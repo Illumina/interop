@@ -243,14 +243,14 @@ namespace illumina{ namespace interop{ namespace io {
                     assert(bins.size() <= N);
                     for(::uint8_t i=0;i<bins.size();++i) bins[i].m_lower = tmp[i];
                 }
-                static void copy_lower_read(const std::vector<q_score_bin>& bins, ::uint8_t* tmp) { }
+                static void copy_lower_read(const std::vector<q_score_bin>&, ::uint8_t*) { }
                 template<size_t N>
                 static void copy_lower_write(const std::vector<q_score_bin>& bins, ::uint8_t (&tmp)[N])
                 {
                     assert(bins.size() <= N);
-                    for(::uint8_t i=0;i<bins.size();++i) tmp[i] = bins[i].m_lower;
+                    for(::uint8_t i=0;i<bins.size();++i) tmp[i] = static_cast< ::uint8_t >(bins[i].m_lower);
                 }
-                static void copy_lower_write(std::vector<q_score_bin>& bins, ::uint8_t* tmp) { }
+                static void copy_lower_write(std::vector<q_score_bin>&, ::uint8_t*) { }
             private:
                 template<size_t N>
                 static void copy_upper_read(std::vector<q_score_bin>& bins, ::uint8_t (&tmp)[N])
@@ -258,14 +258,14 @@ namespace illumina{ namespace interop{ namespace io {
                     assert(bins.size() <= N);
                     for(::uint8_t i=0;i<bins.size();++i) bins[i].m_upper = tmp[i];
                 }
-                static void copy_upper_read(const std::vector<q_score_bin>& bins, ::uint8_t* tmp) { }
+                static void copy_upper_read(const std::vector<q_score_bin>& , ::uint8_t*) { }
                 template<size_t N>
                 static void copy_upper_write(const std::vector<q_score_bin>& bins, ::uint8_t (&tmp)[N])
                 {
                     assert(bins.size() <= N);
-                    for(::uint8_t i=0;i<bins.size();++i) tmp[i] = bins[i].m_upper;
+                    for(::uint8_t i=0;i<bins.size();++i) tmp[i] = static_cast< ::uint8_t >(bins[i].m_upper);
                 }
-                static void copy_upper_write(std::vector<q_score_bin>& bins, ::uint8_t* tmp) { }
+                static void copy_upper_write(std::vector<q_score_bin>&, ::uint8_t*) { }
             private:
                 template<size_t N>
                 static void copy_value_read(std::vector<q_score_bin>& bins, ::uint8_t (&tmp)[N])
@@ -273,14 +273,14 @@ namespace illumina{ namespace interop{ namespace io {
                     assert(bins.size() <= N);
                     for(::uint8_t i=0;i<bins.size();++i) bins[i].m_value = tmp[i];
                 }
-                static void copy_value_read(const std::vector<q_score_bin>& bins, ::uint8_t* tmp) { }
+                static void copy_value_read(const std::vector<q_score_bin>&, ::uint8_t*) { }
                 template<size_t N>
                 static void copy_value_write(const std::vector<q_score_bin>& bins, ::uint8_t (&tmp)[N])
                 {
                     assert(bins.size() <= N);
-                    for(::uint8_t i=0;i<bins.size();++i) tmp[i] = bins[i].m_value;
+                    for(::uint8_t i=0;i<bins.size();++i) tmp[i] = static_cast< ::uint8_t >(bins[i].m_value);
                 }
-                static void copy_value_write(std::vector<q_score_bin>& bins, ::uint8_t* tmp) { }
+                static void copy_value_write(std::vector<q_score_bin>&, ::uint8_t*) { }
             };
             /** Q-score Metric Record Layout Version 6
              *
@@ -407,14 +407,14 @@ namespace illumina{ namespace interop{ namespace io {
                     assert(bins.size() <= N);
                     for(::uint8_t i=0;i<bins.size();++i) bins[i].m_lower = tmp[i];
                 }
-                static void copy_lower_read(const std::vector<q_score_bin>& bins, ::uint8_t* tmp) { }
+                static void copy_lower_read(const std::vector<q_score_bin>&, ::uint8_t*) { }
                 template<size_t N>
                 static void copy_lower_write(const std::vector<q_score_bin>& bins, ::uint8_t (&tmp)[N])
                 {
                     assert(bins.size() <= N);
-                    for(::uint8_t i=0;i<bins.size();++i) tmp[i] = bins[i].m_lower;
+                    for(::uint8_t i=0;i<bins.size();++i) tmp[i] = static_cast< ::uint8_t >(bins[i].m_lower);
                 }
-                static void copy_lower_write(std::vector<q_score_bin>& bins, ::uint8_t* tmp) { }
+                static void copy_lower_write(std::vector<q_score_bin>&, ::uint8_t*) { }
             private:
                 template<size_t N>
                 static void copy_upper_read(std::vector<q_score_bin>& bins, ::uint8_t (&tmp)[N])
@@ -422,14 +422,14 @@ namespace illumina{ namespace interop{ namespace io {
                     assert(bins.size() <= N);
                     for(::uint8_t i=0;i<bins.size();++i) bins[i].m_upper = tmp[i];
                 }
-                static void copy_upper_read(const std::vector<q_score_bin>& bins, ::uint8_t* tmp) { }
+                static void copy_upper_read(const std::vector<q_score_bin>&, ::uint8_t*) { }
                 template<size_t N>
                 static void copy_upper_write(const std::vector<q_score_bin>& bins, ::uint8_t (&tmp)[N])
                 {
                     assert(bins.size() <= N);
-                    for(::uint8_t i=0;i<bins.size();++i) tmp[i] = bins[i].m_upper;
+                    for(::uint8_t i=0;i<bins.size();++i) tmp[i] = static_cast< ::uint8_t >(bins[i].m_upper);
                 }
-                static void copy_upper_write(std::vector<q_score_bin>& bins, ::uint8_t* tmp) { }
+                static void copy_upper_write(std::vector<q_score_bin>&, ::uint8_t*) { }
             private:
                 template<size_t N>
                 static void copy_value_read(std::vector<q_score_bin>& bins, ::uint8_t (&tmp)[N])
@@ -437,14 +437,14 @@ namespace illumina{ namespace interop{ namespace io {
                     assert(bins.size() <= N);
                     for(::uint8_t i=0;i<bins.size();++i) bins[i].m_value = tmp[i];
                 }
-                static void copy_value_read(const std::vector<q_score_bin>& bins, ::uint8_t* tmp) { }
+                static void copy_value_read(const std::vector<q_score_bin>&, ::uint8_t*) { }
                 template<size_t N>
                 static void copy_value_write(const std::vector<q_score_bin>& bins, ::uint8_t (&tmp)[N])
                 {
                     assert(bins.size() <= N);
-                    for(::uint8_t i=0;i<bins.size();++i) tmp[i] = bins[i].m_value;
+                    for(::uint8_t i=0;i<bins.size();++i) tmp[i] = static_cast< ::uint8_t >(bins[i].m_value);
                 }
-                static void copy_value_write(std::vector<q_score_bin>& bins, ::uint8_t* tmp) { }
+                static void copy_value_write(std::vector<q_score_bin>&, ::uint8_t*) { }
             };
 
 #pragma pack()// DO NOT MOVE
