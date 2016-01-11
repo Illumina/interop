@@ -14,6 +14,7 @@
 #include "interop/io/metric_file_stream.h"
 %}
 
+
 %ignore metric_group_iuo;
 %ignore set_base(const io::layout::base_metric& base);
 %ignore set_base(const io::layout::base_cycle_metric& base);
