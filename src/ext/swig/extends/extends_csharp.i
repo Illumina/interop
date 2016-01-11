@@ -44,7 +44,7 @@ namespace metric_base = illumina::interop::model::metric_base;
     }
     public global::System.Collections.Generic.IEnumerable< metric_t > GetMetricsByCycle(global::System.Collections.Generic.IEnumerable<int> cycles)
     {
-        return global::System.Linq.Enumerable.Where(metrics(), m => global::System.Linq.Enumerable.Contains<int>(cycles, m.Cycle));
+        return global::System.Linq.Enumerable.Where(metrics(), m => global::System.Linq.Enumerable.Contains<int>(cycles, (int)m.cycle()));
     }
     public global::System.Collections.Generic.IEnumerable< metric_t > GetMetricsInLane(int lane)
     {
@@ -97,6 +97,10 @@ public int LatestExtractedCycle;
 public int LatestCalledCycle;
 public int LatestQScoredCycle;
 public int LatestErrorCycle;
+    public int cycle(){return -1;}// Hack for bad interface above
+%}
+%typemap(cscode) illumina::interop::model::metrics::index_metric %{
+    public int cycle(){return -1;}// Hack for bad interface above
 %}
 
 
@@ -108,11 +112,10 @@ public int LatestErrorCycle;
 
     public int Tile { get { return (int)tile(); } }
     public int Lane { get { return (int)lane(); } }
-    public int Cycle { get { return -1; } } // Hack for bad interface above
  %}
 
 
 %typemap(cscode) illumina::interop::model::metric_base::base_cycle_metric %{
 
-    public new int Cycle { get { return (int)cycle(); } }
+    public /*new*/ int Cycle { get { return (int)cycle(); } }
  %}
