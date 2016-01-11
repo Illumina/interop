@@ -153,7 +153,7 @@ namespace illumina{ namespace interop{
                         write_binary(out, metric_id);
                         write_binary(out, rec);
                     }
-                    if(metric.m_clusterDensity == metric.m_clusterDensity)
+                    if(metric.m_clusterCount == metric.m_clusterCount)
                     {
                         rec.value = metric.m_clusterCount;
                         rec.code = ClusterCount;
