@@ -42,6 +42,7 @@ add_dependencies(csharp_interop ${SWIG_MODULE_c_csharp_interop_REAL_NAME})
 add_custom_command(
         TARGET csharp_interop
         POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${SWIG_MODULE_c_csharp_interop_REAL_NAME}> $<TARGET_FILE_DIR:${INTEROP_LIB}>
         COMMAND ${CMAKE_COMMAND} -E copy ${CSHARP_csharp_interop_BINARY} $<TARGET_FILE_DIR:${INTEROP_LIB}>
         COMMENT "copy ${CSHARP_csharp_interop_BINARY} $<TARGET_FILE_DIR:${INTEROP_LIB}>"
 )

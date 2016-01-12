@@ -141,9 +141,11 @@ namespace illumina{ namespace interop{
                     metric_id.set(metric);
 
                     // We always write this out, even if it is NaN
+                    // We always write out ID for the first record
                     {
                         rec.value = metric.m_clusterDensity;
                         rec.code = ClusterDensity;
+                        //write_binary(out, metric_id);
                         write_binary(out, rec);
                     }
                     if(metric.m_clusterDensityPf == metric.m_clusterDensityPf)
