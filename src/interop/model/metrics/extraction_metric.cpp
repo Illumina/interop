@@ -97,6 +97,18 @@ namespace illumina{ namespace interop{ namespace io {
                             sizeof(::uint64_t)                                  // m_dateTime
                     );
                 }
+            private:
+                static ::uint64_t convert_to_csharp_datetime(const ::uint64_t time)
+                {
+                    return time * 10000000 + 621355968000000000;
+                }
+                static ::uint64_t& convert_to_csharp_datetime(::uint64_t& time){return time;}
+                static void convert_from_csharp_datetime(const ::uint64_t time){}
+                static void convert_from_csharp_datetime(::uint64_t& time)
+                {
+                    time -= 621355968000000000;
+                    time /= 10000000;
+                }
             };
 
 
