@@ -58,9 +58,34 @@ namespace metric_base = illumina::interop::model::metric_base;
     {
         return global::System.Linq.Enumerable.Where(metrics(), m => m.lane() == lane && m.tile() == tile);
     }
+    /*
     public global::System.Collections.Generic.IEnumerable< metric_t > AllMetrics { get { return metrics(); } }
-
     public global::System.Collections.Generic.IEnumerable<global::System.UInt64> AllKeys { get { return keys(); } }
+    */
+    public global::System.Collections.Generic.IEnumerable< metric_t > AllMetrics
+    {
+        get
+        {
+             global::System.Collections.Generic.Dictionary<global::System.Int64, metric_t> Lookup = new global::System.Collections.Generic.Dictionary<global::System.Int64, metric_t>();
+             foreach(var metric in metrics())
+             {
+                Lookup.Add((global::System.Int64)metric.id(), metric);
+             }
+            return Lookup.Values;
+        }
+    }
+    public global::System.Collections.Generic.IEnumerable<global::System.UInt64> AllKeys
+    {
+        get
+        {
+             global::System.Collections.Generic.Dictionary<global::System.UInt64, metric_t> Lookup = new global::System.Collections.Generic.Dictionary<global::System.UInt64, metric_t>();
+             foreach(var metric in metrics())
+             {
+                Lookup.Add((global::System.UInt64)metric.id(), metric);
+             }
+            return Lookup.Keys;
+        }
+    }
 
     public global::System.Collections.Generic.IEnumerable< metric_t> GetMetricsByCycle(int lane, int tile, global::System.Collections.Generic.IEnumerable<int> cycles)
     {
