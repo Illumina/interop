@@ -139,34 +139,40 @@ namespace illumina{ namespace interop{
                     record_t rec;
                     metric_id_t metric_id;
                     metric_id.set(metric);
+                    bool write_id = false;
 
                     // We always write this out, even if it is NaN
                     // We always write out ID for the first record
+                    if(metric.m_clusterDensity == metric.m_clusterDensity)
                     {
                         rec.value = metric.m_clusterDensity;
                         rec.code = ClusterDensity;
-                        //write_binary(out, metric_id);
+                        if(write_id) write_binary(out, metric_id);
+                        write_id=true;
                         write_binary(out, rec);
                     }
                     if(metric.m_clusterDensityPf == metric.m_clusterDensityPf)
                     {
                         rec.value = metric.m_clusterDensityPf;
                         rec.code = ClusterDensityPf;
-                        write_binary(out, metric_id);
+                        if(write_id) write_binary(out, metric_id);
+                        write_id=true;
                         write_binary(out, rec);
                     }
                     if(metric.m_clusterCount == metric.m_clusterCount)
                     {
                         rec.value = metric.m_clusterCount;
                         rec.code = ClusterCount;
-                        write_binary(out, metric_id);
+                        if(write_id) write_binary(out, metric_id);
+                        write_id=true;
                         write_binary(out, rec);
                     }
                     if(metric.m_clusterCountPf == metric.m_clusterCountPf)
                     {
                         rec.value = metric.m_clusterCountPf;
                         rec.code = ClusterCountPf;
-                        write_binary(out, metric_id);
+                        if(write_id) write_binary(out, metric_id);
+                        write_id=true;
                         write_binary(out, rec);
                     }
                     typedef tile_metric::read_metric_vector::const_iterator const_iterator;
@@ -175,7 +181,8 @@ namespace illumina{ namespace interop{
                         const int read = beg->read()-1;
                         rec.code = static_cast< ::uint16_t >(Prephasing+read*2);
                         rec.value = beg->percent_prephasing();
-                        write_binary(out, metric_id);
+                        if(write_id) write_binary(out, metric_id);
+                        write_id=true;
                         write_binary(out, rec);
                         rec.code = static_cast< ::uint16_t >(Phasing+read*2);
                         rec.value = beg->percent_phasing();
