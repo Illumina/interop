@@ -54,6 +54,24 @@
 
 %enddef
 
+%define WRAP_TEMPLATE_CYCLE_BASE(metric_t)
+    using namespace illumina::interop::model::metrics;
+    namespace metric_base = illumina::interop::model::metric_base;
+
+    %apply size_t { std::map< std::size_t, metric_t >::size_type };
+    %apply size_t { metric_base::metric_set<metric_t>::size_type };
+    %apply uint64_t { metric_base::metric_set<metric_t>::id_t };
+    %apply uint64_t { io::layout::base_metric::id_t };
+
+    EXTEND_CYCLE_METRIC_SET(metric_t)
+    %template(base_ ## metric_t ## s) metric_base::metric_set<metric_t>;
+    %template(vector_ ## metric_t ## s) std::vector<metric_t>;
+    %template(write_interop_to_buffer ) illumina::interop::io::write_interop_to_buffer< metric_base::metric_set<metric_t> >;
+    %template(read_interop_from_buffer )  illumina::interop::io::read_interop_from_buffer< metric_base::metric_set<metric_t> >;
+    %template(read_interop )  illumina::interop::io::read_interop< metric_base::metric_set<metric_t> >;
+
+%enddef
+
 %{
 #include "interop/model/metrics/corrected_intensity_metric.h"
 #include "interop/model/metrics/error_metric.h"
@@ -81,11 +99,11 @@
 %include "interop/model/metrics/tile_metric.h"
 %include "interop/model/metrics/index_metric.h"
 
-WRAP_TEMPLATE_BASE(corrected_intensity_metric)
-WRAP_TEMPLATE_BASE(error_metric)
-WRAP_TEMPLATE_BASE(extraction_metric)
-WRAP_TEMPLATE_BASE(image_metric)
-WRAP_TEMPLATE_BASE(q_metric)
+WRAP_TEMPLATE_CYCLE_BASE(corrected_intensity_metric)
+WRAP_TEMPLATE_CYCLE_BASE(error_metric)
+WRAP_TEMPLATE_CYCLE_BASE(extraction_metric)
+WRAP_TEMPLATE_CYCLE_BASE(image_metric)
+WRAP_TEMPLATE_CYCLE_BASE(q_metric)
 WRAP_TEMPLATE_BASE(tile_metric)
 WRAP_TEMPLATE_BASE(index_metric)
 
