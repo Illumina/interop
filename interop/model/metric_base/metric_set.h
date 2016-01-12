@@ -65,7 +65,7 @@ namespace illumina {
                      *
                      * @param header header information for the metric set
                      */
-                    metric_set(const header_type& header) : header_type(header), m_version(-1), m_interopName(T::prefix()) {}
+                    metric_set(const header_type& header) : header_type(header), m_version(0), m_interopName(T::prefix()) {}
                     /** Constructor
                      *
                      * @param vec array of metrics
