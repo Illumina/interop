@@ -86,7 +86,7 @@ namespace metric_base = illumina::interop::model::metric_base;
 %typemap(cscode) illumina::interop::model::metrics::q_metrics %{
     public bool IsBinned { get { return binCount() > 0; }}
     public int NumQVals(){ return (int)histBinCount(); }
-    public bool IsCompressed { get { return NumQVals() != 50; } }
+    public bool IsCompressed { get { return NumQVals() > 0 && NumQVals() != 50; } }
     public int MaxQVal(){ return (int)max_q_value(); }
 %}
 
