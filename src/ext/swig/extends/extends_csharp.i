@@ -105,7 +105,7 @@ namespace metric_base = illumina::interop::model::metric_base;
 
 
 %typemap(cscode) illumina::interop::model::metrics::tile_metrics %{
-    public int ControlLane;
+    public int ControlLane=0;
 %}
 
 %typemap(cscode) illumina::interop::model::metrics::q_metrics %{
