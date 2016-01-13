@@ -98,16 +98,26 @@ namespace illumina{ namespace interop{ namespace io {
                     );
                 }
             private:
+                //http://en.cppreference.com/w/c/chrono/time_t
+                //https://msdn.microsoft.com/en-us/library/z2xf7zzk(v=vs.110).aspx
+                inline static ::uint64_t ticks_per_second()
+                {
+                    return 10000000;
+                }
+                inline static ::uint64_t ticks_to_1970()
+                {
+                    return 621355968000000000;
+                }
                 static ::uint64_t convert_to_csharp_datetime(const ::uint64_t time)
                 {
-                    return time * 10000000 + 621355968000000000;
+                    return time * ticks_per_second() + ticks_to_1970();
                 }
                 static ::uint64_t& convert_to_csharp_datetime(::uint64_t& time){return time;}
-                static void convert_from_csharp_datetime(const ::uint64_t time){}
+                static void convert_from_csharp_datetime(const ::uint64_t){}
                 static void convert_from_csharp_datetime(::uint64_t& time)
                 {
-                    time -= 621355968000000000;
-                    time /= 10000000;
+                    time -= ticks_to_1970();
+                    time /= ticks_per_second();
                 }
             };
 

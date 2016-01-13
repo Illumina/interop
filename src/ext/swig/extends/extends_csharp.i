@@ -144,7 +144,11 @@ public int LatestErrorCycle;
 public global::System.DateTime Time
 { get
   {
-    return global::System.DateTime.FromBinary((long)(dateTime()* 10000000 + 621355968000000000));
+    //http://en.cppreference.com/w/c/chrono/time_t
+    //https://msdn.microsoft.com/en-us/library/z2xf7zzk(v=vs.110).aspx
+    const long ticks_per_second = 10000000;
+    const long ticks_to_1970 = 621355968000000000;
+    return global::System.DateTime.FromBinary((long)(dateTime()* ticks_per_second + ticks_to_1970));
   }
  private set{}
 }
