@@ -101,9 +101,12 @@ namespace illumina {
                         {
                             throw bad_format_exception("Record does not match expected size!");
                         }
-                        metric_offset_map[metric.id()] = metrics.size();
-                        metrics.insert(metric.id(), metric);
-                        metrics.metric_updated_at(metric_offset_map[metric.id()]);
+                        if(metric.lane() > 0 && metric.tile() > 0)
+                        {
+                            metric_offset_map[metric.id()] = metrics.size();
+                            metrics.insert(metric.id(), metric);
+                            metrics.metric_updated_at(metric_offset_map[metric.id()]);
+                        }
                     }
                     else
                     {

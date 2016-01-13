@@ -116,7 +116,7 @@
 
 
 %typemap(cscode) illumina::interop::model::metrics::tile_metrics %{
-    public int ControlLane=0;
+    public int ControlLane { get; set; }
 %}
 
 %typemap(cscode) illumina::interop::model::metrics::q_metrics %{
@@ -138,6 +138,16 @@ public int LatestErrorCycle;
 %}
 %typemap(cscode) illumina::interop::model::metrics::index_metric %{
     public int cycle(){return -1;}// Hack for bad interface above
+%}
+
+%typemap(cscode) illumina::interop::model::metrics::extraction_metric %{
+public global::System.DateTime Time
+{ get
+  {
+    return global::System.DateTime.FromBinary((long)(dateTime()* 10000000 + 621355968000000000));
+  }
+ private set{}
+}
 %}
 
 
