@@ -21,10 +21,11 @@ namespace metrics {
 class q_metrics : public metric_base::metric_set<q_metric>
 {
     typedef metric_base::metric_set<q_metric> parent_type;
+    typedef typename q_metric::uint_t uint_t;
 public:
     /** Constructor
      */
-    q_metrics() : parent_type(header_type())
+    q_metrics() : parent_type(header_type()), m_max_cycle(0)
     {
     }
 
@@ -35,10 +36,18 @@ public:
      * @param header header information for the metric set
      */
     q_metrics(const metric_array_t& vec, const ::int16_t version=-1, const header_type& header=header_type()) :
-            parent_type(vec, version, header) {
+            parent_type(vec, version, header), m_max_cycle(0) {
     }
 
 public:
+    /** Get maximum number of cycles
+     *
+     * @return maximum cycle
+     */
+    uint_t max_cycle()const
+    {
+        return m_max_cycle;
+    }
     /** Get the number of bins for each metric
      *
      * @return number of bins for each metric
@@ -53,13 +62,32 @@ public:
     {
         if(size() > 0)
         {
-            m_data[0].accumulate(m_data[0]);
+            for(metric_array_t::iterator cur = m_data.begin(), end = m_data.end();cur != end;++cur)
+                m_max_cycle = std::max(m_max_cycle, cur->cycle());
+            id_vector lane_ids = lanes();
+            for(typename id_vector::const_iterator lane_beg = lane_ids.begin(), lane_end = lane_ids.end();lane_beg != lane_end;++lane_beg)
+            {
+                id_vector tile_ids = tile_numbers_for_lane(*lane_beg);
+                for(typename id_vector::const_iterator tile_beg = tile_ids.begin(), tile_end = tile_ids.end();tile_beg != tile_end;++tile_beg)
+                {
+                    if(!has_metric(*lane_beg, *tile_beg, 1)) continue;
+                    q_metric& metric = get_metric_ref(*lane_beg, *tile_beg, 1);
+                    metric.accumulate(metric);
+                    for(uint_t cycle = 2;cycle <= m_max_cycle;++cycle)
+                    {
+                        try{
+                            get_metric_ref(*lane_beg, *tile_beg, cycle).accumulate(get_metric_ref(*lane_beg, *tile_beg, cycle-1));
+                        }catch(const metric_base::index_out_of_bounds_exception&){}
+                    }
+                }
+            }
+            /*m_data[0].accumulate(m_data[0]);
             for(metric_array_t::iterator beg = m_data.begin(), cur=beg+1, end = m_data.end();cur != end;++beg,++cur)
             {
                 if(cur->lane() == (cur-1)->lane() && cur->tile() == (cur-1)->tile())
                     cur->accumulate(*beg);
                 else cur->accumulate(*cur);
-            }
+            }*/
         }
     }
     /** Populate the q-score header bins from the data
@@ -137,6 +165,9 @@ public:
             m_qscoreBins.push_back(q_score_bin(0, 50, 20));
         }
     }
+
+private:
+    uint_t m_max_cycle;
 };
 }
 }

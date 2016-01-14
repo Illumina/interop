@@ -86,6 +86,16 @@ namespace illumina {
                     }
 
                 public:
+                    /** Test if set has metric
+                     *
+                     * @param lane lane
+                     * @param tile tile
+                     * @param cycle cycle
+                     */
+                    bool has_metric(uint_t lane, uint_t tile, uint_t cycle=0)const
+                    {
+                        return m_id_map.find(metric_type::id(lane, tile, cycle)) != m_id_map.end();
+                    }
                     /** Add a metric to the metric set
                      *
                      * @param id unique id for metric
@@ -109,7 +119,7 @@ namespace illumina {
                      * @param cycle cycle
                      * @return metric
                      */
-                    const metric_type& get_metric(uint_t lane, uint_t tile, uint_t cycle=0) _INTEROP_METRIC_THROWS
+                    const metric_type& get_metric(uint_t lane, uint_t tile, uint_t cycle=0) const _INTEROP_METRIC_THROWS
                     {
                         try {
                             return get_metric(metric_type::id(lane, tile, cycle));
@@ -130,7 +140,7 @@ namespace illumina {
                      * @param key unique id built from lane, tile and cycle (if available)
                      * @return metric
                      */
-                    const metric_type& get_metric(id_t key) _INTEROP_METRIC_THROWS
+                    const metric_type& get_metric(id_t key) const _INTEROP_METRIC_THROWS
                     {
                         typename std::map<id_t, size_t>::const_iterator it = m_id_map.find(key);
                         if(it == m_id_map.end())
@@ -277,6 +287,46 @@ namespace illumina {
                      * time a metric record is read from a stream.
                      */
                     void metric_updated_at(const size_t){}
+
+                protected:
+                    /** Get metric for lane, tile and cycle
+                     *
+                     * @todo: remove this function
+                     *
+                     * @param lane lane
+                     * @param tile tile
+                     * @param cycle cycle
+                     * @return metric
+                     */
+                    metric_type& get_metric_ref(uint_t lane, uint_t tile, uint_t cycle=0) _INTEROP_METRIC_THROWS
+                    {
+                        try{
+                            return get_metric_ref(metric_type::id(lane, tile, cycle));
+                        }catch(const index_out_of_bounds_exception&){
+                            throw index_out_of_bounds_exception("No tile available: key: "+
+                                                                util::lexical_cast<std::string>(metric_type::id(lane, tile, cycle))+
+                                                                " map: "+util::lexical_cast<std::string>(m_id_map.size())+
+                                                                "  lane: "+util::lexical_cast<std::string>(lane)+
+                                                                "  tile: "+util::lexical_cast<std::string>(tile)+
+                                                                "  cycle: "+util::lexical_cast<std::string>(cycle));
+
+                        }
+                    }
+                    /** Get metric for a unique identifier
+                     *
+                     * @todo: remove this function
+                     *
+                     * @param key unique id built from lane, tile and cycle (if available)
+                     * @return metric
+                     */
+                    metric_type& get_metric_ref(id_t key) _INTEROP_METRIC_THROWS
+                    {
+                        typename std::map<id_t, size_t>::const_iterator it = m_id_map.find(key);
+                        if(it == m_id_map.end())
+                            throw index_out_of_bounds_exception("No tile available: key: "+util::lexical_cast<std::string>(key)+" map: "+util::lexical_cast<std::string>(m_id_map.size())+" == data: "+util::lexical_cast<std::string>(m_data.size()));
+                        assert(it->second < m_data.size());
+                        return m_data[it->second];
+                    }
 
                 private:
                     metric_array_t metrics_for_cycle(const uint_t cycle, base_cycle_metric_header*)const
