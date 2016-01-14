@@ -21,6 +21,9 @@ namespace metrics {
 class q_metrics : public metric_base::metric_set<q_metric>
 {
     typedef metric_base::metric_set<q_metric> parent_type;
+
+public:
+    /** Unsigned integer type */
     typedef typename q_metric::uint_t uint_t;
 public:
     /** Constructor
