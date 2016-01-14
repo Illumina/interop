@@ -56,7 +56,7 @@ WRAPPED_TEST(FIXTURE, test_hardcoded_bad_format_exception)
     tmp[0] = 34;
     std::istringstream fin(tmp);
     typename TypeParam::metrics_type metrics;
-    EXPECT_THROW(read_metrics(fin, metrics), bad_format_exception);
+    EXPECT_THROW(illumina::interop::io::read_metrics(fin, metrics), bad_format_exception);
 }
 
 /** Confirm incomplete_file_exception is thrown for a small partial record
@@ -69,7 +69,7 @@ WRAPPED_TEST(FIXTURE, test_hardcoded_incomplete_file_exception)
         std::istringstream fin(TypeParam::expected_binary_data.substr(0, i));
         typename TypeParam::metrics_type metrics;
         try{
-            read_metrics(fin, metrics);
+            illumina::interop::io::read_metrics(fin, metrics);
         }
         catch(const incomplete_file_exception&){incomplete++;}
         catch(const std::exception& ex){ std::cerr << i << " " << ex.what() << std::endl;throw;}
@@ -82,7 +82,7 @@ WRAPPED_TEST(FIXTURE, test_hardcoded_incomplete_file_exception_last_metric)
 {
     std::istringstream fin(TypeParam::expected_binary_data.substr(0,TypeParam::expected_binary_data.length()-4));
     typename TypeParam::metrics_type metrics;
-    EXPECT_THROW(read_metrics(fin, metrics), incomplete_file_exception);
+    EXPECT_THROW(illumina::interop::io::read_metrics(fin, metrics), incomplete_file_exception);
 }
 /** Confirm bad_format_exception is thrown when record size is incorrect
  */
@@ -93,7 +93,7 @@ WRAPPED_TEST(FIXTURE, test_hardcoded_incorrect_record_size)
     tmp[1] = 0;
     std::istringstream fin(tmp);
     typename TypeParam::metrics_type metrics;
-    EXPECT_THROW(read_metrics(fin, metrics), bad_format_exception);
+    EXPECT_THROW(illumina::interop::io::read_metrics(fin, metrics), bad_format_exception);
 }
 /** Confirm file_not_found_exception is thrown when a file is not found
  */
@@ -109,7 +109,7 @@ WRAPPED_TEST(FIXTURE, test_hardcoded_read)
     std::string tmp = std::string(TypeParam::expected_binary_data);
     std::istringstream fin(tmp);
     typename TypeParam::metrics_type metrics;
-    EXPECT_NO_THROW(read_metrics(fin, metrics));
+    EXPECT_NO_THROW(illumina::interop::io::read_metrics(fin, metrics));
 }
 
 #ifdef _MSC_VER
