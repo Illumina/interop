@@ -329,8 +329,6 @@ TYPED_TEST(q_metrics_test, test_populate_cumulative_on_empty)
     TypeParam::actual_metric_set.populateCumulativeDistributions();
     for(typename TypeParam::const_iterator cur=TypeParam::actual_metric_set.metrics().begin();cur != TypeParam::actual_metric_set.metrics().end();++cur)
         EXPECT_TRUE(!cur->is_cumulative_empty());
-
-
     q_metrics empty_metrics;
     empty_metrics.populateCumulativeDistributions();
 }
@@ -352,7 +350,7 @@ TEST(q_metrics_test, test_cumulative)
     q_metric_vec.push_back(q_metric(6, 1114, 1, helper_t::to_vector(hist_all0)));
     q_metric_vec.push_back(q_metric(7, 1114, 3, helper_t::to_vector(hist_all3)));
 
-    q_metrics q_metric_set(q_metric_vec, 6, typename q_metric::header_type());
+    q_metrics q_metric_set(q_metric_vec, 6, q_metric::header_type());
     q_metric_set.populateCumulativeDistributions();
 
     for(uint_t i=0;i<helper_t::to_vector(hist_all1).size();i++)

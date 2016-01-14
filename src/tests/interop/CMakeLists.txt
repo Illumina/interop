@@ -21,7 +21,9 @@ add_custom_target(check
         COMMAND $<TARGET_FILE:interop_gtests>)
 set_target_properties(check PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
 add_dependencies(check interop_gtests)
-
+if(MSVC)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+endif()
 if(NOT ENABLE_TEST)
     set_target_properties(interop_gtests PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
 endif()
