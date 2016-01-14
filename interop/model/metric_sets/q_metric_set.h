@@ -68,10 +68,10 @@ public:
             for(metric_array_t::iterator cur = m_data.begin(), end = m_data.end();cur != end;++cur)
                 m_max_cycle = std::max(m_max_cycle, cur->cycle());
             id_vector lane_ids = lanes();
-            for(typename id_vector::const_iterator lane_beg = lane_ids.begin(), lane_end = lane_ids.end();lane_beg != lane_end;++lane_beg)
+            for(id_vector::const_iterator lane_beg = lane_ids.begin(), lane_end = lane_ids.end();lane_beg != lane_end;++lane_beg)
             {
                 id_vector tile_ids = tile_numbers_for_lane(*lane_beg);
-                for(typename id_vector::const_iterator tile_beg = tile_ids.begin(), tile_end = tile_ids.end();tile_beg != tile_end;++tile_beg)
+                for(id_vector::const_iterator tile_beg = tile_ids.begin(), tile_end = tile_ids.end();tile_beg != tile_end;++tile_beg)
                 {
                     if(!has_metric(*lane_beg, *tile_beg, 1)) continue;
                     q_metric& metric = get_metric_ref(*lane_beg, *tile_beg, 1);
