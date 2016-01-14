@@ -79,7 +79,8 @@ namespace illumina
                          */
                         static id_t id(id_t lane, id_t tile)
                         {
-                            return lane | (tile << 6);
+                            //return lane | (tile << 6);
+                            return (lane << 32) | (tile << 6);
                         }
                         /** Test if the layout contains valid data
                          *
@@ -141,7 +142,8 @@ namespace illumina
                          */
                         static id_t id(id_t lane, id_t tile, id_t cycle)
                         {
-                            return base_metric::id(lane, tile) | (cycle << 32);
+                            //return base_metric::id(lane, tile) | (cycle << 32);
+                            return base_metric::id(lane, tile) | (cycle);
                         }
                         /** Test if the layout contains valid data
                          *
@@ -201,7 +203,8 @@ namespace illumina
                          */
                         static id_t id(id_t lane, id_t tile, id_t read_)
                         {
-                            return base_metric::id(lane, tile) | (read_ << 32);
+                            //return base_metric::id(lane, tile) | (read_ << 32);
+                            return base_metric::id(lane, tile) | (read_);
                         }
                         /** Test if the layout contains valid data
                          *

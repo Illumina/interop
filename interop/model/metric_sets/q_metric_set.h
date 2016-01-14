@@ -55,7 +55,11 @@ public:
         {
             m_data[0].accumulate(m_data[0]);
             for(metric_array_t::iterator beg = m_data.begin(), cur=beg+1, end = m_data.end();cur != end;++beg,++cur)
-                cur->accumulate(*beg);
+            {
+                if(cur->lane() == (cur-1)->lane() && cur->tile() == (cur-1)->tile())
+                    cur->accumulate(*beg);
+                else cur->accumulate(*cur);
+            }
         }
     }
     /** Populate the q-score header bins from the data
