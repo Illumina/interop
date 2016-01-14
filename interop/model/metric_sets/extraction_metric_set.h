@@ -54,8 +54,8 @@ public:
             if (startTime == std::numeric_limits<ulong_t>::min()) continue;
             ulong_t endTime = beg->dateTime();
             if (endTime == std::numeric_limits<ulong_t>::min()) continue;
-            double minutes = std::difftime(static_cast<std::time_t>(startTime),
-                                           static_cast<std::time_t>(endTime)) / 60.0;
+            double minutes = std::difftime(static_cast<std::time_t>(endTime),
+                                           static_cast<std::time_t>(startTime)) / 60.0;
             times.push_back(minutes);
         }
         if (times.size() == 0) return -1;
