@@ -75,19 +75,11 @@ public:
                     metric.accumulate(metric);
                     for(uint_t cycle = 2;cycle <= m_max_cycle;++cycle)
                     {
-                        try{
-                            get_metric_ref(*lane_beg, *tile_beg, cycle).accumulate(get_metric_ref(*lane_beg, *tile_beg, cycle-1));
-                        }catch(const metric_base::index_out_of_bounds_exception&){}
+                        if(!has_metric(*lane_beg, *tile_beg, cycle)) continue;
+                        get_metric_ref(*lane_beg, *tile_beg, cycle).accumulate(get_metric_ref(*lane_beg, *tile_beg, cycle-1));
                     }
                 }
             }
-            /*m_data[0].accumulate(m_data[0]);
-            for(metric_array_t::iterator beg = m_data.begin(), cur=beg+1, end = m_data.end();cur != end;++beg,++cur)
-            {
-                if(cur->lane() == (cur-1)->lane() && cur->tile() == (cur-1)->tile())
-                    cur->accumulate(*beg);
-                else cur->accumulate(*cur);
-            }*/
         }
     }
     /** Populate the q-score header bins from the data
