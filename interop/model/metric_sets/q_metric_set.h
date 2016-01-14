@@ -24,7 +24,7 @@ class q_metrics : public metric_base::metric_set<q_metric>
 
 public:
     /** Unsigned integer type */
-    typedef typename q_metric::uint_t uint_t;
+    typedef q_metric::uint_t uint_t;
 public:
     /** Constructor
      */

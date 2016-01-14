@@ -327,10 +327,8 @@ TYPED_TEST(q_metrics_test, test_read_write)
 TYPED_TEST(q_metrics_test, test_populate_cumulative_on_empty)
 {
     TypeParam::actual_metric_set.populateCumulativeDistributions();
-    for(typename TypeParam::const_iterator cur=TypeParam::actual_metric_set.metrics().begin();cur != TypeParam::actual_metric_set.metrics().end();++cur)
+    for(TypeParam::const_iterator cur=TypeParam::actual_metric_set.metrics().begin();cur != TypeParam::actual_metric_set.metrics().end();++cur)
         EXPECT_TRUE(!cur->is_cumulative_empty());
-
-
     q_metrics empty_metrics;
     empty_metrics.populateCumulativeDistributions();
 }
