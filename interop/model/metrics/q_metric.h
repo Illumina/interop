@@ -371,11 +371,13 @@ namespace illumina {
                      */
                     void accumulate(const q_metric& metric)
                     {
-                        uint_vector::const_iterator beg = metric.m_qscoreHist.begin(),
-                                end = metric.m_qscoreHist.end();
-                        m_qscoreHist_cumulative.assign(m_qscoreHist.size(), 0);
-                        for(uint_vector::iterator cur= m_qscoreHist_cumulative.begin(); beg != end; ++beg, ++cur)
-                            *cur += *beg;
+                        uint_vector::const_iterator beg = metric.m_qscoreHist_cumulative.begin(),
+                                end = metric.m_qscoreHist_cumulative.end();
+                        m_qscoreHist_cumulative = m_qscoreHist;
+                        if(&metric != this) {
+                            for (uint_vector::iterator cur = m_qscoreHist_cumulative.begin(); beg != end; ++beg, ++cur)
+                                *cur += *beg;
+                        }
                     }
 
                 public:

@@ -106,7 +106,7 @@ struct fixture_helper
      * @return vector of values
      */
     template<typename T, size_t N>
-    std::vector<T> to_vector(T (&vals)[N])
+    static std::vector<T> to_vector(T (&vals)[N])
     {
         return std::vector<T>(vals, vals + N);
     }
@@ -119,7 +119,7 @@ struct fixture_helper
      * @return vector of values
      */
     template<typename T, size_t N, size_t Size>
-    std::vector<T> to_vector(sparse_value<T, Size> (&vals)[N])
+    static std::vector<T> to_vector(sparse_value<T, Size> (&vals)[N])
     {
         std::vector<T> vec(Size, 0);
         for (size_t i = 0; i < N; i++)

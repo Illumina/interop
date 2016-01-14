@@ -93,7 +93,7 @@ namespace illumina {
                      */
                     static id_t id(const id_t lane, const id_t tile, const id_t=0)// TODO: remove hack
                     {
-                        return lane | (tile << 6);
+                        return io::layout::base_metric::id(lane, tile);
                     }
                     /** Lane number
                      *
