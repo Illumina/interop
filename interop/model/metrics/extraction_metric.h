@@ -190,6 +190,37 @@ namespace illumina {
                      * @return prefix
                      */
                     static const char* prefix(){return "Extraction";}
+                    /** Convert to C# time
+                     *
+                     * http://en.cppreference.com/w/c/chrono/time_t
+                     * https://msdn.microsoft.com/en-us/library/z2xf7zzk(v=vs.110).aspx
+                     *
+                     * @param time time in C++ units
+                     * @return time in C# units
+                     */
+                    static ulong_t time_to_csharp(ulong_t time)
+                    {
+                        return time * ticks_per_second() + ticks_to_1970();
+                    }
+                    /** Convert from C# time
+                     *
+                     * @param time time in C# units
+                     * @return time in C++ units
+                     */
+                    static ulong_t time_from_csharp(ulong_t time)
+                    {
+                        return (time - ticks_to_1970()) / ticks_per_second();
+                    }
+
+                private:
+                    inline static ::uint64_t ticks_per_second()
+                    {
+                        return 10000000;
+                    }
+                    inline static ::uint64_t ticks_to_1970()
+                    {
+                        return 621355968000000000;
+                    }
 
                 private:
                     ulong_t m_dateTime;

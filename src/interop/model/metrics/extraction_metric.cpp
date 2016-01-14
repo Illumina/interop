@@ -81,7 +81,8 @@ namespace illumina{ namespace interop{ namespace io {
                     std::streamsize count = 0;
                     count += stream_map< float >(stream, metric.m_focusScores, extraction_metric::MAX_CHANNELS);
                     count += stream_map< ::uint16_t >(stream, metric.m_max_intensity_values, extraction_metric::MAX_CHANNELS);
-                    count += stream_map< ::uint64_t >(stream, metric.m_dateTime);
+                    count += stream_map< ::uint64_t >(stream, convert_to_csharp_datetime(stream, metric.m_dateTime));
+                    convert_from_csharp_datetime(stream, metric.m_dateTime);
                     return count;
                 }
                 /** Compute the layout size
@@ -98,16 +99,15 @@ namespace illumina{ namespace interop{ namespace io {
                     );
                 }
             private:
-                static ::uint64_t convert_to_csharp_datetime(const ::uint64_t time)
+                static ::uint64_t convert_to_csharp_datetime(std::ostream&, const ::uint64_t& time)
                 {
-                    return time * 10000000 + 621355968000000000;
+                    return extraction_metric::time_to_csharp(time);
                 }
-                static ::uint64_t& convert_to_csharp_datetime(::uint64_t& time){return time;}
-                static void convert_from_csharp_datetime(const ::uint64_t time){}
-                static void convert_from_csharp_datetime(::uint64_t& time)
+                static ::uint64_t& convert_to_csharp_datetime(std::istream&, ::uint64_t& time){return time;}
+                static void convert_from_csharp_datetime(std::ostream&, const ::uint64_t){}
+                static void convert_from_csharp_datetime(std::istream&, ::uint64_t& time)
                 {
-                    time -= 621355968000000000;
-                    time /= 10000000;
+                    time = extraction_metric::time_from_csharp(time);
                 }
             };
 
