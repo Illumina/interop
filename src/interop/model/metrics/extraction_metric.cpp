@@ -99,7 +99,7 @@ namespace illumina{ namespace interop{ namespace io {
                     );
                 }
             private:
-                static void convert_datetime(std::ostream&, const extraction_metric& metric)
+                static void convert_datetime(std::ostream&, const extraction_metric&)
                 {
                 }
                 static void convert_datetime(std::istream&, extraction_metric& metric)
