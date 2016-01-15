@@ -118,12 +118,26 @@
 %}
 
 %typemap(cscode) illumina::interop::model::metrics::q_metrics %{
+    public class QScoreBin
+    {
+         public byte Lower {get; set;}
+         public byte Upper {get; set;}
+         public byte Value {get; set;}
+         public QScoreBin(){}
+         public QScoreBin(byte lower, byte upper, byte value)
+         {
+            Lower = lower;
+            Upper = upper;
+            Value = value;
+         }
+    };
+    public global::System.Collections.Generic.List<QScoreBin> QScoreBins { get; set; }
+
     public bool IsBinned { get { return binCount() > 0; }}
     public int NumQVals(){ return (int)histBinCount(); }
     public bool IsCompressed { get { return NumQVals() > 0 && NumQVals() != 50; } }
     public int MaxQVal(){ return (int)max_q_value(); }
 %}
-%typemap(csclassmodifiers) illumina::interop::model::metrics::q_metrics "public partial class"
 
 
 
@@ -167,3 +181,4 @@ public global::System.DateTime Time
 
     public /*new*/ int Cycle { get { return (int)cycle(); } }
  %}
+
