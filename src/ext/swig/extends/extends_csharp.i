@@ -144,7 +144,7 @@ public int LatestErrorCycle;
 public global::System.DateTime Time
 { get
   {
-    return global::System.DateTime.FromBinary( (global::System.Int64)date_time_csharp() );
+    return global::System.DateTime.FromBinary( (global::System.Int64)date_time_csharp().value );
   }
  private set{}
 }

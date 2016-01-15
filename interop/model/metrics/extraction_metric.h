@@ -198,9 +198,9 @@ namespace illumina {
                      *
                      * @return date time code
                      */
-                    ulong_t date_time_csharp()const
+                    const util::csharp_date_time& date_time_csharp()const
                     {
-                        return m_date_time_csharp.value;
+                        return m_date_time_csharp;
                     }
                     /** Median P90 (P99) intensity over all non-overlapping subregion bins
                      *
