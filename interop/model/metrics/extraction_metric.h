@@ -86,7 +86,7 @@ namespace illumina {
                                       const ushort_array_t& intensities_p90,
                                       const float_array_t& focusScores) :
                             metric_base::base_cycle_metric(lane, tile, cycle),
-                            m_date_time_csharp(),
+                            m_date_time_csharp(util::csharp_date_time::to_csharp(dateTime)),
                             m_date_time(dateTime),
                             m_max_intensity_values(intensities_p90),
                             m_focusScores(focusScores)
@@ -115,7 +115,7 @@ namespace illumina {
                                       const float_pointer_t focusScores,
                                       const uint_t channel_count=MAX_CHANNELS) :
                             metric_base::base_cycle_metric(lane, tile, cycle),
-                            m_date_time_csharp(),
+                            m_date_time_csharp(util::csharp_date_time::to_csharp(dateTime)),
                             m_date_time(dateTime),
                             m_max_intensity_values(intensities_p90, intensities_p90+channel_count),
                             m_focusScores(focusScores, focusScores+channel_count)
