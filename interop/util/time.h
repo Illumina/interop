@@ -46,19 +46,21 @@ namespace util {
                     {
                         ticks += 0xc92a69c000L;
                     }
-                    return static_cast<int64_t>( (ticks - ticks_to_1970()) / ticks_per_second() );
+                    return static_cast<uint64_t>( (ticks - ticks_to_1970()) / ticks_per_second() );
                 }
                 /** Convert to c# format
                  *
                  * @param val time_t unix format
                  * @return C# DateTime.ToBinary format
                  */
-                static csharp_date_time to_csharp(uint64_t val)
+                static csharp_date_time to_csharp(uint64_t uval)
                 {
+                    int64_t val =  static_cast<int64_t>(uval);
                     val *= ticks_per_second();
                     val += ticks_to_1970();
                     if(val < 0ul) val += 0x4000000000000000ul;
-                    return csharp_date_time(val | -9223372036854775808ul);
+                    // TODO: missing conversion to local time (use encoded kind)
+                    return csharp_date_time(static_cast<uint64_t>(val | -9223372036854775808ul));
                 }
 
                 /** Date time in csharp DateTime.ToBinary format */
