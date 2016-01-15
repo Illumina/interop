@@ -60,7 +60,7 @@ namespace util {
                     val += ticks_to_1970();
                     if(val < 0ul) val += 0x4000000000000000ul;
                     // TODO: missing conversion to local time (use encoded kind)
-                    return csharp_date_time(static_cast<uint64_t>(val | -9223372036854775808ul));
+                    return csharp_date_time(static_cast<uint64_t>(val | 9223372036854775808ul));//-9223372036854775808
                 }
 
                 /** Date time in csharp DateTime.ToBinary format */
