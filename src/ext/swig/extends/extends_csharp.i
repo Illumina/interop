@@ -114,16 +114,16 @@
 
 %typemap(cscode) illumina::interop::model::metrics::tile_metrics %{
     public int ControlLane { get; set; }
-     public List<int> Tiles { get; set; }
+     public global::System.Collections.Generic.List<int> Tiles { get; set; }
 %}
 
 %typemap(cscode) illumina::interop::model::metrics::q_metrics %{
-    public global::System.Collections.Generic.List<InterOp.Model.Metrics.QScoreBin> QScoreBins { get; set; }
     public bool IsBinned { get { return binCount() > 0; }}
     public int NumQVals(){ return (int)histBinCount(); }
     public bool IsCompressed { get { return NumQVals() > 0 && NumQVals() != 50; } }
     public int MaxQVal(){ return (int)max_q_value(); }
 %}
+%typemap(csclassmodifiers) illumina::interop::model::metrics::q_metrics "public partial class"
 
 
 
