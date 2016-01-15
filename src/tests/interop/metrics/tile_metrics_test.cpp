@@ -9,6 +9,7 @@
  */
 #include <limits>
 #include <fstream>
+#include <set>
 #include <gtest/gtest.h>
 #include "interop/model/metric_sets/tile_metric_set.h"
 #include "src/tests/interop/metrics/metric_test_utils.h"
@@ -136,6 +137,55 @@ TYPED_TEST(tile_metrics_test, test_read_write)
             EXPECT_NEAR(itReadExpected->percent_phasing(), itReadActual->percent_phasing(), tol);
             EXPECT_NEAR(itReadExpected->percent_prephasing(), itReadActual->percent_prephasing(), tol);
         }
+    }
+}
+
+TEST(tile_metrics_test, test_unique_id_four_digit)
+{
+    typedef tile_metrics::uint_t uint_t;
+    typedef tile_metrics::uint_t id_t;
+    std::set<id_t> ids;
+    tile_metrics metrics;
+    for(uint_t lane=1;lane<=8;++lane)
+    {
+        for(uint surface=1;surface<=2;++surface) {
+            for (uint swath = 1; swath <= 4; ++swath) {
+                for (uint tile = 1; tile <= 36; ++tile) {
+                    tile_metric metric(lane, surface*1000+swath*100+tile, 0, 0, 0, 0);
+                    metrics.insert(metric.id(), metric);
+                }
+            }
+        }
+    }
+    for(size_t i=0;i<metrics.size();i++)
+    {
+        EXPECT_TRUE(ids.find(metrics.at(i).id())==ids.end());
+        ids.insert(metrics.at(i).id());
+    }
+}
+
+TEST(tile_metrics_test, test_unique_id_five_digit)
+{
+    typedef tile_metrics::uint_t uint_t;
+    std::set<uint_t> ids;
+    tile_metrics metrics;
+    for(uint_t lane=1;lane<=8;++lane)
+    {
+        for(uint surface=1;surface<=2;++surface) {
+            for (uint swath = 1; swath <= 2; ++swath) {
+                for(uint section=1;section <=4;++section) {
+                    for (uint tile = 1; tile <= 36; ++tile) {
+                        tile_metric metric(lane, surface * 10000 + swath * 1000 + section*100 + tile, 0, 0, 0, 0);
+                        metrics.insert(metric.id(), metric);
+                    }
+                }
+            }
+        }
+    }
+    for(size_t i=0;i<metrics.size();i++)
+    {
+        EXPECT_TRUE(ids.find(metrics.at(i).id())==ids.end());
+        ids.insert(metrics.at(i).id());
     }
 }
 

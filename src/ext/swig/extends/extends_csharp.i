@@ -45,7 +45,13 @@
                  global::System.Collections.Generic.Dictionary<global::System.Int64, metric_t> Lookup = new global::System.Collections.Generic.Dictionary<global::System.Int64, metric_t>();
                  foreach(var metric in metrics())
                  {
-                    Lookup.Add((global::System.Int64)metric.id(), metric);
+                    try{
+                        Lookup.Add((global::System.Int64)metric.id(), metric);
+                    }catch(global::System.Exception ex)
+                    {
+                        global::System.Console.WriteLine(metric.Lane+"_"+metric.Tile+" == "+Lookup[(global::System.Int64)metric.id()].Lane+"_"+Lookup[(global::System.Int64)metric.id()].Tile);
+                        throw ex;
+                    }
                  }
                 return Lookup.Values;
             }
