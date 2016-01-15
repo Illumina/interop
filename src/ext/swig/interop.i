@@ -11,6 +11,7 @@
 
 %{
 #include "interop/constants/enums.h"
+#include "interop/util/time.h"
 #include "interop/io/metric_file_stream.h"
 %}
 
@@ -20,6 +21,7 @@
 %ignore set_base(const io::layout::base_read_metric& base);
 
 %include "interop/constants/enums.h"
+%include "interop/util/time.h"
 %include "interop/model/metric_base/base_metric.h"
 %include "interop/model/metric_base/base_cycle_metric.h"
 %include "interop/model/metric_base/base_read_metric.h"
@@ -124,5 +126,6 @@ WRAP_TEMPLATE_BASE(index_metric)
 %include "interop/model/metric_sets/q_metric_set.h"
 %include "interop/model/metric_sets/tile_metric_set.h"
 %include "interop/model/metric_sets/index_metric_set.h"
+
 
 

@@ -17,7 +17,6 @@ class Example3
 			return ret;
 
 		Console.WriteLine("Time: {0}", extraction_metric_set.AllMetrics.ToList()[0].Time);
-
 		return 0;
 	}
 }
