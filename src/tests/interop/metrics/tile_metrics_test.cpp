@@ -148,9 +148,9 @@ TEST(tile_metrics_test, test_unique_id_four_digit)
     tile_metrics metrics;
     for(uint_t lane=1;lane<=8;++lane)
     {
-        for(uint surface=1;surface<=2;++surface) {
-            for (uint swath = 1; swath <= 4; ++swath) {
-                for (uint tile = 1; tile <= 36; ++tile) {
+        for(uint_t surface=1;surface<=2;++surface) {
+            for (uint_t swath = 1; swath <= 4; ++swath) {
+                for (uint_t tile = 1; tile <= 36; ++tile) {
                     tile_metric metric(lane, surface*1000+swath*100+tile, 0, 0, 0, 0);
                     metrics.insert(metric.id(), metric);
                 }
@@ -171,10 +171,10 @@ TEST(tile_metrics_test, test_unique_id_five_digit)
     tile_metrics metrics;
     for(uint_t lane=1;lane<=8;++lane)
     {
-        for(uint surface=1;surface<=2;++surface) {
-            for (uint swath = 1; swath <= 2; ++swath) {
-                for(uint section=1;section <=4;++section) {
-                    for (uint tile = 1; tile <= 36; ++tile) {
+        for(uint_t surface=1;surface<=2;++surface) {
+            for (uint_t swath = 1; swath <= 2; ++swath) {
+                for(uint_t section=1;section <=4;++section) {
+                    for (uint_t tile = 1; tile <= 36; ++tile) {
                         tile_metric metric(lane, surface * 10000 + swath * 1000 + section*100 + tile, 0, 0, 0, 0);
                         metrics.insert(metric.id(), metric);
                     }
