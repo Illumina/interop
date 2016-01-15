@@ -25,13 +25,13 @@ namespace illumina.interop.csharp.unittest
 		{
             float[] focus1 = new float[]{2.24664021f, 2.1896739f, 0, 0};
             ushort[] p90_1  = new ushort[]{302, 273, 0, 0};
-			expected_metrics.Add(new extraction_metric(7, 1114, 1, extraction_metric.time_from_csharp(9859129975844165472ul), (p90_1), (focus1), 4));
+			expected_metrics.Add(new extraction_metric(7, 1114, 1, new csharp_date_time(9859129975844165472ul), (p90_1), (focus1), 4));
 			float[] focus2 = new float[]{2.23177338f, 2.20616174f, 0, 0};
             ushort[] p90_2  = new ushort[]{312, 273, 0, 0};
-			expected_metrics.Add(new extraction_metric(7, 1214, 1, extraction_metric.time_from_csharp(9859129975872781680ul), (p90_2), (focus2), 4));
+			expected_metrics.Add(new extraction_metric(7, 1214, 1, new csharp_date_time(9859129975872781680ul), (p90_2), (focus2), 4));
 			float[] focus3 = new float[]{2.10524225f, 2.14023066f, 0, 0};
             ushort[] p90_3  = new ushort[]{349, 302, 0, 0};
-			expected_metrics.Add(new extraction_metric(7, 2114, 1, extraction_metric.time_from_csharp(9859129975901427921ul), (p90_3), (focus3), 4));
+			expected_metrics.Add(new extraction_metric(7, 2114, 1, new csharp_date_time(9859129975901427921ul), (p90_3), (focus3), 4));
 
 			int[] tmp = new int[]{
                 2,38

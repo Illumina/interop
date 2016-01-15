@@ -45,7 +45,13 @@
                  global::System.Collections.Generic.Dictionary<global::System.Int64, metric_t> Lookup = new global::System.Collections.Generic.Dictionary<global::System.Int64, metric_t>();
                  foreach(var metric in metrics())
                  {
-                    Lookup.Add((global::System.Int64)metric.id(), metric);
+                    try{
+                        Lookup.Add((global::System.Int64)metric.id(), metric);
+                    }catch(global::System.Exception ex)
+                    {
+                        global::System.Console.WriteLine(metric.Lane+"_"+metric.Tile+" == "+Lookup[(global::System.Int64)metric.id()].Lane+"_"+Lookup[(global::System.Int64)metric.id()].Tile);
+                        throw ex;
+                    }
                  }
                 return Lookup.Values;
             }
@@ -112,15 +118,27 @@
 %enddef
 
 
-
-
-
 %typemap(cscode) illumina::interop::model::metrics::tile_metrics %{
     public int ControlLane { get; set; }
+     public global::System.Collections.Generic.List<int> Tiles { get; set; }
 %}
 
 %typemap(cscode) illumina::interop::model::metrics::q_metrics %{
-    //public global::System.Collections.Generic.List<InterOp.Model.Metrics.QScoreBin> QScoreBins { get; set; }
+    public class QScoreBin
+    {
+         public byte Lower {get; set;}
+         public byte Upper {get; set;}
+         public byte Value {get; set;}
+         public QScoreBin(){}
+         public QScoreBin(byte lower, byte upper, byte value)
+         {
+            Lower = lower;
+            Upper = upper;
+            Value = value;
+         }
+    };
+    public global::System.Collections.Generic.List<QScoreBin> QScoreBins { get; set; }
+
     public bool IsBinned { get { return binCount() > 0; }}
     public int NumQVals(){ return (int)histBinCount(); }
     public bool IsCompressed { get { return NumQVals() > 0 && NumQVals() != 50; } }
@@ -141,13 +159,16 @@ public int LatestErrorCycle;
 %}
 
 %typemap(cscode) illumina::interop::model::metrics::extraction_metric %{
+    public global::System.DateTime Time;
+/*
 public global::System.DateTime Time
 { get
   {
-    return global::System.DateTime.FromBinary( (global::System.Int64) time_to_csharp(dateTime()));
+    return global::System.DateTime.FromBinary( (global::System.Int64)date_time_csharp().value );
   }
  private set{}
 }
+*/
 %}
 
 
@@ -166,3 +187,4 @@ public global::System.DateTime Time
 
     public /*new*/ int Cycle { get { return (int)cycle(); } }
  %}
+

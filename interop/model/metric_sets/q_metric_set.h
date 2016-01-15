@@ -61,7 +61,7 @@ public:
     }
     /** Populate the cumulative distributions
      */
-    void populateCumulativeDistributions()
+    void populateCumulativeDistributions() _INTEROP_METRIC_THROWS
     {
         if(size() > 0)
         {
@@ -78,7 +78,7 @@ public:
                     metric.accumulate(metric);
                     for(uint_t cycle = 2;cycle <= m_max_cycle;++cycle)
                     {
-                        if(!has_metric(*lane_beg, *tile_beg, cycle)) continue;
+                        if(!has_metric(*lane_beg, *tile_beg, cycle) || !has_metric(*lane_beg, *tile_beg, cycle-1)) continue;// TODO: if this happens zero out following q-scores
                         get_metric_ref(*lane_beg, *tile_beg, cycle).accumulate(get_metric_ref(*lane_beg, *tile_beg, cycle-1));
                     }
                 }

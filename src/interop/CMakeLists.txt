@@ -50,7 +50,7 @@ set(SRCS
         ../../interop/model/metric_sets/index_metric_set.h
         ../../interop/util/xml_parser.h
         ../../interop/util/xml_exceptions.h
-        )
+        ../../interop/util/time.h)
 
 include(CheckFunctionExists)
 check_function_exists("strptime" HAVE_STRPTIME)

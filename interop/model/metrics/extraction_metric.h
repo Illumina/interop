@@ -17,6 +17,7 @@
 #include <ctime>
 #include <cstring>
 #include <algorithm>
+#include "interop/util/time.h"
 #include "interop/io/format/generic_layout.h"
 #include "interop/io/layout/base_metric.h"
 #include "interop/model/metric_base/base_cycle_metric.h"
@@ -62,7 +63,8 @@ namespace illumina {
                      */
                     extraction_metric() :
                             metric_base::base_cycle_metric(0,0,0),
-                            m_dateTime(0),
+                            m_date_time_csharp(0),
+                            m_date_time(0),
                             m_max_intensity_values(MAX_CHANNELS, 0),
                             m_focusScores(MAX_CHANNELS, 0)
                     {
@@ -84,7 +86,8 @@ namespace illumina {
                                       const ushort_array_t& intensities_p90,
                                       const float_array_t& focusScores) :
                             metric_base::base_cycle_metric(lane, tile, cycle),
-                            m_dateTime(dateTime),
+                            m_date_time_csharp(),
+                            m_date_time(dateTime),
                             m_max_intensity_values(intensities_p90),
                             m_focusScores(focusScores)
                     {
@@ -112,7 +115,60 @@ namespace illumina {
                                       const float_pointer_t focusScores,
                                       const uint_t channel_count=MAX_CHANNELS) :
                             metric_base::base_cycle_metric(lane, tile, cycle),
-                            m_dateTime(dateTime),
+                            m_date_time_csharp(),
+                            m_date_time(dateTime),
+                            m_max_intensity_values(intensities_p90, intensities_p90+channel_count),
+                            m_focusScores(focusScores, focusScores+channel_count)
+                    {
+                    }
+                    /** Constructor
+                     *
+                     * @note Version 2
+                     * @param lane lane number
+                     * @param tile tile number
+                     * @param cycle cycle number
+                     * @param dateTime time extraction was completed
+                     * @param intensities_p90 90th percentile of intensities for the given channel
+                     * @param focusScores focus score for the given channel
+                     */
+                    extraction_metric(const uint_t lane,
+                                      const uint_t tile,
+                                      const uint_t cycle,
+                                      const util::csharp_date_time dateTime,
+                                      const ushort_array_t& intensities_p90,
+                                      const float_array_t& focusScores) :
+                            metric_base::base_cycle_metric(lane, tile, cycle),
+                            m_date_time_csharp(dateTime),
+                            m_date_time(dateTime.to_unix()),
+                            m_max_intensity_values(intensities_p90),
+                            m_focusScores(focusScores)
+                    {
+                        INTEROP_ASSERT(intensities_p90.size() <= MAX_CHANNELS);
+                        INTEROP_ASSERT(m_focusScores.size() <= MAX_CHANNELS);
+                        m_max_intensity_values.resize(MAX_CHANNELS, 0);
+                        m_focusScores.resize(MAX_CHANNELS, 0);
+                    }
+                    /** Constructor
+                     *
+                     * @note Version 2
+                     * @param lane lane number
+                     * @param tile tile number
+                     * @param cycle cycle number
+                     * @param dateTime time extraction was completed
+                     * @param intensities_p90 90th percentile of intensities for the given channel
+                     * @param focusScores focus score for the given channel
+                     * @param channel_count number of channels
+                     */
+                    extraction_metric(const uint_t lane,
+                                      const uint_t tile,
+                                      const uint_t cycle,
+                                      const util::csharp_date_time dateTime,
+                                      const ushort_pointer_t intensities_p90,
+                                      const float_pointer_t focusScores,
+                                      const uint_t channel_count=MAX_CHANNELS) :
+                            metric_base::base_cycle_metric(lane, tile, cycle),
+                            m_date_time_csharp(dateTime),
+                            m_date_time(dateTime.to_unix()),
                             m_max_intensity_values(intensities_p90, intensities_p90+channel_count),
                             m_focusScores(focusScores, focusScores+channel_count)
                     {
@@ -136,7 +192,15 @@ namespace illumina {
                      */
                     ulong_t dateTime()const
                     {
-                        return m_dateTime;
+                        return m_date_time;
+                    }
+                    /** Date time extraction completed
+                     *
+                     * @return date time code
+                     */
+                    const util::csharp_date_time& date_time_csharp()const
+                    {
+                        return m_date_time_csharp;
                     }
                     /** Median P90 (P99) intensity over all non-overlapping subregion bins
                      *
@@ -190,40 +254,10 @@ namespace illumina {
                      * @return prefix
                      */
                     static const char* prefix(){return "Extraction";}
-                    /** Convert to C# time
-                     *
-                     * http://en.cppreference.com/w/c/chrono/time_t
-                     * https://msdn.microsoft.com/en-us/library/z2xf7zzk(v=vs.110).aspx
-                     *
-                     * @param time time in C++ units
-                     * @return time in C# units
-                     */
-                    static ulong_t time_to_csharp(ulong_t time)
-                    {
-                        return time * ticks_per_second() + ticks_to_1970();
-                    }
-                    /** Convert from C# time
-                     *
-                     * @param time time in C# units
-                     * @return time in C++ units
-                     */
-                    static ulong_t time_from_csharp(ulong_t time)
-                    {
-                        return (time - ticks_to_1970()) / ticks_per_second();
-                    }
 
                 private:
-                    inline static ::uint64_t ticks_per_second()
-                    {
-                        return 10000000;
-                    }
-                    inline static ::uint64_t ticks_to_1970()
-                    {
-                        return 621355968000000000;
-                    }
-
-                private:
-                    ulong_t m_dateTime;
+                    util::csharp_date_time m_date_time_csharp;
+                    ulong_t m_date_time;
                     ushort_array_t m_max_intensity_values;
                     float_array_t m_focusScores;
                     template<class MetricType, int Version>
