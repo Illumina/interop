@@ -38,7 +38,7 @@ namespace util {
                  */
                 static uint64_t to_unix(uint64_t val)
                 {
-                    uint64_t ticks = val & 0x3fffffffffffffffL;
+                    int64_t ticks = static_cast<int64_t>(val) & 0x3fffffffffffffffL;
                     if (ticks > 0x3fffff36d5964000L)
                         ticks -= 0x4000000000000000L;
                     // TODO: missing conversion to local time (use encoded kind)
@@ -46,7 +46,7 @@ namespace util {
                     {
                         ticks += 0xc92a69c000L;
                     }
-                    return (ticks - ticks_to_1970()) / ticks_per_second();
+                    return static_cast<int64_t>( (ticks - ticks_to_1970()) / ticks_per_second() );
                 }
                 /** Convert to c# format
                  *
