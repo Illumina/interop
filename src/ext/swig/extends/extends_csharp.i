@@ -112,15 +112,13 @@
 %enddef
 
 
-
-
-
 %typemap(cscode) illumina::interop::model::metrics::tile_metrics %{
     public int ControlLane { get; set; }
+     public List<int> Tiles { get; set; }
 %}
 
 %typemap(cscode) illumina::interop::model::metrics::q_metrics %{
-    //public global::System.Collections.Generic.List<InterOp.Model.Metrics.QScoreBin> QScoreBins { get; set; }
+    public global::System.Collections.Generic.List<InterOp.Model.Metrics.QScoreBin> QScoreBins { get; set; }
     public bool IsBinned { get { return binCount() > 0; }}
     public int NumQVals(){ return (int)histBinCount(); }
     public bool IsCompressed { get { return NumQVals() > 0 && NumQVals() != 50; } }
@@ -141,6 +139,8 @@ public int LatestErrorCycle;
 %}
 
 %typemap(cscode) illumina::interop::model::metrics::extraction_metric %{
+    public global::System.DateTime Time;
+/*
 public global::System.DateTime Time
 { get
   {
@@ -148,6 +148,7 @@ public global::System.DateTime Time
   }
  private set{}
 }
+*/
 %}
 
 
