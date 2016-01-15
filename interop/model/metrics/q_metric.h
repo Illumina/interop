@@ -348,7 +348,7 @@ namespace illumina {
                         for(;i<m_qscoreHist.size();i++)
                         {
                             sum += m_qscoreHist[i];
-                            if(sum > position)break;
+                            if(sum >= position)break;
                         }
                         if(bins.size()==0) return i+1;
                         if(i<bins.size()) return bins[i].value();
