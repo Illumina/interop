@@ -143,7 +143,7 @@ TYPED_TEST(tile_metrics_test, test_read_write)
 TEST(tile_metrics_test, test_unique_id_four_digit)
 {
     typedef tile_metrics::uint_t uint_t;
-    typedef tile_metrics::uint_t id_t;
+    typedef tile_metrics::id_t id_t;
     std::set<id_t> ids;
     tile_metrics metrics;
     for(uint_t lane=1;lane<=8;++lane)
@@ -167,7 +167,8 @@ TEST(tile_metrics_test, test_unique_id_four_digit)
 TEST(tile_metrics_test, test_unique_id_five_digit)
 {
     typedef tile_metrics::uint_t uint_t;
-    std::set<uint_t> ids;
+    typedef tile_metrics::id_t id_t;
+    std::set<id_t> ids;
     tile_metrics metrics;
     for(uint_t lane=1;lane<=8;++lane)
     {
