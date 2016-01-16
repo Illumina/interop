@@ -98,7 +98,7 @@ namespace illumina{ namespace interop{
                     switch(rec.code)
                     {
                         case ControlLane:
-                            metric.set_base(metric_id_t());// Invalidate metric, will not be added to metric set
+                            break;
                         case ClusterDensity:
                             metric.m_clusterDensity = val;
                             break;

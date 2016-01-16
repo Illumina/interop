@@ -22,6 +22,8 @@ namespace illumina{ namespace interop { namespace unittest {
  * to the values displayed in SAV.
  *
  * @note Version 2
+ *
+ * @todo Add hardcoded data with a control lane
  */
 struct tile_metrics_hardcoded_fixture_v2 : util::fixture_helper<tile_metrics, 2>
 {

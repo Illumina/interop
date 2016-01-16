@@ -11,6 +11,7 @@
 #include <fstream>
 #include "interop/io/format/metric_format_factory.h"
 #include "interop/util/filesystem.h"
+#include "interop/util/assert.h"
 
 #pragma once
 namespace illumina {
@@ -111,6 +112,7 @@ namespace illumina {
                     else
                     {
                         const size_t offset = metric_offset_map[metric.id()];
+                        INTEROP_ASSERTMSG(metrics.at(offset).lane() != 0, offset);
                         const std::streamsize count = format_map[version]->read_metric(in, metrics.at(offset), metrics)+icount;
                         if(in.fail())
                         {
