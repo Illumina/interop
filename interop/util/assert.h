@@ -12,6 +12,7 @@
 
 #if !defined(NDEBUG) || defined(DEBUG) || defined(_DEBUG)
 #include <iostream>
+#include <cstdlib>
 
 /** Assert if test is true
  *
@@ -21,7 +22,7 @@
 #define INTEROP_ASSERT(TST)	\
     if(!(TST)) {\
         std::cerr << __FILE__<< "::" << __FUNCTION__<< " (" << __LINE__ << ")" << "  " #TST << std::endl;\
-        abort();\
+        std::abort();\
     }
 /** Assert if test is true
  *
@@ -32,7 +33,7 @@
 #define INTEROP_ASSERTMSG(TST, MSG)	\
     if(!(TST)) {\
         std::cerr << __FILE__<< "::" << __FUNCTION__<< " (" << __LINE__ << ")" << "  " #TST << "  " << MSG << std::endl;\
-        abort();\
+        std::abort();\
     }
 
 #else
