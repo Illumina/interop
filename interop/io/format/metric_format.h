@@ -57,7 +57,7 @@ namespace illumina {
                     metric_id_t metric_id;
                     metric_id.set(metric);
                     write_binary(out, metric_id);
-                    Layout::map_stream(out, metric, header);
+                    Layout::map_stream(out, metric, header, false);
                 }
                 /** Read a metric set from the given input stream
                  *
@@ -97,9 +97,9 @@ namespace illumina {
                  * @param in input stream containing binary InterOp file data
                  * @return number of bytes in the record
                  */
-                std::streamsize read_metric(std::istream& in, metric_t& metric, const header_t& header)
+                std::streamsize read_metric(std::istream& in, metric_t& metric, const header_t& header, const bool is_new)
                 {
-                    return Layout::map_stream(in, metric, header);
+                    return Layout::map_stream(in, metric, header, is_new);
                 }
                 /** Get the version of this metric format
                  *

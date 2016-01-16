@@ -84,7 +84,7 @@ namespace illumina{ namespace interop{ namespace io {
                  * @return number of bytes read or total number of bytes written
                  */
                 template<class Stream, class Metric, class Header>
-                static std::streamsize map_stream(Stream& stream, Metric& metric, Header&)
+                static std::streamsize map_stream(Stream& stream, Metric& metric, Header&, const bool)
                 {
                     std::streamsize count = 0;
                     count += stream_map< ::uint16_t >(stream, metric.m_averageCycleIntensity);
@@ -170,7 +170,7 @@ namespace illumina{ namespace interop{ namespace io {
                  * @return number of bytes read or total number of bytes written
                  */
                 template<class Stream, class Metric, class Header>
-                static std::streamsize map_stream(Stream& stream, Metric& metric, Header&)
+                static std::streamsize map_stream(Stream& stream, Metric& metric, Header&, const bool)
                 {
                     std::streamsize count = 0;
                     // TODO: this does not need header layout, audit rest to see if that is true

@@ -90,7 +90,7 @@ namespace illumina {
 
                     if (metric_offset_map.find(metric.id()) == metric_offset_map.end())
                     {
-                        const std::streamsize count = format_map[version]->read_metric(in, metric, metrics)+icount;
+                        const std::streamsize count = format_map[version]->read_metric(in, metric, metrics, true)+icount;
                         if(in.fail())
                         {
                             if(count==0 && !metric_offset_map.empty()) break;
@@ -113,7 +113,7 @@ namespace illumina {
                     {
                         const size_t offset = metric_offset_map[metric.id()];
                         INTEROP_ASSERTMSG(metrics.at(offset).lane() != 0, offset);
-                        const std::streamsize count = format_map[version]->read_metric(in, metrics.at(offset), metrics)+icount;
+                        const std::streamsize count = format_map[version]->read_metric(in, metrics.at(offset), metrics, false)+icount;
                         if(in.fail())
                         {
                             if(count==0 && !metric_offset_map.empty()) break;

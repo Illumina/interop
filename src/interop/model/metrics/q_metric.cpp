@@ -71,7 +71,7 @@ namespace illumina{ namespace interop{ namespace io {
                  * @return number of bytes read or total number of bytes written
                  */
                 template<class Stream, class Metric, class Header>
-                static std::streamsize map_stream(Stream& stream, Metric& metric, Header&)
+                static std::streamsize map_stream(Stream& stream, Metric& metric, Header&, const bool)
                 {
                     return stream_map< ::uint32_t >(stream, metric.m_qscoreHist, q_metric::MAX_Q_BINS);
                 }
@@ -149,7 +149,7 @@ namespace illumina{ namespace interop{ namespace io {
                  * @return number of bytes read or total number of bytes written
                  */
                 template<class Metric, class Header>
-                static std::streamsize map_stream(std::istream& stream, Metric& metric, Header& header)
+                static std::streamsize map_stream(std::istream& stream, Metric& metric, Header& header, const bool)
                 {
                     if(header.m_qscoreBins.size()>0)
                     {
@@ -175,7 +175,7 @@ namespace illumina{ namespace interop{ namespace io {
                  * @return number of bytes read or total number of bytes written
                  */
                 template<class Metric, class Header>
-                static std::streamsize map_stream(std::ostream& stream, Metric& metric, Header& header)
+                static std::streamsize map_stream(std::ostream& stream, Metric& metric, Header& header, const bool)
                 {
                     if(header.m_qscoreBins.size()>0)
                     {
@@ -351,7 +351,7 @@ namespace illumina{ namespace interop{ namespace io {
                  * @return number of bytes read or total number of bytes written
                  */
                 template<class Stream, class Metric, class Header>
-                static std::streamsize map_stream(Stream& stream, Metric& metric, Header& header)
+                static std::streamsize map_stream(Stream& stream, Metric& metric, Header& header, const bool)
                 {
                     return stream_map< ::uint32_t >(stream, metric.m_qscoreHist, header.binCount());
                 }
