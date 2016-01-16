@@ -2,7 +2,6 @@
  *
  *
  *  @file
- *
  *  @date 9/6/2015
  *  @version 1.0
  *  @copyright GNU Public License.
@@ -22,14 +21,14 @@ namespace illumina{ namespace interop { namespace unittest {
  * to the values displayed in SAV.
  *
  * @note Version 2
- *
- * @todo Add hardcoded data with a control lane
  */
 struct tile_metrics_hardcoded_fixture_v2 : util::fixture_helper<tile_metrics, 2>
 {
     enum{
         /** Do not check the expected binary data */
-        disable_binary_data=true
+        disable_binary_data=true,
+        /** Do not check the expected binary data size */
+        disable_binary_data_size=true
     };
     /** Setup fixture */
     tile_metrics_hardcoded_fixture_v2()
@@ -63,6 +62,8 @@ struct tile_metrics_hardcoded_fixture_v2 : util::fixture_helper<tile_metrics, 2>
                 ,7,0,66,8,-56,0,123,22,-100,58
                 ,7,0,66,8,-55,0,85,6,115,58
                 ,7,0,66,8,44,1,57,97,31,64
+                ,7,0,66,8,144,1,0,0,0,0   // Test whether control lane accidentally clears data
+                ,6,0,66,8,144,1,0,0,0,0   // Test whether control lane for empty tile shows up
         };
         setup_hardcoded_binary(tmp, header_type());
     }
@@ -78,7 +79,7 @@ struct tile_metrics_write_read_fixture_v2 : util::fixture_helper<tile_metrics, 2
 {
     enum{
         /** Do not check the expected binary data */
-                disable_binary_data=true
+        disable_binary_data=true
     };
     /** Setup fixture */
     tile_metrics_write_read_fixture_v2()
