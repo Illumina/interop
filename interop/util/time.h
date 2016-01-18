@@ -73,7 +73,7 @@ namespace util {
                     {
                         ticks += 0xc92a69c000L;
                     }
-                    return (ticks - ticks_to_1970()) / static_cast<double>(ticks_per_second());
+                    return (ticks - static_cast<double>(ticks_to_1970())) / static_cast<double>(ticks_per_second());
                 }
                 /** Convert to c# format
                  *
