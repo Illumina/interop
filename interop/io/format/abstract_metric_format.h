@@ -53,9 +53,10 @@ namespace illumina {
                  * @param in input stream containing binary InterOp file data
                  * @param metric metric
                  * @param header metric set header
+                 * @param is_new true if the metric is new to the set
                  * @return number of bytes in the record
                  */
-                virtual std::streamsize read_metric(std::istream& in, metric_type& metric, const header_t& header)=0;
+                virtual std::streamsize read_metric(std::istream& in, metric_type& metric, const header_t& header, const bool is_new)=0;
                 /** Write the metric to the given output stream
                  *
                  * @param out output stream to write the binary InterOp file data

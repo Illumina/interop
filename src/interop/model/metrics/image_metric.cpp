@@ -77,7 +77,7 @@ namespace illumina{ namespace interop{ namespace io {
                  * @return number of bytes read or total number of bytes written
                  */
                 template<class Metric, class Header>
-                static std::streamsize map_stream(std::istream& stream, Metric& metric, Header&)
+                static std::streamsize map_stream(std::istream& stream, Metric& metric, Header&, const bool)
                 {
                     record_t rec;
                     std::streamsize count = stream_map< record_t >(stream, rec);
@@ -95,7 +95,7 @@ namespace illumina{ namespace interop{ namespace io {
                  * @return number of bytes read or total number of bytes written
                  */
                 template<class Metric, class Header>
-                static std::streamsize map_stream(std::ostream& stream, Metric& metric, Header&)
+                static std::streamsize map_stream(std::ostream& stream, Metric& metric, Header&, const bool)
                 {
                     std::streamsize count = 0;
                     metric_id_t metric_id;
@@ -182,7 +182,7 @@ namespace illumina{ namespace interop{ namespace io {
                  * @return number of bytes read or total number of bytes written
                  */
                 template<class Stream, class Metric, class Header>
-                static std::streamsize map_stream(Stream& stream, Metric& metric, Header& header)
+                static std::streamsize map_stream(Stream& stream, Metric& metric, Header& header, const bool)
                 {
                     std::streamsize count = 0;
                     copy_from(metric.m_channelCount, header.m_channelCount);

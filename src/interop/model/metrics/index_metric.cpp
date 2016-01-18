@@ -76,7 +76,7 @@ struct generic_layout<index_metric, 1> : public default_layout<1>
      * @return number of bytes read or total number of bytes written
      */
     template<class Metric, class Header>
-    static std::streamsize map_stream(std::istream& in, Metric& metric, Header&)
+    static std::streamsize map_stream(std::istream& in, Metric& metric, Header&, const bool)
     {
         std::string index_name;
         ::uint32_t count;
@@ -107,7 +107,7 @@ struct generic_layout<index_metric, 1> : public default_layout<1>
      * @return number of bytes read or total number of bytes written
      */
     template<class Metric, class Header>
-    static std::streamsize map_stream(std::ostream& out, Metric& metric, Header&)
+    static std::streamsize map_stream(std::ostream& out, Metric& metric, Header&, const bool)
     {
         metric_id_t metric_id;
         metric_id.set(metric);

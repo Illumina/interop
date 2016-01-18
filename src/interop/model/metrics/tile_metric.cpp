@@ -85,10 +85,11 @@ namespace illumina{ namespace interop{
                  *
                  * @param stream input stream
                  * @param metric destination metric
+                 * @param is_new true if metric is new
                  * @return number of bytes read or total number of bytes written
                  */
                 template<class Metric, class Header>
-                static std::streamsize map_stream(std::istream& stream, Metric& metric, Header&)
+                static std::streamsize map_stream(std::istream& stream, Metric& metric, Header&, const bool is_new)
                 {
                     record_t rec;
                     std::streamsize count = stream_map< record_t >(stream, rec);
@@ -98,6 +99,7 @@ namespace illumina{ namespace interop{
                     switch(rec.code)
                     {
                         case ControlLane:
+                            if(is_new) metric.set_base(metric_id_t());
                             break;
                         case ClusterDensity:
                             metric.m_clusterDensity = val;
@@ -136,7 +138,7 @@ namespace illumina{ namespace interop{
                  * @return number of bytes read or total number of bytes written
                  */
                 template<class Metric, class Header>
-                static std::streamsize map_stream(std::ostream& out, Metric& metric, Header&)
+                static std::streamsize map_stream(std::ostream& out, Metric& metric, Header&, const bool)
                 {
                     record_t rec;
                     metric_id_t metric_id;
