@@ -32,7 +32,7 @@ namespace util {
                  *
                  * @return seconds with fractions
                  */
-                uint64_t to_seconds()const
+                double to_seconds()const
                 {
                     return to_seconds(value);
                 }
