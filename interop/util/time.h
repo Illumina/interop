@@ -28,6 +28,14 @@ namespace util {
                 {
                     return to_unix(value);
                 }
+                /** Convert to to seconds with fractions
+                 *
+                 * @return seconds with fractions
+                 */
+                uint64_t to_seconds()const
+                {
+                    return to_seconds(value);
+                }
 
                 /** Convert to time_t unix format
                  *
@@ -47,6 +55,25 @@ namespace util {
                         ticks += 0xc92a69c000L;
                     }
                     return static_cast<uint64_t>( (ticks - ticks_to_1970()) / ticks_per_second() );
+                }
+                /** Convert to seconds with fractions
+                 *
+                 * http://stackoverflow.com/questions/4014652/how-do-datetime-tobinary-and-datetime-tofiletime-differ
+                 *
+                 * @param val C# DateTime.ToBinary format
+                 * @return seconds with fractions
+                 */
+                static double to_seconds(uint64_t val)
+                {
+                    int64_t ticks = static_cast<int64_t>(val) & 0x3fffffffffffffffL;
+                    if (ticks > 0x3fffff36d5964000L)
+                        ticks -= 0x4000000000000000L;
+                    // TODO: missing conversion to local time (use encoded kind)
+                    if (ticks < 0L)
+                    {
+                        ticks += 0xc92a69c000L;
+                    }
+                    return (ticks - ticks_to_1970()) / static_cast<double>(ticks_per_second());
                 }
                 /** Convert to c# format
                  *
