@@ -99,7 +99,7 @@ public:
         std::set<uint_t> bins_found;
         for(const_iterator b = m_data.begin(), e = m_data.end();b != e;++b)
         {
-            for(size_t i=0;i<b->qscoreHist().size();++i)
+            for(uint_t i=0;i<static_cast<uint_t>(b->qscoreHist().size());++i)
                 if(b->qscoreHist()[i] > 0)bins_found.insert(i);
         }
         size_t count = bins_found.size() - (bins_found.count(0) > 0 ? 1 : 0);
