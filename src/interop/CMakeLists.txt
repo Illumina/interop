@@ -58,7 +58,6 @@ if(HAVE_STRPTIME)
     add_definitions(-DHAVE_STRPTIME)
 elseif(MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-    #set(SRCS ${SRCS} port/strptime.c)
 endif()
 
 add_library(${INTEROP_LIB} ${LIBRARY_TYPE} ${SRCS})

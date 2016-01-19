@@ -78,6 +78,7 @@ TYPED_TEST(error_metrics_test, test_read_write)
 {
     EXPECT_EQ(TypeParam::actual_metric_set.version(), TypeParam::VERSION);
     EXPECT_EQ(TypeParam::actual_metrics.size(), TypeParam::expected_metrics.size());
+    EXPECT_EQ(TypeParam::actual_metric_set.max_cycle(), TypeParam::expected_metric_set.max_cycle());
 
     for(typename TypeParam::const_iterator itExpected=TypeParam::expected_metrics.begin(), itActual = TypeParam::actual_metrics.begin();
         itExpected != TypeParam::expected_metrics.end() && itActual != TypeParam::actual_metrics.end();
