@@ -27,7 +27,7 @@ TODO
 ### From Source
 
 ~~~~~~~~~~~~~{.sh}
-$ git clone https://github.com/IlluminaBioinformatics/ipa.git
+$ git clone https://github.com/illumina/ipa.git
 $ mkdir build
 $ cd build
 $ cmake ../ipa
