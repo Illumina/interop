@@ -8,9 +8,6 @@
  *  @copyright GNU Public License.
  */
 
-
-
-
 // @ [Reporting Extraction Metrics]
 #include <iostream>
 #include <iomanip>
@@ -34,7 +31,6 @@ int main(int argc, char** argv)
     if((ret = read_interop_file(argv[1], extraction_metric_set)) != 0) return ret;
 
     std::time_t t = static_cast<std::time_t>(extraction_metric_set.metrics()[0].dateTime());
-    //std::tm* tm = std::localtime(&t);
     std::tm* tm = std::gmtime(&t);
     if(tm != 0)
     {
@@ -47,7 +43,7 @@ int main(int argc, char** argv)
     return 0;
 }
 
-// @ [Reporting Tile Metrics]
+// @ [Reporting Extraction Metrics]
 int check_args(int argc)
 {
     if(argc != 2)
