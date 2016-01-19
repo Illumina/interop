@@ -196,6 +196,8 @@ namespace illumina {
                     }
                     /** Date time extraction completed
                      *
+                     * @note C# DataTime.ToBinary int64 format
+                     *
                      * @return date time code
                      */
                     const util::csharp_date_time& date_time_csharp()const

@@ -158,19 +158,6 @@ public int LatestErrorCycle;
     public int cycle(){return -1;}// Hack for bad interface above
 %}
 
-%typemap(cscode) illumina::interop::model::metrics::extraction_metric %{
-    public global::System.DateTime Time;
-/*
-public global::System.DateTime Time
-{ get
-  {
-    return global::System.DateTime.FromBinary( (global::System.Int64)date_time_csharp().value );
-  }
- private set{}
-}
-*/
-%}
-
 
 %typemap(cscode) illumina::interop::model::metric_base::base_metric_header %{
    public int max_cycle(){return 0;} // Hack for bad interface above
