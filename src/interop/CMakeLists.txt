@@ -71,22 +71,6 @@ if(CMAKE_COMPILER_IS_GNUCC AND NOT MINGW)
     set_target_properties(${INTEROP_DL_LIB} PROPERTIES COMPILE_FLAGS "-fPIC")
 endif()
 
-
-find_package(Git REQUIRED)
-add_custom_target(Deploy
-        COMMAND ${GIT_EXECUTABLE} pull
-        COMMAND ${GIT_EXECUTABLE} rm -r ${CMAKE_SOURCE_DIR}/../ipadep/${CMAKE_SYSTEM_NAME}/interop/include/interop
-        COMMAND ${GIT_EXECUTABLE} rm -r ${CMAKE_SOURCE_DIR}/../ipadep/${CMAKE_SYSTEM_NAME}/interop/lib64
-        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${INTEROP_LIB}> ${CMAKE_SOURCE_DIR}/../ipadep/${CMAKE_SYSTEM_NAME}/interop/lib64/$<TARGET_FILE_NAME:${INTEROP_LIB}>
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/interop ${CMAKE_SOURCE_DIR}/../ipadep/${CMAKE_SYSTEM_NAME}/interop/include/interop
-        COMMAND ${GIT_EXECUTABLE} add ${CMAKE_SOURCE_DIR}/../ipadep/${CMAKE_SYSTEM_NAME}/interop/include/interop
-        COMMAND ${GIT_EXECUTABLE} add ${CMAKE_SOURCE_DIR}/../ipadep/${CMAKE_SYSTEM_NAME}/interop/lib64
-        COMMAND ${GIT_EXECUTABLE} commit -am "Updated ${CMAKE_SYSTEM_NAME} library"
-        COMMAND ${GIT_EXECUTABLE} push origin master
-        DEPENDS ${INTEROP_LIB}
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/../ipadep/
-        COMMENT "Deploy InterOp library" )
-
 install(TARGETS ${INTEROP_LIB}
         LIBRARY DESTINATION lib64
         RUNTIME DESTINATION bin
