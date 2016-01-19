@@ -105,9 +105,6 @@ TYPED_TEST(extraction_metrics_test, test_read_write)
     EXPECT_EQ(TypeParam::actual_metric_set.version(), TypeParam::VERSION);
     EXPECT_EQ(TypeParam::actual_metrics.size(), TypeParam::expected_metrics.size());
 
-    double medianCycleTime = TypeParam::actual_metric_set.medianCycleTime();
-    EXPECT_GT(medianCycleTime, 0.0);
-
 
     for(typename TypeParam::const_iterator itExpected=TypeParam::expected_metrics.begin(), itActual = TypeParam::actual_metrics.begin();
         itExpected != TypeParam::expected_metrics.end() && itActual != TypeParam::actual_metrics.end();
