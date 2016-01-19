@@ -43,7 +43,7 @@ namespace illumina{ namespace interop{ namespace io {
                  *
                  *  @b Header
                  *
-                 *  illumina::interop::io::metric_format_stream (Class that parses this information)
+                 *  illumina::interop::io::read_metrics (Function that parses this information)
                  *
                  *          byte 0: version number
                  *          byte 1: record size
@@ -108,14 +108,14 @@ namespace illumina{ namespace interop{ namespace io {
                  *
                  *  @b Header
                  *
-                 *  illumina::interop::io::metric_format_stream (Class that parses this information)
+                 *  illumina::interop::io::read_metrics (Function that parses this information)
                  *
                  *          byte 0: version number
                  *          byte 1: record size
                  *
                  *  @b Extended Header
                  *
-                 *  illumina::interop::io::generic_header_layout<q_metric, 5> (Class that parses this information)
+                 *  illumina::interop::io::generic_layout<q_metric, 5> (Class that parses this information)
                  *
                  *          byte 2:                         flag indicating whether is has bins (bool)
                  *
@@ -306,14 +306,14 @@ namespace illumina{ namespace interop{ namespace io {
                  *
                  *  @b Header
                  *
-                 *  illumina::interop::io::metric_format_stream (Class that parses this information)
+                 *  illumina::interop::io::read_metrics (Function that parses this information)
                  *
                  *          byte 0: version number
                  *          byte 1: record size
                  *
                  *  @b Extended Header
                  *
-                 *  illumina::interop::io::generic_header_layout<q_metric, 6> (Class that parses this information)
+                 *  illumina::interop::io::generic_layout<q_metric, 6> (Class that parses this information)
                  *
                  *          byte 2:                         flag indicating whether is has bins (bool)
                  *

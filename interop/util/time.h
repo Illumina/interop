@@ -77,7 +77,7 @@ namespace util {
                 }
                 /** Convert to c# format
                  *
-                 * @param val time_t unix format
+                 * @param uval time_t unix format
                  * @return C# DateTime.ToBinary format
                  */
                 static csharp_date_time to_csharp(uint64_t uval)

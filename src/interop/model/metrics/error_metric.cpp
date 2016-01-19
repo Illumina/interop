@@ -41,7 +41,7 @@ namespace illumina{ namespace interop{ namespace io {
                  *
                  *  @b Header
                  *
-                 *  illumina::interop::io::metric_format_stream (Class that parses this information)
+                 *  illumina::interop::io::read_metrics (Function that parses this information)
                  *
                  *          byte 0: version number
                  *          byte 1: record size

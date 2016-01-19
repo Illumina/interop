@@ -833,7 +833,7 @@ EXCLUDE_PATTERNS       =
 # Note that the wildcards are matched against the file with absolute path, so to
 # exclude all test directories use the pattern */test/*
 
-EXCLUDE_SYMBOLS        = static_assert_ tile_summary TileSummary Example1 Example2 Helper
+EXCLUDE_SYMBOLS        = static_assert_ tile_summary TileSummary Example1 Example2 Example3 Helper
 
 # The EXAMPLE_PATH tag can be used to specify one or more files or directories
 # that contain example code fragments that are included (see the \include
