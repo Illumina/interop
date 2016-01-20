@@ -1,0 +1,38 @@
+language: cpp
+matrix:
+  include:
+    - compiler: clang
+      os: linux
+    - compiler: gcc
+      os: linux
+    - compiler: clang
+      os: osx
+
+before_install:
+  - date -u
+  - uname -a
+
+install:
+  - if test "$TRAVIS_OS_NAME" = "linux"; then source tools/travis-linux-install.sh; fi
+  - if test "$TRAVIS_OS_NAME" = "osx"; then source tools/travis-osx-install.sh; fi
+  - ls -la $(which $CC)
+  - ls -la $(which $CXX)
+  - $CC --version
+  - $CXX --version
+
+script:
+  - echo 'Configuring...' && echo -en 'travis_fold:start:script.1\\r'
+  - mkdir -p build && cd build && cmake ../
+  - echo -en 'travis_fold:end:script.1\\r'
+  - cmake --build .
+  - echo 'Installing...' && echo -en 'travis_fold:start:script.2\\r'
+  - sudo make install
+  - echo -en 'travis_fold:end:script.2\\r'
+  - cmake --build . --target check
+  - echo 'Cleaning...' && echo -en 'travis_fold:start:script.3\\r'
+  - make clean
+  - echo -en 'travis_fold:end:script.3\\r'
+
+branches:
+  only:
+    - master
