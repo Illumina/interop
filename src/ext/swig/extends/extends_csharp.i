@@ -45,7 +45,7 @@
             get
             {
                  global::System.Collections.Generic.Dictionary<global::System.Int64, metric_t> Lookup = new global::System.Collections.Generic.Dictionary<global::System.Int64, metric_t>();
-                 foreach(var metric in metrics())
+                 foreach(metric_t metric in metrics())
                  {
                     try{
                         Lookup.Add((global::System.Int64)metric.id(), metric);
@@ -63,7 +63,7 @@
             get
             {
                  global::System.Collections.Generic.Dictionary<global::System.UInt64, metric_t> Lookup = new global::System.Collections.Generic.Dictionary<global::System.UInt64, metric_t>();
-                 foreach(var metric in metrics())
+                 foreach(metric_t metric in metrics())
                  {
                     Lookup.Add((global::System.UInt64)metric.id(), metric);
                  }
@@ -108,10 +108,10 @@
         }
         public global::System.Collections.Generic.IEnumerable< metric_t> GetMetricsByCycle(int lane, int tile, global::System.Collections.Generic.IEnumerable<int> cycles)
         {
-            var results = new global::System.Collections.Generic.List< metric_t>();
-            foreach (var cycle in cycles)
+            global::System.Collections.Generic.List< metric_t> results = new global::System.Collections.Generic.List< metric_t>();
+            foreach (int cycle in cycles)
             {
-                var metric = get_metric((uint)lane, (uint)tile, (uint)cycle);
+                metric_t metric = get_metric((uint)lane, (uint)tile, (uint)cycle);
                 if (metric != null) results.Add(metric);
             }
             return results;
