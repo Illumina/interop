@@ -13,6 +13,8 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR CMAKE_COMPILER_IS_GNUCC)
     set_target_properties(example1 PROPERTIES COMPILE_FLAGS "-Wpedantic" )
     set_target_properties(example2 PROPERTIES COMPILE_FLAGS "-Wpedantic" )
     set_target_properties(example3 PROPERTIES COMPILE_FLAGS "-Wpedantic" )
+elseif(MSVC)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
 
 if(NOT ENABLE_EXAMPLES)
