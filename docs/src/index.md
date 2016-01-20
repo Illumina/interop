@@ -26,7 +26,9 @@ Table of Contents
 | [Applications](@ref apps)     | Describes applications that transform binary InterOp data into text                  |
 | [Examples](@ref examples)     | How to examples showing how to use the Illumina InterOp C++ API                      |
 | [Modules](modules.html)       | Short descriptions of the most useful code in the Illumina InterOp API               |
+| [Source Code]                 | Git repository hosted on Github.com                                                  |
 
+[Source Code]: https://github.com/Illumina/interop
 
 List of InterOp Metric Files
 ----------------------------
