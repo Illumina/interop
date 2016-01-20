@@ -9,6 +9,7 @@
 
 #pragma once
 #include "interop/util/cstdint.h"
+#include "interop/util/static_assert.h"
 
 namespace illumina {
 namespace interop {
@@ -46,6 +47,7 @@ namespace util {
                  */
                 static uint64_t to_unix(uint64_t val)
                 {
+                    static_assert(sizeof(uint64_t) == 8, "Int64 has the wrong size");
                     int64_t ticks = static_cast<int64_t>(val) & 0x3fffffffffffffffL;
                     if (ticks > 0x3fffff36d5964000L)
                         ticks -= 0x4000000000000000L;
