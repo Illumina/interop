@@ -123,7 +123,8 @@
 %typemap(cscode) illumina::interop::model::metrics::tile_metrics %{
      private int _controlLane;
      public int ControlLane { get{return _controlLane;} set{_controlLane=value;} }
-     public global::System.Collections.Generic.List<int> Tiles { get; set; }
+     private global::System.Collections.Generic.List<int> _tiles;
+     public global::System.Collections.Generic.List<int> Tiles { get{return _tiles;} set{_tiles=value;} }
 %}
 
 %typemap(cscode) illumina::interop::model::metrics::q_metrics %{
