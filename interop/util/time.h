@@ -17,12 +17,14 @@
 #define INTEROP_UTIL_TICKS_OFFSET 0x4000000000000000LL
 #define INTEROP_UTIL_TICKS_NEG_OFFSET 0xc92a69c000LL
 #define INTEROP_UTIL_TICKS_ENCODE 9223372036854775808ull
+#define INTEROP_UTIL_TICKS_1970 621355968000000000ull
 #else
 #define INTEROP_UTIL_TICKS_MASK 0x3fffffffffffffffL
 #define INTEROP_UTIL_TICKS_THRESHOLD 0x3fffff36d5964000L
 #define INTEROP_UTIL_TICKS_OFFSET 0x4000000000000000L
 #define INTEROP_UTIL_TICKS_NEG_OFFSET 0xc92a69c000L
 #define INTEROP_UTIL_TICKS_ENCODE 9223372036854775808ul
+#define INTEROP_UTIL_TICKS_1970 621355968000000000ul
 #endif
 
 namespace illumina {
@@ -116,7 +118,7 @@ namespace util {
                 }
                 inline static ::uint64_t ticks_to_1970()
                 {
-                    return 621355968000000000;
+                    return INTEROP_UTIL_TICKS_1970;
                 }
             };
 #pragma pack()
