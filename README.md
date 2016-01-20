@@ -17,6 +17,26 @@ The InterOp files supported by this library include:
 This library is written in C++98 and provides bindings for C# using the SWIG interface. This
 support includes examples and unit tests for both languages.
 
+Documentation
+-------------
+
+
+| Content                       | Description                                                                          |
+| ----------------------------- | -------------------------------------------------------------------------------------|
+| [Main][MainPage]              | Index page for the documentation                                                     |
+| [Install][InstallPage]        | Describes how to install Illumina InterOp from binaries and the source code          |
+| [Applications][AppsPage]      | Describes applications that transform binary InterOp data into text                  |
+| [Examples][ExamplesPage]      | How to examples showing how to use the Illumina InterOp C++ API                      |
+| [Modules][ModulesPage]        | Short descriptions of the most useful code in the Illumina InterOp API               |
+
+
+
+[MainPage]: http://illumina.github.io/interop
+[InstallPage]: http://illumina.github.io/interop/install.html
+[AppsPage]: http://illumina.github.io/interop/apps.html
+[ExamplesPage]: http://illumina.github.io/interop/examples.html
+[ModulesPage]: http://illumina.github.io/interop/modules.html
+
 Install
 -------
 
@@ -44,10 +64,6 @@ g++ example1.cpp -l interop_lib -L <install_dir>/lib64 -I <install_dir>/include
 ~~~~~~~~~~~~~
 
 For CLang, just substitute g++ with clang++. 
-
-### CMake
-
-See `cmake/FindInterop.cmake`
 
 
 Known Limitations
