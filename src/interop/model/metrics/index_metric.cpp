@@ -137,5 +137,5 @@ struct generic_layout<index_metric, 1> : public default_layout<1>
 #pragma pack()
 }}}
 
-INTEROP_FORCE_LINK_DEF(index_metric);
-INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(index_metric, 1 );
+INTEROP_FORCE_LINK_DEF(index_metric)
+INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(index_metric, 1 )

@@ -9,6 +9,12 @@ target_link_libraries(example2 ${INTEROP_LIB})
 add_executable(example3 example3.cpp)
 target_link_libraries(example3 ${INTEROP_LIB})
 
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR CMAKE_COMPILER_IS_GNUCC)
+    set_target_properties(example1 PROPERTIES COMPILE_FLAGS "-Wpedantic" )
+    set_target_properties(example2 PROPERTIES COMPILE_FLAGS "-Wpedantic" )
+    set_target_properties(example3 PROPERTIES COMPILE_FLAGS "-Wpedantic" )
+endif()
+
 if(NOT ENABLE_EXAMPLES)
     set_target_properties(example1 PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
     set_target_properties(example2 PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)

@@ -9,6 +9,8 @@ from the source code.
 It is recommended to start from one of the binary distributions found under releases. The CentOS 5 build
 should work on a wide variety of Linux distributions.
 
+**At this time, binary releases are unavailable**
+
 ## Build from Source
 
 This section describes the prerequisites for building the source, describes how to download the source and
@@ -84,7 +86,7 @@ git pull
 
 ### Build the Source
 
-The following code will work for most platforms. 
+The following code will work for most platforms, as summarized below: 
 
 ~~~~~~~~~~~~~~~{.sh}
 mkdir Build
@@ -92,6 +94,8 @@ cd Build
 cmake ../interop
 cmake --build .
 ~~~~~~~~~~~~~~~
+
+#### Step by step explaination for above summary
 
 The user should create a directory outside of interop to build the binary, here we called it `Build`. After
 entering the directory, the user can configure the build system with:

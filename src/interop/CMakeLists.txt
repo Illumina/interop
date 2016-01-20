@@ -10,6 +10,9 @@ set(SRCS
         model/metrics/image_metric.cpp
         model/metrics/q_metric.cpp
         model/metrics/index_metric.cpp
+)
+
+set(HEADERS
         ../../interop/model/metric_sets/error_metric_set.h
         ../../interop/model/metric_sets/corrected_intensity_metric_set.h
         ../../interop/model/metrics/tile_metric.h
@@ -52,6 +55,12 @@ set(SRCS
         ../../interop/util/xml_exceptions.h
         ../../interop/util/time.h)
 
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR CMAKE_COMPILER_IS_GNUCC)
+    foreach(SRC ${SRCS})
+        set_source_files_properties(${SRC} PROPERTIES COMPILE_FLAGS "-Wpedantic" )
+    endforeach()
+endif()
+
 include(CheckFunctionExists)
 check_function_exists("strptime" HAVE_STRPTIME)
 if(HAVE_STRPTIME)
@@ -60,8 +69,8 @@ elseif(MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
 
-add_library(${INTEROP_LIB} ${LIBRARY_TYPE} ${SRCS})
-add_library(${INTEROP_DL_LIB} ${LIBRARY_TYPE} ${SRCS})
+add_library(${INTEROP_LIB} ${LIBRARY_TYPE} ${SRCS} ${HEADERS})
+add_library(${INTEROP_DL_LIB} ${LIBRARY_TYPE} ${SRCS} ${HEADERS})
 add_dependencies(${INTEROP_LIB} version ${RAPIDXML_TARGET})
 add_dependencies(${INTEROP_DL_LIB} version ${RAPIDXML_TARGET})
 

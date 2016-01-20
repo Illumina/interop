@@ -112,5 +112,5 @@ namespace illumina{ namespace interop{ namespace io {
 #pragma pack()
         }}}
 
-INTEROP_FORCE_LINK_DEF(extraction_metric);
-INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(extraction_metric, 2 );
+INTEROP_FORCE_LINK_DEF(extraction_metric)
+INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(extraction_metric, 2 )

@@ -197,7 +197,7 @@ namespace illumina{ namespace interop{ namespace io {
     }
 }
 
-INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(corrected_intensity_metric, 2 );
-INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(corrected_intensity_metric, 3 );
-INTEROP_FORCE_LINK_DEF(corrected_intensity_metric);
+INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(corrected_intensity_metric, 2 )
+INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(corrected_intensity_metric, 3 )
+INTEROP_FORCE_LINK_DEF(corrected_intensity_metric)
 

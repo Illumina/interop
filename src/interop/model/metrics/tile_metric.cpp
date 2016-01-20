@@ -221,5 +221,5 @@ namespace illumina{ namespace interop{
 #pragma pack()
 }}}
 
-INTEROP_FORCE_LINK_DEF(tile_metric);
-INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(tile_metric, 2 );
+INTEROP_FORCE_LINK_DEF(tile_metric)
+INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(tile_metric, 2 )
