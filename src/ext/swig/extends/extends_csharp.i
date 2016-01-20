@@ -1,7 +1,9 @@
 
 %define SHARED_METRIC_SET_METHODS(metric_t)
-    public long DataSourceLength { get; set; }
-    public bool DataSourceExists { get; set; }
+    private long _dataSourceLength;
+    private bool _dataSourceExists;
+    public long DataSourceLength { get{return _dataSourceLength;} set{_dataSourceLength=value;} }
+    public bool DataSourceExists { get{return _dataSourceExists;} set{_dataSourceExists=value;} }
     public byte Version { get{ return (byte)version(); } }
     public global::System.Int64 GetKey(int lane, int tile)
     {
@@ -119,16 +121,20 @@
 
 
 %typemap(cscode) illumina::interop::model::metrics::tile_metrics %{
-    public int ControlLane { get; set; }
+     private int _controlLane;
+     public int ControlLane { get{return _controlLane;} set{_controlLane=value;} }
      public global::System.Collections.Generic.List<int> Tiles { get; set; }
 %}
 
 %typemap(cscode) illumina::interop::model::metrics::q_metrics %{
     public class QScoreBin
     {
-         public byte Lower {get; set;}
-         public byte Upper {get; set;}
-         public byte Value {get; set;}
+         private byte _lower;
+         private byte _upper;
+         private byte _value;
+         public byte Lower { get{return _lower;} set{_lower=value;} }
+         public byte Upper { get{return _upper;} set{_upper=value;} }
+         public byte Value { get{return _value;} set{_value=value;} }
          public QScoreBin(){}
          public QScoreBin(byte lower, byte upper, byte value)
          {
@@ -137,7 +143,8 @@
             Value = value;
          }
     };
-    public global::System.Collections.Generic.List<QScoreBin> QScoreBins { get; set; }
+    private global::System.Collections.Generic.List<QScoreBin> _qScoreBins;
+    public global::System.Collections.Generic.List<QScoreBin> QScoreBins { get{return _qScoreBins;} set{_qScoreBins=value;} }
 
     public bool IsBinned { get { return binCount() > 0; }}
     public int NumQVals(){ return (int)histBinCount(); }
@@ -148,10 +155,10 @@
 
 
 %typemap(cscode) illumina::interop::model::metrics::tile_metric %{
-public int LatestExtractedCycle;
-public int LatestCalledCycle;
-public int LatestQScoredCycle;
-public int LatestErrorCycle;
+    public int LatestExtractedCycle;
+    public int LatestCalledCycle;
+    public int LatestQScoredCycle;
+    public int LatestErrorCycle;
     public int cycle(){return -1;}// Hack for bad interface above
 %}
 %typemap(cscode) illumina::interop::model::metrics::index_metric %{
