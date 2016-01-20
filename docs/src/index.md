@@ -61,3 +61,4 @@ There are several known limitations to the current library:
      does not work. You can still use a static library on Windows. There is one caveat, you can build a shared
      library for the SWIG bindings, e.g. C#.
   2. The full logic of SAV including certain metrics and plots are not yet implemented.
+  3. Microsoft Dot Net less than v4.0.30319 is currently not supported
