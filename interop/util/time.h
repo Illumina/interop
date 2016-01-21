@@ -11,7 +11,7 @@
 #include "interop/util/cstdint.h"
 #include "interop/util/static_assert.h"
 
-#if defined(_WIN32)
+#if defined(_WIN32) || defined(_MSC_VER)
 #define INTEROP_UTIL_TICKS_MASK 0x3fffffffffffffffLL
 #define INTEROP_UTIL_TICKS_THRESHOLD 0x3fffff36d5964000LL
 #define INTEROP_UTIL_TICKS_OFFSET 0x4000000000000000LL

@@ -8,17 +8,18 @@
 #   - DESTINATION_DIR - the destination directory path
 #
 #
-
+string (REPLACE " " ";" FILES_TO_COPY "${FILES_TO_COPY}")
 set(FILES_TO_COPY_EX)
-foreach(filename in ${FILES_TO_COPY})
+foreach(filename ${FILES_TO_COPY})
     file(GLOB GLOB_FILES ${filename})
     list(APPEND FILES_TO_COPY_EX ${GLOB_FILES})
 endforeach()
 
-list(LENGTH ${FILES_TO_COPY} FILES_LEN)
+list(LENGTH "${FILES_TO_COPY}" FILES_LEN)
 if(${FILES_LEN} EQUAL 1)
     get_filename_component(FILE_EXPR ${FILES_TO_COPY} NAME)
     file(REMOVE ${DESTINATION_DIR}/${FILE_EXPR})
 endif()
+
 file(COPY ${FILES_TO_COPY_EX} DESTINATION ${DESTINATION_DIR})
 
