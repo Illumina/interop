@@ -21,6 +21,10 @@ if(NOT ENABLE_EXAMPLES)
     set_target_properties(example1 PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
     set_target_properties(example2 PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
     set_target_properties(example3 PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
+else()
+    install(TARGETS example1 example2 example3
+            RUNTIME DESTINATION share/illumina/interop/examples
+            )
 endif()
 
 if(NOT ENABLE_STATIC)
