@@ -46,17 +46,17 @@ namespace illumina {
                      *
                      * @return lower end of the bin
                      */
-                    const bin_type lower()const{return m_lower;}
+                    bin_type lower()const{return m_lower;}
                     /** Upper end of the bin
                      *
                      * @return upper end of the bin
                      */
-                    const bin_type upper()const{return m_upper;}
+                    bin_type upper()const{return m_upper;}
                     /** Value of the bin
                      *
                      * @return value of the bin
                      */
-                    const bin_type value()const{return m_value;}
+                    bin_type value()const{return m_value;}
 
                 private:
                     bin_type m_lower;
@@ -116,7 +116,7 @@ namespace illumina {
                      */
                     q_score_bin::bin_type max_q_value()const
                     {
-                        return m_bin_count == MAX_Q_BINS || m_bin_count == 0 ? MAX_Q_BINS : m_qscoreBins.back().upper();
+                        return m_bin_count == static_cast<size_t>(MAX_Q_BINS) || m_bin_count == 0 ? static_cast<q_score_bin::bin_type>(MAX_Q_BINS) : m_qscoreBins.back().upper();
                     }
 
                 protected:

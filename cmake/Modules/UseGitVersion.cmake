@@ -35,4 +35,17 @@ function(add_version_target _target _version_file _macro_name)
                          -D DST=${_version_file}
                          -P ${CMAKE_BINARY_DIR}/version.cmake
     )
+    execute_process(
+            COMMAND ${GIT_EXECUTABLE} describe --tags --dirty=-dirty
+            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+            RESULT_VARIABLE
+            res
+            OUTPUT_VARIABLE
+            VERSION
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    if(NOT res EQUAL 0)
+        set(VERSION \"Unknown\")
+    endif()
+    set(${_macro_name} ${VERSION} PARENT_SCOPE)
 endfunction()

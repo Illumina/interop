@@ -40,7 +40,7 @@ namespace illumina{ namespace interop{ namespace io {
                  *
                  *  @b Header
                  *
-                 *  illumina::interop::io::metric_format_stream (Class that parses this information)
+                 *  illumina::interop::io::read_metrics (Function that parses this information)
                  *
                  *          byte 0: version number
                  *          byte 1: record size
@@ -112,5 +112,5 @@ namespace illumina{ namespace interop{ namespace io {
 #pragma pack()
         }}}
 
-INTEROP_FORCE_LINK_DEF(extraction_metric);
-INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(extraction_metric, 2 );
+INTEROP_FORCE_LINK_DEF(extraction_metric)
+INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(extraction_metric, 2 )

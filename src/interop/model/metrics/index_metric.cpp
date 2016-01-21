@@ -40,7 +40,7 @@ struct generic_layout<index_metric, 1> : public default_layout<1>
      *
      *  @b Header
      *
-     *  illumina::interop::io::metric_format_stream (Class that parses this information)
+     *  illumina::interop::io::read_metrics (Function that parses this information)
      *
      *          byte 0: version number
      *
@@ -71,7 +71,7 @@ struct generic_layout<index_metric, 1> : public default_layout<1>
 
     /** Read metric from the input stream
      *
-     * @param stream input stream
+     * @param in input stream
      * @param metric destination metric
      * @return number of bytes read or total number of bytes written
      */
@@ -102,7 +102,7 @@ struct generic_layout<index_metric, 1> : public default_layout<1>
     }
     /** Write metric to the output stream
      *
-     * @param stream output stream
+     * @param out output stream
      * @param metric source metric
      * @return number of bytes read or total number of bytes written
      */
@@ -137,5 +137,5 @@ struct generic_layout<index_metric, 1> : public default_layout<1>
 #pragma pack()
 }}}
 
-INTEROP_FORCE_LINK_DEF(index_metric);
-INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(index_metric, 1 );
+INTEROP_FORCE_LINK_DEF(index_metric)
+INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(index_metric, 1 )

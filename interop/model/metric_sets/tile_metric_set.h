@@ -38,6 +38,30 @@ public:
             parent_type(vec, version, header)
     {
     }
+
+public:
+    /** Collect all possible tile numbers
+     */
+    void populate_tiles()
+    {
+        std::set<uint_t> tiles;
+        for(const_iterator beg = m_data.begin(), end=m_data.end();beg != end;++beg)
+            tiles.insert(beg->tile());
+        m_tiles.assign(tiles.begin(), tiles.end());
+    }
+
+public:
+    /** Get list of all tile numbers
+     *
+     * @return list of available tile numbers
+     */
+    const std::vector<uint_t>& tiles()const
+    {
+        return m_tiles;
+    }
+
+private:
+    std::vector<uint_t> m_tiles;
 };
 }
 }

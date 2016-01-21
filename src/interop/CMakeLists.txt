@@ -10,6 +10,9 @@ set(SRCS
         model/metrics/image_metric.cpp
         model/metrics/q_metric.cpp
         model/metrics/index_metric.cpp
+)
+
+set(HEADERS
         ../../interop/model/metric_sets/error_metric_set.h
         ../../interop/model/metric_sets/corrected_intensity_metric_set.h
         ../../interop/model/metrics/tile_metric.h
@@ -52,17 +55,22 @@ set(SRCS
         ../../interop/util/xml_exceptions.h
         ../../interop/util/time.h)
 
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR CMAKE_COMPILER_IS_GNUCC)
+    foreach(SRC ${SRCS})
+        set_source_files_properties(${SRC} PROPERTIES COMPILE_FLAGS "-Wpedantic" )
+    endforeach()
+endif()
+
 include(CheckFunctionExists)
 check_function_exists("strptime" HAVE_STRPTIME)
 if(HAVE_STRPTIME)
     add_definitions(-DHAVE_STRPTIME)
 elseif(MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-    #set(SRCS ${SRCS} port/strptime.c)
 endif()
 
-add_library(${INTEROP_LIB} ${LIBRARY_TYPE} ${SRCS})
-add_library(${INTEROP_DL_LIB} ${LIBRARY_TYPE} ${SRCS})
+add_library(${INTEROP_LIB} ${LIBRARY_TYPE} ${SRCS} ${HEADERS})
+add_library(${INTEROP_DL_LIB} ${LIBRARY_TYPE} ${SRCS} ${HEADERS})
 add_dependencies(${INTEROP_LIB} version ${RAPIDXML_TARGET})
 add_dependencies(${INTEROP_DL_LIB} version ${RAPIDXML_TARGET})
 
@@ -70,22 +78,6 @@ set_target_properties(${INTEROP_DL_LIB} PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FR
 if(CMAKE_COMPILER_IS_GNUCC AND NOT MINGW)
     set_target_properties(${INTEROP_DL_LIB} PROPERTIES COMPILE_FLAGS "-fPIC")
 endif()
-
-
-find_package(Git REQUIRED)
-add_custom_target(Deploy
-        COMMAND ${GIT_EXECUTABLE} pull
-        COMMAND ${GIT_EXECUTABLE} rm -r ${CMAKE_SOURCE_DIR}/../ipadep/${CMAKE_SYSTEM_NAME}/interop/include/interop
-        COMMAND ${GIT_EXECUTABLE} rm -r ${CMAKE_SOURCE_DIR}/../ipadep/${CMAKE_SYSTEM_NAME}/interop/lib64
-        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${INTEROP_LIB}> ${CMAKE_SOURCE_DIR}/../ipadep/${CMAKE_SYSTEM_NAME}/interop/lib64/$<TARGET_FILE_NAME:${INTEROP_LIB}>
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/interop ${CMAKE_SOURCE_DIR}/../ipadep/${CMAKE_SYSTEM_NAME}/interop/include/interop
-        COMMAND ${GIT_EXECUTABLE} add ${CMAKE_SOURCE_DIR}/../ipadep/${CMAKE_SYSTEM_NAME}/interop/include/interop
-        COMMAND ${GIT_EXECUTABLE} add ${CMAKE_SOURCE_DIR}/../ipadep/${CMAKE_SYSTEM_NAME}/interop/lib64
-        COMMAND ${GIT_EXECUTABLE} commit -am "Updated ${CMAKE_SYSTEM_NAME} library"
-        COMMAND ${GIT_EXECUTABLE} push origin master
-        DEPENDS ${INTEROP_LIB}
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/../ipadep/
-        COMMENT "Deploy InterOp library" )
 
 install(TARGETS ${INTEROP_LIB}
         LIBRARY DESTINATION lib64

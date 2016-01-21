@@ -9,6 +9,8 @@ from the source code.
 It is recommended to start from one of the binary distributions found under releases. The CentOS 5 build
 should work on a wide variety of Linux distributions.
 
+**At this time, binary releases are unavailable**
+
 ## Build from Source
 
 This section describes the prerequisites for building the source, describes how to download the source and
@@ -63,15 +65,15 @@ rigorously tested and will have less stringent build requirements.
 
 If the latest stable version does not meet your needs, then you may consider using the [LatestVersion].
 
-[LatestStableRelease]: https://github.com/IlluminaBioinformatics/interop/releases/latest "Latest Stable Release"
-[LatestVersion]: https://github.com/IlluminaBioinformatics/interop/archive/master.zip "Bleeding-edge Release"
+[LatestStableRelease]: https://github.com/illumina/interop/releases/latest "Latest Stable Release"
+[LatestVersion]: https://github.com/illumina/interop/archive/master.zip "Bleeding-edge Release"
 
 ### Clone the Latest Source
 
 The code may be "cloned" using the git version control program as follows:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.sh}
-git clone git@github.com:IlluminaBioinformatics/interop.git
+git clone git@github.com:illumina/interop.git
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 After cloning the code, you may update your code for any changes made since you lasted cloned by 
@@ -84,7 +86,7 @@ git pull
 
 ### Build the Source
 
-The following code will work for most platforms. 
+The following code will work for most platforms, as summarized below: 
 
 ~~~~~~~~~~~~~~~{.sh}
 mkdir Build
@@ -92,6 +94,8 @@ cd Build
 cmake ../interop
 cmake --build .
 ~~~~~~~~~~~~~~~
+
+#### Step by step explaination for above summary
 
 The user should create a directory outside of interop to build the binary, here we called it `Build`. After
 entering the directory, the user can configure the build system with:

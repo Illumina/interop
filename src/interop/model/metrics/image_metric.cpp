@@ -41,7 +41,7 @@ namespace illumina{ namespace interop{ namespace io {
                  *
                  *  @b Header
                  *
-                 *  illumina::interop::io::metric_format_stream (Class that parses this information)
+                 *  illumina::interop::io::read_metrics (Function that parses this information)
                  *
                  *          byte 0: version number
                  *          byte 1: record size
@@ -145,14 +145,14 @@ namespace illumina{ namespace interop{ namespace io {
                  *
                  *  @b Header
                  *
-                 *  illumina::interop::io::metric_format_stream (Class that parses this information)
+                 *  illumina::interop::io::read_metrics (Function that parses this information)
                  *
                  *          byte 0: version number
                  *          byte 1: record size
                  *
                  *  @b Extended Header
                  *
-                 *  illumina::interop::io::generic_header_layout<image_metric, 2>(Class that parses this information)
+                 *  illumina::interop::io::generic_layout<image_metric, 2>  (Class that parses this information)
                  *
                  *          byte 2: channel count (uint8)
                  *
@@ -178,7 +178,7 @@ namespace illumina{ namespace interop{ namespace io {
                  *
                  * @param stream input/output stream
                  * @param metric source/destination metric
-                 * @param header_layout metric header layout
+                 * @param header metric header layout
                  * @return number of bytes read or total number of bytes written
                  */
                 template<class Stream, class Metric, class Header>
@@ -216,6 +216,6 @@ namespace illumina{ namespace interop{ namespace io {
 #pragma pack() // DO NOT MOVE
         }}}
 
-INTEROP_FORCE_LINK_DEF(image_metric);
-INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(image_metric, 1 );
-INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(image_metric, 2 );
+INTEROP_FORCE_LINK_DEF(image_metric)
+INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(image_metric, 1 )
+INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(image_metric, 2 )

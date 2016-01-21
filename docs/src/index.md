@@ -26,7 +26,9 @@ Table of Contents
 | [Applications](@ref apps)     | Describes applications that transform binary InterOp data into text                  |
 | [Examples](@ref examples)     | How to examples showing how to use the Illumina InterOp C++ API                      |
 | [Modules](modules.html)       | Short descriptions of the most useful code in the Illumina InterOp API               |
+| [Source Code]                 | Git repository hosted on Github.com                                                  |
 
+[Source Code]: https://github.com/Illumina/interop
 
 List of InterOp Metric Files
 ----------------------------
@@ -59,3 +61,5 @@ There are several known limitations to the current library:
      does not work. You can still use a static library on Windows. There is one caveat, you can build a shared
      library for the SWIG bindings, e.g. C#.
   2. The full logic of SAV including certain metrics and plots are not yet implemented.
+  3. Microsoft Dot Net less than v4.0.30319 is currently not supported
+  4. MinGW cannot compile the code when ENABLE_BACKWARDS_COMPATIBILITY=ON

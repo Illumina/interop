@@ -83,6 +83,7 @@ namespace illumina {
                 /** Read a metric set from the given input stream
                  *
                  * @param in input stream containing binary InterOp file data
+                 * @param metric metric
                  * @return number of bytes in the record
                  */
                 std::streamsize read_metric_id(std::istream& in, metric_t& metric)
@@ -95,6 +96,9 @@ namespace illumina {
                 /** Read a metric set from the given input stream
                  *
                  * @param in input stream containing binary InterOp file data
+                 * @param metric metric
+                 * @param header metric header
+                 * @param is_new the metric does not already exist in the set
                  * @return number of bytes in the record
                  */
                 std::streamsize read_metric(std::istream& in, metric_t& metric, const header_t& header, const bool is_new)

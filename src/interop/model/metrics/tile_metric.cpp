@@ -42,7 +42,7 @@ namespace illumina{ namespace interop{
                  *
                  *  @b Header
                  *
-                 *  illumina::interop::io::metric_format_stream (Class that parses this information)
+                 *  illumina::interop::io::read_metrics (Function that parses this information)
                  *
                  *          byte 0: version number
                  *          byte 1: record size
@@ -133,7 +133,7 @@ namespace illumina{ namespace interop{
                 }
                 /** Write metric to the output stream
                  *
-                 * @param stream output stream
+                 * @param out output stream
                  * @param metric source metric
                  * @return number of bytes read or total number of bytes written
                  */
@@ -221,5 +221,5 @@ namespace illumina{ namespace interop{
 #pragma pack()
 }}}
 
-INTEROP_FORCE_LINK_DEF(tile_metric);
-INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(tile_metric, 2 );
+INTEROP_FORCE_LINK_DEF(tile_metric)
+INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(tile_metric, 2 )
