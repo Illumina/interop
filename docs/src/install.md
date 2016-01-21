@@ -24,7 +24,7 @@ The following are the minimum requirements to build the source:
     - Windows: [MinGW], [Cygwin], Microsoft Visual C++, [Express]
     - Linux: GCC, CLang
     - Mac OSX: CLang
-- [CMake] Version 3.2
+- [CMake] Version 3.2 or later
 - [RapidXML] v1.3 - This is automatically downloaded if not found or specified
 
 The following optional features have the corresponding requirements:
@@ -171,16 +171,16 @@ generates the C# *.cs files and the second builds the DLL from these files.
 
 ### Example configurations
 
-Using pre-downloaded GTest and RapidXML packages assuming:
+Using pre-downloaded [Google Test] and [RapidXML] packages assuming:
     
     - The packages have already been unarchived
     - The packages were placed at the same level as InterOp
     
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.sh}
-    cmake ../interop -D GTEST_ROOT=../../gtest -D RAPIDXML_ROOT ../../rapidxml -DENABLE_TEST=ON
+    cmake ../interop -D GTEST_ROOT=../../gtest -D RAPIDXML_ROOT ../../rapidxml
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Build C# binding using SWIG on Windows assuming:
+Build C# binding using [SWIG] on Windows assuming:
     
     - Visual Studio is installed
     - Using latest .NET Version 4.x
@@ -190,7 +190,7 @@ Build C# binding using SWIG on Windows assuming:
     cmake ../interop -D SWIG_EXECUTABLE=c:\Swig\swig.exe -DCSHARP_DOTNET_VERSION=v4.0.30319
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Build C# binding using SWIG on Windows assuming:
+Build C# binding using [SWIG] on Windows assuming:
     
     - Visual Studio is installed
     - Using latest .NET Version 3.x
