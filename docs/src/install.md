@@ -96,7 +96,9 @@ cmake ../interop
 cmake --build .
 ~~~~~~~~~~~~~~~
 
-#### Step by step explaination for above summary
+*Note, replace <install-dir> with the directory you wish to install InterOp*
+
+#### Step by step explanation for above summary
 
 The user should create a directory outside of interop to build the binary, here we called it `Build`. After
 entering the directory, the user can configure the build system with:
@@ -184,16 +186,6 @@ Build C# binding using [SWIG] on Windows assuming:
     
     - Visual Studio is installed
     - Using latest .NET Version 4.x
-    - SWIG could not be found automatically, but is installed in c:\Swig
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.sh}
-    cmake ../interop -D SWIG_EXECUTABLE=c:\Swig\swig.exe -DCSHARP_DOTNET_VERSION=v4.0.30319
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Build C# binding using [SWIG] on Windows assuming:
-    
-    - Visual Studio is installed
-    - Using latest .NET Version 3.x
     - SWIG could not be found automatically, but is installed in c:\Swig
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.sh}
