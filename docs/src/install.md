@@ -91,9 +91,12 @@ The following code will work for most platforms, as summarized below:
 ~~~~~~~~~~~~~~~{.sh}
 mkdir Build
 cd Build
-cmake ../interop
+cmake ../interop -DCMAKE_INSTALL_PREFIX=<install-dir>
 cmake --build .
+cmake --build . --target install
 ~~~~~~~~~~~~~~~
+
+*Note, replace <install-dir> with the directory you wish to install InterOp*
 
 #### Step by step explaination for above summary
 
@@ -101,10 +104,11 @@ The user should create a directory outside of interop to build the binary, here 
 entering the directory, the user can configure the build system with:
 
 ~~~~~~~~~~~~~{.sh}
-cmake ../interop
+cmake ../interop -DCMAKE_INSTALL_PREFIX=<install-dir>
 ~~~~~~~~~~~~~
 
 Note, the user can obtain a list of the available generators using (for an alternative to the default):
+*Note, replace <install-dir> with the directory you wish to install InterOp*
 
 ~~~~~~~~~~~~~{.sh}
 cmake --help
@@ -116,10 +120,16 @@ Then, specify the appropriate generator using the `-G` flag:
 cmake ../interop -G “Visual Studio 12 2013 Win64”
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Finally, the binary can be built in a platform independent manner with the following command:
+The binary can be built in a platform independent manner with the following command:
 
 ~~~~~~~~~~~~~~~{.sh}
 cmake --build .
+~~~~~~~~~~~~~~~
+
+Finally, the headers, libraries and applications can be installed into the target directory with the following command:
+
+~~~~~~~~~~~~~~~{.sh}
+cmake --build . --target install
 ~~~~~~~~~~~~~~~
 
 ### Configure the Source
