@@ -44,6 +44,7 @@ The following optional features have the corresponding requirements:
 Tips for Prerequisites
     
   - CMake and SWIG will likely need to be installed from the source on Linux
+  - On Windows, CMake will likely need to know the location of SWIG, see Example configurations below
   - Building on a machine not connected to the Internet: download and provide necessary dependencies such as RapidXML
 
 [NUnit]: http://www.nunit.org/
@@ -186,7 +187,7 @@ Build C# binding using SWIG on Windows assuming:
     - SWIG could not be found automatically, but is installed in c:\Swig
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.sh}
-    cmake ../interop -D SWIG_EXECUTABLE=c:\Swig\swig.exe -DCSHARP_DOTNET_VERSION=v4.0.30319 -DENABLE_SWIG=ON
+    cmake ../interop -D SWIG_EXECUTABLE=c:\Swig\swig.exe -DCSHARP_DOTNET_VERSION=v4.0.30319
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Build C# binding using SWIG on Windows assuming:
@@ -196,5 +197,5 @@ Build C# binding using SWIG on Windows assuming:
     - SWIG could not be found automatically, but is installed in c:\Swig
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.sh}
-    cmake ../interop -D SWIG_EXECUTABLE=c:\Swig\swig.exe -DENABLE_SWIG=ON
+    cmake ../interop -D SWIG_EXECUTABLE=c:\Swig\swig.exe
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
