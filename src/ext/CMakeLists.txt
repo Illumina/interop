@@ -9,8 +9,6 @@ endif()
 # Need to enable SWIGWORDSIZE64 in SWIG when long is 64-bit
 # This is so stdint.i works properly
 ############################################################
-include(CheckStdInt)
-check_int64_long(IS_INT64_LONG)
 if(IS_INT64_LONG)
     set(SWIG_WORDSIZE_FLAG ";-DSWIGWORDSIZE64")
 else()
