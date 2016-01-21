@@ -89,7 +89,7 @@ TYPED_TEST(error_metrics_test, test_read_write)
         EXPECT_EQ(itExpected->cycle(), itActual->cycle());
         EXPECT_EQ(itExpected->mismatch_count(), itActual->mismatch_count());
         EXPECT_NEAR(itExpected->errorRate(), itActual->errorRate(), 1e-7f);
-        for(ptrdiff_t i=0;i<itExpected->mismatch_count();i++)
+        for(ptrdiff_t i=0;i<static_cast<ptrdiff_t>(itExpected->mismatch_count());i++)
             EXPECT_EQ(itExpected->mismatch_cluster_count(i), itActual->mismatch_cluster_count(i));
     }
 }
