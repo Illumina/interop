@@ -116,7 +116,7 @@
             global::System.Collections.Generic.List< metric_t> results = new global::System.Collections.Generic.List< metric_t>();
             foreach (int cycle in cycles)
             {
-                metric_t metric = GetMetric((uint)lane, (uint)tile, (uint)cycle);
+                metric_t metric = GetMetric(lane, tile, cycle);
                 if (metric != null) results.Add(metric);
             }
             return results;
