@@ -66,15 +66,15 @@ rigorously tested and will have less stringent build requirements.
 
 If the latest stable version does not meet your needs, then you may consider using the [LatestVersion].
 
-[LatestStableRelease]: https://github.com/illumina/interop/releases/latest "Latest Stable Release"
-[LatestVersion]: https://github.com/illumina/interop/archive/master.zip "Bleeding-edge Release"
+[LatestStableRelease]: https://github.com/Illumina/interop/releases/latest "Latest Stable Release"
+[LatestVersion]: https://github.com/Illumina/interop/archive/master.zip "Bleeding-edge Release"
 
 ### Clone the Latest Source
 
 The code may be "cloned" using the git version control program as follows:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.sh}
-git clone git@github.com:illumina/interop.git
+git clone git@github.com:Illumina/interop.git
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 After cloning the code, you may update your code for any changes made since you lasted cloned by 
