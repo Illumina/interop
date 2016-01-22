@@ -221,6 +221,7 @@ Install Mono:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.sh}
 $ sudo apt-get install mono-complete
+$ sudo apt-get nunit-console
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Install SWIG:

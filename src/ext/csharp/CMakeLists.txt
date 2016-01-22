@@ -46,3 +46,13 @@ add_custom_command(
         COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CSHARP_csharp_interop_BINARY} $<TARGET_FILE_DIR:${INTEROP_LIB}>
         COMMENT "copy ${CSHARP_csharp_interop_BINARY} $<TARGET_FILE_DIR:${INTEROP_LIB}>"
 )
+
+if(ENABLE_EXAMPLES)
+    install(FILES ${CSHARP_csharp_interop_BINARY} DESTINATION share/illumina/interop/examples)
+    install(TARGETS ${SWIG_MODULE_c_csharp_interop_REAL_NAME} LIBRARY DESTINATION share/illumina/interop/examples)
+endif()
+
+install(FILES ${CSHARP_csharp_interop_BINARY}
+        DESTINATION lib64
+)
+install(TARGETS ${SWIG_MODULE_c_csharp_interop_REAL_NAME} LIBRARY DESTINATION lib64)

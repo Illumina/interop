@@ -74,7 +74,7 @@ if(NOT ENABLE_EXAMPLES)
     set_target_properties(csharp_example2 PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
     set_target_properties(csharp_example3 PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
 else()
-    install(FILES ${CSHARP_csharp_example1_BINARY} ${CSHARP_csharp_example2_BINARY} ${CSHARP_csharp_example3_BINARY}
+    install(FILES ${CSHARP_csharp_example1_BINARY} ${CSHARP_csharp_example2_BINARY} ${CSHARP_csharp_example3_BINARY} ${CSHARP_INTEROP_LIBRARY}
             DESTINATION share/illumina/interop/examples
             )
 endif()
