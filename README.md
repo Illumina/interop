@@ -31,7 +31,7 @@ Documentation
 
 
 
-[MainPage]: http://illumina.github.io/interop
+[MainPage]: http://illumina.github.io/interop/index.html
 [InstallPage]: http://illumina.github.io/interop/install.html
 [AppsPage]: http://illumina.github.io/interop/apps.html
 [ExamplesPage]: http://illumina.github.io/interop/examples.html
