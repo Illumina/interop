@@ -115,7 +115,8 @@ Note, the user can obtain a list of the available generators using (for an alter
 cmake --help
 ~~~~~~~~~~~~~
 
-Then, specify the appropriate generator using the `-G` flag:
+The default CMake generator for Windows is 32-bit.  This can be changed by specifying the appropriate generator 
+using the `-G` flag:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.sh}
 cmake ../interop -G “Visual Studio 12 2013 Win64”
@@ -187,7 +188,7 @@ Using pre-downloaded [Google Test] and [RapidXML] packages assuming:
     - The packages were placed at the same level as InterOp
     
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.sh}
-    cmake ../interop -D GTEST_ROOT=../../gtest -D RAPIDXML_ROOT ../../rapidxml
+    cmake ../interop -DGTEST_ROOT=../../gtest -DRAPIDXML_ROOT ../../rapidxml
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Build C# binding using [SWIG] on Windows assuming:
@@ -197,7 +198,7 @@ Build C# binding using [SWIG] on Windows assuming:
     - SWIG could not be found automatically, but is installed in c:\Swig
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.sh}
-    cmake ../interop -D SWIG_EXECUTABLE=c:\Swig\swig.exe
+    cmake ../interop -DSWIG_EXECUTABLE=c:\Swig\swig.exe
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ## Prerequisite Installation
@@ -221,7 +222,7 @@ Install Mono:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.sh}
 $ sudo apt-get install mono-complete
-$ sudo apt-get nunit-console
+$ sudo apt-get install nunit-console
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Install SWIG:
