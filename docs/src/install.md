@@ -24,7 +24,7 @@ The following are the minimum requirements to build the source:
     - Windows: [MinGW], [Cygwin], Microsoft Visual C++, [Express]
     - Linux: GCC, CLang
     - Mac OSX: CLang
-- [CMake] Version 3.2
+- [CMake] Version 3.2 or later
 - [RapidXML] v1.3 - This is automatically downloaded if not found or specified
 
 The following optional features have the corresponding requirements:
@@ -44,6 +44,7 @@ The following optional features have the corresponding requirements:
 Tips for Prerequisites
     
   - CMake and SWIG will likely need to be installed from the source on Linux
+  - On Windows, CMake will likely need to know the location of SWIG, see Example configurations below
   - Building on a machine not connected to the Internet: download and provide necessary dependencies such as RapidXML
 
 [NUnit]: http://www.nunit.org/
@@ -98,7 +99,7 @@ cmake --build . --target install
 
 *Note, replace <install-dir> with the directory you wish to install InterOp*
 
-#### Step by step explaination for above summary
+#### Step by step explanation for above summary
 
 The user should create a directory outside of interop to build the binary, here we called it `Build`. After
 entering the directory, the user can configure the build system with:
@@ -180,31 +181,51 @@ generates the C# *.cs files and the second builds the DLL from these files.
 
 ### Example configurations
 
-Using pre-downloaded GTest and RapidXML packages assuming:
+Using pre-downloaded [Google Test] and [RapidXML] packages assuming:
     
     - The packages have already been unarchived
     - The packages were placed at the same level as InterOp
     
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.sh}
-    cmake ../interop -D GTEST_ROOT=../../gtest -D RAPIDXML_ROOT ../../rapidxml -DENABLE_TEST=ON
+    cmake ../interop -D GTEST_ROOT=../../gtest -D RAPIDXML_ROOT ../../rapidxml
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Build C# binding using SWIG on Windows assuming:
+Build C# binding using [SWIG] on Windows assuming:
     
     - Visual Studio is installed
     - Using latest .NET Version 4.x
     - SWIG could not be found automatically, but is installed in c:\Swig
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.sh}
-    cmake ../interop -D SWIG_EXECUTABLE=c:\Swig\swig.exe -DCSHARP_DOTNET_VERSION=v4.0.30319 -DENABLE_SWIG=ON
+    cmake ../interop -D SWIG_EXECUTABLE=c:\Swig\swig.exe
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Build C# binding using SWIG on Windows assuming:
-    
-    - Visual Studio is installed
-    - Using latest .NET Version 3.x
-    - SWIG could not be found automatically, but is installed in c:\Swig
+## Prerequisite Installation
+
+Certain systems (i.e. Linux) make installation very simple, the following instructions can help with
+installing the prerequisites on these systems.
+ 
+### Debian (Ubuntu)
+
+Install CMake:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.sh}
-    cmake ../interop -D SWIG_EXECUTABLE=c:\Swig\swig.exe -DENABLE_SWIG=ON
+sudo apt-get install software-properties-common
+sudo add-apt-repository ppa:george-edison55/cmake-3.x
+sudo apt-get update
+sudo apt-get install cmake # If cmake is not installed
+sudo apt-get upgrade cmake # if cmake is already installed
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Install Mono:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.sh}
+$ sudo apt-get install mono-complete
+$ sudo apt-get nunit-console
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Install SWIG:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.sh}
+$ sudo apt-get install swig
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -26,14 +26,17 @@
     }
      public global::System.Collections.Generic.IEnumerable< metric_t > GetMetricsInLane(int lane)
         {
+            if(size() == 0) return new global::System.Collections.Generic.List<metric_t>();
             return global::System.Linq.Enumerable.Where(metrics(), m => m.lane() == lane);
         }
         public global::System.Collections.Generic.List<uint> GetTiles(int lane)
         {
+            if(size() == 0) return new global::System.Collections.Generic.List<uint>();
             return global::System.Linq.Enumerable.ToList(tile_numbers_for_lane((uint)lane));
         }
         public global::System.Collections.Generic.IEnumerable< metric_t >  GetMetricsForTile(int lane, int tile)
         {
+            if(size() == 0) return new global::System.Collections.Generic.List<metric_t>();
             return global::System.Linq.Enumerable.Where(metrics(), m => m.lane() == lane && m.tile() == tile);
         }
         /*
@@ -104,14 +107,16 @@
         }
         public global::System.Collections.Generic.IEnumerable< metric_t > GetMetricsByCycle(global::System.Collections.Generic.IEnumerable<int> cycles)
         {
+            if(size() == 0) return new global::System.Collections.Generic.List<metric_t>();
             return global::System.Linq.Enumerable.Where(metrics(), m => global::System.Linq.Enumerable.Contains<int>(cycles, (int)m.cycle()));
         }
         public global::System.Collections.Generic.IEnumerable< metric_t> GetMetricsByCycle(int lane, int tile, global::System.Collections.Generic.IEnumerable<int> cycles)
         {
+            if(size() == 0) return new global::System.Collections.Generic.List<metric_t>();
             global::System.Collections.Generic.List< metric_t> results = new global::System.Collections.Generic.List< metric_t>();
             foreach (int cycle in cycles)
             {
-                metric_t metric = get_metric((uint)lane, (uint)tile, (uint)cycle);
+                metric_t metric = GetMetric(lane, tile, cycle);
                 if (metric != null) results.Add(metric);
             }
             return results;
