@@ -9,6 +9,10 @@ endif()
 
 if(NOT ENABLE_APPS)
     set_target_properties(interop2csv PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
+else()
+    install(TARGETS interop2csv
+            RUNTIME DESTINATION bin
+            )
 endif()
 
 if(NOT ENABLE_STATIC)

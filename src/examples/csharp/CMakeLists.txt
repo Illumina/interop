@@ -69,6 +69,13 @@ add_dependencies(csharp_example3 csharp_interop)
 add_custom_command(TARGET csharp_example3 POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy ${CSHARP_csharp_example3_BINARY} $<TARGET_FILE_DIR:${INTEROP_LIB}>)
 
+if(NOT ENABLE_EXAMPLES)
+    set_target_properties(csharp_example1 PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
+    set_target_properties(csharp_example2 PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
+    set_target_properties(csharp_example3 PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
+else()
+    #TODO add install command
+endif()
 
 if(NOT ENABLE_STATIC)
     add_custom_command(TARGET csharp_example1 POST_BUILD
@@ -77,11 +84,4 @@ if(NOT ENABLE_STATIC)
             COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE_DIR:${INTEROP_LIB}> ${CMAKE_CURRENT_BINARY_DIR})
     add_custom_command(TARGET csharp_example3 POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE_DIR:${INTEROP_LIB}> ${CMAKE_CURRENT_BINARY_DIR})
-endif()
-
-
-if(NOT ENABLE_EXAMPLES)
-    set_target_properties(csharp_example1 PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
-    set_target_properties(csharp_example2 PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
-    set_target_properties(csharp_example3 PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
 endif()
