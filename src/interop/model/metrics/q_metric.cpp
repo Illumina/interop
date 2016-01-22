@@ -21,7 +21,7 @@ namespace illumina{ namespace interop{ namespace io {
 #pragma pack(1)
             /** Q-score Metric Record Layout Version 4
              *
-             * This class provides an interface to reading the registration metric file:
+             * This class provides an interface to reading the q-metric file:
              *  - InterOp/QMetrics.bin
              *  - InterOp/QMetricsOut.bin
              *
@@ -86,7 +86,7 @@ namespace illumina{ namespace interop{ namespace io {
             };
             /** Q-score Metric Record Layout Version 5
              *
-             * This class provides an interface to reading the registration metric file:
+             * This class provides an interface to reading the q-metric file:
              *  - InterOp/QMetrics.bin
              *  - InterOp/QMetricsOut.bin
              *
@@ -284,7 +284,7 @@ namespace illumina{ namespace interop{ namespace io {
             };
             /** Q-score Metric Record Layout Version 6
              *
-             * This class provides an interface to reading the registration metric file:
+             * This class provides an interface to reading the q-metric file:
              *  - InterOp/QMetrics.bin
              *  - InterOp/QMetricsOut.bin
              *

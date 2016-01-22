@@ -2,7 +2,7 @@ Quick Start
 ===========
 
 The Illumina InterOp libraries are a set of common routines used for reading InterOp metric files produced by
-Illumina sequencers. These libraries backwards compatible and capable of supporting prior releases of the software,
+Illumina sequencers. These libraries are backwards compatible and capable of supporting prior releases of the software,
 with one exception: GA systems have been excluded.
 
 The InterOp files supported by this library include:
@@ -40,17 +40,13 @@ Documentation
 Install
 -------
 
-### From Binaries
-
-TODO
-
 ### From Source
 
 ~~~~~~~~~~~~~{.sh}
-$ git clone https://github.com/illumina/ipa.git
+$ git clone https://github.com/Illumina/interop.git
 $ mkdir build
 $ cd build
-$ cmake ../ipa
+$ cmake ../interop
 $ cmake --build .
 ~~~~~~~~~~~~~
 
