@@ -1,4 +1,4 @@
-Illumina Interop                         {#mainpage}
+Illumina InterOp                         {#mainpage}
 ================
 
 Purpose
