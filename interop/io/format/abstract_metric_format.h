@@ -61,6 +61,7 @@ namespace illumina {
                  *
                  * @param out output stream to write the binary InterOp file data
                  * @param metric interop metric data to write
+                 * @param header interop metric header data to write
                  */
                 virtual void write_metric(std::ostream& out, const metric_type &metric, const header_t& header)=0;
                 /** Write the metric header to the given output stream

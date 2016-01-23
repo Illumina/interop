@@ -17,10 +17,7 @@ target_link_libraries(interop_gtests ${INTEROP_LIB} ${GTEST_LIBRARY} ${GTEST_MAI
 add_test(NAME interop_gtests WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/testBin
               COMMAND ${CMAKE_BINARY_DIR}/testBin/${INTEROP_TESTS} )
 
-add_custom_target(check
-        COMMAND $<TARGET_FILE:interop_gtests>)
-set_target_properties(check PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
-add_dependencies(check interop_gtests)
+
 if(MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()

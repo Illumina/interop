@@ -1,7 +1,9 @@
 
 %define SHARED_METRIC_SET_METHODS(metric_t)
-    public long DataSourceLength { get; set; }
-    public bool DataSourceExists { get; set; }
+    private long _dataSourceLength;
+    private bool _dataSourceExists;
+    public long DataSourceLength { get{return _dataSourceLength;} set{_dataSourceLength=value;} }
+    public bool DataSourceExists { get{return _dataSourceExists;} set{_dataSourceExists=value;} }
     public byte Version { get{ return (byte)version(); } }
     public global::System.Int64 GetKey(int lane, int tile)
     {
@@ -24,14 +26,17 @@
     }
      public global::System.Collections.Generic.IEnumerable< metric_t > GetMetricsInLane(int lane)
         {
+            if(size() == 0) return new global::System.Collections.Generic.List<metric_t>();
             return global::System.Linq.Enumerable.Where(metrics(), m => m.lane() == lane);
         }
         public global::System.Collections.Generic.List<uint> GetTiles(int lane)
         {
+            if(size() == 0) return new global::System.Collections.Generic.List<uint>();
             return global::System.Linq.Enumerable.ToList(tile_numbers_for_lane((uint)lane));
         }
         public global::System.Collections.Generic.IEnumerable< metric_t >  GetMetricsForTile(int lane, int tile)
         {
+            if(size() == 0) return new global::System.Collections.Generic.List<metric_t>();
             return global::System.Linq.Enumerable.Where(metrics(), m => m.lane() == lane && m.tile() == tile);
         }
         /*
@@ -43,7 +48,7 @@
             get
             {
                  global::System.Collections.Generic.Dictionary<global::System.Int64, metric_t> Lookup = new global::System.Collections.Generic.Dictionary<global::System.Int64, metric_t>();
-                 foreach(var metric in metrics())
+                 foreach(metric_t metric in metrics())
                  {
                     try{
                         Lookup.Add((global::System.Int64)metric.id(), metric);
@@ -61,7 +66,7 @@
             get
             {
                  global::System.Collections.Generic.Dictionary<global::System.UInt64, metric_t> Lookup = new global::System.Collections.Generic.Dictionary<global::System.UInt64, metric_t>();
-                 foreach(var metric in metrics())
+                 foreach(metric_t metric in metrics())
                  {
                     Lookup.Add((global::System.UInt64)metric.id(), metric);
                  }
@@ -102,14 +107,16 @@
         }
         public global::System.Collections.Generic.IEnumerable< metric_t > GetMetricsByCycle(global::System.Collections.Generic.IEnumerable<int> cycles)
         {
+            if(size() == 0) return new global::System.Collections.Generic.List<metric_t>();
             return global::System.Linq.Enumerable.Where(metrics(), m => global::System.Linq.Enumerable.Contains<int>(cycles, (int)m.cycle()));
         }
         public global::System.Collections.Generic.IEnumerable< metric_t> GetMetricsByCycle(int lane, int tile, global::System.Collections.Generic.IEnumerable<int> cycles)
         {
-            var results = new global::System.Collections.Generic.List< metric_t>();
-            foreach (var cycle in cycles)
+            if(size() == 0) return new global::System.Collections.Generic.List<metric_t>();
+            global::System.Collections.Generic.List< metric_t> results = new global::System.Collections.Generic.List< metric_t>();
+            foreach (int cycle in cycles)
             {
-                var metric = get_metric((uint)lane, (uint)tile, (uint)cycle);
+                metric_t metric = GetMetric(lane, tile, cycle);
                 if (metric != null) results.Add(metric);
             }
             return results;
@@ -119,16 +126,21 @@
 
 
 %typemap(cscode) illumina::interop::model::metrics::tile_metrics %{
-    public int ControlLane { get; set; }
-     public global::System.Collections.Generic.List<int> Tiles { get; set; }
+     private int _controlLane;
+     public int ControlLane { get{return _controlLane;} set{_controlLane=value;} }
+     private global::System.Collections.Generic.List<int> _tiles;
+     public global::System.Collections.Generic.List<int> Tiles { get{return _tiles;} set{_tiles=value;} }
 %}
 
 %typemap(cscode) illumina::interop::model::metrics::q_metrics %{
     public class QScoreBin
     {
-         public byte Lower {get; set;}
-         public byte Upper {get; set;}
-         public byte Value {get; set;}
+         private byte _lower;
+         private byte _upper;
+         private byte _value;
+         public byte Lower { get{return _lower;} set{_lower=value;} }
+         public byte Upper { get{return _upper;} set{_upper=value;} }
+         public byte Value { get{return _value;} set{_value=value;} }
          public QScoreBin(){}
          public QScoreBin(byte lower, byte upper, byte value)
          {
@@ -137,7 +149,8 @@
             Value = value;
          }
     };
-    public global::System.Collections.Generic.List<QScoreBin> QScoreBins { get; set; }
+    private global::System.Collections.Generic.List<QScoreBin> _qScoreBins;
+    public global::System.Collections.Generic.List<QScoreBin> QScoreBins { get{return _qScoreBins;} set{_qScoreBins=value;} }
 
     public bool IsBinned { get { return binCount() > 0; }}
     public int NumQVals(){ return (int)histBinCount(); }
@@ -148,10 +161,10 @@
 
 
 %typemap(cscode) illumina::interop::model::metrics::tile_metric %{
-public int LatestExtractedCycle;
-public int LatestCalledCycle;
-public int LatestQScoredCycle;
-public int LatestErrorCycle;
+    public int LatestExtractedCycle;
+    public int LatestCalledCycle;
+    public int LatestQScoredCycle;
+    public int LatestErrorCycle;
     public int cycle(){return -1;}// Hack for bad interface above
 %}
 %typemap(cscode) illumina::interop::model::metrics::index_metric %{

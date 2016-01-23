@@ -7,7 +7,7 @@ sequencing run easier. We encourage users to contribute in a number of ways:
   - Contribute to Illumina InterOp Documentation by adding Wiki examples showing how you use the code
   - Blog about Illumina InterOp, tell others about how great it is.
   
-[Issues]: https://github.com/illumina/interop/labels
+[Issues]: https://github.com/Illumina/interop/labels
 
 If think working *with* Illumina InterOp is fun, just wait until you start working *on* it. We are passionate
 about turning users into contributors, and provide several ways for you to contribute to Illumina InterOp:

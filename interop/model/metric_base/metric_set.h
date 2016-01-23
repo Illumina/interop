@@ -82,6 +82,7 @@ namespace illumina {
                         for(typename metric_array_t::const_iterator b=vec.begin(), e=vec.end();b != e;++b) {
                             m_id_map[b->id()] = offset;
                             ++offset;
+                            T::header_type::update_max_cycle(*b);
                         }
                     }
 

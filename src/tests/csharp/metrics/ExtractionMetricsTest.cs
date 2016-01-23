@@ -61,7 +61,7 @@ namespace illumina.interop.csharp.unittest
 				Assert.AreEqual(expected_metrics[i].lane(), actual_metrics[i].lane());
 				Assert.AreEqual(expected_metrics[i].tile(), actual_metrics[i].tile());
 				Assert.AreEqual(expected_metrics[i].cycle(), actual_metrics[i].cycle());
-				Assert.AreEqual(expected_metrics[i].Time, actual_metrics[i].Time);
+				Assert.AreEqual(expected_metrics[i].date_time_csharp().value, actual_metrics[i].date_time_csharp().value);
 				for(uint j=0;j<Math.Min(expected_metrics[i].channel_count(), actual_metrics[i].channel_count());j++)
 				{
 				    Assert.AreEqual(expected_metrics[i].max_intensity(j), actual_metrics[i].max_intensity(j));

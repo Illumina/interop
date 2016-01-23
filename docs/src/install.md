@@ -9,6 +9,8 @@ from the source code.
 It is recommended to start from one of the binary distributions found under releases. The CentOS 5 build
 should work on a wide variety of Linux distributions.
 
+**At this time, binary releases are unavailable**
+
 ## Build from Source
 
 This section describes the prerequisites for building the source, describes how to download the source and
@@ -22,7 +24,7 @@ The following are the minimum requirements to build the source:
     - Windows: [MinGW], [Cygwin], Microsoft Visual C++, [Express]
     - Linux: GCC, CLang
     - Mac OSX: CLang
-- [CMake] Version 3.2
+- [CMake] Version 3.2 or later
 - [RapidXML] v1.3 - This is automatically downloaded if not found or specified
 
 The following optional features have the corresponding requirements:
@@ -42,6 +44,7 @@ The following optional features have the corresponding requirements:
 Tips for Prerequisites
     
   - CMake and SWIG will likely need to be installed from the source on Linux
+  - On Windows, CMake will likely need to know the location of SWIG, see Example configurations below
   - Building on a machine not connected to the Internet: download and provide necessary dependencies such as RapidXML
 
 [NUnit]: http://www.nunit.org/
@@ -63,15 +66,15 @@ rigorously tested and will have less stringent build requirements.
 
 If the latest stable version does not meet your needs, then you may consider using the [LatestVersion].
 
-[LatestStableRelease]: https://github.com/IlluminaBioinformatics/interop/releases/latest "Latest Stable Release"
-[LatestVersion]: https://github.com/IlluminaBioinformatics/interop/archive/master.zip "Bleeding-edge Release"
+[LatestStableRelease]: https://github.com/Illumina/interop/releases/latest "Latest Stable Release"
+[LatestVersion]: https://github.com/Illumina/interop/archive/master.zip "Bleeding-edge Release"
 
 ### Clone the Latest Source
 
 The code may be "cloned" using the git version control program as follows:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.sh}
-git clone git@github.com:IlluminaBioinformatics/interop.git
+git clone git@github.com:Illumina/interop.git
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 After cloning the code, you may update your code for any changes made since you lasted cloned by 
@@ -84,38 +87,51 @@ git pull
 
 ### Build the Source
 
-The following code will work for most platforms. 
+The following code will work for most platforms, as summarized below: 
 
 ~~~~~~~~~~~~~~~{.sh}
 mkdir Build
 cd Build
-cmake ../interop
+cmake ../interop -DCMAKE_INSTALL_PREFIX=<install-dir>
 cmake --build .
+cmake --build . --target install
 ~~~~~~~~~~~~~~~
+
+*Note, replace <install-dir> with the directory you wish to install InterOp*
+
+#### Step by step explanation for above summary
 
 The user should create a directory outside of interop to build the binary, here we called it `Build`. After
 entering the directory, the user can configure the build system with:
 
 ~~~~~~~~~~~~~{.sh}
-cmake ../interop
+cmake ../interop -DCMAKE_INSTALL_PREFIX=<install-dir>
 ~~~~~~~~~~~~~
 
 Note, the user can obtain a list of the available generators using (for an alternative to the default):
+*Note, replace <install-dir> with the directory you wish to install InterOp*
 
 ~~~~~~~~~~~~~{.sh}
 cmake --help
 ~~~~~~~~~~~~~
 
-Then, specify the appropriate generator using the `-G` flag:
+The default CMake generator for Windows is 32-bit.  This can be changed by specifying the appropriate generator 
+using the `-G` flag:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.sh}
 cmake ../interop -G “Visual Studio 12 2013 Win64”
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Finally, the binary can be built in a platform independent manner with the following command:
+The binary can be built in a platform independent manner with the following command:
 
 ~~~~~~~~~~~~~~~{.sh}
 cmake --build .
+~~~~~~~~~~~~~~~
+
+Finally, the headers, libraries and applications can be installed into the target directory with the following command:
+
+~~~~~~~~~~~~~~~{.sh}
+cmake --build . --target install
 ~~~~~~~~~~~~~~~
 
 ### Configure the Source
@@ -166,31 +182,51 @@ generates the C# *.cs files and the second builds the DLL from these files.
 
 ### Example configurations
 
-Using pre-downloaded GTest and RapidXML packages assuming:
+Using pre-downloaded [Google Test] and [RapidXML] packages assuming:
     
     - The packages have already been unarchived
     - The packages were placed at the same level as InterOp
     
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.sh}
-    cmake ../interop -D GTEST_ROOT=../../gtest -D RAPIDXML_ROOT ../../rapidxml -DENABLE_TEST=ON
+    cmake ../interop -DGTEST_ROOT=../../gtest -DRAPIDXML_ROOT ../../rapidxml
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Build C# binding using SWIG on Windows assuming:
+Build C# binding using [SWIG] on Windows assuming:
     
     - Visual Studio is installed
     - Using latest .NET Version 4.x
     - SWIG could not be found automatically, but is installed in c:\Swig
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.sh}
-    cmake ../interop -D SWIG_EXECUTABLE=c:\Swig\swig.exe -DCSHARP_DOTNET_VERSION=v4.0.30319 -DENABLE_SWIG=ON
+    cmake ../interop -DSWIG_EXECUTABLE=c:\Swig\swig.exe
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Build C# binding using SWIG on Windows assuming:
-    
-    - Visual Studio is installed
-    - Using latest .NET Version 3.x
-    - SWIG could not be found automatically, but is installed in c:\Swig
+## Prerequisite Installation
+
+Certain systems (i.e. Linux) make installation very simple, the following instructions can help with
+installing the prerequisites on these systems.
+ 
+### Debian (Ubuntu)
+
+Install CMake:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.sh}
-    cmake ../interop -D SWIG_EXECUTABLE=c:\Swig\swig.exe -DENABLE_SWIG=ON
+sudo apt-get install software-properties-common
+sudo add-apt-repository ppa:george-edison55/cmake-3.x
+sudo apt-get update
+sudo apt-get install cmake # If cmake is not installed
+sudo apt-get upgrade cmake # if cmake is already installed
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Install Mono:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.sh}
+$ sudo apt-get install mono-complete
+$ sudo apt-get install nunit-console
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Install SWIG:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.sh}
+$ sudo apt-get install swig
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

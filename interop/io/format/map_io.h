@@ -146,7 +146,7 @@ template<typename Layout>
 void map_resize(std::vector<Layout>& layout, size_t n)
 {
     layout.resize(n);
-};
+}
 
 }
 }
