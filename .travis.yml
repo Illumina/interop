@@ -12,6 +12,14 @@ before_install:
   - date -u
   - uname -a
 
+addons:
+  apt:
+    sources:
+      - george-edison55-precise-backports
+    packages:
+      - cmake
+      - cmake-data
+
 install:
   - if test "$TRAVIS_OS_NAME" = "linux"; then source tools/travis-linux-install.sh; fi
   - if test "$TRAVIS_OS_NAME" = "osx"; then source tools/travis-osx-install.sh; fi
@@ -36,3 +44,4 @@ script:
 branches:
   only:
     - master
+    - ipa-3626-travisci
