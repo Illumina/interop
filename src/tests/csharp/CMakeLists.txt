@@ -22,6 +22,7 @@ if(NOT NUNIT_FOUND)
     message(WARNING "You may set the location of NUNIT with NUNIT_ROOT or the NUNIT_DIR environment variable")
     return()
 endif()
+set(CSHARP_TEST_ENABLED ON PARENT_SCOPE)
 
 include(${CSHARP_USE_FILE})
 
