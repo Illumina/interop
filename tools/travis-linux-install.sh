@@ -11,7 +11,7 @@ sudo apt-get update
 sudo apt-get install -qq -y libicu-dev swig3.0 doxygen graphviz
 sudo apt-get install -y libssl-dev
 sudo apt-get remove -y curl
-sudo apt-get install -y curl-ssl
+sudo apt-get install -y curl libcurl3
 
 
 
