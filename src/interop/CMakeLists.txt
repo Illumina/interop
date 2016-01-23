@@ -57,7 +57,7 @@ set(HEADERS
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR CMAKE_COMPILER_IS_GNUCC)
     foreach(SRC ${SRCS})
-        set_source_files_properties(${SRC} PROPERTIES COMPILE_FLAGS "-Wpedantic" )
+        set_source_files_properties(${SRC} PROPERTIES COMPILE_FLAGS "${CXX_PEDANTIC_FLAG}" )
     endforeach()
 endif()
 
