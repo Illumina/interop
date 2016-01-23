@@ -15,7 +15,7 @@ if(ENABLE_SWIG)
     add_subdirectory("csharp")
     if(CSHARP_TEST_ENABLED)
         add_custom_command(TARGET check POST_BUILD
-                COMMAND ${NUNIT_COMMAND} $<TARGET_FILE_DIR:${INTEROP_LIB}>/${CSHARP_UNIT_TEST_EXE})
+                COMMAND ${NUNIT_COMMAND_EXE} $<TARGET_FILE_DIR:${INTEROP_LIB}>/${CSHARP_UNIT_TEST_EXE})
         add_dependencies(check csharp_unittest)
     endif()
 endif()
