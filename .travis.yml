@@ -37,6 +37,7 @@ script:
   - sudo make install
   - echo -en 'travis_fold:end:script.2\\r'
   - cmake --build . --target check
+  - cat /home/travis/build/Illumina/interop/build/external/gtest/src/googletest-stamp/googletest-download-*.log
   - echo 'Cleaning...' && echo -en 'travis_fold:start:script.3\\r'
   - make clean
   - echo -en 'travis_fold:end:script.3\\r'
