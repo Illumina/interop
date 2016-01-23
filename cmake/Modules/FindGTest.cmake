@@ -43,8 +43,7 @@ if(NOT GTEST_INCLUDE_DIR)
     ExternalProject_Add(
             googletest
             PREFIX ${GTEST_PREFIX}
-            URL http://github.com/google/googletest/archive/release-1.7.0.zip
-            #URL https://github.com/google/googletest/archive/release-1.7.0.zip
+            URL https://github.com/google/googletest/archive/release-1.7.0.zip
             CMAKE_ARGS -DCMAKE_CXX_FLAGS=-DGTEST_USE_OWN_TR1_TUPLE=${USE_OWN_TR1_TUPLE}
                 -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
                 -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY=${GTEST_PREFIX}/lib64
