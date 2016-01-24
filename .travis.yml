@@ -27,7 +27,7 @@ install:
   - ls -la $(which $CXX)
   - $CC --version
   - $CXX --version
-  - ls /usr/lib/mono
+  - find /usr/lib/mono -name "nunit.framework.dll"
 
 script:
   - echo 'Configuring...' && echo -en 'travis_fold:start:script.1\\r'

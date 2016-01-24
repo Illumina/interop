@@ -26,7 +26,8 @@ set(nunit_search_hints
         "C:\\Program Files (x86)\\NUnit 2.6.4"
         /usr/local//Cellar/mono/4.0.1/lib/mono/4.5/
         /usr/lib/monodevelop/AddIns/NUnit
-        /usr/lib/mono/3.0
+        /usr/lib/mono/4.0
+        /usr/lib/mono/3.5
         /usr/lib/mono/2.0
         /usr/lib/mono/1.0
         /usr/lib/nunit
