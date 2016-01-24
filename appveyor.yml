@@ -20,4 +20,4 @@ build_script:
 
 branches:
   only:
-  - ipa-3627-appveyor
+  - master
