@@ -20,6 +20,12 @@ The InterOp files supported by this library include:
 This library is written in C++98 and provides bindings for C# using the SWIG interface. This
 support includes examples and unit tests for both languages.
 
+[tcistatus]:https://travis-ci.org/Illumina/interop?branch=master
+[tcihome]:https://travis-ci.org/Illumina/iterop
+
+[acistatus]:https://ci.appveyor.com/api/projects/status/5hwirymkc10uf13d/branch/master?svg=true
+[acihome]:https://ci.appveyor.com/project/ezralanglois/interop/branch/master
+
 Documentation
 -------------
 
