@@ -51,9 +51,6 @@ find_program(NUNIT_COMMAND nunit-console.exe
         PATH_SUFFIXES bin
         DOC "NUnit test runner command"
         )
-
-message(WARNING "${NUNIT_LIBRARY} -- ${NUNIT_COMMAND}")
-
 #if(NOT NUNIT_LIBRARY OR NOT NUNIT_COMMAND)
 if(NOT NUNIT_LIBRARY AND NOT NUNIT_COMMAND)
     include(ExternalProject)
