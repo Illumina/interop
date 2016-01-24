@@ -15,3 +15,8 @@ install:
 build_script:
   - cmake ../ "-G%GENERATOR%" -H. -Bbuild -DCMAKE_BUILD_TYPE="%configuration%"
   - cmake --build build --config "%configuration%"
+  - cmake --build build --config "%configuration%" --target check
+
+branches:
+  only:
+  - master
