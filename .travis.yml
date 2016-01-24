@@ -27,8 +27,6 @@ install:
   - ls -la $(which $CXX)
   - $CC --version
   - $CXX --version
-  - find /usr -name "libgtest.a"
-  - find /usr -name "libgtest.*"
 
 script:
   - echo 'Configuring...' && echo -en 'travis_fold:start:script.1\\r'
