@@ -21,7 +21,9 @@ add_test(NAME interop_gtests WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/testB
 if(MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
+MESSAGE(WARNING "${CMAKE_CXX_COMPILER_ID}")
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    MESSAGE(WARNING "-Wunnamed-type-template-args")
     set_target_properties(interop_gtests PROPERTIES COMPILE_FLAGS "-Wunnamed-type-template-args")
 endif()
 
