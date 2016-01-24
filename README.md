@@ -1,6 +1,9 @@
 Quick Start
 ===========
 
+[![Build Status] [tcistatus]] [tcihome]
+[![Build status] [acistatus]] [acihome]
+
 The Illumina InterOp libraries are a set of common routines used for reading InterOp metric files produced by
 Illumina sequencers. These libraries are backwards compatible and capable of supporting prior releases of the software,
 with one exception: GA systems have been excluded.
