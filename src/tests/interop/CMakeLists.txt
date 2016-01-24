@@ -17,7 +17,6 @@ target_link_libraries(interop_gtests ${INTEROP_LIB} ${GTEST_LIBRARY} ${GTEST_MAI
 add_test(NAME interop_gtests WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/testBin
               COMMAND ${CMAKE_BINARY_DIR}/testBin/${INTEROP_TESTS} )
 
-
 if(MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()

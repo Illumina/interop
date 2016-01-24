@@ -134,6 +134,12 @@ Finally, the headers, libraries and applications can be installed into the targe
 cmake --build . --target install
 ~~~~~~~~~~~~~~~
 
+Finally, the headers, libraries and applications can be installed into the target directory with the following command:
+
+~~~~~~~~~~~~~~~{.sh}
+cmake --build . --target install
+~~~~~~~~~~~~~~~
+
 ### Configure the Source
 
 There are several configuration options that you may wish to consider:
