@@ -1,0 +1,17 @@
+
+configuration:
+  - Debug
+  - Release
+
+environment:
+  matrix:
+    - generator: "Visual Studio 12 2013 Win64"
+
+install:
+  - cmd: date /T & time /T
+  - cmd: set PATH=C:\cygwin\bin;%PATH%
+  - cmd: set PATH=%PATH%;C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\;
+
+build_script:
+  - cmake ../ "-G%GENERATOR%" -H. -Bbuild -DCMAKE_BUILD_TYPE="%configuration%"
+  - cmake --build build --config "%configuration%"
