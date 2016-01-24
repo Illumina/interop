@@ -27,7 +27,7 @@ install:
   - ls -la $(which $CXX)
   - $CC --version
   - $CXX --version
-  - find /usr/lib/mono -name "nunit.framework.dll"
+  - find /usr -name "*gtest*.a"
 
 script:
   - echo 'Configuring...' && echo -en 'travis_fold:start:script.1\\r'
