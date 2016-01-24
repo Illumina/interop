@@ -22,6 +22,7 @@ pkg_check_modules(PC_RAPIDXML QUIET rapidxml)
 set(NUNIT_ROOT "" CACHE PATH "Set the location of the RapidXML library and header")
 
 set(nunit_search_hints
+        ${NUNIT_ROOT}
         [HKEY_CURRENT_USER\\Software\\nunit.org\\NUnit\\2.6.4]
         "C:\\Program Files (x86)\\NUnit 2.6.4"
         /usr/local//Cellar/mono/4.0.1/lib/mono/4.5/
@@ -31,23 +32,25 @@ set(nunit_search_hints
         /usr/lib/mono/2.0
         /usr/lib/mono/1.0
         /usr/lib/nunit
-        ${NUNIT_ROOT}
         $ENV{NUNIT_DIR}
         )
 
 find_file(NUNIT_LIBRARY nunit.framework.dll
-        HINTS ${PC_NUNIT_INCLUDEDIR} ${PC_NUNIT_INCLUDE_DIRS} ${nunit_search_hints}
+        PATHS ${nunit_search_hints}
+        HINTS ${PC_NUNIT_INCLUDEDIR} ${PC_NUNIT_INCLUDE_DIRS}
         PATH_SUFFIXES bin bin/framework
         )
 
 find_program(NUNIT_COMMAND nunit-console.exe
-        HINTS ${PC_NUNIT_INCLUDEDIR} ${PC_NUNIT_INCLUDE_DIRS} ${nunit_search_hints}
+        PATHS ${nunit_search_hints}
+        HINTS ${PC_NUNIT_INCLUDEDIR} ${PC_NUNIT_INCLUDE_DIRS}
         PATH_SUFFIXES bin
         NO_DEFAULT_PATH
         )
 
 find_program(NUNIT_COMMAND nunit-console.exe
-        HINTS ${PC_NUNIT_INCLUDEDIR} ${PC_NUNIT_INCLUDE_DIRS} ${nunit_search_hints}
+        PATHS ${nunit_search_hints}
+        HINTS ${PC_NUNIT_INCLUDEDIR} ${PC_NUNIT_INCLUDE_DIRS}
         PATH_SUFFIXES bin tools
         DOC "NUnit test runner command"
         )
