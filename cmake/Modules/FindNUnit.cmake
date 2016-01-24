@@ -37,12 +37,12 @@ set(nunit_search_hints
 
 find_file(NUNIT_LIBRARY nunit.framework.dll
         HINTS ${PC_NUNIT_INCLUDEDIR} ${PC_NUNIT_INCLUDE_DIRS} ${nunit_search_hints}
-        PATH_SUFFIXES tools bin bin/framework
+        PATH_SUFFIXES bin bin/framework
         )
 
 find_program(NUNIT_COMMAND nunit-console.exe
         HINTS ${PC_NUNIT_INCLUDEDIR} ${PC_NUNIT_INCLUDE_DIRS} ${nunit_search_hints}
-        PATH_SUFFIXES bin tools
+        PATH_SUFFIXES bin
         NO_DEFAULT_PATH
         )
 
