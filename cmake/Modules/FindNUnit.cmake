@@ -48,6 +48,8 @@ find_program(NUNIT_COMMAND nunit-console.exe
         DOC "NUnit test runner command"
         )
 
+message(WARNING "${NUNIT_LIBRARY} -- ${NUNIT_COMMAND}")
+
 if(NOT NUNIT_LIBRARY OR NOT NUNIT_COMMAND)
     include(ExternalProject)
     ExternalProject_Add(

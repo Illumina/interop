@@ -27,6 +27,8 @@ install:
   - ls -la $(which $CXX)
   - $CC --version
   - $CXX --version
+  - ls -la $(which nunit-console)
+  - more $(which nunit-console)
 
 script:
   - echo 'Configuring...' && echo -en 'travis_fold:start:script.1\\r'
