@@ -107,7 +107,7 @@ if( WIN32 )
 
 else( UNIX )
   # Search for Mono on non-Win32 systems
-  set( csharp_mono_names "mcs" "mcs.exe" "dmcs" "dmcs.exe" "smcs" "smcs.exe" "gmcs" "gmcs.exe" )
+  set( csharp_mono_names "dmcs" "dmcs.exe" "smcs" "smcs.exe" "gmcs" "gmcs.exe" "mcs" "mcs.exe" )
   set(
     csharp_mono_paths
     "/usr/bin/"
