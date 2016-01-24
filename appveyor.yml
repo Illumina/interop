@@ -11,6 +11,7 @@ install:
   - cmd: date /T & time /T
   - cmd: set PATH=C:\cygwin\bin;%PATH%
   - cmd: set PATH=%PATH%;C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\;
+  - cinst swig
 
 build_script:
   - cmake ../ "-G%GENERATOR%" -H. -Bbuild -DCMAKE_BUILD_TYPE="%configuration%"
@@ -19,4 +20,4 @@ build_script:
 
 branches:
   only:
-  - master
+  - ipa-3627-appveyor
