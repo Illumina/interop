@@ -54,7 +54,8 @@ find_program(NUNIT_COMMAND nunit-console.exe
 
 message(WARNING "${NUNIT_LIBRARY} -- ${NUNIT_COMMAND}")
 
-if(NOT NUNIT_LIBRARY OR NOT NUNIT_COMMAND)
+#if(NOT NUNIT_LIBRARY OR NOT NUNIT_COMMAND)
+if(NOT NUNIT_LIBRARY AND NOT NUNIT_COMMAND)
     include(ExternalProject)
     ExternalProject_Add(
             NUnit
@@ -80,7 +81,8 @@ set(NUNIT_LIBRARIES ${NUNIT_LIBRARY} )
 set(NUNIT_INCLUDE_DIR ${NUNIT_LIBRARY} )
 set(NUNIT_INCLUDE_DIRS ${NUNIT_LIBRARY} )
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(NUnit DEFAULT_MSG NUNIT_LIBRARY NUNIT_COMMAND)
+#find_package_handle_standard_args(NUnit DEFAULT_MSG NUNIT_LIBRARY NUNIT_COMMAND)
+find_package_handle_standard_args(NUnit DEFAULT_MSG NUNIT_COMMAND)
 
 if(CSHARP_MONO_FOUND AND CSHARP_INTERPRETER AND NUNIT_COMMAND)
     set(NUNIT_COMMAND ${CSHARP_INTERPRETER} ${NUNIT_COMMAND})
