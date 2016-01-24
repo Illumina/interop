@@ -37,18 +37,18 @@ set(nunit_search_hints
 
 find_file(NUNIT_LIBRARY nunit.framework.dll
         HINTS ${PC_NUNIT_INCLUDEDIR} ${PC_NUNIT_INCLUDE_DIRS} ${nunit_search_hints}
-        PATH_SUFFIXES bin bin/framework
+        PATH_SUFFIXES tools bin bin/framework
         )
 
 find_program(NUNIT_COMMAND nunit-console.exe
         HINTS ${PC_NUNIT_INCLUDEDIR} ${PC_NUNIT_INCLUDE_DIRS} ${nunit_search_hints}
-        PATH_SUFFIXES bin
+        PATH_SUFFIXES bin tools
         NO_DEFAULT_PATH
         )
 
 find_program(NUNIT_COMMAND nunit-console.exe
         HINTS ${PC_NUNIT_INCLUDEDIR} ${PC_NUNIT_INCLUDE_DIRS} ${nunit_search_hints}
-        PATH_SUFFIXES bin
+        PATH_SUFFIXES bin tools
         DOC "NUnit test runner command"
         )
 

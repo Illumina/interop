@@ -27,10 +27,11 @@ install:
   - ls -la $(which $CXX)
   - $CC --version
   - $CXX --version
+  - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
 
 script:
   - echo 'Configuring...' && echo -en 'travis_fold:start:script.1\\r'
-  - mkdir -p build && cd build && cmake ../
+  - mkdir -p build && cd build && cmake ../ -DNUNIT_ROOT=./testrunner/NUnit.Runners.2.6.4
   - echo -en 'travis_fold:end:script.1\\r'
   - cmake --build .
   - echo 'Installing...' && echo -en 'travis_fold:start:script.2\\r'
