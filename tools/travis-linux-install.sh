@@ -3,7 +3,7 @@
 lsb_release -a
 
 sudo apt-get -qq update
-sudo apt-get install -qq -y mono-devel monodevelop-nunit nunit-console
+sudo apt-get install -qq -y mono-devel mono-gmcs nunit-console
 
 sudo apt-get install -y libgtest-dev
 sudo add-apt-repository -y ppa:teward/swig3.0
