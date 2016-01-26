@@ -23,6 +23,12 @@ option(ENABLE_EXAMPLES "Build example programs" ON)
 option(ENABLE_STATIC "Build static libraries instead of dynamic" ON)
 option(FORCE_X86 "Force 32-bit libraries instead of platform default (Does nothing for Visual Studio)" OFF)
 
+if(ENABLE_BACKWARDS_COMPATIBILITY)
+    message(status "Using C++11: No")
+else()
+    message(status "Using C++11: Yes")
+endif9)
+
 if(ENABLE_STATIC)
     set(LIBRARY_TYPE STATIC)
 else()
