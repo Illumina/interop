@@ -3,7 +3,13 @@ matrix:
   include:
     - compiler: clang
       os: linux
+      env: INTEROP_C11=OFF
     - compiler: gcc
+      os: linux
+      env: INTEROP_C11=OFF
+    - env: CXX=g++-5 CC=gcc-5 INTEROP_C11=ON
+      os: linux
+    - env: CXX=g++-4.2 CC=gcc-4.2 INTEROP_C11=OFF
       os: linux
     - compiler: clang
       os: osx
@@ -30,7 +36,7 @@ install:
 
 script:
   - echo 'Configuring...' && echo -en 'travis_fold:start:script.1\\r'
-  - mkdir -p build && cd build && cmake ../ -DNUNIT_ROOT=$PWD/../NUnit-2.6.4
+  - mkdir -p build && cd build && cmake ../ -DNUNIT_ROOT=$PWD/../NUnit-2.6.4 -DENABLE_BACKWARDS_COMPATIBILITY=$INTEROP_C11
   - echo -en 'travis_fold:end:script.1\\r'
   - cmake --build .
   - echo 'Installing...' && echo -en 'travis_fold:start:script.2\\r'
@@ -44,7 +50,6 @@ script:
 branches:
   only:
     - master
-    - ipa-3626-travisci
 
 notifications:
   email: false
