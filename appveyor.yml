@@ -11,9 +11,9 @@ configuration:
 environment:
   matrix:
     - generator: "Visual Studio 14 2015 Win64"
-    - generator:  "Visual Studio 14 2015"
+#    - generator: "Visual Studio 14 2015"
     - generator: "Visual Studio 12 2013 Win64"
-    - generator:  "Visual Studio 12 2013"
+#    - generator: "Visual Studio 12 2013"
     - generator: "MinGW Makefiles"
 
 
@@ -21,11 +21,18 @@ install:
   - cmd: date /T & time /T
   - cmd: set PATH=C:\cygwin\bin;%PATH%
   - cmd: set PATH=%PATH%;C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\;
-  - cinst swig
+  - choco install swig --version 3.0.5 -y
+#cinst swig
+
+before_build:
+  - set PATH=%PATH:C:\Program Files (x86)\Git\bin;=%
+  - set PATH=C:\MinGW\bin;%PATH%
 
 build_script:
   - cmake ../ "-G%GENERATOR%" -H. -Bbuild -DCMAKE_BUILD_TYPE="%configuration%"
   - cmake --build build --config "%configuration%"
+
+test_script:
   - cmake --build build --config "%configuration%" --target check
 
 branches:
