@@ -8,14 +8,17 @@ matrix:
       os: linux
       env: INTEROP_C89=ON
     - compiler: gcc
-      env: INTEROP_CXX=g++-5 INTEROP_CC=gcc-5 INTEROP_C89=OFF
-      os: linux
-    - compiler: gcc
-      env: INTEROP_CXX=g++-4.2 INTEROP_CC=gcc-4.2 INTEROP_C89=ON
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-4.9
+      env: INTEROP_CXX=g++-4.9 INTEROP_CC=gcc-4.9 INTEROP_C89=OFF
       os: linux
     - compiler: clang
       os: osx
-      env: INTEROP_C89=ON
+      env: INTEROP_C89=OFF
 
 before_install:
   - date -u
