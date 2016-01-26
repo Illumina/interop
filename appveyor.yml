@@ -26,6 +26,7 @@ install:
 
 before_build:
   - set PATH=%PATH:C:\Program Files (x86)\Git\bin;=%
+  - set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
   - set PATH=C:\MinGW\bin;%PATH%
 
 build_script:
