@@ -36,10 +36,12 @@ install:
   - ls -la $(which $CXX)
   - $CC --version
   - $CXX --version
+  - ls -la $(which $INTEROP_CXX)
+  - ls -la $(which $INTEROP_CC)
 
 script:
   - echo 'Configuring...' && echo -en 'travis_fold:start:script.1\\r'
-  - rm -fr build && mkdir -p build && cd build && cmake ../ -DNUNIT_ROOT=$PWD/../NUnit-2.6.4 -DENABLE_BACKWARDS_COMPATIBILITY=$INTEROP_C89 -DCMAKE_CXX_COMPILER=$(which $INTEROP_CXX) -DCMAKE_CC_COMPILER=$(which $INTEROP_CC)
+  - rm -fr build && mkdir -p build && cd build && cmake ../ -DNUNIT_ROOT=$PWD/../NUnit-2.6.4 -DENABLE_BACKWARDS_COMPATIBILITY=$INTEROP_C89 -DCMAKE_CXX_COMPILER=$(which $INTEROP_CXX) -DCMAKE_C_COMPILER=$(which $INTEROP_CC)
   - echo -en 'travis_fold:end:script.1\\r'
   - cmake --build .
   - echo 'Installing...' && echo -en 'travis_fold:start:script.2\\r'
