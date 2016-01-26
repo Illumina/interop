@@ -19,7 +19,7 @@ environment:
 
 install:
   - cmd: date /T & time /T
-  - cmd: set PATH=C:\cygwin\bin;%PATH%
+#  - cmd: set PATH=C:\cygwin\bin;%PATH%
   - cmd: set PATH=%PATH%;C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\;
   - choco install swig --version 3.0.5 -y
 #cinst swig
