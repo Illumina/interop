@@ -27,7 +27,7 @@ if(ENABLE_BACKWARDS_COMPATIBILITY)
     message(status "Using C++11: No")
 else()
     message(status "Using C++11: Yes")
-endif()U
+endif()
 
 if(ENABLE_STATIC)
     set(LIBRARY_TYPE STATIC)
