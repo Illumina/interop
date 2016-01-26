@@ -54,7 +54,6 @@ find_program(NUNIT_COMMAND nunit-console.exe
         PATH_SUFFIXES bin tools
         DOC "NUnit test runner command"
         )
-
 if(NOT NUNIT_LIBRARY OR NOT NUNIT_COMMAND)
     include(ExternalProject)
     ExternalProject_Add(
