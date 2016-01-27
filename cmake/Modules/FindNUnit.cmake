@@ -36,13 +36,25 @@ find_file(NUNIT_LIBRARY nunit.framework.dll
         PATH_SUFFIXES bin bin/framework
         )
 
-find_program(NUNIT_COMMAND nunit-console.exe
+find_program(NUNIT64_COMMAND nunit-console.exe
         HINTS ${PC_NUNIT_INCLUDEDIR} ${PC_NUNIT_INCLUDE_DIRS} ${nunit_search_hints}
         PATH_SUFFIXES bin
         NO_DEFAULT_PATH
         )
 
-find_program(NUNIT_COMMAND nunit-console.exe
+find_program(NUNIT64_COMMAND nunit-console.exe
+        HINTS ${PC_NUNIT_INCLUDEDIR} ${PC_NUNIT_INCLUDE_DIRS} ${nunit_search_hints}
+        PATH_SUFFIXES bin
+        DOC "NUnit test runner command"
+        )
+
+find_program(NUNIT32_COMMAND nunit-console-x86.exe
+        HINTS ${PC_NUNIT_INCLUDEDIR} ${PC_NUNIT_INCLUDE_DIRS} ${nunit_search_hints}
+        PATH_SUFFIXES bin
+        NO_DEFAULT_PATH
+        )
+
+find_program(NUNIT32_COMMAND nunit-console-x86.exe
         HINTS ${PC_NUNIT_INCLUDEDIR} ${PC_NUNIT_INCLUDE_DIRS} ${nunit_search_hints}
         PATH_SUFFIXES bin
         DOC "NUnit test runner command"
@@ -60,14 +72,20 @@ if(NOT NUNIT_LIBRARY OR NOT NUNIT_COMMAND)
     )
     ExternalProject_Get_Property(NUnit SOURCE_DIR)
     set(NUNIT_LIBRARY ${SOURCE_DIR}/bin/nunit.framework.dll)
-    if("${CSHARP_PLATFORM}" STREQUAL "x86") # TODO: Add AnyCpu support
-        set(NUNIT_COMMAND ${SOURCE_DIR}/bin/nunit-console-x86.exe)
-    else()
-        set(NUNIT_COMMAND ${SOURCE_DIR}/bin/nunit-console.exe)
-    endif()
+    set(NUNIT32_COMMAND ${SOURCE_DIR}/bin/nunit-console-x86.exe)
+    set(NUNIT64_COMMAND ${SOURCE_DIR}/bin/nunit-console.exe)
     set(NUNIT_TARGET NUnit)
 else()
     set(NUNIT_TARGET "")
+endif()
+
+
+if("${CSHARP_PLATFORM}" STREQUAL "x86")
+    message(WARNING "Using 32-bit nunit - ${CSHARP_PLATFORM}")
+    set(NUNIT_COMMAND ${NUNIT32_COMMAND})
+else()
+    message(WARNING "Using 64-bit nunit - ${CSHARP_PLATFORM}")
+    set(NUNIT_COMMAND ${NUNIT64_COMMAND})
 endif()
 
 set(NUNIT_LIBRARIES ${NUNIT_LIBRARY} )
