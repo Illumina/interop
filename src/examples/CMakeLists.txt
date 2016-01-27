@@ -35,5 +35,6 @@ if(NOT ENABLE_STATIC)
     add_custom_command(TARGET example3 POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE_DIR:${INTEROP_LIB}> ${CMAKE_CURRENT_BINARY_DIR})
 endif()
-
-add_subdirectory("csharp")
+if(ENABLE_SWIG)
+    add_subdirectory("csharp")
+endif()
