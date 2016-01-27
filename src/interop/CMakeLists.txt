@@ -57,7 +57,7 @@ set(HEADERS
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR CMAKE_COMPILER_IS_GNUCC)
     foreach(SRC ${SRCS})
-        set_source_files_properties(${SRC} PROPERTIES COMPILE_FLAGS "-Wpedantic" )
+        set_source_files_properties(${SRC} PROPERTIES COMPILE_FLAGS "${CXX_PEDANTIC_FLAG}" )
     endforeach()
 endif()
 
@@ -75,7 +75,7 @@ add_dependencies(${INTEROP_LIB} version ${RAPIDXML_TARGET})
 add_dependencies(${INTEROP_DL_LIB} version ${RAPIDXML_TARGET})
 
 set_target_properties(${INTEROP_DL_LIB} PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
-if(CMAKE_COMPILER_IS_GNUCC AND NOT MINGW)
+if(COMPILER_IS_GNUCC_OR_CLANG AND NOT MINGW)
     set_target_properties(${INTEROP_DL_LIB} PROPERTIES COMPILE_FLAGS "-fPIC")
 endif()
 

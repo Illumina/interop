@@ -4,7 +4,7 @@ add_executable(interop2csv interop2csv.cpp)
 target_link_libraries(interop2csv ${INTEROP_LIB} ${Boost_LIBRARIES})
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR CMAKE_COMPILER_IS_GNUCC)
-    set_target_properties(interop2csv PROPERTIES COMPILE_FLAGS "-Wpedantic" )
+    set_target_properties(interop2csv PROPERTIES COMPILE_FLAGS "${CXX_PEDANTIC_FLAG}" )
 endif()
 
 if(NOT ENABLE_APPS)
