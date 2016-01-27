@@ -42,7 +42,7 @@ else()
 endif()
 
 # By default use anycpu platform, allow the user to override
-set( CSHARP_PLATFORM "x64" CACHE STRING "C# target platform: x86, x64, anycpu, or itanium" )
+#set( CSHARP_PLATFORM "x64" CACHE STRING "C# target platform: x86, x64, anycpu, or itanium" )
 if( NOT ${CSHARP_PLATFORM} MATCHES "x86|x64|anycpu|itanium" )
   message( FATAL_ERROR "The C# target platform '${CSHARP_PLATFORM}' is not valid. Please enter one of the following: x86, x64, anycpu, or itanium" )
 endif( )
