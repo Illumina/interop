@@ -6,7 +6,7 @@
 
 configuration:
   - Debug
-#  - Release
+  - Release
 
 environment:
   matrix:
@@ -22,14 +22,13 @@ environment:
 
 install:
   - cmd: date /T & time /T
-#  - cmd: set PATH=%PATH%;C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\;
   - cmd: choco install swig --version 3.0.5 -y > NUL
 
-before_build: # move to mingw
-  - set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
+#before_build: # move to mingw
+#  - set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
 
 build_script:
-#  - ls build
+  - cmake --version
   - cmake ../ "-G%GENERATOR%" -H. -Bbuild -DCMAKE_BUILD_TYPE="%configuration%"
   - cmake --build build --config "%configuration%"
 
