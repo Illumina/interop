@@ -17,8 +17,7 @@ matrix:
             - cmake
             - cmake-data
             - g++-4.9
-          packages:
-      env: CXX=g++-4.9 CC=gcc-4.9 INTEROP_C89=OFF COMPILER_VERSION=4.9
+      env: INTEROP_C89=OFF COMPILER_VERSION=-4.9
       os: linux
     - compiler: clang
       os: osx
@@ -41,14 +40,10 @@ install:
   - if test "$TRAVIS_OS_NAME" = "osx"; then source tools/travis-osx-install.sh; fi
   - ls -la $(which $CC)
   - ls -la $(which $CXX)
-  - $CC --version
-  - $CXX --version
-  - ls -la $(which $INTEROP_CXX)
-  - ls -la $(which $INTEROP_CC)
 
 script:
-  - export CC="${CC}-${COMPILER_VERSION}"
-  - export CXX="${CXX}-${COMPILER_VERSION}"
+  - export CC="${CC}${COMPILER_VERSION}"
+  - export CXX="${CXX}${COMPILER_VERSION}"
   - echo 'Configuring...' && echo -en 'travis_fold:start:script.1\\r'
   - rm -fr build && mkdir -p build && cd build && cmake ../ -DNUNIT_ROOT=$PWD/../NUnit-2.6.4 -DENABLE_BACKWARDS_COMPATIBILITY=$INTEROP_C89
   - echo -en 'travis_fold:end:script.1\\r'
