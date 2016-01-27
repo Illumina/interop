@@ -11,14 +11,14 @@ configuration:
 environment:
   matrix:
 #    - generator: "Visual Studio 14 2015 Win64"
+    - generator: "Visual Studio 14 2015"
 #    - generator: "Visual Studio 12 2013 Win64"
+#    - generator: "Visual Studio 12 2013"
 #    - generator: "MinGW Makefiles"
 #      mingw_path: C:\MinGW64\bin
 #
 # We do not support 32-bit builds using Visual Studio
 #
-    - generator: "Visual Studio 14 2015"
-#    - generator: "Visual Studio 12 2013"
 
 install:
   - cmd: date /T & time /T
