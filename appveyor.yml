@@ -29,6 +29,7 @@ before_build: # move to mingw
   - set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
 
 build_script:
+  - ps: rm -fr build
   - cmake ../ "-G%GENERATOR%" -H. -Bbuild -DCMAKE_BUILD_TYPE="%configuration%"
   - cmake --build build --config "%configuration%"
 
