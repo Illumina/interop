@@ -23,11 +23,8 @@ install:
   - choco install swig --version 3.0.5 -y > NUL
   - curl --remote-name http://github.com/nunit/nunitv2/releases/download/2.6.4/NUnit-2.6.4.zip
   - unzip NUnit-2.6.4.zip
-  - dir
 
 before_build:
-  - SET
-  - set PATH=%PATH:C:\Program Files (x86)\Git\bin;=%
   - set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
 #  - set PATH=C:\MinGW64\bin;%PATH%
 
