@@ -21,7 +21,7 @@ install:
   - cmd: date /T & time /T
   - cmd: set PATH=%PATH%;C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\;
   - choco install swig --version 3.0.5 -y > NUL
-  - curl --remote-name http://github.com/nunit/nunitv2/releases/download/2.6.4/NUnit-2.6.4.zip
+  - wget http://github.com/nunit/nunitv2/releases/download/2.6.4/NUnit-2.6.4.zip
   - unzip NUnit-2.6.4.zip
   - dir
 
