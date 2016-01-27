@@ -6,7 +6,7 @@
 
 configuration:
   - Debug
-  - Release
+#  - Release
 
 environment:
   matrix:
@@ -20,10 +20,9 @@ environment:
 install:
   - cmd: date /T & time /T
   - cmd: set PATH=%PATH%;C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\;
-  - choco install swig --version 3.0.5 -y > NUL
-  - C:\cygwin\bin\bash -lc "wget http://github.com/nunit/nunitv2/releases/download/2.6.4/NUnit-2.6.4.zip"
-  - unzip NUnit-2.6.4.zip
-  - dir
+  - cmd: choco install swig --version 3.0.5 -y > NUL
+  - ps: "wget http://github.com/nunit/nunitv2/releases/download/2.6.4/NUnit-2.6.4.zip -OutFile ./NUnit-2.6.4.zip"
+  - 7z e NUnit-2.6.4.zip -oNUnit-2.6.4
 
 before_build:
   - SET
