@@ -3,29 +3,28 @@
 # Build status: https://ci.appveyor.com/project/ezralanglois/interop
 #
 
-
 configuration:
   - Debug
   - Release
 
 environment:
   matrix:
-#    - generator: "Visual Studio 14 2015 Win64"
+    - generator: "Visual Studio 14 2015 Win64"
     - generator: "Visual Studio 14 2015"
-#    - generator: "Visual Studio 12 2013 Win64"
-#    - generator: "Visual Studio 12 2013"
+    - generator: "Visual Studio 12 2013 Win64"
+    - generator: "Visual Studio 12 2013"
+
+# Cannot compile GTest with MinGW
 #    - generator: "MinGW Makefiles"
 #      mingw_path: C:\MinGW64\bin
 #
-# We do not support 32-bit builds using Visual Studio
 #
+#before_build: # move to mingw
+#  - set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
 
 install:
   - cmd: date /T & time /T
   - cmd: choco install swig --version 3.0.5 -y > NUL
-
-#before_build: # move to mingw
-#  - set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
 
 build_script:
   - cmake --version
