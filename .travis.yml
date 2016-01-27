@@ -12,8 +12,12 @@ matrix:
         apt:
           sources:
             - ubuntu-toolchain-r-test
+            - george-edison55-precise-backports
           packages:
             - g++-4.9
+            - cmake
+            - cmake-data
+          packages:
       env: CXX=g++-4.9 CC=gcc-4.9 INTEROP_C89=OFF
       os: linux
     - compiler: clang
