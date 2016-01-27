@@ -25,14 +25,14 @@ namespace io {
 /** Place holder that does not perform a copy
  */
 template<typename Source, typename Destination>
-void copy_from(const Source&, const Destination&){}
+void copy_from(std::ostream&, const Source&, const Destination&){}
 /** Copy from the destination to the source
  *
  * @param dst destination
  * @param src source
  */
 template<typename Source, typename Destination>
-void copy_from(Destination& dst, const Source& src)
+void copy_from(std::istream&, Destination& dst, const Source& src)
 {
     dst = src;
 }
