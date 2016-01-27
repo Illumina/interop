@@ -29,17 +29,10 @@ unset( CSHARP_TYPE CACHE )
 unset( CSHARP_VERSION CACHE )
 unset( CSHARP_FOUND CACHE )
 
-message(WARNING "CMAKE_SIZEOF_VOID_P: ${CMAKE_SIZEOF_VOID_P}")
-if(MSVC)
-  string(FIND ${CMAKE_GENERATOR} "Win64" IS_WIN64)
-  if("${IS_WIN64}" EQUAL "-1")
-    set( CSHARP_PLATFORM "x86" CACHE STRING "C# target platform: x86, x64, anycpu, or itanium" )
-  else()
-    set( CSHARP_PLATFORM "x64" CACHE STRING "C# target platform: x86, x64, anycpu, or itanium" )
-  endif()
+if(CMAKE_SIZEOF_VOID_P EQUAL "4")
+  set( CSHARP_PLATFORM "x86" CACHE STRING "C# target platform: x86, x64, anycpu, or itanium" )
 else()
-  # Mono has trouble with x64 builds, use anycpu instead
-  set( CSHARP_PLATFORM "anycpu" CACHE STRING "C# target platform: x86, x64, anycpu, or itanium" )
+  set( CSHARP_PLATFORM "x64" CACHE STRING "C# target platform: x86, x64, anycpu, or itanium" )
 endif()
 
 # By default use anycpu platform, allow the user to override

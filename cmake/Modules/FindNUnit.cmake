@@ -81,10 +81,8 @@ endif()
 
 
 if("${CSHARP_PLATFORM}" STREQUAL "x86")
-    message(WARNING "Using 32-bit nunit - ${CSHARP_PLATFORM}")
     set(NUNIT_COMMAND ${NUNIT32_COMMAND})
 else()
-    message(WARNING "Using 64-bit nunit - ${CSHARP_PLATFORM}")
     set(NUNIT_COMMAND ${NUNIT64_COMMAND})
 endif()
 
