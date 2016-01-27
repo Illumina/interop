@@ -6,30 +6,31 @@
 
 configuration:
   - Debug
-  - Release
+#  - Release
 
 environment:
   matrix:
-    - generator: "Visual Studio 14 2015 Win64"
-    - generator: "Visual Studio 14 2015"
+#    - generator: "Visual Studio 14 2015 Win64"
 #    - generator: "Visual Studio 12 2013 Win64"
-#    - generator: "Visual Studio 12 2013"
 #    - generator: "MinGW Makefiles"
 #      mingw_path: C:\MinGW64\bin
+#
+# We do not support 32-bit builds using Visual Studio
+#
+    - generator: "Visual Studio 14 2015"
+#    - generator: "Visual Studio 12 2013"
 
 install:
   - cmd: date /T & time /T
-  - cmd: set PATH=%PATH%;C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\;
-  - choco install swig --version 3.0.5 -y > NUL
-  - curl --remote-name http://github.com/nunit/nunitv2/releases/download/2.6.4/NUnit-2.6.4.zip
-  - unzip NUnit-2.6.4.zip
+#  - cmd: set PATH=%PATH%;C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\;
+  - cmd: choco install swig --version 3.0.5 -y > NUL
 
-before_build:
+before_build: # move to mingw
   - set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
-#  - set PATH=C:\MinGW64\bin;%PATH%
 
 build_script:
-  - cmake ../ "-G%GENERATOR%" -H. -Bbuild -DCMAKE_BUILD_TYPE="%configuration%" -DNUNIT_ROOT=$PWD/NUnit-2.6.4
+#  - ls build
+  - cmake ../ "-G%GENERATOR%" -H. -Bbuild -DCMAKE_BUILD_TYPE="%configuration%"
   - cmake --build build --config "%configuration%"
 
 test_script:
