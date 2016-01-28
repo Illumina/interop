@@ -74,7 +74,7 @@ namespace stdbp
          */
         bool operator!=(const T* ptr)const
         {
-            return m_ptr != m_ptr;
+            return m_ptr != ptr;
         }
         /** Test if the unique pointer is empty
          *
@@ -96,3 +96,4 @@ namespace stdbp
     template<typename T> using unique_ptr = std::unique_ptr<T>;
 }
 #endif
+
