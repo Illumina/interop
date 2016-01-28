@@ -31,8 +31,10 @@ unset( CSHARP_FOUND CACHE )
 
 if(CMAKE_SIZEOF_VOID_P EQUAL "4")
   set( CSHARP_PLATFORM "x86" CACHE STRING "C# target platform: x86, x64, anycpu, or itanium" )
-else()
+elseif( CMAKE_SIZEOF_VOID_P EQUAL "8" )
   set( CSHARP_PLATFORM "x64" CACHE STRING "C# target platform: x86, x64, anycpu, or itanium" )
+else()
+  message(FATAL_ERROR "Only 32-bit and 64-bit are supported")
 endif()
 
 # By default use anycpu platform, allow the user to override
