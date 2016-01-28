@@ -38,3 +38,4 @@ test_script:
 branches:
   only:
   - master
+  - ipa-3627-appveyor
