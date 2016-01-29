@@ -21,19 +21,19 @@ environment:
 #
 before_build: # move to mingw
   - set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
-  - set PATH=%PATH%:%mingw_path%
+  - set PATH=%mingw_path%:%PATH%
 
 install:
   - cmd: date /T & time /T
   - cmd: choco install swig --version 3.0.5 -y > NUL
-  - set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
   - appveyor DownloadFile http://googletest.googlecode.com/files/gtest-1.7.0.zip -FileName gtest-1.7.0.zip
   - 7z x gtest-1.7.0.zip > NUL
   - cd gtest-1.7.0
   - md build_x86
   - cd build_x86
   - set GTEST_PREFIX=%cd%
-  - set PATH=%PATH%:%mingw_path%
+  - set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
+  - set PATH=%mingw_path%:%PATH%
   - cmake ../ -G "MinGW Makefiles" -DGTEST_USE_OWN_TR1_TUPLE=0 -DCMAKE_BUILD_TYPE=Release -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY=%GTEST_PREFIX%/lib64 -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG=%GTEST_PREFIX%/lib64 -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE=%GTEST_PREFIX%/lib64 -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=%GTEST_PREFIX%/lib64 -DCMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG=%GTEST_PREFIX%/lib64 -DCMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE=%GTEST_PREFIX%/lib64
   - cmake --build . --config Release
   - cd ..
