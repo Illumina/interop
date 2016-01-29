@@ -21,30 +21,31 @@ environment:
 
 # Cannot compile GTest with MinGW
     - generator: "MinGW Makefiles"
-      mingw_path: C:\MinGW\bin
+      tool_path: C:\MinGW\bin
+      tool_type: mingw
+      tool_arch: x64
 #
 #
 before_build: # move to mingw
   - set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
-  - set PATH=%mingw_path%:%PATH%
+  - set PATH=%tool_path%:%PATH%
 
 install:
   - cmd: date /T & time /T
   - cmd: choco install swig --version 3.0.5 -y > NUL
   - appveyor DownloadFile http://googletest.googlecode.com/files/gtest-1.7.0.zip -FileName gtest-1.7.0.zip
-  - 7z x gtest-1.7.0.zip > NUL
-  - cd gtest-1.7.0
-  - md build_x86
-  - cd build_x86
-  - set GTEST_PREFIX=%cd%
-  - set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
-  - set PATH=C:\MinGW\bin:%PATH%
-  - ps: which as.exe
-  - ps: which g++.exe
-  - cmake ../ -G "MinGW Makefiles" -DGTEST_USE_OWN_TR1_TUPLE=0 -DCMAKE_BUILD_TYPE=Release -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY=%GTEST_PREFIX%/lib64 -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG=%GTEST_PREFIX%/lib64 -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE=%GTEST_PREFIX%/lib64 -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=%GTEST_PREFIX%/lib64 -DCMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG=%GTEST_PREFIX%/lib64 -DCMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE=%GTEST_PREFIX%/lib64
-  - cmake --build . --config Release
-  - cd ..
-  - cd ..
+  - cmd: 7z x gtest-1.7.0.zip > NUL
+  - cmd: cd gtest-1.7.0
+  - cmd: md build_x86
+  - cmd: cd build_x86
+  - cmd: ps: echo "$env:tool_path"
+  - cmd: set GTEST_PREFIX=%cd%
+  - cmd: set PATH=%PATH;C:\Program Files\Git\usr\bin;=%
+  - cmd: set PATH=C:\MinGW\bin;%PATH%
+  - cmd: cmake ../ -G "MinGW Makefiles" -DGTEST_USE_OWN_TR1_TUPLE=0 -DCMAKE_BUILD_TYPE=Release -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY=%GTEST_PREFIX%/lib64 -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG=%GTEST_PREFIX%/lib64 -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE=%GTEST_PREFIX%/lib64 -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=%GTEST_PREFIX%/lib64 -DCMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG=%GTEST_PREFIX%/lib64 -DCMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE=%GTEST_PREFIX%/lib64
+  - cmd: cmake --build . --config Release
+  - cmd: cd ..
+  - cmd: cd ..
 
 build_script:
   - cmake --version
