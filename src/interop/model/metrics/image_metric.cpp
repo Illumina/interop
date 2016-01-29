@@ -185,8 +185,7 @@ namespace illumina{ namespace interop{ namespace io {
                 static std::streamsize map_stream(Stream& stream, Metric& metric, Header& header, const bool)
                 {
                     std::streamsize count = 0;
-                    copy_from(metric.m_channelCount, header.m_channelCount);
-                    // TODO: this does not need header layout, audit rest to see if that is true
+                    copy_from(stream, metric.m_channelCount, header.m_channelCount);
                     count += stream_map< ::uint16_t >(stream, metric.m_minContrast, header.m_channelCount);
                     count += stream_map< ::uint16_t >(stream, metric.m_maxContrast, header.m_channelCount);
                     return count;

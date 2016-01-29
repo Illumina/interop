@@ -22,6 +22,7 @@ if(NOT NUNIT_FOUND)
     message(WARNING "You may set the location of NUNIT with NUNIT_ROOT or the NUNIT_DIR environment variable")
     return()
 endif()
+set(CSHARP_TEST_ENABLED ON PARENT_SCOPE)
 
 include(${CSHARP_USE_FILE})
 
@@ -48,6 +49,7 @@ add_custom_command(TARGET csharp_unittest POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy ${NUNIT_LIBRARIES} $<TARGET_FILE_DIR:${INTEROP_LIB}>)
 
 set(CSHARP_UNIT_TEST_EXE "${CSHARP_csharp_unittest_BINARY_NAME}" PARENT_SCOPE)
+set(NUNIT_COMMAND_EXE "${NUNIT_COMMAND}" PARENT_SCOPE)
 
 if(NOT ENABLE_STATIC)
     add_custom_command(TARGET csharp_unittest POST_BUILD

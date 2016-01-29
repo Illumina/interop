@@ -35,7 +35,7 @@ The following optional features have the corresponding requirements:
     - [SWIG] 3.x or later
     - C# compiler: Visual Studio or [Mono]
 - Running C# Unit Tests:
-    - [NUnit] - This is automatically downloaded if not found or specified
+    - [NUnit] - NUNIT_ROOT may have to be specified
 - Building the documentation
     - [Doxygen]
 - Clone the Source Code from the Version Control Repository
