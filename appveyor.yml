@@ -26,6 +26,7 @@ before_build: # move to mingw
 install:
   - cmd: date /T & time /T
   - cmd: choco install swig --version 3.0.5 -y > NUL
+  - set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
   - appveyor DownloadFile http://googletest.googlecode.com/files/gtest-1.7.0.zip -FileName gtest-1.7.0.zip
   - 7z x gtest-1.7.0.zip > NUL
   - cd gtest-1.7.0
