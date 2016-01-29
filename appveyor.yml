@@ -32,10 +32,13 @@ install:
   - md build_x86
   - cd build_x86
   - set GTEST_PREFIX=%cd%
+  - SET
   - set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
   - set PATH=C:\MinGW\bin:%PATH%
-  - where as.exe
-  - where g++.exe
+  - dir C:\MinGW\bin\*.*
+  - dir C:\
+  - where.exe as.exe
+  - where.exe g++.exe
   - cmake ../ -G "MinGW Makefiles" -DGTEST_USE_OWN_TR1_TUPLE=0 -DCMAKE_BUILD_TYPE=Release -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY=%GTEST_PREFIX%/lib64 -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG=%GTEST_PREFIX%/lib64 -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE=%GTEST_PREFIX%/lib64 -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=%GTEST_PREFIX%/lib64 -DCMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG=%GTEST_PREFIX%/lib64 -DCMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE=%GTEST_PREFIX%/lib64
   - cmake --build . --config Release
   - cd ..
