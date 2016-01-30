@@ -64,6 +64,13 @@ find_program(NUNIT32_COMMAND nunit-console-x86.exe
         PATH_SUFFIXES bin
         DOC "NUnit test runner command"
         )
+
+if("${CSHARP_PLATFORM}" STREQUAL "x86")
+    set(NUNIT_COMMAND ${NUNIT32_COMMAND})
+else()
+    set(NUNIT_COMMAND ${NUNIT64_COMMAND})
+endif()
+
 if(NOT NUNIT_LIBRARY OR NOT NUNIT_COMMAND)
     include(ExternalProject)
     ExternalProject_Add(
@@ -82,7 +89,6 @@ if(NOT NUNIT_LIBRARY OR NOT NUNIT_COMMAND)
 else()
     set(NUNIT_TARGET "")
 endif()
-
 
 if("${CSHARP_PLATFORM}" STREQUAL "x86")
     set(NUNIT_COMMAND ${NUNIT32_COMMAND})
