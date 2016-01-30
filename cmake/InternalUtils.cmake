@@ -57,9 +57,15 @@ macro(config_compiler_and_linker)
         add_definitions(-DHAVE_LONG64)
     endif()
 
-    check_cxx_compiler_flag("-std=c++11" COMPILER_SUPPORTS_CXX11)
+    if(MINGW)
+        set(CXX11_FLAG_ "-std=gnu++11")
+    else()
+        set(CXX11_FLAG_ "-std=c++11")
+    endif()
+
+    check_cxx_compiler_flag("${CXX11_FLAG_}" COMPILER_SUPPORTS_CXX11)
     if(COMPILER_SUPPORTS_CXX11)
-        set(CXX_CX11_FLAG "-std=c++11")
+        set(CXX_CX11_FLAG "${CXX11_FLAG_}")
     endif()
 
     check_cxx_compiler_flag("-Wpedantic" COMPILER_SUPPORTS_PEDANTIC)

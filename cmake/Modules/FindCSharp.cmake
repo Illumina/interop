@@ -29,24 +29,6 @@ unset( CSHARP_TYPE CACHE )
 unset( CSHARP_VERSION CACHE )
 unset( CSHARP_FOUND CACHE )
 
-if(MSVC)
-  string(FIND ${CMAKE_GENERATOR} "Win64" IS_WIN64)
-  if("${IS_WIN64}" EQUAL "-1")
-    set( CSHARP_PLATFORM "x86" CACHE STRING "C# target platform: x86, x64, anycpu, or itanium" )
-  else()
-    set( CSHARP_PLATFORM "x64" CACHE STRING "C# target platform: x86, x64, anycpu, or itanium" )
-  endif()
-else()
-  # Mono has trouble with x64 builds, use anycpu instead
-  set( CSHARP_PLATFORM "anycpu" CACHE STRING "C# target platform: x86, x64, anycpu, or itanium" )
-endif()
-
-# By default use anycpu platform, allow the user to override
-set( CSHARP_PLATFORM "x64" CACHE STRING "C# target platform: x86, x64, anycpu, or itanium" )
-if( NOT ${CSHARP_PLATFORM} MATCHES "x86|x64|anycpu|itanium" )
-  message( FATAL_ERROR "The C# target platform '${CSHARP_PLATFORM}' is not valid. Please enter one of the following: x86, x64, anycpu, or itanium" )
-endif( )
-
 if( WIN32 )
   find_package( DotNetFrameworkSdk )
   if( NOT CSHARP_DOTNET_FOUND )
@@ -67,6 +49,26 @@ elseif( CSHARP_MONO_FOUND )
   set( CSHARP_COMPILER ${CSHARP_MONO_COMPILER_${CSHARP_MONO_VERSION}} CACHE STRING "Full path to Mono compiler" FORCE )
   set( CSHARP_INTERPRETER ${CSHARP_MONO_INTERPRETER_${CSHARP_MONO_VERSION}} CACHE STRING "Full path to Mono interpretor" FORCE )
   set( CSHARP_SDK "/sdk:4" CACHE STRING "C# Mono SDK commandline switch (e.g. /sdk:2, /sdk:4, /sdk:5)" )
+endif( )
+
+
+if( CSHARP_DOTNET_FOUND )
+  if(CMAKE_SIZEOF_VOID_P EQUAL "4")
+    set( CSHARP_PLATFORM "x86" CACHE STRING "C# target platform: x86, x64, anycpu, or itanium" )
+  elseif( CMAKE_SIZEOF_VOID_P EQUAL "8" )
+    set( CSHARP_PLATFORM "x64" CACHE STRING "C# target platform: x86, x64, anycpu, or itanium" )
+  else()
+    message(FATAL_ERROR "Only 32-bit and 64-bit are supported")
+  endif()
+elseif( CSHARP_MONO_FOUND )
+  set( CSHARP_PLATFORM "anycpu" CACHE STRING "C# target platform: x86, x64, anycpu, or itanium" )
+endif()
+
+
+# By default use anycpu platform, allow the user to override
+#set( CSHARP_PLATFORM "x64" CACHE STRING "C# target platform: x86, x64, anycpu, or itanium" )
+if( NOT ${CSHARP_PLATFORM} MATCHES "x86|x64|anycpu|itanium" )
+  message( FATAL_ERROR "The C# target platform '${CSHARP_PLATFORM}' is not valid. Please enter one of the following: x86, x64, anycpu, or itanium" )
 endif( )
 
 # Handle WIN32 specific issues

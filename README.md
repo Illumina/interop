@@ -1,7 +1,8 @@
 Quick Start
 ===========
 
-[![Build Status](https://travis-ci.org/Illumina/interop.svg?branch=master)](https://travis-ci.org/Illumina/interop)
+[![Build Status] [tcistatus]] [tcihome]
+[![Build status] [acistatus]] [acihome]
 
 The Illumina InterOp libraries are a set of common routines used for reading InterOp metric files produced by
 Illumina sequencers. These libraries are backwards compatible and capable of supporting prior releases of the software,
@@ -19,9 +20,14 @@ The InterOp files supported by this library include:
 This library is written in C++98 and provides bindings for C# using the SWIG interface. This
 support includes examples and unit tests for both languages.
 
+[tcistatus]:https://travis-ci.org/Illumina/interop.svg?branch=master
+[tcihome]:https://travis-ci.org/Illumina/interop
+
+[acistatus]:https://ci.appveyor.com/api/projects/status/5hwirymkc10uf13d/branch/master?svg=true
+[acihome]:https://ci.appveyor.com/project/ezralanglois/interop/branch/master
+
 Documentation
 -------------
-
 
 | Content                       | Description                                                                          |
 | ----------------------------- | -------------------------------------------------------------------------------------|
@@ -75,5 +81,8 @@ There are several known limitations to the current library:
   2. The full logic of SAV including certain metrics and plots are not yet implemented.
   3. Microsoft Dot Net less than v4.0.30319 is currently not supported
   4. MinGW cannot compile the code when ENABLE_BACKWARDS_COMPATIBILITY=ON
+  5. Currently, the minimum DotNet version is v4.0.30319
+  6. We do not support Mono on Windows
+  7. If both Visual Studio and Mono are installed, the build script will only use Visual Studio for C#
 
 

@@ -63,3 +63,6 @@ There are several known limitations to the current library:
   2. The full logic of SAV including certain metrics and plots are not yet implemented.
   3. Microsoft Dot Net less than v4.0.30319 is currently not supported
   4. MinGW cannot compile the code when ENABLE_BACKWARDS_COMPATIBILITY=ON
+  5. Currently, the minimum DotNet version is v4.0.30319
+  6. We do not support Mono on Windows
+  7. If both Visual Studio and Mono are installed, the build script will only use Visual Studio for C#

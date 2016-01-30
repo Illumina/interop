@@ -1,0 +1,80 @@
+# Configuration for AppVeyor Continuous Integration Service
+#
+# Build status: https://ci.appveyor.com/project/ezralanglois/interop
+#
+# Tested configurations:
+#
+#   Visual Studio 14 2015
+#     - Release/Debug
+#     - 32-bit/64-bit
+#   Visual Studio 12 2013
+#     - Release/Debug
+#     - 32-bit/64-bit
+#   MinGW
+#     - Release/Debug
+#     - 32-bit/64-bit
+#
+# C# Compiler is always .NET v4.0.30319
+
+configuration:
+  - Debug
+  - Release
+
+cache:
+  - x86_64-4.9.2-release-win32-seh-rt_v4-rev4.7z
+  - C:\ProgramData\chocolatey\bin -> appveyor.yml
+  - C:\ProgramData\chocolatey\lib -> appveyor.yml
+  - C:\mingw64
+
+environment:
+  MINGW_URL: http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/4.9.2/threads-win32/seh/x86_64-4.9.2-release-win32-seh-rt_v4-rev4.7z/download
+  MINGW_ARCHIVE: x86_64-4.9.2-release-win32-seh-rt_v4-rev4.7z
+  matrix:
+    - generator: "Visual Studio 14 2015 Win64"
+    - generator: "Visual Studio 14 2015"
+    - generator: "Visual Studio 12 2013 Win64"
+    - generator: "Visual Studio 12 2013"
+    - generator: "MinGW Makefiles"
+      COMPILER_PATH: C:\MinGW\bin
+    - generator: "MinGW Makefiles"
+      COMPILER_PATH: C:\mingw64\bin
+
+before_build:
+  - cmd: set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
+  - cmd: set PATH=%COMPILER_PATH%;%PATH%
+
+install:
+  - cmd: date /T & time /T
+  - ps: |
+      if (Test-Path "C:/ProgramData/chocolatey/bin/swig.exe") {
+          echo "using swig from cache"
+      } else {
+          choco install swig --version 3.0.5 -y > $null
+      }
+  - if not exist "%MINGW_ARCHIVE%" appveyor DownloadFile "%MINGW_URL%" -FileName "%MINGW_ARCHIVE%"
+  - if not exist "C:\mingw64" 7z x -oC:\ -y "%MINGW_ARCHIVE%" > nul
+
+build_script:
+  - cmake --version
+  - cmake ../ -G "%GENERATOR%" -H. -Bbuild -DCMAKE_BUILD_TYPE="%configuration%"
+  - cmake --build build --config "%configuration%"
+
+test_script:
+  - cmake --build build --config "%configuration%" --target check
+
+branches:
+  only:
+  - master
+
+
+########################################################################################################################
+#
+# These settings allow one to Remote Desktop into the VM and check what went wrong:
+#
+########################################################################################################################
+
+#init:
+#  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+
+#on_finish:
+#  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
