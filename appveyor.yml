@@ -17,7 +17,7 @@
 # C# Compiler is always .NET v4.0.30319
 
 configuration:
-#  - Debug
+  - Debug
   - Release
 
 cache:
