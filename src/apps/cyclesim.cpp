@@ -9,11 +9,11 @@
  *
  * The program runs as follows:
  *
- *      $ cyclesim 140131_1287_0851_A01n401drr 26
+ *      $ cyclesim 140131_1287_0851_A01n401drr ./ 26 1
  *
- * In this sample, 140131_1287_0851_A01n401drr is a run folder than contains a sub directory called InterOp and 26
- * is the maximum number of cycles for the records. The program will output a directory called
- * 140131_1287_0851_A01n401drr_MaxCycle_26
+ * In this sample, 140131_1287_0851_A01n401drr is a run folder than contains a sub directory called InterOp, `./` write
+ * to the current directory, 26 is the maximum number of cycles for the records and 1 is the maximum number of reads.
+ * The program will output a directory called ./140131_1287_0851_A01n401drr_MaxCycle_26.
  *
  * The InterOp sub folder may contain any of the following files:
  *
@@ -36,10 +36,12 @@
  *
  *  A missing InterOp file will be silently ignored. Incomplete InterOp files are also ignored.
  */
+#include <cstdlib>
 #include <iostream>
 #include <iomanip>
-#include "interop/io/metric_file_stream.h"
 #include "interop/util/lexical_cast.h"
+#include "interop/util/filesystem.h"
+#include "interop/io/metric_file_stream.h"
 #include "interop/model/metric_sets/tile_metric_set.h"
 #include "interop/model/metric_sets/error_metric_set.h"
 #include "interop/model/metric_sets/corrected_intensity_metric_set.h"
@@ -89,7 +91,7 @@ void print_help(std::ostream& out);
  * @param max_cycle number of cycles to copy
  * @return error code or 0
  */
-int write_interops(const std::string& input, const std::string& output, unsigned int max_cycle);
+int write_interops(const std::string& input, const std::string& output, unsigned int max_cycle, unsigned int max_read);
 
 /** Set false if you want to disable error messages printing to the error stream */
 bool kPrintError=true;
@@ -99,13 +101,13 @@ int kMaxRecordCount=0;
 
 int main(int argc, char** argv)
 {
-    if(argc == 0)
+    if(argc <= 1)
     {
         if(kPrintError) std::cerr << "No arguments specified!" << std::endl;
         if(kPrintError) print_help(std::cout);
         return 1;
     }
-    if(argc == 1)
+    if(argc < 5)
     {
         if(kPrintError) std::cerr << "Too few arguments specified!" << std::endl;
         if(kPrintError) print_help(std::cout);
@@ -113,10 +115,30 @@ int main(int argc, char** argv)
     }
 
     std::cout << "Cycle Simulator " << INTEROP_VERSION << std::endl;
+    std::cout << "Max number of cycles: " << argv[3] << std::endl;
     std::string run_folder = argv[1];
-    std::string output_folder = run_folder + MaxCycle + argv[2];
-    unsigned int max_cycle = util::lexical_cast<unsigned int>(argv[2]);
-    int res = write_interops(run_folder, output_folder, max_cycle);
+    std::string output_folder = io::combine(argv[2], io::basename(run_folder) + "_MaxCycle_" + argv[3]);
+    unsigned int max_cycle = util::lexical_cast<unsigned int>(argv[3]);
+    unsigned int max_read = util::lexical_cast<unsigned int>(argv[4]);
+
+    // Somewhat system independent way to create a directory
+    std::string cmd = "mkdir "+output_folder;
+    std::system(cmd.c_str());
+    cmd = "mkdir "+io::combine(output_folder, "InterOp");
+    std::system(cmd.c_str());
+
+    {
+        std::ifstream src(io::combine(run_folder, "RunInfo.xml").c_str(), std::ios::binary);
+        std::ofstream dst(io::combine(output_folder, "RunInfo.xml").c_str(), std::ios::binary);
+        dst << src.rdbuf();
+    }
+    {
+        std::ifstream src(io::combine(run_folder, "RunParameters.xml").c_str(), std::ios::binary);
+        std::ofstream dst(io::combine(output_folder, "RunParameters.xml").c_str(), std::ios::binary);
+        dst << src.rdbuf();
+    }
+
+    int res = write_interops(run_folder, output_folder, max_cycle, max_read);
     if(res != SUCCESS)
     {
         std::cout << "# Error: " << res << std::endl;
@@ -137,7 +159,6 @@ int main(int argc, char** argv)
 template<class MetricSet>
 int read_metrics_from_file(const std::string& filename, MetricSet& metrics)
 {
-    // @ [Reading a binary InterOp file]
     try {
         io::read_interop(filename, metrics);
     }
@@ -158,28 +179,79 @@ int read_metrics_from_file(const std::string& filename, MetricSet& metrics)
         if(kPrintError) std::cerr << "Empty metric file: " << metrics.name() << std::endl;
         return EMPTY_INTEROP;
     }
-    // @ [Reading a binary InterOp file]
     return 0;
 }
 
-int copy_tile_metrics(const std::string& input, const std::string& output, unsigned int max_cycle)
+/** Copy only records less than or equal to max_read
+ *
+ * @param input path to run folder
+ * @param output path to output run folder
+ * @param max_read maximum number of reads
+ * @return 0 if success, or an error code
+ */
+int copy_tile_metrics(const std::string& input, const std::string& output, unsigned int max_read)
 {
+    typedef tile_metrics::metric_array_t metric_array_t;
+    typedef metric_array_t::const_iterator const_iterator;
+    typedef tile_metric::read_metric_vector read_metric_vector;
+    typedef read_metric_vector::const_iterator const_read_iterator;
     tile_metrics metrics;
     int res;
     if((res=read_metrics_from_file(input, metrics)) != 0) return res;
 
     std::cout << metrics.name() << ": " << metrics.version() << std::endl;
+
+    io::write_interop(output, metrics);
+
+    metric_array_t subset;
+
+    for(const_iterator beg = metrics.metrics().begin(), end=metrics.metrics().end();beg != end;++beg)
+    {
+        read_metric_vector reads;
+        for(const_read_iterator rbeg = beg->read_metrics().begin(), rend=beg->read_metrics().end();rbeg != rend;++rbeg)
+        {
+            if(rbeg->read() > max_read) continue;
+            reads.push_back(*rbeg);
+        }
+
+        subset.push_back(tile_metric(*beg, reads));
+    }
+
+    tile_metrics metricsOut(subset, metrics.version(), metrics);
+    io::write_interop(output, metricsOut);
+
     return 0;
 }
 
+/** Copy only records less than or equal to max_cycle
+ *
+ * @param input path to run folder
+ * @param output path to output run folder
+ * @param max_cycle maximum number of cycles
+ * @return 0 if success, or an error code
+ */
 template<class MetricSet>
 int copy_cycle_metrics(const std::string& input, const std::string& output, unsigned int max_cycle)
 {
+    typedef typename MetricSet::metric_array_t metric_array_t;
+    typedef typename metric_array_t::const_iterator const_iterator;
     MetricSet metrics;
     int res;
     if((res=read_metrics_from_file(input, metrics)) != 0) return res;
 
     std::cout << metrics.name() << ": " << metrics.version() << std::endl;
+
+    metric_array_t subset;
+
+    for(const_iterator beg = metrics.metrics().begin(), end=metrics.metrics().end();beg != end;++beg)
+    {
+        if(beg->cycle() > max_cycle) continue;
+        subset.push_back(*beg);
+    }
+
+    MetricSet metricsOut(subset, metrics.version(), metrics);
+    io::write_interop(output, metricsOut);
+
     return 0;
 }
 
@@ -193,22 +265,29 @@ int encode_error(int res, int type)
 {
     return res*100 + type;
 }
-
-int write_interops(const std::string& filename, const std::string& output, unsigned int max_cycle)
+/** Encode error type and metric type into a single code
+ *
+ * @param input path to run folder
+ * @param output path to output run folder
+ * @param max_cycle maximum number of cycles
+ * @param max_read maximum number of reads
+ * @return 0 if success, or an error code
+ */
+int write_interops(const std::string& filename, const std::string& output, unsigned int max_cycle, unsigned int max_read)
 {
     int res;
     int valid_count = 0;
-    if((res=copy_tile_metrics(out, filename, max_cycle)) > 1) return encode_error(res, 1);
+    if((res=copy_tile_metrics(filename, output, max_read)) > 1) return encode_error(res, 1);
     if(res == 0) valid_count++;
-    if((res=copy_cycle_metrics<error_metrics>(out, filename, max_cycle)) > 1) return encode_error(res, 2);
+    if((res=copy_cycle_metrics<error_metrics>(filename, output, max_cycle)) > 1) return encode_error(res, 2);
     if(res == 0) valid_count++;
-    if((res=copy_cycle_metrics<corrected_intensity_metrics>(out, filename, max_cycle)) > 1) return encode_error(res, 2);
+    if((res=copy_cycle_metrics<corrected_intensity_metrics>(filename, output, max_cycle)) > 1) return encode_error(res, 2);
     if(res == 0) valid_count++;
-    if((res=copy_cycle_metrics<extraction_metrics>(out, filename, max_cycle)) > 1) return encode_error(res, 2);
+    if((res=copy_cycle_metrics<extraction_metrics>(filename, output, max_cycle)) > 1) return encode_error(res, 2);
     if(res == 0) valid_count++;
-    if((res=copy_cycle_metrics<q_metrics>(out, filename, max_cycle)) > 1) return encode_error(res, 2);
+    if((res=copy_cycle_metrics<q_metrics>(filename, output, max_cycle)) > 1) return encode_error(res, 2);
     if(res == 0) valid_count++;
-    if((res=copy_cycle_metrics<image_metrics>(out, filename, max_cycle)) > 1) return encode_error(res, 2);
+    if((res=copy_cycle_metrics<image_metrics>(filename, output, max_cycle)) > 1) return encode_error(res, 2);
     if(res == 0) valid_count++;
     if(valid_count == 0)
     {
@@ -225,5 +304,7 @@ int write_interops(const std::string& filename, const std::string& output, unsig
 void print_help(std::ostream& out)
 {
     out << "Version: " << INTEROP_VERSION << std::endl;
-    out << "Usage: cyclesim run-folder cycle-count" << std::endl;
+    out << "Usage: cyclesim run-folder output-folder max-cycle-count max-read-count" << std::endl;
 }
+
+

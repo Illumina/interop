@@ -18,6 +18,7 @@
 #endif
 
 #include <string>
+#include <algorithm>
 
 #pragma once
 namespace illumina {
@@ -37,6 +38,43 @@ namespace illumina {
                     return path + INTEROP_OS_SEP + name;
                 }
                 return path + name;
+            }
+            inline std::string dirname(std::string source)
+            {
+                if (source.size() <= 1) //Make sure it's possible to check the last character.
+                {
+                    return source;
+                }
+                if (*(source.rbegin() + 1) == '/') //Remove trailing slash if it exists.
+                {
+                    source = source.substr(0, source.size()-1);
+                    // source.pop_back(); // C++11
+                }
+                source.erase(std::find(source.rbegin(), source.rend(), '/').base(), source.end());
+                return source;
+            }
+            namespace detail {
+#ifdef WIN32
+            struct match_path_sep
+            {
+                bool operator()(char ch)const
+                {
+                    return ch == '/';
+                }
+            };
+#else
+            struct match_path_sep
+            {
+                bool operator()(char ch)const
+                {
+                    return ch == '/' || ch == '\\';
+                }
+            };
+#endif
+            }
+            inline std::string basename(std::string const& source)
+            {
+                return std::string(std::find_if(source.rbegin(), source.rend(), detail::match_path_sep()).base(), source.end());
             }
         }
     }
