@@ -58,17 +58,17 @@ using namespace illumina::interop;
 enum exit_codes
 {
     /** The program exited cleanly, 0 */
-            SUCCESS,
+    SUCCESS,
     /** Invalid arguments were given to the application*/
-            INVALID_ARGUMENTS,
+    INVALID_ARGUMENTS,
     /** Empty InterOp directory*/
-            NO_INTEROPS_FOUND,
+    NO_INTEROPS_FOUND,
     /** InterOp file has a bad format */
-            BAD_FORMAT,
+    BAD_FORMAT,
     /** Unknown error has occurred*/
-            UNEXPECTED_EXCEPTION,
+    UNEXPECTED_EXCEPTION,
     /** InterOp file has not records */
-            EMPTY_INTEROP
+    EMPTY_INTEROP
 };
 /** Write a help message to the output stream
  *
