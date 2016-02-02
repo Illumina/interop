@@ -91,7 +91,7 @@ void print_help(std::ostream& out);
  * @param max_cycle number of cycles to copy
  * @return error code or 0
  */
-int write_interops(const std::string& input, const std::string& output, unsigned int max_cycle, unsigned int max_read);
+int write_interops(const std::string& input, const std::string& output, unsigned int max_cycle, unsigned int max_read, unsigned int cycle_to_align);
 
 /** Set false if you want to disable error messages printing to the error stream */
 bool kPrintError=true;
@@ -113,6 +113,8 @@ int main(int argc, char** argv)
         if(kPrintError) print_help(std::cout);
         return 1;
     }
+
+    const unsigned int cycle_to_align = 25;
 
     std::cout << "Cycle Simulator " << INTEROP_VERSION << std::endl;
     std::cout << "Max number of cycles: " << argv[3] << std::endl;
@@ -138,7 +140,7 @@ int main(int argc, char** argv)
         dst << src.rdbuf();
     }
 
-    int res = write_interops(run_folder, output_folder, max_cycle, max_read);
+    int res = write_interops(run_folder, output_folder, max_cycle, max_read, cycle_to_align);
     if(res != SUCCESS)
     {
         std::cout << "# Error: " << res << std::endl;
@@ -273,14 +275,17 @@ int encode_error(int res, int type)
  * @param max_read maximum number of reads
  * @return 0 if success, or an error code
  */
-int write_interops(const std::string& filename, const std::string& output, unsigned int max_cycle, unsigned int max_read)
+int write_interops(const std::string& filename, const std::string& output, unsigned int max_cycle, unsigned int max_read, unsigned int cycle_to_align)
 {
     int res;
     int valid_count = 0;
     if((res=copy_tile_metrics(filename, output, max_read)) > 1) return encode_error(res, 1);
     if(res == 0) valid_count++;
-    if((res=copy_cycle_metrics<error_metrics>(filename, output, max_cycle)) > 1) return encode_error(res, 2);
-    if(res == 0) valid_count++;
+    if(max_cycle > cycle_to_align)
+    {
+        if ((res = copy_cycle_metrics<error_metrics>(filename, output, max_cycle)) > 1) return encode_error(res, 2);
+        if (res == 0) valid_count++;
+    }
     if((res=copy_cycle_metrics<corrected_intensity_metrics>(filename, output, max_cycle)) > 1) return encode_error(res, 2);
     if(res == 0) valid_count++;
     if((res=copy_cycle_metrics<extraction_metrics>(filename, output, max_cycle)) > 1) return encode_error(res, 2);
