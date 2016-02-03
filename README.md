@@ -79,10 +79,9 @@ There are several known limitations to the current library:
      does not work. You can still use a static library on Windows. There is one caveat, you can build a shared
      library for the SWIG bindings, e.g. C#.
   2. The full logic of SAV including certain metrics and plots are not yet implemented.
-  3. Microsoft Dot Net less than v4.0.30319 is currently not supported
+  3. Microsoft .Net less than v4.0.30319 is currently not supported (Same for Mono)
   4. MinGW cannot compile the code when ENABLE_BACKWARDS_COMPATIBILITY=ON
-  5. Currently, the minimum DotNet version is v4.0.30319
-  6. We do not support Mono on Windows
-  7. If both Visual Studio and Mono are installed, the build script will only use Visual Studio for C#
+  5. We do not support Mono on Windows
+  6. If both Visual Studio and Mono are installed, the build script will only use Visual Studio for C#
 
 
