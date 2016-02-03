@@ -21,6 +21,7 @@ configuration:
   - Release
 
 cache:
+  - rapidxml-1.13.zip
   - x86_64-4.9.2-release-win32-seh-rt_v4-rev4.7z
   - C:\ProgramData\chocolatey\bin -> appveyor.yml
   - C:\ProgramData\chocolatey\lib -> appveyor.yml
@@ -29,15 +30,23 @@ cache:
 environment:
   MINGW_URL: http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/4.9.2/threads-win32/seh/x86_64-4.9.2-release-win32-seh-rt_v4-rev4.7z/download
   MINGW_ARCHIVE: x86_64-4.9.2-release-win32-seh-rt_v4-rev4.7z
+  RAPIDXML_URL: http://downloads.sourceforge.net/project/rapidxml/rapidxml/rapidxml%201.13/rapidxml-1.13.zip
+  RAPIDXML_ARCHIVE: rapidxml-1.13.zip
   matrix:
     - generator: "Visual Studio 14 2015 Win64"
+      BUILD: msvc14_win64
     - generator: "Visual Studio 14 2015"
+      BUILD: msvc14_win32
     - generator: "Visual Studio 12 2013 Win64"
+      BUILD: msvc12_win64
     - generator: "Visual Studio 12 2013"
+      BUILD: msvc12_win32
     - generator: "MinGW Makefiles"
       COMPILER_PATH: C:\MinGW\bin
+      BUILD: mingw_win32
     - generator: "MinGW Makefiles"
       COMPILER_PATH: C:\mingw64\bin
+      BUILD: mingw_win64
 
 before_build:
   - cmd: set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
@@ -53,19 +62,42 @@ install:
       }
   - if not exist "%MINGW_ARCHIVE%" appveyor DownloadFile "%MINGW_URL%" -FileName "%MINGW_ARCHIVE%"
   - if not exist "C:\mingw64" 7z x -oC:\ -y "%MINGW_ARCHIVE%" > nul
+  - if not exist "%RAPIDXML_ARCHIVE%" appveyor DownloadFile "%RAPIDXML_URL%" -FileName "%RAPIDXML_ARCHIVE%"
+  - if not exist "C:\rapidxml-1.13" 7z x -oC:\ -y "%RAPIDXML_ARCHIVE%" > nul
 
 build_script:
+  - set BUILD_PATH=%CD%\%BUILD%_%configuration%
   - cmake --version
-  - cmake ../ -G "%GENERATOR%" -H. -Bbuild -DCMAKE_BUILD_TYPE="%configuration%"
+  - cmake ../ -G "%GENERATOR%" -H. -Bbuild -DCMAKE_BUILD_TYPE="%configuration%" -DCMAKE_INSTALL_PREFIX=%BUILD_PATH% -DRAPIDXML_ROOT=C:\rapidxml-1.13
   - cmake --build build --config "%configuration%"
+  - cmake --build build --config "%configuration%" --target install
 
 test_script:
   - cmake --build build --config "%configuration%" --target check
+
+after_build:
+  - echo "%BUILD_PATH%"
+  - mkdir builds
+  - 7z a interop-%BUILD%_%configuration%.zip %BUILD_PATH%
+
+artifacts:
+  - path: .\*.zip
+    name: Releases
 
 branches:
   only:
   - master
 
+deploy:
+  provider: GitHub
+  description: 'Release description'
+  artifact: /interop-.*\.zip/
+  draft: true
+  auth_token:
+      secure: HcMKUFlziwHVs3kI4ZWKvy9LPKHUoVsaURh9C0yHz7rvMaPD/J7yvlPcTYK7mdrM
+  on:
+    branch: master
+    appveyor_repo_tag: true
 
 ########################################################################################################################
 #
