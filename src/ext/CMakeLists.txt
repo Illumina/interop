@@ -1,7 +1,14 @@
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules)
 find_package(SWIG)
 if(NOT SWIG_FOUND)
-    message(WARNING "Swig not found, cannot generate intefaces")
+    message(WARNING "Swig not found. Skipping interface generation.")
+    return()
+endif()
+include(${PROJECT_SOURCE_DIR}/cmake/CheckSWIGVersion.cmake)
+
+check_swig_version(swig_major_ver)
+if(swig_major_ver LESS "3")
+    message(WARNING "Swig version ${swig_major_ver} found, but version 3.x or later is required. Skipping interface generation.")
     return()
 endif()
 

@@ -1,95 +1,107 @@
 language: cpp
+sudo: required
 matrix:
   include:
-    - compiler: clang
-      os: linux
-      env: INTEROP_C89=ON BUILD_TYPE=Debug
-    - compiler: clang
-      os: linux
-      env: INTEROP_C89=ON BUILD_TYPE=Release
-    - compiler: gcc
-      os: linux
-      env: INTEROP_C89=ON BUILD_TYPE=Debug
-    - compiler: gcc
-      os: linux
-      env: INTEROP_C89=ON BUILD_TYPE=Release
-    - compiler: gcc
-      addons: &gcc49
-        apt:
-          sources:
-            - george-edison55-precise-backports
-            - ubuntu-toolchain-r-test
-          packages:
-            - cmake
-            - cmake-data
-            - g++-4.9
-      env: INTEROP_C89=OFF COMPILER_VERSION=-4.9 BUILD_TYPE=Debug
-      os: linux
-    - compiler: gcc
-      addons: *gcc49
-      env: INTEROP_C89=OFF COMPILER_VERSION=-4.9 BUILD_TYPE=Release
-      os: linux
-    - compiler: clang
-      addons: &clang37
-        apt:
-          sources:
-            - george-edison55-precise-backports
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.7
-          packages:
-            - cmake
-            - cmake-data
-            - g++-4.9
-            - clang-3.7
-      env: INTEROP_C89=OFF COMPILER_VERSION=-3.7 BUILD_TYPE=Debug
-      os: linux
-    - compiler: clang
-      addons: *clang37
-      env: INTEROP_C89=OFF COMPILER_VERSION=-3.7 BUILD_TYPE=Release
-      os: linux
-    - compiler: clang
-      os: osx
-      env: INTEROP_C89=OFF BUILD_TYPE=Debug
-    - compiler: clang
-      os: osx
-      env: INTEROP_C89=OFF BUILD_TYPE=Release
-
+  - compiler: clang
+    os: linux
+    env: INTEROP_C89=ON BUILD_TYPE=Debug BUILD_NAME=linux_clang34_debug
+  - compiler: clang
+    os: linux
+    env: INTEROP_C89=ON BUILD_TYPE=Release BUILD_NAME=linux_clang34_release
+  - compiler: gcc
+    os: linux
+    env: INTEROP_C89=ON BUILD_TYPE=Debug BUILD_NAME=linux_gcc46_debug
+  - compiler: gcc
+    os: linux
+    env: INTEROP_C89=ON BUILD_TYPE=Release BUILD_NAME=linux_gcc46_release DEPLOY_BUILD=true
+  - compiler: gcc
+    addons: &1
+      apt:
+        sources:
+        - george-edison55-precise-backports
+        - ubuntu-toolchain-r-test
+        packages:
+        - cmake
+        - cmake-data
+        - g++-4.9
+    env: INTEROP_C89=OFF COMPILER_VERSION=-4.9 BUILD_TYPE=Debug BUILD_NAME=linux_gcc49_debug
+    os: linux
+  - compiler: gcc
+    addons: *1
+    env: INTEROP_C89=OFF COMPILER_VERSION=-4.9 BUILD_TYPE=Release BUILD_NAME=linux_gcc49_release
+    os: linux
+  - compiler: clang
+    addons: &2
+      apt:
+        sources:
+        - george-edison55-precise-backports
+        - ubuntu-toolchain-r-test
+        - llvm-toolchain-precise-3.7
+        packages:
+        - cmake
+        - cmake-data
+        - g++-4.9
+        - clang-3.7
+    env: INTEROP_C89=OFF COMPILER_VERSION=-3.7 BUILD_TYPE=Debug BUILD_NAME=linux_clang37_debug
+    os: linux
+  - compiler: clang
+    addons: *2
+    env: INTEROP_C89=OFF COMPILER_VERSION=-3.7 BUILD_TYPE=Release BUILD_NAME=linux_clang37_release
+    os: linux
+  - compiler: clang
+    os: osx
+    env: INTEROP_C89=OFF BUILD_TYPE=Debug BUILD_NAME=osx_clang_debug
+  - compiler: clang
+    os: osx
+    env: INTEROP_C89=OFF BUILD_TYPE=Release BUILD_NAME=osx_clang_release DEPLOY_BUILD=true
 before_install:
-  - date -u
-  - uname -a
-
+- date -u
+- uname -a
 addons:
   apt:
     sources:
-      - george-edison55-precise-backports
+    - george-edison55-precise-backports
     packages:
-      - cmake
-      - cmake-data
-
+    - cmake
+    - cmake-data
 install:
-  - if test "$TRAVIS_OS_NAME" = "linux"; then source tools/travis-linux-install.sh; fi
-  - if test "$TRAVIS_OS_NAME" = "osx"; then source tools/travis-osx-install.sh; fi
-  - ls -la $(which $CC)
-  - ls -la $(which $CXX)
-
+- if test "$TRAVIS_OS_NAME" = "linux"; then source tools/travis-linux-install.sh;
+  fi
+- if test "$TRAVIS_OS_NAME" = "osx"; then source tools/travis-osx-install.sh; fi
+- ls -la $(which $CC)
+- ls -la $(which $CXX)
 script:
-  - export CC="${CC}${COMPILER_VERSION}"
-  - export CXX="${CXX}${COMPILER_VERSION}"
-  - echo 'Configuring...' && echo -en 'travis_fold:start:script.1\\r'
-  - rm -fr build && mkdir -p build && cd build && cmake ../ -DNUNIT_ROOT=$PWD/../NUnit-2.6.4 -DENABLE_BACKWARDS_COMPATIBILITY=$INTEROP_C89 -DCMAKE_BUILD_TYPE=$BUILD_TYPE
-  - echo -en 'travis_fold:end:script.1\\r'
-  - cmake --build .
-  - echo 'Installing...' && echo -en 'travis_fold:start:script.2\\r'
-  - sudo make install
-  - echo -en 'travis_fold:end:script.2\\r'
-  - cmake --build . --target check
-  - echo 'Cleaning...' && echo -en 'travis_fold:start:script.3\\r'
-  - make clean
-  - echo -en 'travis_fold:end:script.3\\r'
+- export CC="${CC}${COMPILER_VERSION}"
+- export CXX="${CXX}${COMPILER_VERSION}"
+- export BUILD_PATH=${PWD}/${BUILD_NAME}
+- echo 'Configuring...' && echo -en 'travis_fold:start:script.1\\r'
+- rm -fr build && mkdir -p build && cd build && cmake ../ -DNUNIT_ROOT=$PWD/../NUnit-2.6.4
+  -DENABLE_BACKWARDS_COMPATIBILITY=$INTEROP_C89 -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_INSTALL_PREFIX=${BUILD_PATH}
+- echo -en 'travis_fold:end:script.1\\r'
+- cmake --build .
+- echo 'Installing...' && echo -en 'travis_fold:start:script.2\\r'
+- make install
+- echo -en 'travis_fold:end:script.2\\r'
+- cmake --build . --target check
+- echo 'Cleaning...' && echo -en 'travis_fold:start:script.3\\r'
+- make clean
+- echo -en 'travis_fold:end:script.3\\r'
 
-branches:
-  only:
-    - master
+#white list broke the tag push deployment
 
 notifications:
   email: false
+before_deploy:
+- tar czf interop-${BUILD_NAME}.tar.gz ${BUILD_PATH}
+deploy:
+  skip_cleanup: true
+  provider: releases
+  api_key:
+    secure: qUB+Gaq1jYzYgMW+rh3mYquzFpt4cuJ+C89L0o/NkkSrCeDizftNL0P2mBXMqeUOLEWDFGwMgWcdTSs0MMdoOmYKp0hMFbCzipbwANKdzcmUjYx9VDlft9iEnKyjhnwLTyljvcK2OYWMCiPkTv+V4O0H9/T8bZEGQ/zBElCeYJPSdjNTRSFzfe8XqzGsNoty4YDlK89UIWy2Pmw38qRIWpu2rk3WAMDxsJgSO7uPs5xxaLioAfukhV7thbeQjYQn42OQ8eA2AwQa478KtlY2V5XtZqFQtdDPosvtS5HXYCXvnCWJeUbB0KrE5o+Je8njm4e+K30WDfpDGiCPU7Guz52FN551/5L5iv0+6++ZOt8fxKSMF+4H42JxDzDMdzvJmTImdIP2ACm5EnY8pJXOVnXbemDNNnpjhE8CqMVSqfiB+QDLasiZ3PBAaqPbb7XVYKpxUE1nGQCIynHjS7KClKo0EKrvJo2vWSgeXW5wBtmGuIsgMkPcNTtqM6WEui1mdoKQXrvAl4SxdgwhvmA6RYhva+yBIGf9HPqfGL7c2ByQADULLtc8SgOjqbibDO+jVITTtWsliaD53nXJKHzU8JkOsAJNl0Le+kyQKNoHaMersHrZzccrCeRkGOES5g/a+2a3PF0hRkgQjmVQsEEPw9C1rLEXG5gTUL3gd5UmD58=
+  file: interop-${BUILD_NAME}.tar.gz
+  on:
+    repo: Illumina/interop
+    branch: master
+    tags: true
+    condition:
+      - "$DEPLOY_BUILD == true"

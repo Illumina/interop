@@ -70,10 +70,11 @@ if( WIN32 )
     string( REPLACE "\\" "." csharp_mono_bin_dir ${csharp_mono_bin_dir} )
     if (EXISTS "${csharp_mono_bin_dir}/dmcs.bat")
       set( csharp_mono_executable "${csharp_mono_bin_dir}/dmcs.bat")
-    elseif (EXISTS "${csharp_mono_bin_dir}/gmcs.bat")
-      set( csharp_mono_executable "${csharp_mono_bin_dir}/gmcs.bat")
-    elseif (EXISTS "${csharp_mono_bin_dir}/mcs.bat")
-      set( csharp_mono_executable "${csharp_mono_bin_dir}/mcs.bat")
+    # We currently disallow any framework less than .NET 4.x
+    #elseif (EXISTS "${csharp_mono_bin_dir}/gmcs.bat")
+    #  set( csharp_mono_executable "${csharp_mono_bin_dir}/gmcs.bat")
+    #elseif (EXISTS "${csharp_mono_bin_dir}/mcs.bat")
+    #  set( csharp_mono_executable "${csharp_mono_bin_dir}/mcs.bat")
     endif (EXISTS "${csharp_mono_bin_dir}/dmcs.bat")
 
     if( csharp_mono_valid )
@@ -107,7 +108,8 @@ if( WIN32 )
 
 else( UNIX )
   # Search for Mono on non-Win32 systems
-  set( csharp_mono_names "dmcs" "dmcs.exe" "smcs" "smcs.exe" "gmcs" "gmcs.exe" "mcs" "mcs.exe" )
+  # We currently disallow any framework less than .NET 4.x (dmcs only)
+  set( csharp_mono_names "dmcs" "dmcs.exe")# "mcs" "mcs.exe" "smcs" "smcs.exe" "gmcs" "gmcs.exe" )
   set(
     csharp_mono_paths
     "/usr/bin/"
