@@ -36,6 +36,7 @@ Documentation
 | [Applications][AppsPage]      | Describes applications that transform binary InterOp data into text                  |
 | [Examples][ExamplesPage]      | How to examples showing how to use the Illumina InterOp C++ API                      |
 | [Modules][ModulesPage]        | Short descriptions of the most useful code in the Illumina InterOp API               |
+| [Changes][ChangesPage]        | Changes between releases of the source code                                          |
 
 
 
@@ -44,6 +45,7 @@ Documentation
 [AppsPage]: http://illumina.github.io/interop/apps.html
 [ExamplesPage]: http://illumina.github.io/interop/examples.html
 [ModulesPage]: http://illumina.github.io/interop/modules.html
+[ChangesPage]: http://illumina.github.io/interop/changes.html
 
 Install
 -------
