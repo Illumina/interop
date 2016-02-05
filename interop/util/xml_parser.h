@@ -8,8 +8,8 @@
  */
 
 #pragma once
-#include <rapidxml.hpp>
-#include <rapidxml_utils.hpp>
+#include <interop/external/rapidxml.hpp>
+#include <interop/external/rapidxml_utils.hpp>
 #include "interop/util/xml_exceptions.h"
 
 namespace illumina
