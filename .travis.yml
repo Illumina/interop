@@ -66,7 +66,6 @@ addons:
     - cmake-data
 cache:
   directories:
-    - $HOME/rapidxml-1.13
     - $HOME/NUnit-2.6.4
 install:
 - if test "$TRAVIS_OS_NAME" = "linux"; then source tools/travis-linux-install.sh;
@@ -80,7 +79,7 @@ script:
 - export CXX="${CXX}${COMPILER_VERSION}"
 - export BUILD_PATH=${PWD}/${BUILD_NAME}
 - echo 'Configuring...' && echo -en 'travis_fold:start:script.1\\r'
-- rm -fr build && mkdir -p build && cd build && cmake ../ -DNUNIT_ROOT=$HOME/NUnit-2.6.4 -DRAPIDXML_ROOT=$HOME/rapidxml-1.13
+- rm -fr build && mkdir -p build && cd build && cmake ../ -DNUNIT_ROOT=$HOME/NUnit-2.6.4
   -DENABLE_BACKWARDS_COMPATIBILITY=$INTEROP_C89 -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_INSTALL_PREFIX=${BUILD_PATH}
 - echo -en 'travis_fold:end:script.1\\r'
 - cmake --build .

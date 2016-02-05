@@ -1,6 +1,4 @@
 
-find_package(RapidXML REQUIRED)
-include_directories(${RAPIDXML_INCLUDE_DIR})
 
 set(SRCS
         model/metrics/corrected_intensity_metric.cpp

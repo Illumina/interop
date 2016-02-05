@@ -21,7 +21,6 @@ configuration:
   - Release
 
 cache:
-  - rapidxml-1.13.zip
   - x86_64-4.9.2-release-win32-seh-rt_v4-rev4.7z
   - C:\ProgramData\chocolatey\bin -> appveyor.yml
   - C:\ProgramData\chocolatey\lib -> appveyor.yml
@@ -30,8 +29,6 @@ cache:
 environment:
   MINGW_URL: http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/4.9.2/threads-win32/seh/x86_64-4.9.2-release-win32-seh-rt_v4-rev4.7z/download
   MINGW_ARCHIVE: x86_64-4.9.2-release-win32-seh-rt_v4-rev4.7z
-  RAPIDXML_URL: http://downloads.sourceforge.net/project/rapidxml/rapidxml/rapidxml%201.13/rapidxml-1.13.zip
-  RAPIDXML_ARCHIVE: rapidxml-1.13.zip
   matrix:
     - generator: "Visual Studio 14 2015 Win64"
       BUILD: msvc14_win64
@@ -62,13 +59,11 @@ install:
       }
   - if not exist "%MINGW_ARCHIVE%" appveyor DownloadFile "%MINGW_URL%" -FileName "%MINGW_ARCHIVE%"
   - if not exist "C:\mingw64" 7z x -oC:\ -y "%MINGW_ARCHIVE%" > nul
-  - if not exist "%RAPIDXML_ARCHIVE%" appveyor DownloadFile "%RAPIDXML_URL%" -FileName "%RAPIDXML_ARCHIVE%"
-  - if not exist "C:\rapidxml-1.13" 7z x -oC:\ -y "%RAPIDXML_ARCHIVE%" > nul
 
 build_script:
   - set BUILD_PATH=%CD%\%BUILD%_%configuration%
   - cmake --version
-  - cmake ../ -G "%GENERATOR%" -H. -Bbuild -DCMAKE_BUILD_TYPE="%configuration%" -DCMAKE_INSTALL_PREFIX=%BUILD_PATH% -DRAPIDXML_ROOT=C:\rapidxml-1.13
+  - cmake ../ -G "%GENERATOR%" -H. -Bbuild -DCMAKE_BUILD_TYPE="%configuration%" -DCMAKE_INSTALL_PREFIX=%BUILD_PATH%
   - cmake --build build --config "%configuration%"
   - cmake --build build --config "%configuration%" --target install
 
