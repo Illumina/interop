@@ -53,3 +53,16 @@ $ git config --global user.email "you@email.com"
 ~~~~~~~~~
 
 It is important for us to track who made what changes.
+
+## Including a change log in your pull request
+
+It is highly recommended that you include a change log with your pull request. Ideally, this will only be a single
+item. Also your commit messages should be meaningful and correspond to the change log. You can create a change
+log from your git commits s follows:
+
+~~~~~~~~~{.sh}
+git log v1.0.0..HEAD --oneline --decorate --no-merges
+~~~~~~~~~
+
+In the above example, v1.0.0 was the last tag, you should replace this value with the actual last tag.
+
