@@ -69,6 +69,8 @@ endif()
 
 add_library(${INTEROP_LIB} ${LIBRARY_TYPE} ${SRCS} ${HEADERS})
 add_library(${INTEROP_DL_LIB} ${LIBRARY_TYPE} ${SRCS} ${HEADERS})
+add_dependencies(${INTEROP_LIB} version)
+add_dependencies(${INTEROP_DL_LIB} version)
 
 set_target_properties(${INTEROP_DL_LIB} PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
 if(COMPILER_IS_GNUCC_OR_CLANG AND NOT MINGW)
