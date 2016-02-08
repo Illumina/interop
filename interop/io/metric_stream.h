@@ -135,7 +135,7 @@ namespace illumina {
              * @param version version of the format
              */
             template<class MetricType>
-            size_t record_size(const MetricType&, const typename MetricType::header_type& header, const ::int16_t version)
+            size_t record_size(const typename MetricType::header_type& header, const ::int16_t version = MetricType::LATEST_VERSION)
             {
                 typedef metric_format_factory <MetricType> factory_type;
                 typedef typename factory_type::metric_format_map metric_format_map;
