@@ -6,10 +6,16 @@ from the source code.
 
 ## Download Binary
 
-It is recommended to start from one of the binary distributions found under releases. The CentOS 5 build
-should work on a wide variety of Linux distributions.
+It is recommended to start from one of the binary distributions found under releases. Binary distributions are
+available for:
 
-**At this time, binary releases are unavailable**
+- Windows
+- Linux
+- Mac OSX
+
+[Latest Release]
+
+[Latest Release]: https://github.com/Illumina/interop/releases/latest
 
 ## Build from Source
 
