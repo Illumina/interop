@@ -1,6 +1,10 @@
 # Changes                                               {#changes}
 
+## Trunk
 
+Commit  | Description
+------- | -----------
+08f579c | Updated documentation and build script building and deployment
 
 ## v1.0.1
 
