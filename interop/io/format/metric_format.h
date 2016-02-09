@@ -93,6 +93,14 @@ namespace illumina {
                     metric.set_base(id);
                     return in.gcount();
                 }
+                /** Calculate the size of a record
+                 *
+                 * @return size of record in bytes
+                 */
+                size_t record_size(const header_t& header)const
+                {
+                    return static_cast<size_t>(Layout::computeSize(header));
+                }
                 /** Read a metric set from the given input stream
                  *
                  * @param in input stream containing binary InterOp file data
