@@ -92,7 +92,6 @@ deploy:
   auth_token:
       secure: HcMKUFlziwHVs3kI4ZWKvy9LPKHUoVsaURh9C0yHz7rvMaPD/J7yvlPcTYK7mdrM
   on:
-    branch: master
     appveyor_repo_tag: true
 
 ########################################################################################################################
