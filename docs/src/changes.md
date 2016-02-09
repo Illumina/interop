@@ -6,6 +6,7 @@
 
 Commit  | Description
 ------- | -----------
+450b7e6 | Bundle RapidXML and update deployment scripts
 b9cc4b0 | Add change log
 f74a702 | Deploy binaries for Windows/Linux/OSX and major compilers
         | Ensure only Mono .Net 4.x compiler is used
