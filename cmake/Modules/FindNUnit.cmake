@@ -17,9 +17,9 @@
 #   - NUNIT_FOUND - set to ON if NUnit is found
 
 find_package(PkgConfig)
-pkg_check_modules(PC_RAPIDXML QUIET rapidxml)
+pkg_check_modules(PC_NUNIT QUIET nunit)
 
-set(NUNIT_ROOT "" CACHE PATH "Set the location of the RapidXML library and header")
+set(NUNIT_ROOT "" CACHE PATH "Set the location of the NUnit library")
 
 set(nunit_search_hints
         ${NUNIT_ROOT}

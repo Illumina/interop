@@ -25,7 +25,7 @@ The following are the minimum requirements to build the source:
     - Linux: GCC, CLang
     - Mac OSX: CLang
 - [CMake] Version 3.2 or later
-- [RapidXML] v1.3 - This is automatically downloaded if not found or specified
+- [RapidXML] v1.3 - Included with package
 
 The following optional features have the corresponding requirements:
 
@@ -45,7 +45,6 @@ Tips for Prerequisites
     
   - CMake and SWIG will likely need to be installed from the source on Linux
   - On Windows, CMake will likely need to know the location of SWIG, see Example configurations below
-  - Building on a machine not connected to the Internet: download and provide necessary dependencies such as RapidXML
 
 [NUnit]: http://www.nunit.org/
 [Git]: https://git-scm.com/
@@ -153,7 +152,6 @@ There are several configuration options that you may wish to consider:
 | ENABLE_APPS                     | Build command line programs                                                         |
 | ENABLE_STATIC                   | Build static libraries instead of dynamic                                           |
 | FORCE_X86                       | Force 32-bit libraries instead of platform default (Does nothing for Visual Studio) |
-| RAPIDXML_ROOT                   | Location of RapidXML headers. If not set, then it will auto download                |
 | GTEST_ROOT                      | Optional. Location of GTest installation. If not set, then it will auto download    |
 
 CMake also has several built-in options that you may use:
@@ -188,13 +186,13 @@ generates the C# *.cs files and the second builds the DLL from these files.
 
 ### Example configurations
 
-Using pre-downloaded [Google Test] and [RapidXML] packages assuming:
+Using pre-downloaded [Google Test] packages assuming:
     
     - The packages have already been unarchived
     - The packages were placed at the same level as InterOp
     
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.sh}
-    cmake ../interop -DGTEST_ROOT=../../gtest -DRAPIDXML_ROOT ../../rapidxml
+    cmake ../interop -DGTEST_ROOT=../../gtest
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Build C# binding using [SWIG] on Windows assuming:
