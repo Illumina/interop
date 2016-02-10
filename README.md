@@ -40,6 +40,15 @@ Documentation
 
 
 
+You can do the following on our Github [Issues] page:
+
+- Need additional help? [Help]
+- Have a feature request? [Feature Request]
+- Report a bug? [Issues]
+
+[Help]: https://github.com/Illumina/interop/issues/new
+[Feature Request]: https://github.com/Illumina/interop/issues/new
+[Issues]: https://github.com/Illumina/interop/issues
 [MainPage]: http://illumina.github.io/interop/index.html
 [InstallPage]: http://illumina.github.io/interop/install.html
 [AppsPage]: http://illumina.github.io/interop/apps.html
