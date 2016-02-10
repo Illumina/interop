@@ -4,6 +4,9 @@
 
 Commit  | Description
 ------- | -----------
+06f567d | Added record size calculation
+d35f6bf | Added new filename function without assuming directory
+fc94e9f | Added links to Issues on webpage
 08f579c | Updated documentation and build script building and deployment
 
 ## v1.0.1
