@@ -839,7 +839,7 @@ EXCLUDE_SYMBOLS        = static_assert_ tile_summary TileSummary Example1 Exampl
 # that contain example code fragments that are included (see the \include
 # command).
 
-EXAMPLE_PATH           = ../../
+EXAMPLE_PATH           = @PROJECT_SOURCE_DIR@
 
 # If the value of the EXAMPLE_PATH tag contains directories, you can use the
 # EXAMPLE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp and
