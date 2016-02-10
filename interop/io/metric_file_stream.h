@@ -23,7 +23,17 @@ namespace io {
 template<class MetricType>
 std::string interop_filename(const std::string& runDirectory, bool useOut = true)
 {
-    return detail::interop_name(runDirectory, MetricType::prefix(), useOut);
+    return detail::interop_filename(runDirectory, MetricType::prefix(), useOut);
+}
+/** Generate a file name from a run directory and the metric type
+ *
+ * @param useOut if true, append "Out" to the end of the filename
+ * @return file path to the InterOp directory
+ */
+template<class MetricType>
+std::string interop_basename(bool useOut = true)
+{
+    return detail::interop_basename(MetricType::prefix(), useOut);
 }
 
 
