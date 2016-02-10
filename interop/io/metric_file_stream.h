@@ -85,7 +85,7 @@ void read_interop_from_buffer(::uint8_t* buffer, size_t buffer_size, MetricSet& 
 template<class MetricSet>
 void read_interop(const std::string& runDirectory, MetricSet& metrics, const bool useOut=true) _INTEROP_FORMAT_THROWS
 {
-    std::string fileName = detail::interop_name(runDirectory, metrics.name(), useOut);
+    std::string fileName = detail::interop_filename(runDirectory, metrics.name(), useOut);
     std::ifstream fin(fileName.c_str(), std::ios::binary);
     if(!fin.good())
         throw file_not_found_exception("File not found: "+fileName);
@@ -101,7 +101,7 @@ void read_interop(const std::string& runDirectory, MetricSet& metrics, const boo
 template<class MetricSet>
 void write_interop(const std::string& runDirectory, const MetricSet& metrics, const bool useOut=true, const ::int16_t version=-1)
 {
-    std::string fileName = detail::interop_name(runDirectory, metrics.name(), useOut);
+    std::string fileName = detail::interop_filename(runDirectory, metrics.name(), useOut);
     std::ofstream fout(fileName.c_str(), std::ios::binary);
     if(!fout.good())
         throw file_not_found_exception("File not found: "+fileName);
@@ -117,7 +117,7 @@ void write_interop(const std::string& runDirectory, const MetricSet& metrics, co
 template<class MetricType>
 void write_interop_header(const std::string& runDirectory, const ::int16_t version=-1, const typename MetricType::header_type& header = typename MetricType::header_type(), const bool useOut=true)
 {
-    std::string fileName = detail::interop_name(runDirectory, MetricType::prefix(), useOut);
+    std::string fileName = detail::interop_filename(runDirectory, MetricType::prefix(), useOut);
     std::ofstream fout(fileName.c_str(), std::ios::binary);
     if(!fout.good())
         throw file_not_found_exception("File not found: "+fileName);
