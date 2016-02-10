@@ -137,10 +137,11 @@ namespace illumina {
                     }
                 }
             }
-            /** Write a metric to a binary InterOp file
+            /** Get the size of a single metric record
              *
              * @param header header for metric
              * @param version version of the format
+             * @return size of a single metric record
              */
             template<class MetricType>
             size_t record_size(const typename MetricType::header_type& header, const ::int16_t version = MetricType::LATEST_VERSION)
@@ -156,6 +157,27 @@ namespace illumina {
 
                 assert(format_map[version]);
                 return format_map[version]->record_size(header);
+            }
+            /** Get the size of a metric file header
+             *
+             * @param header header for metric
+             * @param version version of the format
+             * @return size of metric file header
+             */
+            template<class MetricType>
+            size_t header_size(const typename MetricType::header_type& header, const ::int16_t version = MetricType::LATEST_VERSION)
+            {
+                typedef metric_format_factory <MetricType> factory_type;
+                typedef typename factory_type::metric_format_map metric_format_map;
+                metric_format_map& format_map=factory_type::metric_formats();
+
+                if (format_map.find(version) == format_map.end())
+                    throw bad_format_exception("No format found to write file with version: " +
+                                               util::lexical_cast<std::string>(version) + " of " +
+                                               util::lexical_cast<std::string>(format_map.size()));
+
+                assert(format_map[version]);
+                return format_map[version]->header_size(header);
             }
             /** Write a metric to a binary InterOp file
              *

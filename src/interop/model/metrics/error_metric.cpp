@@ -92,6 +92,14 @@ namespace illumina{ namespace interop{ namespace io {
                             sizeof(::uint32_t)*error_metric::MAX_MISMATCH   // m_mismatch_cluster_count
                     );
                 }
+                /** Compute header size
+                 *
+                 * @return header size
+                 */
+                static record_size_t computeHeaderSize(const error_metric::header_type&)
+                {
+                    return sizeof(record_size_t) + sizeof(::uint8_t);
+                }
             };
 
 

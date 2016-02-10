@@ -34,6 +34,7 @@ namespace illumina.interop.csharp.unittest
 		/// </summary>
 		/// <param name="tmp">Hard coded binary data</param>
 		/// <param name="version">Version of the format</param>
+		/// <param name="channelCount">Number of channels</param>
 	    protected void SetupBuffers(int[] tmp, short version, ushort channelCount)
 	    {
 	        expected_binary_data = new byte[tmp.Length];

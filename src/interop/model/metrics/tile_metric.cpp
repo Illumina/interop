@@ -207,6 +207,14 @@ namespace illumina{ namespace interop{
                 {
                     return static_cast< record_size_t >(sizeof(metric_id_t)+sizeof(record_t));
                 }
+                /** Compute header size
+                 *
+                 * @return header size
+                 */
+                static record_size_t computeHeaderSize(const tile_metric::header_type&)
+                {
+                    return sizeof(record_size_t) + sizeof(::uint8_t);
+                }
 
             private:
                 static tile_metric::read_metric_vector::iterator get_read(tile_metric& metric, tile_metric::read_metric_type::uint_t read)

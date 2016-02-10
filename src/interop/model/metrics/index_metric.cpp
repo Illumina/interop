@@ -132,6 +132,14 @@ struct generic_layout<index_metric, 1> : public default_layout<1>
     {
         return record_size_t();
     }
+    /** Compute header size
+     *
+     * @return header size
+     */
+    static size_t computeHeaderSize(const index_metric::header_type&)
+    {
+        return sizeof(::uint8_t);
+    }
 };
 
 #pragma pack()

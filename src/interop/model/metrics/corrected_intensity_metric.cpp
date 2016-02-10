@@ -109,6 +109,14 @@ namespace illumina{ namespace interop{ namespace io {
                                     sizeof(float)                                       // m_signalToNoise
                     );
                 }
+                /** Compute header size
+                 *
+                 * @return header size
+                 */
+                static record_size_t computeHeaderSize(const corrected_intensity_metric::header_type&)
+                {
+                    return sizeof(record_size_t) + sizeof(::uint8_t);
+                }
             };
             /** Corrected Intensity Metric Record Layout Version 3
              *
@@ -189,6 +197,14 @@ namespace illumina{ namespace interop{ namespace io {
                             sizeof(::uint16_t)*constants::NUM_OF_BASES +        // m_correctedIntCalled
                             sizeof(::uint32_t)*constants::NUM_OF_BASES_AND_NC   // m_calledCounts
                     );
+                }
+                /** Compute header size
+                 *
+                 * @return header size
+                 */
+                static record_size_t computeHeaderSize(const corrected_intensity_metric::header_type&)
+                {
+                    return sizeof(record_size_t) + sizeof(::uint8_t);
                 }
             };
 #pragma pack()

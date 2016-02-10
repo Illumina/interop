@@ -95,11 +95,21 @@ namespace illumina {
                 }
                 /** Calculate the size of a record
                  *
+                 * @param header metric set header
                  * @return size of record in bytes
                  */
                 size_t record_size(const header_t& header)const
                 {
                     return static_cast<size_t>(Layout::computeSize(header));
+                }
+                /** Calculate the size of a record
+                 *
+                 * @param header metric set header
+                 * @return size of header in bytes
+                 */
+                size_t header_size(const header_t& header)const
+                {
+                    return static_cast<size_t>(Layout::computeHeaderSize(header));
                 }
                 /** Read a metric set from the given input stream
                  *
