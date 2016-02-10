@@ -37,24 +37,15 @@ Documentation
 | [Examples][ExamplesPage]      | How to examples showing how to use the Illumina InterOp C++ API                      |
 | [Modules][ModulesPage]        | Short descriptions of the most useful code in the Illumina InterOp API               |
 | [Changes][ChangesPage]        | Changes between releases of the source code                                          |
+| [Issues]                      | Have a question? Need a feature? Found a bug? Interact with the developers here.     |
 
-
-
-You can do the following on our Github [Issues] page:
-
-- Need additional help? [Help]
-- Have a feature request? [Feature Request]
-- Report a bug? [Issues]
-
-[Help]: https://github.com/Illumina/interop/issues/new
-[Feature Request]: https://github.com/Illumina/interop/issues/new
-[Issues]: https://github.com/Illumina/interop/issues
 [MainPage]: http://illumina.github.io/interop/index.html
 [InstallPage]: http://illumina.github.io/interop/install.html
 [AppsPage]: http://illumina.github.io/interop/apps.html
 [ExamplesPage]: http://illumina.github.io/interop/examples.html
 [ModulesPage]: http://illumina.github.io/interop/modules.html
 [ChangesPage]: http://illumina.github.io/interop/changes.html
+[Issues]: https://github.com/Illumina/interop/issues
 
 Install
 -------
