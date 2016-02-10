@@ -213,7 +213,7 @@ namespace illumina{ namespace interop{
                  */
                 static record_size_t computeHeaderSize(const tile_metric::header_type&)
                 {
-                    return sizeof(record_size_t) + sizeof(::uint8_t);
+                    return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(::uint8_t));
                 }
 
             private:

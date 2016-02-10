@@ -89,7 +89,7 @@ namespace illumina{ namespace interop{ namespace io {
                  */
                 static record_size_t computeHeaderSize(const q_metric::header_type&)
                 {
-                    return sizeof(record_size_t) + sizeof(::uint8_t);
+                    return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(::uint8_t));
                 }
             };
             /** Q-score Metric Record Layout Version 5
@@ -251,12 +251,12 @@ namespace illumina{ namespace interop{ namespace io {
                  */
                 static record_size_t computeHeaderSize(const q_metric::header_type& header)
                 {
-                    if(header.binCount()==0) return sizeof(record_size_t) + sizeof(::uint8_t) + sizeof(::uint8_t);
-                    return sizeof(record_size_t) +
+                    if(header.binCount()==0) return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(::uint8_t) + sizeof(::uint8_t));
+                    return static_cast<record_size_t>(sizeof(record_size_t) +
                             sizeof(::uint8_t) + // record size
                             sizeof(::uint8_t) + // has bins
                             sizeof(::uint8_t) + // number of bins
-                            header.m_bin_count*3*sizeof(::uint8_t);
+                            header.m_bin_count*3*sizeof(::uint8_t));
                 }
             private:
                 template<size_t N>
@@ -429,12 +429,12 @@ namespace illumina{ namespace interop{ namespace io {
                  */
                 static record_size_t computeHeaderSize(const q_metric::header_type& header)
                 {
-                    if(header.binCount()==0) return sizeof(record_size_t) + sizeof(::uint8_t) + sizeof(::uint8_t);
-                    return sizeof(record_size_t) +
+                    if(header.binCount()==0) return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(::uint8_t) + sizeof(::uint8_t));
+                    return static_cast<record_size_t>(sizeof(record_size_t) +
                            sizeof(::uint8_t) + // version
                            sizeof(::uint8_t) + // has bins
                            sizeof(::uint8_t) + // number of bins
-                           header.m_bin_count*3*sizeof(::uint8_t);
+                           header.m_bin_count*3*sizeof(::uint8_t));
                 }
             private:
                 template<size_t N>

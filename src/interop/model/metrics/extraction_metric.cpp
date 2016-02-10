@@ -104,7 +104,7 @@ namespace illumina{ namespace interop{ namespace io {
                  */
                 static record_size_t computeHeaderSize(const extraction_metric::header_type&)
                 {
-                    return sizeof(record_size_t) + sizeof(::uint8_t);
+                    return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(::uint8_t));
                 }
             private:
                 static void convert_datetime(std::ostream&, const extraction_metric&)
