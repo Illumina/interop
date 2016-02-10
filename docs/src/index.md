@@ -27,9 +27,11 @@ Table of Contents
 | [Examples](@ref examples)     | How to examples showing how to use the Illumina InterOp C++ API                      |
 | [Modules](modules.html)       | Short descriptions of the most useful code in the Illumina InterOp API               |
 | [Source Code]                 | Git repository hosted on Github.com                                                  |
+| [Issues]                      | Have a question? Need a feature? Found a bug? Interact with the developers here.     |
 | [Changes](@ref changes)       | Changes between releases of the source code                                          |
 
 [Source Code]: https://github.com/Illumina/interop
+[Issues]: https://github.com/Illumina/interop/issues
 
 List of InterOp Metric Files
 ----------------------------
