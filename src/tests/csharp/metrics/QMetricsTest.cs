@@ -35,6 +35,7 @@ namespace illumina.interop.csharp.unittest
 		/// </summary>
 		/// <param name="tmp">Hard coded binary data</param>
 		/// <param name="version">Version of the format</param>
+		/// <param name="header">Header for the file format</param>
 	    protected void SetupBuffers(int[] tmp, short version, q_score_header header)
 	    {
 	        expected_binary_data = new byte[tmp.Length];
