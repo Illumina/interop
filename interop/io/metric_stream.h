@@ -29,14 +29,22 @@ namespace illumina {
                 }
                 /** Generate a file name from a run directory and the InterOp name
                  *
+                 * @param name name of the interop file
+                 * @param useOut if true, append "Out" to the end of the filename
+                 * @return file path to the InterOp directory
+                 */
+                inline std::string interop_basename(const std::string& name, bool useOut = true) {
+                    return name + "Metrics" + ((useOut) ? ("Out.bin") : (".bin"));
+                }
+                /** Generate a file name from a run directory and the InterOp name
+                 *
                  * @param runDirectory file path to the run directory
                  * @param name name of the interop file
                  * @param useOut if true, append "Out" to the end of the filename
                  * @return file path to the InterOp directory
                  */
-                inline std::string interop_name(const std::string& runDirectory, const std::string& name, bool useOut = true) {
-                    return io::combine(interop_directory_name(runDirectory),
-                                       name + "Metrics" + ((useOut) ? ("Out.bin") : (".bin")));
+                inline std::string interop_filename(const std::string& runDirectory, const std::string& name, bool useOut = true) {
+                    return io::combine(interop_directory_name(runDirectory), interop_basename(name, useOut));
                 }
                 /** Memory buffer for a stream
                  *
@@ -131,8 +139,29 @@ namespace illumina {
             }
             /** Write a metric to a binary InterOp file
              *
+             * @param header header for metric
+             * @param version version of the format
+             */
+            template<class MetricType>
+            size_t record_size(const typename MetricType::header_type& header, const ::int16_t version = MetricType::LATEST_VERSION)
+            {
+                typedef metric_format_factory <MetricType> factory_type;
+                typedef typename factory_type::metric_format_map metric_format_map;
+                metric_format_map& format_map=factory_type::metric_formats();
+
+                if (format_map.find(version) == format_map.end())
+                    throw bad_format_exception("No format found to write file with version: " +
+                                               util::lexical_cast<std::string>(version) + " of " +
+                                               util::lexical_cast<std::string>(format_map.size()));
+
+                assert(format_map[version]);
+                return format_map[version]->record_size(header);
+            }
+            /** Write a metric to a binary InterOp file
+             *
              * @param out output stream
              * @param metric metric
+             * @param header header for metric
              * @param version version of the format
              */
             template<class MetricType>
