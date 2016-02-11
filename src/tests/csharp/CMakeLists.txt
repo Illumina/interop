@@ -17,6 +17,11 @@ if(NOT SWIG_FOUND)
     return()
 endif()
 
+check_swig_version(swig_major_ver)
+if(swig_major_ver LESS "3")
+    return()
+endif()
+
 if(NOT NUNIT_FOUND)
     message(WARNING "NUnit not found, C# unit testing will be disabled")
     message(WARNING "You may set the location of NUNIT with NUNIT_ROOT or the NUNIT_DIR environment variable")
