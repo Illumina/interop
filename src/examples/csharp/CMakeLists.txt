@@ -16,6 +16,11 @@ if(NOT SWIG_FOUND)
     return()
 endif()
 
+check_swig_version(swig_major_ver)
+if(swig_major_ver LESS "3")
+    return()
+endif()
+
 if(NOT SWIG_GEN_CSHARP_SOURCE_FILES)
     message(WARNING "No source files found for unit testing")
     message(WARNING "Please run cmake <path> and cmake <path> --build . again")
