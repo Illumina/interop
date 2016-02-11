@@ -34,6 +34,19 @@ namespace illumina {
                 /** Destructor
                  */
                 virtual ~abstract_metric_format(){}
+
+                /** Calculate the size of the file header
+                 *
+                 * @param header metric set header
+                 * @return size of header in bytes
+                 */
+                virtual size_t header_size(const header_t& header)const=0;
+                /** Calculate the size of a record
+                 *
+                 * @param header metric set header
+                 * @return size of record in bytes
+                 */
+                virtual size_t record_size(const header_t& header)const=0;
                 /** Read a metric set from the given input stream
                  *
                  * @param in input stream containing binary InterOp file data

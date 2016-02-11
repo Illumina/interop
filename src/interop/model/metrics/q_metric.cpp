@@ -83,6 +83,14 @@ namespace illumina{ namespace interop{ namespace io {
                 {
                     return static_cast<record_size_t>(sizeof(metric_id_t)+sizeof(::uint32_t)*q_metric::MAX_Q_BINS);
                 }
+                /** Compute header size
+                 *
+                 * @return header size
+                 */
+                static record_size_t computeHeaderSize(const q_metric::header_type&)
+                {
+                    return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(::uint8_t));
+                }
             };
             /** Q-score Metric Record Layout Version 5
              *
@@ -235,6 +243,20 @@ namespace illumina{ namespace interop{ namespace io {
                     copy_value_read(header.m_qscoreBins, tmp);
 
                     return count;
+                }
+                /** Compute header size
+                 *
+                 * @param header q-metric header
+                 * @return header size
+                 */
+                static record_size_t computeHeaderSize(const q_metric::header_type& header)
+                {
+                    if(header.binCount()==0) return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(::uint8_t) + sizeof(::uint8_t));
+                    return static_cast<record_size_t>(sizeof(record_size_t) +
+                            sizeof(::uint8_t) + // record size
+                            sizeof(::uint8_t) + // has bins
+                            sizeof(::uint8_t) + // number of bins
+                            header.m_bin_count*3*sizeof(::uint8_t));
                 }
             private:
                 template<size_t N>
@@ -399,6 +421,20 @@ namespace illumina{ namespace interop{ namespace io {
                     copy_value_read(header.m_qscoreBins, tmp);
 
                     return count;
+                }
+                /** Compute header size
+                 *
+                 * @param header q-metric header
+                 * @return header size
+                 */
+                static record_size_t computeHeaderSize(const q_metric::header_type& header)
+                {
+                    if(header.binCount()==0) return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(::uint8_t) + sizeof(::uint8_t));
+                    return static_cast<record_size_t>(sizeof(record_size_t) +
+                           sizeof(::uint8_t) + // version
+                           sizeof(::uint8_t) + // has bins
+                           sizeof(::uint8_t) + // number of bins
+                           header.m_bin_count*3*sizeof(::uint8_t));
                 }
             private:
                 template<size_t N>

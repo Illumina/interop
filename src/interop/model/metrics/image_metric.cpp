@@ -119,6 +119,14 @@ namespace illumina{ namespace interop{ namespace io {
                             sizeof(metric_id_t)+sizeof(record_t)
                     );
                 }
+                /** Compute header size
+                 *
+                 * @return header size
+                 */
+                static record_size_t computeHeaderSize(const image_metric::header_type&)
+                {
+                    return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(::uint8_t));
+                }
             };
 
             /** Image Metric Record Layout Version 2
@@ -210,6 +218,14 @@ namespace illumina{ namespace interop{ namespace io {
                 static std::streamsize map_stream_for_header(Stream& stream, Header& header)
                 {
                     return stream_map< ::uint8_t >(stream, header.m_channelCount);
+                }
+                /** Compute header size
+                 *
+                 * @return header size
+                 */
+                static record_size_t computeHeaderSize(const image_metric::header_type&)
+                {
+                    return static_cast<record_size_t>(sizeof(::uint8_t) + sizeof(record_size_t) + sizeof(::uint8_t));
                 }
             };
 #pragma pack() // DO NOT MOVE

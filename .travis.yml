@@ -64,19 +64,22 @@ addons:
     packages:
     - cmake
     - cmake-data
+cache:
+  directories:
+    - $HOME/NUnit-2.6.4
 install:
 - if test "$TRAVIS_OS_NAME" = "linux"; then source tools/travis-linux-install.sh;
   fi
 - if test "$TRAVIS_OS_NAME" = "osx"; then source tools/travis-osx-install.sh; fi
 - ls -la $(which $CC)
 - ls -la $(which $CXX)
+
 script:
 - export CC="${CC}${COMPILER_VERSION}"
 - export CXX="${CXX}${COMPILER_VERSION}"
 - export BUILD_PATH=${PWD}/${BUILD_NAME}
 - echo 'Configuring...' && echo -en 'travis_fold:start:script.1\\r'
-- rm -fr build && mkdir -p build && cd build && cmake ../ -DNUNIT_ROOT=$PWD/../NUnit-2.6.4
-  -DENABLE_BACKWARDS_COMPATIBILITY=$INTEROP_C89 -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_INSTALL_PREFIX=${BUILD_PATH}
+- rm -fr build && mkdir -p build && cd build && cmake ../ -DNUNIT_ROOT=$HOME/NUnit-2.6.4 -DENABLE_BACKWARDS_COMPATIBILITY=$INTEROP_C89 -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_INSTALL_PREFIX=${BUILD_PATH}
 - echo -en 'travis_fold:end:script.1\\r'
 - cmake --build .
 - echo 'Installing...' && echo -en 'travis_fold:start:script.2\\r'
@@ -88,6 +91,11 @@ script:
 - echo -en 'travis_fold:end:script.3\\r'
 
 #white list broke the tag push deployment
+
+branches:
+  only:
+  - master
+  - /v\d\.\d\.\d/
 
 notifications:
   email: false
