@@ -4,6 +4,10 @@
 
 Commit  | Description
 ------- | -----------
+ade1187 | Ensure CMake configure script throws error of system does not support 32-bit float
+096c817 | Made CMake configure script more robust to missing dependencies
+498efc3 | Ensure proper cast to record_size_t
+286c66c | Added header size calculation
 06f567d | Added record size calculation
 d35f6bf | Added new filename function without assuming directory
 fc94e9f | Added links to Issues on webpage
