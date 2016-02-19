@@ -56,7 +56,7 @@ Install
 $ git clone https://github.com/Illumina/interop.git
 $ mkdir build
 $ cd build
-$ cmake ../interop
+$ cmake ../
 $ cmake --build .
 ~~~~~~~~~~~~~
 
