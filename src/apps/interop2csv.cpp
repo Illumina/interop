@@ -211,13 +211,13 @@ int read_metrics_from_file(const std::string& filename, MetricSet& metrics)
     catch(const io::file_not_found_exception&){return 1;}
     catch(const io::bad_format_exception& ex)
     {
-        if(kPrintError) std::cerr << ex.what() << std::endl;
+        if(kPrintError) std::cerr << metrics.name() << " - " << ex.what() << std::endl;
         return BAD_FORMAT;
     }
     catch(const io::incomplete_file_exception&){ }
     catch(const std::exception& ex)
     {
-        if(kPrintError) std::cerr << ex.what() << std::endl;
+        if(kPrintError) std::cerr << metrics.name() << " - " << ex.what() << std::endl;
         return UNEXPECTED_EXCEPTION;
     }
     if(metrics.size()==0)
