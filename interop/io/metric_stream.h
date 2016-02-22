@@ -74,7 +74,12 @@ namespace illumina {
                 typedef typename factory_type::metric_format_map metric_format_map;
                 metric_format_map& format_map=factory_type::metric_formats();
 
+                if(!in.good())
+                    throw incomplete_file_exception("Empty file found");
+
                 const int version = in.get();
+                if(version == -1)
+                    throw incomplete_file_exception("Empty file found");
                 if (format_map.find(version) == format_map.end())
                     throw bad_format_exception("No format found to parse file with version: " +
                                                util::lexical_cast<std::string>(version) + " of " +
