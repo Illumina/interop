@@ -125,9 +125,11 @@ int main(int argc, char** argv)
 
     // Somewhat system independent way to create a directory
     std::string cmd = "mkdir "+output_folder;
-    std::system(cmd.c_str());
+    int sres = std::system(cmd.c_str());
+    if(sres != 0) std::cerr << "Make directory failed for output_folder" << std::endl;
     cmd = "mkdir "+io::combine(output_folder, "InterOp");
-    std::system(cmd.c_str());
+    sres = std::system(cmd.c_str());
+    if(sres != 0) std::cerr << "Make directory failed for InterOp" << std::endl;
 
     {
         std::ifstream src(io::combine(run_folder, "RunInfo.xml").c_str(), std::ios::binary);

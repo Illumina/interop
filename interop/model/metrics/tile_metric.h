@@ -187,7 +187,7 @@ namespace illumina {
                             m_clusterDensityPf(metric.m_clusterDensityPf),
                             m_clusterCount(metric.m_clusterCount),
                             m_clusterCountPf(metric.m_clusterCountPf),
-                            m_read_metrics(readMetrics)
+                            m_read_metrics(readMetrics.size() > 0 ? readMetrics : metric.read_metrics())
                     {}
 
                 public:
