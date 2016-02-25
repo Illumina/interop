@@ -30,9 +30,21 @@ find_library(GTEST_LIBRARY
         HINTS ${PC_GTEST_INCLUDEDIR} ${PC_GTEST_INCLUDE_DIRS} ${GTEST_ROOT} $ENV{GTEST_DIR}
         PATH_SUFFIXES . lib lib64
 )
+find_library(GTEST_MAIN_LIBRARY
+        NAMES gtest_main$
+        HINTS ${PC_GTEST_INCLUDEDIR} ${PC_GTEST_INCLUDE_DIRS} ${GTEST_ROOT} $ENV{GTEST_DIR}
+        PATH_SUFFIXES . lib lib64
+        )
 
-if(NOT GTEST_INCLUDE_DIR OR NOT GTEST_LIBRARY)
+if(NOT GTEST_INCLUDE_DIR OR NOT GTEST_LIBRARY OR NOT GTEST_MAIN_LIBRARY)
 
+    if(NOT GTEST_INCLUDE_DIR)
+        message(STATUS "GTest include directory not found")
+    elseif(NOT GTEST_LIBRARY)
+        message(STATUS "GTest library not found")
+    elseif(NOT GTEST_MAIN_LIBRARY)
+        message(STATUS "GTest main library not found")
+    endif()
     if(MSVC)
         set(USE_OWN_TR1_TUPLE 0)
     else()
@@ -59,11 +71,13 @@ if(NOT GTEST_INCLUDE_DIR OR NOT GTEST_LIBRARY)
             LOG_BUILD ON)
     ExternalProject_Get_Property(googletest source_dir)
     set(GTEST_INCLUDE_DIR ${source_dir}/include)
+    set(GTEST_LIBRARY OFF)
+    set(GTEST_MAIN_LIBRARY OFF)
 
     ExternalProject_Get_Property(googletest binary_dir)
     set(GTEST_LIBRARY_PATH ${GTEST_PREFIX}/lib64 CACHE INTERNAL "Path to Google Test Library")
-
-
+    set(GTEST_LIBRARY_FILE ${GTEST_LIBRARY_PATH}/${CMAKE_STATIC_LIBRARY_PREFIX}gtest${CMAKE_STATIC_LIBRARY_SUFFIX})
+    set(GTEST_MAIN_LIBRARY_FILE ${GTEST_LIBRARY_PATH}/${CMAKE_STATIC_LIBRARY_PREFIX}gtest_main${CMAKE_STATIC_LIBRARY_SUFFIX})
     set(GTEST_TARGET googletest)
 endif()
 

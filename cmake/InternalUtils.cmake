@@ -44,6 +44,15 @@ macro(config_compiler_and_linker)
         set(COMPILER_IS_GNUCC_OR_CLANG ON)
     endif()
 
+
+    include(CheckTypeSize)
+    check_type_size("float" SIZEOF_FLOAT)
+    if( "${SIZEOF_FLOAT}" STREQUAL "" )
+        message(FATAL_ERROR "Type float is not supported on this system and/or compiler: ${CMAKE_SYSTEM}/${CMAKE_CXX_COMPILER_ID}")
+    elseif( NOT ${SIZEOF_FLOAT} EQUAL "4" )
+        message(FATAL_ERROR "Type float is ${SIZEOF_FLOAT}-byte - This system and/or compiler is not supported: ${CMAKE_SYSTEM}/${CMAKE_CXX_COMPILER_ID}")
+    endif()
+
     include(CheckIncludeFiles)
     check_include_files("stdint.h" HAVE_STDINT_H)
     if(HAVE_STDINT_H)
