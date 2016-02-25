@@ -71,4 +71,83 @@ namespace illumina.interop.csharp.unittest
 		}
 	}
 
+
+	/// <summary>
+	/// Test the performance of tabulating a large number of extraction metrics
+	/// </summary>
+	[TestFixture]
+	public class ExtractionMetricsPerformanceTestV2
+	{
+		const int Version = 2;
+		extraction_metrics extraction_metric_set;
+		vector_extraction_metrics metrics = new vector_extraction_metrics();
+		/// <summary>
+		/// Build a large extraction metric set
+		/// </summary>
+		[SetUp]
+		protected void SetUp()
+		{
+
+		    if(metrics.Count == 0)
+		    {
+                System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
+                timer.Start();
+                float[] focus1 = new float[]{2.24664021f, 2.1896739f, 0, 0};
+                ushort[] p90_1  = new ushort[]{302, 273, 0, 0};
+                for(uint lane = 1;lane <=8;lane++)
+                {
+                    for(uint tile = 1;tile <=80;tile++)
+                    {
+                        for(uint cycle = 1;cycle <=318;cycle++)
+                        {
+                            metrics.Add(new extraction_metric(lane, tile, cycle, new csharp_date_time(9859129975844165472ul), (p90_1), (focus1), 4));
+                        }
+                    }
+                }
+                extraction_metric_set = new extraction_metrics(metrics, Version);
+                timer.Stop();
+                System.Console.WriteLine("Setup: " + timer.Elapsed.Hours +" : " + timer.Elapsed.Minutes +" : " + timer.Elapsed.Seconds);
+                System.Console.WriteLine("Size: " + metrics.Count + " - " + extraction_metric_set.size());
+		    }
+		}
+		/// <summary>
+		/// Test performance of getting the focus values
+		/// </summary>
+		[Test]
+		public void Test_At()
+		{
+		    System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
+		    timer.Start();
+		    double sum = 0.0;
+		    for(uint i=0;i<extraction_metric_set.size();i++)
+		        sum += extraction_metric_set.at(i).focusScore(0);
+		    timer.Stop();
+		    System.Console.WriteLine("GetMetric - Sum focus: " + timer.Elapsed.Hours +" : " + timer.Elapsed.Minutes +" : " + timer.Elapsed.Seconds);
+		}
+		/// <summary>
+		/// Test performance of getting the focus values
+		/// </summary>
+		[Test]
+		public void Test_GetMetric()
+		{
+		    System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
+		    timer.Start();
+		    double sum = 0.0;
+		    for(int lane = 1;lane <=8;lane++)
+		    {
+		        for(int tile = 1;tile <=80;tile++)
+		        {
+		            for(int cycle = 1;cycle <=318;cycle++)
+		            {
+
+		                extraction_metric metric = extraction_metric_set.GetMetric(lane, tile, cycle);
+		                sum += metric.focusScore(0);
+		            }
+                }
+            }
+		    timer.Stop();
+		    System.Console.WriteLine("GetMetric - Sum focus: " + timer.Elapsed.Hours +" : " + timer.Elapsed.Minutes +" : " + timer.Elapsed.Seconds);
+		}
+	}
+
 }
