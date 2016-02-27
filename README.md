@@ -38,6 +38,7 @@ Documentation
 | [Modules][ModulesPage]        | Short descriptions of the most useful code in the Illumina InterOp API               |
 | [Changes][ChangesPage]        | Changes between releases of the source code                                          |
 | [Issues]                      | Have a question? Need a feature? Found a bug? Interact with the developers here.     |
+| [Performance][PerfPage]       | Computation performance of the code                                                  |
 
 [MainPage]: http://illumina.github.io/interop/index.html
 [InstallPage]: http://illumina.github.io/interop/install.html
@@ -46,6 +47,7 @@ Documentation
 [ModulesPage]: http://illumina.github.io/interop/modules.html
 [ChangesPage]: http://illumina.github.io/interop/changes.html
 [Issues]: https://github.com/Illumina/interop/issues
+[PerfPage]: http://illumina.github.io/interop/performance.html
 
 Install
 -------

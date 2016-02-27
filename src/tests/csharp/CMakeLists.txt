@@ -39,6 +39,7 @@ set(TEST_SRCS
         metrics/IndexMetricsTest.cs
         metrics/QMetricsTest.cs
         metrics/TileMetricsTest.cs
+        metrics/PerformanceTest.cs
         )
 set(csharp_files ${SWIG_GEN_CSHARP_SOURCE_FILES})
 foreach(SRC ${TEST_SRCS})

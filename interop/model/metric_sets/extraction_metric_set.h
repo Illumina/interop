@@ -36,7 +36,9 @@ public:
     }
 
 public:
-    /** Used for the performance test in C#
+    /** Example used for the performance test in C#
+     *
+     * This shows a simple way to speed up analysis of data using the C# binding.
      *
      * @param focus_scores array of focus scores
      * @param channel channel for focus
