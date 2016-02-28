@@ -256,6 +256,7 @@ namespace illumina {
                      */
                     void clear()
                     {
+                        m_id_map.clear();
                         m_data.clear();
                     }
                     /** Get the name of the InterOp
