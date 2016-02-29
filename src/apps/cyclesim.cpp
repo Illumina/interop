@@ -89,6 +89,8 @@ void print_help(std::ostream& out);
  * @param input path to run folder
  * @param output path to output run folder
  * @param max_cycle number of cycles to copy
+ * @param max_read number of reads to copy
+ * @param cycle_to_align cycle alignment occurs
  * @return error code or 0
  */
 int write_interops(const std::string& input, const std::string& output, unsigned int max_cycle, unsigned int max_read, unsigned int cycle_to_align);
