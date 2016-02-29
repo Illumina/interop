@@ -111,6 +111,21 @@ WRAPPED_TEST(FIXTURE, test_hardcoded_read)
     typename TypeParam::metrics_type metrics;
     EXPECT_NO_THROW(illumina::interop::io::read_metrics(fin, metrics));
 }
+/** Confirm the clear function works
+ */
+WRAPPED_TEST(FIXTURE, test_clear)
+{
+    std::string tmp = std::string(TypeParam::expected_binary_data);
+    std::istringstream fin(tmp);
+    typename TypeParam::metrics_type metrics;
+    EXPECT_NO_THROW(illumina::interop::io::read_metrics(fin, metrics));
+    size_t cnt = metrics.size();
+    metrics.clear();
+    std::istringstream fin2(tmp);
+    EXPECT_NO_THROW(illumina::interop::io::read_metrics(fin2, metrics));
+    EXPECT_EQ(cnt, metrics.size());
+
+}
 
 #ifdef _MSC_VER
 #pragma warning(pop)
