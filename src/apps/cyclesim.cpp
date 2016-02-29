@@ -206,8 +206,14 @@ int copy_tile_metrics(const std::string& input, const std::string& output, unsig
     if((res=read_metrics_from_file(input, metrics)) != 0) return res;
 
     std::cout << metrics.name() << ": " << metrics.version() << std::endl;
-
-    io::write_interop(output, metrics);
+    try {
+        io::write_interop(output, metrics);
+    }
+    catch(const io::bad_format_exception& ex)
+    {
+        if(kPrintError) std::cerr << ex.what() << std::endl;
+        return BAD_FORMAT;
+    }
 
     metric_array_t subset;
 
