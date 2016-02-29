@@ -224,7 +224,14 @@ int copy_tile_metrics(const std::string& input, const std::string& output, unsig
     }
 
     tile_metrics metricsOut(subset, metrics.version(), metrics);
-    io::write_interop(output, metricsOut);
+    try {
+        io::write_interop(output, metricsOut);
+    }
+    catch(const io::bad_format_exception& ex)
+    {
+        if(kPrintError) std::cerr << ex.what() << std::endl;
+        return BAD_FORMAT;
+    }
 
     return 0;
 }
