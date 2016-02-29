@@ -263,7 +263,14 @@ int copy_cycle_metrics(const std::string& input, const std::string& output, unsi
     }
 
     MetricSet metricsOut(subset, metrics.version(), metrics);
-    io::write_interop(output, metricsOut);
+    try {
+        io::write_interop(output, metricsOut);
+    }
+    catch(const io::bad_format_exception& ex)
+    {
+        if(kPrintError) std::cerr << ex.what() << std::endl;
+        return BAD_FORMAT;
+    }
 
     return 0;
 }
