@@ -198,7 +198,7 @@ namespace illumina {
                      */
                     id_vector tile_numbers_for_lane(const uint_t lane)const
                     {
-                        std::set<id_t> tile_number_set;
+                        std::set<uint_t> tile_number_set;
                         transform_if(m_data.begin(),
                                      m_data.end(),
                                      std::inserter(tile_number_set, tile_number_set.begin()),
