@@ -209,6 +209,11 @@ int copy_tile_metrics(const std::string& input, const std::string& output, unsig
     try {
         io::write_interop(output, metrics);
     }
+    catch(const io::file_not_found_exception& ex)
+    {
+        if(kPrintError) std::cerr << ex.what() << std::endl;
+        return 1;
+    }
     catch(const io::bad_format_exception& ex)
     {
         if(kPrintError) std::cerr << ex.what() << std::endl;
@@ -232,6 +237,11 @@ int copy_tile_metrics(const std::string& input, const std::string& output, unsig
     tile_metrics metricsOut(subset, metrics.version(), metrics);
     try {
         io::write_interop(output, metricsOut);
+    }
+    catch(const io::file_not_found_exception& ex)
+    {
+        if(kPrintError) std::cerr << ex.what() << std::endl;
+        return 1;
     }
     catch(const io::bad_format_exception& ex)
     {
@@ -271,6 +281,11 @@ int copy_cycle_metrics(const std::string& input, const std::string& output, unsi
     MetricSet metricsOut(subset, metrics.version(), metrics);
     try {
         io::write_interop(output, metricsOut);
+    }
+    catch(const io::file_not_found_exception& ex)
+    {
+        if(kPrintError) std::cerr << ex.what() << std::endl;
+        return 1;
     }
     catch(const io::bad_format_exception& ex)
     {
