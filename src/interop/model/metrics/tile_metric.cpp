@@ -121,14 +121,10 @@ namespace illumina{ namespace interop{
                                 if(codeOffset%2 == 0)
                                 {
                                     get_read(metric, (codeOffset/2)+1)->percent_phasing(val*100);
-                                    if(val > 0)
-                                        codeOffset++;
                                 }
                                 else
                                 {
                                     get_read(metric, (codeOffset+1)/2)->percent_prephasing(val*100);
-                                    if(val > 0)
-                                        codeOffset++;
                                 }
                             }
                             else if(rec.code % PercentAligned < 100)
