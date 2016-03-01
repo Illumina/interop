@@ -61,12 +61,18 @@ addons:
   apt:
     sources:
     - george-edison55-precise-backports
+    - ppa:teward/swig3.0
     packages:
     - cmake
     - cmake-data
+    - libicu-dev
+    - swig3.0
+    - doxygen
+    - graphviz
 cache:
   directories:
     - $HOME/NUnit-2.6.4
+
 install:
 - if test "$TRAVIS_OS_NAME" = "linux"; then source tools/travis-linux-install.sh;
   fi
