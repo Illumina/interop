@@ -47,7 +47,7 @@ public:
     void copy_focus(float* focus_scores, size_t channel, size_t n)
     {
         float* focus_scores_end = focus_scores+n;
-        for(typename parent_type::const_iterator b=parent_type::metrics().begin(), e=parent_type::metrics().end();b != e && focus_scores != focus_scores_end;++b, ++focus_scores)
+        for(parent_type::const_iterator b=parent_type::metrics().begin(), e=parent_type::metrics().end();b != e && focus_scores != focus_scores_end;++b, ++focus_scores)
             *focus_scores = b->focusScore(channel);
     }
 };
