@@ -1,9 +1,27 @@
 # Changes                                               {#changes}
 
+The change list on the website is likely not the most up to date for trunk. This set
+of changes can be found in [Recent Changes].
+
+[Recent Changes]: https://github.com/Illumina/interop/blob/master/docs/src/changes.md
+
 ## Trunk
+
+## v1.0.3
 
 Commit  | Description
 ------- | -----------
+5bf14ca | Fix for reading multiple reads with tile metrics
+2cef41a | Fixing tile metric phasing/prephasing scale to match SAV
+a11a3e1 | Fixed tile_number_for_lane
+29905ea | Fixed clear for all metric sets
+
+## v1.0.2
+
+Commit  | Description
+------- | -----------
+27a7eab | Fixed unclear error message when InterOp is empty
+7f93166 | Improvements to the documentation website theme
 ade1187 | Ensure CMake configure script throws error of system does not support 32-bit float
 096c817 | Made CMake configure script more robust to missing dependencies
 498efc3 | Ensure proper cast to record_size_t
