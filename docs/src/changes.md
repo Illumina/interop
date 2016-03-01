@@ -11,7 +11,10 @@ of changes can be found in [Recent Changes].
 
 Commit  | Description
 ------- | -----------
-
+5bf14ca | Fix for reading multiple reads with tile metrics
+2cef41a | Fixing tile metric phasing/prephasing scale to match SAV
+a11a3e1 | Fixed tile_number_for_lane
+29905ea | Fixed clear for all metric sets
 
 ## v1.0.2
 
