@@ -13,6 +13,7 @@ namespace illumina.interop.csharp.unittest
 		const int Version = 2;
 		extraction_metrics extraction_metric_set;
 		vector_extraction_metrics metrics = new vector_extraction_metrics();
+		const int TileCount=500;
 		/// <summary>
 		/// Build a large extraction metric set
 		/// </summary>
@@ -28,7 +29,7 @@ namespace illumina.interop.csharp.unittest
                 ushort[] p90_1  = new ushort[]{302, 273, 0, 0};
                 for(uint lane = 1;lane <=8;lane++)
                 {
-                    for(uint tile = 1;tile <=2000;tile++)
+                    for(uint tile = 1;tile <=TileCount;tile++)
                     {
                         for(uint cycle = 1;cycle <=318;cycle++)
                         {
@@ -67,7 +68,7 @@ namespace illumina.interop.csharp.unittest
 		    double sum = 0.0;
 		    for(int lane = 1;lane <=8;lane++)
 		    {
-		        for(int tile = 1;tile <=2000;tile++)
+		        for(int tile = 1;tile <=TileCount;tile++)
 		        {
 		            for(int cycle = 1;cycle <=318;cycle++)
 		            {
