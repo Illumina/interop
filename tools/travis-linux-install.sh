@@ -7,7 +7,7 @@ sudo apt-get install -qq -y mono-complete
 
 sudo apt-get install -qq libgtest-dev
 sudo add-apt-repository -y ppa:teward/swig3.0
-sudo add-apt-repository -y ppa:beineri/opt-qt551-trusty
+#sudo add-apt-repository -y ppa:beineri/opt-qt551-trusty
 sudo apt-get update -qq
 sudo apt-get install -qq libicu-dev swig3.0 doxygen graphviz
 
