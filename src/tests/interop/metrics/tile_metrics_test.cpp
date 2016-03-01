@@ -34,8 +34,11 @@ struct tile_metrics_hardcoded_fixture_v2 : util::fixture_helper<tile_metrics, 2>
     /** Setup fixture */
     tile_metrics_hardcoded_fixture_v2()
     {
-        expected_metrics.push_back(metric_type(7, 1114, 2355119.25f,1158081.50f,6470949,3181956,
-                                               metric_type::read_metric_vector(1, metric_type::read_metric_type(1, 2.61630869f, 0.0797112584f, 0.119908921f))));
+        metric_type::read_metric_vector reads1;
+        reads1.push_back(metric_type::read_metric_type(1, 2.61630869f, 0.0797112584f, 0.119908921f));
+        reads1.push_back(metric_type::read_metric_type(2, 2.61630869f, 0.0797112584f, 0.119908921f));
+
+        expected_metrics.push_back(metric_type(7, 1114, 2355119.25f,1158081.50f,6470949,3181956,reads1));
         expected_metrics.push_back(metric_type(7, 1214, 2355119.25f,1174757.75f,6470949,3227776,
                                                metric_type::read_metric_vector(1, metric_type::read_metric_type(1, 2.62243795f, 0.129267812f, 0.135128692f))));
         expected_metrics.push_back(metric_type(7, 2114, 2355119.25f,1211592.38f,6470949,3328983,
@@ -46,6 +49,12 @@ struct tile_metrics_hardcoded_fixture_v2 : util::fixture_helper<tile_metrics, 2>
                 ,7,0,90,4,102,0,74,122,-59,74
                 ,7,0,90,4,101,0,12,94,-115,73
                 ,7,0,90,4,103,0,16,54,66,74
+                ,7,0,90,4,-56,0,82,-11,80,58
+                ,7,0,90,4,-55,0,-62,42,-99,58
+                ,7,0,90,4,44,1,-102,113,39,64
+                ,7,0,90,4,-54,0,82,-11,80,58
+                ,7,0,90,4,-53,0,-62,42,-99,58
+                ,7,0,90,4,45,1,-102,113,39,64
                 ,7,0,90,4,-56,0,82,-11,80,58
                 ,7,0,90,4,-55,0,-62,42,-99,58
                 ,7,0,90,4,44,1,-102,113,39,64
@@ -87,12 +96,15 @@ struct tile_metrics_write_read_fixture_v2 : util::fixture_helper<tile_metrics, 2
     /** Setup fixture */
     tile_metrics_write_read_fixture_v2()
     {
-        expected_metrics.push_back(metric_type(7, 1114, 2355119.25f,1158081.50f,6470949,3181956,
-                                               metric_type::read_metric_vector(1, metric_type::read_metric_type(3, 2.61630869f, 0.0797112584f, 0.119908921f))));
+        metric_type::read_metric_vector reads1;
+        reads1.push_back(metric_type::read_metric_type(1, 2.61630869f, 0.0797112584f, 0.119908921f));
+        reads1.push_back(metric_type::read_metric_type(2, 2.61630869f, 0.0797112584f, 0.119908921f));
+
+        expected_metrics.push_back(metric_type(7, 1114, 2355119.25f,1158081.50f,6470949,3181956,reads1));
         expected_metrics.push_back(metric_type(7, 1214, 2355119.25f,1174757.75f,6470949,3227776,
-                                               metric_type::read_metric_vector(1, metric_type::read_metric_type(3, 2.62243795f, 0.129267812f, 0.135128692f))));
+                                               metric_type::read_metric_vector(1, metric_type::read_metric_type(1, 2.62243795f, 0.129267812f, 0.135128692f))));
         expected_metrics.push_back(metric_type(7, 2114, 2355119.25f,1211592.38f,6470949,3328983,
-                                               metric_type::read_metric_vector(1, metric_type::read_metric_type(3, 2.490309f, 0.11908555f, 0.092706576f))));
+                                               metric_type::read_metric_vector(1, metric_type::read_metric_type(1, 2.490309f, 0.11908555f, 0.092706576f))));
         setup_write_read();
     }
 };
