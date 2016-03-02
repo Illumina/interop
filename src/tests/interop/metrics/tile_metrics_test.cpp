@@ -178,11 +178,32 @@ TYPED_TEST(tile_metrics_test, mean)
     EXPECT_NEAR(expected_percent_aligned_avg, 2.5763518810272217, tol);
 }
 
+TYPED_TEST(tile_metrics_test, nan_mean)
+{
+    const float tol = 1e-7f / 0.01f;
+    const size_t read = 0;
+    float expected_percent_aligned_avg = interop::util::nan_mean<float>(TypeParam::expected_metrics.begin(),
+                                                                        TypeParam::expected_metrics.end(),
+                                                                        interop::util::op::const_member_function(read, &tile_metric::percent_aligned));
+    EXPECT_NEAR(expected_percent_aligned_avg, 2.5763518810272217, tol);
+}
+
+
 TYPED_TEST(tile_metrics_test, standard_deviation)
 {
     const float tol = 1e-7f / 0.01f;
     const size_t read = 0;
     float expected_percent_aligned_std = std::sqrt(interop::util::variance<float>(TypeParam::expected_metrics.begin(),
+                                                                                  TypeParam::expected_metrics.end(),
+                                                                                  interop::util::op::const_member_function(read, &tile_metric::percent_aligned)));
+    EXPECT_NEAR(expected_percent_aligned_std, 0.074578315019607544, tol);
+}
+
+TYPED_TEST(tile_metrics_test, nan_standard_deviation)
+{
+    const float tol = 1e-7f / 0.01f;
+    const size_t read = 0;
+    float expected_percent_aligned_std = std::sqrt(interop::util::nan_variance<float>(TypeParam::expected_metrics.begin(),
                                                                                   TypeParam::expected_metrics.end(),
                                                                                   interop::util::op::const_member_function(read, &tile_metric::percent_aligned)));
     EXPECT_NEAR(expected_percent_aligned_std, 0.074578315019607544, tol);

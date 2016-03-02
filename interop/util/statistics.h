@@ -142,6 +142,63 @@ namespace op
         }
     };
 }
+/** Estimate the mean of values in a given collection
+ *
+ * This function skips NaN values
+ *
+ * Usage:
+ *  std::vector<float> values = {0,1,2,3};
+ *  double mean_val = nan_mean<double>(values.begin(), values.end());
+ *
+ * @param beg iterator to start of collection
+ * @param end iterator to end of collection
+ * @param op function that takes one value and returns another value
+ * @return mean of the input collection
+ */
+template<typename R, typename I, typename BinaryOp>
+R nan_mean(I beg, I end, BinaryOp op)
+{
+    ptrdiff_t n = 0;
+    R sum = 0;
+    for(;beg != end;++beg)
+    {
+        R val = op(*beg);
+        if(std::isnan(val)) continue;
+        sum += val;
+        ++n;
+    }
+    return sum/n;
+}
+/** Estimate the variance of values in a given collection
+ *
+ * This function skips NaN values
+ *
+ * Usage:
+ *  std::vector<float> values = {0,1,2,3};
+ *  double mean_val = nan_variance<double>(values.begin(), values.end());
+ *
+ * @param beg iterator to start of collection
+ * @param end iterator to end of collection
+ * @param op function that takes one value and returns another value
+ * @return variance of the input collection
+ */
+template<typename R, typename I, typename BinaryOp>
+R nan_variance(I beg, I end, BinaryOp op)
+{
+    ptrdiff_t n = 0;
+    R mean_val = nan_mean<R>(beg, end, op);
+    R sum2 = 0;
+    R sum3 = 0;
+    for(;beg != end;++beg)
+    {
+        const R val = op(*beg)-mean_val;
+        if(std::isnan(val)) continue;
+        sum2 += val*val;
+        sum3 += val;
+        ++n;
+    }
+    return (sum2 - sum3*sum3/n) / (n-1);
+}
 
 /** Estimate the mean of values in a given collection
  *

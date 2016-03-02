@@ -67,6 +67,8 @@ namespace illumina {
                     uint_t read()const{return m_read;}
                     /** Percent aligned for read
                      *
+                     * @note If percent aligned was never estimated, then it will be NaN
+                     *
                      * @return percent aligned
                      */
                     float percent_aligned()const{return m_percent_aligned;}
@@ -231,6 +233,8 @@ namespace illumina {
                      */
                     const read_metric_vector & read_metrics()const{return m_read_metrics;}
                     /** Percent aligned for read
+                     *
+                     * @note If percent aligned was never estimated, then it will be NaN
                      *
                      * @param n index of read
                      * @return percent aligned
