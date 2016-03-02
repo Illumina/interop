@@ -25,13 +25,13 @@ namespace illumina.interop.csharp.unittest
 		{
 
 		    read_metric_vector read1 = new read_metric_vector();
-		    read1.Add(new read_metric(1, 2.61630869f, 0.0797112584f/100, 0.119908921f/100));
+		    read1.Add(new read_metric(1, 2.61630869f, 0.0797112584f, 0.119908921f));
 			expected_metrics.Add(new tile_metric(7, 1114, 2355119.25f,1158081.50f,6470949,3181956, read1));
 		    read_metric_vector read2 = new read_metric_vector();
-		    read2.Add(new read_metric(1, 2.62243795f, 0.129267812f/100, 0.135128692f/100));
+		    read2.Add(new read_metric(1, 2.62243795f, 0.129267812f, 0.135128692f));
 			expected_metrics.Add(new tile_metric(7, 1214, 2355119.25f,1174757.75f,6470949,3227776, read2));
 		    read_metric_vector read3 = new read_metric_vector();
-		    read3.Add(new read_metric(1, 2.490309f, 0.11908555f/100, 0.092706576f/100));
+		    read3.Add(new read_metric(1, 2.490309f, 0.11908555f, 0.092706576f));
 			expected_metrics.Add(new tile_metric(7, 2114, 2355119.25f,1211592.38f,6470949,3328983, read3));
 
 			int[] tmp = new int[]{2,10

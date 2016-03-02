@@ -198,14 +198,13 @@ namespace illumina {
                      */
                     id_vector tile_numbers_for_lane(const uint_t lane)const
                     {
-                        id_vector tile_numbers;
-                        tile_numbers.reserve(size());
+                        std::set<uint_t> tile_number_set;
                         transform_if(m_data.begin(),
                                      m_data.end(),
-                                     std::back_inserter(tile_numbers),
+                                     std::inserter(tile_number_set, tile_number_set.begin()),
                                      lane_equals(lane),
                                      to_tile);
-                        id_vector(tile_numbers).swap(tile_numbers);// Shrink to fit
+                        id_vector tile_numbers(tile_number_set.begin(), tile_number_set.end());
                         return tile_numbers;
                     }
                     /** Get a list of all available metrics for the specified lane
@@ -256,6 +255,7 @@ namespace illumina {
                      */
                     void clear()
                     {
+                        m_id_map.clear();
                         m_data.clear();
                     }
                     /** Get the name of the InterOp
