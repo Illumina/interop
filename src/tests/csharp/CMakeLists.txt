@@ -39,7 +39,6 @@ set(TEST_SRCS
         metrics/IndexMetricsTest.cs
         metrics/QMetricsTest.cs
         metrics/TileMetricsTest.cs
-        metrics/PerformanceTest.cs
         )
 set(csharp_files ${SWIG_GEN_CSHARP_SOURCE_FILES})
 foreach(SRC ${TEST_SRCS})
@@ -59,5 +58,29 @@ set(NUNIT_COMMAND_EXE "${NUNIT_COMMAND}" PARENT_SCOPE)
 
 if(NOT ENABLE_STATIC)
     add_custom_command(TARGET csharp_unittest POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE_DIR:${INTEROP_LIB}> ${CMAKE_CURRENT_BINARY_DIR})
+endif()
+
+
+
+set(PERF_TEST_SRCS
+        metrics/PerformanceTest.cs
+        )
+set(csharp_perf_files ${SWIG_GEN_CSHARP_SOURCE_FILES})
+foreach(SRC ${PERF_TEST_SRCS})
+    get_filename_component(CSHARP_TEST_SRCS ${SRC} ABSOLUTE)
+    list(APPEND csharp_perf_files ${CSHARP_TEST_SRCS})
+endforeach()
+
+csharp_add_library(csharp_perftest ${NUNIT_LIBRARIES} ${csharp_perf_files})
+add_dependencies(csharp_perftest csharp_interop ${NUNIT_TARGET})
+
+add_custom_command(TARGET csharp_perftest POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy ${CSHARP_csharp_perftest_BINARY} $<TARGET_FILE_DIR:${INTEROP_LIB}>
+        COMMAND ${CMAKE_COMMAND} -E copy ${NUNIT_LIBRARIES} $<TARGET_FILE_DIR:${INTEROP_LIB}>)
+
+set(CSHARP_PERF_TEST_EXE "${CSHARP_csharp_perftest_BINARY_NAME}" PARENT_SCOPE)
+if(NOT ENABLE_STATIC)
+    add_custom_command(TARGET csharp_perftest POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE_DIR:${INTEROP_LIB}> ${CMAKE_CURRENT_BINARY_DIR})
 endif()
