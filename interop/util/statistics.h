@@ -23,26 +23,66 @@ namespace util {
 
 namespace op
 {
-    template<class T, typename R, typename P1, R (T::*F)(P1)>
+    /** Function call with a single parameter
+     */
+    template<class T, typename R, typename P1>
     struct operator1
     {
-        operator1(const P1 index) : m_index(index){}
-        float operator()(const T& metric)
+        /** Constructor
+         *
+         * @param param1 first value to function
+         * @param func pointer to member function
+         */
+        operator1(const P1 param1, R (T::*func )(P1)const) : m_param1(param1), m_function(func){}
+        /** Perform function call
+         *
+         * @param val previous accumulated value
+         * @param obj object with value to access
+         */
+        template<class F>
+        F operator()(const F val, const T& obj)const
         {
-            return metric.percentCalledIntensity(m_index);
+            return val+(obj.*m_function)(m_param1);
         }
-        P1 m_index;
+        /** Perform function call
+         *
+         * @param obj object with value to access
+         */
+        R operator()(const T& obj)const
+        {
+            return (obj.*m_function)(m_param1);
+        }
+
+    private:
+        P1 m_param1;
+        R (T::*m_function )(P1)const;
     };
-    template<class T, typename R, typename P1>
-    operator1<T, R, P1, F> opt1(P1 val, R (T::*F)(P1))
+    /**Function Interface for function call with single parameter
+     *
+     * @param param1 first value to function
+     * @param func pointer to member function
+     * @return functor wrapper
+     */
+    template<class T, typename R, typename P1, typename P2>
+    operator1<T, R, P1> opt1(P2 param1, R (T::*func )(P1)const)
     {
-        return operator1<T, R, P1, F>(val);
-    };
+        return operator1<T, R, P1>(param1, func);
+    }
 
     /** No operation is performed on the given value
      */
     struct no_op
     {
+        /** No operation is performed
+         *
+         * @param val source value
+         * @return same value
+         */
+        template<typename F, typename T>
+        F operator()(const F val1, const T& val2)
+        {
+            return static_cast<F>(val1+val2);
+        }
         /** No operation is performed
          *
          * @param val source value
@@ -93,7 +133,7 @@ R variance(I beg, I end, BinaryOp op)
     R sum3 = 0;
     for(;beg != end;++beg)
     {
-        const R val = op(*beg)-mean;
+        const R val = op(*beg)-mean_val;
         sum2 += val*val;
         sum3 += val;
     }
