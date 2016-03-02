@@ -118,8 +118,14 @@ namespace illumina{ namespace interop{
                             {
                                 //code = Prephasing+read*2;
                                 int codeOffset = rec.code % Phasing;
-                                if(codeOffset%2 == 0) get_read(metric, (codeOffset/2)+1)->percent_phasing(val);//*100.0f);
-                                else get_read(metric, (codeOffset+1)/2)->percent_prephasing(val);//*100.0f);
+                                if(codeOffset%2 == 0)
+                                {
+                                    get_read(metric, (codeOffset/2)+1)->percent_phasing(val*100);
+                                }
+                                else
+                                {
+                                    get_read(metric, (codeOffset+1)/2)->percent_prephasing(val*100);
+                                }
                             }
                             else if(rec.code % PercentAligned < 100)
                             {
@@ -223,7 +229,7 @@ namespace illumina{ namespace interop{
                     for(;it != metric.read_metrics().end();it++)
                         if(it->read() == read) return it;
                     metric.m_read_metrics.push_back(model::metrics::read_metric(read, 0, 0, 0));
-                    return metric.m_read_metrics.begin();
+                    return metric.m_read_metrics.begin()+metric.m_read_metrics.size()-1;
                 }
             };
 #pragma pack()

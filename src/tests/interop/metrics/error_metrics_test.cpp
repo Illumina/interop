@@ -94,6 +94,21 @@ TYPED_TEST(error_metrics_test, test_read_write)
     }
 }
 
+TEST(error_metrics_test, test_tile_metric_count_for_lane)
+{
+    std::vector<error_metric> metrics;
+    metrics.push_back(error_metric(7, 1114, 1, 0.450100899f));
+    metrics.push_back(error_metric(7, 1114, 2, 0.900201797f));
+    metrics.push_back(error_metric(7, 1114, 3, 0.465621591f));
+    error_metrics metric_set;
+    for(size_t i=0;i<metrics.size();++i) metric_set.insert(metrics[i].id(), metrics[i]);
+    error_metrics::id_vector tile_lane_metrics = metric_set.tile_numbers_for_lane(7);
+
+    EXPECT_EQ(tile_lane_metrics.size(), 1u);
+
+
+}
+
 #define FIXTURE error_metrics_test
 /**
  * @class illumina::interop::model::metrics::error_metric
