@@ -12,6 +12,7 @@
 #include <gtest/gtest.h>
 #include "interop/model/metric_sets/tile_metric_set.h"
 #include "src/tests/interop/metrics/metric_test_utils.h"
+#include "interop/util/statistics.h"
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::io;
 
@@ -121,6 +122,7 @@ template<typename TestSetup>
 struct tile_metrics_test : public ::testing::Test, public TestSetup { };
 }}}
 using namespace illumina::interop::unittest;
+using namespace illumina;
 
 
 
@@ -164,6 +166,37 @@ TYPED_TEST(tile_metrics_test, test_read_write)
             EXPECT_NEAR(itReadExpected->percent_prephasing()*TypeParam::scale_phasing(), itReadActual->percent_prephasing(), tol);
         }
     }
+}
+
+TYPED_TEST(tile_metrics_test, mean)
+{
+    const float tol = 1e-7f / 0.01f;
+    const size_t read = 0;
+    float expected_percent_aligned_avg = interop::util::mean<float>(TypeParam::expected_metrics.begin(),
+                                                                    TypeParam::expected_metrics.end(),
+                                                                    interop::util::op::const_member_function(read, &tile_metric::percent_aligned));
+    EXPECT_NEAR(expected_percent_aligned_avg, 2.5763518810272217, tol);
+}
+
+TYPED_TEST(tile_metrics_test, standard_deviation)
+{
+    const float tol = 1e-7f / 0.01f;
+    const size_t read = 0;
+    float expected_percent_aligned_std = std::sqrt(interop::util::variance<float>(TypeParam::expected_metrics.begin(),
+                                                                                  TypeParam::expected_metrics.end(),
+                                                                                  interop::util::op::const_member_function(read, &tile_metric::percent_aligned)));
+    EXPECT_NEAR(expected_percent_aligned_std, 0.074578315019607544, tol);
+}
+
+TYPED_TEST(tile_metrics_test, standard_deviation_vec)
+{
+    const float tol = 1e-7f / 0.01f;
+    const size_t read = 0;
+    std::vector<float> percent_aligned_vec(TypeParam::expected_metrics.size());
+    for(size_t i=0;i<TypeParam::expected_metrics.size();++i) percent_aligned_vec[i] = TypeParam::expected_metrics[i].percent_aligned(read);
+    float expected_percent_aligned_std = std::sqrt(interop::util::variance<float>(percent_aligned_vec.begin(),
+                                                                                  percent_aligned_vec.end()));
+    EXPECT_NEAR(expected_percent_aligned_std, 0.074578315019607544, tol);
 }
 
 TEST(tile_metrics_test, test_unique_id_four_digit)

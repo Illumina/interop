@@ -7,4 +7,6 @@ of the examples in that folder with additional commentary.
 
  - @subpage reading "Reading a binary InterOp file"
  - @subpage tile_report "Reporting Tile Metrics"
+ - @subpage extraction_report "Reporting Extraction Metrics"
+ - @subpage simple_stats "Reporting simple statistics"
 

@@ -201,7 +201,7 @@ R variance(I beg, I end, BinaryOp op)
 template<typename R, typename I>
 R mean(I beg, I end)
 {
-    return mean(beg, end, op::operator_none());
+    return mean<R>(beg, end, op::operator_none());
 }/** Estimate the variance of values in a given collection
  *
  * Usage:
@@ -215,7 +215,7 @@ R mean(I beg, I end)
 template<typename R, typename I>
 R variance(I beg, I end)
 {
-    return variance(beg, end, op::operator_none());
+    return variance<R>(beg, end, op::operator_none());
 }
 
 }

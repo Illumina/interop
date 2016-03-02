@@ -230,6 +230,36 @@ namespace illumina {
                      * @return vector of metrics for each read
                      */
                     const read_metric_vector & read_metrics()const{return m_read_metrics;}
+                    /** Percent aligned for read
+                     *
+                     * @param n index of read
+                     * @return percent aligned
+                     */
+                    float percent_aligned(const size_t n)const
+                    {
+                        INTEROP_ASSERT(n<m_read_metrics.size());
+                        return m_read_metrics[n].percent_aligned();
+                    }
+                    /** Percent phasing for read
+                     *
+                     * @param n index of read
+                     * @return percent phasing
+                     */
+                    float percent_phasing(const size_t n)const
+                    {
+                        INTEROP_ASSERT(n<m_read_metrics.size());
+                        return m_read_metrics[n].percent_phasing();
+                    }
+                    /** Percent prephasing for read
+                     *
+                     * @param n index of read
+                     * @return percent prephasing
+                     */
+                    float percent_prephasing(const size_t n)const
+                    {
+                        INTEROP_ASSERT(n<m_read_metrics.size());
+                        return m_read_metrics[n].percent_prephasing();
+                    }
                     /* @} */
 
                 public:
