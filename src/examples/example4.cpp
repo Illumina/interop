@@ -42,14 +42,21 @@ int main(int argc, char** argv)
         return 1;
     }
 
+    // Member function that takes a single argument
     float avg = mean<float>(corrected_intensity_metric_set.metrics().begin(),
                             corrected_intensity_metric_set.metrics().end(),
-                            op::opt1(constants::A, &corrected_intensity_metric::percentBase));
+                            op::const_member_function(constants::A, &corrected_intensity_metric::percentBase));
     float std = std::sqrt(variance<float>(corrected_intensity_metric_set.metrics().begin(),
                             corrected_intensity_metric_set.metrics().end(),
-                            op::opt1(constants::A, &corrected_intensity_metric::percentBase)));
+                            op::const_member_function(constants::A, &corrected_intensity_metric::percentBase)));
+
+    // Member function that takes no arguments
+    float avg_no_call = mean<float>(corrected_intensity_metric_set.metrics().begin(),
+                            corrected_intensity_metric_set.metrics().end(),
+                            op::const_member_function(&corrected_intensity_metric::noCalls));
     std::cout << "Mean of percent base for A " << avg  << std::endl;
     std::cout << "Standard Deviation of percent base for A " << std  << std::endl;
+    std::cout << "Mean of no call" << avg_no_call  << std::endl;
 
     return 0;
 }

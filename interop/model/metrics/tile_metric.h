@@ -175,9 +175,7 @@ namespace illumina {
                     {}
                     /** Constructor
                      *
-                     * @note Version 2, used for writing
-                     * @param lane lane number
-                     * @param tile tile number
+                     * @param metric tile metric
                      * @param readMetrics vector of metrics for each read on the tile
                      */
                     tile_metric(const tile_metric& metric,

@@ -1,11 +1,10 @@
-/** Convert between arbitrary types
+/** Functions to calculate basic statistics over InterOp metric sets
  *
- * Type conversion can be done in many ways in C++, but there is no simple portable method to
- * convert between std::string and int and back. This library provides a limited version of
- * the Boost.Lexical_cast.
+ * This file contains generic statistic algorithms that will work directory over InterOp metric sets.
+ *
+ * @sa src/examples/example4.cpp
  *
  *  @file
- *
  *  @date 3/1/16
  *  @version 1.0
  *  @copyright GNU Public License.
@@ -23,26 +22,30 @@ namespace util {
 
 namespace op
 {
+    /** Sentinel indicating no parameter
+     */
+    struct parameter_none_type{};
     /** Function call with a single parameter
      */
-    template<class T, typename R, typename P1>
-    struct operator1
+    template<class T, typename R, typename P1=parameter_none_type>
+    struct const_member_function_w
     {
         /** Constructor
          *
          * @param param1 first value to function
          * @param func pointer to member function
          */
-        operator1(const P1 param1, R (T::*func )(P1)const) : m_param1(param1), m_function(func){}
+        const_member_function_w(const P1 param1, R (T::*func )(P1)const) : m_param1(param1), m_function(func){}
         /** Perform function call
          *
          * @param val previous accumulated value
          * @param obj object with value to access
+         * @return addition of both values
          */
         template<class F>
         F operator()(const F val, const T& obj)const
         {
-            return val+(obj.*m_function)(m_param1);
+            return val+operator()(obj);
         }
         /** Perform function call
          *
@@ -57,26 +60,70 @@ namespace op
         P1 m_param1;
         R (T::*m_function )(P1)const;
     };
+    /** Function call with a single parameter
+     */
+    template<class T, typename R>
+    struct const_member_function_w<T, R, parameter_none_type>
+    {
+        /** Constructor
+         *
+         * @param func pointer to member function
+         */
+        const_member_function_w(R (T::*func )()const) : m_function(func){}
+        /** Perform function call
+         *
+         * @param val previous accumulated value
+         * @param obj object with value to access
+         * @return addition of both values
+         */
+        template<class F>
+        F operator()(const F val, const T& obj)const
+        {
+            return val+operator()(obj);
+        }
+        /** Perform function call
+         *
+         * @param obj object with value to access
+         */
+        R operator()(const T& obj)const
+        {
+            return (obj.*m_function)();
+        }
+
+    private:
+        R (T::*m_function )()const;
+    };
     /**Function Interface for function call with single parameter
      *
      * @param param1 first value to function
      * @param func pointer to member function
      * @return functor wrapper
      */
-    template<class T, typename R, typename P1, typename P2>
-    operator1<T, R, P1> opt1(P2 param1, R (T::*func )(P1)const)
+    template<class T, typename R, typename P2, typename P1>
+    const_member_function_w<T, R, P1> const_member_function(P2 param1, R (T::*func )(P1)const)
     {
-        return operator1<T, R, P1>(param1, func);
+        return const_member_function_w<T, R, P1>(param1, func);
+    }
+    /**Function Interface for function call with single parameter
+     *
+     * @param func pointer to member function
+     * @return functor wrapper
+     */
+    template<class T, typename R>
+    const_member_function_w<T, R> const_member_function(R (T::*func )()const)
+    {
+        return const_member_function_w<T, R>(func);
     }
 
     /** No operation is performed on the given value
      */
-    struct no_op
+    struct operator_none
     {
         /** No operation is performed
          *
-         * @param val source value
-         * @return same value
+         * @param val1 source value
+         * @param val2 source value
+         * @return addition of both values
          */
         template<typename F, typename T>
         F operator()(const F val1, const T& val2)
@@ -154,7 +201,7 @@ R variance(I beg, I end, BinaryOp op)
 template<typename R, typename I>
 R mean(I beg, I end)
 {
-    return mean(beg, end, op::no_op());
+    return mean(beg, end, op::operator_none());
 }/** Estimate the variance of values in a given collection
  *
  * Usage:
@@ -168,7 +215,7 @@ R mean(I beg, I end)
 template<typename R, typename I>
 R variance(I beg, I end)
 {
-    return variance(beg, end, op::no_op());
+    return variance(beg, end, op::operator_none());
 }
 
 }

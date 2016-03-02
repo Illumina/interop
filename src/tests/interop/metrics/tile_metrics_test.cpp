@@ -30,6 +30,10 @@ struct tile_metrics_hardcoded_fixture_v2 : util::fixture_helper<tile_metrics, 2>
         /** Do not check the expected binary data size */
         disable_binary_data_size=true
     };
+    /** Do not scale the phasing
+     *
+     * @return 1
+     */
     float scale_phasing(){return 1;}
     /** Setup fixture */
     tile_metrics_hardcoded_fixture_v2()
@@ -92,6 +96,10 @@ struct tile_metrics_write_read_fixture_v2 : util::fixture_helper<tile_metrics, 2
         disable_binary_data=true
     };
 
+    /** Scale the phasing
+     *
+     * @return 100
+     */
     float scale_phasing(){return 100;}
     /** Setup fixture */
     tile_metrics_write_read_fixture_v2()

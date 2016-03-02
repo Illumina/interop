@@ -1,9 +1,5 @@
 # Changes                                               {#changes}
 
-The change list on the website is likely not the most up to date for trunk. This set
-of changes can be found in [Recent Changes].
-
-[Recent Changes]: https://github.com/Illumina/interop/blob/master/docs/src/changes.md
 
 ## Trunk
 
