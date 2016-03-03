@@ -228,7 +228,7 @@ namespace illumina{ namespace interop{
                     tile_metric::read_metric_vector::iterator it = metric.m_read_metrics.begin();
                     for(;it != metric.read_metrics().end();it++)
                         if(it->read() == read) return it;
-                    metric.m_read_metrics.push_back(model::metrics::read_metric(read, 0, 0, 0));
+                    metric.m_read_metrics.push_back(model::metrics::read_metric(read));
                     return metric.m_read_metrics.begin()+metric.m_read_metrics.size()-1;
                 }
             };
