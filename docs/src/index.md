@@ -28,6 +28,7 @@ Table of Contents
 | [Modules](modules.html)       | Short descriptions of the most useful code in the Illumina InterOp API               |
 | [Source Code]                 | Git repository hosted on Github.com                                                  |
 | [Issues]                      | Have a question? Need a feature? Found a bug? Interact with the developers here.     |
+| [Performance](@ref perf)      | Computation performance of the code                                                  |
 | [Changes](@ref changes)       | Changes between releases of the source code                                          |
 
 [Source Code]: https://github.com/Illumina/interop
