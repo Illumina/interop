@@ -208,6 +208,28 @@ TEST(tile_metrics_test, test_unique_id_five_digit)
     }
 }
 
+TEST(tile_metrics_test, test_tile_metric_for_lane)
+{
+    tile_metrics metrics;
+    tile_metric expected_metric(7, 1114, 2355119.25f,1158081.50f,6470949,3181956,
+                tile_metric::read_metric_vector(1, tile_metric::read_metric_type(3, 2.61630869f, 0.0797112584f/100, 0.119908921f/100)));
+    metrics.insert(expected_metric.id(), expected_metric);
+    tile_metrics::metric_array_t tile_lane_metrics = metrics.metrics_for_lane(7);
+    tile_metric& actual_metric = tile_lane_metrics[0];
+
+    EXPECT_EQ(expected_metric.lane(), actual_metric.lane());
+    EXPECT_EQ(expected_metric.tile(), actual_metric.tile());
+
+    const float tol = 1e-7f / 0.01f;
+    EXPECT_NEAR(expected_metric.clusterDensity(), actual_metric.clusterDensity(), tol);
+    EXPECT_NEAR(expected_metric.clusterDensityPf(), actual_metric.clusterDensityPf(), tol);
+    EXPECT_NEAR(expected_metric.clusterCount(), actual_metric.clusterCount(), tol);
+    EXPECT_NEAR(expected_metric.clusterCountPf(), actual_metric.clusterCountPf(), tol);
+    EXPECT_EQ(expected_metric.read_metrics().size(), actual_metric.read_metrics().size());
+
+
+}
+
 #define FIXTURE tile_metrics_test
 /**
  * @class illumina::interop::model::metrics::tile_metric

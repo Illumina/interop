@@ -21,6 +21,7 @@ matrix:
         - george-edison55-precise-backports
         - teward-swig3.0
         - ubuntu-toolchain-r-test
+        - teward-swig3.0
         packages:
         - cmake
         - cmake-data
@@ -43,6 +44,7 @@ matrix:
         - teward-swig3.0
         - ubuntu-toolchain-r-test
         - llvm-toolchain-precise-3.7
+        - teward-swig3.0
         packages:
         - cmake
         - cmake-data

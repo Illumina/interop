@@ -173,6 +173,22 @@ namespace illumina {
                             m_clusterCountPf(std::numeric_limits<float>::quiet_NaN()),
                             m_read_metrics(readMetrics)
                     {}
+                    /** Constructor
+                     *
+                     * @note Version 2, used for writing
+                     * @param lane lane number
+                     * @param tile tile number
+                     * @param readMetrics vector of metrics for each read on the tile
+                     */
+                    tile_metric(const tile_metric& metric,
+                                const read_metric_vector & readMetrics=read_metric_vector()) :
+                            metric_base::base_metric(metric),
+                            m_clusterDensity(metric.m_clusterDensity),
+                            m_clusterDensityPf(metric.m_clusterDensityPf),
+                            m_clusterCount(metric.m_clusterCount),
+                            m_clusterCountPf(metric.m_clusterCountPf),
+                            m_read_metrics(readMetrics.size() > 0 ? readMetrics : metric.read_metrics())
+                    {}
 
                 public:
                     /** @defgroup tile_metric Tile Metrics
