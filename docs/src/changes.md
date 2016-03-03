@@ -1,9 +1,5 @@
 # Changes                                               {#changes}
 
-The change list on the website is likely not the most up to date for trunk. This set
-of changes can be found in [Recent Changes].
-
-[Recent Changes]: https://github.com/Illumina/interop/blob/master/docs/src/changes.md
 
 ## Trunk
 
@@ -15,6 +11,9 @@ Commit  | Description
 2cef41a | Fixing tile metric phasing/prephasing scale to match SAV
 a11a3e1 | Fixed tile_number_for_lane
 29905ea | Fixed clear for all metric sets
+9af35c4 | Added simple statistical functions: mean and variance
+2f04b3f | Added C# performance test
+d8b79b0 | Added example program for simulating InterOps at a specific cycle
 
 ## v1.0.2
 

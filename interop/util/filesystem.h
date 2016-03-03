@@ -39,42 +39,65 @@ namespace illumina {
                 }
                 return path + name;
             }
+            namespace detail {
+#ifndef WIN32
+                /** Helper functor to match path separator on Linux
+                 */
+                struct match_path_sep
+                {
+                    /** Test if given character is Linux path separator
+                     *
+                     * @param ch character to test
+                     */
+                    bool operator()(char ch)const
+                    {
+                        return ch == '/';
+                    }
+                };
+#else
+                /** Helper functor to match path separator on Windows
+                 */
+                struct match_path_sep
+                {
+                    /** Test if given character is Windows path separator
+                     *
+                     * @param ch character to test
+                     */
+                    bool operator()(char ch)const
+                    {
+                        return ch == '/' || ch == '\\';
+                    }
+                };
+#endif
+            }
+            /** Get the file name from a file path
+             *
+             * @param source full file path
+             * @return name of the file
+             */
+            inline std::string basename(std::string const& source)
+            {
+                return std::string(std::find_if(source.rbegin(), source.rend(), detail::match_path_sep()).base(), source.end());
+            }
+            /** Get the directory name from a file path
+             *
+             * @param source full file path
+             * @return name of the directory
+             */
             inline std::string dirname(std::string source)
             {
                 if (source.size() <= 1) //Make sure it's possible to check the last character.
                 {
                     return source;
                 }
-                if (*(source.rbegin() + 1) == '/') //Remove trailing slash if it exists.
+                detail::match_path_sep is_sep;
+                if (is_sep(*(source.rbegin() + 1))) //Remove trailing slash if it exists.
                 {
                     source = source.substr(0, source.size()-1);
                     // source.pop_back(); // C++11
                 }
-                source.erase(std::find(source.rbegin(), source.rend(), '/').base(), source.end());
+                source.erase(std::find_if(source.rbegin(), source.rend(), is_sep).base(), source.end());
                 return source;
-            }
-            namespace detail {
-#ifdef WIN32
-            struct match_path_sep
-            {
-                bool operator()(char ch)const
-                {
-                    return ch == '/';
-                }
-            };
-#else
-            struct match_path_sep
-            {
-                bool operator()(char ch)const
-                {
-                    return ch == '/' || ch == '\\';
-                }
-            };
-#endif
-            }
-            inline std::string basename(std::string const& source)
-            {
-                return std::string(std::find_if(source.rbegin(), source.rend(), detail::match_path_sep()).base(), source.end());
             }
         }
     }

@@ -339,7 +339,7 @@ namespace illumina {
                      * @param index index of the base (A=0, C=1, G=2, T=3)
                      * @return percentage of intensity for each base
                      */
-                    float percentCalledIntensity(size_t index)const
+                    float percentCalledIntensity(const size_t index)const
                     {
                         uint_t total = totalCalledIntensity();
                         if(total == 0) return std::numeric_limits<float>::quiet_NaN();
@@ -364,7 +364,6 @@ namespace illumina {
                     template<class MetricType, int Version>
                     friend struct io::generic_layout;
                 };
-
             }
         }
     }

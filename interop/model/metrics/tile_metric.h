@@ -67,6 +67,8 @@ namespace illumina {
                     uint_t read()const{return m_read;}
                     /** Percent aligned for read
                      *
+                     * @note If percent aligned was never estimated, then it will be NaN
+                     *
                      * @return percent aligned
                      */
                     float percent_aligned()const{return m_percent_aligned;}
@@ -175,9 +177,7 @@ namespace illumina {
                     {}
                     /** Constructor
                      *
-                     * @note Version 2, used for writing
-                     * @param lane lane number
-                     * @param tile tile number
+                     * @param metric tile metric
                      * @param readMetrics vector of metrics for each read on the tile
                      */
                     tile_metric(const tile_metric& metric,
@@ -232,6 +232,38 @@ namespace illumina {
                      * @return vector of metrics for each read
                      */
                     const read_metric_vector & read_metrics()const{return m_read_metrics;}
+                    /** Percent aligned for read
+                     *
+                     * @note If percent aligned was never estimated, then it will be NaN
+                     *
+                     * @param n index of read
+                     * @return percent aligned
+                     */
+                    float percent_aligned(const size_t n)const
+                    {
+                        INTEROP_ASSERT(n<m_read_metrics.size());
+                        return m_read_metrics[n].percent_aligned();
+                    }
+                    /** Percent phasing for read
+                     *
+                     * @param n index of read
+                     * @return percent phasing
+                     */
+                    float percent_phasing(const size_t n)const
+                    {
+                        INTEROP_ASSERT(n<m_read_metrics.size());
+                        return m_read_metrics[n].percent_phasing();
+                    }
+                    /** Percent prephasing for read
+                     *
+                     * @param n index of read
+                     * @return percent prephasing
+                     */
+                    float percent_prephasing(const size_t n)const
+                    {
+                        INTEROP_ASSERT(n<m_read_metrics.size());
+                        return m_read_metrics[n].percent_prephasing();
+                    }
                     /* @} */
 
                 public:

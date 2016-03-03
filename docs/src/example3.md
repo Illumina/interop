@@ -1,4 +1,4 @@
-Reporting Extraction Metrics {#tile_report}
+Reporting Extraction Metrics {#extraction_report}
 ============================
 
 Now, let us consider how to summarize the data into useful reporting metrics. This example continues with extraction
