@@ -41,9 +41,9 @@ namespace illumina {
                      * @param percentPrePhasing percent pre-phasing
                      */
                     read_metric(uint_t read=0,
-                                float percentAligned=0,
-                                float percentPhasing=0,
-                                float percentPrePhasing=0) :
+                                float percentAligned=std::numeric_limits<float>::quiet_NaN(),
+                                float percentPhasing=std::numeric_limits<float>::quiet_NaN(),
+                                float percentPrePhasing=std::numeric_limits<float>::quiet_NaN()) :
                             m_read(read),
                             m_percent_aligned(percentAligned),
                             m_percent_phasing(percentPhasing),
