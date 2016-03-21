@@ -102,9 +102,9 @@ public:
             for(uint_t i=0;i<static_cast<uint_t>(b->qscoreHist().size());++i)
                 if(b->qscoreHist()[i] > 0)bins_found.insert(i);
         }
-        size_t count = bins_found.size() - (bins_found.count(0) > 0 ? 1 : 0);
+        const size_t count = bins_found.size() - (bins_found.count(0) > 0 ? 1 : 0);
         if(count > 7) return;
-        if(instrument == constants::NextSeq)
+        if(instrument == constants::NextSeq || instrument==constants::MiniSeq)
         {
             m_qscoreBins.push_back(q_score_bin(0, 9, 8));
             m_qscoreBins.push_back(q_score_bin(10, 19, 13));

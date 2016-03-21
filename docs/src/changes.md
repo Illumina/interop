@@ -6,6 +6,7 @@
 Commit  | Description
 ------- | -----------
 585eb43 | Remove legacy error metric fields
+bdf3f5f | Added parsers for RunInfo.xml and RunParameters.xml
 
 ## v1.0.3
 
