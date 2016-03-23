@@ -184,6 +184,26 @@ namespace illumina {
                     {
                         return q_score_header();
                     }
+                    /** Get the index for the given q-value
+                     *
+                     * @param qval q-value
+                     * @return index;
+                     */
+                    size_t index_for_q_value(size_t qval)const
+                    {
+                        if(m_qscoreBins.size() == 0) return qval;
+                        size_t index=0;
+                        while(binAt(index).value() < qval && index < m_qscoreBins.size()) index++;
+                        return index+1;
+                    }
+                    /** Generate a default header
+                     *
+                     * @return default header
+                     */
+                    static q_score_header default_header()
+                    {
+                        return q_score_header();
+                    }
 
                 protected:
                     /** Q-score bins */
