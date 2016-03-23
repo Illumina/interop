@@ -53,7 +53,6 @@ namespace op
         /** Perform function call
          *
          * @param obj object with value to access
-         * @return value of member function
          */
         R operator()(const T& obj)const
         {
@@ -88,7 +87,6 @@ namespace op
         /** Perform function call
          *
          * @param obj object with value to access
-         * @return value of member function
          */
         R operator()(const T& obj)const
         {
@@ -97,31 +95,6 @@ namespace op
 
     private:
         R (T::*m_function )()const;
-    };
-
-    /** Function call with a single parameter
-     */
-    template<class T, typename R, typename P1=parameter_none_type>
-    struct const_member_function_less_w
-    {
-        /** Constructor
-         *
-         * @param func pointer to member function
-         */
-        const_member_function_less_w(const const_member_function_w<T, R, P1>& func) : m_func(func){}
-        /** Perform function call
-         *
-         * @param lhs object to compare
-         * @param rhs object to compare
-         * @return true if lhs < rhs
-         */
-        bool operator()(const T& lhs, const T& rhs)const
-        {
-            return m_func(lhs) < m_func(rhs);
-        }
-
-    private:
-        const_member_function_w<T, R, P1> m_func;
     };
     /**Function Interface for function call with single parameter
      *
@@ -143,27 +116,6 @@ namespace op
     const_member_function_w<T, R> const_member_function(R (T::*func )()const)
     {
         return const_member_function_w<T, R>(func);
-    }
-    /**Function Interface for function call with single parameter
-     *
-     * @param param1 first value to function
-     * @param func pointer to member function
-     * @return functor wrapper
-     */
-    template<class T, typename R, typename P2, typename P1>
-    const_member_function_less_w<T, R, P1> const_member_function_less(P2 param1, R (T::*func )(P1)const)
-    {
-        return const_member_function_less_w<T, R, P1>(const_member_function(param1, func));
-    }
-    /**Function Interface for function call with single parameter
-     *
-     * @param func pointer to member function
-     * @return functor wrapper
-     */
-    template<class T, typename R>
-    const_member_function_less_w<T, R> const_member_function_less(R (T::*func )()const)
-    {
-        return const_member_function_less_w<T, R>(const_member_function(func));
     }
 
     /** No operation is performed on the given value
@@ -191,30 +143,6 @@ namespace op
         {
             return val;
         }
-    };
-    /** Unary operator that returns true if the number is not NaN
-     */
-    template<typename UnaryOp>
-    struct nan_check
-    {
-        /** Constructor
-         *
-         * @param op unary operator that returns an object that contains total_cycles
-         */
-        nan_check(const UnaryOp& op) : m_op(op){}
-        /** Return true if given value is not NaN
-         *
-         * @param obj object to test
-         * @return true if given value is not NaN
-         */
-        template<class T>
-        size_t operator()(const T &obj) const
-        {
-            return !std::isnan(m_op(obj));
-        }
-
-    private:
-        UnaryOp m_op;
     };
 }
 
@@ -330,7 +258,6 @@ R nan_mean(I beg, I end, BinaryOp op)
         sum += val;
         ++n;
     }
-    if(n==0)return 0;
     return sum/n;
 }
 /** Estimate the variance of values in a given collection
@@ -339,16 +266,15 @@ R nan_mean(I beg, I end, BinaryOp op)
  *
  * Usage:
  *  std::vector<float> values = {0,1,2,3};
- *  double var_val = nan_variance<double>(values.begin(), values.end());
+ *  double mean_val = nan_variance<double>(values.begin(), values.end());
  *
  * @param beg iterator to start of collection
  * @param end iterator to end of collection
- * @param mean_val pre-calculated mean
  * @param op function that takes one value and returns another value
  * @return variance of the input collection
  */
 template<typename R, typename I, typename BinaryOp>
-R nan_variance_with_mean(I beg, I end, const R mean_val, BinaryOp op)
+R nan_variance(I beg, I end, BinaryOp op)
 {
     ptrdiff_t n = 0;
     R sum2 = 0;
@@ -361,27 +287,7 @@ R nan_variance_with_mean(I beg, I end, const R mean_val, BinaryOp op)
         sum3 += val;
         ++n;
     }
-    if(n <= 1) return 0;
     return (sum2 - sum3*sum3/n) / (n-1);
-}
-/** Estimate the variance of values in a given collection
- *
- * This function skips NaN values
- *
- * Usage:
- *  std::vector<float> values = {0,1,2,3};
- *  double var_val = nan_variance<double>(values.begin(), values.end());
- *
- * @param beg iterator to start of collection
- * @param end iterator to end of collection
- * @param op function that takes one value and returns another value
- * @return variance of the input collection
- */
-template<typename R, typename I, typename BinaryOp>
-R nan_variance(I beg, I end, BinaryOp op)
-{
-    const R mean_val = nan_mean<R>(beg, end, op);
-    return nan_variance_with_mean<R>(beg, end, mean_val, op);
 }
 
 /** Estimate the mean of values in a given collection
@@ -406,16 +312,15 @@ R mean(I beg, I end, BinaryOp op)
  *
  * Usage:
  *  std::vector<float> values = {0,1,2,3};
- *  double var_val = variance<double>(values.begin(), values.end());
+ *  double mean_val = variance<double>(values.begin(), values.end());
  *
  * @param beg iterator to start of collection
  * @param end iterator to end of collection
- * @param mean_val precalculated mean
  * @param op function that takes one value and returns another value
  * @return variance of the input collection
  */
 template<typename R, typename I, typename BinaryOp>
-R variance_with_mean(I beg, I end, const R mean_val, BinaryOp op)
+R variance(I beg, I end, BinaryOp op)
 {
     ptrdiff_t n = std::distance(beg, end);
     R sum2 = 0;
@@ -426,25 +331,7 @@ R variance_with_mean(I beg, I end, const R mean_val, BinaryOp op)
         sum2 += val*val;
         sum3 += val;
     }
-    if(n <= 1) return 0;
     return (sum2 - sum3*sum3/n) / (n-1);
-}
-/** Estimate the variance of values in a given collection
- *
- * Usage:
- *  std::vector<float> values = {0,1,2,3};
- *  double var_val = variance<double>(values.begin(), values.end());
- *
- * @param beg iterator to start of collection
- * @param end iterator to end of collection
- * @param op function that takes one value and returns another value
- * @return variance of the input collection
- */
-template<typename R, typename I, typename BinaryOp>
-R variance(I beg, I end, BinaryOp op)
-{
-    const R mean_val = mean<R>(beg, end, op);
-    return variance_with_mean<R>(beg, end, mean_val, op);
 }
 
 
@@ -462,8 +349,7 @@ template<typename R, typename I>
 R mean(I beg, I end)
 {
     return mean<R>(beg, end, op::operator_none());
-}
-/** Estimate the variance of values in a given collection
+}/** Estimate the variance of values in a given collection
  *
  * Usage:
  *  std::vector<float> values = {0,1,2,3};
@@ -477,21 +363,6 @@ template<typename R, typename I>
 R variance(I beg, I end)
 {
     return variance<R>(beg, end, op::operator_none());
-}
-/** Estimate the variance of values in a given collection
- *
- * Usage:
- *  std::vector<float> values = {0,1,2,3};
- *  double mean_val = variance<double>(values.begin(), values.end());
- *
- * @param beg iterator to start of collection
- * @param end iterator to end of collection
- * @return variance of the input collection
- */
-template<typename R, typename I>
-R variance_with_mean(I beg, I end, const R mean)
-{
-    return variance_with_mean<R>(beg, end, mean, op::operator_none());
 }
 
 }
