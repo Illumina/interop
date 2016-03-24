@@ -3,6 +3,10 @@
 
 ## Trunk
 
+Commit  | Description
+------- | -----------
+585eb43 | Remove legacy error metric fields
+
 ## v1.0.3
 
 Commit  | Description
