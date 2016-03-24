@@ -6,13 +6,12 @@
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Modules)
 find_package(CSharp)
-find_package(SWIG)
-find_package(NUnit)
 
 if(NOT CSHARP_FOUND)
     return()
 endif()
 
+find_package(SWIG)
 if(NOT SWIG_FOUND)
     return()
 endif()
@@ -22,6 +21,7 @@ if(swig_major_ver LESS "3")
     return()
 endif()
 
+find_package(NUnit)
 if(NOT NUNIT_FOUND)
     message(WARNING "NUnit not found, C# unit testing will be disabled")
     message(WARNING "You may set the location of NUNIT with NUNIT_ROOT or the NUNIT_DIR environment variable")

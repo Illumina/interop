@@ -72,6 +72,13 @@ else()
 endif()
 
 if(NOT NUNIT_LIBRARY OR NOT NUNIT_COMMAND)
+    if(NUNIT_ROOT)
+        if(NOT NUNIT_LIBRARY)
+            message(WARNING "NUNIT library not found at root: ${NUNIT_ROOT}")
+        else()
+            message(WARNING "NUNIT command not found at root: ${NUNIT_ROOT} with library: ${NUNIT_LIBRARY}")
+        endif()
+    endif()
     include(ExternalProject)
     ExternalProject_Add(
             NUnit

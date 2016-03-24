@@ -354,12 +354,12 @@ int write_error_metrics(std::ostream& out, const std::string& filename)
     if(res != 0) return res;
 
     write_header(out, metrics);
-    out << "Lane,Tile,Cycle,Error,ReadCount,ErrorCount\n";
+    out << "Lane,Tile,Cycle,Error\n";
     for(error_metrics::metric_array_t::const_iterator beg = metrics.metrics().begin(), end = vec_end(metrics.metrics());beg != end;++beg)
     {
         const error_metric& metric = *beg;
         write_id(out, metric);
-        out << metric.errorRate() << "," << metric.totalReads() << "," << metric.mismatch_count() << "\n";
+        out << metric.errorRate() << "\n";
     }
 
     return res;

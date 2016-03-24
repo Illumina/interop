@@ -2,7 +2,7 @@
 
 add_custom_target(check)
 add_custom_target(performance)
-set_target_properties(check PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
+set_target_properties(check performance PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
 
 
 

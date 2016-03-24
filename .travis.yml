@@ -20,7 +20,7 @@ matrix:
         sources:
         - george-edison55-precise-backports
         - ubuntu-toolchain-r-test
-        - teward-swig3.0
+        - teward
         packages:
         - cmake
         - cmake-data
@@ -42,7 +42,7 @@ matrix:
         - george-edison55-precise-backports
         - ubuntu-toolchain-r-test
         - llvm-toolchain-precise-3.7
-        - teward-swig3.0
+        - teward
         packages:
         - cmake
         - cmake-data

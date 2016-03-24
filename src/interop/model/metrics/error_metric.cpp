@@ -8,7 +8,6 @@
  *  @version 1.0
  *  @copyright GNU Public License.
  */
-
 #include "interop/model/metrics/error_metric.h"
 #include "interop/io/format/metric_format_factory.h"
 
@@ -100,6 +99,7 @@ namespace illumina{ namespace interop{ namespace io {
                 {
                     return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(::uint8_t));
                 }
+
             };
 
 

@@ -52,7 +52,6 @@ namespace illumina {
                     error_metric() :
                             metric_base::base_cycle_metric(0,0,0),
                             m_errorRate(0),
-                            m_totalReads(0),
                             m_mismatch_cluster_count(MAX_MISMATCH, 0)
                     {
                     }
@@ -69,7 +68,6 @@ namespace illumina {
                                  float error) :
                             metric_base::base_cycle_metric(lane,tile,cycle),
                             m_errorRate(error),
-                            m_totalReads(0),
                             m_mismatch_cluster_count(MAX_MISMATCH, 0)
                     {
                     }
@@ -92,22 +90,13 @@ namespace illumina {
                     {
                         return m_errorRate;
                     }
-                    /** Total number of reads
-                     *
-                     * @note Supported by all versions
-                     * @return total number of reads
-                     */
-                    uint_t totalReads()const
-                    {
-                        return m_totalReads;
-                    }
                     /** Number of clusters at given number of mismatches
                      *
                      * 0: no mismatches
                      * 1: 1 mismatch
                      * etc.
                      *
-                     * @note Unsupported on most platforms (TODO: MiSeq supported?)
+                     * @note Unsupported on most platforms, some older MiSeq and HiSeq support
                      * @param n index of read
                      * @return total number of errors
                      */
@@ -118,7 +107,7 @@ namespace illumina {
                     }
                     /** Size of mismatch array
                      *
-                     * @note Unsupported on most platforms (TODO: MiSeq supported?)
+                     * @note Unsupported on most platforms, some older MiSeq and HiSeq support
                      * @return total number of errors
                      */
                     uint_t mismatch_count()const
@@ -131,6 +120,7 @@ namespace illumina {
                      * 1: 1 mismatch
                      * etc.
                      *
+                     * @note Unsupported on most platforms, some older MiSeq and HiSeq support
                      * @return vector of mismatch cluster counts
                      */
                     const uint_array_t& mismatch_cluster_counts()const
@@ -148,7 +138,6 @@ namespace illumina {
 
                 private:
                     float m_errorRate;
-                    uint_t m_totalReads;
                     uint_array_t m_mismatch_cluster_count;
                     template<class MetricType, int Version>
                     friend struct io::generic_layout;
