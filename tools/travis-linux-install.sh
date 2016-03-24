@@ -2,7 +2,7 @@
 
 lsb_release -a
 
-sudo apt-get update -qq
+#sudo apt-get update -qq
 sudo apt-get install -qq -y mono-complete
 sudo apt-get install -qq libgtest-dev
 
