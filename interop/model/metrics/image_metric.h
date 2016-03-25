@@ -42,7 +42,6 @@ namespace illumina {
                      * @param channelCount number of channels
                      */
                     image_metric_header(ushort_t channelCount) : m_channelCount(channelCount) {}
-                    //image_metric_header(ushort_t channelCount=MAX_CHANNELS) : m_channelCount(channelCount) {}
                     /** Number of channels
                      *
                      * @return number of channels

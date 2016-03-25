@@ -60,7 +60,10 @@ set(HEADERS
         ../../interop/util/xml_parser.h
         ../../interop/util/xml_exceptions.h
         ../../interop/util/time.h
-        ../../interop/util/statistics.h)
+        ../../interop/util/statistics.h
+        ../../interop/logic/metric/q_metric.h
+        ../../interop/logic/utils/channel.h
+        )
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR CMAKE_COMPILER_IS_GNUCC)
     foreach(SRC ${SRCS})

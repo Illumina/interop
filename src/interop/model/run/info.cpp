@@ -70,6 +70,7 @@ void info::parse(char *data)  _INTEROP_XML_THROWS
     for(xml_node_ptr p_node = p_run_node->first_node();p_node;p_node = p_node->next_sibling())
     {
         if(set_data(p_node, "Date", m_date)) continue;
+        if(set_data(p_node, "Flowcell", m_flowcell.m_barcode)) continue;
         if(p_node->name() == std::string("FlowcellLayout"))
         {
             for (xml_attr_ptr attr = p_node->first_attribute();

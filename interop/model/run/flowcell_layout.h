@@ -40,6 +40,7 @@ public:
      * @param lanes_per_section number of lanes per section
      * @param tiles vector of tile names
      * @param naming_method tile naming method
+     * @param barcode flowcell barcode
      */
     flowcell_layout(const size_t lane_count=1,
                     const size_t surface_count=1,
@@ -48,7 +49,8 @@ public:
                     const size_t sections_per_lane=1,
                     const size_t lanes_per_section=1,
                     const str_vector_t& tiles=str_vector_t(),
-                    const tile_naming_method_t naming_method=constants::unknown) :
+                    const tile_naming_method_t naming_method=constants::unknown,
+                    const std::string& barcode="") :
             m_naming_method(naming_method),
             m_lane_count(lane_count),
             m_surface_count(surface_count),
@@ -56,7 +58,8 @@ public:
             m_tile_count(tile_count),
             m_sections_per_lane(sections_per_lane),
             m_lanes_per_section(lanes_per_section),
-            m_tiles(tiles)
+            m_tiles(tiles),
+            m_barcode(barcode)
     {
     }
 
@@ -101,6 +104,11 @@ public:
      * @return vector of tile names
      */
     const str_vector_t& tiles()const{ return m_tiles; }
+    /** Get the flowcell bar code
+     *
+     * @return flowcell bar code as a string
+     */
+    const std::string& barcode()const{ return m_barcode; }
 
 private:
     tile_naming_method_t m_naming_method;
@@ -111,6 +119,7 @@ private:
     size_t m_sections_per_lane;
     size_t m_lanes_per_section;
     str_vector_t m_tiles;
+    std::string m_barcode;
     friend class info;
 };
 }
