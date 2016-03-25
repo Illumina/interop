@@ -8,7 +8,7 @@ namespace std
 #endif
 %{
 #include "interop/io/stream_exceptions.h"
-#include "interop/model/metric_base/metric_exceptions.h"
+#include "interop/model/model_exceptions.h"
 #include "interop/util/xml_exceptions.h"
 %}
 
@@ -17,7 +17,7 @@ namespace std
 %include "src/ext/swig/exceptions/exceptions_csharp.i"
 
 // TODO: use built in c++ stdexcept
-%typemap(throws, canthrow=1) illumina::interop::model::metric_base::index_out_of_bounds_exception {
+%typemap(throws, canthrow=1) illumina::interop::model::index_out_of_bounds_exception {
   SWIG_CSharpSetPendingException(SWIG_CSharpIndexOutOfRangeException, $1.what());
   return $null;
 }
@@ -68,7 +68,7 @@ namespace std
     std::string __str__()const{return self->what();}
 }
 
-%extend  illumina::interop::model::metric_base::index_out_of_bounds_exception {
+%extend  illumina::interop::model::index_out_of_bounds_exception {
     std::string __str__()const{return self->what();}
 }
 
@@ -98,4 +98,4 @@ namespace std
 
 %include "interop/io/stream_exceptions.h"
 %include "interop/util/xml_exceptions.h"
-%include "interop/model/metric_base/metric_exceptions.h"
+%include "interop/model/model_exceptions.h"

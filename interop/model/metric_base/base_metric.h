@@ -25,6 +25,15 @@ namespace illumina {
                 /** Defines default base header for metric */
                 class base_metric_header
                 {
+                public:
+                    /** Generate a default header
+                     *
+                     * @return default header
+                     */
+                    static base_metric_header default_header()
+                    {
+                        return base_metric_header();
+                    }
                 protected:
                     /** Update max cycle
                      *

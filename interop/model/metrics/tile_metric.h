@@ -227,6 +227,14 @@ namespace illumina {
                      * @return number of clusters passing filter
                      */
                     float clusterCountPf()const{return m_clusterCountPf;}
+                    /** Percent of clusters passing filter
+                     *
+                     * @return percent of clusters passing filter
+                     */
+                    float percent_pf()const
+                    {
+                        return 100 * m_clusterCountPf / m_clusterCount;
+                    }
                     /** Metrics for each read on the tile
                      *
                      * @return vector of metrics for each read
@@ -263,6 +271,14 @@ namespace illumina {
                     {
                         INTEROP_ASSERT(n<m_read_metrics.size());
                         return m_read_metrics[n].percent_prephasing();
+                    }
+                    /** Number of reads
+                     *
+                     * @return number of reads
+                     */
+                    size_t read_count()const
+                    {
+                        return m_read_metrics.size();
                     }
                     /* @} */
 
