@@ -119,6 +119,15 @@ namespace illumina {
                     {
                         return id & ~((~0u) << LANE_BIT_SHIFT);
                     }
+                    /** Get the lane from the unique lane/tile id
+                     *
+                     * @param id unique lane/tile id
+                     * @return lane number
+                     */
+                    static id_t lane_from_id(const id_t id)
+                    {
+                        return io::layout::base_metric::lane_from_id(id);
+                    }
                     /** Lane number
                      *
                      * @return lane number
