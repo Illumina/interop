@@ -84,7 +84,8 @@ namespace illumina {
                 HiSeq,
                 HiScan,
                 MiSeq,
-                NextSeq
+                NextSeq,
+                MiniSeq
                 // ...
             };
             /** Instrument type to string

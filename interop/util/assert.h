@@ -3,7 +3,6 @@
  * This header file provides enhanced assert macros to make debugging easier.
  *
  *  @file
- *
  *  @date 10/28/15
  *  @version 1.0
  *  @copyright GNU Public License.

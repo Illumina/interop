@@ -3,8 +3,8 @@ include(${GTEST_USE_FILE})
 find_package(Threads)
 
 add_executable(interop_gtests
-        metrics/stream_exception_tests.hpp
-        metrics/metric_test_utils.h
+        run/info_test.cpp
+        run/parameters_test.cpp
         metrics/corrected_intensity_metrics_test.cpp
         metrics/error_metrics_test.cpp
         metrics/extraction_metrics_test.cpp

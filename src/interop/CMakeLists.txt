@@ -1,6 +1,8 @@
 
 
 set(SRCS
+        model/run/info.cpp
+        model/run/parameters.cpp
         model/metrics/corrected_intensity_metric.cpp
         model/metrics/tile_metric.cpp
         model/metrics/error_metric.cpp
@@ -11,6 +13,12 @@ set(SRCS
 )
 
 set(HEADERS
+        ../../interop/model/run/cycle_range.h
+        ../../interop/model/run/flowcell_layout.h
+        ../../interop/model/run/image_dimensions.h
+        ../../interop/model/run/info.h
+        ../../interop/model/run/parameters.h
+        ../../interop/model/run/read_info.h
         ../../interop/model/metric_sets/error_metric_set.h
         ../../interop/model/metric_sets/corrected_intensity_metric_set.h
         ../../interop/model/metrics/tile_metric.h
