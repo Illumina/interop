@@ -76,6 +76,8 @@ namespace illumina {
                     };
                     /** Vector of q-scores type */
                     typedef std::vector<q_score_bin> qscore_bin_vector_type;
+                    /** Q-score bin type */
+                    typedef q_score_bin bin_t;
                 public:
                     /** Constructor
                      */
@@ -103,6 +105,14 @@ namespace illumina {
                     {
                         return m_qscoreBins;
                     }
+                    /** Get the q-score bins
+                     *
+                     * @return vector of q-score bins
+                     */
+                    qscore_bin_vector_type& bins()
+                    {
+                        return m_qscoreBins;
+                    }
                     /** Get the number of bins in header
                      *
                      * @return number of bins in header
@@ -117,6 +127,26 @@ namespace illumina {
                     q_score_bin::bin_type max_q_value()const
                     {
                         return m_bin_count == static_cast<size_t>(MAX_Q_BINS) || m_bin_count == 0 ? static_cast<q_score_bin::bin_type>(MAX_Q_BINS) : m_qscoreBins.back().upper();
+                    }
+                    /** Get the index for the given q-value
+                     *
+                     * @param qval q-value
+                     * @return index;
+                     */
+                    size_t index_for_q_value(size_t qval)const
+                    {
+                        if(m_qscoreBins.size() == 0) return qval;
+                        size_t index=0;
+                        while(binAt(index).value() < qval && index < m_qscoreBins.size()) index++;
+                        return index+1;
+                    }
+                    /** Generate a default header
+                     *
+                     * @return default header
+                     */
+                    static q_score_header default_header()
+                    {
+                        return q_score_header();
                     }
 
                 protected:

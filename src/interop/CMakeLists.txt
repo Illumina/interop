@@ -1,6 +1,8 @@
 
 
 set(SRCS
+        model/run/info.cpp
+        model/run/parameters.cpp
         model/metrics/corrected_intensity_metric.cpp
         model/metrics/tile_metric.cpp
         model/metrics/error_metric.cpp
@@ -11,6 +13,12 @@ set(SRCS
 )
 
 set(HEADERS
+        ../../interop/model/run/cycle_range.h
+        ../../interop/model/run/flowcell_layout.h
+        ../../interop/model/run/image_dimensions.h
+        ../../interop/model/run/info.h
+        ../../interop/model/run/parameters.h
+        ../../interop/model/run/read_info.h
         ../../interop/model/metric_sets/error_metric_set.h
         ../../interop/model/metric_sets/corrected_intensity_metric_set.h
         ../../interop/model/metrics/tile_metric.h
@@ -43,7 +51,7 @@ set(HEADERS
         ../../interop/model/metric_sets/q_metric_set.h
         ../../interop/model/metric_sets/tile_metric_set.h
         ../../interop/io/metric_file_stream.h
-        ../../interop/model/metric_base/metric_exceptions.h
+        ../../interop/model/model_exceptions.h
         ../../interop/util/assert.h
         ../../interop/io/format/map_io.h
         ../../interop/util/length_of.h
@@ -52,7 +60,10 @@ set(HEADERS
         ../../interop/util/xml_parser.h
         ../../interop/util/xml_exceptions.h
         ../../interop/util/time.h
-        ../../interop/util/statistics.h)
+        ../../interop/util/statistics.h
+        ../../interop/logic/metric/q_metric.h
+        ../../interop/logic/utils/channel.h
+        )
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR CMAKE_COMPILER_IS_GNUCC)
     foreach(SRC ${SRCS})

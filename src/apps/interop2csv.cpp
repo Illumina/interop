@@ -12,6 +12,8 @@
  * The program runs as follows:
  *
  *      $ interop2csv 140131_1287_0851_A01n401drr
+ *      $ interop2csv 140131_1287_0851_A01n401drr/InterOp
+ *      $ interop2csv 140131_1287_0851_A01n401drr/InterOp/TileMetricsOut.csv
  *
  * In this sample, 140131_1287_0851_A01n401drr is a run folder than contains a sub directory called InterOp, which in
  * turn may contain any of the following files:
@@ -23,6 +25,9 @@
  *  - IndexMetricsOut.bin
  *  - QMetricsOut.bin
  *  - TileMetricsOut.bin
+ *
+ *  Alternatively, you can provide a directory that contains InterOp files (e.g. 140131_1287_0851_A01n401drr/InterOp) or
+ *  a specific InterOp file (e.g. 140131_1287_0851_A01n401drr/InterOp/TileMetricsOut.csv).
  *
  * The output can be redirected to a file as follows:
  *
@@ -162,7 +167,7 @@ void print_help(std::ostream& out);
  * @param filename path to run folder
  * @return error code or 0
  */
-int write_interops(std::ostream& out, const std::string filename);
+int write_interops(std::ostream& out, const std::string& filename);
 
 /** Set false if you want to disable error messages printing to the error stream */
 bool kPrintError=true;
@@ -622,7 +627,7 @@ int encode_error(int res, int type)
  * @param filename path to run folder
  * @return error code or 0
  */
-int write_interops(std::ostream& out, const std::string filename)
+int write_interops(std::ostream& out, const std::string& filename)
 {
     int res;
     int valid_count = 0;

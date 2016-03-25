@@ -6,6 +6,9 @@
 Commit  | Description
 ------- | -----------
 585eb43 | Remove legacy error metric fields
+bdf3f5f | Added parsers for RunInfo.xml and RunParameters.xml
+92a07a2 | Added metric and channel logic as well as more statistics functions
+
 
 ## v1.0.3
 
