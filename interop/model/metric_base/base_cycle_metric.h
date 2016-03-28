@@ -25,6 +25,15 @@ namespace illumina {
                     /** Constructor */
                     base_cycle_metric_header() : m_max_cycle(0){}
                 public:
+                    /** Generate a default header
+                     *
+                     * @return default header
+                     */
+                    static base_cycle_metric_header default_header()
+                    {
+                        return base_cycle_metric_header();
+                    }
+                public:
                     /** Get cycle
                      *
                      * @return cycle

@@ -14,7 +14,7 @@
 #include <iterator>
 #include <algorithm>
 #include "interop/model/metric_base/base_cycle_metric.h"
-#include "interop/model/metric_base/metric_exceptions.h"
+#include "interop/model/model_exceptions.h"
 #include "interop/util/lexical_cast.h"
 #include "interop/util/assert.h"
 
@@ -54,7 +54,7 @@ namespace illumina {
                     /** Define an key vector */
                     typedef std::vector<id_t> key_vector;
 
-                protected:
+                public:
                     /** Const metric iterator */
                     typedef typename metric_array_t::const_iterator const_iterator;
                     /** Metric iterator */
@@ -64,8 +64,9 @@ namespace illumina {
                     /** Constructor
                      *
                      * @param header header information for the metric set
+                     * @param version version of the file format
                      */
-                    metric_set(const header_type& header) : header_type(header), m_version(0), m_interopName(T::prefix()) {}
+                    metric_set(const header_type& header=header_type::default_header(), const ::int16_t version=0) : header_type(header), m_version(version), m_interopName(T::prefix()) {}
                     /** Constructor
                      *
                      * @param vec array of metrics
@@ -87,6 +88,40 @@ namespace illumina {
                     }
 
                 public:
+                    /** Get start of metric collection
+                     *
+                     * @return iterator to start of metric collection
+                     */
+                    const_iterator begin()const
+                    {
+                        return m_data.begin();
+                    }
+                    /** Get end of metric collection
+                     *
+                     * @return iterator to end of metric collection
+                     */
+                    const_iterator end()const
+                    {
+                        return m_data.end();
+                    }
+                    /** Get start of metric collection
+                     *
+                     * @return iterator to start of metric collection
+                     */
+                    iterator begin()
+                    {
+                        return m_data.begin();
+                    }
+                    /** Get end of metric collection
+                     *
+                     * @return iterator to end of metric collection
+                     */
+                    iterator end()
+                    {
+                        return m_data.end();
+                    }
+
+                public:
                     /** Test if set has metric
                      *
                      * @param lane lane
@@ -96,6 +131,14 @@ namespace illumina {
                     bool has_metric(uint_t lane, uint_t tile, uint_t cycle=0)const
                     {
                         return m_id_map.find(metric_type::id(lane, tile, cycle)) != m_id_map.end();
+                    }
+                    /** Add a metric to the metric set
+                     *
+                     * @param metric metric to add to set
+                     */
+                    void insert(const metric_type& metric)
+                    {
+                        insert(metric.id(), metric);
                     }
                     /** Add a metric to the metric set
                      *
@@ -120,7 +163,7 @@ namespace illumina {
                      * @param cycle cycle
                      * @return metric
                      */
-                    const metric_type& get_metric(uint_t lane, uint_t tile, uint_t cycle=0) const _INTEROP_METRIC_THROWS
+                    const metric_type& get_metric(uint_t lane, uint_t tile, uint_t cycle=0) const _INTEROP_MODEL_THROWS
                     {
                         try {
                             return get_metric(metric_type::id(lane, tile, cycle));
@@ -141,7 +184,7 @@ namespace illumina {
                      * @param key unique id built from lane, tile and cycle (if available)
                      * @return metric
                      */
-                    const metric_type& get_metric(id_t key) const _INTEROP_METRIC_THROWS
+                    const metric_type& get_metric(id_t key) const _INTEROP_MODEL_THROWS
                     {
                         typename std::map<id_t, size_t>::const_iterator it = m_id_map.find(key);
                         if(it == m_id_map.end())
@@ -289,7 +332,7 @@ namespace illumina {
                      */
                     void metric_updated_at(const size_t){}
 
-                protected:
+                public:
                     /** Get metric for lane, tile and cycle
                      *
                      * @todo: remove this function
@@ -299,7 +342,7 @@ namespace illumina {
                      * @param cycle cycle
                      * @return metric
                      */
-                    metric_type& get_metric_ref(uint_t lane, uint_t tile, uint_t cycle=0) _INTEROP_METRIC_THROWS
+                    metric_type& get_metric_ref(uint_t lane, uint_t tile, uint_t cycle=0) _INTEROP_MODEL_THROWS
                     {
                         try{
                             return get_metric_ref(metric_type::id(lane, tile, cycle));
@@ -320,7 +363,7 @@ namespace illumina {
                      * @param key unique id built from lane, tile and cycle (if available)
                      * @return metric
                      */
-                    metric_type& get_metric_ref(id_t key) _INTEROP_METRIC_THROWS
+                    metric_type& get_metric_ref(id_t key) _INTEROP_MODEL_THROWS
                     {
                         typename std::map<id_t, size_t>::const_iterator it = m_id_map.find(key);
                         if(it == m_id_map.end())

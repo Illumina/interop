@@ -42,12 +42,19 @@ namespace illumina {
                      * @param channelCount number of channels
                      */
                     image_metric_header(ushort_t channelCount) : m_channelCount(channelCount) {}
-                    //image_metric_header(ushort_t channelCount=MAX_CHANNELS) : m_channelCount(channelCount) {}
                     /** Number of channels
                      *
                      * @return number of channels
                      */
                     ushort_t channelCount()const{return m_channelCount;}
+                    /** Generate a default header
+                     *
+                     * @return default header
+                     */
+                    static image_metric_header default_header()
+                    {
+                        return image_metric_header(MAX_CHANNELS);
+                    }
                 private:
                     ushort_t m_channelCount;
                     template<class MetricType, int Version>

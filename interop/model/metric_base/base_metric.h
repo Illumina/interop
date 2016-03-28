@@ -25,6 +25,15 @@ namespace illumina {
                 /** Defines default base header for metric */
                 class base_metric_header
                 {
+                public:
+                    /** Generate a default header
+                     *
+                     * @return default header
+                     */
+                    static base_metric_header default_header()
+                    {
+                        return base_metric_header();
+                    }
                 protected:
                     /** Update max cycle
                      *
@@ -94,6 +103,15 @@ namespace illumina {
                     static id_t id(const id_t lane, const id_t tile, const id_t=0)// TODO: remove hack
                     {
                         return io::layout::base_metric::id(lane, tile);
+                    }
+                    /** Get the lane from the unique lane/tile id
+                     *
+                     * @param id unique lane/tile id
+                     * @return lane number
+                     */
+                    static id_t lane_from_id(const id_t id)
+                    {
+                        return io::layout::base_metric::lane_from_id(id);
                     }
                     /** Lane number
                      *

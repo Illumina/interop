@@ -81,6 +81,15 @@ namespace illumina
                         {
                             return lane | (tile << 6);
                         }
+                        /** Get the lane from the unique lane/tile id
+                         *
+                         * @param id unique lane/tile id
+                         * @return lane number
+                         */
+                        static id_t lane_from_id(const id_t id)
+                        {
+                            return id & ~((~0) << 6);
+                        }
                         /** Test if the layout contains valid data
                          *
                          * @return true if data is valid
