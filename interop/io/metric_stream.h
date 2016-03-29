@@ -24,7 +24,8 @@ namespace illumina {
                  * @param runDirectory file path to the run directory
                  * @return file path to the InterOp directory
                  */
-                inline std::string interop_directory_name(const std::string& runDirectory) {
+                inline std::string interop_directory_name(const std::string& runDirectory)
+                {
                     return io::combine(runDirectory, "InterOp");
                 }
                 /** Generate a file name from a run directory and the InterOp name
@@ -43,7 +44,12 @@ namespace illumina {
                  * @param useOut if true, append "Out" to the end of the filename
                  * @return file path to the InterOp directory
                  */
-                inline std::string interop_filename(const std::string& runDirectory, const std::string& name, bool useOut = true) {
+                inline std::string interop_filename(const std::string& runDirectory, const std::string& name, bool useOut = true)
+                {
+                    if(io::basename(runDirectory) == interop_basename(name, useOut))
+                        return runDirectory;
+                    if(io::basename(runDirectory) == "InterOp")
+                        return io::combine(runDirectory, interop_basename(name, useOut));
                     return io::combine(interop_directory_name(runDirectory), interop_basename(name, useOut));
                 }
                 /** Memory buffer for a stream

@@ -18,7 +18,7 @@ if(DOXYGEN_FOUND)
     if(GIT_FOUND)
         add_custom_target(deploy-docs
                 COMMAND ${GIT_EXECUTABLE} checkout gh-pages
-                COMMAND ${GIT_EXECUTABLE} reset `git rev-list --max-parents=0 --abbrev-commit HEAD` --hard
+                COMMAND ${GIT_EXECUTABLE} reset GH_PAGES_ROOT --hard
                 COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_BINARY_DIR}/html ${CMAKE_SOURCE_DIR}
                 COMMAND ${GIT_EXECUTABLE} add .
                 COMMAND ${GIT_EXECUTABLE} commit -am "Added documentation"
@@ -26,6 +26,15 @@ if(DOXYGEN_FOUND)
                 COMMAND ${GIT_EXECUTABLE} checkout @{-1}
                 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         )
+        add_custom_target(prepare-docs
+                COMMAND ${GIT_EXECUTABLE} checkout gh-pages
+                COMMAND ${GIT_EXECUTABLE} reset GH_PAGES_ROOT --hard
+                COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_BINARY_DIR}/html ${CMAKE_SOURCE_DIR}
+                COMMAND ${GIT_EXECUTABLE} add .
+                COMMAND ${GIT_EXECUTABLE} commit -am "Added documentation"
+                COMMAND ${GIT_EXECUTABLE} checkout @{-1}
+                WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+                )
         add_dependencies(deploy-docs doc)
     endif()
 
