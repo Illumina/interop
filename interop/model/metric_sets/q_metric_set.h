@@ -61,7 +61,7 @@ public:
     }
     /** Populate the cumulative distributions
      */
-    void populateCumulativeDistributions() _INTEROP_METRIC_THROWS
+    void populateCumulativeDistributions() _INTEROP_MODEL_THROWS
     {
         if(size() > 0)
         {

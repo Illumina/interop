@@ -118,6 +118,9 @@ public:
     /** Define a index array using an underlying vector
      */
     typedef std::vector<index_info> index_array_t;
+    /** Define index info type
+     */
+    typedef index_info index_info_t;
 public:
     /** Constructor
      */
