@@ -74,7 +74,7 @@ namespace illumina { namespace interop { namespace logic { namespace utils
      * @return string vector of expected channels
      */
     template<class I>
-    std::vector<std::string> expected_order(I beg, I end) _INTEROP_MODEL_THROWS
+    std::vector<std::string> expected_order(I beg, I end) _INTEROP_CHANNEL_THROWS
     {
         std::vector<std::string> expected;
         expected.reserve(std::distance(beg, end));
