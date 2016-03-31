@@ -32,18 +32,24 @@ environment:
   matrix:
     - generator: "Visual Studio 14 2015 Win64"
       BUILD: msvc14_win64
+      config_type: win64
     - generator: "Visual Studio 14 2015"
       BUILD: msvc14_win32
+      config_type: win32
     - generator: "Visual Studio 12 2013 Win64"
       BUILD: msvc12_win64
+      config_type: win64
     - generator: "Visual Studio 12 2013"
       BUILD: msvc12_win32
+      config_type: win32
     - generator: "MinGW Makefiles"
       COMPILER_PATH: C:\MinGW\bin
       BUILD: mingw_win32
+      config_type: win32
     - generator: "MinGW Makefiles"
       COMPILER_PATH: C:\mingw64\bin
       BUILD: mingw_win64
+      config_type: win64
 
 before_build:
   - cmd: set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
@@ -93,6 +99,8 @@ deploy:
       secure: HcMKUFlziwHVs3kI4ZWKvy9LPKHUoVsaURh9C0yHz7rvMaPD/J7yvlPcTYK7mdrM
   on:
     appveyor_repo_tag: true
+    configuration: Release
+    config_type: win64
 
 ########################################################################################################################
 #
