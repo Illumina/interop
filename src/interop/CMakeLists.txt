@@ -63,6 +63,10 @@ set(HEADERS
         ../../interop/util/statistics.h
         ../../interop/logic/metric/q_metric.h
         ../../interop/logic/utils/channel.h
+        ../../interop/model/run_metrics.h
+        ../../interop/util/type_traits.h
+        ../../interop/util/linear_hierarchy.h
+        ../../interop/util/object_list.h
         )
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR CMAKE_COMPILER_IS_GNUCC)
