@@ -15,15 +15,15 @@ namespace illumina {
 namespace interop {
 namespace model {
 
-/** Exception raised if an index goes out of bounds
- */
-struct index_out_of_bounds_exception : public std::runtime_error {
-    /** Constructor
-     *
-     *  @param mesg error message
+    /** Exception raised if an index goes out of bounds
      */
-    index_out_of_bounds_exception(const std::string &mesg) : std::runtime_error(mesg) { }
-};
+    struct index_out_of_bounds_exception : public std::out_of_range {
+        /** Constructor
+         *
+         *  @param mesg error message
+         */
+        index_out_of_bounds_exception(const std::string &mesg) : std::out_of_range(mesg) { }
+    };
 
     /** Exception raised if the channel names are invalid
      */

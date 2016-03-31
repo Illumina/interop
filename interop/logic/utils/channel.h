@@ -166,6 +166,7 @@ namespace illumina { namespace interop { namespace logic { namespace utils
         std::vector<std::string> channels;
         switch(instrument)
         {
+            case constants::MiniSeq:
             case constants::NextSeq:
                 channels.push_back("Red");
                 channels.push_back("Green");

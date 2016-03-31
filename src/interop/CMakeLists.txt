@@ -13,6 +13,18 @@ set(SRCS
 )
 
 set(HEADERS
+        ../../interop/model/summary/cycle_state_summary.h
+        ../../interop/model/summary/lane_summary.h
+        ../../interop/model/summary/metric_stat.h
+        ../../interop/model/summary/metric_summary.h
+        ../../interop/model/summary/read_summary.h
+        ../../interop/model/summary/run_summary.h
+        ../../interop/logic/summary/error_summary.h
+        ../../interop/logic/summary/extraction_summary.h
+        ../../interop/logic/summary/quality_summary.h
+        ../../interop/logic/summary/run_summary.h
+        ../../interop/logic/summary/summary_statistics.h
+        ../../interop/logic/summary/tile_summary.h
         ../../interop/model/run/cycle_range.h
         ../../interop/model/run/flowcell_layout.h
         ../../interop/model/run/image_dimensions.h
@@ -63,6 +75,10 @@ set(HEADERS
         ../../interop/util/statistics.h
         ../../interop/logic/metric/q_metric.h
         ../../interop/logic/utils/channel.h
+        ../../interop/model/run_metrics.h
+        ../../interop/util/type_traits.h
+        ../../interop/util/linear_hierarchy.h
+        ../../interop/util/object_list.h
         )
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR CMAKE_COMPILER_IS_GNUCC)

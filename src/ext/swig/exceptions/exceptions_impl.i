@@ -21,6 +21,10 @@ namespace std
   SWIG_CSharpSetPendingException(SWIG_CSharpIndexOutOfRangeException, $1.what());
   return $null;
 }
+%typemap(throws, canthrow=1) illumina::interop::model::invalid_channel_exception {
+  SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, $1.what());
+  return $null;
+}
 
 // TODO: wrap these
 %typemap(throws, canthrow=1) illumina::interop::xml::xml_format_exception {
@@ -72,6 +76,9 @@ namespace std
     std::string __str__()const{return self->what();}
 }
 
+%extend  illumina::interop::model::invalid_channel_exception {
+    std::string __str__()const{return self->what();}
+}
 %extend  illumina::interop::xml::xml_format_exception {
     std::string __str__()const{return self->what();}
 }

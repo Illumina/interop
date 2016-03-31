@@ -6,12 +6,12 @@
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Modules)
 find_package(CSharp)
-find_package(SWIG)
 
 if(NOT CSHARP_FOUND)
     return()
 endif()
 
+find_package(SWIG)
 if(NOT SWIG_FOUND)
     return()
 endif()
