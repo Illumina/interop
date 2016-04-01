@@ -193,7 +193,7 @@ namespace illumina {
                     {
                         if(m_qscoreBins.size() == 0) return qval;
                         size_t index=0;
-                        while(binAt(index).value() < qval && index < m_qscoreBins.size()) index++;
+                        while(index < m_qscoreBins.size() && binAt(index).value() < qval) index++;
                         return index+1;
                     }
                     /** Generate a default header
