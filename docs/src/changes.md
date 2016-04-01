@@ -5,8 +5,9 @@
 
 Commit  | Description
 ------- | -----------
-92a07a2 | Added metric and channel logic as well as more statistics functions
+29ac966 | Added summary model
 a351673 | Added run metrics
+92a07a2 | Added metric and channel logic as well as more statistics functions
 585eb43 | Remove legacy error metric fields
 bdf3f5f | Added parsers for RunInfo.xml and RunParameters.xml
 

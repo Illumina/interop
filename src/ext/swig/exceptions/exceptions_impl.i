@@ -76,6 +76,9 @@ namespace std
     std::string __str__()const{return self->what();}
 }
 
+%extend  illumina::interop::model::invalid_channel_exception {
+    std::string __str__()const{return self->what();}
+}
 %extend  illumina::interop::xml::xml_format_exception {
     std::string __str__()const{return self->what();}
 }
