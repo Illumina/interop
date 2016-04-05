@@ -16,7 +16,7 @@ using namespace illumina::interop::model::metrics;
 
 namespace illumina{ namespace interop{ namespace io {
 #pragma pack(1)
-            /** Extraction Metric Record Layout Version 1
+            /** Extraction Metric Record Layout Version 2
              *
              * This class provides an interface to reading the extraction metric file:
              *  - InterOp/ExtractionMetrics.bin

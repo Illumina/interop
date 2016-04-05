@@ -48,13 +48,20 @@ class run_metrics
     typedef transform_type_list< metric_type_list_t, create_metric_set>::result_t metric_set_list_t;
     typedef object_list< metric_set_list_t > metric_list_t;
 
-private:
+public:
+    /** Define corrected intensity metric set */
     typedef metric_base::metric_set<corrected_intensity_metric> corrected_intensity_metric_set_t;
+    /** Define error metric set */
     typedef metric_base::metric_set<error_metric> error_metric_set_t;
+    /** Define extraction metric set */
     typedef metric_base::metric_set<extraction_metric> extraction_metric_set_t;
+    /** Define image metric set */
     typedef metric_base::metric_set<image_metric> image_metric_set_t;
+    /** Define index metric set */
     typedef metric_base::metric_set<index_metric> index_metric_set_t;
+    /** Define q-metric set */
     typedef metric_base::metric_set<q_metric> q_metric_set_t;
+    /** Define tile metric set */
     typedef metric_base::metric_set<tile_metric> tile_metric_set_t;
 
 public:
