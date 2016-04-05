@@ -137,7 +137,7 @@ namespace illumina {
                     {
                         if(m_qscoreBins.size() == 0) return qval;
                         size_t index=0;
-                        while(binAt(index).value() < qval && index < m_qscoreBins.size()) index++;
+                        while(index < m_qscoreBins.size() && binAt(index).value() < qval) index++;
                         return index+1;
                     }
                     /** Generate a default header
@@ -279,8 +279,13 @@ namespace illumina {
                     }
                     /** Number of clusters over the given q-score
                      *
-                     * This calculates over the local histogram.
+                     * This calculates over the local histogram. This function either requires the bins from the header
+                     * or the index of the q-value for the first parameter. Note that the header is apart of the
+                     * metric set (q_metrics).
                      *
+                     * @snippet src/examples/example_q_metric.cpp Calculating Total >= Q30
+                     *
+                     * @sa q_score_header::bins()
                      * @param qscore percentage of clusters over the given q-score value
                      * @param bins q-score histogram bins
                      * @return total of clusters over the given q-score
@@ -305,8 +310,11 @@ namespace illumina {
                     }
                     /** Number of clusters over the given q-score
                      *
-                     * This calculates over the cumlative histogram.
+                     * This calculates over the cumlative histogram. This function either requires the bins from the
+                     * header or the index of the q-value for the first parameter. Note that the header is apart of the
+                     * metric set (q_metrics).
                      *
+                     * @sa q_score_header::bins()
                      * @param qscore percentage of clusters over the given q-score value
                      * @param bins q-score histogram bins
                      * @return total of clusters over the given q-score
@@ -333,8 +341,13 @@ namespace illumina {
                     }
                     /** Percent of clusters over the given q-score
                      *
-                     * This calculates over the local histogram.
+                     * This calculates over the local histogram. This function either requires the bins from the header
+                     * or the index of the q-value for the first parameter. Note that the header is apart of the
+                     * metric set (q_metrics).
                      *
+                     * @snippet src/examples/example_q_metric.cpp Calculating Percent >= Q30
+                     *
+                     * @sa q_score_header::bins()
                      * @param qscore percentage of clusters over the given q-score value
                      * @param bins q-score histogram bins
                      * @return percent of cluster over the given q-score
@@ -348,8 +361,11 @@ namespace illumina {
                     }
                     /** Percent of clusters over the given q-score
                      *
-                     * This calculates over the cumlative histogram.
+                     * This calculates over the cumlative histogram. This function either requires the bins from the
+                     * header or the index of the q-value for the first parameter. Note that the header is apart of the
+                     * metric set (q_metrics).
                      *
+                     * @sa q_score_header::bins()
                      * @param qscore percentage of clusters over the given q-score value
                      * @param bins q-score histogram bins
                      * @return percent of cluster over the given q-score
@@ -365,8 +381,11 @@ namespace illumina {
                     }
                     /** Get the median q-score
                      *
-                     * If the median cannot be found, return the maximum integer.
+                     * If the median cannot be found, return the maximum integer. This function either requires the bins
+                     * from the  header or the index of the q-value for the first parameter. Note that the header is
+                     * apart of the metric set (q_metrics).
                      *
+                     * @sa q_score_header::bins()
                      * @return median q-score
                      */
                     uint_t median(const qscore_bin_vector_type& bins=qscore_bin_vector_type())const

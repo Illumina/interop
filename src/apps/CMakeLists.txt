@@ -23,3 +23,4 @@ endfunction()
 
 add_application(interop2csv interop2csv.cpp)
 add_application(cyclesim cyclesim.cpp)
+add_application(summary summary.cpp)

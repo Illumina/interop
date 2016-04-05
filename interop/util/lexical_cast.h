@@ -13,6 +13,7 @@
 
 #pragma once
 #include <sstream>
+#include <iomanip>
 
 namespace illumina {
     namespace interop {
@@ -180,6 +181,25 @@ namespace illumina {
             inline Destination lexical_cast(const Source& src)
             {
                 return lexical_cast_helper<Source, Destination>::cast(src);
+            }
+            /** Utility to format a floating point number as a string
+             *
+             * @param val floating point value
+             * @param width width of the number
+             * @param precision number of digits after decimal
+             * @param fill fill character
+             * @param fixed if true use fixed not default
+             * @return string representation of float
+             */
+            inline std::string format(const float val, const int width, const int precision, const char fill='0', const bool fixed=true)
+            {
+                std::ostringstream oss;
+                if(fixed) oss << std::fixed;
+                if(width > -1) oss << std::setw(width);
+                if(precision > -1) oss << std::setprecision(precision);
+                if(fill != 0) oss << std::setfill(fill);
+                oss << val;
+                return oss.str();
             }
 
         }

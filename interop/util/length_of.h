@@ -43,7 +43,6 @@ struct length_of_type< std::vector<T> >
      */
     static size_t size(const std::vector<T>& vec) {return vec.size();}
 };
-
 /** Get the number of elements in the collection or 1 if a value
  *
  * @param val collection or value
@@ -51,6 +50,13 @@ struct length_of_type< std::vector<T> >
  */
 template<typename T>
 size_t length_of(const T& val){return length_of_type<T>::size(val);}
+/** Get the number of elements in a stack array
+ *
+ * @param val stack array
+ * @return size of array
+ */
+template<typename T, size_t N>
+size_t length_of(const T (&)[N]){return N;}
 
 
 }

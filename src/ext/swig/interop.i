@@ -53,6 +53,8 @@
     %template(write_interop_to_buffer ) illumina::interop::io::write_interop_to_buffer< metric_base::metric_set<metric_t> >;
     %template(read_interop_from_buffer )  illumina::interop::io::read_interop_from_buffer< metric_base::metric_set<metric_t> >;
     %template(read_interop )  illumina::interop::io::read_interop< metric_base::metric_set<metric_t> >;
+    %ignore illumina::interop::model::metric_base::metric_set<illumina::interop::model::metrics::metric_t>::begin;
+    %ignore illumina::interop::model::metric_base::metric_set<illumina::interop::model::metrics::metric_t>::end;
 
 %enddef
 
@@ -71,6 +73,8 @@
     %template(write_interop_to_buffer ) illumina::interop::io::write_interop_to_buffer< metric_base::metric_set<metric_t> >;
     %template(read_interop_from_buffer )  illumina::interop::io::read_interop_from_buffer< metric_base::metric_set<metric_t> >;
     %template(read_interop )  illumina::interop::io::read_interop< metric_base::metric_set<metric_t> >;
+    %ignore illumina::interop::model::metric_base::metric_set<illumina::interop::model::metrics::metric_t>::begin;
+    %ignore illumina::interop::model::metric_base::metric_set<illumina::interop::model::metrics::metric_t>::end;
 
 %enddef
 
@@ -127,5 +131,61 @@ WRAP_TEMPLATE_BASE(index_metric)
 %include "interop/model/metric_sets/tile_metric_set.h"
 %include "interop/model/metric_sets/index_metric_set.h"
 
+%ignore illumina::interop::model::summary::read_summary::begin;
+%ignore illumina::interop::model::summary::read_summary::end;
+%ignore illumina::interop::model::summary::read_summary::operator[];
+%ignore illumina::interop::model::summary::read_summary::read()const;
 
+%ignore illumina::interop::model::summary::run_summary::begin;
+%ignore illumina::interop::model::summary::run_summary::end;
+%ignore illumina::interop::model::summary::run_summary::operator[];
+
+%{
+#include "interop/model/run/cycle_range.h"
+#include "interop/model/summary/cycle_state_summary.h"
+#include "interop/model/summary/metric_summary.h"
+#include "interop/model/summary/lane_summary.h"
+#include "interop/model/summary/metric_stat.h"
+#include "interop/model/summary/read_summary.h"
+#include "interop/model/summary/run_summary.h"
+
+
+#include "interop/model/run/flowcell_layout.h"
+#include "interop/model/run/image_dimensions.h"
+#include "interop/model/run/info.h"
+#include "interop/model/run/parameters.h"
+#include "interop/model/run/read_info.h"
+
+#include "interop/model/run_metrics.h"
+#include "interop/logic/metric/q_metric.h"
+#include "interop/logic/summary/run_summary.h"
+%}
+
+
+%include "interop/model/run/cycle_range.h"
+%include "interop/model/summary/cycle_state_summary.h"
+%include "interop/model/summary/metric_summary.h"
+%include "interop/model/summary/lane_summary.h"
+%include "interop/model/summary/metric_stat.h"
+%include "interop/model/summary/read_summary.h"
+%include "interop/model/summary/run_summary.h"
+
+%include "interop/model/run/flowcell_layout.h"
+%include "interop/model/run/image_dimensions.h"
+%include "interop/model/run/info.h"
+%include "interop/model/run/parameters.h"
+%include "interop/model/run/read_info.h"
+
+//
+// Setup typemaps for summary metrics
+//
+%apply size_t { std::vector<illumina::interop::model::summary::lane_summary>::size_type };
+%apply size_t { std::vector<illumina::interop::model::summary::read_summary>::size_type };
+%template(lane_summary_vector) std::vector<illumina::interop::model::summary::lane_summary>;
+%template(read_summary_vector) std::vector<illumina::interop::model::summary::read_summary>;
+%template(read_info_vector) std::vector<illumina::interop::model::run::read_info>;
+
+%include "interop/model/run_metrics.h"
+%include "interop/logic/summary/run_summary.h"
+%include "interop/logic/metric/q_metric.h"
 
