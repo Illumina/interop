@@ -107,12 +107,12 @@ void cache_error_by_lane_read(I beg,
     }
     for(size_t read=0;read<tmp.size();++read)
     {
-        for(typename error_tile_t::const_iterator beg = tmp[read].begin(), end = tmp[read].end();beg != end;++beg)
+        for(typename error_tile_t::const_iterator ebeg = tmp[read].begin(), eend = tmp[read].end();ebeg != eend;++ebeg)
         {
             INTEROP_ASSERT(read < summary_by_lane_read.read_count());
-            const size_t lane = beg->first.first-1;
+            const size_t lane = ebeg->first.first-1;
             if(lane >= summary_by_lane_read.lane_count()) throw model::index_out_of_bounds_exception("Lane exceeds number of lanes in RunInfo.xml");
-            summary_by_lane_read(read, lane).push_back(divide(beg->second.first,beg->second.second));
+            summary_by_lane_read(read, lane).push_back(divide(ebeg->second.first,ebeg->second.second));
         }
     }
 }
@@ -171,11 +171,11 @@ void cache_cycle_state_by_lane_read(I beg, I end,
     for(size_t read=0;read<tmp.size();++read)
     {
         INTEROP_ASSERT(read < summary_by_lane_read.size());
-        for(typename cycle_range_tile_t::const_iterator beg = tmp[read].begin(), end = tmp[read].end();beg != end;++beg)
+        for(typename cycle_range_tile_t::const_iterator ebeg = tmp[read].begin(), eend = tmp[read].end();ebeg != eend;++ebeg)
         {
-            const size_t lane = model::metric_base::base_metric::lane_from_id(beg->first)-1;
+            const size_t lane = model::metric_base::base_metric::lane_from_id(ebeg->first)-1;
             INTEROP_ASSERT(lane < summary_by_lane_read[read].size());
-            summary_by_lane_read[read][lane].update(beg->second.last_cycle());
+            summary_by_lane_read[read][lane].update(ebeg->second.last_cycle());
         }
     }
 }

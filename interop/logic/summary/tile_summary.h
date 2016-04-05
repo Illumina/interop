@@ -136,7 +136,7 @@ namespace summary
             for(size_t lane=0;lane<run[read].size();++lane)
             {
                 INTEROP_ASSERT(lane < run[0].size());
-                const size_t n = nan_summarize(read_data_by_lane_read(read, lane).begin(),
+                const size_t non_nan = nan_summarize(read_data_by_lane_read(read, lane).begin(),
                                          read_data_by_lane_read(read, lane).end(),
                                          run[read][lane].percent_aligned(),
                                          util::op::const_member_function(&model::metrics::read_metric::percent_aligned),
@@ -154,7 +154,7 @@ namespace summary
                               util::op::const_member_function_less(&model::metrics::read_metric::percent_phasing));
                 INTEROP_ASSERT(!std::isnan(run[read][lane].percent_aligned().mean()));
                 percent_aligned_by_read += run[read][lane].percent_aligned().mean() * n;
-                total_by_read += n;
+                total_by_read += non_nan;
             }
             run[read].summary().percent_aligned(divide(percent_aligned_by_read,float(total_by_read)));
             percent_aligned += percent_aligned_by_read;
