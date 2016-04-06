@@ -3,13 +3,20 @@
 
 ## Trunk
 
+
+
+## v1.0.4
+
 Commit  | Description
 ------- | -----------
-29ac966 | Added summary model
-a351673 | Added run metrics
-92a07a2 | Added metric and channel logic as well as more statistics functions
-585eb43 | Remove legacy error metric fields
-bdf3f5f | Added parsers for RunInfo.xml and RunParameters.xml
+        | Update documentation
+        | Added summary tests
+13f1fb4 | Added summary logic
+339a914 | Added summary model
+aca0152 | Added run metrics
+6516098 | Added metric and channel logic as well as more statistics functions
+221028a | Added parsers for RunInfo.xml and RunParameters.xml
+5a7ca8f | Remove legacy error metric fields
 
 ## v1.0.3
 

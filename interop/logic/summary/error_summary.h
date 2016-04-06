@@ -143,7 +143,7 @@ inline void error_summary_from_cache(summary_by_lane_read<float>& summary_by_lan
 }
 
 /** Cache errors for all tiles up to a give max cycle
- *ll
+ *
  * This function only includes errors from useable cycles (not the last cycle).
  *
  * @param beg iterator to start of a collection of error metrics

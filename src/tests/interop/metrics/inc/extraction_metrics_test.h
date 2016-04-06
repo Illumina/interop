@@ -93,6 +93,7 @@ namespace illumina{ namespace interop { namespace unittest {
             summary[0][6].first_cycle_intensity()=model::summary::metric_stat(321, 24.75883674621582f, 312);
             summary[0].summary().first_cycle_intensity(321);
             summary.total_summary().first_cycle_intensity(321);
+            summary.nonindex_summary().first_cycle_intensity(321);
             summary[0][6].tile_count(3);
             return summary;
         }

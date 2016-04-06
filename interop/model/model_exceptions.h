@@ -8,6 +8,11 @@
 #pragma once
 #include <stdexcept>
 
+#ifdef _MSC_VER
+#pragma warning(disable:4290) // MSVC warns that it ignores the exception specification.
+#endif
+
+
 #define _INTEROP_MODEL_THROWS throw( interop::model::index_out_of_bounds_exception )
 #define _INTEROP_CHANNEL_THROWS throw( interop::model::invalid_channel_exception )
 
