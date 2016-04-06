@@ -9,6 +9,7 @@
 #include <stdexcept>
 
 #define _INTEROP_MODEL_THROWS throw( interop::model::index_out_of_bounds_exception )
+#define _INTEROP_CHANNEL_THROWS throw( interop::model::invalid_channel_exception )
 
 namespace illumina {
 namespace interop {
@@ -16,12 +17,12 @@ namespace model {
 
     /** Exception raised if an index goes out of bounds
      */
-    struct index_out_of_bounds_exception : public std::runtime_error {
+    struct index_out_of_bounds_exception : public std::out_of_range {
         /** Constructor
          *
          *  @param mesg error message
          */
-        index_out_of_bounds_exception(const std::string &mesg) : std::runtime_error(mesg) { }
+        index_out_of_bounds_exception(const std::string &mesg) : std::out_of_range(mesg) { }
     };
 
     /** Exception raised if the channel names are invalid
