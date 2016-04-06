@@ -20,6 +20,7 @@ namespace run
 
 /** Defines a range over cycles
  *
+ * @ingroup run_info
  */
 class read_info : public cycle_range
 {

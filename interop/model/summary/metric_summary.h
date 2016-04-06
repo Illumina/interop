@@ -13,6 +13,8 @@ namespace illumina { namespace interop { namespace model { namespace summary {
 
     /**  Summary statistics by read, total and non-indexed
      *
+     * @ingroup run_summary
+     *
      * @todo: use this is lane_summary too
      */
     class metric_summary
