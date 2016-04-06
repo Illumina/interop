@@ -18,8 +18,6 @@ namespace summary
 {
 
 /** Defines a range over cycles
- *
- * @ingroup run_summary
  */
 class cycle_state_summary
 {
