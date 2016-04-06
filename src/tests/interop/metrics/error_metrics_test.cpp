@@ -10,62 +10,17 @@
 
 #include <fstream>
 #include <gtest/gtest.h>
-#include "interop/model/metric_sets/error_metric_set.h"
-#include "src/tests/interop/metrics/metric_test_utils.h"
+#include "inc/error_metrics_test.h"
 using namespace illumina::interop::model::metrics;
+using namespace illumina::interop::model::metric_base;
 using namespace illumina::interop::io;
-
-
-namespace illumina{ namespace interop { namespace unittest {
-/** This test compares byte values taken from an InterOp file for three records produced by RTA 2.7.x
- * to the values displayed in SAV.
- *
- * @note Version 3
- */
-struct error_metrics_hardcoded_fixture_v3 : util::fixture_helper<error_metrics, 3>
-{
-    /** Setup fixture */
-    error_metrics_hardcoded_fixture_v3()
-    {
-        expected_metrics.push_back(metric_type(7, 1114, 1, 0.450100899f));
-        expected_metrics.push_back(metric_type(7, 1114, 2, 0.900201797f));
-        expected_metrics.push_back(metric_type(7, 1114, 3, 0.465621591f));
-        int tmp[] = {3,30,7,0,90,4,1,0,-96,115,-26,62,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-                ,7,0,90,4,2,0,-96,115,102,63,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-                ,7,0,90,4,3,0,-12,101,-18,62,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-        };
-        setup_hardcoded_binary(tmp, header_type());
-    }
-};
-
-
-/** This test writes three records of an InterOp files, then reads them back in and compares
- * each value to ensure they did not change.
- *
- * @note Version 3
- */
-struct error_metrics_write_read_fixture_v3 : util::fixture_helper<error_metrics, 3>
-{
-    /** Setup fixture */
-    error_metrics_write_read_fixture_v3()
-    {
-        expected_metrics.push_back(metric_type(7, 1114, 1, 0.450100899f));
-        expected_metrics.push_back(metric_type(7, 1114, 2, 0.900201797f));
-        expected_metrics.push_back(metric_type(7, 1114, 3, 0.465621591f));
-        setup_write_read();
-    }
-};
-
-/** Interface between fixtures and Google Test */
-template<typename TestSetup>
-struct error_metrics_test : public ::testing::Test, public TestSetup { };
-}}}
+using namespace illumina::interop;
 using namespace illumina::interop::unittest;
 
 
 typedef ::testing::Types<
-error_metrics_hardcoded_fixture_v3,
-error_metrics_write_read_fixture_v3
+        hardcoded_fixture<error_v3>,
+        write_read_fixture<error_v3>
 > Formats;
 TYPED_TEST_CASE(error_metrics_test, Formats);
 
@@ -77,11 +32,11 @@ TYPED_TEST_CASE(error_metrics_test, Formats);
 TYPED_TEST(error_metrics_test, test_read_write)
 {
     EXPECT_EQ(TypeParam::actual_metric_set.version(), TypeParam::VERSION);
-    EXPECT_EQ(TypeParam::actual_metrics.size(), TypeParam::expected_metrics.size());
+    EXPECT_EQ(TypeParam::actual_metric_set.size(), TypeParam::expected_metric_set.size());
     EXPECT_EQ(TypeParam::actual_metric_set.max_cycle(), TypeParam::expected_metric_set.max_cycle());
 
-    for(typename TypeParam::const_iterator itExpected=TypeParam::expected_metrics.begin(), itActual = TypeParam::actual_metrics.begin();
-        itExpected != TypeParam::expected_metrics.end() && itActual != TypeParam::actual_metrics.end();
+    for(typename TypeParam::const_iterator itExpected=TypeParam::expected_metric_set.begin(), itActual = TypeParam::actual_metric_set.begin();
+        itExpected != TypeParam::expected_metric_set.end() && itActual != TypeParam::actual_metric_set.end();
         itExpected++,itActual++)
     {
         EXPECT_EQ(itExpected->lane(), itActual->lane());
@@ -94,19 +49,10 @@ TYPED_TEST(error_metrics_test, test_read_write)
     }
 }
 
-TEST(error_metrics_test, test_tile_metric_count_for_lane)
+
+TYPED_TEST(error_metrics_test, test_tile_metric_count_for_lane)
 {
-    std::vector<error_metric> metrics;
-    metrics.push_back(error_metric(7, 1114, 1, 0.450100899f));
-    metrics.push_back(error_metric(7, 1114, 2, 0.900201797f));
-    metrics.push_back(error_metric(7, 1114, 3, 0.465621591f));
-    error_metrics metric_set;
-    for(size_t i=0;i<metrics.size();++i) metric_set.insert(metrics[i].id(), metrics[i]);
-    error_metrics::id_vector tile_lane_metrics = metric_set.tile_numbers_for_lane(7);
-
-    EXPECT_EQ(tile_lane_metrics.size(), 1u);
-
-
+    EXPECT_EQ(TypeParam::expected_metric_set.tile_numbers_for_lane(7).size(), 1u);
 }
 
 #define FIXTURE error_metrics_test
@@ -120,5 +66,5 @@ TEST(error_metrics_test, test_tile_metric_count_for_lane)
  * @test Confirm file_not_found_exception is thrown when a file is not found
  * @test Confirm reading from good data does not throw an exception
  */
-#include "src/tests/interop/metrics/stream_exception_tests.hpp"
+#include "inc/stream_tests.hpp"
 
