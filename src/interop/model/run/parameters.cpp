@@ -127,7 +127,15 @@ void parameters::read(const std::string& run_folder) throw( xml::xml_file_not_fo
                                                             xml::missing_xml_element_exception,
                                                             xml::xml_parse_exception)
 {
-    read_file(io::combine(run_folder, "RunParameters.xml"));
+    try
+    {
+        read_file(io::combine(run_folder, "runParameters.xml"));
+    }
+    catch(const io::file_not_found_exception&)
+    {
+        read_file(io::combine(run_folder, "RunParameters.xml"));
+    }
+
 }
 
 

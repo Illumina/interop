@@ -166,7 +166,7 @@ void cache_cycle_state_by_lane_read(I beg, I end,
         const read_cycle& read = cycle_to_read[beg->cycle()-1];
         if(read.number == 0) continue;
         INTEROP_ASSERT((read.number-1) < tmp.size());
-        size_t id = static_cast<size_t>(model::metric_base::base_metric::id(beg->lane(), beg->tile()));
+        const size_t id = static_cast<size_t>(model::metric_base::base_metric::id(beg->lane(), beg->tile()));
         tmp[read.number-1][id].update(beg->cycle());
     }
     for(size_t read=0;read<tmp.size();++read)
