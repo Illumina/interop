@@ -19,6 +19,7 @@ namespace model
 namespace run
 {
     /** Dimenions of the image
+     *
      */
     class image_dimensions
     {
@@ -31,6 +32,14 @@ namespace run
         image_dimensions(size_t width=0, size_t height=0) : m_width(width), m_height(height){}
 
     public:
+        /** @defgroup image_dimensions Image Dimensions
+         *
+         * Information describing the dimensions of the tile image
+         *
+         * @ingroup run_info
+         * @ref illumina::interop::model::run::image_dimensions "See full class description"
+         * @{
+         */
         /** Get the width of the image
          *
          * @return image width
@@ -41,6 +50,7 @@ namespace run
          * @return image height
          */
         size_t height()const{return m_height;}
+        /** @} */
     private:
         size_t m_width;
         size_t m_height;

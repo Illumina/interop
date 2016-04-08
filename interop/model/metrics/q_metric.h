@@ -42,6 +42,14 @@ namespace illumina {
                                                                                         m_upper(upper),
                                                                                         m_value(value){}
                 public:
+                    /** @defgroup q_score_bin Quality Bin
+                     *
+                     * Bin information for a q-score
+                     *
+                     * @ref illumina::interop::model::metrics::q_score_bin "See full class description"
+                     * @ingroup q_score_header
+                     * @{
+                     */
                     /** Lower end of the bin
                      *
                      * @return lower end of the bin
@@ -57,6 +65,7 @@ namespace illumina {
                      * @return value of the bin
                      */
                     bin_type value()const{return m_value;}
+                    /** @} */
 
                 private:
                     bin_type m_lower;
@@ -88,6 +97,15 @@ namespace illumina {
                      */
                     q_score_header(const qscore_bin_vector_type& bins) :
                             m_qscoreBins(bins), m_bin_count(bins.size()){}
+
+                    /** @defgroup q_score_header Quality Metric Header
+                     *
+                     * Collection of q-score bins
+                     *
+                     * @ref illumina::interop::model::metrics::q_score_header "See full class description"
+                     * @ingroup q_metric
+                     * @{
+                     */
                     /** Get a q-score bin
                      *
                      * @return q-score bin
@@ -140,6 +158,7 @@ namespace illumina {
                         while(index < m_qscoreBins.size() && binAt(index).value() < qval) index++;
                         return index+1;
                     }
+                    /** @} */
                     /** Generate a default header
                      *
                      * @return default header
@@ -234,6 +253,7 @@ namespace illumina {
                      * @ref illumina::interop::model::metrics::q_metric "See full class description"
                      *
                      * @note All metrics in this class are supported by all versions
+                     * @ingroup run_metrics
                      * @{
                      */
                     /** Q-score value of the histogram

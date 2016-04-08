@@ -19,6 +19,7 @@ namespace run
 {
 
 /** Defines a range over cycles
+ *
  */
 class read_info : public cycle_range
 {
@@ -41,6 +42,14 @@ public:
     }
 
 public:
+    /** @defgroup read_info Read Information
+     *
+     * Information describing the read
+     *
+     * @ingroup run_info
+     * @ref illumina::interop::model::run::read_info "See full class description"
+     * @{
+     */
     /** Get the number to identify the read
      *
      * @return  number to identify the read
@@ -75,6 +84,7 @@ public:
     {
         return (m_last_cycle >= m_first_cycle) ? m_last_cycle-m_first_cycle : 0;
     }
+    /** @} */
 
 private:
     size_t m_number;

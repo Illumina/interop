@@ -56,7 +56,7 @@ namespace illumina {
                      * Per tile per read metrics
                      *
                      * @ref illumina::interop::model::metrics::tile_metric "See full class description"
-                     *
+                     * @ingroup tile_metric
                      * @ref tile_metric "See read metrics"
                      * @{
                      */
@@ -204,6 +204,7 @@ namespace illumina {
                      *
                      * @ref read_metric "See read metrics"
                      *
+                     * @ingroup run_metrics
                      * @note All metrics in this class are supported by all versions
                      * @{
                      */

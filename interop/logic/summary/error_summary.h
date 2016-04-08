@@ -84,7 +84,7 @@ void cache_error_by_lane_read(I beg,
                               I end,
                               const size_t max_cycle,
                               const std::vector<read_cycle>& cycle_to_read,
-                              summary_by_lane_read<float>& summary_by_lane_read) _INTEROP_MODEL_THROWS
+                              summary_by_lane_read<float>& summary_by_lane_read) throw( model::index_out_of_bounds_exception )
 {
     typedef std::pair<size_t, size_t> key_t;
     typedef std::pair<float, float> value_t;
@@ -143,7 +143,7 @@ inline void error_summary_from_cache(summary_by_lane_read<float>& summary_by_lan
 }
 
 /** Cache errors for all tiles up to a give max cycle
- *ll
+ *
  * This function only includes errors from useable cycles (not the last cycle).
  *
  * @param beg iterator to start of a collection of error metrics
@@ -200,7 +200,7 @@ void cache_cycle_state_by_lane_read(I beg, I end,
  * @param run destination run summary
  */
 template<typename I>
-void summarize_error_metrics(I beg, I end, model::summary::run_summary &run) _INTEROP_MODEL_THROWS
+void summarize_error_metrics(I beg, I end, model::summary::run_summary &run) throw( model::index_out_of_bounds_exception )
 {
     typedef summary_by_lane_read<float> summary_by_lane_read_t;
     typedef std::vector<std::vector< model::run::cycle_range> > cycle_range_read_lane_t;

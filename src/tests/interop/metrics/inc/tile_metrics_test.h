@@ -144,6 +144,7 @@ namespace illumina{ namespace interop { namespace unittest {
             summary[0].summary().percent_aligned(2.5763518810272217f);
             summary[1].summary().percent_aligned(2.6163086891174316f);
             summary.total_summary().percent_aligned(2.5863409042358398f);
+            summary.nonindex_summary().percent_aligned(2.5863409042358398f);
 
             return summary;
         }

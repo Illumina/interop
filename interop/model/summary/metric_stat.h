@@ -17,6 +17,7 @@ namespace summary
 {
 
 /** Simple statistics describing a set of metrics
+ *
  */
 class metric_stat
 {
@@ -63,6 +64,14 @@ public:
     }
 
 public:
+    /** @defgroup metric_stat Metric statistics
+     *
+     * Simple statistics of a metric
+     *
+     * @ingroup lane_summary
+     * @ref illumina::interop::model::summary::metric_stat "See full class description"
+     * @{
+     */
     /** Get the mean value over several metrics
      *
      * @return mean value over several metrics
@@ -87,6 +96,7 @@ public:
     {
         return m_median;
     }
+    /** @} */
 protected:
     /** Mean value */
     float m_mean;

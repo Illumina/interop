@@ -16,6 +16,7 @@ add_executable(interop_gtests
         metrics/inc/error_metrics_test.h
         metrics/inc/metric_test.h
         metrics/inc/stream_tests.hpp
+        metrics/summary_metrics_test.cpp
         metrics/inc/summary_fixture.h
         metrics/inc/extraction_metrics_test.h
         metrics/inc/image_metrics_test.h

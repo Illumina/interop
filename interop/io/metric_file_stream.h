@@ -65,7 +65,8 @@ std::string write_interop_to_buffer(const MetricSet& metrics)
  * @throw incomplete_file_exception
  */
 template<class MetricSet>
-void read_interop_from_buffer(::uint8_t* buffer, size_t buffer_size, MetricSet& metrics) _INTEROP_FORMAT_THROWS
+void read_interop_from_buffer(::uint8_t* buffer, size_t buffer_size, MetricSet& metrics)  throw
+(interop::io::file_not_found_exception, interop::io::bad_format_exception, interop::io::incomplete_file_exception)
 {
     detail::membuf sbuf(reinterpret_cast<char*>(buffer), reinterpret_cast<char*>(buffer) + buffer_size);
     std::istream in(&sbuf);
@@ -83,7 +84,8 @@ void read_interop_from_buffer(::uint8_t* buffer, size_t buffer_size, MetricSet& 
  * @throw incomplete_file_exception
  */
 template<class MetricSet>
-void read_interop(const std::string& runDirectory, MetricSet& metrics, const bool useOut=true) _INTEROP_FORMAT_THROWS
+void read_interop(const std::string& runDirectory, MetricSet& metrics, const bool useOut=true)   throw
+(interop::io::file_not_found_exception, interop::io::bad_format_exception, interop::io::incomplete_file_exception)
 {
     std::string fileName = detail::interop_filename(runDirectory, metrics.name(), useOut);
     std::ifstream fin(fileName.c_str(), std::ios::binary);

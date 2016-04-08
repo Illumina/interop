@@ -1,4 +1,4 @@
-/** Unit tests for the corrected intensity metrics
+/** Unit tests for the error metrics
  *
  *
  *  @file
@@ -87,6 +87,7 @@ struct error_v3 : metric_test<model::metrics::error_metric, 3>
         summary[0][6].cycle_state().error_cycle_range(model::run::cycle_range(2, 2));
         summary[0].summary().error_rate(0.67515134811401367f);
         summary.total_summary().error_rate(0.67515134811401367f);
+        summary.nonindex_summary().error_rate(0.67515134811401367f);
         summary[0][6].tile_count(1);
         summary.cycle_state().error_cycle_range(model::run::cycle_range(2, 2));
         return summary;

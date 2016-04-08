@@ -20,7 +20,9 @@ namespace model
 namespace summary
 {
 
+
 /**  Summary statistics over entire run
+ *
  */
 class run_summary
 {
@@ -99,12 +101,19 @@ public:
     }
 
 public:
+    /** @defgroup run_summary Run Summary
+     *
+     * Information used in the SAV Summary Tab
+     *
+     * @ref illumina::interop::model::summary::run_summary "See full class description"
+     * @{
+     */
     /** Get reference to read_summary at given index
      *
      * @param n index
      * @return reference to read_summary
      */
-    reference operator[](const size_type n) _INTEROP_MODEL_THROWS
+    reference operator[](const size_type n) throw( model::index_out_of_bounds_exception )
     {
         if(n >= m_summary_by_read.size()) throw index_out_of_bounds_exception("Read index exceeds read count");
         return m_summary_by_read[n];
@@ -114,7 +123,7 @@ public:
      * @param n index
      * @return constant reference to read_summary
      */
-    const_reference operator[](const size_type n)const _INTEROP_MODEL_THROWS
+    const_reference operator[](const size_type n)const throw( model::index_out_of_bounds_exception )
     {
         if(n >= m_summary_by_read.size()) throw index_out_of_bounds_exception("Read index exceeds read count");
         return m_summary_by_read[n];
@@ -124,7 +133,7 @@ public:
      * @param n index
      * @return reference to read_summary
      */
-    read_summary& at(const size_type n) _INTEROP_MODEL_THROWS
+    read_summary& at(const size_type n) throw( model::index_out_of_bounds_exception )
     {
         if(n >= m_summary_by_read.size()) throw index_out_of_bounds_exception("Read index exceeds read count");
         return m_summary_by_read[n];
@@ -134,7 +143,7 @@ public:
      * @param n index
      * @return constant reference to read_summary
      */
-    const_reference at(const size_type n)const _INTEROP_MODEL_THROWS
+    const_reference at(const size_type n)const throw( model::index_out_of_bounds_exception )
     {
         if(n >= m_summary_by_read.size()) throw index_out_of_bounds_exception("Read index exceeds read count");
         return m_summary_by_read[n];
@@ -259,6 +268,7 @@ public:
     {
         return m_cycle_state;
     }
+    /** @} */
 
 private:
     size_t m_lane_count;

@@ -54,7 +54,7 @@ class q_metrics : public metric_base::metric_set<q_metric>
 
         /** Populate the cumulative distributions
          */
-        void populateCumulativeDistributions() _INTEROP_MODEL_THROWS
+        void populateCumulativeDistributions() throw( model::index_out_of_bounds_exception )
         {
             logic::metric::populate_cumulative_distribution(*this);
         }

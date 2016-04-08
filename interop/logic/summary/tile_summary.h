@@ -41,7 +41,7 @@ namespace summary
     * @param run destination run summary
     */
     template<typename I>
-    void summarize_tile_metrics(I beg, I end, model::summary::run_summary &run) _INTEROP_MODEL_THROWS
+    void summarize_tile_metrics(I beg, I end, model::summary::run_summary &run) throw( model::index_out_of_bounds_exception )
     {
         typedef typename model::metrics::tile_metric::read_metric_vector read_metric_vector_t;
         typedef typename read_metric_vector_t::const_iterator const_read_metric_iterator;
@@ -153,7 +153,7 @@ namespace summary
                               util::op::const_member_function(&model::metrics::read_metric::percent_phasing),
                               util::op::const_member_function_less(&model::metrics::read_metric::percent_phasing));
                 INTEROP_ASSERT(!std::isnan(run[read][lane].percent_aligned().mean()));
-                percent_aligned_by_read += run[read][lane].percent_aligned().mean() * n;
+                percent_aligned_by_read += run[read][lane].percent_aligned().mean() * non_nan;
                 total_by_read += non_nan;
             }
             run[read].summary().percent_aligned(divide(percent_aligned_by_read,float(total_by_read)));

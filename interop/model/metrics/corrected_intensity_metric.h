@@ -199,6 +199,7 @@ namespace illumina {
                      *
                      * Per tile per cycle per channel average intensity values
                      *
+                     * @ingroup run_metrics
                      * @ref illumina::interop::model::metrics::corrected_intensity_metric "See full class description"
                      * @{
                      */

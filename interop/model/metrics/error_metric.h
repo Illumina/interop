@@ -79,6 +79,7 @@ namespace illumina {
                      *
                      * @ref illumina::interop::model::metrics::error_metric "See full class description"
                      *
+                     * @ingroup run_metrics
                      * @{
                      */
                     /** Calculated error rate, as determined by a spiked in PhiX control sample.

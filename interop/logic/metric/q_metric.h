@@ -40,7 +40,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
      *
      * @param metrics q-metric set
      */
-    inline void populate_cumulative_distribution(model::metric_base::metric_set<model::metrics::q_metric>& metrics) _INTEROP_MODEL_THROWS
+    inline void populate_cumulative_distribution(model::metric_base::metric_set<model::metrics::q_metric>& metrics) throw( model::index_out_of_bounds_exception )
     {
         if(metrics.size()==0) return;
         typedef model::metrics::q_metric q_metric;

@@ -37,8 +37,7 @@
 %typemap(in) (const illumina::interop::io::layout::base_read_metric& layout)
    "#error \"Please %ignore this constructor\""
 
-// Template need to be defined before they can be used in SWIG
-%define WRAP_TEMPLATE_BASE(metric_t)
+%define WRAP_TYPES(metric_t)
     using namespace illumina::interop::model::metrics;
     namespace metric_base = illumina::interop::model::metric_base;
 
@@ -46,37 +45,48 @@
     %apply size_t { metric_base::metric_set<metric_t>::size_type };
     %apply uint64_t { metric_base::metric_set<metric_t>::id_t };
     %apply uint64_t { io::layout::base_metric::id_t };
+    %ignore illumina::interop::model::metric_base::metric_set<illumina::interop::model::metrics::metric_t>::begin;
+    %ignore illumina::interop::model::metric_base::metric_set<illumina::interop::model::metrics::metric_t>::end;
 
-    EXTEND_METRIC_SET(metric_t)
+%enddef
+
+%define WRAP_METRIC_SET(metric_t)
+    using namespace illumina::interop::model::metrics;
+    namespace metric_base = illumina::interop::model::metric_base;
+
     %template(base_ ## metric_t ## s) metric_base::metric_set<metric_t>;
     %template(vector_ ## metric_t ## s) std::vector<metric_t>;
     %template(write_interop_to_buffer ) illumina::interop::io::write_interop_to_buffer< metric_base::metric_set<metric_t> >;
     %template(read_interop_from_buffer )  illumina::interop::io::read_interop_from_buffer< metric_base::metric_set<metric_t> >;
     %template(read_interop )  illumina::interop::io::read_interop< metric_base::metric_set<metric_t> >;
-    %ignore illumina::interop::model::metric_base::metric_set<illumina::interop::model::metrics::metric_t>::begin;
-    %ignore illumina::interop::model::metric_base::metric_set<illumina::interop::model::metrics::metric_t>::end;
 
+%enddef
+
+// Template need to be defined before they can be used in SWIG
+%define WRAP_TEMPLATE_BASE(metric_t)
+    WRAP_TYPES(metric_t)
+    EXTEND_METRIC_SET(metric_t)
+    WRAP_METRIC_SET(metric_t)
 %enddef
 
 %define WRAP_TEMPLATE_CYCLE_BASE(metric_t)
-    using namespace illumina::interop::model::metrics;
-    namespace metric_base = illumina::interop::model::metric_base;
-
-    %apply size_t { std::map< std::size_t, metric_t >::size_type };
-    %apply size_t { metric_base::metric_set<metric_t>::size_type };
-    %apply uint64_t { metric_base::metric_set<metric_t>::id_t };
-    %apply uint64_t { io::layout::base_metric::id_t };
-
+    WRAP_TYPES(metric_t)
     EXTEND_CYCLE_METRIC_SET(metric_t)
-    %template(base_ ## metric_t ## s) metric_base::metric_set<metric_t>;
-    %template(vector_ ## metric_t ## s) std::vector<metric_t>;
-    %template(write_interop_to_buffer ) illumina::interop::io::write_interop_to_buffer< metric_base::metric_set<metric_t> >;
-    %template(read_interop_from_buffer )  illumina::interop::io::read_interop_from_buffer< metric_base::metric_set<metric_t> >;
-    %template(read_interop )  illumina::interop::io::read_interop< metric_base::metric_set<metric_t> >;
-    %ignore illumina::interop::model::metric_base::metric_set<illumina::interop::model::metrics::metric_t>::begin;
-    %ignore illumina::interop::model::metric_base::metric_set<illumina::interop::model::metrics::metric_t>::end;
-
+    WRAP_METRIC_SET(metric_t)
 %enddef
+
+%define WRAP_Q_METRIC(metric_t)
+    WRAP_TYPES(metric_t)
+    EXTEND_Q_METRIC(metric_t)
+    WRAP_METRIC_SET(metric_t)
+%enddef
+
+%define WRAP_TILE_METRIC(metric_t)
+    WRAP_TYPES(metric_t)
+    EXTEND_TILE_METRIC(metric_t)
+    WRAP_METRIC_SET(metric_t)
+%enddef
+
 
 %{
 #include "interop/model/metrics/corrected_intensity_metric.h"
@@ -109,8 +119,8 @@ WRAP_TEMPLATE_CYCLE_BASE(corrected_intensity_metric)
 WRAP_TEMPLATE_CYCLE_BASE(error_metric)
 WRAP_TEMPLATE_CYCLE_BASE(extraction_metric)
 WRAP_TEMPLATE_CYCLE_BASE(image_metric)
-WRAP_TEMPLATE_CYCLE_BASE(q_metric)
-WRAP_TEMPLATE_BASE(tile_metric)
+WRAP_Q_METRIC(q_metric)
+WRAP_TILE_METRIC(tile_metric)
 WRAP_TEMPLATE_BASE(index_metric)
 
 %{

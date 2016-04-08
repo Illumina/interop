@@ -101,7 +101,7 @@ namespace summary
      * @param run destination run summary
      */
     template<typename I>
-    void summarize_quality_metrics(I beg, I end, const size_t qval_index, model::summary::run_summary &run) _INTEROP_MODEL_THROWS
+    void summarize_quality_metrics(I beg, I end, const size_t qval_index, model::summary::run_summary &run) throw( model::index_out_of_bounds_exception )
     {
         typedef model::metrics::q_metric::uint_t uint_t;
         typedef model::summary::lane_summary lane_summary;

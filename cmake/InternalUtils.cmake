@@ -44,6 +44,11 @@ macro(config_compiler_and_linker)
         set(COMPILER_IS_GNUCC_OR_CLANG ON)
     endif()
 
+    if(CMAKE_SIZEOF_VOID_P EQUAL "4")
+        if(MSVC OR MINGW)
+            add_definitions(-D_INTEROP_WIN32)
+        endif()
+    endif()
 
     include(CheckTypeSize)
     check_type_size("float" SIZEOF_FLOAT)

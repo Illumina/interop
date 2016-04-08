@@ -79,17 +79,29 @@ public:
      *
      * @param run_folder run folder containing RunParameters.xml
      */
-    void read(const std::string& run_folder) _INTEROP_XML_THROWS;
+    void read(const std::string& run_folder) throw( xml::xml_file_not_found_exception,
+                                                    xml::bad_xml_format_exception,
+                                                    xml::empty_xml_format_exception,
+                                                    xml::missing_xml_element_exception,
+                                                    xml::xml_parse_exception);
     /** Read run metadata from the given XML file
      *
      * @param filename xml file
      */
-    void read_file(const std::string& filename) _INTEROP_XML_THROWS;
+    void read_file(const std::string& filename) throw( xml::xml_file_not_found_exception,
+                                                        xml::bad_xml_format_exception,
+                                                        xml::empty_xml_format_exception,
+                                                        xml::missing_xml_element_exception,
+                                                        xml::xml_parse_exception);
     /** String containing xml data
      *
      * @param data xml string data
      */
-    void parse(char* data) _INTEROP_XML_THROWS;
+    void parse(char* data) throw(   xml::xml_file_not_found_exception,
+                                    xml::bad_xml_format_exception,
+                                    xml::empty_xml_format_exception,
+                                    xml::missing_xml_element_exception,
+                                    xml::xml_parse_exception);
 
 private:
     void set_instrument_id(std::string& application_name, std::string& multi_surface);

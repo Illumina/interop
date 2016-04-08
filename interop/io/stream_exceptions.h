@@ -12,18 +12,19 @@
 #pragma once
 #include <string>
 #include <stdexcept>
+#include "interop/util/exception_specification.h"
 
 #ifdef _MSC_VER
 #pragma warning(disable:4290) // MSVC warns that it ignores the exception specification.
 #endif
 
-#define _INTEROP_FORMAT_THROWS throw(   interop::io::file_not_found_exception, \
-                                        interop::io::bad_format_exception, \
-                                        interop::io::incomplete_file_exception)
-
 namespace illumina {
     namespace interop {
         namespace io {
+            /** @defgroup interop_exceptions Exceptions
+             *
+             * List of exceptions thrown by the InterOp library
+             */
             /** Base exception for all format errors
              */
             struct format_exception : public std::runtime_error {
@@ -37,6 +38,7 @@ namespace illumina {
              *
              * Exceptions that will be thrown if a problem occurs while reading a binary InterOp file.
              *
+             * @ingroup interop_exceptions
              * @{
              */
             /** Exception raised if the InterOp file is not found in the file system

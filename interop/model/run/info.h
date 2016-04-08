@@ -42,7 +42,7 @@ public:
     /** String vector type */
     typedef std::vector <std::string> str_vector_t;
     /** Read vector type */
-    typedef std::vector< illumina::interop::model::run::read_info> read_vector_t;
+    typedef std::vector< read_info> read_vector_t;
 public:
     /** Constructor
      *
@@ -87,21 +87,24 @@ public:
     }
 
 public:
+    /** @defgroup run_info Run Info
+     *
+     * Information describing the run
+     *
+     * @ingroup run_metrics
+     * @ref illumina::interop::model::run::info "See full class description"
+     * @{
+     */
+
     /** Read run information from run folder
      *
      * @param run_folder run folder containing RunInfo.xml
      */
-    void read(const std::string& run_folder) _INTEROP_XML_THROWS;
-    /** Read run information from the given XML file
-     *
-     * @param filename xml file
-     */
-    void read_file(const std::string& filename) _INTEROP_XML_THROWS;
-    /** String containing xml data
-     *
-     * @param data xml string data
-     */
-    void parse(char* data) _INTEROP_XML_THROWS;
+    void read(const std::string& run_folder) throw( xml::xml_file_not_found_exception,
+                                                    xml::bad_xml_format_exception,
+                                                    xml::empty_xml_format_exception,
+                                                    xml::missing_xml_element_exception,
+                                                    xml::xml_parse_exception);
 
 public:
     /** Get the name of the run
@@ -144,7 +147,27 @@ public:
      * @param channels channel labels
      */
     void channels(const str_vector_t& channels){ m_channels = channels;}
+    /** @} */
 
+public:
+    /** Read run information from the given XML file
+     *
+     * @param filename xml file
+     */
+    void read_file(const std::string& filename) throw(  xml::xml_file_not_found_exception,
+                                                        xml::bad_xml_format_exception,
+                                                        xml::empty_xml_format_exception,
+                                                        xml::missing_xml_element_exception,
+                                                        xml::xml_parse_exception);
+    /** String containing xml data
+     *
+     * @param data xml string data
+     */
+    void parse(char* data) throw(   xml::xml_file_not_found_exception,
+                                    xml::bad_xml_format_exception,
+                                    xml::empty_xml_format_exception,
+                                    xml::missing_xml_element_exception,
+                                    xml::xml_parse_exception);
 
 private:
     std::string m_name;
