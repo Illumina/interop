@@ -73,26 +73,16 @@
                 return Lookup.Keys;
             }
         }
+
+         private run_metrics _runMetricsRef;
+         internal void AddReference(run_metrics metrics)
+         {
+             _runMetricsRef = metrics;
+         }
 %enddef
 
-%define EXTEND_METRIC_SET(metric_t)
-    using namespace illumina::interop::model::metrics;
-    namespace metric_base = illumina::interop::model::metric_base;
+%define SHARED_CYCLE_METRIC_SET_METHODS(metric_t)
 
-    %typemap(cscode) illumina::interop::model::metric_base::metric_set<metric_t> %{
-        SHARED_METRIC_SET_METHODS(metric_t)
-    %}
-%enddef
-
-
-%define EXTEND_CYCLE_METRIC_SET(metric_t)
-
-    using namespace illumina::interop::model::metrics;
-    namespace metric_base = illumina::interop::model::metric_base;
-
-    %typemap(cscode) illumina::interop::model::metric_base::metric_set<metric_t> %{
-
-        SHARED_METRIC_SET_METHODS(metric_t)
 
         public int MaxCycle { get{ return (int)max_cycle(); } }
         public global::System.Int64 GetKey(int lane, int tile, int cycle)
@@ -121,44 +111,90 @@
             }
             return results;
         }
+%enddef
+
+%define EXTEND_METRIC_SET(metric_t)
+    using namespace illumina::interop::model::metrics;
+    namespace metric_base = illumina::interop::model::metric_base;
+
+    %typemap(cscode) illumina::interop::model::metric_base::metric_set<metric_t> %{
+        SHARED_METRIC_SET_METHODS(metric_t)
+        SHARED_CYCLE_METRIC_SET_METHODS(metric_t)
     %}
 %enddef
 
 
-%typemap(cscode) illumina::interop::model::metrics::tile_metrics %{
-     private int _controlLane;
-     public int ControlLane { get{return _controlLane;} set{_controlLane=value;} }
-     private global::System.Collections.Generic.List<int> _tiles;
-     public global::System.Collections.Generic.List<int> Tiles { get{return _tiles;} set{_tiles=value;} }
-%}
+%define EXTEND_CYCLE_METRIC_SET(metric_t)
 
-%typemap(cscode) illumina::interop::model::metrics::q_metrics %{
-    public class QScoreBin
-    {
-         private byte _lower;
-         private byte _upper;
-         private byte _value;
-         public byte Lower { get{return _lower;} set{_lower=value;} }
-         public byte Upper { get{return _upper;} set{_upper=value;} }
-         public byte Value { get{return _value;} set{_value=value;} }
-         public QScoreBin(){}
-         public QScoreBin(byte lower, byte upper, byte value)
-         {
-            Lower = lower;
-            Upper = upper;
-            Value = value;
-         }
-    };
-    private global::System.Collections.Generic.List<QScoreBin> _qScoreBins;
-    public global::System.Collections.Generic.List<QScoreBin> QScoreBins { get{return _qScoreBins;} set{_qScoreBins=value;} }
+    using namespace illumina::interop::model::metrics;
+    namespace metric_base = illumina::interop::model::metric_base;
 
-    public bool IsBinned { get { return binCount() > 0; }}
-    public int NumQVals(){ return (int)histBinCount(); }
-    public bool IsCompressed { get { return NumQVals() > 0 && NumQVals() != 50; } }
-    public int MaxQVal(){ return (int)max_q_value(); }
-%}
+    %typemap(cscode) illumina::interop::model::metric_base::metric_set<metric_t> %{
+        SHARED_METRIC_SET_METHODS(metric_t)
+        SHARED_CYCLE_METRIC_SET_METHODS(metric_t)
+    %}
+%enddef
+
+%define EXTEND_Q_METRIC(metric_t)
+    %typemap(cscode) illumina::interop::model::metric_base::metric_set<metric_t> %{
+        SHARED_METRIC_SET_METHODS(metric_t)
+        SHARED_CYCLE_METRIC_SET_METHODS(metric_t)
+        public class QScoreBin
+        {
+             private byte _lower;
+             private byte _upper;
+             private byte _value;
+             public byte Lower { get{return _lower;} set{_lower=value;} }
+             public byte Upper { get{return _upper;} set{_upper=value;} }
+             public byte Value { get{return _value;} set{_value=value;} }
+             public QScoreBin(){}
+             public QScoreBin(byte lower, byte upper, byte value)
+             {
+                Lower = lower;
+                Upper = upper;
+                Value = value;
+             }
+        };
+        private global::System.Collections.Generic.List<QScoreBin> _qScoreBins;
+        public global::System.Collections.Generic.List<QScoreBin> QScoreBins { get{return _qScoreBins;} set{_qScoreBins=value;} }
+
+        public bool IsBinned { get { return binCount() > 0; }}
+        public int NumQVals(){ return (int)c_csharp_interop.count_q_metric_bins(this); }
+        public bool IsCompressed { get { return NumQVals() > 0 && NumQVals() != 50; } }
+        public int MaxQVal(){ return (int)max_q_value(); }
+
+        public void build_bins(instrument_type instrument)
+        {
+            c_csharp_interop.populate_legacy_q_score_bins(this, bins(), instrument);
+        }
+        public void populateCumulativeDistributions()
+        {
+            c_csharp_interop.populate_cumulative_distribution(this);
+        }
+    %}
+%enddef
+
+%define EXTEND_TILE_METRIC(metric_t)
+    %typemap(cscode) illumina::interop::model::metric_base::metric_set<metric_t> %{
+         SHARED_METRIC_SET_METHODS(metric_t)
+         private int _controlLane;
+         public int ControlLane { get{return _controlLane;} set{_controlLane=value;} }
+         private global::System.Collections.Generic.List<int> _tiles;
+         public global::System.Collections.Generic.List<int> Tiles { get{return _tiles;} set{_tiles=value;} }
+    %}
+%enddef
 
 
+%typemap(csout, excode=SWIGEXCODE) illumina::interop::model::metric_base::metric_set<illumina::interop::model::metrics::tile_metric>& tile_metric_set()
+{
+    System.IntPtr cPtr = $imcall;$excode
+    $csclassname ret = null;
+    if (cPtr != System.IntPtr.Zero) {
+        ret = new $csclassname(cPtr, $owner);
+        ret.AddReference(this);
+    }
+    return ret;
+}
 
 %typemap(cscode) illumina::interop::model::metrics::tile_metric %{
     public int LatestExtractedCycle;

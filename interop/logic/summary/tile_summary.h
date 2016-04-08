@@ -153,7 +153,7 @@ namespace summary
                               util::op::const_member_function(&model::metrics::read_metric::percent_phasing),
                               util::op::const_member_function_less(&model::metrics::read_metric::percent_phasing));
                 INTEROP_ASSERT(!std::isnan(run[read][lane].percent_aligned().mean()));
-                percent_aligned_by_read += run[read][lane].percent_aligned().mean() * n;
+                percent_aligned_by_read += run[read][lane].percent_aligned().mean() * non_nan;
                 total_by_read += non_nan;
             }
             run[read].summary().percent_aligned(divide(percent_aligned_by_read,float(total_by_read)));
