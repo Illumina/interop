@@ -146,6 +146,7 @@ namespace illumina {
                      *
                      * @ref illumina::interop::model::metrics::image_metric "See full class description"
                      *
+                     * @ingroup run_metrics
                      * @note All metrics in this class are supported by all versions
                      * @{
                      */

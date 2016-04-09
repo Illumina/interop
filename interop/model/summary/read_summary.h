@@ -16,6 +16,7 @@
 namespace illumina { namespace interop { namespace model { namespace summary {
 
 /**  Summary statistics compiled by lane
+ *
  */
 class read_summary
 {
@@ -43,12 +44,20 @@ public:
     }
 
 public:
-    /** Get reference to lane_summary at given index
+    /** @defgroup read_summary Read summary
+     *
+     * Summary of key metrics in each read
+     *
+     * @ingroup run_summary
+     * @ref illumina::interop::model::summary::read_summary "See full class description"
+     * @{
+     */
+    /** Get constant reference to lane_summary at given index
      *
      * @param n index
-     * @return reference to lane_summary
+     * @return constant reference to lane_summary
      */
-    reference operator[](const size_type n) _INTEROP_MODEL_THROWS
+    const_reference operator[](const size_type n)const throw( model::index_out_of_bounds_exception )
     {
         if(n >= m_summary_by_lane.size()) throw index_out_of_bounds_exception("Lane index exceeds read count");
         return m_summary_by_lane[n];
@@ -58,27 +67,7 @@ public:
      * @param n index
      * @return constant reference to lane_summary
      */
-    const_reference operator[](const size_type n)const _INTEROP_MODEL_THROWS
-    {
-        if(n >= m_summary_by_lane.size()) throw index_out_of_bounds_exception("Lane index exceeds read count");
-        return m_summary_by_lane[n];
-    }
-    /** Get reference to lane_summary at given index
-     *
-     * @param n index
-     * @return reference to lane_summary
-     */
-    lane_summary& at(const size_type n) _INTEROP_MODEL_THROWS
-    {
-        if(n >= m_summary_by_lane.size()) throw index_out_of_bounds_exception("Lane index exceeds read count");
-        return m_summary_by_lane[n];
-    }
-    /** Get constant reference to lane_summary at given index
-     *
-     * @param n index
-     * @return constant reference to lane_summary
-     */
-    const_reference at(const size_type n)const _INTEROP_MODEL_THROWS
+    const_reference at(const size_type n)const throw( model::index_out_of_bounds_exception )
     {
         if(n >= m_summary_by_lane.size()) throw index_out_of_bounds_exception("Lane index exceeds read count");
         return m_summary_by_lane[n];
@@ -99,22 +88,6 @@ public:
     {
         return m_summary_by_lane.size();
     }
-    /** Get random access iterator to start of summaries by lane
-     *
-     * @return random access iterator
-     */
-    iterator begin()
-    {
-        return m_summary_by_lane.begin();
-    }
-    /** Get random access iterator to end of summaries by lane
-     *
-     * @return random access iterator
-     */
-    iterator end()
-    {
-        return m_summary_by_lane.end();
-    }
     /** Get constant random access iterator to start of summaries by lane
      *
      * @return constant random access iterator
@@ -131,14 +104,6 @@ public:
     {
         return m_summary_by_lane.end();
     }
-    /** Resize the summary by lane vector
-     *
-     * @param n new size of summary by lane vector
-     */
-    void resize(const size_type n)
-    {
-        m_summary_by_lane.resize(n);
-    }
 
 public:
     /** Get read information
@@ -149,16 +114,6 @@ public:
     {
         return m_read;
     }
-    /** Get read information
-     *
-     * @return read information
-     */
-    run::read_info& read()
-    {
-        return m_read;
-    }
-
-public:
     /** Get summary metrics
      *
      * @return summary metrics
@@ -166,6 +121,61 @@ public:
     const metric_summary& summary()const
     {
         return m_metric_summary;
+    }
+    /** @} */
+
+public:
+    /** Get reference to lane_summary at given index
+     *
+     * @param n index
+     * @return reference to lane_summary
+     */
+    reference operator[](const size_type n) throw( model::index_out_of_bounds_exception )
+    {
+        if(n >= m_summary_by_lane.size()) throw index_out_of_bounds_exception("Lane index exceeds read count");
+        return m_summary_by_lane[n];
+    }
+    /** Get reference to lane_summary at given index
+     *
+     * @param n index
+     * @return reference to lane_summary
+     */
+    lane_summary& at(const size_type n) throw( model::index_out_of_bounds_exception )
+    {
+        if(n >= m_summary_by_lane.size()) throw index_out_of_bounds_exception("Lane index exceeds read count");
+        return m_summary_by_lane[n];
+    }
+    /** Get random access iterator to start of summaries by lane
+     *
+     * @return random access iterator
+     */
+    iterator begin()
+    {
+        return m_summary_by_lane.begin();
+    }
+    /** Get random access iterator to end of summaries by lane
+     *
+     * @return random access iterator
+     */
+    iterator end()
+    {
+        return m_summary_by_lane.end();
+    }
+    /** Resize the summary by lane vector
+     *
+     * @param n new size of summary by lane vector
+     */
+    void resize(const size_type n)
+    {
+        m_summary_by_lane.resize(n);
+    }
+    /** Get read information
+     *
+     * @return read information
+     */
+    run::read_info& read()
+    {
+        return m_read;
     }
     /** Get summary metrics
      *

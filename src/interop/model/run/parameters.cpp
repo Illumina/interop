@@ -35,7 +35,11 @@ namespace model
 namespace run
 {
 
-void parameters::parse(char *data)  _INTEROP_XML_THROWS
+void parameters::parse(char *data) throw(   xml::xml_file_not_found_exception,
+                                            xml::bad_xml_format_exception,
+                                            xml::empty_xml_format_exception,
+                                            xml::missing_xml_element_exception,
+                                            xml::xml_parse_exception)
 {
     rapidxml::xml_document<> doc;
     try{
@@ -101,7 +105,11 @@ void parameters::set_instrument_id(std::string& application_name, std::string& m
     }
 }
 
-void parameters::read_file(const std::string &filename)  _INTEROP_XML_THROWS
+void parameters::read_file(const std::string &filename)   throw( xml::xml_file_not_found_exception,
+                                                            xml::bad_xml_format_exception,
+                                                            xml::empty_xml_format_exception,
+                                                            xml::missing_xml_element_exception,
+                                                            xml::xml_parse_exception)
 {
     try
     {
@@ -113,9 +121,21 @@ void parameters::read_file(const std::string &filename)  _INTEROP_XML_THROWS
     }
 }
 
-void parameters::read(const std::string& run_folder) _INTEROP_XML_THROWS
+void parameters::read(const std::string& run_folder) throw( xml::xml_file_not_found_exception,
+                                                            xml::bad_xml_format_exception,
+                                                            xml::empty_xml_format_exception,
+                                                            xml::missing_xml_element_exception,
+                                                            xml::xml_parse_exception)
 {
-    read_file(io::combine(run_folder, "RunParameters.xml"));
+    try
+    {
+        read_file(io::combine(run_folder, "runParameters.xml"));
+    }
+    catch(const io::file_not_found_exception&)
+    {
+        read_file(io::combine(run_folder, "RunParameters.xml"));
+    }
+
 }
 
 

@@ -33,7 +33,11 @@ namespace model
 namespace run
 {
 
-void info::parse(char *data)  _INTEROP_XML_THROWS
+void info::parse(char *data)  throw(    xml::xml_file_not_found_exception,
+                                        xml::bad_xml_format_exception,
+                                        xml::empty_xml_format_exception,
+                                        xml::missing_xml_element_exception,
+                                        xml::xml_parse_exception)
 {
     rapidxml::xml_document<> doc;
     try{
@@ -132,7 +136,11 @@ void info::parse(char *data)  _INTEROP_XML_THROWS
 
 }
 
-void info::read_file(const std::string &filename)  _INTEROP_XML_THROWS
+void info::read_file(const std::string &filename)  throw(   xml::xml_file_not_found_exception,
+                                                            xml::bad_xml_format_exception,
+                                                            xml::empty_xml_format_exception,
+                                                            xml::missing_xml_element_exception,
+                                                            xml::xml_parse_exception)
 {
     try{
         rapidxml::file<> xmlFile(filename.c_str());
@@ -143,7 +151,11 @@ void info::read_file(const std::string &filename)  _INTEROP_XML_THROWS
     }
 }
 
-void info::read(const std::string& run_folder) _INTEROP_XML_THROWS
+void info::read(const std::string& run_folder) throw(   xml::xml_file_not_found_exception,
+                                                        xml::bad_xml_format_exception,
+                                                        xml::empty_xml_format_exception,
+                                                        xml::missing_xml_element_exception,
+                                                        xml::xml_parse_exception)
 {
     read_file(io::combine(run_folder, "RunInfo.xml"));
 }

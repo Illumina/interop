@@ -20,6 +20,7 @@ namespace run
 {
 
     /** Defines a range over cycles
+     *
      */
     class cycle_range
     {
@@ -39,6 +40,14 @@ namespace run
         }
 
     public:
+        /** @defgroup cycle_range Cycle range
+         *
+         * Information describing the cycle rnage
+         *
+         * @ingroup read_info
+         * @ref illumina::interop::model::run::cycle_range "See full class description"
+         * @{
+         */
         /** Get the index of the first cycle
          *
          * @return index of first cycle
@@ -72,6 +81,7 @@ namespace run
         {
             m_last_cycle = val;
         }
+        /** @} */
 
     public:
         /** Update the cycle state

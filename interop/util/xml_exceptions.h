@@ -8,12 +8,7 @@
 
 #pragma once
 #include <stdexcept>
-
-#define _INTEROP_XML_THROWS throw(   interop::xml::xml_file_not_found_exception, \
-                                        interop::xml::bad_xml_format_exception, \
-                                        interop::xml::empty_xml_format_exception, \
-                                        interop::xml::missing_xml_element_exception, \
-                                        interop::xml::xml_parse_exception)
+#include "interop/util/exception_specification.h"
 
 namespace illumina
 {
@@ -35,6 +30,7 @@ struct xml_format_exception : public std::runtime_error {
  *
  * Exceptions that will be thrown if a problem occurs while reading an XML file.
  *
+ * @ingroup interop_exceptions
  * @{
  */
 /** Exception raised if the XML file is not found in the file system

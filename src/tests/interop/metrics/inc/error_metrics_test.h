@@ -1,4 +1,4 @@
-/** Unit tests for the corrected intensity metrics
+/** Unit tests for the error metrics
  *
  *
  *  @file

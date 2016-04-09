@@ -20,6 +20,7 @@ namespace run
 {
 
 /** Layout of the flow cell
+ *
  */
 class flowcell_layout
 {
@@ -64,6 +65,14 @@ public:
     }
 
 public:
+    /** @defgroup flowcell_layout Flowcell Layout
+     *
+     * Information describing the layout of the flowcell
+     *
+     * @ingroup run_info
+     * @ref illumina::interop::model::run::flowcell_layout "See full class description"
+     * @{
+     */
     /** Get number of lanes
      *
      * @return number of lanes
@@ -109,6 +118,7 @@ public:
      * @return flowcell bar code as a string
      */
     const std::string& barcode()const{ return m_barcode; }
+    /** @} */
 
 private:
     tile_naming_method_t m_naming_method;

@@ -9,8 +9,7 @@ set(SRCS
         model/metrics/extraction_metric.cpp
         model/metrics/image_metric.cpp
         model/metrics/q_metric.cpp
-        model/metrics/index_metric.cpp
-)
+        model/metrics/index_metric.cpp)
 
 set(HEADERS
         ../../interop/model/summary/cycle_state_summary.h
@@ -79,6 +78,7 @@ set(HEADERS
         ../../interop/util/type_traits.h
         ../../interop/util/linear_hierarchy.h
         ../../interop/util/object_list.h
+        ../../interop/util/exception_specification.h
         )
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR CMAKE_COMPILER_IS_GNUCC)

@@ -23,8 +23,10 @@
 
 namespace illumina { namespace interop { namespace model { namespace metrics {
 
+
 /**  Collection of all metric sets for a run
  *
+ * @ingroup run_metrics
  * @see corrected_intensity_metrics
  * @see error_metrics
  * @see extraction_metrics
@@ -82,11 +84,26 @@ public:
     }
 
 public:
+    /** @defgroup run_metrics Run Metrics
+     *
+     * All the InterOp data as well as the RunInfo
+     *
+     * @ref illumina::interop::model::metrics::run_metrics "See full class description"
+     * @{
+     */
+
     /** Read binary metrics and XML files from the run folder
      *
      * @param run_folder run folder path
      */
-    void read(const std::string& run_folder) _INTEROP_FORMAT_THROWS
+    void read(const std::string& run_folder) throw( xml::xml_file_not_found_exception,
+                                                    xml::bad_xml_format_exception,
+                                                    xml::empty_xml_format_exception,
+                                                    xml::missing_xml_element_exception,
+                                                    xml::xml_parse_exception,
+                                                    io::file_not_found_exception,
+                                                    io::bad_format_exception,
+                                                    io::incomplete_file_exception)
     {
         read_metrics(run_folder);
         m_run_info.read(run_folder);
@@ -106,51 +123,6 @@ public:
                 throw io::format_exception("Channel names are missing from the RunInfo.xml, and RunParameters.xml does not contain sufficient information on the instrument run.");
         }
         logic::metric::populate_legacy_q_score_bins(get_set<q_metric>().bins(), m_run_parameters.instrument_type(), count);
-    }
-    /** Read binary metrics from the run folder
-     *
-     * This function ignores:
-     *  - Missing InterOp files
-     *  - Incomplete InterOp files
-     *  - Missing RunParameters.xml for non-legacy run folders
-     *
-     * @param run_folder run folder path
-     */
-    void read_metrics(const std::string& run_folder) _INTEROP_FORMAT_THROWS
-    {
-        m_metrics.apply(read_func(run_folder));
-    }
-    /** Read binary metrics and XML files from the run folder
-     *
-     * @param func call back for metric and XML reading
-     */
-    template<class ReadFunc>
-    void read_callback(ReadFunc& func) _INTEROP_FORMAT_THROWS
-    {
-        read_metrics_callback(func);
-        func(m_run_info);
-        const size_t count = logic::metric::count_legacy_q_score_bins(get_set<q_metric>());
-        if(m_run_info.channels().empty() || logic::metric::requires_legacy_bins(count))
-        {
-            func(m_run_parameters);
-        }
-        if(m_run_info.channels().empty())
-        {
-            m_run_info.channels(logic::utils::update_channel_from_instrument_type(m_run_parameters.instrument_type()));
-            if(m_run_info.channels().empty())
-                throw io::format_exception("Channel names are missing from the RunInfo.xml, and RunParameters.xml does not contain sufficient information on the instrument run.");
-
-        }
-        logic::metric::populate_legacy_q_score_bins(get_set<q_metric>().bins(), m_run_parameters.instrument_type(), count);
-    }
-    /** Read binary metrics from the run folder
-     *
-     * @param func call back for metric reading
-     */
-    template<class ReadFunc>
-    void read_metrics_callback(ReadFunc& func) _INTEROP_FORMAT_THROWS
-    {
-        m_metrics.apply(func);
     }
     /** Test if all metrics are empty
      *
@@ -278,6 +250,41 @@ public:
     }
 
 public:
+    /** Get information about the run
+     *
+     * @return run info
+     */
+    const run::info& run_info()const
+    {
+        return m_run_info;
+    }
+    /** Set information about the run
+     *
+     * @param info run info
+     */
+    void run_info(const run::info& info)
+    {
+        m_run_info = info;
+    }
+    /** @} */
+    /** Get parameters describing the run
+     *
+     * @return run parameters
+     */
+    const run::parameters& run_parameters()const
+    {
+        return m_run_parameters;
+    }
+    /** Set parameters describing the run
+     *
+     * @param param run parameters
+     */
+    void run_parameters(const run::parameters& param)
+    {
+        m_run_parameters = param;
+    }
+
+public:
     /** Get a metric set
      *
      * @return metric set
@@ -316,37 +323,53 @@ public:
     }
 
 public:
-    /** Get information about the run
+    /** Read binary metrics from the run folder
      *
-     * @return run info
+     * This function ignores:
+     *  - Missing InterOp files
+     *  - Incomplete InterOp files
+     *  - Missing RunParameters.xml for non-legacy run folders
+     *
+     * @param run_folder run folder path
      */
-    const run::info& run_info()const
+    void read_metrics(const std::string& run_folder) throw(
+                                                        io::file_not_found_exception,
+                                                        io::bad_format_exception,
+                                                        io::incomplete_file_exception)
     {
-        return m_run_info;
+        m_metrics.apply(read_func(run_folder));
     }
-    /** Set information about the run
+    /** Read binary metrics and XML files from the run folder
      *
-     * @param info run info
+     * @param func call back for metric and XML reading
      */
-    void run_info(const run::info& info)
+    template<class ReadFunc>
+    void read_callback(ReadFunc& func)
     {
-        m_run_info = info;
+        read_metrics_callback(func);
+        func(m_run_info);
+        const size_t count = logic::metric::count_legacy_q_score_bins(get_set<q_metric>());
+        if(m_run_info.channels().empty() || logic::metric::requires_legacy_bins(count))
+        {
+            func(m_run_parameters);
+        }
+        if(m_run_info.channels().empty())
+        {
+            m_run_info.channels(logic::utils::update_channel_from_instrument_type(m_run_parameters.instrument_type()));
+            if(m_run_info.channels().empty())
+                throw io::format_exception("Channel names are missing from the RunInfo.xml, and RunParameters.xml does not contain sufficient information on the instrument run.");
+
+        }
+        logic::metric::populate_legacy_q_score_bins(get_set<q_metric>().bins(), m_run_parameters.instrument_type(), count);
     }
-    /** Get parameters describing the run
+    /** Read binary metrics from the run folder
      *
-     * @return run parameters
+     * @param func call back for metric reading
      */
-    const run::parameters& run_parameters()const
+    template<class ReadFunc>
+    void read_metrics_callback(ReadFunc& func)
     {
-        return m_run_parameters;
-    }
-    /** Set parameters describing the run
-     *
-     * @param param run parameters
-     */
-    void run_parameters(const run::parameters& param)
-    {
-        m_run_parameters = param;
+        m_metrics.apply(func);
     }
 
 private:

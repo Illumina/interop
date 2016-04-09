@@ -1,4 +1,4 @@
-/** Unit tests for the extraction metrics
+/** Unit tests for the q-metrics
  *
  *
  *  @file

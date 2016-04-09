@@ -31,6 +31,14 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         {
         }
     public:
+        /** @defgroup metric_summary Metric summary
+         *
+         * Summary of key metrics
+         *
+         * @ingroup run_summary
+         * @ref illumina::interop::model::summary::metric_summary "See full class description"
+         * @{
+         */
         /** Get the error rate of PHIX for the run
          *
          * @return error rate of PHIX for run
@@ -38,14 +46,6 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         float error_rate()const
         {
             return m_error_rate;
-        }
-        /** Set the error rate of PHIX for the run
-         *
-         * @param val error rate of PHIX for run
-         */
-        void error_rate(const float val)
-        {
-            m_error_rate = val;
         }
         /** Get the percent aligned PHIX for the run
          *
@@ -55,14 +55,6 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         {
             return m_percent_aligned;
         }
-        /** Set the percent aligned PHIX for the run
-         *
-         *  @param val percent aligned PHIX
-         */
-        void percent_aligned(const float val)
-        {
-            m_percent_aligned = val;
-        }
         /** Get the first cycle intensity
          *
          * @return first cycle intensity
@@ -70,14 +62,6 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         float first_cycle_intensity()const
         {
             return m_first_cycle_intensity;
-        }
-        /** Set the first cycle intensity
-         *
-         * @param val first cycle intensity
-         */
-        void first_cycle_intensity(const float val)
-        {
-            m_first_cycle_intensity = val;
         }
         /** Get the percent of bases greater than Q30
          *
@@ -87,14 +71,6 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         {
             return m_percent_gt_q30;
         }
-        /** Set the percent of bases greater than Q30
-         *
-         * @param val percent of bases greater than Q30
-         */
-        void percent_gt_q30(const float val)
-        {
-            m_percent_gt_q30 = val;
-        }
         /** Get the yield of the run in gigabases
          *
          * @return yield of the run in gigabases
@@ -103,14 +79,6 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         {
             return m_yield_g;
         }
-        /** Set the yield of the run in gigabases
-         *
-         * @param val yield of the run in gigabases
-         */
-        void yield_g(const float val)
-        {
-            m_yield_g = val;
-        }
         /** Get the projected yield of teh run in gigabases
          *
          * @return projected yield of teh run in gigabases
@@ -118,6 +86,47 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         float projected_yield_g()const
         {
             return m_projected_yield_g;
+        }
+        /** @} */
+        /** Set the first cycle intensity
+         *
+         * @param val first cycle intensity
+         */
+        void first_cycle_intensity(const float val)
+        {
+            m_first_cycle_intensity = val;
+        }
+        /** Set the error rate of PHIX for the run
+         *
+         * @param val error rate of PHIX for run
+         */
+        void error_rate(const float val)
+        {
+            m_error_rate = val;
+        }
+        /** Set the percent aligned PHIX for the run
+         *
+         *  @param val percent aligned PHIX
+         */
+        void percent_aligned(const float val)
+        {
+            m_percent_aligned = val;
+        }
+        /** Set the percent of bases greater than Q30
+         *
+         * @param val percent of bases greater than Q30
+         */
+        void percent_gt_q30(const float val)
+        {
+            m_percent_gt_q30 = val;
+        }
+        /** Set the yield of the run in gigabases
+         *
+         * @param val yield of the run in gigabases
+         */
+        void yield_g(const float val)
+        {
+            m_yield_g = val;
         }
         /** Set the projected yield of teh run in gigabases
          *

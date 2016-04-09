@@ -10,7 +10,7 @@
 Commit  | Description
 ------- | -----------
         | Update documentation
-        | Added summary tests
+0b22102 | Added summary tests
 13f1fb4 | Added summary logic
 339a914 | Added summary model
 aca0152 | Added run metrics

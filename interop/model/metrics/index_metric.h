@@ -73,6 +73,7 @@ public:
      *
      *
      * @ref illumina::interop::model::metrics::index_info "See full class description"
+     * @ingroup index_metric
      * @{
      */
     /** Get the index sequence
@@ -149,6 +150,7 @@ public:
      *
      *
      * @ref illumina::interop::model::metrics::index_metric "See full class description"
+     * @ingroup run_metrics
      * @{
      */
     /** Get the number of indexes

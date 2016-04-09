@@ -30,6 +30,14 @@ public:
     }
 
 public:
+    /** @defgroup cycle_state_summary Cycle state summary
+     *
+     * Current cycle state for the run
+     *
+     * @ingroup run_summary
+     * @ref illumina::interop::model::summary::cycle_state_summary "See full class description"
+     * @{
+     */
     /** Get the extracted cycle range
      *
      * @return  extracted cycle range
@@ -62,6 +70,7 @@ public:
     {
         return m_error_cycle_range;
     }
+    /** @} */
 
 public:
     /** Set the extracted cycle range

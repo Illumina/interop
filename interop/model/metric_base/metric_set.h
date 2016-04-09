@@ -163,7 +163,7 @@ namespace illumina {
                      * @param cycle cycle
                      * @return metric
                      */
-                    const metric_type& get_metric(uint_t lane, uint_t tile, uint_t cycle=0) const _INTEROP_MODEL_THROWS
+                    const metric_type& get_metric(uint_t lane, uint_t tile, uint_t cycle=0) const throw( model::index_out_of_bounds_exception )
                     {
                         try {
                             return get_metric(metric_type::id(lane, tile, cycle));
@@ -184,7 +184,7 @@ namespace illumina {
                      * @param key unique id built from lane, tile and cycle (if available)
                      * @return metric
                      */
-                    const metric_type& get_metric(id_t key) const _INTEROP_MODEL_THROWS
+                    const metric_type& get_metric(id_t key) const throw( model::index_out_of_bounds_exception )
                     {
                         typename std::map<id_t, size_t>::const_iterator it = m_id_map.find(key);
                         if(it == m_id_map.end())
@@ -342,7 +342,7 @@ namespace illumina {
                      * @param cycle cycle
                      * @return metric
                      */
-                    metric_type& get_metric_ref(uint_t lane, uint_t tile, uint_t cycle=0) _INTEROP_MODEL_THROWS
+                    metric_type& get_metric_ref(uint_t lane, uint_t tile, uint_t cycle=0) throw( model::index_out_of_bounds_exception )
                     {
                         try{
                             return get_metric_ref(metric_type::id(lane, tile, cycle));
@@ -363,7 +363,7 @@ namespace illumina {
                      * @param key unique id built from lane, tile and cycle (if available)
                      * @return metric
                      */
-                    metric_type& get_metric_ref(id_t key) _INTEROP_MODEL_THROWS
+                    metric_type& get_metric_ref(id_t key) throw( model::index_out_of_bounds_exception )
                     {
                         typename std::map<id_t, size_t>::const_iterator it = m_id_map.find(key);
                         if(it == m_id_map.end())

@@ -84,7 +84,7 @@ void cache_error_by_lane_read(I beg,
                               I end,
                               const size_t max_cycle,
                               const std::vector<read_cycle>& cycle_to_read,
-                              summary_by_lane_read<float>& summary_by_lane_read) _INTEROP_MODEL_THROWS
+                              summary_by_lane_read<float>& summary_by_lane_read) throw( model::index_out_of_bounds_exception )
 {
     typedef std::pair<size_t, size_t> key_t;
     typedef std::pair<float, float> value_t;
@@ -166,7 +166,7 @@ void cache_cycle_state_by_lane_read(I beg, I end,
         const read_cycle& read = cycle_to_read[beg->cycle()-1];
         if(read.number == 0) continue;
         INTEROP_ASSERT((read.number-1) < tmp.size());
-        size_t id = static_cast<size_t>(model::metric_base::base_metric::id(beg->lane(), beg->tile()));
+        const size_t id = static_cast<size_t>(model::metric_base::base_metric::id(beg->lane(), beg->tile()));
         tmp[read.number-1][id].update(beg->cycle());
     }
     for(size_t read=0;read<tmp.size();++read)
@@ -200,7 +200,7 @@ void cache_cycle_state_by_lane_read(I beg, I end,
  * @param run destination run summary
  */
 template<typename I>
-void summarize_error_metrics(I beg, I end, model::summary::run_summary &run) _INTEROP_MODEL_THROWS
+void summarize_error_metrics(I beg, I end, model::summary::run_summary &run) throw( model::index_out_of_bounds_exception )
 {
     typedef summary_by_lane_read<float> summary_by_lane_read_t;
     typedef std::vector<std::vector< model::run::cycle_range> > cycle_range_read_lane_t;
