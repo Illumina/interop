@@ -189,7 +189,7 @@ namespace illumina {
                      * @param qval q-value
                      * @return index;
                      */
-                    size_t index_for_q_value(size_t qval)const
+                    size_t index_for_q_value(const size_t qval)const
                     {
                         if(m_qscoreBins.size() == 0) return qval;
                         size_t index=0;

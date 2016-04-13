@@ -126,7 +126,7 @@ namespace illumina {
                      */
                     static id_t lane_from_id(const id_t id)
                     {
-                        return io::layout::base_metric::lane_from_id(id);
+                        return id & ~((~0u) << LANE_BIT_SHIFT);
                     }
                     /** Lane number
                      *
