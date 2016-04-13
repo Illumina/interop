@@ -51,6 +51,13 @@ class q_metrics : public metric_base::metric_set<q_metric>
         size_t histBinCount() const {
             return logic::metric::count_q_metric_bins(*this);
         }
+
+        /** Populate the cumulative distributions
+         */
+        void populateCumulativeDistributions() throw( model::index_out_of_bounds_exception )
+        {
+            logic::metric::populate_cumulative_distribution(*this);
+        }
     };
 }
 }

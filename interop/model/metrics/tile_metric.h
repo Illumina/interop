@@ -234,6 +234,7 @@ namespace illumina {
                      */
                     float percent_pf()const
                     {
+                        if(m_clusterCount==0) return 0;
                         return 100 * m_clusterCountPf / m_clusterCount;
                     }
                     /** Metrics for each read on the tile

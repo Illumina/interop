@@ -86,11 +86,13 @@ void cache_error_by_lane_read(I beg,
                               const std::vector<read_cycle>& cycle_to_read,
                               summary_by_lane_read<float>& summary_by_lane_read) throw( model::index_out_of_bounds_exception )
 {
+    typedef std::vector<size_t> cycle_vector_t;
     typedef std::pair<size_t, size_t> key_t;
     typedef std::pair<float, float> value_t;
     typedef std::map< key_t, value_t>  error_tile_t;
     typedef std::vector< error_tile_t > error_by_read_tile_t;
     error_by_read_tile_t tmp (summary_by_lane_read.size());
+    cycle_vector_t max_error_cycle(summary_by_lane_read.size(), 0);
     for(;beg != end;++beg)
     {
         INTEROP_ASSERT(beg->cycle() > 0);
@@ -99,6 +101,7 @@ void cache_error_by_lane_read(I beg,
         if(read.cycle > max_cycle || read.number == 0) continue;
         key_t key = std::make_pair(beg->lane(), beg->tile());
         const size_t read_number = read.number-1;
+        max_error_cycle[read_number] = std::max(max_error_cycle[read_number], static_cast<size_t>(beg->cycle()));
         INTEROP_ASSERT(read_number < tmp.size());
         if(tmp[read_number].find(key) == tmp[read.number-1].end())
             tmp[read_number][key] = std::make_pair(0.0f, 0.0f);
@@ -112,7 +115,8 @@ void cache_error_by_lane_read(I beg,
             INTEROP_ASSERT(read < summary_by_lane_read.read_count());
             const size_t lane = ebeg->first.first-1;
             if(lane >= summary_by_lane_read.lane_count()) throw model::index_out_of_bounds_exception("Lane exceeds number of lanes in RunInfo.xml");
-            summary_by_lane_read(read, lane).push_back(divide(ebeg->second.first,ebeg->second.second));
+            if(max_cycle < std::numeric_limits<size_t>::max() && max_error_cycle[read] < max_cycle) summary_by_lane_read(read, lane).push_back(0);
+            else summary_by_lane_read(read, lane).push_back(divide(ebeg->second.first,ebeg->second.second));
         }
     }
 }
