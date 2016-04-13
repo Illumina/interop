@@ -189,7 +189,7 @@ namespace illumina {
                         typename std::map<id_t, size_t>::const_iterator it = m_id_map.find(key);
                         if(it == m_id_map.end())
                             throw index_out_of_bounds_exception("No tile available: key: "+util::lexical_cast<std::string>(key)+" map: "+util::lexical_cast<std::string>(m_id_map.size())+" == data: "+util::lexical_cast<std::string>(m_data.size()));
-                        assert(it->second < m_data.size());
+                       INTEROP_ASSERT(it->second < m_data.size());
                         return m_data[it->second];
                     }
                     /** Get a metric at the given index

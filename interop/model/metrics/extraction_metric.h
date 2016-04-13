@@ -13,7 +13,6 @@
  *  @copyright GNU Public License.
  */
 #pragma once
-#include <assert.h>
 #include <ctime>
 #include <cstring>
 #include <algorithm>
@@ -212,8 +211,8 @@ namespace illumina {
                      */
                     ushort_t max_intensity(size_t channel)const
                     {
-                        assert(channel<MAX_CHANNELS);
-                        assert(m_max_intensity_values.size() == MAX_CHANNELS);
+                       INTEROP_ASSERT(channel<MAX_CHANNELS);
+                       INTEROP_ASSERT(m_max_intensity_values.size() == MAX_CHANNELS);
                         return m_max_intensity_values[channel];
                     }
                     /** Median Full Width Half Max (FWHM) Focus Metric
@@ -223,8 +222,8 @@ namespace illumina {
                      */
                     float focusScore(size_t channel)const
                     {
-                        assert(channel <MAX_CHANNELS);
-                        assert(m_focusScores.size()==MAX_CHANNELS);
+                       INTEROP_ASSERT(channel <MAX_CHANNELS);
+                       INTEROP_ASSERT(m_focusScores.size()==MAX_CHANNELS);
                         return m_focusScores[channel];
                     }
                     /** Get an array of maximum intensity values

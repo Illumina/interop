@@ -64,12 +64,16 @@ namespace illumina{ namespace interop{ namespace io {
                 typedef layout::base_cycle_metric metric_id_t;
                 /** Record type */
                 typedef generic_layout<image_metric, 1> record_t;
+                /** Channel type */
+                typedef ::uint16_t channel_t;
+                /** Contrast type */
+                typedef ::uint16_t contrast_t;
                 /** Channel */
-                ::uint16_t channel;
+                channel_t channel;
                 /**  Minimum contrast */
-                ::uint16_t minContrast;
+                contrast_t minContrast;
                 /** Maximum contrast */
-                ::uint16_t maxContrast;
+                contrast_t maxContrast;
                 /** Read metric from the input stream
                  *
                  * @param stream input stream
@@ -103,9 +107,9 @@ namespace illumina{ namespace interop{ namespace io {
                     for(image_metric::ushort_t channelIndex=0;channelIndex < image_metric::MAX_CHANNELS;++channelIndex)
                     {
                         if(channelIndex > 0) write_binary(stream, metric_id);
-                        count += stream_map< ::uint16_t >(stream, channelIndex);
-                        count += stream_map< ::uint16_t >(stream, metric.m_minContrast[channelIndex]);
-                        count += stream_map< ::uint16_t >(stream, metric.m_maxContrast[channelIndex]);
+                        count += stream_map< channel_t >(stream, channelIndex);
+                        count += stream_map< contrast_t >(stream, metric.m_minContrast[channelIndex]);
+                        count += stream_map< contrast_t >(stream, metric.m_maxContrast[channelIndex]);
                     }
                     return count;
                 }
@@ -125,7 +129,7 @@ namespace illumina{ namespace interop{ namespace io {
                  */
                 static record_size_t computeHeaderSize(const image_metric::header_type&)
                 {
-                    return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(::uint8_t));
+                    return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t));
                 }
             };
 
@@ -179,6 +183,10 @@ namespace illumina{ namespace interop{ namespace io {
                  */
                 /** Metric ID type */
                 typedef layout::base_cycle_metric metric_id_t;
+                /** Contrast type */
+                typedef ::uint16_t contrast_t;
+                /** Contrast type */
+                typedef ::uint8_t channel_count_t;
 
                 /** Map reading/writing a metric to a stream
                  *
@@ -194,8 +202,8 @@ namespace illumina{ namespace interop{ namespace io {
                 {
                     std::streamsize count = 0;
                     copy_from(stream, metric.m_channelCount, header.m_channelCount);
-                    count += stream_map< ::uint16_t >(stream, metric.m_minContrast, header.m_channelCount);
-                    count += stream_map< ::uint16_t >(stream, metric.m_maxContrast, header.m_channelCount);
+                    count += stream_map< contrast_t >(stream, metric.m_minContrast, header.m_channelCount);
+                    count += stream_map< contrast_t >(stream, metric.m_maxContrast, header.m_channelCount);
                     return count;
                 }
                 /** Compute the layout size
@@ -204,7 +212,7 @@ namespace illumina{ namespace interop{ namespace io {
                  */
                 static record_size_t computeSize(const image_metric::header_type& header)
                 {
-                    return static_cast<record_size_t>(sizeof(metric_id_t)+header.channelCount()*sizeof(::uint16_t)*2);
+                    return static_cast<record_size_t>(sizeof(metric_id_t)+header.channelCount()*sizeof(contrast_t)*2);
                 }
                 /** Map reading/writing a header to a stream
                  *
@@ -217,7 +225,7 @@ namespace illumina{ namespace interop{ namespace io {
                 template<class Stream, class Header>
                 static std::streamsize map_stream_for_header(Stream& stream, Header& header)
                 {
-                    return stream_map< ::uint8_t >(stream, header.m_channelCount);
+                    return stream_map< channel_count_t >(stream, header.m_channelCount);
                 }
                 /** Compute header size
                  *
@@ -225,7 +233,7 @@ namespace illumina{ namespace interop{ namespace io {
                  */
                 static record_size_t computeHeaderSize(const image_metric::header_type&)
                 {
-                    return static_cast<record_size_t>(sizeof(::uint8_t) + sizeof(record_size_t) + sizeof(::uint8_t));
+                    return static_cast<record_size_t>(sizeof(channel_count_t) + sizeof(record_size_t) + sizeof(version_t));
                 }
             };
 #pragma pack() // DO NOT MOVE

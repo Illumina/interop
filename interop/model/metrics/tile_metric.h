@@ -11,7 +11,6 @@
  *  @copyright GNU Public License.
  */
 #pragma once
-#include <assert.h>
 #include <cstring>
 #include <fstream>
 #include <map>
@@ -40,10 +39,10 @@ namespace illumina {
                      * @param percentPhasing percent phasing
                      * @param percentPrePhasing percent pre-phasing
                      */
-                    read_metric(uint_t read=0,
-                                float percentAligned=std::numeric_limits<float>::quiet_NaN(),
-                                float percentPhasing=std::numeric_limits<float>::quiet_NaN(),
-                                float percentPrePhasing=std::numeric_limits<float>::quiet_NaN()) :
+                    read_metric(const uint_t read=0,
+                                const float percentAligned=0,
+                                const float percentPhasing=0,
+                                const float percentPrePhasing=0) :
                             m_read(read),
                             m_percent_aligned(percentAligned),
                             m_percent_phasing(percentPhasing),

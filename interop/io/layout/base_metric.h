@@ -37,8 +37,6 @@ namespace illumina
                      */
                     struct base_metric
                     {
-                        /** Define an ID type */
-                        typedef ::uint64_t id_t;
                         /** Define a record size type */
                         typedef ::uint8_t record_size_t;
                         /** Constructor
@@ -62,33 +60,6 @@ namespace illumina
                         {
                             lane = static_cast< ::uint16_t >(metric.lane());
                             tile = static_cast< ::uint16_t >(metric.tile());
-                        }
-                        /** Unique id created from both the lane and tile
-                         *
-                         * @return unique id
-                         */
-                        id_t id()const
-                        {
-                            return id(lane, tile);
-                        }
-                        /** Unique id created from both the lane and tile
-                         *
-                         * @param lane lane number
-                         * @param tile tile number
-                         * @return unique id
-                         */
-                        static id_t id(id_t lane, id_t tile)
-                        {
-                            return lane | (tile << 6);
-                        }
-                        /** Get the lane from the unique lane/tile id
-                         *
-                         * @param id unique lane/tile id
-                         * @return lane number
-                         */
-                        static id_t lane_from_id(const id_t id)
-                        {
-                            return id & ~((~0u) << 6);
                         }
                         /** Test if the layout contains valid data
                          *
@@ -133,25 +104,6 @@ namespace illumina
                             base_metric::set(metric);
                             cycle = static_cast< ::uint16_t >(metric.cycle());
                         }
-                        /** Unique id created from the lane, tile and cycle
-                         *
-                         * @return unique id
-                         */
-                        id_t id()const
-                        {
-                            return id(lane, tile, cycle);
-                        }
-                        /** Unique id created from both the lane, tile and cycle
-                         *
-                         * @param lane lane number
-                         * @param tile tile number
-                         * @param cycle cycle number
-                         * @return unique id
-                         */
-                        static id_t id(id_t lane, id_t tile, id_t cycle)
-                        {
-                            return base_metric::id(lane, tile) | (cycle << 32);
-                        }
                         /** Test if the layout contains valid data
                          *
                          * @return true if data is valid
@@ -192,25 +144,6 @@ namespace illumina
                         {
                             base_metric::set(metric);
                             read = static_cast< ::uint16_t >(metric.read());
-                        }
-                        /** Unique id created from the lane, tile and read
-                         *
-                         * @return unique id
-                         */
-                        id_t id()const
-                        {
-                            return id(lane, tile, read);
-                        }
-                        /** Unique id created from both the lane, tile and read
-                         *
-                         * @param lane lane number
-                         * @param tile tile number
-                         * @param read_ read number
-                         * @return unique id
-                         */
-                        static id_t id(id_t lane, id_t tile, id_t read_)
-                        {
-                            return base_metric::id(lane, tile) | (read_ << 32);
                         }
                         /** Test if the layout contains valid data
                          *

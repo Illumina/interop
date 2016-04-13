@@ -14,7 +14,6 @@
  *  @copyright GNU Public License.
  */
 #pragma once
-#include <assert.h>
 #include <cstring>
 #include "interop/model/metric_base/base_cycle_metric.h"
 #include "interop/model/metric_base/metric_set.h"
@@ -62,10 +61,10 @@ namespace illumina {
                      * @param cycle cycle number
                      * @param error error rate for current cycle
                      */
-                    error_metric(uint_t lane,
-                                 uint_t tile,
-                                 uint_t cycle,
-                                 float error) :
+                    error_metric(const uint_t lane,
+                                 const uint_t tile,
+                                 const uint_t cycle,
+                                 const float error) :
                             metric_base::base_cycle_metric(lane,tile,cycle),
                             m_errorRate(error),
                             m_mismatch_cluster_count(MAX_MISMATCH, 0)
@@ -103,7 +102,7 @@ namespace illumina {
                      */
                     uint_t mismatch_cluster_count(size_t n)const
                     {
-                        assert(n<MAX_MISMATCH);
+                       INTEROP_ASSERT(n<MAX_MISMATCH);
                         return m_mismatch_cluster_count[n];
                     }
                     /** Size of mismatch array

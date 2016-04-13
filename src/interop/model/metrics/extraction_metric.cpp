@@ -67,6 +67,12 @@ namespace illumina{ namespace interop{ namespace io {
                  */
                 /** Metric ID type */
                 typedef layout::base_cycle_metric metric_id_t;
+                /** Intensity type */
+                typedef float focus_t;
+                /** Intensity type */
+                typedef ::uint16_t intensity_t;
+                /** Time type */
+                typedef ::uint64_t datetime_t;
                 /** Map reading/writing to stream
                  *
                  * Reading and writing are symmetric operations, map it once
@@ -79,9 +85,9 @@ namespace illumina{ namespace interop{ namespace io {
                 static std::streamsize map_stream(Stream& stream, Metric& metric, Header&, const bool)
                 {
                     std::streamsize count = 0;
-                    count += stream_map< float >(stream, metric.m_focusScores, extraction_metric::MAX_CHANNELS);
-                    count += stream_map< ::uint16_t >(stream, metric.m_max_intensity_values, extraction_metric::MAX_CHANNELS);
-                    count += stream_map< ::uint64_t >(stream, metric.m_date_time_csharp.value);
+                    count += stream_map< focus_t >(stream, metric.m_focusScores, extraction_metric::MAX_CHANNELS);
+                    count += stream_map< intensity_t >(stream, metric.m_max_intensity_values, extraction_metric::MAX_CHANNELS);
+                    count += stream_map< datetime_t >(stream, metric.m_date_time_csharp.value);
                     convert_datetime(stream, metric);
                     return count;
                 }
@@ -93,9 +99,9 @@ namespace illumina{ namespace interop{ namespace io {
                 {
                     return static_cast<record_size_t>(
                             sizeof(metric_id_t)+
-                            sizeof(float)*extraction_metric::MAX_CHANNELS +     // m_focusScores
-                            sizeof(::uint16_t)*extraction_metric::MAX_CHANNELS+ // m_max_intensity_values
-                            sizeof(::uint64_t)                                  // m_dateTime
+                            sizeof(focus_t)*extraction_metric::MAX_CHANNELS +     // m_focusScores
+                            sizeof(intensity_t)*extraction_metric::MAX_CHANNELS+ // m_max_intensity_values
+                            sizeof(datetime_t)                                  // m_dateTime
                     );
                 }
                 /** Compute header size
@@ -104,7 +110,7 @@ namespace illumina{ namespace interop{ namespace io {
                  */
                 static record_size_t computeHeaderSize(const extraction_metric::header_type&)
                 {
-                    return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(::uint8_t));
+                    return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t));
                 }
             private:
                 static void convert_datetime(std::ostream&, const extraction_metric&)

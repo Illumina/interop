@@ -7,14 +7,14 @@
  *  @copyright GNU Public License.
  */
 #include <gtest/gtest.h>
-#include "interop/io/layout/base_metric.h"
+#include "interop/model/metric_base/base_metric.h"
 
 #ifdef _MSC_VER
 #pragma warning(push)
     #pragma warning(disable:4127) // MSVC warns about using constants in conditional statements, for template constants
 #endif
 
-using namespace illumina::interop::io::layout;
+using namespace illumina::interop::model::metric_base;
 
 
 TEST(base_metric_test, lane_from_id)

@@ -12,7 +12,6 @@
  *  @copyright GNU Public License.
  */
 #pragma once
-#include <assert.h>
 #include <cstring>
 #include <numeric>
 #include "interop/model/metric_base/base_cycle_metric.h"
@@ -38,9 +37,25 @@ namespace illumina {
                      * @param upper upper end of the bin range
                      * @param value value of the bin
                      */
-                    q_score_bin(bin_type lower=0, bin_type upper=0, bin_type value=0) : m_lower(lower),
-                                                                                        m_upper(upper),
-                                                                                        m_value(value){}
+                    q_score_bin(const bin_type lower=0, const bin_type upper=0, const bin_type value=0) :
+                            m_lower(lower),
+                            m_upper(upper),
+                            m_value(value){}
+                public:
+                    /** Assign type val to point2d
+                     *
+                     * @param val type that defines m_x and m_y
+                     * @return point2d
+                     */
+                    template<class T>
+                    q_score_bin& operator=(const T& val)
+                    {
+                        m_lower = val.m_lower;
+                        m_upper = val.m_upper;
+                        m_value = val.m_value;
+                        return *this;
+                    }
+
                 public:
                     /** @defgroup q_score_bin Quality Bin
                      *
@@ -110,9 +125,9 @@ namespace illumina {
                      *
                      * @return q-score bin
                      */
-                    const q_score_bin& binAt(size_t n)const
+                    const q_score_bin& binAt(const size_t n)const
                     {
-                        assert(n < binCount());
+                       INTEROP_ASSERT(n < binCount());
                         return m_qscoreBins[n];
                     }
                     /** Get the q-score bins
@@ -151,7 +166,7 @@ namespace illumina {
                      * @param qval q-value
                      * @return index;
                      */
-                    size_t index_for_q_value(size_t qval)const
+                    size_t index_for_q_value(const size_t qval)const
                     {
                         if(m_qscoreBins.size() == 0) return qval;
                         size_t index=0;
@@ -260,9 +275,9 @@ namespace illumina {
                      *
                      * @return q-score value of the histogram
                      */
-                    uint_t qscoreHist(size_t n)const
+                    uint_t qscoreHist(const size_t n)const
                     {
-                        assert(n<m_qscoreHist.size());
+                       INTEROP_ASSERT(n<m_qscoreHist.size());
                         return m_qscoreHist[n];
                     }
                     /** Q-score histogram
@@ -310,12 +325,12 @@ namespace illumina {
                      * @param bins q-score histogram bins
                      * @return total of clusters over the given q-score
                      */
-                    uint_t total_over_qscore(uint_t qscore, const qscore_bin_vector_type& bins=qscore_bin_vector_type())const
+                    uint_t total_over_qscore(const uint_t qscore, const qscore_bin_vector_type& bins=qscore_bin_vector_type())const
                     {
                         uint_t totalCount=0;
                         if(bins.size() == 0)
                         {
-                            assert(qscore > 0);
+                           INTEROP_ASSERT(qscore > 0);
                             totalCount = std::accumulate(m_qscoreHist.begin()+qscore-1, m_qscoreHist.end(), 0);
                         }
                         else
@@ -339,14 +354,14 @@ namespace illumina {
                      * @param bins q-score histogram bins
                      * @return total of clusters over the given q-score
                      */
-                    uint_t total_over_qscore_cumulative(uint_t qscore,
+                    uint_t total_over_qscore_cumulative(const uint_t qscore,
                                                         const qscore_bin_vector_type &bins = qscore_bin_vector_type())const
                     {
-                        assert(m_qscoreHist_cumulative.size() > 0);
+                       INTEROP_ASSERT(m_qscoreHist_cumulative.size() > 0);
                         uint_t totalCount=0;
                         if(bins.size() == 0)
                         {
-                            assert(qscore > 0);
+                           INTEROP_ASSERT(qscore > 0);
                             totalCount = std::accumulate(m_qscoreHist_cumulative.begin() + qscore - 1, m_qscoreHist_cumulative.end(), 0);
                         }
                         else
@@ -372,7 +387,8 @@ namespace illumina {
                      * @param bins q-score histogram bins
                      * @return percent of cluster over the given q-score
                      */
-                    float percent_over_qscore(uint_t qscore, const qscore_bin_vector_type& bins=qscore_bin_vector_type())const
+                    float percent_over_qscore(const uint_t qscore,
+                                              const qscore_bin_vector_type& bins=qscore_bin_vector_type())const
                     {
                         const float total = static_cast<float>(sum_qscore());
                         if(total == 0.0f) return std::numeric_limits<float>::quiet_NaN();
@@ -390,10 +406,11 @@ namespace illumina {
                      * @param bins q-score histogram bins
                      * @return percent of cluster over the given q-score
                      */
-                    float percent_over_qscore_cumulative(uint_t qscore,
-                                                         const qscore_bin_vector_type &bins = qscore_bin_vector_type())const
+                    float percent_over_qscore_cumulative(const uint_t qscore,
+                                                         const qscore_bin_vector_type &bins =
+                                                         qscore_bin_vector_type())const
                     {
-                        assert(m_qscoreHist_cumulative.size() > 0);
+                       INTEROP_ASSERT(m_qscoreHist_cumulative.size() > 0);
                         const float total = static_cast<float>(sum_qscore_cumulative());
                         if(total == 0.0f) return std::numeric_limits<float>::quiet_NaN();
                         uint_t totalCount= total_over_qscore_cumulative(qscore, bins);

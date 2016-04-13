@@ -49,7 +49,6 @@ namespace illumina {
                  */
                 class base_metric
                 {
-                    //typedef layout::base_metric::id_t id_t; // TODO find workaround -> does not compile with SWIG
                 public:
                     /** Unsigned long
                      */
@@ -66,6 +65,13 @@ namespace illumina {
                     /** Base metric header that adds no functionality
                      */
                     typedef base_metric_header header_type;
+                    enum
+                    {
+                        LANE_BIT_COUNT=6, // Supports up to 63 lanes
+                        TILE_BIT_COUNT=32,
+                        LANE_BIT_SHIFT=LANE_BIT_COUNT, // Supports up to 63 lanes
+                        TILE_BIT_SHIFT=LANE_BIT_COUNT+TILE_BIT_COUNT
+                    };
                 public:
                     /** Constructor
                      *
@@ -100,9 +106,9 @@ namespace illumina {
                      * @param tile tile number
                      * @return unique id
                      */
-                    static id_t id(const id_t lane, const id_t tile, const id_t=0)// TODO: remove hack
+                    static id_t id(const id_t lane, const id_t tile, const id_t=0)// TODO: remove hack (const id_t=0)
                     {
-                        return io::layout::base_metric::id(lane, tile);
+                        return lane | (tile << LANE_BIT_SHIFT);
                     }
                     /** Get the lane from the unique lane/tile id
                      *
@@ -111,7 +117,7 @@ namespace illumina {
                      */
                     static id_t lane_from_id(const id_t id)
                     {
-                        return io::layout::base_metric::lane_from_id(id);
+                        return id & ~((~0u) << LANE_BIT_SHIFT);
                     }
                     /** Lane number
                      *
