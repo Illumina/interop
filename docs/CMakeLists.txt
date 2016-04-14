@@ -16,26 +16,18 @@ if(DOXYGEN_FOUND)
     endif()
 
     if(GIT_FOUND)
-        add_custom_target(deploy-docs
-                COMMAND ${GIT_EXECUTABLE} checkout gh-pages
-                COMMAND ${GIT_EXECUTABLE} reset GH_PAGES_ROOT --hard
-                COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_BINARY_DIR}/html ${CMAKE_SOURCE_DIR}
-                COMMAND ${GIT_EXECUTABLE} add .
-                COMMAND ${GIT_EXECUTABLE} commit -am "Added documentation"
-                COMMAND ${GIT_EXECUTABLE} push origin +gh-pages
-                COMMAND ${GIT_EXECUTABLE} checkout @{-1}
-                WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        )
         add_custom_target(prepare-docs
                 COMMAND ${GIT_EXECUTABLE} checkout gh-pages
                 COMMAND ${GIT_EXECUTABLE} reset GH_PAGES_ROOT --hard
+                # TODO make system independent
+                COMMAND rm -fr *
                 COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_BINARY_DIR}/html ${CMAKE_SOURCE_DIR}
                 COMMAND ${GIT_EXECUTABLE} add .
                 COMMAND ${GIT_EXECUTABLE} commit -am "Added documentation"
                 COMMAND ${GIT_EXECUTABLE} checkout @{-1}
                 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
                 )
-        add_dependencies(deploy-docs doc)
+        #add_dependencies(prepare-docs doc) # TODO call cmake first
     endif()
 
 else()

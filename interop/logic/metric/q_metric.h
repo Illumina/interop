@@ -101,7 +101,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
      */
     inline bool requires_legacy_bins(const size_t count)
     {
-        return count <= 7 || count > 0;
+        return count <= 7 && count > 0;
     }
     /** Populate the q-score header bins from the data
      *
@@ -109,8 +109,8 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
      * in the header.
      *
      * @param q_score_bins vector of q-score bins
+     * @param instrument instrument type
      * @param count number of bins
-     * @param instrument type
      */
     inline void populate_legacy_q_score_bins(std::vector<model::metrics::q_score_bin>& q_score_bins, const constants::instrument_type instrument, const size_t count)
     {

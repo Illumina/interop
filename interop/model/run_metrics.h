@@ -114,7 +114,13 @@ public:
             try {
                 m_run_parameters.read(run_folder);
             }
-            catch (const xml::xml_file_not_found_exception &) { throw io::file_not_found_exception("RunParameters.xml required for legacy run folders and is missing"); }
+            catch (const xml::xml_file_not_found_exception &)
+            {
+                if(m_run_info.channels().empty())
+                    throw io::file_not_found_exception("RunParameters.xml required for legacy run folders with missing channel names");
+                else
+                    throw io::file_not_found_exception("RunParameters.xml required for legacy run folders and is missing");
+            }
         }
         if(m_run_info.channels().empty())
         {

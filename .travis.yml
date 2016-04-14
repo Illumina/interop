@@ -82,6 +82,7 @@ addons:
 cache:
   directories:
     - $HOME/NUnit-2.6.4
+
 install:
 - if test "$TRAVIS_OS_NAME" = "linux"; then source tools/travis-linux-install.sh;
   fi

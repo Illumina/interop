@@ -88,7 +88,7 @@ namespace illumina
                          */
                         static id_t lane_from_id(const id_t id)
                         {
-                            return id & ~((~0) << 6);
+                            return id & ~((~0u) << 6);
                         }
                         /** Test if the layout contains valid data
                          *
