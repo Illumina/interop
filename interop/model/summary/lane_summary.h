@@ -115,7 +115,7 @@ public:
     }
 
 public:
-    /** Get statistics summarizing the density of tiles in the lane
+    /** Get statistics summarizing the density of tiles in the lane (in clusters per mm2)
      *
      * @return statistics summarizing the density of tiles in the lane
      */
@@ -123,7 +123,7 @@ public:
     {
         return m_density;
     }
-    /** Get statistics summarizing the passing filter density of tiles in the lane
+    /** Get statistics summarizing the passing filter density of tiles in the lane (in clusters per mm2)
      *
      * @return statistics summarizing the passing filter density of tiles in the lane
      */

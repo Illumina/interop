@@ -18,6 +18,8 @@ namespace metrics {
 
 
 /** Index Metric Set
+ *
+ * @deprecated Will be removed in 1.1.x (use metric_set<index_metric> instead)
  */
 class index_metrics : public metric_base::metric_set<index_metric>
 {

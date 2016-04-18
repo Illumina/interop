@@ -207,12 +207,12 @@ namespace illumina {
                      * @note All metrics in this class are supported by all versions
                      * @{
                      */
-                    /** Density of clusters for each tile (in thousands per mm2)
+                    /** Density of clusters for each tile (in clusters per mm2)
                      *
                      * @return cluster density
                      */
                     float clusterDensity()const{return m_clusterDensity;}
-                    /** Density of clusters passing filter for each tile (in thousands per mm2)
+                    /** Density of clusters passing filter for each tile (in clusters per mm2)
                      *
                      * @return cluster density passing filter
                      */

@@ -19,6 +19,7 @@ namespace metrics {
  * The error metric is the calculated error rate, as determined by a spiked in PhiX control sample.
  * This metric is available for each lane and tile for every cycle.
  *
+ * @deprecated Will be removed in 1.1.x (use metric_set<error_metric> instead)
  * @see metric_base::metric_set
  * @see error_metric
  */
