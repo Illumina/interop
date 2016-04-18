@@ -38,6 +38,8 @@ namespace illumina {
                 };
                 /** Define a record size type */
                 typedef ::uint8_t record_size_t;
+                /** Define a version type */
+                typedef ::uint8_t version_t;
 
                 /** Map reading/writing a header to a stream
                  *
@@ -54,6 +56,4 @@ namespace illumina {
         }
     }
 }
-
-
 

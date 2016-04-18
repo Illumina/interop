@@ -23,7 +23,6 @@
 
 #include <limits>
 #include <numeric>
-#include <assert.h>
 #include <cstring>
 #include <fstream>
 #include "interop/constants/enums.h"
@@ -110,9 +109,9 @@ namespace illumina {
                             m_calledCounts(calledCounts),
                             m_signalToNoise(signalToNoise)
                     {
-                        assert(correctedIntAll.size() == constants::NUM_OF_BASES);
-                        assert(correctedIntCalled.size() == constants::NUM_OF_BASES);
-                        assert(calledCounts.size() == constants::NUM_OF_BASES_AND_NC);
+                       INTEROP_ASSERT(correctedIntAll.size() == constants::NUM_OF_BASES);
+                       INTEROP_ASSERT(correctedIntCalled.size() == constants::NUM_OF_BASES);
+                       INTEROP_ASSERT(calledCounts.size() == constants::NUM_OF_BASES_AND_NC);
                     }
                     /** Constructor
                      *
@@ -141,9 +140,9 @@ namespace illumina {
                             m_calledCounts(calledCounts, calledCounts+constants::NUM_OF_BASES_AND_NC),
                             m_signalToNoise(signalToNoise)
                     {
-                        assert(m_correctedIntAll.size() == constants::NUM_OF_BASES);
-                        assert(m_correctedIntCalled.size() == constants::NUM_OF_BASES);
-                        assert(m_calledCounts.size() == constants::NUM_OF_BASES_AND_NC);
+                       INTEROP_ASSERT(m_correctedIntAll.size() == constants::NUM_OF_BASES);
+                       INTEROP_ASSERT(m_correctedIntCalled.size() == constants::NUM_OF_BASES);
+                       INTEROP_ASSERT(m_calledCounts.size() == constants::NUM_OF_BASES_AND_NC);
                     }
                     /** Constructor
                      *
@@ -166,8 +165,8 @@ namespace illumina {
                             m_calledCounts(calledCounts),
                             m_signalToNoise(std::numeric_limits<float>::quiet_NaN())
                     {
-                        assert(correctedIntCalled.size() == constants::NUM_OF_BASES);
-                        assert(calledCounts.size() == constants::NUM_OF_BASES_AND_NC);
+                       INTEROP_ASSERT(correctedIntCalled.size() == constants::NUM_OF_BASES);
+                       INTEROP_ASSERT(calledCounts.size() == constants::NUM_OF_BASES_AND_NC);
                     }
                     /** Constructor
                      *
@@ -190,8 +189,8 @@ namespace illumina {
                             m_calledCounts(calledCounts, calledCounts+constants::NUM_OF_BASES_AND_NC),
                             m_signalToNoise(std::numeric_limits<float>::quiet_NaN())
                     {// TODO: Add array safety to this constructor
-                        assert(m_correctedIntCalled.size() == constants::NUM_OF_BASES);
-                        assert(m_calledCounts.size() == constants::NUM_OF_BASES_AND_NC);
+                       INTEROP_ASSERT(m_correctedIntCalled.size() == constants::NUM_OF_BASES);
+                       INTEROP_ASSERT(m_calledCounts.size() == constants::NUM_OF_BASES_AND_NC);
                     }
 
                 public:
@@ -220,7 +219,7 @@ namespace illumina {
                      */
                     ushort_t correctedIntAll(size_t index)const
                     {
-                        assert(index < static_cast<size_t>(constants::NUM_OF_BASES));
+                       INTEROP_ASSERT(index < static_cast<size_t>(constants::NUM_OF_BASES));
                         return m_correctedIntAll[index];
                     }
                     /** Average corrected intensity for only base called clusters: A, C, G and T
@@ -231,7 +230,7 @@ namespace illumina {
                      */
                     ushort_t correctedIntCalled(size_t index)const
                     {
-                        assert(index < static_cast<size_t>(constants::NUM_OF_BASES));
+                       INTEROP_ASSERT(index < static_cast<size_t>(constants::NUM_OF_BASES));
                         return m_correctedIntCalled[index];
                     }
                     /** Average corrected intensity for only base called clusters: A, C, G and T
@@ -261,7 +260,7 @@ namespace illumina {
                      */
                     uint_t calledCounts(difference_type index)const
                     {
-                        assert((index+1) < static_cast<difference_type>(constants::NUM_OF_BASES_AND_NC));
+                       INTEROP_ASSERT((index+1) < static_cast<difference_type>(constants::NUM_OF_BASES_AND_NC));
                         return m_calledCounts[static_cast<uint_t>(index+1)];
                     }
                     /** Number of clusters per no call

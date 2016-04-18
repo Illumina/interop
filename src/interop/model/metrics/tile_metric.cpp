@@ -63,6 +63,10 @@ namespace illumina{ namespace interop{
                 typedef layout::base_metric metric_id_t;
                 /** Record type */
                 typedef generic_layout<tile_metric, 2> record_t;
+                /** Code type */
+                typedef ::uint16_t code_t;
+                /** Value type */
+                typedef float value_t;
                 /** Code for each tile metric
                  */
                 enum TileMetricCode
@@ -77,9 +81,9 @@ namespace illumina{ namespace interop{
                     ControlLane = 400
                 };
                 /** Tile Metric Code */
-                ::uint16_t code;
+                code_t code;
                 /** Tile Metric Value */
-                float value;
+                value_t value;
 
                 /** Read metric from the input stream
                  *
@@ -189,16 +193,16 @@ namespace illumina{ namespace interop{
                     for(const_iterator beg = metric.read_metrics().begin();beg != metric.read_metrics().end();beg++)
                     {
                         const int read = beg->read()-1;
-                        rec.code = static_cast< ::uint16_t >(Prephasing+read*2);
+                        rec.code = static_cast< code_t >(Prephasing+read*2);
                         rec.value = beg->percent_prephasing();
                         if(write_id) write_binary(out, metric_id);
                         write_id=true;
                         write_binary(out, rec);
-                        rec.code = static_cast< ::uint16_t >(Phasing+read*2);
+                        rec.code = static_cast< code_t >(Phasing+read*2);
                         rec.value = beg->percent_phasing();
                         write_binary(out, metric_id);
                         write_binary(out, rec);
-                        rec.code = static_cast< ::uint16_t >(PercentAligned+read);
+                        rec.code = static_cast< code_t >(PercentAligned+read);
                         rec.value = beg->percent_aligned();
                         write_binary(out, metric_id);
                         write_binary(out, rec);
@@ -219,7 +223,7 @@ namespace illumina{ namespace interop{
                  */
                 static record_size_t computeHeaderSize(const tile_metric::header_type&)
                 {
-                    return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(::uint8_t));
+                    return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t));
                 }
 
             private:

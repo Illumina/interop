@@ -13,7 +13,6 @@
  *  @copyright GNU Public License.
  */
 #pragma once
-#include <assert.h>
 #include <cstring>
 #include "interop/io/format/generic_layout.h"
 #include "interop/io/layout/base_metric.h"
@@ -156,7 +155,7 @@ namespace illumina {
                      */
                     ushort_t minContrast(size_t channel)const
                     {
-                        assert(channel < m_channelCount);
+                       INTEROP_ASSERT(channel < m_channelCount);
                         return m_minContrast[channel];
                     }
                     /** Maximum contrast intensity
@@ -165,7 +164,7 @@ namespace illumina {
                      */
                     ushort_t maxContrast(size_t channel)const
                     {
-                        assert(channel < m_channelCount);
+                       INTEROP_ASSERT(channel < m_channelCount);
                         return m_maxContrast[channel];
                     }
                     /** Minimum contrast intensity

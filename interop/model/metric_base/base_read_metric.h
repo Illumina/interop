@@ -64,7 +64,7 @@ namespace illumina {
                      */
                     static id_t id(const id_t lane, const id_t tile, const id_t read)
                     {
-                        return io::layout::base_read_metric::id(lane, tile, read);
+                        return base_metric::id(lane, tile) | (read << TILE_BIT_SHIFT);
                     }
 
                 private:

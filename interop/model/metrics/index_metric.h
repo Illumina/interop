@@ -13,9 +13,9 @@
  *  @copyright GNU Public License.
  */
 #pragma once
-#include <assert.h>
 #include <string>
 #include <map>
+#include "interop/util/assert.h"
 #include "interop/model/metric_base/base_read_metric.h"
 #include "interop/io/format/generic_layout.h"
 
@@ -60,7 +60,7 @@ public:
     index_info(const std::string& index_seq,
                const std::string& sample_id,
                const std::string& sample_proj,
-               size_t count) :
+               const size_t count) :
             m_index_seq(index_seq),
             m_sample_id(sample_id),
             m_sample_proj(sample_proj),
@@ -168,7 +168,7 @@ public:
      */
     const index_info& indices(size_t n)const
     {
-        assert(n<m_indices.size());
+       INTEROP_ASSERT(n<m_indices.size());
         return m_indices[n];
     }
     /** Get an array of indices

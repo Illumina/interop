@@ -138,7 +138,7 @@ struct generic_layout<index_metric, 1> : public default_layout<1>
      */
     static size_t computeHeaderSize(const index_metric::header_type&)
     {
-        return sizeof(::uint8_t);
+        return sizeof(version_t);
     }
 };
 

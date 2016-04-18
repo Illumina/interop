@@ -75,6 +75,10 @@ namespace illumina{ namespace interop{ namespace io {
                  */
                 /** Metric ID type */
                 typedef layout::base_cycle_metric metric_id_t;
+                /** Intensity type */
+                typedef ::uint16_t intensity_t;
+                /** Count type */
+                typedef ::uint32_t count_t;
                 /** Map reading/writing to stream
                  *
                  * Reading and writing are symmetric operations, map it once
@@ -87,10 +91,10 @@ namespace illumina{ namespace interop{ namespace io {
                 static std::streamsize map_stream(Stream& stream, Metric& metric, Header&, const bool)
                 {
                     std::streamsize count = 0;
-                    count += stream_map< ::uint16_t >(stream, metric.m_averageCycleIntensity);
-                    count += stream_map< ::uint16_t >(stream, metric.m_correctedIntAll, constants::NUM_OF_BASES);
-                    count += stream_map< ::uint16_t >(stream, metric.m_correctedIntCalled, constants::NUM_OF_BASES);
-                    count += stream_map< ::uint32_t >(stream, metric.m_calledCounts, constants::NUM_OF_BASES_AND_NC);
+                    count += stream_map< intensity_t >(stream, metric.m_averageCycleIntensity);
+                    count += stream_map< intensity_t >(stream, metric.m_correctedIntAll, constants::NUM_OF_BASES);
+                    count += stream_map< intensity_t >(stream, metric.m_correctedIntCalled, constants::NUM_OF_BASES);
+                    count += stream_map< count_t >(stream, metric.m_calledCounts, constants::NUM_OF_BASES_AND_NC);
                     count += stream_map< float >(stream, metric.m_signalToNoise);
                     return count;
                 }
@@ -102,10 +106,10 @@ namespace illumina{ namespace interop{ namespace io {
                 {
                     return static_cast<record_size_t>(
                             sizeof(metric_id_t)+
-                                    sizeof(::uint16_t) +                                // m_averageCycleIntensity
-                                    sizeof(::uint16_t)*constants::NUM_OF_BASES +        // m_correctedIntAll
-                                    sizeof(::uint16_t)*constants::NUM_OF_BASES +        // m_correctedIntCalled
-                                    sizeof(::uint32_t)*constants::NUM_OF_BASES_AND_NC + // m_calledCounts
+                                    sizeof(intensity_t) +                                // m_averageCycleIntensity
+                                    sizeof(intensity_t)*constants::NUM_OF_BASES +        // m_correctedIntAll
+                                    sizeof(intensity_t)*constants::NUM_OF_BASES +        // m_correctedIntCalled
+                                    sizeof(count_t)*constants::NUM_OF_BASES_AND_NC + // m_calledCounts
                                     sizeof(float)                                       // m_signalToNoise
                     );
                 }
@@ -115,7 +119,7 @@ namespace illumina{ namespace interop{ namespace io {
                  */
                 static record_size_t computeHeaderSize(const corrected_intensity_metric::header_type&)
                 {
-                    return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(::uint8_t));
+                    return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t));
                 }
             };
             /** Corrected Intensity Metric Record Layout Version 3
@@ -169,6 +173,10 @@ namespace illumina{ namespace interop{ namespace io {
                  */
                 /** Metric ID type */
                 typedef layout::base_cycle_metric metric_id_t;
+                /** Intensity type */
+                typedef ::uint16_t intensity_t;
+                /** Count type */
+                typedef ::uint32_t count_t;
                 /** Map reading/writing to stream
                  *
                  * Reading and writing are symmetric operations, map it once
@@ -182,8 +190,8 @@ namespace illumina{ namespace interop{ namespace io {
                 {
                     std::streamsize count = 0;
                     // TODO: this does not need header layout, audit rest to see if that is true
-                    count += stream_map< ::uint16_t >(stream, metric.m_correctedIntCalled, constants::NUM_OF_BASES);
-                    count += stream_map< ::uint32_t >(stream, metric.m_calledCounts, constants::NUM_OF_BASES_AND_NC);
+                    count += stream_map< intensity_t >(stream, metric.m_correctedIntCalled, constants::NUM_OF_BASES);
+                    count += stream_map< count_t >(stream, metric.m_calledCounts, constants::NUM_OF_BASES_AND_NC);
                     return count;
                 }
                 /** Compute the layout size
@@ -194,8 +202,8 @@ namespace illumina{ namespace interop{ namespace io {
                 {
                     return static_cast<record_size_t>(
                             sizeof(metric_id_t)+
-                            sizeof(::uint16_t)*constants::NUM_OF_BASES +        // m_correctedIntCalled
-                            sizeof(::uint32_t)*constants::NUM_OF_BASES_AND_NC   // m_calledCounts
+                            sizeof(intensity_t)*constants::NUM_OF_BASES +    // m_correctedIntCalled
+                            sizeof(count_t)*constants::NUM_OF_BASES_AND_NC   // m_calledCounts
                     );
                 }
                 /** Compute header size
@@ -204,7 +212,7 @@ namespace illumina{ namespace interop{ namespace io {
                  */
                 static record_size_t computeHeaderSize(const corrected_intensity_metric::header_type&)
                 {
-                    return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(::uint8_t));
+                    return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t));
                 }
             };
 #pragma pack()

@@ -90,7 +90,7 @@ namespace illumina {
                     throw bad_format_exception("No format found to parse file with version: " +
                                                util::lexical_cast<std::string>(version) + " of " +
                                                util::lexical_cast<std::string>(format_map.size()));
-                assert(format_map[version]);
+               INTEROP_ASSERT(format_map[version]);
                 metrics.set_version(static_cast< ::int16_t>(version));
                 const std::streamsize record_size = format_map[version]->read_header(in, metrics);
 
@@ -166,7 +166,7 @@ namespace illumina {
                                                util::lexical_cast<std::string>(version) + " of " +
                                                util::lexical_cast<std::string>(format_map.size()));
 
-                assert(format_map[version]);
+               INTEROP_ASSERT(format_map[version]);
                 return format_map[version]->record_size(header);
             }
             /** Get the size of a metric file header
@@ -187,7 +187,7 @@ namespace illumina {
                                                util::lexical_cast<std::string>(version) + " of " +
                                                util::lexical_cast<std::string>(format_map.size()));
 
-                assert(format_map[version]);
+               INTEROP_ASSERT(format_map[version]);
                 return format_map[version]->header_size(header);
             }
             /** Write a metric to a binary InterOp file
@@ -209,7 +209,7 @@ namespace illumina {
                                                util::lexical_cast<std::string>(version) + " of " +
                                                util::lexical_cast<std::string>(format_map.size()));
 
-                assert(format_map[version]);
+               INTEROP_ASSERT(format_map[version]);
                 format_map[version]->write_metric(out, metric, header);
             }
             /** Write a header describing the metric records
@@ -229,7 +229,7 @@ namespace illumina {
                                                util::lexical_cast<std::string>(version) + " of " +
                                                util::lexical_cast<std::string>(format_map.size()));
 
-                assert(format_map[version]);
+               INTEROP_ASSERT(format_map[version]);
                 format_map[version]->write_metric_header(out, header);
             }
             /** Write a metric header to a binary Interop output stream
@@ -252,7 +252,7 @@ namespace illumina {
                                                util::lexical_cast<std::string>(version) + " of " +
                                                util::lexical_cast<std::string>(format_map.size()));
 
-                assert(format_map[version]);
+               INTEROP_ASSERT(format_map[version]);
                 format_map[version]->write_metric_header(out, metrics);
                 for (typename MetricSet::metric_array_t::const_iterator it = metrics.metrics().begin();
                      it != metrics.metrics().end(); it++)

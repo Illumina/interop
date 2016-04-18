@@ -10,7 +10,6 @@
 #pragma once
 #include <istream>
 #include <ostream>
-#include <assert.h>
 #include "interop/util/cstdint.h"
 
 namespace illumina {

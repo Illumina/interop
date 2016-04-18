@@ -62,6 +62,8 @@ namespace illumina{ namespace interop{ namespace io {
                  */
                 /** Metric ID type */
                 typedef layout::base_cycle_metric metric_id_t;
+                /** Histogram count type */
+                typedef ::uint32_t count_t;
                 /** Map reading/writing to stream
                  *
                  * Reading and writing are symmetric operations, map it once
@@ -73,7 +75,7 @@ namespace illumina{ namespace interop{ namespace io {
                 template<class Stream, class Metric, class Header>
                 static std::streamsize map_stream(Stream& stream, Metric& metric, Header&, const bool)
                 {
-                    return stream_map< ::uint32_t >(stream, metric.m_qscoreHist, q_metric::MAX_Q_BINS);
+                    return stream_map< count_t >(stream, metric.m_qscoreHist, q_metric::MAX_Q_BINS);
                 }
                 /** Compute the layout size
                  *
@@ -81,7 +83,7 @@ namespace illumina{ namespace interop{ namespace io {
                  */
                 static record_size_t computeSize(const q_metric::header_type&)
                 {
-                    return static_cast<record_size_t>(sizeof(metric_id_t)+sizeof(::uint32_t)*q_metric::MAX_Q_BINS);
+                    return static_cast<record_size_t>(sizeof(metric_id_t)+sizeof(count_t)*q_metric::MAX_Q_BINS);
                 }
                 /** Compute header size
                  *
@@ -89,7 +91,7 @@ namespace illumina{ namespace interop{ namespace io {
                  */
                 static record_size_t computeHeaderSize(const q_metric::header_type&)
                 {
-                    return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(::uint8_t));
+                    return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t));
                 }
             };
             /** Q-score Metric Record Layout Version 5
@@ -148,6 +150,14 @@ namespace illumina{ namespace interop{ namespace io {
                  */
                 /** Metric ID type */
                 typedef layout::base_cycle_metric metric_id_t;
+                /** Histogram count type */
+                typedef ::uint32_t count_t;
+                /** Bool type */
+                typedef ::uint8_t bool_t;
+                /** Bin count type */
+                typedef ::uint8_t bin_count_t;
+                /** Bin type */
+                typedef ::uint8_t bin_t;
 
                 /** Read metric from the input stream
                  *
@@ -161,8 +171,8 @@ namespace illumina{ namespace interop{ namespace io {
                 {
                     if(header.m_qscoreBins.size()>0)
                     {
-                        ::uint32_t hist[q_metric::MAX_Q_BINS];
-                        std::streamsize count = stream_map< ::uint32_t >(stream, hist, q_metric::MAX_Q_BINS);
+                        count_t hist[q_metric::MAX_Q_BINS];
+                        std::streamsize count = stream_map< count_t >(stream, hist, q_metric::MAX_Q_BINS);
                         map_resize(metric.m_qscoreHist, header.m_qscoreBins.size());
                         for(size_t i=0;i<header.m_qscoreBins.size();++i)
                         {
@@ -173,7 +183,7 @@ namespace illumina{ namespace interop{ namespace io {
                         }
                         return count;
                     }
-                    return stream_map< ::uint32_t >(stream, metric.m_qscoreHist, q_metric::MAX_Q_BINS);
+                    return stream_map< count_t >(stream, metric.m_qscoreHist, q_metric::MAX_Q_BINS);
                 }
                 /** Write metric to the output stream
                  *
@@ -187,7 +197,7 @@ namespace illumina{ namespace interop{ namespace io {
                 {
                     if(header.m_qscoreBins.size()>0)
                     {
-                        ::uint32_t hist[q_metric::MAX_Q_BINS];
+                        count_t hist[q_metric::MAX_Q_BINS];
                         std::fill(hist, hist+q_metric::MAX_Q_BINS, 0);
                         for(size_t i=0;i<header.m_qscoreBins.size();i++)
                         {
@@ -195,9 +205,9 @@ namespace illumina{ namespace interop{ namespace io {
                             INTEROP_ASSERTMSG((header.m_qscoreBins[i].value() - 1) < q_metric::MAX_Q_BINS, header.m_qscoreBins[i].value()  - 1 << " < " << q_metric::MAX_Q_BINS);
                             hist[header.m_qscoreBins[i].value()-1] = metric.m_qscoreHist[i];
                         }
-                        return stream_map< ::uint32_t >(stream, hist, q_metric::MAX_Q_BINS);
+                        return stream_map< count_t >(stream, hist, q_metric::MAX_Q_BINS);
                     }
-                    return stream_map< ::uint32_t >(stream, metric.m_qscoreHist, q_metric::MAX_Q_BINS);
+                    return stream_map< count_t >(stream, metric.m_qscoreHist, q_metric::MAX_Q_BINS);
                 }
                 /** Compute the layout size
                  *
@@ -205,7 +215,7 @@ namespace illumina{ namespace interop{ namespace io {
                  */
                 static record_size_t computeSize(const q_metric::header_type&)
                 {
-                    return static_cast<record_size_t>(sizeof(metric_id_t)+sizeof(::uint32_t)*q_metric::MAX_Q_BINS);
+                    return static_cast<record_size_t>(sizeof(metric_id_t)+sizeof(count_t)*q_metric::MAX_Q_BINS);
                 }
                 /** Map reading/writing a header to a stream
                  *
@@ -218,28 +228,28 @@ namespace illumina{ namespace interop{ namespace io {
                 template<class Stream, class Header>
                 static std::streamsize map_stream_for_header(Stream& stream, Header& header)
                 {
-                    ::uint8_t has_bins = header.binCount()>0;
+                    bool_t has_bins = header.binCount()>0;
                     std::streamsize count = 0;
-                    count += stream_map< ::uint8_t >(stream, has_bins);
+                    count += stream_map< bool_t >(stream, has_bins);
                     if(stream.fail()) return count;
                     if(!has_bins) return count;
-                    count+=stream_map< ::uint8_t >(stream, header.m_bin_count);
+                    count+=stream_map< bin_count_t>(stream, header.m_bin_count);
                     if(stream.fail()) return count;
-                    const ::uint8_t bin_count = static_cast< ::uint8_t >(header.m_bin_count);
-                    assert(bin_count>0);
-                    ::uint8_t tmp[q_metric::MAX_Q_BINS];
+                    const bin_count_t bin_count = static_cast< bin_count_t >(header.m_bin_count);
+                    INTEROP_ASSERT(bin_count>0);
+                    bin_t tmp[q_metric::MAX_Q_BINS];
                     map_resize(header.m_qscoreBins, bin_count);
 
                     copy_lower_write(header.m_qscoreBins, tmp);
-                    count+=stream_map< ::uint8_t >(stream, tmp, bin_count);
+                    count+=stream_map< bin_t >(stream, tmp, bin_count);
                     copy_lower_read(header.m_qscoreBins, tmp);
 
                     copy_upper_write(header.m_qscoreBins, tmp);
-                    count+=stream_map< ::uint8_t >(stream, tmp, bin_count);
+                    count+=stream_map< bin_t >(stream, tmp, bin_count);
                     copy_upper_read(header.m_qscoreBins, tmp);
 
                     copy_value_write(header.m_qscoreBins, tmp);
-                    count+=stream_map< ::uint8_t >(stream, tmp, bin_count);
+                    count+=stream_map< bin_t >(stream, tmp, bin_count);
                     copy_value_read(header.m_qscoreBins, tmp);
 
                     return count;
@@ -251,58 +261,58 @@ namespace illumina{ namespace interop{ namespace io {
                  */
                 static record_size_t computeHeaderSize(const q_metric::header_type& header)
                 {
-                    if(header.binCount()==0) return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(::uint8_t) + sizeof(::uint8_t));
+                    if(header.binCount()==0) return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t) + sizeof(bool_t));
                     return static_cast<record_size_t>(sizeof(record_size_t) +
-                            sizeof(::uint8_t) + // record size
-                            sizeof(::uint8_t) + // has bins
-                            sizeof(::uint8_t) + // number of bins
-                            header.m_bin_count*3*sizeof(::uint8_t));
+                            sizeof(version_t) + // version
+                            sizeof(bool_t) + // has bins
+                            sizeof(bin_count_t) + // number of bins
+                            header.m_bin_count*3*sizeof(bin_t));
                 }
             private:
                 template<size_t N>
-                static void copy_lower_read(std::vector<q_score_bin>& bins, ::uint8_t (&tmp)[N])
+                static void copy_lower_read(std::vector<q_score_bin>& bins, bin_t (&tmp)[N])
                 {
-                    assert(bins.size() <= N);
-                    for(::uint8_t i=0;i<bins.size();++i) bins[i].m_lower = tmp[i];
+                    INTEROP_ASSERT(bins.size() <= N);
+                    for(size_t i=0;i<bins.size();++i) bins[i].m_lower = tmp[i];
                 }
-                static void copy_lower_read(const std::vector<q_score_bin>&, ::uint8_t*) { }
+                static void copy_lower_read(const std::vector<q_score_bin>&, bin_t*) { }
                 template<size_t N>
-                static void copy_lower_write(const std::vector<q_score_bin>& bins, ::uint8_t (&tmp)[N])
+                static void copy_lower_write(const std::vector<q_score_bin>& bins, bin_t (&tmp)[N])
                 {
-                    assert(bins.size() <= N);
-                    for(::uint8_t i=0;i<bins.size();++i) tmp[i] = static_cast< ::uint8_t >(bins[i].m_lower);
+                    INTEROP_ASSERT(bins.size() <= N);
+                    for(size_t i=0;i<bins.size();++i) tmp[i] = static_cast< bin_t >(bins[i].m_lower);
                 }
-                static void copy_lower_write(std::vector<q_score_bin>&, ::uint8_t*) { }
+                static void copy_lower_write(std::vector<q_score_bin>&, bin_t*) { }
             private:
                 template<size_t N>
-                static void copy_upper_read(std::vector<q_score_bin>& bins, ::uint8_t (&tmp)[N])
+                static void copy_upper_read(std::vector<q_score_bin>& bins, bin_t (&tmp)[N])
                 {
-                    assert(bins.size() <= N);
-                    for(::uint8_t i=0;i<bins.size();++i) bins[i].m_upper = tmp[i];
+                    INTEROP_ASSERT(bins.size() <= N);
+                    for(size_t i=0;i<bins.size();++i) bins[i].m_upper = tmp[i];
                 }
-                static void copy_upper_read(const std::vector<q_score_bin>& , ::uint8_t*) { }
+                static void copy_upper_read(const std::vector<q_score_bin>& , bin_t*) { }
                 template<size_t N>
-                static void copy_upper_write(const std::vector<q_score_bin>& bins, ::uint8_t (&tmp)[N])
+                static void copy_upper_write(const std::vector<q_score_bin>& bins, bin_t (&tmp)[N])
                 {
-                    assert(bins.size() <= N);
-                    for(::uint8_t i=0;i<bins.size();++i) tmp[i] = static_cast< ::uint8_t >(bins[i].m_upper);
+                    INTEROP_ASSERT(bins.size() <= N);
+                    for(size_t i=0;i<bins.size();++i) tmp[i] = static_cast< bin_t >(bins[i].m_upper);
                 }
-                static void copy_upper_write(std::vector<q_score_bin>&, ::uint8_t*) { }
+                static void copy_upper_write(std::vector<q_score_bin>&, bin_t*) { }
             private:
                 template<size_t N>
-                static void copy_value_read(std::vector<q_score_bin>& bins, ::uint8_t (&tmp)[N])
+                static void copy_value_read(std::vector<q_score_bin>& bins, bin_t (&tmp)[N])
                 {
-                    assert(bins.size() <= N);
-                    for(::uint8_t i=0;i<bins.size();++i) bins[i].m_value = tmp[i];
+                    INTEROP_ASSERT(bins.size() <= N);
+                    for(size_t i=0;i<bins.size();++i) bins[i].m_value = tmp[i];
                 }
-                static void copy_value_read(const std::vector<q_score_bin>&, ::uint8_t*) { }
+                static void copy_value_read(const std::vector<q_score_bin>&, bin_t*) { }
                 template<size_t N>
-                static void copy_value_write(const std::vector<q_score_bin>& bins, ::uint8_t (&tmp)[N])
+                static void copy_value_write(const std::vector<q_score_bin>& bins, bin_t (&tmp)[N])
                 {
-                    assert(bins.size() <= N);
-                    for(::uint8_t i=0;i<bins.size();++i) tmp[i] = static_cast< ::uint8_t >(bins[i].m_value);
+                    INTEROP_ASSERT(bins.size() <= N);
+                    for(size_t i=0;i<bins.size();++i) tmp[i] = static_cast< bin_t >(bins[i].m_value);
                 }
-                static void copy_value_write(std::vector<q_score_bin>&, ::uint8_t*) { }
+                static void copy_value_write(std::vector<q_score_bin>&, bin_t*) { }
             };
             /** Q-score Metric Record Layout Version 6
              *
@@ -362,6 +372,14 @@ namespace illumina{ namespace interop{ namespace io {
                  */
                 /** Metric ID type */
                 typedef layout::base_cycle_metric metric_id_t;
+                /** Histogram count type */
+                typedef ::uint32_t count_t;
+                /** Bool type */
+                typedef ::uint8_t bool_t;
+                /** Bin count type */
+                typedef ::uint8_t bin_count_t;
+                /** Bin type */
+                typedef ::uint8_t bin_t;
 
                 /** Map reading/writing to stream
                  *
@@ -375,7 +393,7 @@ namespace illumina{ namespace interop{ namespace io {
                 template<class Stream, class Metric, class Header>
                 static std::streamsize map_stream(Stream& stream, Metric& metric, Header& header, const bool)
                 {
-                    return stream_map< ::uint32_t >(stream, metric.m_qscoreHist, header.binCount());
+                    return stream_map< count_t >(stream, metric.m_qscoreHist, header.binCount());
                 }
                 /** Compute the layout size
                  *
@@ -383,7 +401,7 @@ namespace illumina{ namespace interop{ namespace io {
                  */
                 static record_size_t computeSize(const q_metric::header_type& header)
                 {
-                    return static_cast<record_size_t>(sizeof(metric_id_t)+sizeof(::uint32_t)*header.binCount());
+                    return static_cast<record_size_t>(sizeof(metric_id_t)+sizeof(count_t)*header.binCount());
                 }
                 /** Map reading/writing a header to a stream
                  *
@@ -396,28 +414,28 @@ namespace illumina{ namespace interop{ namespace io {
                 template<class Stream, class Header>
                 static std::streamsize map_stream_for_header(Stream& stream, Header& header)
                 {
-                    ::uint8_t has_bins = header.binCount()>0;
+                    bool_t has_bins = header.binCount()>0;
                     std::streamsize count = 0;
-                    count += stream_map< ::uint8_t >(stream, has_bins);
+                    count += stream_map< bool_t >(stream, has_bins);
                     if(stream.fail()) return count;
                     if(!has_bins) return count;
-                    count+=stream_map< ::uint8_t >(stream, header.m_bin_count);
+                    count+=stream_map< bin_count_t >(stream, header.m_bin_count);
                     if(stream.fail()) return count;
-                    const ::uint8_t bin_count = static_cast< ::uint8_t >(header.m_bin_count);
-                    assert(bin_count>0);
-                    ::uint8_t tmp[q_metric::MAX_Q_BINS];
+                    const bin_count_t bin_count = static_cast< bin_count_t >(header.m_bin_count);
+                    INTEROP_ASSERT(bin_count>0);
+                    bin_t tmp[q_metric::MAX_Q_BINS];
                     map_resize(header.m_qscoreBins, bin_count);
 
                     copy_lower_write(header.m_qscoreBins, tmp);
-                    count+=stream_map< ::uint8_t >(stream, tmp, bin_count);
+                    count+=stream_map< bin_t >(stream, tmp, bin_count);
                     copy_lower_read(header.m_qscoreBins, tmp);
 
                     copy_upper_write(header.m_qscoreBins, tmp);
-                    count+=stream_map< ::uint8_t >(stream, tmp, bin_count);
+                    count+=stream_map< bin_t >(stream, tmp, bin_count);
                     copy_upper_read(header.m_qscoreBins, tmp);
 
                     copy_value_write(header.m_qscoreBins, tmp);
-                    count+=stream_map< ::uint8_t >(stream, tmp, bin_count);
+                    count+=stream_map< bin_t >(stream, tmp, bin_count);
                     copy_value_read(header.m_qscoreBins, tmp);
 
                     return count;
@@ -429,58 +447,58 @@ namespace illumina{ namespace interop{ namespace io {
                  */
                 static record_size_t computeHeaderSize(const q_metric::header_type& header)
                 {
-                    if(header.binCount()==0) return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(::uint8_t) + sizeof(::uint8_t));
+                    if(header.binCount()==0) return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t) + sizeof(bool_t));
                     return static_cast<record_size_t>(sizeof(record_size_t) +
-                           sizeof(::uint8_t) + // version
-                           sizeof(::uint8_t) + // has bins
-                           sizeof(::uint8_t) + // number of bins
-                           header.m_bin_count*3*sizeof(::uint8_t));
+                           sizeof(version_t) + // version
+                           sizeof(bool_t) + // has bins
+                           sizeof(bin_count_t) + // number of bins
+                           header.m_bin_count*3*sizeof(bin_t));
                 }
             private:
                 template<size_t N>
-                static void copy_lower_read(std::vector<q_score_bin>& bins, ::uint8_t (&tmp)[N])
+                static void copy_lower_read(std::vector<q_score_bin>& bins, bin_t (&tmp)[N])
                 {
-                    assert(bins.size() <= N);
-                    for(::uint8_t i=0;i<bins.size();++i) bins[i].m_lower = tmp[i];
+                    INTEROP_ASSERT(bins.size() <= N);
+                    for(size_t i=0;i<bins.size();++i) bins[i].m_lower = tmp[i];
                 }
-                static void copy_lower_read(const std::vector<q_score_bin>&, ::uint8_t*) { }
+                static void copy_lower_read(const std::vector<q_score_bin>&, bin_t*) { }
                 template<size_t N>
-                static void copy_lower_write(const std::vector<q_score_bin>& bins, ::uint8_t (&tmp)[N])
+                static void copy_lower_write(const std::vector<q_score_bin>& bins, bin_t (&tmp)[N])
                 {
-                    assert(bins.size() <= N);
-                    for(::uint8_t i=0;i<bins.size();++i) tmp[i] = static_cast< ::uint8_t >(bins[i].m_lower);
+                    INTEROP_ASSERT(bins.size() <= N);
+                    for(size_t i=0;i<bins.size();++i) tmp[i] = static_cast< bin_t >(bins[i].m_lower);
                 }
-                static void copy_lower_write(std::vector<q_score_bin>&, ::uint8_t*) { }
+                static void copy_lower_write(std::vector<q_score_bin>&, bin_t*) { }
             private:
                 template<size_t N>
-                static void copy_upper_read(std::vector<q_score_bin>& bins, ::uint8_t (&tmp)[N])
+                static void copy_upper_read(std::vector<q_score_bin>& bins, bin_t (&tmp)[N])
                 {
-                    assert(bins.size() <= N);
-                    for(::uint8_t i=0;i<bins.size();++i) bins[i].m_upper = tmp[i];
+                    INTEROP_ASSERT(bins.size() <= N);
+                    for(size_t i=0;i<bins.size();++i) bins[i].m_upper = tmp[i];
                 }
-                static void copy_upper_read(const std::vector<q_score_bin>&, ::uint8_t*) { }
+                static void copy_upper_read(const std::vector<q_score_bin>&, bin_t*) { }
                 template<size_t N>
-                static void copy_upper_write(const std::vector<q_score_bin>& bins, ::uint8_t (&tmp)[N])
+                static void copy_upper_write(const std::vector<q_score_bin>& bins, bin_t (&tmp)[N])
                 {
-                    assert(bins.size() <= N);
-                    for(::uint8_t i=0;i<bins.size();++i) tmp[i] = static_cast< ::uint8_t >(bins[i].m_upper);
+                    INTEROP_ASSERT(bins.size() <= N);
+                    for(size_t i=0;i<bins.size();++i) tmp[i] = static_cast< bin_t >(bins[i].m_upper);
                 }
-                static void copy_upper_write(std::vector<q_score_bin>&, ::uint8_t*) { }
+                static void copy_upper_write(std::vector<q_score_bin>&, bin_t*) { }
             private:
                 template<size_t N>
-                static void copy_value_read(std::vector<q_score_bin>& bins, ::uint8_t (&tmp)[N])
+                static void copy_value_read(std::vector<q_score_bin>& bins, bin_t (&tmp)[N])
                 {
-                    assert(bins.size() <= N);
-                    for(::uint8_t i=0;i<bins.size();++i) bins[i].m_value = tmp[i];
+                    INTEROP_ASSERT(bins.size() <= N);
+                    for(size_t i=0;i<bins.size();++i) bins[i].m_value = tmp[i];
                 }
-                static void copy_value_read(const std::vector<q_score_bin>&, ::uint8_t*) { }
+                static void copy_value_read(const std::vector<q_score_bin>&, bin_t*) { }
                 template<size_t N>
-                static void copy_value_write(const std::vector<q_score_bin>& bins, ::uint8_t (&tmp)[N])
+                static void copy_value_write(const std::vector<q_score_bin>& bins, bin_t (&tmp)[N])
                 {
-                    assert(bins.size() <= N);
-                    for(::uint8_t i=0;i<bins.size();++i) tmp[i] = static_cast< ::uint8_t >(bins[i].m_value);
+                    INTEROP_ASSERT(bins.size() <= N);
+                    for(size_t i=0;i<bins.size();++i) tmp[i] = static_cast< bin_t >(bins[i].m_value);
                 }
-                static void copy_value_write(std::vector<q_score_bin>&, ::uint8_t*) { }
+                static void copy_value_write(std::vector<q_score_bin>&, bin_t*) { }
             };
 
 #pragma pack()// DO NOT MOVE

@@ -7,14 +7,14 @@
  *  @copyright GNU Public License.
  */
 #pragma once
-#include <assert.h>
 #include <map>
 #include <vector>
-#include "abstract_metric_format.h"
+#include "interop/util/assert.h"
+#include "interop/io/format/abstract_metric_format.h"
 #include "interop/util/unique_ptr.h"
 #include "interop/util/lexical_cast.h"
 #include "interop/io/stream_exceptions.h"
-#include "metric_format.h"
+#include "interop/io/format/metric_format.h"
 
 /** Register a metric format with the factory
  *
@@ -68,7 +68,7 @@ namespace illumina {
                  */
                 metric_format_factory(abstract_metric_format<Metric>* pformat)
                 {
-                    assert(pformat!=0);
+                   INTEROP_ASSERT(pformat!=0);
                     metric_formats()[pformat->version()]=metric_format_pointer(pformat);
                 }
                 /** Static initialization workaround for member variables

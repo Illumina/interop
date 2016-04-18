@@ -404,12 +404,17 @@ private:
         template<class MetricSet>
         int operator()(MetricSet& metrics)const
         {
-            try
-            {
+            try {
                 io::read_interop(m_run_folder, metrics);
             }
-            catch(const io::file_not_found_exception&){return 1;}
-            catch(const io::incomplete_file_exception&){return 2;}
+            catch (const io::file_not_found_exception &) {
+                try {
+                    io::read_interop(m_run_folder, metrics, false /** Search for XMetrics.bin not XMetricsOut.bin */);
+                }
+                catch (const io::file_not_found_exception &) { return 1; }
+                catch (const io::incomplete_file_exception &) { return 2; }
+            }
+            catch (const io::incomplete_file_exception &) { return 2; }
             return 0;
         }
         std::string m_run_folder;
