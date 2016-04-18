@@ -352,7 +352,7 @@ public:
     template<class ReadFunc>
     void read_callback(ReadFunc& func)
     {
-        read_metrics_callback(func);
+        metrics_callback(func);
         func(m_run_info);
         const size_t count = logic::metric::count_legacy_q_score_bins(get_set<q_metric>());
         if(m_run_info.channels().empty() || logic::metric::requires_legacy_bins(count))
@@ -372,8 +372,8 @@ public:
      *
      * @param func call back for metric reading
      */
-    template<class ReadFunc>
-    void read_metrics_callback(ReadFunc& func)
+    template<class Func>
+    void metrics_callback(Func &func)
     {
         m_metrics.apply(func);
     }
