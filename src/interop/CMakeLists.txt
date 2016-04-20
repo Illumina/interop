@@ -78,7 +78,11 @@ set(HEADERS
         ../../interop/util/linear_hierarchy.h
         ../../interop/util/object_list.h
         ../../interop/util/exception_specification.h
-        ../../interop/logic/summary/map_cycle_to_read.h ../../interop/logic/summary/cycle_state_summary.h)
+        ../../interop/logic/summary/map_cycle_to_read.h
+        ../../interop/logic/summary/cycle_state_summary.h
+        ../../interop/util/math.h
+
+        )
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR CMAKE_COMPILER_IS_GNUCC)
     foreach(SRC ${SRCS})

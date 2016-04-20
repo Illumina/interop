@@ -22,10 +22,6 @@ namespace illumina{ namespace interop { namespace unittest {
      */
     struct extraction_v2 : metric_test<model::metrics::extraction_metric, 2>
     {
-        enum{
-            /** Do not check the expected binary data */
-           disable_binary_data=true // TODO: Move this to template?
-        };
         /** Build the expected metric set
          *
          * @return vector of metrics

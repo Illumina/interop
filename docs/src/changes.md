@@ -3,13 +3,31 @@
 
 ## Trunk
 
+Commit  | Description
+------- | -----------
+??????? | Enhance robustness to missing isnan functions
+         
+## v1.0.6
 
+Commit  | Description
+------- | -----------
+57be79c | Update all cycle states and bug fix for legacy q-metrics
+0b4304a | Refactor to remove and mark deprecated code
+647cc9e | Add utility for creating unit tests
+9d82333 | Add search for non Out interop files
+
+## v1.0.5
+
+Commit  | Description
+------- | -----------
+7380f29 | Bug fixes for q-metrics and compilation error on Mac OSX
 
 ## v1.0.4
 
 Commit  | Description
 ------- | -----------
-        | Update documentation
+50e8e2a | Update documentation
+50e8e2a | Update documentation
 0b22102 | Added summary tests
 13f1fb4 | Added summary logic
 339a914 | Added summary model
