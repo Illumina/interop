@@ -16,6 +16,7 @@ namespace metrics {
 
 /** Corrected Intensity Metric Set
  *
+ * @deprecated Will be removed in 1.1.x (use metric_set<corrected_intensity_metric> instead)
  * @see metric_base::metric_set
  * @see corrected_intensity_metric
  */

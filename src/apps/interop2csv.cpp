@@ -118,13 +118,14 @@
 #include <iostream>
 #include <iomanip>
 #include "interop/io/metric_file_stream.h"
-#include "interop/model/metric_sets/tile_metric_set.h"
-#include "interop/model/metric_sets/error_metric_set.h"
-#include "interop/model/metric_sets/corrected_intensity_metric_set.h"
-#include "interop/model/metric_sets/extraction_metric_set.h"
-#include "interop/model/metric_sets/image_metric_set.h"
-#include "interop/model/metric_sets/q_metric_set.h"
-#include "interop/model/metric_sets/index_metric_set.h"
+#include "interop/model/metrics/tile_metric.h"
+#include "interop/model/metrics/error_metric.h"
+#include "interop/model/metrics/corrected_intensity_metric.h"
+#include "interop/model/metrics/extraction_metric.h"
+#include "interop/model/metrics/image_metric.h"
+#include "interop/model/metrics/q_metric.h"
+#include "interop/model/metrics/index_metric.h"
+#include "interop/logic/metric/q_metric.h"
 #include "interop/version.h"
 
 using namespace illumina::interop::model::metrics;
@@ -186,6 +187,7 @@ int main(int argc, char** argv)
 
     for(int i=1;i<argc;i++)
     {
+        std::cout << "# Run Folder: " << io::basename(argv[i]) << std::endl;
         int res = write_interops(std::cout, argv[i]);
         if(res != SUCCESS)
         {
@@ -308,13 +310,14 @@ void write_id(std::ostream& out, const model::metric_base::base_read_metric& met
  */
 int write_tile_metrics(std::ostream& out, const std::string& filename)
 {
-    tile_metrics metrics;
+    typedef model::metric_base::metric_set<tile_metric> tile_metric_set;
+    tile_metric_set metrics;
     int res = read_metrics_from_file(filename, metrics);
     if(res != 0) return res;
 
     write_header(out, metrics);
     out << "Lane,Tile,Count,CountPF,Density,DensityPF\n";
-    for(tile_metrics::metric_array_t::const_iterator beg = metrics.metrics().begin(), end = vec_end(metrics.metrics());beg != end;++beg)
+    for(tile_metric_set::metric_array_t::const_iterator beg = metrics.metrics().begin(), end = vec_end(metrics.metrics());beg != end;++beg)
     {
         const tile_metric& metric = *beg;
         write_id(out, metric);
@@ -323,7 +326,7 @@ int write_tile_metrics(std::ostream& out, const std::string& filename)
 
     write_header(out, metrics);
     out << "Lane,Tile,Read,Aligned,Prephasing,Phasing\n";
-    for(tile_metrics::metric_array_t::const_iterator beg = metrics.metrics().begin(), end = vec_end(metrics.metrics());beg != end;++beg)
+    for(tile_metric_set::metric_array_t::const_iterator beg = metrics.metrics().begin(), end = vec_end(metrics.metrics());beg != end;++beg)
     {
         const tile_metric& metric = *beg;
         for(tile_metric::read_metric_vector::const_iterator rbeg = metric.read_metrics().begin(), rend = metric.read_metrics().end();rbeg != rend;++rbeg)
@@ -354,13 +357,14 @@ int write_tile_metrics(std::ostream& out, const std::string& filename)
  */
 int write_error_metrics(std::ostream& out, const std::string& filename)
 {
-    error_metrics metrics;
+    typedef model::metric_base::metric_set<error_metric> error_metric_set;
+    error_metric_set metrics;
     int res = read_metrics_from_file(filename, metrics);
     if(res != 0) return res;
 
     write_header(out, metrics);
     out << "Lane,Tile,Cycle,Error\n";
-    for(error_metrics::metric_array_t::const_iterator beg = metrics.metrics().begin(), end = vec_end(metrics.metrics());beg != end;++beg)
+    for(error_metric_set::metric_array_t::const_iterator beg = metrics.metrics().begin(), end = vec_end(metrics.metrics());beg != end;++beg)
     {
         const error_metric& metric = *beg;
         write_id(out, metric);
@@ -388,7 +392,8 @@ int write_error_metrics(std::ostream& out, const std::string& filename)
  */
 int write_corrected_intensity_metrics(std::ostream& out, const std::string& filename)
 {
-    corrected_intensity_metrics metrics;
+    typedef model::metric_base::metric_set<corrected_intensity_metric> corrected_intensity_metric_set;
+    corrected_intensity_metric_set metrics;
     int res = read_metrics_from_file(filename, metrics);
     if(res != 0) return res;
 
@@ -398,7 +403,7 @@ int write_corrected_intensity_metrics(std::ostream& out, const std::string& file
     out << "CalledIntensity_A,CalledIntensity_C,CalledIntensity_G,CalledIntensity_T,";
     out << "AllIntensity_A,AllIntensity_C,AllIntensity_G,AllIntensity_T";
     out << "\n";
-    for(corrected_intensity_metrics::metric_array_t::const_iterator beg = metrics.metrics().begin(), end = vec_end(metrics.metrics());beg != end;++beg)
+    for(corrected_intensity_metric_set::metric_array_t::const_iterator beg = metrics.metrics().begin(), end = vec_end(metrics.metrics());beg != end;++beg)
     {
         const corrected_intensity_metric& metric = *beg;
         write_id(out, metric);
@@ -432,7 +437,8 @@ int write_corrected_intensity_metrics(std::ostream& out, const std::string& file
  */
 int write_extraction_metrics(std::ostream& out, const std::string& filename)
 {
-    extraction_metrics metrics;
+    typedef model::metric_base::metric_set<extraction_metric> extraction_metric_set;
+    extraction_metric_set metrics;
     int res = read_metrics_from_file(filename, metrics);
     if(res != 0) return res;
 
@@ -441,7 +447,7 @@ int write_extraction_metrics(std::ostream& out, const std::string& filename)
     out << "P90_1,P90_2,P90_3,P90_4,";
     out << "Focus_1,Focus_2,Focus_3,Focus_4";
     out << "\n";
-    for(extraction_metrics::metric_array_t::const_iterator beg = metrics.metrics().begin(), end = vec_end(metrics.metrics());beg != end;++beg)
+    for(extraction_metric_set::metric_array_t::const_iterator beg = metrics.metrics().begin(), end = vec_end(metrics.metrics());beg != end;++beg)
     {
         const extraction_metric& metric = *beg;
         write_id(out, metric);
@@ -473,7 +479,8 @@ int write_extraction_metrics(std::ostream& out, const std::string& filename)
  */
 int write_image_metrics(std::ostream& out, const std::string& filename)
 {
-    image_metrics metrics;
+    typedef model::metric_base::metric_set<image_metric> image_metric_set;
+    image_metric_set metrics;
     int res = read_metrics_from_file(filename, metrics);
     if(res != 0) return res;
 
@@ -484,7 +491,7 @@ int write_image_metrics(std::ostream& out, const std::string& filename)
     for(size_t i=0;i<metrics.channelCount();i++)
         out << ",MaxContrast_" << i+1;
     out << "\n";
-    for(image_metrics::metric_array_t::const_iterator beg = metrics.metrics().begin(), end = vec_end(metrics.metrics());beg != end;++beg)
+    for(image_metric_set::metric_array_t::const_iterator beg = metrics.metrics().begin(), end = vec_end(metrics.metrics());beg != end;++beg)
     {
         const image_metric& metric = *beg;
         write_id(out, metric);
@@ -522,7 +529,8 @@ int write_image_metrics(std::ostream& out, const std::string& filename)
  */
 int write_q_metrics(std::ostream& out, const std::string& filename)
 {
-    q_metrics metrics;
+    typedef model::metric_base::metric_set<q_metric> q_metric_set;
+    q_metric_set metrics;
     int res = read_metrics_from_file(filename, metrics);
     if(res != 0) return res;
 
@@ -549,10 +557,11 @@ int write_q_metrics(std::ostream& out, const std::string& filename)
 
     write_header(out, metrics);
     out << "Lane,Tile,Cycle,BinCount";
-    for(size_t i=0;i<metrics.histBinCount();i++)
+    const size_t hist_bin_count = logic::metric::count_q_metric_bins(metrics);
+    for(size_t i=0;i<hist_bin_count;++i)
         out << ",BinCount" << i+1;
     out << "\n";
-    for(q_metrics::metric_array_t::const_iterator beg = metrics.metrics().begin(), end = vec_end(metrics.metrics());beg != end;++beg)
+    for(q_metric_set::metric_array_t::const_iterator beg = metrics.metrics().begin(), end = vec_end(metrics.metrics());beg != end;++beg)
     {
         const q_metric& metric = *beg;
         write_id(out, metric);
@@ -582,13 +591,14 @@ int write_q_metrics(std::ostream& out, const std::string& filename)
  */
 int write_index_metrics(std::ostream& out, const std::string& filename)
 {
-    index_metrics metrics;
+    typedef model::metric_base::metric_set<index_metric> index_metric_set;
+    index_metric_set metrics;
     int res = read_metrics_from_file(filename, metrics);
     if(res != 0) return res;
 
     write_header(out, metrics);
     out << "Lane,Tile,Read,Sequence,Sample,Project,Count\n";
-    for(index_metrics::metric_array_t::const_iterator beg = metrics.metrics().begin(), end = vec_end(metrics.metrics());beg != end;++beg)
+    for(index_metric_set::metric_array_t::const_iterator beg = metrics.metrics().begin(), end = vec_end(metrics.metrics());beg != end;++beg)
     {
         const index_metric& metric = *beg;
         for(index_metric::index_array_t::const_iterator index_beg=metric.indices().begin(), index_end=metric.indices().end();index_beg != index_end;++index_beg)

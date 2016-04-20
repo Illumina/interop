@@ -19,6 +19,8 @@ namespace metrics {
 
 
 /** Q-score Metric Set
+ *
+ * @deprecated Will be removed in 1.1.x (use metric_set<q_metric> instead)
  */
 class q_metrics : public metric_base::metric_set<q_metric>
 {

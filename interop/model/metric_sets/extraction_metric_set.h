@@ -17,6 +17,7 @@ namespace metrics {
 
 /** Extraction Metric Set
  *
+ * @deprecated Will be removed in 1.1.x (use metric_set<extraction_metric> instead)
  */
 class extraction_metrics : public metric_base::metric_set<extraction_metric> {
     typedef metric_base::metric_set<extraction_metric> parent_type;

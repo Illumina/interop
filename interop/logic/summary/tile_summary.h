@@ -108,9 +108,9 @@ namespace summary
                             float(0),
                             util::op::const_member_function(&model::metrics::tile_metric::clusterCount)));
             run[0][lane].reads_pf(std::accumulate(tile_data_by_lane[lane].begin(),
-                                               tile_data_by_lane[lane].end(),
+                                                  tile_data_by_lane[lane].end(),
                                                   float(0),
-                                               util::op::const_member_function(&model::metrics::tile_metric::clusterCountPf)));
+                                                  util::op::const_member_function(&model::metrics::tile_metric::clusterCountPf)));
 
             for(size_t read=1;read<run.size();++read)
             {
