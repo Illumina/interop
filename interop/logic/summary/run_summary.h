@@ -56,15 +56,55 @@ namespace summary
     {
         using namespace model::metrics;
         if(metrics.empty()) return;
+
+
         summary.initialize(metrics.run_info().reads(), metrics.run_info().flowcell().lane_count());
+
+
+        read_cycle_vector_t cycle_to_read;
+        map_read_to_cycle_number(summary.begin(), summary.end(), cycle_to_read);
         summarize_tile_metrics(metrics.get_set<tile_metric>().begin(), metrics.get_set<tile_metric>().end(), summary);
-        summarize_error_metrics(metrics.get_set<error_metric>().begin(), metrics.get_set<error_metric>().end(), summary);
+        summarize_error_metrics(metrics.get_set<error_metric>().begin(),
+                                metrics.get_set<error_metric>().end(),
+                                cycle_to_read,
+                                summary);
         INTEROP_ASSERT(metrics.run_info().channels().size()>0);
         const size_t intensity_channel = utils::expected2actual_map(metrics.run_info().channels())[0];
-        summarize_extraction_metrics(metrics.get_set<extraction_metric>().begin(), metrics.get_set<extraction_metric>().end(), intensity_channel, summary);
-        const size_t q30_index = metrics.get_set<q_metric>().index_for_q_value(30);
-        summarize_quality_metrics(metrics.get_set<q_metric>().begin(), metrics.get_set<q_metric>().end(), q30_index, summary);
+        summarize_extraction_metrics(metrics.get_set<extraction_metric>().begin(),
+                                     metrics.get_set<extraction_metric>().end(),
+                                     cycle_to_read,
+                                     intensity_channel,
+                                     summary);
+
+        const size_t q30_index = logic::metric::index_for_q_value(metrics.get_set<q_metric>(), 30);
+        summarize_quality_metrics(metrics.get_set<q_metric>().begin(),
+                                  metrics.get_set<q_metric>().end(),
+                                  cycle_to_read,
+                                  q30_index,
+                                  summary);
         summarize_tile_count(metrics, summary);
+
+        summarize_cycle_state(metrics.get_set<error_metric>().begin(),
+                              metrics.get_set<error_metric>().end(),
+                              cycle_to_read,
+                              &model::summary::cycle_state_summary::error_cycle_range,
+                              summary);
+        summarize_cycle_state(metrics.get_set<extraction_metric>().begin(),
+                              metrics.get_set<extraction_metric>().end(),
+                              cycle_to_read,
+                              &model::summary::cycle_state_summary::extracted_cycle_range,
+                              summary);
+        summarize_cycle_state(metrics.get_set<q_metric>().begin(),
+                              metrics.get_set<q_metric>().end(),
+                              cycle_to_read,
+                              &model::summary::cycle_state_summary::qscored_cycle_range,
+                              summary);
+        // Summarize called cycle state
+        summarize_cycle_state(metrics.get_set<corrected_intensity_metric>().begin(),
+                              metrics.get_set<corrected_intensity_metric>().end(),
+                              cycle_to_read,
+                              &model::summary::cycle_state_summary::called_cycle_range,
+                              summary);
     }
 
 }

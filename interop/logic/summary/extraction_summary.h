@@ -10,6 +10,7 @@
 #include "interop/model/model_exceptions.h"
 #include "interop/logic/summary/summary_statistics.h"
 #include "interop/model/metrics/extraction_metric.h"
+#include "interop/logic/summary/map_cycle_to_read.h"
 #include "interop/model/summary/run_summary.h"
 
 
@@ -21,33 +22,6 @@ namespace logic
 {
 namespace summary
 {
-    /** Create a map from cycle to read number (only if it is the first cycle of the read)
-     *
-     * @param beg iterator to start of a collection of read infos
-     * @param end iterator to end of a collection of read infos
-     * @param is_first_cycle_of_read map that takes a cycle and returns the read-number if it is the first cycle in the read
-     * @param op unary operator that takes some object and returns a read info
-     */
-    template<typename I, typename UnaryOp>
-    void map_is_first_cycle_of_read(I beg, I end, std::vector<size_t>& is_first_cycle_of_read, UnaryOp op)
-    {
-        is_first_cycle_of_read.resize(std::accumulate(beg, end, size_t(0), op::total_cycle_sum<UnaryOp>(op))+1);
-        std::fill(is_first_cycle_of_read.begin(), is_first_cycle_of_read.end(), 0);
-        for(;beg != end;++beg) is_first_cycle_of_read[op(*beg).first_cycle()] = op(*beg).number();
-    }
-    /** Create a map from cycle to read number (only if it is the first cycle of the read)
-     *
-     * @param beg iterator to start of a collection of read infos
-     * @param end iterator to end of a collection of read infos
-     * @param is_first_cycle_of_read map that takes a cycle and returns the read-number if it is the first cycle in the read
-     */
-    template<typename I>
-    void map_is_first_cycle_of_read(I beg, I end, std::vector<size_t>& is_first_cycle_of_read)
-    {
-        map_is_first_cycle_of_read(beg, end, is_first_cycle_of_read, op::default_get_read());
-    }
-
-
     /** Summarize a collection extraction metrics
      *
      * @sa model::summary::lane_summary::first_cycle_intensity
@@ -57,29 +31,31 @@ namespace summary
      *
      * @param beg iterator to start of a collection of extraction metrics
      * @param end iterator to end of a collection of extraction metrics
+     * @param cycle_to_read map cycle to the read number and cycle within read number
      * @param channel channel to use for intensity reporting
      * @param run destination run summary
      */
     template<typename I>
-    void summarize_extraction_metrics(I beg, I end, const size_t channel, model::summary::run_summary &run) throw( model::index_out_of_bounds_exception )
+    void summarize_extraction_metrics(I beg,
+                                      I end,
+                                      const read_cycle_vector_t& cycle_to_read,
+                                      const size_t channel,
+                                      model::summary::run_summary &run) throw( model::index_out_of_bounds_exception )
     {
         typedef typename model::metrics::extraction_metric::ushort_t ushort_t;
         typedef summary_by_lane_read<ushort_t> summary_by_lane_read_t;
         if(beg == end) return;
         if(run.size()==0)return;
-
         summary_by_lane_read_t temp(run, std::distance(beg, end));
-        std::vector<size_t> is_first_cycle_of_read;
-        logic::summary::map_is_first_cycle_of_read(run.begin(), run.end(), is_first_cycle_of_read);
 
         for(;beg != end;++beg)
         {
-            const size_t read = is_first_cycle_of_read[beg->cycle()];
-            if(read == 0) continue; // If read is zero, then the cycle is invalid (not the first cycle of read)
-            INTEROP_ASSERT((read-1) < temp.read_count());
+            const size_t read = cycle_to_read[beg->cycle()-1].number-1;
+            if(cycle_to_read[beg->cycle()-1].cycle_within_read > 1) continue;
+            INTEROP_ASSERT(read < temp.read_count());
             const size_t lane = beg->lane()-1;
             if(lane >= temp.lane_count()) throw model::index_out_of_bounds_exception("Lane exceeds lane count in RunInfo.xml");
-            temp(read-1, lane).push_back(beg->max_intensity(channel));
+            temp(read, lane).push_back(beg->max_intensity(channel));
         }
 
         float first_cycle_intensity = 0;

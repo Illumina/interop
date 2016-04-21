@@ -11,62 +11,13 @@
 #include "interop/util/length_of.h"
 #include "interop/model/model_exceptions.h"
 #include "interop/logic/summary/summary_statistics.h"
+#include "interop/logic/summary/map_cycle_to_read.h"
+#include "interop/logic/summary/cycle_state_summary.h"
 #include "interop/model/metrics/error_metric.h"
 #include "interop/model/summary/run_summary.h"
 
 
 namespace illumina { namespace interop { namespace logic { namespace summary {
-/** Read number and cycle in read
- */
-struct read_cycle
-{
-    /** Constructor
-     *
-     * @param r read number
-     * @param c cycle in read
-     */
-    read_cycle(const size_t r=0, const size_t c=0) : number(r), cycle(c){}
-    /** Read number */
-    size_t number;
-    /** Cycle in read */
-    size_t cycle;
-};
-
-/** Create a map from cycle to a pair: read number and cycle in read
- *
- * @param beg iterator to start of a collection of read infos
- * @param end iterator to end of a collection of read infos
- * @param cycle_to_read map that takes a cycle and returns the read-number cycle-in-read pair
- * @param op unary operator that takes some object and returns a read info
- */
-template<typename I, typename UnaryOp>
-void map_read_to_cycle_number(I beg, I end, std::vector<read_cycle>& cycle_to_read, UnaryOp op)
-{
-    cycle_to_read.resize(std::accumulate(beg, end, size_t(0), op::total_cycle_sum<UnaryOp>(op))+1);
-    std::fill(cycle_to_read.begin(), cycle_to_read.end(), 0);
-    for(;beg != end;++beg)
-    {
-        for(size_t cycle=op(*beg).first_cycle()-1, last_cycle=op(*beg).last_cycle(), cycle_in_read=1;
-            cycle < last_cycle;++cycle_in_read, ++cycle)
-        {
-            INTEROP_ASSERT(cycle < cycle_to_read.size());
-            cycle_to_read[cycle] = read_cycle(op(*beg).number(), cycle_in_read);
-        }
-        INTEROP_ASSERT((op(*beg).last_cycle()-1) < cycle_to_read.size());
-        cycle_to_read[op(*beg).last_cycle()-1] = read_cycle();// Remove last cycle, not usable
-    }
-}
-/** Create a map from cycle to a pair: read number and cycle in read
- *
- * @param beg iterator to start of a collection of read infos
- * @param end iterator to end of a collection of read infos
- * @param cycle_to_read map that takes a cycle and returns the read-number cycle-in-read pair
- */
-template<typename I>
-void map_read_to_cycle_number(I beg, I end, std::vector<read_cycle>& cycle_to_read)
-{
-    map_read_to_cycle_number(beg, end, cycle_to_read, op::default_get_read());
-}
 
 /** Cache errors for all tiles up to a give max cycle
  *
@@ -98,11 +49,11 @@ void cache_error_by_lane_read(I beg,
         INTEROP_ASSERT(beg->cycle() > 0);
         INTEROP_ASSERT((beg->cycle()-1) < cycle_to_read.size());
         const read_cycle& read = cycle_to_read[beg->cycle()-1];
-        if(read.cycle > max_cycle || read.number == 0) continue;
+        if(read.cycle_within_read > max_cycle || read.is_last_cycle_in_read) continue;
         key_t key = std::make_pair(beg->lane(), beg->tile());
         const size_t read_number = read.number-1;
         max_error_cycle[read_number] = std::max(max_error_cycle[read_number], static_cast<size_t>(beg->cycle()));
-        INTEROP_ASSERT(read_number < tmp.size());
+        INTEROP_ASSERTMSG(read_number < tmp.size(), read.number << " " << read.cycle_within_read << ", " << beg->cycle());
         if(tmp[read_number].find(key) == tmp[read.number-1].end())
             tmp[read_number][key] = std::make_pair(0.0f, 0.0f);
         tmp[read_number][key].first+=beg->errorRate();
@@ -146,45 +97,6 @@ inline void error_summary_from_cache(summary_by_lane_read<float>& summary_by_lan
     }
 }
 
-/** Cache errors for all tiles up to a give max cycle
- *
- * This function only includes errors from useable cycles (not the last cycle).
- *
- * @param beg iterator to start of a collection of error metrics
- * @param end iterator to end of a collection of error metrics
- * @param cycle_to_read map that takes a cycle and returns the read-number cycle-in-read pair
- * @param summary_by_lane_read destination cache by read then by lane a collection of errors
- */
-template<typename I>
-void cache_cycle_state_by_lane_read(I beg, I end,
-                                    const std::vector<read_cycle>& cycle_to_read,
-                                    std::vector<std::vector< model::run::cycle_range> >& summary_by_lane_read)
-{
-    typedef std::map< size_t, model::run::cycle_range >  cycle_range_tile_t;
-    typedef std::vector< cycle_range_tile_t > cycle_range_by_read_tile_t;
-    cycle_range_by_read_tile_t tmp (summary_by_lane_read.size());
-    for(;beg != end;++beg)
-    {
-        INTEROP_ASSERT(beg->cycle() > 0);
-        INTEROP_ASSERT((beg->cycle()-1) < cycle_to_read.size());
-        const read_cycle& read = cycle_to_read[beg->cycle()-1];
-        if(read.number == 0) continue;
-        INTEROP_ASSERT((read.number-1) < tmp.size());
-        const size_t id = static_cast<size_t>(model::metric_base::base_metric::id(beg->lane(), beg->tile()));
-        tmp[read.number-1][id].update(beg->cycle());
-    }
-    for(size_t read=0;read<tmp.size();++read)
-    {
-        INTEROP_ASSERT(read < summary_by_lane_read.size());
-        for(typename cycle_range_tile_t::const_iterator ebeg = tmp[read].begin(), eend = tmp[read].end();ebeg != eend;++ebeg)
-        {
-            const size_t lane = static_cast<size_t>(model::metric_base::base_metric::lane_from_id(ebeg->first)-1);
-            INTEROP_ASSERT(lane < summary_by_lane_read[read].size());
-            summary_by_lane_read[read][lane].update(ebeg->second.last_cycle());
-        }
-    }
-}
-
 /** Summarize a collection error metrics
  *
  * @sa model::summary::lane_summary::error_rate
@@ -201,22 +113,22 @@ void cache_cycle_state_by_lane_read(I beg, I end,
  *
  * @param beg iterator to start of a collection of error metrics
  * @param end iterator to end of a collection of error metrics
+ * @param cycle_to_read map cycle to the read number and cycle within read number
  * @param run destination run summary
  */
 template<typename I>
-void summarize_error_metrics(I beg, I end, model::summary::run_summary &run) throw( model::index_out_of_bounds_exception )
+void summarize_error_metrics(I beg,
+                             I end,
+                             const read_cycle_vector_t& cycle_to_read,
+                             model::summary::run_summary &run) throw( model::index_out_of_bounds_exception )
 {
     typedef summary_by_lane_read<float> summary_by_lane_read_t;
-    typedef std::vector<std::vector< model::run::cycle_range> > cycle_range_read_lane_t;
     typedef model::summary::metric_stat& (model::summary::lane_summary::*error_functor_t )();
     typedef std::pair<size_t, error_functor_t > cycle_functor_pair_t;
 
     if(beg == end) return;
     if(run.size() == 0) return;
     summary_by_lane_read_t temp(run, std::distance(beg, end));
-
-    std::vector<read_cycle> cycle_to_read;
-    map_read_to_cycle_number(run.begin(), run.end(), cycle_to_read);
 
     cycle_functor_pair_t cycle_functor_pairs[] = {
             cycle_functor_pair_t(35u, &model::summary::lane_summary::error_rate_35),
@@ -234,14 +146,10 @@ void summarize_error_metrics(I beg, I end, model::summary::run_summary &run) thr
 
     cache_error_by_lane_read(beg, end, std::numeric_limits<size_t>::max(), cycle_to_read, temp);
 
-    cycle_range_read_lane_t cycle_range(run.size(), std::vector< model::run::cycle_range>(run.lane_count()));
-    cache_cycle_state_by_lane_read(beg, end, cycle_to_read, cycle_range);
-
     float error_rate = 0;
     size_t total = 0;
     float error_rate_nonindex = 0;
     size_t total_nonindex = 0;
-    model::run::cycle_range overall_cycle_state;
     for(size_t read=0;read<run.size();++read)
     {
         INTEROP_ASSERT(read < run.size());
@@ -257,8 +165,6 @@ void summarize_error_metrics(I beg, I end, model::summary::run_summary &run) thr
                                                   temp(read,lane).end(),
                                                   float(0));
             total_by_read += temp(read,lane).size();
-            run[read][lane].cycle_state().error_cycle_range(cycle_range[read][lane] - (run[read].read().first_cycle()-1));
-            overall_cycle_state.update(cycle_range[read][lane]);
         }
         if(total_by_read>0) run[read].summary().error_rate(divide(error_rate_by_read,static_cast<float>(total_by_read)));
         error_rate += error_rate_by_read;
@@ -273,7 +179,6 @@ void summarize_error_metrics(I beg, I end, model::summary::run_summary &run) thr
     }
     run.nonindex_summary().error_rate(divide(error_rate_nonindex,static_cast<float>(total_nonindex)));
     run.total_summary().error_rate(divide(error_rate,static_cast<float>(total)));
-    run.cycle_state().error_cycle_range(overall_cycle_state);
 }
 
 }

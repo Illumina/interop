@@ -10,6 +10,7 @@
 #include <gtest/gtest.h>
 #include "metric_test.h"
 #include "interop/model/metrics/corrected_intensity_metric.h"
+#include "interop/model/summary/run_summary.h"
 
 
 namespace illumina{ namespace interop { namespace unittest {
@@ -75,6 +76,32 @@ namespace illumina{ namespace interop { namespace unittest {
             };
             return to_string(tmp);
         }
+        /** Get number lanes in data
+         *
+         * @return 8 lanes
+         */
+        static size_t lane_count(){return 8;}
+        /** Get reads describing data
+         *
+         * @return reads vector
+         */
+        static std::vector<model::run::read_info> reads()
+        {
+            std::vector<model::run::read_info> reads(1, model::run::read_info(1, 1, 27, false));
+            return reads;
+        }
+        /** Get the summary for these metrics
+         *
+         * @return run summary
+         */
+        static model::summary::run_summary summary()
+        {
+            std::vector<model::run::read_info> read_infos = reads();
+            model::summary::run_summary summary(read_infos.begin(), read_infos.end(), lane_count());
+            summary[0][0].cycle_state().called_cycle_range(model::run::cycle_range(1, 25));
+            summary.cycle_state().called_cycle_range(model::run::cycle_range(1, 25));
+            return summary;
+        }
     };
 
     /** This test compares byte values taken from an InterOp file for three records produced by RTA 2.7.x
@@ -127,6 +154,32 @@ namespace illumina{ namespace interop { namespace unittest {
                          0, 0, 0, 0, 0, -48, -101, 15, 0, 51, 108, 9, 0, -108, 19, 9, 0, 17, -122, 14, 0
             };
             return to_string(tmp);
+        }
+        /** Get number lanes in data
+         *
+         * @return 8 lanes
+         */
+        static size_t lane_count(){return 8;}
+        /** Get reads describing data
+         *
+         * @return reads vector
+         */
+        static std::vector<model::run::read_info> reads()
+        {
+            std::vector<model::run::read_info> reads(1, model::run::read_info(1, 1, 27, false));
+            return reads;
+        }
+        /** Get the summary for these metrics
+         *
+         * @return run summary
+         */
+        static model::summary::run_summary summary()
+        {
+            std::vector<model::run::read_info> read_infos = reads();
+            model::summary::run_summary summary(read_infos.begin(), read_infos.end(), lane_count());
+            summary[0][0].cycle_state().called_cycle_range(model::run::cycle_range(3, 3));
+            summary.cycle_state().called_cycle_range(model::run::cycle_range(3, 3));
+            return summary;
         }
     };
     /** Interface between fixtures and Google Test */

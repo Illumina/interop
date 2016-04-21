@@ -48,7 +48,7 @@ public:
     }
     /** Get the base called cycle range
      *
-     * @return  base called cycle range
+     * @return base called cycle range
      */
     const run::cycle_range& called_cycle_range()const
     {
