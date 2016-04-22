@@ -150,8 +150,15 @@ WRAP_TEMPLATE_BASE(index_metric)
 %ignore illumina::interop::model::summary::run_summary::end;
 %ignore illumina::interop::model::summary::run_summary::operator[];
 
+
 %{
 #include "interop/model/run/cycle_range.h"
+#include "interop/model/run/read_info.h"
+%}
+%include "interop/model/run/cycle_range.h"
+%include "interop/model/run/read_info.h"
+
+%{
 #include "interop/model/summary/cycle_state_summary.h"
 #include "interop/model/summary/metric_summary.h"
 #include "interop/model/summary/lane_summary.h"
@@ -164,7 +171,6 @@ WRAP_TEMPLATE_BASE(index_metric)
 #include "interop/model/run/image_dimensions.h"
 #include "interop/model/run/info.h"
 #include "interop/model/run/parameters.h"
-#include "interop/model/run/read_info.h"
 
 #include "interop/model/run_metrics.h"
 #include "interop/logic/metric/q_metric.h"
@@ -172,7 +178,6 @@ WRAP_TEMPLATE_BASE(index_metric)
 %}
 
 
-%include "interop/model/run/cycle_range.h"
 %include "interop/model/summary/cycle_state_summary.h"
 %include "interop/model/summary/metric_summary.h"
 %include "interop/model/summary/lane_summary.h"
@@ -184,7 +189,6 @@ WRAP_TEMPLATE_BASE(index_metric)
 %include "interop/model/run/image_dimensions.h"
 %include "interop/model/run/info.h"
 %include "interop/model/run/parameters.h"
-%include "interop/model/run/read_info.h"
 
 //
 // Setup typemaps for summary metrics

@@ -143,6 +143,7 @@ TYPED_TEST(summary_metrics_test, lane_summary)
 
             const model::summary::cycle_state_summary& actual_cycle_summary = actual_lane_summary.cycle_state();
             const model::summary::cycle_state_summary& expected_cycle_summary = expected_lane_summary.cycle_state();
+            EXPECT_CYCLE_EQ(actual_cycle_summary.called_cycle_range(), expected_cycle_summary.called_cycle_range());
             EXPECT_CYCLE_EQ(actual_cycle_summary.extracted_cycle_range(), expected_cycle_summary.extracted_cycle_range());
             EXPECT_CYCLE_EQ(actual_cycle_summary.called_cycle_range(), expected_cycle_summary.called_cycle_range());
             EXPECT_CYCLE_EQ(actual_cycle_summary.qscored_cycle_range(), expected_cycle_summary.qscored_cycle_range());

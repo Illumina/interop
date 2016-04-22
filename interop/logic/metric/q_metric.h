@@ -181,7 +181,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
      * This only for legacy platforms that use older q-metric formats, which do not include bin information
      * in the header.
      *
-     * @param set q_metric set
+     * @param metrics q_metric set
      * @param q_score_bins vector of q-score bins
      * @param instrument type
      */
@@ -189,5 +189,35 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
     {
         const size_t count = count_legacy_q_score_bins(metrics);
         populate_legacy_q_score_bins(q_score_bins, instrument, count);
+    }
+    /** Test whether the q-values are compressed
+     *
+     * @param set q_metric set
+     * @return number of q-vals
+     */
+    inline size_t count_qvals(const model::metric_base::metric_set<model::metrics::q_metric>& metrics)
+    {
+        return metrics.size() > 0 ? metrics.metrics()[0].size() : 0;
+    }
+    /** Test whether the q-values are compressed
+     *
+     * @param set q_metric set
+     * @return true if the histogram is compressed (no all zero columns)
+     */
+    inline bool is_compressed(const model::metric_base::metric_set<model::metrics::q_metric>& metrics)
+    {
+        const size_t q_val_count = count_qvals(metrics);
+        return q_val_count > 0 && q_val_count != 50;
+    }
+    /** Get the index for the given q-value
+     *
+     * @param metrics q_metric set
+     * @param qval threshold
+     * @return index of q-val above given threshold
+     */
+    inline size_t index_for_q_value(const model::metric_base::metric_set<model::metrics::q_metric>& metrics, const size_t qval)
+    {
+        if(!is_compressed(metrics)) return qval;
+        return metrics.index_for_q_value(qval);
     }
 }}}}

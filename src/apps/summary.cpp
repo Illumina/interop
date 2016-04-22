@@ -312,4 +312,7 @@ void print_summary(std::ostream& out, const run_summary& summary)
             print_array(out, values, width);
         }
     }
+    out << "Extracted: " << format(summary.cycle_state().extracted_cycle_range()) << "\n";
+    out << "Called: " << format(summary.cycle_state().called_cycle_range()) << "\n";
+    out << "Scored: " << format(summary.cycle_state().qscored_cycle_range()) << "\n";
 }

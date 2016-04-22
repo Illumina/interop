@@ -84,12 +84,12 @@ struct error_v3 : metric_test<model::metrics::error_metric, 3>
         summary[0][6].error_rate_50()=model::summary::metric_stat(00.0f, 0, 0.0f);
         summary[0][6].error_rate_75()=model::summary::metric_stat(0.0f, 0, 0.0f);
         summary[0][6].error_rate_100()=model::summary::metric_stat(0.0f, 0, 0.0f);
-        summary[0][6].cycle_state().error_cycle_range(model::run::cycle_range(2, 2));
+        summary[0][6].cycle_state().error_cycle_range(model::run::cycle_range(3, 3));
         summary[0].summary().error_rate(0.67515134811401367f);
         summary.total_summary().error_rate(0.67515134811401367f);
         summary.nonindex_summary().error_rate(0.67515134811401367f);
         summary[0][6].tile_count(1);
-        summary.cycle_state().error_cycle_range(model::run::cycle_range(2, 2));
+        summary.cycle_state().error_cycle_range(model::run::cycle_range(3, 3));
         return summary;
     }
 };

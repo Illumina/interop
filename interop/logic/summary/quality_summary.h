@@ -10,51 +10,12 @@
 #include <map>
 #include "interop/model/model_exceptions.h"
 #include "interop/logic/summary/summary_statistics.h"
+#include "interop/logic/summary/map_cycle_to_read.h"
 #include "interop/model/metrics/q_metric.h"
 #include "interop/model/summary/run_summary.h"
 
-namespace illumina
-{
-namespace interop
-{
-namespace logic
-{
-namespace summary
-{
-    /** Create a map from cycle to read number (only if it is the first cycle of the read)
-     *
-     * @param beg iterator to start of a collection of read infos
-     * @param end iterator to end of a collection of read infos
-     * @param is_first_cycle_of_read map that takes a cycle and returns the read-number
-     * @param op unary operator that takes some object and returns a read info
-     */
-    template<typename I, typename UnaryOp>
-    void map_read_to_cycle(I beg, I end, std::vector<size_t>& cycle_to_read, UnaryOp op)
-    {
-        cycle_to_read.resize(std::accumulate(beg, end, size_t(0), op::total_cycle_sum<UnaryOp>(op))+1);
-        std::fill(cycle_to_read.begin(), cycle_to_read.end(), 0);
-        for(;beg != end;++beg)
-        {
-            for(size_t cycle=op(*beg).first_cycle()-1, last_cycle=op(*beg).last_cycle(), cycle_in_read=1;cycle < last_cycle;++cycle_in_read, ++cycle)
-            {
-                INTEROP_ASSERT(cycle < cycle_to_read.size());
-                cycle_to_read[cycle] = op(*beg).number();
-            }
-            INTEROP_ASSERT((op(*beg).last_cycle()-1) < cycle_to_read.size());
-            cycle_to_read[op(*beg).last_cycle()-1] = 0;// Remove last cycle, not usable
-        }
-    }
-    /** Create a map from cycle to read number (only if it is the first cycle of the read)
-     *
-     * @param beg iterator to start of a collection of read infos
-     * @param end iterator to end of a collection of read infos
-     * @param is_first_cycle_of_read map that takes a cycle and returns the read-number
-     */
-    template<typename I>
-    void map_read_to_cycle(I beg, I end, std::vector<size_t>& cycle_to_read)
-    {
-        map_read_to_cycle(beg, end, cycle_to_read, op::default_get_read());
-    }
+namespace illumina { namespace interop { namespace logic { namespace summary {
+
     /** Contains number above Q30 and total number of calls
      */
     struct qval_total
@@ -97,11 +58,16 @@ namespace summary
      *
      * @param beg iterator to start of a collection of q metrics
      * @param end iterator to end of a collection of q metrics
+     * @param cycle_to_read map cycle to the read number and cycle within read number
      * @param qval30_index index of Q30 bin
      * @param run destination run summary
      */
     template<typename I>
-    void summarize_quality_metrics(I beg, I end, const size_t qval_index, model::summary::run_summary &run) throw( model::index_out_of_bounds_exception )
+    void summarize_quality_metrics(I beg,
+                                   I end,
+                                   const read_cycle_vector_t& cycle_to_read,
+                                   const size_t qval_index,
+                                   model::summary::run_summary &run) throw( model::index_out_of_bounds_exception )
     {
         typedef model::metrics::q_metric::uint_t uint_t;
         typedef model::summary::lane_summary lane_summary;
@@ -116,26 +82,24 @@ namespace summary
         size_vector2d_t metrics_in_read(run.size(), size_vector_t(run.lane_count()));
         tile_lookup_t tile_lookup;
 
-        std::vector<size_t> cycle_to_read;
-        map_read_to_cycle(run.begin(), run.end(), cycle_to_read);
-
         for(;beg != end;++beg)
         {
             INTEROP_ASSERT(beg->cycle() > 0);
             INTEROP_ASSERT((beg->cycle()-1) < cycle_to_read.size());
-            const size_t read_number = cycle_to_read[beg->cycle()-1];
-            if(read_number == 0) continue;
+            const size_t read_number = cycle_to_read[beg->cycle()-1].number-1;
+            if(cycle_to_read[beg->cycle()-1].is_last_cycle_in_read) continue;
             const size_t lane = beg->lane()-1;
-            INTEROP_ASSERT((read_number-1) < cache.size());
-            INTEROP_ASSERT(lane < cache[read_number-1].size());
-            INTEROP_ASSERT((read_number-1) < metrics_in_read.size());
-            INTEROP_ASSERT(lane < metrics_in_read[read_number-1].size());
+            INTEROP_ASSERT(read_number < cache.size());
+            INTEROP_ASSERT(lane < cache[read_number].size());
+            INTEROP_ASSERT(read_number < metrics_in_read.size());
+            INTEROP_ASSERT(lane < metrics_in_read[read_number].size());
             if(lane >= run.lane_count()) throw model::index_out_of_bounds_exception("Lane exceeds lane count in RunInfo.xml");
-            cache[read_number-1][lane].above_qval+=beg->total_over_qscore(static_cast<uint_t>(qval_index));
-            cache[read_number-1][lane].total += beg->sum_qscore();
+            cache[read_number][lane].above_qval+=beg->total_over_qscore(static_cast<uint_t>(qval_index));
+            cache[read_number][lane].total += beg->sum_qscore();
             tile_lookup.insert(beg->tile());
-            metrics_in_read[read_number - 1][lane] += 1;
+            metrics_in_read[read_number][lane] += 1;
         }
+
         ::uint64_t total_useable_calls = 0;
         ::uint64_t useable_calls_gt_q30 = 0;
         float projected_yield_g = 0;

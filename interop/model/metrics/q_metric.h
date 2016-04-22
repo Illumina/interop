@@ -159,10 +159,12 @@ namespace illumina {
                      */
                     q_score_bin::bin_type max_q_value()const
                     {
-                        return m_bin_count == static_cast<size_t>(MAX_Q_BINS) || m_bin_count == 0 ? static_cast<q_score_bin::bin_type>(MAX_Q_BINS) : m_qscoreBins.back().upper();
+                        return m_bin_count == static_cast<size_t>(MAX_Q_BINS) ||
+                                       m_bin_count == 0 ? static_cast<q_score_bin::bin_type>(MAX_Q_BINS) : m_qscoreBins.back().upper();
                     }
                     /** Get the index for the given q-value
                      *
+                     * @note Never call this function directly, use interop::logic::metric::index_for_q_value
                      * @param qval q-value
                      * @return index;
                      */

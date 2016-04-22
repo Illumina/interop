@@ -274,7 +274,14 @@ int copy_cycle_metrics(const std::string& input, const std::string& output, unsi
 
     for(const_iterator beg = metrics.metrics().begin(), end=metrics.metrics().end();beg != end;++beg)
     {
-        if(beg->cycle() > max_cycle) continue;
+        if(beg->tile()%2==0 && max_cycle > 1)
+        {
+            if (beg->cycle() > (max_cycle-1)) continue;
+        }
+        else
+        {
+            if (beg->cycle() > max_cycle) continue;
+        }
         subset.push_back(*beg);
     }
 
