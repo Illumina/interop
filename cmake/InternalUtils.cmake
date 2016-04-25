@@ -40,6 +40,8 @@ endmacro()
 macro(config_compiler_and_linker)
     fix_default_compiler_settings_()
 
+    include(CheckIsNaN)
+
     if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR CMAKE_COMPILER_IS_GNUCC)
         set(COMPILER_IS_GNUCC_OR_CLANG ON)
     endif()

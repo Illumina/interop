@@ -13,6 +13,7 @@
 #endif
 
 #include <fstream>
+#include "interop/util/math.h"
 #include "inc/corrected_intensity_metrics_test.h"
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop;
