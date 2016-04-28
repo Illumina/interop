@@ -11,6 +11,7 @@
 #pragma once
 
 #include <algorithm>
+#include "interop/util/type_traits.h"
 #include "interop/model/metric_base/base_metric.h"
 
 
@@ -21,6 +22,9 @@ namespace illumina {
                 /** Defines default base header for metric */
                 class base_cycle_metric_header
                 {
+                public:
+                    /** Define the base type */
+                    typedef constant_type<constants::metric_base_type, constants::BaseCycleType> base_type;
                 public:
                     /** Constructor */
                     base_cycle_metric_header() : m_max_cycle(0){}
@@ -59,6 +63,12 @@ namespace illumina {
                  */
                 class base_cycle_metric : public base_metric
                 {
+                public:
+                    enum
+                    {
+                        /** Base for records written out once for each tile/cycle */
+                                BASE_TYPE = constants::BaseCycleType
+                    };
                 public:
                     /** A cycle metric_set header
                      */

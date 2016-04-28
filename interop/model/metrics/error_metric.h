@@ -50,7 +50,7 @@ namespace illumina {
                      */
                     error_metric() :
                             metric_base::base_cycle_metric(0,0,0),
-                            m_errorRate(0),
+                            m_error_rate(0),
                             m_mismatch_cluster_count(MAX_MISMATCH, 0)
                     {
                     }
@@ -66,7 +66,7 @@ namespace illumina {
                                  const uint_t cycle,
                                  const float error) :
                             metric_base::base_cycle_metric(lane,tile,cycle),
-                            m_errorRate(error),
+                            m_error_rate(error),
                             m_mismatch_cluster_count(MAX_MISMATCH, 0)
                     {
                     }
@@ -83,12 +83,22 @@ namespace illumina {
                      */
                     /** Calculated error rate, as determined by a spiked in PhiX control sample.
                      *
+                     * @deprecated Will be removed in 1.1.x (use error_rate instead)
                      * @note Supported by all versions
                      * @return error rate
                      */
                     float errorRate()const
                     {
-                        return m_errorRate;
+                        return m_error_rate;
+                    }
+                    /** Calculated error rate, as determined by a spiked in PhiX control sample.
+                     *
+                     * @note Supported by all versions
+                     * @return error rate
+                     */
+                    float error_rate()const
+                    {
+                        return m_error_rate;
                     }
                     /** Number of clusters at given number of mismatches
                      *
@@ -137,7 +147,7 @@ namespace illumina {
                     static const char* prefix(){return "Error";}
 
                 private:
-                    float m_errorRate;
+                    float m_error_rate;
                     uint_array_t m_mismatch_cluster_count;
                     template<class MetricType, int Version>
                     friend struct io::generic_layout;

@@ -116,6 +116,21 @@
         INTEROP_ENUM(NextSeq),\
         INTEROP_ENUM(MiniSeq)
 
+/** Enumeration of instrument types
+ *
+ * @note This macro requires the macro INTEROP_ENUM to be defined before use
+ * @see illumina::interop::constants::instrument_type
+ */
+#define INTEROP_ENUM_METRIC_BASE_TYPES \
+        /** Tile base types are written out once for each tile */\
+        INTEROP_ENUM(BaseTileType),\
+        /** Cycle base types are written out once for each tile and cycle */\
+        INTEROP_ENUM(BaseCycleType),\
+        /** Read base types are written out once for each tile and read */\
+        INTEROP_ENUM(BaseReadType),\
+        INTEROP_ENUM(BaseMetricCount),\
+        INTEROP_ENUM(UnknownBaseType)
+
 /** This temp macro converts a enum/description pair into the an enum (first element of the pair) */
 #define INTEROP_ENUM_DESCRIPTION(X, Y) X
 /** This temp macro converts an enum to an enum */
@@ -138,6 +153,8 @@ namespace illumina {
             enum surface_type {INTEROP_ENUM_SURFACE_TYPES};
             /** Instrument type */
             enum instrument_type {INTEROP_ENUM_INSTRUMENT_TYPES};
+            /** Base types for each metric */
+            enum metric_base_type {INTEROP_ENUM_METRIC_BASE_TYPES};
         }
     }
 }

@@ -65,7 +65,7 @@ namespace illumina {
                             m_date_time_csharp(0),
                             m_date_time(0),
                             m_max_intensity_values(MAX_CHANNELS, 0),
-                            m_focusScores(MAX_CHANNELS, 0)
+                            m_focus_scores(MAX_CHANNELS, 0)
                     {
                     }
                     /** Constructor
@@ -88,12 +88,12 @@ namespace illumina {
                             m_date_time_csharp(util::csharp_date_time::to_csharp(dateTime)),
                             m_date_time(dateTime),
                             m_max_intensity_values(intensities_p90),
-                            m_focusScores(focusScores)
+                            m_focus_scores(focusScores)
                     {
                         INTEROP_ASSERT(intensities_p90.size() <= MAX_CHANNELS);
-                        INTEROP_ASSERT(m_focusScores.size() <= MAX_CHANNELS);
+                        INTEROP_ASSERT(m_focus_scores.size() <= MAX_CHANNELS);
                         m_max_intensity_values.resize(MAX_CHANNELS, 0);
-                        m_focusScores.resize(MAX_CHANNELS, 0);
+                        m_focus_scores.resize(MAX_CHANNELS, 0);
                     }
                     /** Constructor
                      *
@@ -117,7 +117,7 @@ namespace illumina {
                             m_date_time_csharp(util::csharp_date_time::to_csharp(dateTime)),
                             m_date_time(dateTime),
                             m_max_intensity_values(intensities_p90, intensities_p90+channel_count),
-                            m_focusScores(focusScores, focusScores+channel_count)
+                            m_focus_scores(focusScores, focusScores+channel_count)
                     {
                     }
                     /** Constructor
@@ -140,12 +140,12 @@ namespace illumina {
                             m_date_time_csharp(dateTime),
                             m_date_time(dateTime.to_unix()),
                             m_max_intensity_values(intensities_p90),
-                            m_focusScores(focusScores)
+                            m_focus_scores(focusScores)
                     {
                         INTEROP_ASSERT(intensities_p90.size() <= MAX_CHANNELS);
-                        INTEROP_ASSERT(m_focusScores.size() <= MAX_CHANNELS);
+                        INTEROP_ASSERT(m_focus_scores.size() <= MAX_CHANNELS);
                         m_max_intensity_values.resize(MAX_CHANNELS, 0);
-                        m_focusScores.resize(MAX_CHANNELS, 0);
+                        m_focus_scores.resize(MAX_CHANNELS, 0);
                     }
                     /** Constructor
                      *
@@ -169,7 +169,7 @@ namespace illumina {
                             m_date_time_csharp(dateTime),
                             m_date_time(dateTime.to_unix()),
                             m_max_intensity_values(intensities_p90, intensities_p90+channel_count),
-                            m_focusScores(focusScores, focusScores+channel_count)
+                            m_focus_scores(focusScores, focusScores+channel_count)
                     {
                     }
 
@@ -188,9 +188,18 @@ namespace illumina {
                      */
                     /** Date time extraction completed
                      *
+                     * @deprecated Will be removed in 1.1.x (use date_time instead)
                      * @return date time code
                      */
                     ulong_t dateTime()const
+                    {
+                        return m_date_time;
+                    }
+                    /** Date time extraction completed
+                     *
+                     * @return date time code
+                     */
+                    ulong_t date_time()const
                     {
                         return m_date_time;
                     }
@@ -217,14 +226,26 @@ namespace illumina {
                     }
                     /** Median Full Width Half Max (FWHM) Focus Metric
                      *
+                     * @deprecated Will be removed in 1.1.x (use focus_score instead)
                      * @param channel channel index
                      * @return focus metric as measured by FWHM
                      */
                     float focusScore(size_t channel)const
                     {
-                       INTEROP_ASSERT(channel <MAX_CHANNELS);
-                       INTEROP_ASSERT(m_focusScores.size()==MAX_CHANNELS);
-                        return m_focusScores[channel];
+                        INTEROP_ASSERT(channel <MAX_CHANNELS);
+                        INTEROP_ASSERT(m_focus_scores.size()==MAX_CHANNELS);
+                        return m_focus_scores[channel];
+                    }
+                    /** Median Full Width Half Max (FWHM) Focus Metric
+                     *
+                     * @param channel channel index
+                     * @return focus metric as measured by FWHM
+                     */
+                    float focus_score(size_t channel)const
+                    {
+                        INTEROP_ASSERT(channel <MAX_CHANNELS);
+                        INTEROP_ASSERT(m_focus_scores.size()==MAX_CHANNELS);
+                        return m_focus_scores[channel];
                     }
                     /** Get an array of maximum intensity values
                      *
@@ -239,7 +260,7 @@ namespace illumina {
                      *
                      * @return vector of focus scores
                      */
-                    const float_array_t& focusScores()const{return m_focusScores;}
+                    const float_array_t& focusScores()const{return m_focus_scores;}
                     /** Get the number of channels
                      *
                      * @return number of channels
@@ -261,7 +282,7 @@ namespace illumina {
                     util::csharp_date_time m_date_time_csharp;
                     ulong_t m_date_time;
                     ushort_array_t m_max_intensity_values;
-                    float_array_t m_focusScores;
+                    float_array_t m_focus_scores;
                     template<class MetricType, int Version>
                     friend struct io::generic_layout;
                 };

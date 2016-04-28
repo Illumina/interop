@@ -75,7 +75,7 @@ namespace illumina{ namespace interop{ namespace io {
                 template<class Stream, class Metric, class Header>
                 static std::streamsize map_stream(Stream& stream, Metric& metric, Header&, const bool)
                 {
-                    return stream_map< count_t >(stream, metric.m_qscoreHist, q_metric::MAX_Q_BINS);
+                    return stream_map< count_t >(stream, metric.m_qscore_hist, q_metric::MAX_Q_BINS);
                 }
                 /** Compute the layout size
                  *
@@ -169,21 +169,21 @@ namespace illumina{ namespace interop{ namespace io {
                 template<class Metric, class Header>
                 static std::streamsize map_stream(std::istream& stream, Metric& metric, Header& header, const bool)
                 {
-                    if(header.m_qscoreBins.size()>0)
+                    if(header.m_qscore_bins.size()>0)
                     {
                         count_t hist[q_metric::MAX_Q_BINS];
                         std::streamsize count = stream_map< count_t >(stream, hist, q_metric::MAX_Q_BINS);
-                        map_resize(metric.m_qscoreHist, header.m_qscoreBins.size());
-                        for(size_t i=0;i<header.m_qscoreBins.size();++i)
+                        map_resize(metric.m_qscore_hist, header.m_qscore_bins.size());
+                        for(size_t i=0;i<header.m_qscore_bins.size();++i)
                         {
-                            INTEROP_ASSERTMSG((header.m_qscoreBins[i].value() > 0), header.m_qscoreBins[i].value());
-                            INTEROP_ASSERTMSG((header.m_qscoreBins[i].value() - 1) < q_metric::MAX_Q_BINS, header.m_qscoreBins[i].value()  - 1 << " < " << q_metric::MAX_Q_BINS);
-                            INTEROP_ASSERTMSG(i< metric.m_qscoreHist.size(), metric.m_qscoreHist.size());
-                            metric.m_qscoreHist[i] = hist[header.m_qscoreBins[i].value()-1];
+                            INTEROP_ASSERTMSG((header.m_qscore_bins[i].value() > 0), header.m_qscore_bins[i].value());
+                            INTEROP_ASSERTMSG((header.m_qscore_bins[i].value() - 1) < q_metric::MAX_Q_BINS, header.m_qscore_bins[i].value()  - 1 << " < " << q_metric::MAX_Q_BINS);
+                            INTEROP_ASSERTMSG(i< metric.m_qscore_hist.size(), metric.m_qscore_hist.size());
+                            metric.m_qscore_hist[i] = hist[header.m_qscore_bins[i].value()-1];
                         }
                         return count;
                     }
-                    return stream_map< count_t >(stream, metric.m_qscoreHist, q_metric::MAX_Q_BINS);
+                    return stream_map< count_t >(stream, metric.m_qscore_hist, q_metric::MAX_Q_BINS);
                 }
                 /** Write metric to the output stream
                  *
@@ -195,19 +195,19 @@ namespace illumina{ namespace interop{ namespace io {
                 template<class Metric, class Header>
                 static std::streamsize map_stream(std::ostream& stream, Metric& metric, Header& header, const bool)
                 {
-                    if(header.m_qscoreBins.size()>0)
+                    if(header.m_qscore_bins.size()>0)
                     {
                         count_t hist[q_metric::MAX_Q_BINS];
                         std::fill(hist, hist+q_metric::MAX_Q_BINS, 0);
-                        for(size_t i=0;i<header.m_qscoreBins.size();i++)
+                        for(size_t i=0;i<header.m_qscore_bins.size();i++)
                         {
-                            INTEROP_ASSERT(header.m_qscoreBins[i].value() > 0);
-                            INTEROP_ASSERTMSG((header.m_qscoreBins[i].value() - 1) < q_metric::MAX_Q_BINS, header.m_qscoreBins[i].value()  - 1 << " < " << q_metric::MAX_Q_BINS);
-                            hist[header.m_qscoreBins[i].value()-1] = metric.m_qscoreHist[i];
+                            INTEROP_ASSERT(header.m_qscore_bins[i].value() > 0);
+                            INTEROP_ASSERTMSG((header.m_qscore_bins[i].value() - 1) < q_metric::MAX_Q_BINS, header.m_qscore_bins[i].value()  - 1 << " < " << q_metric::MAX_Q_BINS);
+                            hist[header.m_qscore_bins[i].value()-1] = metric.m_qscore_hist[i];
                         }
                         return stream_map< count_t >(stream, hist, q_metric::MAX_Q_BINS);
                     }
-                    return stream_map< count_t >(stream, metric.m_qscoreHist, q_metric::MAX_Q_BINS);
+                    return stream_map< count_t >(stream, metric.m_qscore_hist, q_metric::MAX_Q_BINS);
                 }
                 /** Compute the layout size
                  *
@@ -228,7 +228,7 @@ namespace illumina{ namespace interop{ namespace io {
                 template<class Stream, class Header>
                 static std::streamsize map_stream_for_header(Stream& stream, Header& header)
                 {
-                    bool_t has_bins = header.binCount()>0;
+                    bool_t has_bins = header.bin_count()>0;
                     std::streamsize count = 0;
                     count += stream_map< bool_t >(stream, has_bins);
                     if(stream.fail()) return count;
@@ -238,19 +238,19 @@ namespace illumina{ namespace interop{ namespace io {
                     const bin_count_t bin_count = static_cast< bin_count_t >(header.m_bin_count);
                     INTEROP_ASSERT(bin_count>0);
                     bin_t tmp[q_metric::MAX_Q_BINS];
-                    map_resize(header.m_qscoreBins, bin_count);
+                    map_resize(header.m_qscore_bins, bin_count);
 
-                    copy_lower_write(header.m_qscoreBins, tmp);
+                    copy_lower_write(header.m_qscore_bins, tmp);
                     count+=stream_map< bin_t >(stream, tmp, bin_count);
-                    copy_lower_read(header.m_qscoreBins, tmp);
+                    copy_lower_read(header.m_qscore_bins, tmp);
 
-                    copy_upper_write(header.m_qscoreBins, tmp);
+                    copy_upper_write(header.m_qscore_bins, tmp);
                     count+=stream_map< bin_t >(stream, tmp, bin_count);
-                    copy_upper_read(header.m_qscoreBins, tmp);
+                    copy_upper_read(header.m_qscore_bins, tmp);
 
-                    copy_value_write(header.m_qscoreBins, tmp);
+                    copy_value_write(header.m_qscore_bins, tmp);
                     count+=stream_map< bin_t >(stream, tmp, bin_count);
-                    copy_value_read(header.m_qscoreBins, tmp);
+                    copy_value_read(header.m_qscore_bins, tmp);
 
                     return count;
                 }
@@ -261,7 +261,7 @@ namespace illumina{ namespace interop{ namespace io {
                  */
                 static record_size_t computeHeaderSize(const q_metric::header_type& header)
                 {
-                    if(header.binCount()==0) return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t) + sizeof(bool_t));
+                    if(header.bin_count()==0) return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t) + sizeof(bool_t));
                     return static_cast<record_size_t>(sizeof(record_size_t) +
                             sizeof(version_t) + // version
                             sizeof(bool_t) + // has bins
@@ -393,7 +393,7 @@ namespace illumina{ namespace interop{ namespace io {
                 template<class Stream, class Metric, class Header>
                 static std::streamsize map_stream(Stream& stream, Metric& metric, Header& header, const bool)
                 {
-                    return stream_map< count_t >(stream, metric.m_qscoreHist, header.binCount());
+                    return stream_map< count_t >(stream, metric.m_qscore_hist, header.bin_count());
                 }
                 /** Compute the layout size
                  *
@@ -401,7 +401,7 @@ namespace illumina{ namespace interop{ namespace io {
                  */
                 static record_size_t computeSize(const q_metric::header_type& header)
                 {
-                    return static_cast<record_size_t>(sizeof(metric_id_t)+sizeof(count_t)*header.binCount());
+                    return static_cast<record_size_t>(sizeof(metric_id_t)+sizeof(count_t)*header.bin_count());
                 }
                 /** Map reading/writing a header to a stream
                  *
@@ -414,7 +414,7 @@ namespace illumina{ namespace interop{ namespace io {
                 template<class Stream, class Header>
                 static std::streamsize map_stream_for_header(Stream& stream, Header& header)
                 {
-                    bool_t has_bins = header.binCount()>0;
+                    bool_t has_bins = header.bin_count()>0;
                     std::streamsize count = 0;
                     count += stream_map< bool_t >(stream, has_bins);
                     if(stream.fail()) return count;
@@ -424,19 +424,19 @@ namespace illumina{ namespace interop{ namespace io {
                     const bin_count_t bin_count = static_cast< bin_count_t >(header.m_bin_count);
                     INTEROP_ASSERT(bin_count>0);
                     bin_t tmp[q_metric::MAX_Q_BINS];
-                    map_resize(header.m_qscoreBins, bin_count);
+                    map_resize(header.m_qscore_bins, bin_count);
 
-                    copy_lower_write(header.m_qscoreBins, tmp);
+                    copy_lower_write(header.m_qscore_bins, tmp);
                     count+=stream_map< bin_t >(stream, tmp, bin_count);
-                    copy_lower_read(header.m_qscoreBins, tmp);
+                    copy_lower_read(header.m_qscore_bins, tmp);
 
-                    copy_upper_write(header.m_qscoreBins, tmp);
+                    copy_upper_write(header.m_qscore_bins, tmp);
                     count+=stream_map< bin_t >(stream, tmp, bin_count);
-                    copy_upper_read(header.m_qscoreBins, tmp);
+                    copy_upper_read(header.m_qscore_bins, tmp);
 
-                    copy_value_write(header.m_qscoreBins, tmp);
+                    copy_value_write(header.m_qscore_bins, tmp);
                     count+=stream_map< bin_t >(stream, tmp, bin_count);
-                    copy_value_read(header.m_qscoreBins, tmp);
+                    copy_value_read(header.m_qscore_bins, tmp);
 
                     return count;
                 }
@@ -447,7 +447,7 @@ namespace illumina{ namespace interop{ namespace io {
                  */
                 static record_size_t computeHeaderSize(const q_metric::header_type& header)
                 {
-                    if(header.binCount()==0) return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t) + sizeof(bool_t));
+                    if(header.bin_count()==0) return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t) + sizeof(bool_t));
                     return static_cast<record_size_t>(sizeof(record_size_t) +
                            sizeof(version_t) + // version
                            sizeof(bool_t) + // has bins

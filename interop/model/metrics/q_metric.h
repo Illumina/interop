@@ -111,7 +111,7 @@ namespace illumina {
                      * @param bins q-score bin vector
                      */
                     q_score_header(const qscore_bin_vector_type& bins) :
-                            m_qscoreBins(bins), m_bin_count(bins.size()){}
+                            m_qscore_bins(bins), m_bin_count(bins.size()){}
 
                     /** @defgroup q_score_header Quality Metric Header
                      *
@@ -123,12 +123,22 @@ namespace illumina {
                      */
                     /** Get a q-score bin
                      *
+                     * @deprecated Will be removed in 1.1.x (use bin_at instead)
                      * @return q-score bin
                      */
                     const q_score_bin& binAt(const size_t n)const
                     {
                        INTEROP_ASSERT(n < binCount());
-                        return m_qscoreBins[n];
+                        return m_qscore_bins[n];
+                    }
+                    /** Get a q-score bin
+                     *
+                     * @return q-score bin
+                     */
+                    const q_score_bin& bin_at(const size_t n)const
+                    {
+                        INTEROP_ASSERT(n < binCount());
+                        return m_qscore_bins[n];
                     }
                     /** Get the q-score bins
                      *
@@ -136,7 +146,7 @@ namespace illumina {
                      */
                     const qscore_bin_vector_type& bins()const
                     {
-                        return m_qscoreBins;
+                        return m_qscore_bins;
                     }
                     /** Get the q-score bins
                      *
@@ -144,13 +154,19 @@ namespace illumina {
                      */
                     qscore_bin_vector_type& bins()
                     {
-                        return m_qscoreBins;
+                        return m_qscore_bins;
                     }
+                    /** Get the number of bins in header
+                     *
+                     * @deprecated Will be removed in 1.1.x (use bin_count instead)
+                     * @return number of bins in header
+                     */
+                    size_t binCount()const{return m_qscore_bins.size();}
                     /** Get the number of bins in header
                      *
                      * @return number of bins in header
                      */
-                    size_t binCount()const{return m_qscoreBins.size();}
+                    size_t bin_count()const{return m_qscore_bins.size();}
                     /** Get the number of bins for each metric
                      *
                      * If the number of header bins is 0, then this returns 50.
@@ -160,7 +176,7 @@ namespace illumina {
                     q_score_bin::bin_type max_q_value()const
                     {
                         return m_bin_count == static_cast<size_t>(MAX_Q_BINS) ||
-                                       m_bin_count == 0 ? static_cast<q_score_bin::bin_type>(MAX_Q_BINS) : m_qscoreBins.back().upper();
+                                       m_bin_count == 0 ? static_cast<q_score_bin::bin_type>(MAX_Q_BINS) : m_qscore_bins.back().upper();
                     }
                     /** Get the index for the given q-value
                      *
@@ -170,9 +186,9 @@ namespace illumina {
                      */
                     size_t index_for_q_value(const size_t qval)const
                     {
-                        if(m_qscoreBins.size() == 0) return qval;
+                        if(m_qscore_bins.size() == 0) return qval;
                         size_t index=0;
-                        while(index < m_qscoreBins.size() && binAt(index).value() < qval) index++;
+                        while(index < m_qscore_bins.size() && binAt(index).value() < qval) index++;
                         return index+1;
                     }
                     /** @} */
@@ -208,7 +224,7 @@ namespace illumina {
 
                 protected:
                     /** Q-score bins */
-                    qscore_bin_vector_type m_qscoreBins;
+                    qscore_bin_vector_type m_qscore_bins;
                 private:
                     size_t m_bin_count;
                     template<class MetricType, int Version>
@@ -260,8 +276,8 @@ namespace illumina {
                              const uint_t cycle,
                              const uint_vector& qscoreHist) :
                             metric_base::base_cycle_metric(lane, tile, cycle),
-                            m_qscoreHist(qscoreHist),
-                            m_qscoreHist_cumulative(qscoreHist.size(), 0)
+                            m_qscore_hist(qscoreHist),
+                            m_qscore_hist_cumulative(qscoreHist.size(), 0)
                     {
                     }
                     /** Constructor
@@ -278,8 +294,8 @@ namespace illumina {
                              const uint_pointer_t qscoreHist,
                              const uint_t count) :
                             metric_base::base_cycle_metric(lane, tile, cycle),
-                            m_qscoreHist(qscoreHist, qscoreHist+count),
-                            m_qscoreHist_cumulative(count, 0)
+                            m_qscore_hist(qscoreHist, qscoreHist+count),
+                            m_qscore_hist_cumulative(count, 0)
                     {
                     }
 
@@ -296,20 +312,39 @@ namespace illumina {
                      */
                     /** Q-score value of the histogram
                      *
+                     * @deprecated Will be removed in 1.1.x (use qscore_hist instead)
                      * @return q-score value of the histogram
                      */
                     uint_t qscoreHist(const size_t n)const
                     {
-                       INTEROP_ASSERT(n<m_qscoreHist.size());
-                        return m_qscoreHist[n];
+                       INTEROP_ASSERT(n<m_qscore_hist.size());
+                        return m_qscore_hist[n];
                     }
                     /** Q-score histogram
                      *
-                     * @return q-scorehistogram
+                     * @deprecated Will be removed in 1.1.x (use qscore_hist instead)
+                     * @return q-score histogram
                      */
                     const uint_vector& qscoreHist()const
                     {
-                        return m_qscoreHist;
+                        return m_qscore_hist;
+                    }
+                    /** Q-score value of the histogram
+                     *
+                     * @return q-score value of the histogram
+                     */
+                    uint_t qscore_hist(const size_t n)const
+                    {
+                        INTEROP_ASSERT(n<m_qscore_hist.size());
+                        return m_qscore_hist[n];
+                    }
+                    /** Q-score histogram
+                     *
+                     * @return q-score histogram
+                     */
+                    const uint_vector& qscore_hist()const
+                    {
+                        return m_qscore_hist;
                     }
                     /** Number of bins in the q-score histogram
                      *
@@ -317,7 +352,7 @@ namespace illumina {
                      */
                     size_t size()const
                     {
-                        return m_qscoreHist.size();
+                        return m_qscore_hist.size();
                     }
                     /** Sum the q-score histogram
                      *
@@ -325,7 +360,7 @@ namespace illumina {
                      */
                     uint_t sum_qscore()const
                     {
-                        return std::accumulate(m_qscoreHist.begin(), m_qscoreHist.end(), 0);
+                        return std::accumulate(m_qscore_hist.begin(), m_qscore_hist.end(), 0);
                     }
                     /** Sum the cumulative q-score histogram
                      *
@@ -333,7 +368,7 @@ namespace illumina {
                      */
                     uint_t sum_qscore_cumulative()const
                     {
-                        return std::accumulate(m_qscoreHist_cumulative.begin(), m_qscoreHist_cumulative.end(), 0);
+                        return std::accumulate(m_qscore_hist_cumulative.begin(), m_qscore_hist_cumulative.end(), 0);
                     }
                     /** Number of clusters over the given q-score
                      *
@@ -354,14 +389,14 @@ namespace illumina {
                         if(bins.size() == 0)
                         {
                            INTEROP_ASSERT(qscore > 0);
-                            totalCount = std::accumulate(m_qscoreHist.begin()+qscore-1, m_qscoreHist.end(), 0);
+                            totalCount = std::accumulate(m_qscore_hist.begin()+qscore-1, m_qscore_hist.end(), 0);
                         }
                         else
                         {
                             for(size_t i=0;i<bins.size();i++)
                             {
                                 if( bins[i].value() > qscore)
-                                    totalCount += m_qscoreHist[i];
+                                    totalCount += m_qscore_hist[i];
                             }
                         }
                         return totalCount;
@@ -380,19 +415,19 @@ namespace illumina {
                     uint_t total_over_qscore_cumulative(const uint_t qscore,
                                                         const qscore_bin_vector_type &bins = qscore_bin_vector_type())const
                     {
-                       INTEROP_ASSERT(m_qscoreHist_cumulative.size() > 0);
+                       INTEROP_ASSERT(m_qscore_hist_cumulative.size() > 0);
                         uint_t totalCount=0;
                         if(bins.size() == 0)
                         {
                            INTEROP_ASSERT(qscore > 0);
-                            totalCount = std::accumulate(m_qscoreHist_cumulative.begin() + qscore - 1, m_qscoreHist_cumulative.end(), 0);
+                            totalCount = std::accumulate(m_qscore_hist_cumulative.begin() + qscore - 1, m_qscore_hist_cumulative.end(), 0);
                         }
                         else
                         {
                             for(size_t i=0;i<bins.size();i++)
                             {
                                 if( bins[i].value() > qscore)
-                                    totalCount += m_qscoreHist_cumulative[i];
+                                    totalCount += m_qscore_hist_cumulative[i];
                             }
                         }
                         return totalCount;
@@ -433,7 +468,7 @@ namespace illumina {
                                                          const qscore_bin_vector_type &bins =
                                                          qscore_bin_vector_type())const
                     {
-                       INTEROP_ASSERT(m_qscoreHist_cumulative.size() > 0);
+                       INTEROP_ASSERT(m_qscore_hist_cumulative.size() > 0);
                         const float total = static_cast<float>(sum_qscore_cumulative());
                         if(total == 0.0f) return std::numeric_limits<float>::quiet_NaN();
                         uint_t totalCount= total_over_qscore_cumulative(qscore, bins);
@@ -454,9 +489,9 @@ namespace illumina {
                         uint_t position = total % 2 == 0 ? total / 2 + 1 : (total + 1) / 2;
                         uint_t i=0;
                         uint_t sum = 0;
-                        for(;i<m_qscoreHist.size();i++)
+                        for(;i<m_qscore_hist.size();i++)
                         {
-                            sum += m_qscoreHist[i];
+                            sum += m_qscore_hist[i];
                             if(sum >= position)break;
                         }
                         if(bins.size()==0) return i+1;
@@ -469,7 +504,7 @@ namespace illumina {
                      */
                     bool is_cumulative_empty()const
                     {
-                        return m_qscoreHist_cumulative.empty();
+                        return m_qscore_hist_cumulative.empty();
                     }
                     /** @} */
                     /** Accumulate q-score histogram from last cycle
@@ -480,11 +515,11 @@ namespace illumina {
                      */
                     void accumulate(const q_metric& metric)
                     {
-                        uint_vector::const_iterator beg = metric.m_qscoreHist_cumulative.begin(),
-                                end = metric.m_qscoreHist_cumulative.end();
-                        m_qscoreHist_cumulative = m_qscoreHist;
+                        uint_vector::const_iterator beg = metric.m_qscore_hist_cumulative.begin(),
+                                end = metric.m_qscore_hist_cumulative.end();
+                        m_qscore_hist_cumulative = m_qscore_hist;
                         if(&metric != this) {
-                            for (uint_vector::iterator cur = m_qscoreHist_cumulative.begin(); beg != end; ++beg, ++cur)
+                            for (uint_vector::iterator cur = m_qscore_hist_cumulative.begin(); beg != end; ++beg, ++cur)
                                 *cur += *beg;
                         }
                     }
@@ -497,8 +532,8 @@ namespace illumina {
                     static const char* prefix(){return "Q";}
 
                 private:
-                    uint_vector m_qscoreHist;
-                    uint_vector m_qscoreHist_cumulative;
+                    uint_vector m_qscore_hist;
+                    uint_vector m_qscore_hist_cumulative;
 
                     template<class MetricType, int Version>
                     friend struct io::generic_layout;

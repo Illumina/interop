@@ -14,6 +14,7 @@
 #include <iterator>
 #include <algorithm>
 #include "interop/model/metric_base/base_cycle_metric.h"
+#include "interop/model/metric_base/base_read_metric.h"
 #include "interop/model/model_exceptions.h"
 #include "interop/util/lexical_cast.h"
 #include "interop/util/assert.h"
@@ -385,6 +386,10 @@ namespace illumina {
                         return cycle_metrics;
                     }
                     metric_array_t metrics_for_cycle(const uint_t, base_metric_header*)const
+                    {
+                        return metric_array_t();
+                    }
+                    metric_array_t metrics_for_cycle(const uint_t, base_read_metric_header*)const
                     {
                         return metric_array_t();
                     }

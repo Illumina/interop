@@ -212,6 +212,10 @@
    public int max_cycle(){return 0;} // Hack for bad interface above
 %}
 
+%typemap(cscode) illumina::interop::model::metric_base::base_read_metric_header %{
+   public int max_cycle(){return 0;} // Hack for bad interface above
+%}
+
 %typemap(cscode) illumina::interop::model::metric_base::base_metric %{
 
     public int Tile { get { return (int)tile(); } }

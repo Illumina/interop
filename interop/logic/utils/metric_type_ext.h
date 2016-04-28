@@ -18,8 +18,6 @@ namespace illumina { namespace interop {  namespace logic { namespace utils {
             case CalledIntensity:
             case CorrectedIntensity:
             case PercentBase:
-            case PercentCalledInt:
-            case PercentCorrectedInt:
                 return true;
             default:
                 return false;

@@ -91,11 +91,11 @@ namespace illumina{ namespace interop{ namespace io {
                 static std::streamsize map_stream(Stream& stream, Metric& metric, Header&, const bool)
                 {
                     std::streamsize count = 0;
-                    count += stream_map< intensity_t >(stream, metric.m_averageCycleIntensity);
-                    count += stream_map< intensity_t >(stream, metric.m_correctedIntAll, constants::NUM_OF_BASES);
-                    count += stream_map< intensity_t >(stream, metric.m_correctedIntCalled, constants::NUM_OF_BASES);
-                    count += stream_map< count_t >(stream, metric.m_calledCounts, constants::NUM_OF_BASES_AND_NC);
-                    count += stream_map< float >(stream, metric.m_signalToNoise);
+                    count += stream_map< intensity_t >(stream, metric.m_average_cycle_intensity);
+                    count += stream_map< intensity_t >(stream, metric.m_corrected_int_all, constants::NUM_OF_BASES);
+                    count += stream_map< intensity_t >(stream, metric.m_corrected_int_called, constants::NUM_OF_BASES);
+                    count += stream_map< count_t >(stream, metric.m_called_counts, constants::NUM_OF_BASES_AND_NC);
+                    count += stream_map< float >(stream, metric.m_signal_to_noise);
                     return count;
                 }
                 /** Compute the layout size
@@ -106,11 +106,11 @@ namespace illumina{ namespace interop{ namespace io {
                 {
                     return static_cast<record_size_t>(
                             sizeof(metric_id_t)+
-                                    sizeof(intensity_t) +                                // m_averageCycleIntensity
-                                    sizeof(intensity_t)*constants::NUM_OF_BASES +        // m_correctedIntAll
+                                    sizeof(intensity_t) +                                // m_average_cycle_intensity
+                                    sizeof(intensity_t)*constants::NUM_OF_BASES +        // m_corrected_int_all
                                     sizeof(intensity_t)*constants::NUM_OF_BASES +        // m_correctedIntCalled
-                                    sizeof(count_t)*constants::NUM_OF_BASES_AND_NC + // m_calledCounts
-                                    sizeof(float)                                       // m_signalToNoise
+                                    sizeof(count_t)*constants::NUM_OF_BASES_AND_NC + // m_called_counts
+                                    sizeof(float)                                       // m_signal_to_noise
                     );
                 }
                 /** Compute header size
@@ -190,8 +190,8 @@ namespace illumina{ namespace interop{ namespace io {
                 {
                     std::streamsize count = 0;
                     // TODO: this does not need header layout, audit rest to see if that is true
-                    count += stream_map< intensity_t >(stream, metric.m_correctedIntCalled, constants::NUM_OF_BASES);
-                    count += stream_map< count_t >(stream, metric.m_calledCounts, constants::NUM_OF_BASES_AND_NC);
+                    count += stream_map< intensity_t >(stream, metric.m_corrected_int_called, constants::NUM_OF_BASES);
+                    count += stream_map< count_t >(stream, metric.m_called_counts, constants::NUM_OF_BASES_AND_NC);
                     return count;
                 }
                 /** Compute the layout size
@@ -203,7 +203,7 @@ namespace illumina{ namespace interop{ namespace io {
                     return static_cast<record_size_t>(
                             sizeof(metric_id_t)+
                             sizeof(intensity_t)*constants::NUM_OF_BASES +    // m_correctedIntCalled
-                            sizeof(count_t)*constants::NUM_OF_BASES_AND_NC   // m_calledCounts
+                            sizeof(count_t)*constants::NUM_OF_BASES_AND_NC   // m_called_counts
                     );
                 }
                 /** Compute header size

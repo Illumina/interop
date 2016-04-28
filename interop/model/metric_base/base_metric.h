@@ -14,6 +14,7 @@
 #include <stdexcept>
 #include <limits>
 #include <cmath>
+#include "interop/util/type_traits.h"
 #include "interop/io/layout/base_metric.h"
 #include "interop/constants/enums.h"
 
@@ -25,6 +26,9 @@ namespace illumina {
                 /** Defines default base header for metric */
                 class base_metric_header
                 {
+                public:
+                    /** Define the base type */
+                    typedef constant_type<constants::metric_base_type, constants::BaseTileType> base_type;
                 public:
                     /** Generate a default header
                      *
@@ -70,7 +74,9 @@ namespace illumina {
                         LANE_BIT_COUNT=6, // Supports up to 63 lanes
                         TILE_BIT_COUNT=32,
                         LANE_BIT_SHIFT=LANE_BIT_COUNT, // Supports up to 63 lanes
-                        TILE_BIT_SHIFT=LANE_BIT_COUNT+TILE_BIT_COUNT
+                        TILE_BIT_SHIFT=LANE_BIT_COUNT+TILE_BIT_COUNT,
+                        /** Base for records written out once for each tile */
+                        BASE_TYPE = constants::BaseTileType
                     };
                 public:
                     /** Constructor

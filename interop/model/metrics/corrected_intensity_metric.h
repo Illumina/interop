@@ -77,41 +77,41 @@ namespace illumina {
                      */
                     corrected_intensity_metric() :
                             metric_base::base_cycle_metric(0,0,0),
-                            m_averageCycleIntensity(0),
-                            m_correctedIntAll(constants::NUM_OF_BASES, 0),
-                            m_correctedIntCalled(constants::NUM_OF_BASES, 0),
-                            m_calledCounts(constants::NUM_OF_BASES_AND_NC, 0),
-                            m_signalToNoise(0){}
+                            m_average_cycle_intensity(0),
+                            m_corrected_int_all(constants::NUM_OF_BASES, 0),
+                            m_corrected_int_called(constants::NUM_OF_BASES, 0),
+                            m_called_counts(constants::NUM_OF_BASES_AND_NC, 0),
+                            m_signal_to_noise(0){}
                     /** Constructor
                      *
                      * @note Version 2, used for unit testing
                      * @param lane lane number
                      * @param tile tile number
                      * @param cycle cycle number
-                     * @param averageCycleIntensity average intensity for the tile on that cycle
-                     * @param signalToNoise signal to noise for given tile at given cycle
-                     * @param correctedIntCalled average corrected intensity per PF base
-                     * @param correctedIntAll average corrected intensity per base
-                     * @param calledCounts number of clusters called per base
+                     * @param average_cycle_intensity average intensity for the tile on that cycle
+                     * @param signal_to_noise signal to noise for given tile at given cycle
+                     * @param corrected_int_called average corrected intensity per PF base
+                     * @param corrected_int_all average corrected intensity per base
+                     * @param called_counts number of clusters called per base
                      */
                     corrected_intensity_metric(const uint_t lane,
                                                const uint_t tile,
                                                const uint_t cycle,
-                                               const ushort_t averageCycleIntensity,
-                                               const float signalToNoise,
-                                               const ushort_array_t& correctedIntCalled,
-                                               const ushort_array_t& correctedIntAll,
-                                               const uint_array_t& calledCounts) :
+                                               const ushort_t average_cycle_intensity,
+                                               const float signal_to_noise,
+                                               const ushort_array_t& corrected_int_called,
+                                               const ushort_array_t& corrected_int_all,
+                                               const uint_array_t& called_counts) :
                             metric_base::base_cycle_metric(lane, tile, cycle),
-                            m_averageCycleIntensity(averageCycleIntensity),
-                            m_correctedIntAll(correctedIntAll),
-                            m_correctedIntCalled(correctedIntCalled),
-                            m_calledCounts(calledCounts),
-                            m_signalToNoise(signalToNoise)
+                            m_average_cycle_intensity(average_cycle_intensity),
+                            m_corrected_int_all(corrected_int_all),
+                            m_corrected_int_called(corrected_int_called),
+                            m_called_counts(called_counts),
+                            m_signal_to_noise(signal_to_noise)
                     {
-                       INTEROP_ASSERT(correctedIntAll.size() == constants::NUM_OF_BASES);
-                       INTEROP_ASSERT(correctedIntCalled.size() == constants::NUM_OF_BASES);
-                       INTEROP_ASSERT(calledCounts.size() == constants::NUM_OF_BASES_AND_NC);
+                       INTEROP_ASSERT(m_corrected_int_all.size() == constants::NUM_OF_BASES);
+                       INTEROP_ASSERT(m_corrected_int_called.size() == constants::NUM_OF_BASES);
+                       INTEROP_ASSERT(m_called_counts.size() == constants::NUM_OF_BASES_AND_NC);
                     }
                     /** Constructor
                      *
@@ -119,30 +119,30 @@ namespace illumina {
                      * @param lane lane number
                      * @param tile tile number
                      * @param cycle cycle number
-                     * @param averageCycleIntensity average intensity for the tile on that cycle
-                     * @param signalToNoise signal to noise for given tile at given cycle
-                     * @param correctedIntCalled average corrected intensity per PF base
-                     * @param correctedIntAll average corrected intensity per base
-                     * @param calledCounts number of clusters called per base
+                     * @param average_cycle_intensity average intensity for the tile on that cycle
+                     * @param signal_to_noise signal to noise for given tile at given cycle
+                     * @param corrected_int_called average corrected intensity per PF base
+                     * @param corrected_int_all average corrected intensity per base
+                     * @param called_counts number of clusters called per base
                      */
                     corrected_intensity_metric(const uint_t lane,
                                                const uint_t tile,
                                                const uint_t cycle,
-                                               const ushort_t averageCycleIntensity,
-                                               const float signalToNoise,
-                                               const ushort_pointer_t correctedIntCalled,
-                                               const ushort_pointer_t correctedIntAll,
-                                               const uint_pointer_t calledCounts) :
+                                               const ushort_t average_cycle_intensity,
+                                               const float signal_to_noise,
+                                               const ushort_pointer_t corrected_int_called,
+                                               const ushort_pointer_t corrected_int_all,
+                                               const uint_pointer_t called_counts) :
                             metric_base::base_cycle_metric(lane, tile, cycle),
-                            m_averageCycleIntensity(averageCycleIntensity),
-                            m_correctedIntAll(correctedIntAll, correctedIntAll+constants::NUM_OF_BASES),
-                            m_correctedIntCalled(correctedIntCalled, correctedIntCalled+constants::NUM_OF_BASES),
-                            m_calledCounts(calledCounts, calledCounts+constants::NUM_OF_BASES_AND_NC),
-                            m_signalToNoise(signalToNoise)
+                            m_average_cycle_intensity(average_cycle_intensity),
+                            m_corrected_int_all(corrected_int_all, corrected_int_all+constants::NUM_OF_BASES),
+                            m_corrected_int_called(corrected_int_called, corrected_int_called+constants::NUM_OF_BASES),
+                            m_called_counts(called_counts, called_counts+constants::NUM_OF_BASES_AND_NC),
+                            m_signal_to_noise(signal_to_noise)
                     {
-                       INTEROP_ASSERT(m_correctedIntAll.size() == constants::NUM_OF_BASES);
-                       INTEROP_ASSERT(m_correctedIntCalled.size() == constants::NUM_OF_BASES);
-                       INTEROP_ASSERT(m_calledCounts.size() == constants::NUM_OF_BASES_AND_NC);
+                       INTEROP_ASSERT(m_corrected_int_all.size() == constants::NUM_OF_BASES);
+                       INTEROP_ASSERT(m_corrected_int_called.size() == constants::NUM_OF_BASES);
+                       INTEROP_ASSERT(m_called_counts.size() == constants::NUM_OF_BASES_AND_NC);
                     }
                     /** Constructor
                      *
@@ -150,23 +150,23 @@ namespace illumina {
                      * @param lane lane number
                      * @param tile tile number
                      * @param cycle cycle number
-                     * @param correctedIntCalled average corrected intensity per PF base
-                     * @param calledCounts number of clusters called per base
+                     * @param corrected_int_called average corrected intensity per PF base
+                     * @param called_counts number of clusters called per base
                      */
                     corrected_intensity_metric(const uint_t lane,
                                                const uint_t tile,
                                                const uint_t cycle,
-                                               const ushort_array_t& correctedIntCalled,
-                                               const uint_array_t& calledCounts) :
+                                               const ushort_array_t& corrected_int_called,
+                                               const uint_array_t& called_counts) :
                             metric_base::base_cycle_metric(lane, tile, cycle),
-                            m_averageCycleIntensity(std::numeric_limits<ushort_t>::max()),
-                            m_correctedIntAll(constants::NUM_OF_BASES, 0),
-                            m_correctedIntCalled(correctedIntCalled),
-                            m_calledCounts(calledCounts),
-                            m_signalToNoise(std::numeric_limits<float>::quiet_NaN())
+                            m_average_cycle_intensity(std::numeric_limits<ushort_t>::max()),
+                            m_corrected_int_all(constants::NUM_OF_BASES, 0),
+                            m_corrected_int_called(corrected_int_called),
+                            m_called_counts(called_counts),
+                            m_signal_to_noise(std::numeric_limits<float>::quiet_NaN())
                     {
-                       INTEROP_ASSERT(correctedIntCalled.size() == constants::NUM_OF_BASES);
-                       INTEROP_ASSERT(calledCounts.size() == constants::NUM_OF_BASES_AND_NC);
+                       INTEROP_ASSERT(m_corrected_int_all.size() == constants::NUM_OF_BASES);
+                       INTEROP_ASSERT(m_called_counts.size() == constants::NUM_OF_BASES_AND_NC);
                     }
                     /** Constructor
                      *
@@ -174,23 +174,23 @@ namespace illumina {
                      * @param lane lane number
                      * @param tile tile number
                      * @param cycle cycle number
-                     * @param correctedIntCalled average corrected intensity per PF base
-                     * @param calledCounts number of clusters called per base
+                     * @param corrected_int_called average corrected intensity per PF base
+                     * @param called_counts number of clusters called per base
                      */
                     corrected_intensity_metric(const uint_t lane,
                                                const uint_t tile,
                                                const uint_t cycle,
-                                               const ushort_pointer_t correctedIntCalled,
-                                               const uint_pointer_t calledCounts) :
+                                               const ushort_pointer_t corrected_int_called,
+                                               const uint_pointer_t called_counts) :
                             metric_base::base_cycle_metric(lane, tile, cycle),
-                            m_averageCycleIntensity(std::numeric_limits<ushort_t>::max()),
-                            m_correctedIntAll(constants::NUM_OF_BASES, 0),
-                            m_correctedIntCalled(correctedIntCalled, correctedIntCalled+constants::NUM_OF_BASES),
-                            m_calledCounts(calledCounts, calledCounts+constants::NUM_OF_BASES_AND_NC),
-                            m_signalToNoise(std::numeric_limits<float>::quiet_NaN())
+                            m_average_cycle_intensity(std::numeric_limits<ushort_t>::max()),
+                            m_corrected_int_all(constants::NUM_OF_BASES, 0),
+                            m_corrected_int_called(corrected_int_called, corrected_int_called+constants::NUM_OF_BASES),
+                            m_called_counts(called_counts, called_counts+constants::NUM_OF_BASES_AND_NC),
+                            m_signal_to_noise(std::numeric_limits<float>::quiet_NaN())
                     {// TODO: Add array safety to this constructor
-                       INTEROP_ASSERT(m_correctedIntCalled.size() == constants::NUM_OF_BASES);
-                       INTEROP_ASSERT(m_calledCounts.size() == constants::NUM_OF_BASES_AND_NC);
+                       INTEROP_ASSERT(m_corrected_int_called.size() == constants::NUM_OF_BASES);
+                       INTEROP_ASSERT(m_called_counts.size() == constants::NUM_OF_BASES_AND_NC);
                     }
 
                 public:
@@ -204,15 +204,26 @@ namespace illumina {
                      */
                     /** Average intensity over all clusters
                      *
+                     * @deprecated Will be removed in 1.1.x (use average_cycle_intensity instead)
                      * @note Supported version  2, not supported by 3 or later
                      * @return average intensity
                      */
                     ushort_t averageCycleIntensity()const
                     {
-                        return m_averageCycleIntensity;
+                        return m_average_cycle_intensity;
+                    }
+                    /** Average intensity over all clusters
+                     *
+                     * @note Supported version  2, not supported by 3 or later
+                     * @return average intensity
+                     */
+                    ushort_t average_cycle_intensity()const
+                    {
+                        return m_average_cycle_intensity;
                     }
                     /** Average corrected intensity for each type of base: A, C, G and T
                      *
+                     * @deprecated Will be removed in 1.1.x (use corrected_int_all instead)
                      * @note Supported version 2, not supported by 3 or later
                      * @param index index of the base (A=0, C=1, G=2, T=3)
                      * @return average corrected intensity for specified base
@@ -220,10 +231,22 @@ namespace illumina {
                     ushort_t correctedIntAll(size_t index)const
                     {
                        INTEROP_ASSERT(index < static_cast<size_t>(constants::NUM_OF_BASES));
-                        return m_correctedIntAll[index];
+                        return m_corrected_int_all[index];
+                    }
+                    /** Average corrected intensity for each type of base: A, C, G and T
+                     *
+                     * @note Supported version 2, not supported by 3 or later
+                     * @param index index of the base (A=0, C=1, G=2, T=3)
+                     * @return average corrected intensity for specified base
+                     */
+                    ushort_t corrected_int_all(constants::dna_base index)const
+                    {
+                        INTEROP_ASSERT(index < static_cast<constants::dna_base>(constants::NUM_OF_BASES));
+                        return m_corrected_int_all[index];
                     }
                     /** Average corrected intensity for only base called clusters: A, C, G and T
                      *
+                     * @deprecated Will be removed in 1.1.x (use corrected_int_called instead)
                      * @note Supported by all versions
                      * @param index index of the base (A=0, C=1, G=2, T=3)
                      * @return average corrected intensity over only base called clusters
@@ -231,24 +254,69 @@ namespace illumina {
                     ushort_t correctedIntCalled(size_t index)const
                     {
                        INTEROP_ASSERT(index < static_cast<size_t>(constants::NUM_OF_BASES));
-                        return m_correctedIntCalled[index];
+                        return m_corrected_int_called[index];
                     }
+                    /** Average corrected intensity for only base called clusters: A, C, G and T
+                     *
+                     * @note Supported by all versions
+                     * @param index index of the base (A=0, C=1, G=2, T=3)
+                     * @return average corrected intensity over only base called clusters
+                     */
+                    ushort_t corrected_int_called(constants::dna_base index)const
+                    {
+                        INTEROP_ASSERT(index < static_cast<constants::dna_base>(constants::NUM_OF_BASES));
+                        return m_corrected_int_called[index];
+                    }
+                    /** Average corrected intensity for only base called clusters: A, C, G and T
+                     *
+                     * @deprecated Will be removed in 1.1.x (use corrected_int_called instead)
+                     * @return vector of corrected called intensities
+                     */
+                    const ushort_array_t& correctedIntCalled()const{return m_corrected_int_called;}
+                    /** Average corrected intensity for each type of base: A, C, G and T
+                     *
+                     * @deprecated Will be removed in 1.1.x (use corrected_int_all instead)
+                     * @note Supported version 2, not supported by 3 or later
+                     * @return vector of corrected called intensities
+                     */
+                    const ushort_array_t& correctedIntAll()const{return m_corrected_int_all;}
+                    /** Number of clusters called per called base (including No Calls)
+                     *
+                     * @deprecated Will be removed in 1.1.x (use called_counts instead)
+                     * @return vector of called counts
+                     */
+                    const uint_array_t& calledCounts()const{return m_called_counts;}
+                    /** Number of clusters called per called base (including No Calls)
+                     *
+                     * @return vector of called counts
+                     */
+                    const uint_array_t& called_counts()const{return m_called_counts;}
                     /** Average corrected intensity for only base called clusters: A, C, G and T
                      *
                      * @return vector of corrected called intensities
                      */
-                    const ushort_array_t& correctedIntCalled()const{return m_correctedIntCalled;}
+                    const ushort_array_t& corrected_int_called()const{return m_corrected_int_called;}
                     /** Average corrected intensity for each type of base: A, C, G and T
                      *
                      * @note Supported version 2, not supported by 3 or later
                      * @return vector of corrected called intensities
                      */
-                    const ushort_array_t& correctedIntAll()const{return m_correctedIntAll;}
+                    const ushort_array_t& corrected_int_all()const{return m_corrected_int_all;}
                     /** Number of clusters called per called base (including No Calls)
                      *
-                     * @return vector of called counts
+                     * This member accumulates cluster counts over all four bases and no calls (NC). This is used to
+                     * calculate the percentage of clusters for which the selected base has been called.
+                     *
+                     * @deprecated Will be removed in 1.1.x (use called_counts instead)
+                     * @note Supported by all versions
+                     * @param index index of the base (NC=-1, A=0, C=1, G=2, T=3)
+                     * @return number of clusters called per base
                      */
-                    const uint_array_t& calledCounts()const{return m_calledCounts;}
+                    uint_t calledCounts(difference_type index)const
+                    {
+                       INTEROP_ASSERT((index+1) < static_cast<difference_type>(constants::NUM_OF_BASES_AND_NC));
+                        return m_called_counts[static_cast<uint_t>(index+1)];
+                    }
                     /** Number of clusters called per called base (including No Calls)
                      *
                      * This member accumulates cluster counts over all four bases and no calls (NC). This is used to
@@ -258,19 +326,40 @@ namespace illumina {
                      * @param index index of the base (NC=-1, A=0, C=1, G=2, T=3)
                      * @return number of clusters called per base
                      */
-                    uint_t calledCounts(difference_type index)const
+                    uint_t called_counts(constants::dna_base index)const
                     {
-                       INTEROP_ASSERT((index+1) < static_cast<difference_type>(constants::NUM_OF_BASES_AND_NC));
-                        return m_calledCounts[static_cast<uint_t>(index+1)];
+                        INTEROP_ASSERT((index+1) < static_cast<constants::dna_base>(constants::NUM_OF_BASES_AND_NC));
+                        return m_called_counts[static_cast<uint_t>(index+1)];
+                    }
+                    /** Number of clusters per no call
+                     *
+                     * @deprecated Will be removed in 1.1.x (use no_calls instead)
+                     * @note Supported by all versions
+                     * @return number of clusters not called
+                     */
+                    uint_t noCalls()const
+                    {
+                        return m_called_counts[0];
                     }
                     /** Number of clusters per no call
                      *
                      * @note Supported by all versions
                      * @return number of clusters not called
                      */
-                    uint_t noCalls()const
+                    uint_t no_calls()const
                     {
-                        return m_calledCounts[0];
+                        return m_called_counts[0];
+                    }
+                    /** The signal to noise ratio is calculated as mean called intensity divided by standard deviation
+                     * of non called intensities.
+                     *
+                     * @deprecated Will be removed in 1.1.x (use signal_to_noise instead)
+                     * @note Only supported by version 2, not supported by version 3 or later
+                     * @return signal to noise calculated from mean called intensity
+                     */
+                    float signalToNoise()const
+                    {
+                        return m_signal_to_noise;
                     }
                     /** The signal to noise ratio is calculated as mean called intensity divided by standard deviation
                      * of non called intensities.
@@ -278,39 +367,70 @@ namespace illumina {
                      * @note Only supported by version 2, not supported by version 3 or later
                      * @return signal to noise calculated from mean called intensity
                      */
-                    float signalToNoise()const
+                    float signal_to_noise()const
                     {
-                        return m_signalToNoise;
+                        return m_signal_to_noise;
+                    }
+                    /** Get the total number of clusters called
+                     *
+                     * @deprecated Will be removed in 1.1.x (use total_calls instead)
+                     * @note Supported by all versions
+                     * @return total number of clusters called
+                     */
+                    uint_t totalCalls()const
+                    {
+                        return std::accumulate(m_called_counts.begin(), m_called_counts.end(), 0);
+                    }
+                    /** Get the total summed intensity for all clusters
+                     *
+                     * @deprecated Will be removed in 1.1.x (use total_intensity instead)
+                     * @note Supported version 2, not supported by 3 or later
+                     * @return total summed intensity
+                     */
+                    uint_t totalIntensity()const
+                    {
+                        return std::accumulate(m_corrected_int_all.begin(), m_corrected_int_all.end(), 0);
+                    }
+                    /** Get the total summed intensity for only called clusters
+                     *
+                     * @deprecated Will be removed in 1.1.x (use total_called_intensity instead)
+                     * @note Supported by all versions
+                     * @return total summed intensity
+                     */
+                    uint_t totalCalledIntensity()const
+                    {
+                        return std::accumulate(m_corrected_int_called.begin(), m_corrected_int_called.end(), 0);
                     }
                     /** Get the total number of clusters called
                      *
                      * @note Supported by all versions
                      * @return total number of clusters called
                      */
-                    uint_t totalCalls()const
+                    uint_t total_calls()const
                     {
-                        return std::accumulate(m_calledCounts.begin(), m_calledCounts.end(), 0);
+                        return std::accumulate(m_called_counts.begin(), m_called_counts.end(), 0);
                     }
                     /** Get the total summed intensity for all clusters
                      *
                      * @note Supported version 2, not supported by 3 or later
                      * @return total summed intensity
                      */
-                    uint_t totalIntensity()const
+                    uint_t total_intensity()const
                     {
-                        return std::accumulate(m_correctedIntAll.begin(), m_correctedIntAll.end(), 0);
+                        return std::accumulate(m_corrected_int_all.begin(), m_corrected_int_all.end(), 0);
                     }
                     /** Get the total summed intensity for only called clusters
                      *
                      * @note Supported by all versions
                      * @return total summed intensity
                      */
-                    uint_t totalCalledIntensity()const
+                    uint_t total_called_intensity()const
                     {
-                        return std::accumulate(m_correctedIntCalled.begin(), m_correctedIntCalled.end(), 0);
+                        return std::accumulate(m_corrected_int_called.begin(), m_corrected_int_called.end(), 0);
                     }
                     /** Get the percentage per base
                      *
+                     * @deprecated Will be removed in 1.1.x (use percent_base instead)
                      * @note Supported by all versions
                      * @param index index of the base (NC=-1, A=0, C=1, G=2, T=3)
                      * @return percentage for given base
@@ -321,8 +441,21 @@ namespace illumina {
                         if(total == 0) return std::numeric_limits<float>::quiet_NaN();
                         return calledCounts(index) / static_cast<float>(total) * 100;
                     }
+                    /** Get the percentage per base
+                     *
+                     * @note Supported by all versions
+                     * @param index index of the base (NC=-1, A=0, C=1, G=2, T=3)
+                     * @return percentage for given base
+                     */
+                    float percent_base(constants::dna_base index)const
+                    {
+                        uint_t total = totalCalls();
+                        if(total == 0) return std::numeric_limits<float>::quiet_NaN();
+                        return calledCounts(index) / static_cast<float>(total) * 100;
+                    }
                     /** Get the percentage of intensity over all clusters
                      *
+                     * @deprecated Will be removed in 1.1.x
                      * @note Supported version 2, not supported by 3 or later
                      * @param index index of the base (A=0, C=1, G=2, T=3)
                      * @return percentage of intensity for each base
@@ -335,6 +468,7 @@ namespace illumina {
                     }
                     /** Get the percentage of intensity over only called clusters
                      *
+                     * @deprecated Will be removed in 1.1.x
                      * @note Supported by all versions
                      * @param index index of the base (A=0, C=1, G=2, T=3)
                      * @return percentage of intensity for each base
@@ -355,11 +489,11 @@ namespace illumina {
                     static const char* prefix(){return "CorrectedInt";}
 
                 private:
-                    ushort_t m_averageCycleIntensity; // Version 1 & 2
-                    ushort_array_t m_correctedIntAll; // Version 1 & 2
-                    ushort_array_t m_correctedIntCalled;// All
-                    uint_array_t m_calledCounts; // All
-                    float m_signalToNoise; // Version 2
+                    ushort_t m_average_cycle_intensity; // Version 1 & 2
+                    ushort_array_t m_corrected_int_all; // Version 1 & 2
+                    ushort_array_t m_corrected_int_called;// All
+                    uint_array_t m_called_counts; // All
+                    float m_signal_to_noise; // Version 2
 
                     template<class MetricType, int Version>
                     friend struct io::generic_layout;

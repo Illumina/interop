@@ -85,7 +85,7 @@ namespace illumina{ namespace interop{ namespace io {
                 static std::streamsize map_stream(Stream& stream, Metric& metric, Header&, const bool)
                 {
                     std::streamsize count = 0;
-                    count += stream_map< focus_t >(stream, metric.m_focusScores, extraction_metric::MAX_CHANNELS);
+                    count += stream_map< focus_t >(stream, metric.m_focus_scores, extraction_metric::MAX_CHANNELS);
                     count += stream_map< intensity_t >(stream, metric.m_max_intensity_values, extraction_metric::MAX_CHANNELS);
                     count += stream_map< datetime_t >(stream, metric.m_date_time_csharp.value);
                     convert_datetime(stream, metric);
@@ -99,7 +99,7 @@ namespace illumina{ namespace interop{ namespace io {
                 {
                     return static_cast<record_size_t>(
                             sizeof(metric_id_t)+
-                            sizeof(focus_t)*extraction_metric::MAX_CHANNELS +     // m_focusScores
+                            sizeof(focus_t)*extraction_metric::MAX_CHANNELS +     // m_focus_scores
                             sizeof(intensity_t)*extraction_metric::MAX_CHANNELS+ // m_max_intensity_values
                             sizeof(datetime_t)                                  // m_dateTime
                     );

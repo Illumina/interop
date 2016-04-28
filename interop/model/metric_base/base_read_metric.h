@@ -11,17 +11,57 @@
 #pragma once
 
 #include <algorithm>
+#include "interop/util/type_traits.h"
 #include "interop/model/metric_base/base_metric.h"
+
 namespace illumina {
     namespace interop {
         namespace model {
             namespace metric_base {
+                class base_read_metric;
+                /** Defines default base read header for metric */
+                class base_read_metric_header
+                {
+                public:
+                    /** Define the base type */
+                    typedef constant_type<constants::metric_base_type, constants::BaseReadType> base_type;
+
+                public:
+                    /** Constructor */
+                    base_read_metric_header(){}
+                public:
+                    /** Generate a default header
+                     *
+                     * @return default header
+                     */
+                    static base_read_metric_header default_header()
+                    {
+                        return base_read_metric_header();
+                    }
+                protected:
+                    /** Update max cycle
+                     *
+                     * This does nothing, and is here for compatibility.
+                     *
+                     * @todo remove this method
+                     */
+                    void update_max_cycle(const base_read_metric&){}
+                };
                 /** Base class for InterOp classes that contain per read tile specific metrics
                  *
                  * These classes define both a lane, tile and read identifier.
                  */
                 class base_read_metric : public base_metric
                 {
+                public:
+                    enum
+                    {
+                        /** Base for records written out once for each tile/read */
+                        BASE_TYPE = constants::BaseReadType
+                    };
+                    /** A read metric_set header
+                     */
+                    typedef base_read_metric_header header_type;
                 public:
                     /** Constructor
                      *
