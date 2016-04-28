@@ -5,7 +5,8 @@
 
 Commit  | Description
 ------- | -----------
-??????? | Enhance robustness to missing isnan functions
+??????? | Add enum reflection-like interface
+49643cd | Enhance robustness to missing isnan functions
          
 ## v1.0.6
 

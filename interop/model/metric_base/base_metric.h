@@ -153,7 +153,7 @@ namespace illumina {
                      */
                     uint_t section(const illumina::interop::constants::tile_naming_method method)const
                     {
-                        if(method == constants::five_digit)
+                        if(method == constants::FiveDigit)
                             return (m_tile / 100) % 10;
                         return std::numeric_limits<uint_t>::min();
                     }
@@ -165,7 +165,7 @@ namespace illumina {
                      */
                     uint_t surface(const illumina::interop::constants::tile_naming_method method)const
                     {
-                        if(method == constants::five_digit)
+                        if(method == constants::FiveDigit)
                             return (m_tile / 10000);
                         return m_tile / 1000;
                     }
@@ -177,9 +177,9 @@ namespace illumina {
                      */
                     uint_t swath(const illumina::interop::constants::tile_naming_method method)const
                     {
-                        if(method == constants::five_digit)
+                        if(method == constants::FiveDigit)
                             return (m_tile / 1000) % 10;
-                        if(method == constants::four_digit)
+                        if(method == constants::FourDigit)
                             return (m_tile / 100) % 10;
                         return 0;
                     }
@@ -213,7 +213,7 @@ namespace illumina {
                                                   const uint_t swath_count,
                                                   const bool all_surfaces)const
                     {
-                        if(!(method == constants::five_digit||method == constants::four_digit)) return 0;
+                        if(!(method == constants::FiveDigit||method == constants::FourDigit)) return 0;
                         uint_t col = swath(method);
                         if(all_surfaces && surface(method)==2) col += swath_count;
                         return col;
@@ -232,13 +232,13 @@ namespace illumina {
                         uint_t section;
                         switch(method)
                         {
-                            case constants::five_digit:
+                            case constants::FiveDigit:
                                 section = ((m_tile % 1000) - (m_tile % 100)) / 100;
                                 if(section == 4) section = 6;
                                 else if(section == 6) section = 4;
                                 section = (section-1) * section_per_lane;
                                 return (section * tile_count) + (m_tile % 100);
-                            case constants::four_digit:
+                            case constants::FourDigit:
                                 return m_tile % 100;
                             default:
                                 return m_tile;

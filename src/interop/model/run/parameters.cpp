@@ -21,6 +21,7 @@
 #include "interop/util/lexical_cast.h"
 #include "interop/util/xml_parser.h"
 #include "interop/io/metric_stream.h"
+#include "interop/logic/utils/enums.h"
 
 
 
@@ -75,27 +76,24 @@ void parameters::parse(char *data) throw(   xml::xml_file_not_found_exception,
 
 void parameters::set_instrument_id(std::string& application_name, std::string& multi_surface)
 {
+    typedef constants::enumeration<constants::instrument_type> instrument_enum_t;
+    typedef instrument_enum_t::name_type_pair_vector_t name_type_pair_vector_t;
+
     std::transform(application_name.begin(), application_name.end(), application_name.begin(), ::tolower);
     std::transform(multi_surface.begin(), multi_surface.end(), multi_surface.begin(), ::tolower);
-    if(application_name.find("hiseq") != std::string::npos)
+
+    name_type_pair_vector_t instruments = instrument_enum_t::pairs();
+    for(name_type_pair_vector_t::iterator b = instruments.begin(), e=instruments.end();b != e;++b)
+        std::transform(b->first.begin(), b->first.end(), b->first.begin(), ::tolower);
+
+    m_instrument_type = instrument_enum_t::unknown();
+    for(name_type_pair_vector_t::const_iterator b = instruments.begin(), e=instruments.end();b != e;++b)
     {
-        m_instrument_type = constants::HiSeq;
-    }
-    else if(application_name.find("miseq") != std::string::npos)
-    {
-        m_instrument_type = constants::MiSeq;
-    }
-    else if(application_name.find("nextseq") != std::string::npos)
-    {
-        m_instrument_type = constants::NextSeq;
-    }
-    else if(application_name.find("miniseq") != std::string::npos)
-    {
-        m_instrument_type = constants::MiniSeq;
-    }
-    else
-    {
-        m_instrument_type = constants::UnknownInstrument;
+        if(application_name.find(b->first) != std::string::npos)
+        {
+            m_instrument_type = b->second;
+            break;
+        }
     }
     if(multi_surface != "" && m_instrument_type == constants::HiSeq)
     {

@@ -50,7 +50,7 @@ public:
                     const size_t sections_per_lane=1,
                     const size_t lanes_per_section=1,
                     const str_vector_t& tiles=str_vector_t(),
-                    const tile_naming_method_t naming_method=constants::unknown,
+                    const tile_naming_method_t naming_method=constants::UnknownTileNamingMethod,
                     const std::string& barcode="") :
             m_naming_method(naming_method),
             m_lane_count(lane_count),

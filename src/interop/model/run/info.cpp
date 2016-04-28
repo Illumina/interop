@@ -18,6 +18,7 @@
 #include "interop/util/lexical_cast.h"
 #include "interop/util/xml_parser.h"
 #include "interop/io/metric_stream.h"
+#include "interop/logic/utils/enums.h"
 
 
 
@@ -90,13 +91,14 @@ void info::parse(char *data)  throw(    xml::xml_file_not_found_exception,
             xml_node_ptr p_tile_set = p_node->first_node("TileSet");
             if(p_tile_set == 0)
             {
-                m_flowcell.m_naming_method = constants::absolute;
+                m_flowcell.m_naming_method = constants::Absolute;
             }
             else
             {
                 std::string naming_convention;
                 set_data(p_tile_set->first_attribute("TileNamingConvention"), naming_convention);
-                m_flowcell.m_naming_method = constants::tile_naming_from_string(naming_convention);
+                typedef constants::enumeration<constants::tile_naming_method> tile_naming_method_t;
+                m_flowcell.m_naming_method = tile_naming_method_t::parse(naming_convention);
                 set_data(p_tile_set->first_node("Tiles"), "Tiles", m_flowcell.m_tiles);
             }
         }

@@ -96,7 +96,7 @@ TEST(RunInfo, ParseXML_MiSeq)
             run::read_info(2,         252,      263,          true),
             run::read_info(3,         264,      514,          false)
     };
-    const constants::tile_naming_method TileNamingConvention= constants::absolute;
+    const constants::tile_naming_method TileNamingConvention= constants::Absolute;
     const size_t LaneCount = 1;
     const size_t SurfaceCount = 2;
     const size_t SwathCount = 1;
@@ -178,7 +178,7 @@ TEST(RunInfo, ParseXML_HiSeq)
             /*Number,    IsIndexedRead, CycleStart, CycleEnd*/
             run::read_info(1,          1,       30,          false)
     };
-    const constants::tile_naming_method TileNamingConvention= constants::four_digit;
+    const constants::tile_naming_method TileNamingConvention= constants::FourDigit;
     const size_t LaneCount = 8;
     const size_t SurfaceCount = 2;
     const size_t SwathCount = 2;
@@ -239,7 +239,7 @@ TEST(RunInfo, ParseXML_NextSeq)
             /*Number,    IsIndexedRead, CycleStart, CycleEnd*/
             run::read_info(1,          1,       75,          false)
     };
-    const constants::tile_naming_method TileNamingConvention= constants::absolute;
+    const constants::tile_naming_method TileNamingConvention= constants::Absolute;
     const size_t LaneCount = 4;
     const size_t SurfaceCount = 2;
     const size_t SwathCount = 3;
