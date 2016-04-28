@@ -81,9 +81,21 @@ set(HEADERS
         ../../interop/logic/summary/map_cycle_to_read.h
         ../../interop/logic/summary/cycle_state_summary.h
         ../../interop/util/math.h
+        ../../interop/model/plot/filter_options.h
+        ../../interop/logic/utils/enums.h
+        ../../interop/logic/utils/metric_type_ext.h
+        ../../interop/logic/plot/plot_by_cycle.h
+        ../../interop/logic/metric/metric_value.h
+        ../../interop/logic/plot/plot_point.h
+        ../../interop/model/plot/data_point.h
+        ../../interop/model/plot/series.h
+        ../../interop/model/plot/data_point_collection.h
+        ../../interop/model/plot/candle_stick_point.h
+        ../../interop/model/plot/plot_data.h
+        ../../interop/logic/plot/plot_data.h
+        ../../interop/model/plot/axes.h)
 
-        )
-
+set(INTEROP_HEADERS ${HEADERS} PARENT_SCOPE)
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR CMAKE_COMPILER_IS_GNUCC)
     foreach(SRC ${SRCS})
         set_source_files_properties(${SRC} PROPERTIES COMPILE_FLAGS "${CXX_PEDANTIC_FLAG}" )

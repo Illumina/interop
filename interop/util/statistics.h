@@ -146,6 +146,93 @@ namespace op
     };
 }
 
+/** Collect outliers below bound for a sorted collection
+ *
+ * @param beg iterator to start of a sorted collection
+ * @param end iterator to end of a sorted collection
+ * @param bound bounding value for outliers
+ * @param out output iterator
+ */
+template<typename I, typename O, typename F>
+void outliers_lower(I beg, I end, const F bound, O out)
+{
+    for(;beg != end;++beg)
+    {
+        if (*beg < bound)
+        {
+            *out = *beg;
+            ++out;
+        }
+        else break;
+    }
+}
+/** Collect outliers above bound for a sorted collection
+ *
+ * @param beg iterator to start of a sorted collection
+ * @param end iterator to end of a sorted collection
+ * @param bound bounding value for outliers
+ * @param out output iterator
+ */
+template<typename I, typename O, typename F>
+void outliers_upper(I beg, I end, const F bound, O out)
+{
+    if(end==beg) return;
+    for(--end;beg != end;--end)
+    {
+        if (*end > bound)
+        {
+            *out = *end;
+            ++out;
+        }
+        else return;
+    }
+    if(beg == end) return;
+    *out = *end;
+    ++out;
+
+}
+/** Calculate the lower spread for outlier detection
+ *
+ * Really, just some arbitrary criteria derived by empirical observation in the 70s.
+ *
+ * @param beg iterator to start of collection
+ * @param end iterator to end of collection
+ * @param p25 25th percentile
+ * @param p75 75th percentile
+ * @return lower spread
+ */
+template<typename I, typename T>
+T lower_spread(I beg, I end, const T p25, const T p75)
+{
+    INTEROP_ASSERT(beg != end);
+    const float tukey_constant = 1.5f; // Really just some arbitrary criteria derived by empirical observation in the 70s.
+    const float iqr = p75-p25;
+    const float lower_spread = p25 - tukey_constant * iqr;
+    I lower = std::upper_bound(beg, end, lower_spread);
+    if(lower == end) return *(end-1);
+    return *lower;
+}
+/** Calculate the upper spread for outlier detection
+ *
+ * Really, just some arbitrary criteria derived by empirical observation in the 70s.
+ *
+ * @param beg iterator to start of collection
+ * @param end iterator to end of collection
+ * @param p25 25th percentile
+ * @param p75 75th percentile
+ * @return upper spread
+ */
+template<typename I, typename T>
+T upper_spread(I beg, I end, const T p25, const T p75)
+{
+    INTEROP_ASSERT(beg != end);
+    const float tukey_constant = 1.5f; // Really just some arbitrary criteria derived by empirical observation in the 70s.
+    const float iqr = p75-p25;
+    const float upper_spread = p75 + tukey_constant * iqr;
+    I upper = std::lower_bound(beg, end, upper_spread);
+    if(upper == end) return *(end-1);
+    return *upper;
+}
 /** Calculate the given percentile
  *
  * The percentile must be an integer in percent. For example the 99th
@@ -163,7 +250,7 @@ I percentile(I beg, I end, const size_t percentile)
 {
     INTEROP_ASSERT(percentile > 0 && percentile <= 100);
     const size_t n = static_cast<size_t>(std::distance(beg, end));
-    const size_t nth_index = (size_t) std::ceil(percentile * n / 100.0) - 1;
+    const size_t nth_index = static_cast<size_t>(std::ceil(percentile * n / 100.0) - 1);
     I nth_element_iterator = beg + nth_index;
     std::nth_element(beg, nth_element_iterator, end);
     return nth_element_iterator;
@@ -186,10 +273,23 @@ I percentile(I beg, I end, const size_t percentile, Compare comp)
 {
     INTEROP_ASSERT(percentile > 0 && percentile <= 100);
     const size_t n = static_cast<size_t>(std::distance(beg, end));
-    const size_t nth_index = (size_t) std::ceil(percentile * n / 100.0) - 1;
+    const size_t nth_index = static_cast<size_t>(std::ceil(percentile * n / 100.0) - 1);
     I nth_element_iterator = beg + nth_index;
     std::nth_element(beg, nth_element_iterator, end, comp);
     return nth_element_iterator;
+}
+/**
+ *
+ */
+template<typename F, typename I>
+F percentile_sorted(I beg, I end, const size_t percentile)
+{
+    INTEROP_ASSERT(beg != end);
+    INTEROP_ASSERT(percentile > 0 && percentile <= 100);
+    const size_t n = static_cast<size_t>(std::distance(beg, end));
+    const size_t nth_index = static_cast<size_t>(std::ceil(percentile * n / 100.0) - 1);
+    if(nth_index==n) return *(end-1);
+    return *(beg+nth_index);
 }
 /** Sort NaNs to the end of the collection return iterator to first NaN value
  *

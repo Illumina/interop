@@ -42,11 +42,9 @@
     namespace metric_base = illumina::interop::model::metric_base;
 
     %apply size_t { std::map< std::size_t, metric_t >::size_type };
-    %apply size_t { metric_base::metric_set<metric_t>::size_type };
     %apply uint64_t { metric_base::metric_set<metric_t>::id_t };
     %apply uint64_t { io::layout::base_metric::id_t };
-    %ignore illumina::interop::model::metric_base::metric_set<illumina::interop::model::metrics::metric_t>::begin;
-    %ignore illumina::interop::model::metric_base::metric_set<illumina::interop::model::metrics::metric_t>::end;
+    WRAP_VECTOR(illumina::interop::model::metric_base::metric_set<metric_t>);
 
 %enddef
 
@@ -141,14 +139,10 @@ WRAP_TEMPLATE_BASE(index_metric)
 %include "interop/model/metric_sets/tile_metric_set.h"
 %include "interop/model/metric_sets/index_metric_set.h"
 
-%ignore illumina::interop::model::summary::read_summary::begin;
-%ignore illumina::interop::model::summary::read_summary::end;
-%ignore illumina::interop::model::summary::read_summary::operator[];
+WRAP_VECTOR(illumina::interop::model::summary::read_summary);
 %ignore illumina::interop::model::summary::read_summary::read()const;
 
-%ignore illumina::interop::model::summary::run_summary::begin;
-%ignore illumina::interop::model::summary::run_summary::end;
-%ignore illumina::interop::model::summary::run_summary::operator[];
+WRAP_VECTOR(illumina::interop::model::summary::run_summary);
 
 
 %{
@@ -202,4 +196,52 @@ WRAP_TEMPLATE_BASE(index_metric)
 %include "interop/model/run_metrics.h"
 %include "interop/logic/summary/run_summary.h"
 %include "interop/logic/metric/q_metric.h"
+
+// Plotting
+
+%{
+#include "interop/model/plot/axes.h"
+#include "interop/model/plot/candle_stick_point.h"
+#include "interop/model/plot/data_point.h"
+#include "interop/model/plot/data_point_collection.h"
+#include "interop/model/plot/filter_options.h"
+#include "interop/model/plot/plot_data.h"
+#include "interop/model/plot/series.h"
+%}
+%include "interop/model/plot/axes.h"
+%include "interop/model/plot/filter_options.h"
+
+
+%include "interop/model/plot/data_point.h"
+
+%apply float { illumina::interop::model::plot::data_point<float, float>::x_type };
+%apply float { illumina::interop::model::plot::data_point<float, float>::y_type };
+%template(float_point) illumina::interop::model::plot::data_point<float, float>;
+
+
+%include "interop/model/plot/candle_stick_point.h"
+WRAP_VECTOR(illumina::interop::model::plot::data_point_collection<illumina::interop::model::plot::candle_stick_point>);
+%include "interop/model/plot/data_point_collection.h"
+
+%template(candle_stick_vector) std::vector<illumina::interop::model::plot::candle_stick_point>;
+%template(candle_stick_collection) illumina::interop::model::plot::data_point_collection<illumina::interop::model::plot::candle_stick_point>;
+
+%include "interop/model/plot/series.h"
+WRAP_VECTOR(illumina::interop::model::plot::series<illumina::interop::model::plot::candle_stick_point>);
+%template(candle_stick_series) illumina::interop::model::plot::series<illumina::interop::model::plot::candle_stick_point>;
+
+%include "interop/model/plot/plot_data.h"
+WRAP_VECTOR(illumina::interop::model::plot::plot_data<illumina::interop::model::plot::candle_stick_point>);
+%template(candle_stick_plot_data) illumina::interop::model::plot::plot_data<illumina::interop::model::plot::candle_stick_point>;
+
+
+
+// Plotting logic
+
+%{
+#include "interop/logic/plot/plot_by_cycle.h"
+%}
+%include "interop/logic/plot/plot_by_cycle.h"
+
+%template(plot_candle_stick_by_cycle) illumina::interop::logic::plot::plot_by_cycle<illumina::interop::model::plot::candle_stick_point>;
 

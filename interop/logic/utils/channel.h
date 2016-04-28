@@ -161,7 +161,7 @@ namespace illumina { namespace interop { namespace logic { namespace utils
     /** Update channels from instrument type
      *
      */
-    std::vector<std::string> update_channel_from_instrument_type(const constants::instrument_type instrument)
+    inline std::vector<std::string> update_channel_from_instrument_type(const constants::instrument_type instrument)
     {
         std::vector<std::string> channels;
         switch(instrument)

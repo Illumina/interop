@@ -5,7 +5,7 @@ foreach(SRC ${SWIG_SRCS})
 endforeach()
 
 
-set(SWIG_MODULE_c_csharp_interop_EXTRA_DEPS ${SWIG_DEPS})
+set(SWIG_MODULE_c_csharp_interop_EXTRA_DEPS ${SWIG_DEPS} )
 foreach(SRC ${SWIG_SRCS})
     set_source_files_properties(${SRC} PROPERTIES SWIG_FLAGS "-module;c_csharp_interop${SWIG_WORDSIZE_FLAG}")
 endforeach()

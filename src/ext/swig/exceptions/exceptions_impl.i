@@ -4,6 +4,8 @@ namespace std
 {
   %ignore runtime_error;
   struct runtime_error {};
+  %ignore out_of_range;
+  struct out_of_range {};
 }
 #endif
 %{

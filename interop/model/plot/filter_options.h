@@ -6,6 +6,8 @@
  *  @copyright GNU Public License.
  */
 #pragma once
+
+#include "interop/model/metric_base/base_metric.h"
 #include "interop/util/lexical_cast.h"
 #include "interop/constants/enums.h"
 #include "interop/logic/utils/metric_type_ext.h"
@@ -22,7 +24,7 @@ public:
     /** Channel type - Range: 0-N - All: -1*/
     typedef ::int16_t channel_t;
     /** ID type - Range: 1-N - All: 0*/
-    typedef ::uint16_t id_t;
+    typedef model::metric_base::base_metric::uint_t  id_t;
 
 public:
     enum UseAll
