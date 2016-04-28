@@ -5,6 +5,7 @@
 
 Commit  | Description
 ------- | -----------
+??????? | Add filter options to support plot logic
 ??????? | Add enum reflection-like interface
 49643cd | Enhance robustness to missing isnan functions
          
