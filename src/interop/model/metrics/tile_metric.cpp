@@ -106,16 +106,16 @@ namespace illumina{ namespace interop{
                             if(is_new) metric.set_base(metric_id_t());
                             break;
                         case ClusterDensity:
-                            metric.m_clusterDensity = val;
+                            metric.m_cluster_density = val;
                             break;
                         case ClusterDensityPf:
-                            metric.m_clusterDensityPf = val;
+                            metric.m_cluster_density_pf = val;
                             break;
                         case ClusterCount:
-                            metric.m_clusterCount = val;
+                            metric.m_cluster_count = val;
                             break;
                         case ClusterCountPf:
-                            metric.m_clusterCountPf = val;
+                            metric.m_cluster_count_pf = val;
                             break;
                         default:
                             if( rec.code % Phasing < 100 )
@@ -157,33 +157,33 @@ namespace illumina{ namespace interop{
 
                     // We always write this out, even if it is NaN
                     // We always write out ID for the first record
-                    if(metric.m_clusterDensity == metric.m_clusterDensity)
+                    if(!std::isnan(metric.m_cluster_density))
                     {
-                        rec.value = metric.m_clusterDensity;
+                        rec.value = metric.m_cluster_density;
                         rec.code = ClusterDensity;
                         if(write_id) write_binary(out, metric_id);
                         write_id=true;
                         write_binary(out, rec);
                     }
-                    if(metric.m_clusterDensityPf == metric.m_clusterDensityPf)
+                    if(!std::isnan(metric.m_cluster_density_pf))
                     {
-                        rec.value = metric.m_clusterDensityPf;
+                        rec.value = metric.m_cluster_density_pf;
                         rec.code = ClusterDensityPf;
                         if(write_id) write_binary(out, metric_id);
                         write_id=true;
                         write_binary(out, rec);
                     }
-                    if(metric.m_clusterCount == metric.m_clusterCount)
+                    if(!std::isnan(metric.m_cluster_count))
                     {
-                        rec.value = metric.m_clusterCount;
+                        rec.value = metric.m_cluster_count;
                         rec.code = ClusterCount;
                         if(write_id) write_binary(out, metric_id);
                         write_id=true;
                         write_binary(out, rec);
                     }
-                    if(metric.m_clusterCountPf == metric.m_clusterCountPf)
+                    if(!std::isnan(metric.m_cluster_count_pf))
                     {
-                        rec.value = metric.m_clusterCountPf;
+                        rec.value = metric.m_cluster_count_pf;
                         rec.code = ClusterCountPf;
                         if(write_id) write_binary(out, metric_id);
                         write_id=true;

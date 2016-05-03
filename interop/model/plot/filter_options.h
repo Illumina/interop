@@ -6,7 +6,9 @@
  *  @copyright GNU Public License.
  */
 #pragma once
+#include "interop/util/lexical_cast.h"
 #include "interop/constants/enums.h"
+#include "interop/logic/utils/metric_type_ext.h"
 
 namespace illumina { namespace interop { namespace model { namespace plot {
 
@@ -16,7 +18,7 @@ class filter_options
 {
 public:
     /** DNA base enumerated type - Range: A,C,G,T - All: NC*/
-    typedef constants::dna_base dna_base_t;
+    typedef constants::dna_bases dna_base_t;
     /** Channel type - Range: 0-N - All: -1*/
     typedef ::int16_t channel_t;
     /** ID type - Range: 1-N - All: 0*/
@@ -30,12 +32,13 @@ public:
         /** All sentinel for channel types */
         ALL_CHANNELS=-1,
         /** All sentinel for base types */
-        ALL_BASES=constants::NC
+        ALL_BASES=-1
     };
 
 public:
     /** Constructor
      *
+     * @param naming_method tile naming method
      * @param lane lane number
      * @param channel channel number (order based on RunInfo.xml)
      * @param base enumerate type
@@ -46,15 +49,16 @@ public:
      * @param swath swath number
      * @param section section number
      */
-    filter_options(const id_t lane,
-                   const channel_t channel,// Order based on RunInfo.xml
-                   const dna_base_t base,
-                   const id_t surface,
-                   const id_t read,
-                   const id_t cycle,
-                   const id_t tile_number,
-                   const id_t swath,
-                   const id_t section) :
+    filter_options(const constants::tile_naming_method naming_method,
+                   const id_t lane=ALL_IDS,
+                   const channel_t channel=ALL_CHANNELS,// Order based on RunInfo.xml
+                   const dna_base_t base=(dna_base_t)ALL_BASES,
+                   const id_t surface=ALL_IDS,
+                   const id_t read=ALL_IDS,
+                   const id_t cycle=ALL_IDS,
+                   const id_t tile_number=ALL_IDS,
+                   const id_t swath=ALL_IDS,
+                   const id_t section=ALL_IDS) :
             m_lane(lane),
             m_channel(channel),
             m_base(base),
@@ -63,17 +67,43 @@ public:
             m_cycle(cycle),
             m_tile_number(tile_number),
             m_swath(swath),
-            m_section(section)
-    {
-    }
+            m_section(section),
+            m_naming_method(naming_method)
+    {}
 
 public:
+    /** Test if metric is a valid tile
+     *
+     * @param metric any metric type
+     * @return true if the tile should not be filtered
+     */
+    template<class Metric>
+    bool valid_tile(const Metric& metric) const
+    {
+        return valid_lane(metric.lane()) &&
+                valid_surface(metric.surface(m_naming_method)) &&
+                valid_tile_number(metric.number(m_naming_method)) &&
+                valid_swath(metric.swath(m_naming_method)) &&
+                valid_section(metric.section(m_naming_method));
+    }
     /** Test if all channels were requested
      *
      * @param type metric type
      * @return true if metric supports channels and all channels requested
      */
-    //bool all_channels(const metric_type type)
+    bool all_channels(const constants::metric_type type)const
+    {
+        return m_channel == static_cast<channel_t>(ALL_CHANNELS) && logic::utils::is_channel_metric(type);
+    }
+    /** Test if all bases were requested
+     *
+     * @param type metric type
+     * @return true if metric supports bases and all bases requested
+     */
+    bool all_bases(const constants::metric_type type)const
+    {
+        return m_base == static_cast<dna_base_t>(ALL_BASES) && logic::utils::is_base_metric(type);
+    }
     /** Test if the lane if valid
      *
      * @return true if lane should not be filtered
@@ -146,6 +176,63 @@ public:
     {
         return m_base == static_cast<dna_base_t>(ALL_BASES) || m_base == base;
     }
+    /** Get channel to display
+     *
+     * @return channel
+     */
+    channel_t channel()const
+    {
+        return m_channel;
+    }
+    /** Get base to display
+     *
+     * @return base
+     */
+    dna_base_t dna_base()const
+    {
+        return m_base;
+    }
+    /** Get read to display
+     *
+     * @return read
+     */
+    id_t read()const
+    {
+        return m_read;
+    }
+    /** Get a description of the lane filter options
+     *
+     * @return description
+     */
+    std::string lane_description()const
+    {
+        return (m_lane == ALL_IDS) ? "All Lanes" :  "Lane " + util::lexical_cast<std::string>(m_lane);
+    }
+    /** Get a description of the channel filter options
+     *
+     * @return description
+     */
+    std::string channel_description(const std::vector<std::string>& channels)const
+    {
+        return (m_channel == static_cast<channel_t>(ALL_CHANNELS)) ? "All Channels" :  "Channel " + channels[m_channel];
+    }
+    /** Get a description of the base filter options
+     *
+     * @return description
+     */
+    std::string base_description()const
+    {
+        typedef constants::enumeration<dna_base_t> enum_t;
+        return (m_base == static_cast<dna_base_t>(ALL_BASES)) ? "All Bases" :  "Base " + enum_t::to_key(m_base);
+    }
+    /** Get a description of the surface filter options
+     *
+     * @return description
+     */
+    std::string surface_description()const
+    {
+        return (m_surface == ALL_IDS) ? "All Surfaces" :  "Surface " + util::lexical_cast<std::string>(m_surface);
+    }
 
 private:
     id_t m_lane;
@@ -157,6 +244,7 @@ private:
     id_t m_tile_number;
     id_t m_swath;
     id_t m_section;
+    constants::tile_naming_method m_naming_method;
 
 };
 

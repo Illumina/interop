@@ -77,7 +77,7 @@ void parameters::parse(char *data) throw(   xml::xml_file_not_found_exception,
 void parameters::set_instrument_id(std::string& application_name, std::string& multi_surface)
 {
     typedef constants::enumeration<constants::instrument_type> instrument_enum_t;
-    typedef instrument_enum_t::name_type_pair_vector_t name_type_pair_vector_t;
+    typedef instrument_enum_t::key_type_pair_vector_t name_type_pair_vector_t;
 
     std::transform(application_name.begin(), application_name.end(), application_name.begin(), ::tolower);
     std::transform(multi_surface.begin(), multi_surface.end(), multi_surface.begin(), ::tolower);

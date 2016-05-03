@@ -239,9 +239,9 @@ namespace illumina {
                      * @param index index of the base (A=0, C=1, G=2, T=3)
                      * @return average corrected intensity for specified base
                      */
-                    ushort_t corrected_int_all(constants::dna_base index)const
+                    ushort_t corrected_int_all(constants::dna_bases index)const
                     {
-                        INTEROP_ASSERT(index < static_cast<constants::dna_base>(constants::NUM_OF_BASES));
+                        INTEROP_ASSERT(index < static_cast<constants::dna_bases>(constants::NUM_OF_BASES));
                         return m_corrected_int_all[index];
                     }
                     /** Average corrected intensity for only base called clusters: A, C, G and T
@@ -262,9 +262,9 @@ namespace illumina {
                      * @param index index of the base (A=0, C=1, G=2, T=3)
                      * @return average corrected intensity over only base called clusters
                      */
-                    ushort_t corrected_int_called(constants::dna_base index)const
+                    ushort_t corrected_int_called(constants::dna_bases index)const
                     {
-                        INTEROP_ASSERT(index < static_cast<constants::dna_base>(constants::NUM_OF_BASES));
+                        INTEROP_ASSERT(index < static_cast<constants::dna_bases>(constants::NUM_OF_BASES));
                         return m_corrected_int_called[index];
                     }
                     /** Average corrected intensity for only base called clusters: A, C, G and T
@@ -326,9 +326,9 @@ namespace illumina {
                      * @param index index of the base (NC=-1, A=0, C=1, G=2, T=3)
                      * @return number of clusters called per base
                      */
-                    uint_t called_counts(constants::dna_base index)const
+                    uint_t called_counts(constants::dna_bases index)const
                     {
-                        INTEROP_ASSERT((index+1) < static_cast<constants::dna_base>(constants::NUM_OF_BASES_AND_NC));
+                        INTEROP_ASSERT((index+1) < static_cast<constants::dna_bases>(constants::NUM_OF_BASES_AND_NC));
                         return m_called_counts[static_cast<uint_t>(index+1)];
                     }
                     /** Number of clusters per no call
@@ -447,7 +447,7 @@ namespace illumina {
                      * @param index index of the base (NC=-1, A=0, C=1, G=2, T=3)
                      * @return percentage for given base
                      */
-                    float percent_base(constants::dna_base index)const
+                    float percent_base(constants::dna_bases index)const
                     {
                         uint_t total = totalCalls();
                         if(total == 0) return std::numeric_limits<float>::quiet_NaN();

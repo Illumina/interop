@@ -54,6 +54,8 @@ namespace illumina {
                     typedef std::vector<uint_t> id_vector;
                     /** Define an key vector */
                     typedef std::vector<id_t> key_vector;
+                    /** Define the size type */
+                    typedef typename metric_array_t::size_type size_type;
 
                 public:
                     /** Const metric iterator */

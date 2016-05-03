@@ -140,7 +140,7 @@ public:
         }
         if(m_run_info.channels().empty())
         {
-            m_run_info.channels(logic::utils::update_channel_from_instrument_type(m_run_parameters.instrument_type()));
+            legacy_channel_update(m_run_parameters.instrument_type());
             if(m_run_info.channels().empty())
                 throw io::format_exception("Channel names are missing from the RunInfo.xml, and RunParameters.xml does not contain sufficient information on the instrument run.");
         }
@@ -155,6 +155,14 @@ public:
         is_metric_empty func;
         m_metrics.apply(func);
         return func.empty();
+    }
+    /** Update channels for legacy runs
+     *
+     * @param type instrument type
+     */
+    void legacy_channel_update(const constants::instrument_type type)
+    {
+        m_run_info.channels(logic::utils::update_channel_from_instrument_type(type));
     }
 
 public:

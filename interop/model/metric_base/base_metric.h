@@ -150,7 +150,10 @@ namespace illumina {
                      *
                      * @return number of the tile.
                      */
-                    uint_t number()const{return m_tile%100;}
+                    uint_t number(const illumina::interop::constants::tile_naming_method)const
+                    {
+                        return m_tile%100;
+                    }
                     /** Section number
                      *
                      * Calculates the section of the tile from the tile id.
