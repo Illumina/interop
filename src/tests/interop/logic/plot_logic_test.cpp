@@ -9,7 +9,7 @@ using namespace illumina::interop;
 
 TEST(plot_logic, intensity_by_cycle)
 {
-    const float tol = 1e-3;
+    const float tol = 1e-3f;
     model::metrics::run_metrics metrics;
     model::plot::filter_options options(constants::FourDigit);
     std::vector<model::run::read_info> reads(2);

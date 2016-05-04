@@ -27,6 +27,10 @@ namespace illumina.interop.csharp.unittest
             run_metrics run = new run_metrics();
             c_csharp_interop.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, run.extraction_metric_set());
 
+            var run_param = new parameters();
+            Assert.AreEqual(run_param.version(), 0);
+            Assert.AreEqual(run.extraction_metric_set().MaxCycle, 1);
+
             filter_options options = new filter_options(tile_naming_method.FourDigit);
             read_info_vector reads = new read_info_vector();
             reads.Add(new read_info(1, 1, 26));

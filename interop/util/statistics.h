@@ -191,48 +191,6 @@ void outliers_upper(I beg, I end, const F bound, O out)
     ++out;
 
 }
-/** Calculate the lower spread for outlier detection
- *
- * Really, just some arbitrary criteria derived by empirical observation in the 70s.
- *
- * @param beg iterator to start of collection
- * @param end iterator to end of collection
- * @param p25 25th percentile
- * @param p75 75th percentile
- * @return lower spread
- */
-template<typename I, typename T>
-T lower_spread(I beg, I end, const T p25, const T p75)
-{
-    INTEROP_ASSERT(beg != end);
-    const float tukey_constant = 1.5f; // Really just some arbitrary criteria derived by empirical observation in the 70s.
-    const float iqr = p75-p25;
-    const float lower_spread = p25 - tukey_constant * iqr;
-    I lower = std::upper_bound(beg, end, lower_spread);
-    if(lower == end) return *(end-1);
-    return *lower;
-}
-/** Calculate the upper spread for outlier detection
- *
- * Really, just some arbitrary criteria derived by empirical observation in the 70s.
- *
- * @param beg iterator to start of collection
- * @param end iterator to end of collection
- * @param p25 25th percentile
- * @param p75 75th percentile
- * @return upper spread
- */
-template<typename I, typename T>
-T upper_spread(I beg, I end, const T p25, const T p75)
-{
-    INTEROP_ASSERT(beg != end);
-    const float tukey_constant = 1.5f; // Really just some arbitrary criteria derived by empirical observation in the 70s.
-    const float iqr = p75-p25;
-    const float upper_spread = p75 + tukey_constant * iqr;
-    I upper = std::lower_bound(beg, end, upper_spread);
-    if(upper == end) return *(end-1);
-    return *upper;
-}
 /** Calculate the given percentile
  *
  * The percentile must be an integer in percent. For example the 99th
