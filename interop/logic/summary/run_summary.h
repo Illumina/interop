@@ -52,7 +52,8 @@ namespace summary
      * @param metrics source collection of all metrics
      * @param summary destination run summary
      */
-    inline void summarize_run_metrics(const model::metrics::run_metrics& metrics, model::summary::run_summary& summary) throw( model::index_out_of_bounds_exception )
+    inline void summarize_run_metrics(const model::metrics::run_metrics& metrics, model::summary::run_summary& summary)
+    throw( model::index_out_of_bounds_exception, model::invalid_channel_exception )
     {
         using namespace model::metrics;
         if(metrics.empty()) return;

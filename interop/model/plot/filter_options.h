@@ -27,6 +27,7 @@ public:
     typedef model::metric_base::base_metric::uint_t  id_t;
 
 public:
+    /** Sentinels for use all of a specific type */
     enum UseAll
     {
         /** All sentinel for id types */
@@ -105,6 +106,23 @@ public:
     bool all_bases(const constants::metric_type type)const
     {
         return m_base == static_cast<dna_base_t>(ALL_BASES) && logic::utils::is_base_metric(type);
+    }
+    /** Test if metric is read metric and specific read is chosen
+     *
+     * @param type metric type
+     * @return true if metric supports reads and a specific read is requested
+     */
+    bool is_specific_read(const constants::metric_type type)const
+    {
+        return m_read != static_cast<id_t>(ALL_IDS) && logic::utils::is_read_metric(type);
+    }
+    /** Test if specific surface is chosen
+     *
+     * @return true if  a specific surface is requested
+     */
+    bool is_specific_surface()const
+    {
+        return m_surface != static_cast<id_t>(ALL_IDS);
     }
     /** Test if the lane if valid
      *
@@ -234,6 +252,14 @@ public:
     std::string surface_description()const
     {
         return (m_surface == ALL_IDS) ? "All Surfaces" :  "Surface " + util::lexical_cast<std::string>(m_surface);
+    }
+    /** Get a description of the read filter options
+     *
+     * @return description
+     */
+    std::string read_description()const
+    {
+        return (m_read == ALL_IDS) ? "All Reads" :  "Read " + util::lexical_cast<std::string>(m_read);
     }
 
 private:

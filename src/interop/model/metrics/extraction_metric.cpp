@@ -116,8 +116,9 @@ namespace illumina{ namespace interop{ namespace io {
                 static void convert_datetime(std::ostream&, const extraction_metric&)
                 {
                 }
-                static void convert_datetime(std::istream&, extraction_metric& metric)
+                static void convert_datetime(std::istream& in, extraction_metric& metric)
                 {
+                    if(in.fail()) return;
                     metric.m_date_time = metric.m_date_time_csharp.to_unix();
                 }
             };

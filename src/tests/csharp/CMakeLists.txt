@@ -32,6 +32,7 @@ set(CSHARP_TEST_ENABLED ON PARENT_SCOPE)
 include(${CSHARP_USE_FILE})
 
 set(TEST_SRCS
+        logic/PlotDataByLaneTest.cs
         logic/PlotDataByCycleTest.cs
         metrics/ErrorMetricsTest.cs
         metrics/CorrectedIntensityMetricsTest.cs

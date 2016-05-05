@@ -237,6 +237,25 @@ namespace illumina {
                         std::transform(m_data.begin(), m_data.end(), std::inserter(id_set, id_set.begin()), to_lane);
                         return id_vector(id_set.begin(), id_set.end());
                     }
+                    /** Get the number of lanes in the data
+                     *
+                     * @return number of lanes
+                     */
+                    size_t lane_count()const
+                    {
+                        return lanes().size();
+                    }
+                    /** Get maximum lane number
+                     *
+                     * @return maximum lane number
+                     */
+                    size_t max_lane()const
+                    {
+                        size_t lane_max = 0;
+                        for(const_iterator b = m_data.begin(), e = m_data.end();b != e;++b)
+                            lane_max = std::max(lane_max, static_cast<size_t>(b->lane()));
+                        return lane_max;
+                    }
                     /** Get a list of all available tile numbers for the specified lane
                      *
                      * @param lane lane number

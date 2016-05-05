@@ -86,6 +86,7 @@ set(HEADERS
         ../../interop/logic/utils/metric_type_ext.h
         ../../interop/logic/plot/plot_by_cycle.h
         ../../interop/logic/metric/metric_value.h
+        ../../interop/logic/plot/plot_by_lane.h
         ../../interop/logic/plot/plot_point.h
         ../../interop/model/plot/data_point.h
         ../../interop/model/plot/series.h

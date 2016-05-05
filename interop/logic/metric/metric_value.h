@@ -36,12 +36,15 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
     class metric_value<model::metrics::extraction_metric>
     {
     public:
+        /** Constructor
+         *
+         * @param _channel specific channel to select
+         */
         metric_value(const size_t _channel) : channel(_channel){}
         /** Get the metric value corresponding to the metric_type enum value
          *
          * @param metric extraction metric
          * @param type metric type
-         * @param channel index of channel based on RunInfo.xml
          * @return metric value
          */
         float operator()(const model::metrics::extraction_metric& metric, const constants::metric_type type)const
@@ -70,14 +73,17 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
     {
         typedef model::metrics::q_metric::uint_t uint_t;
     public:
+        /** Constructor
+         *
+         * @param _index_for_qvalue Q20 or Q30 index
+         * @param _bins bins for Q-value histogram
+         */
         metric_value(const size_t _index_for_qvalue, const model::metrics::q_metric::qscore_bin_vector_type& _bins) :
                 index_for_qvalue(static_cast<uint_t>(_index_for_qvalue)), bins(_bins){}
         /** Get the metric value corresponding to the metric_type enum value
          *
          * @param metric q-metric
          * @param type metric type
-         * @param index_for_qvalue index for the proper q-value (unsafe but performant)
-         * @param bins bins for q-value histogram
          * @return metric value
          */
         float operator()(const model::metrics::q_metric& metric, const constants::metric_type type)const
@@ -135,6 +141,10 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
     class metric_value<model::metrics::corrected_intensity_metric>
     {
     public:
+        /** Constructor
+         *
+         * @param _base specific base to select
+         */
         metric_value(const constants::dna_bases _base) : base(_base){}
         /** Get the metric value corresponding to the metric_type enum value
          *
@@ -172,6 +182,10 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
     class metric_value<model::metrics::tile_metric>
     {
     public:
+        /** Constructor
+         *
+         * @param _read specific read to select
+         */
         metric_value(const size_t _read) : read(_read){}
         /** Get the metric value corresponding to the metric_type enum value
          *

@@ -124,11 +124,13 @@ void info::parse(char *data)  throw(    xml::xml_file_not_found_exception,
                      attr; attr = attr->next_attribute())
                 {
                     set_data(attr, "Number", rinfo.m_number);
-                    set_data(attr, "NumCycles", cycle_count);
-                    set_data(attr, "IsIndexedRead", is_indexed);
-                    rinfo.m_first_cycle = first_cycle+1;
-                    rinfo.m_last_cycle = first_cycle+cycle_count;
-                    rinfo.m_is_index = std::toupper(is_indexed) == 'Y';
+                    if(set_data(attr, "NumCycles", cycle_count))
+                    {
+                        rinfo.m_last_cycle = first_cycle + cycle_count;
+                        rinfo.m_first_cycle = first_cycle+1;
+                    }
+                    if(set_data(attr, "IsIndexedRead", is_indexed))
+                        rinfo.m_is_index = std::toupper(is_indexed) == 'Y';
                 }
                 first_cycle+=cycle_count;
                 m_reads.push_back(rinfo);

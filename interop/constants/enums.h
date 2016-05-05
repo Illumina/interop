@@ -23,9 +23,9 @@
         INTEROP_ENUM_DESCRIPTION(AccumPercentQ20, "% >=Q20 (Accum)", Q),\
         INTEROP_ENUM_DESCRIPTION(AccumPercentQ30, "% >=Q30 (Accum)", Q),\
         INTEROP_ENUM_DESCRIPTION(QScore, "Median QScore", Q),\
-        INTEROP_ENUM_DESCRIPTION(Density, "Density", Tile),\
+        INTEROP_ENUM_DESCRIPTION(Density, "Density (K/mm2)", Tile),\
         INTEROP_ENUM_DESCRIPTION(DensityPF, "Density PF", Tile),\
-        INTEROP_ENUM_DESCRIPTION(ClusterCount, "Clusters", Tile),\
+        INTEROP_ENUM_DESCRIPTION(ClusterCount, "Cluster Count", Tile),\
         INTEROP_ENUM_DESCRIPTION(ClusterCountPF, "Clusters PF", Tile),\
         INTEROP_ENUM_DESCRIPTION(AlignedReadCount, "Aligned Read Count", Tile),\
         INTEROP_ENUM_DESCRIPTION(ErrorRate, "Error Rate", Error),\

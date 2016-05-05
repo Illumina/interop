@@ -98,6 +98,11 @@ int main(int argc, char** argv)
         {
             run.read(argv[i]);
         }
+        catch(const model::index_out_of_bounds_exception& ex)
+        {
+            std::cerr << ex.what() << std::endl;
+            return UNEXPECTED_EXCEPTION;
+        }
         catch(const xml::xml_file_not_found_exception& ex)
         {
             std::cerr << ex.what() << std::endl;
@@ -131,7 +136,7 @@ int main(int argc, char** argv)
         catch(const model::index_out_of_bounds_exception& ex)
         {
             std::cerr << ex.what() << std::endl;
-            return IMPROPER_RUNINFO_XML;
+            return UNEXPECTED_EXCEPTION;
         }
         catch(const std::exception& ex)
         {
@@ -154,6 +159,7 @@ int main(int argc, char** argv)
 template<typename I>
 void print_array(std::ostream& out, I beg, I end, const size_t width, const char fillch=' ')
 {
+    std::ios::fmtflags f( out.flags() );
     for(;beg != end;++beg)
     {
         out << " ";
@@ -161,6 +167,7 @@ void print_array(std::ostream& out, I beg, I end, const size_t width, const char
         out.fill(fillch);
         out << std::left << *beg;
     }
+    out.flags(f);
     out << std::endl;
 }
 /** Get number of elements in stack array

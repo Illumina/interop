@@ -29,6 +29,7 @@ namespace illumina { namespace interop { namespace model { namespace plot {
         typedef typename point_collection_t::size_type size_type;
 
     public:
+        /** Type of plot to display */
         enum series_types
         {
             /** Candle stick points */

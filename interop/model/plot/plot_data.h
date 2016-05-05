@@ -54,6 +54,14 @@ namespace illumina { namespace interop { namespace model { namespace plot {
         {
             m_series.assign(n, val);
         }
+        /** Push a value to the back of the collection
+         *
+         * @param val value to add
+         */
+        void push_back(const series<Point>& val)
+        {
+            m_series.push_back(val);
+        }
         /** Get point at index
          *
          * @param index index of point
@@ -113,7 +121,7 @@ namespace illumina { namespace interop { namespace model { namespace plot {
     public:
         /** Set both axes
          *
-         * @param axes both axes
+         * @param xyaxes both axes
          */
         void set_axes(const axes& xyaxes)
         {

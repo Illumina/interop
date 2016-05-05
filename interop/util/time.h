@@ -34,7 +34,8 @@ namespace util {
             /** Wrapper to ensure proper conversion of C# DateTime value
              *
              */
-            struct csharp_date_time {
+            struct csharp_date_time
+            {
                 /** Constructor */
                 csharp_date_time(uint64_t v = 0) : value(v) { }
                 /** Convert to time_t unix format

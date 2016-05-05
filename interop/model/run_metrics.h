@@ -119,7 +119,8 @@ public:
                                                     xml::xml_parse_exception,
                                                     io::file_not_found_exception,
                                                     io::bad_format_exception,
-                                                    io::incomplete_file_exception)
+                                                    io::incomplete_file_exception,
+                                                    io::format_exception)
     {
         read_metrics(run_folder);
         m_run_info.read(run_folder);

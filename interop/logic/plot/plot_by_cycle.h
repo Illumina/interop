@@ -8,21 +8,18 @@
 #pragma once
 
 #include "interop/util/statistics.h"
-#include "interop/logic/metric/metric_value.h"
+#include "interop/constants/enums.h"
 #include "interop/model/metrics/extraction_metric.h"
-#include "interop/constants/enums.h"
-#include "interop/model/model_exceptions.h"
 #include "interop/model/metrics/corrected_intensity_metric.h"
-#include "interop/model/run_metrics.h"
-#include "interop/logic/metric/metric_value.h"
-#include "interop/logic/utils/metric_type_ext.h"
 #include "interop/model/model_exceptions.h"
-#include "interop/constants/enums.h"
-#include "interop/logic/plot/plot_point.h"
 #include "interop/model/plot/filter_options.h"
 #include "interop/model/plot/series.h"
 #include "interop/model/plot/plot_data.h"
+#include "interop/model/run_metrics.h"
+#include "interop/logic/utils/metric_type_ext.h"
 #include "interop/logic/utils/channel.h"
+#include "interop/logic/metric/metric_value.h"
+#include "interop/logic/plot/plot_point.h"
 #include "interop/logic/plot/plot_data.h"
 
 namespace illumina { namespace interop { namespace logic { namespace plot
@@ -62,7 +59,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
      * @param proxy functor that takes a metric record and returns a metric value
      * @param options filter for metric records
      * @param type type of metric to extract using the proxy functor
-     * @param points collection of points where x is cycle number and y is the mean metric value
+     * @param points collection of points where x is cycle number and y is the candle stick metric values
      */
     template<typename MetricSet, typename MetricProxy>
     void populate_candle_stick_by_cycle(const MetricSet& metrics,

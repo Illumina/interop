@@ -187,7 +187,14 @@ int main(int argc, char** argv)
 
         subset_copier copy_subset(subset, subset_count);
         run.metrics_callback(copy_subset);
-        subset.metrics_callback(write_metrics);
+        try {
+            subset.metrics_callback(write_metrics);
+        }
+        catch(const io::bad_format_exception& ex)
+        {
+            std::cerr << ex.what() << std::endl;
+            return BAD_FORMAT;
+        }
         std::cout << "\n" << std::endl;
 
     }
