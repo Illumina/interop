@@ -347,6 +347,36 @@ public:
 };
 
 
+/** Specialization that maps metric group types to their string names
+ */
+template<>
+class name_type_vector_builder<bar_plot_options>
+{
+public:
+    /** Define string key type */
+    typedef std::string key_t;
+private:
+    typedef std::pair<key_t, bar_plot_options> name_type_pair_t;
+    typedef std::vector< name_type_pair_t > name_type_vector_t;
+
+public:
+    /** Get vector that maps enumeration string names to enumeration values
+     *
+     * @return vector of enumeration string names and enumeration values
+     */
+    static const name_type_vector_t& key_type_pair_vector()
+    {
+        static const name_type_pair_t name_types[] = {INTEROP_ENUM_BAR_PLOT_OPTIONS};
+        static const name_type_vector_t tmp(name_types, name_types+util::length_of(name_types));
+        return tmp;
+    }
+    /** Get the unknown type
+     *
+     * @return unknown type
+     */
+    static bar_plot_options unknown(){return constants::UnknownBarPlotOption;}
+};
+
 }}}
 
 #undef INTEROP_ENUM_VALUE

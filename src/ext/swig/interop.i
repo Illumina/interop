@@ -202,6 +202,7 @@ WRAP_VECTOR(illumina::interop::model::summary::run_summary);
 %{
 #include "interop/model/plot/axes.h"
 #include "interop/model/plot/candle_stick_point.h"
+#include "interop/model/plot/bar_point.h"
 #include "interop/model/plot/data_point.h"
 #include "interop/model/plot/data_point_collection.h"
 #include "interop/model/plot/filter_options.h"
@@ -220,19 +221,27 @@ WRAP_VECTOR(illumina::interop::model::summary::run_summary);
 
 
 %include "interop/model/plot/candle_stick_point.h"
+%include "interop/model/plot/bar_point.h"
 WRAP_VECTOR(illumina::interop::model::plot::data_point_collection<illumina::interop::model::plot::candle_stick_point>);
+WRAP_VECTOR(illumina::interop::model::plot::data_point_collection<illumina::interop::model::plot::bar_point>);
 %include "interop/model/plot/data_point_collection.h"
 
+%template(bar_vector) std::vector<illumina::interop::model::plot::bar_point>;
 %template(candle_stick_vector) std::vector<illumina::interop::model::plot::candle_stick_point>;
 %template(candle_stick_collection) illumina::interop::model::plot::data_point_collection<illumina::interop::model::plot::candle_stick_point>;
+%template(bar_collection) illumina::interop::model::plot::data_point_collection<illumina::interop::model::plot::bar_point>;
 
 %include "interop/model/plot/series.h"
 WRAP_VECTOR(illumina::interop::model::plot::series<illumina::interop::model::plot::candle_stick_point>);
+WRAP_VECTOR(illumina::interop::model::plot::series<illumina::interop::model::plot::bar_point>);
 %template(candle_stick_series) illumina::interop::model::plot::series<illumina::interop::model::plot::candle_stick_point>;
+%template(bar_series) illumina::interop::model::plot::series<illumina::interop::model::plot::bar_point>;
 
 %include "interop/model/plot/plot_data.h"
 WRAP_VECTOR(illumina::interop::model::plot::plot_data<illumina::interop::model::plot::candle_stick_point>);
+WRAP_VECTOR(illumina::interop::model::plot::plot_data<illumina::interop::model::plot::bar_point>);
 %template(candle_stick_plot_data) illumina::interop::model::plot::plot_data<illumina::interop::model::plot::candle_stick_point>;
+%template(bar_plot_data) illumina::interop::model::plot::plot_data<illumina::interop::model::plot::bar_point>;
 
 
 
@@ -241,10 +250,13 @@ WRAP_VECTOR(illumina::interop::model::plot::plot_data<illumina::interop::model::
 %{
 #include "interop/logic/plot/plot_by_cycle.h"
 #include "interop/logic/plot/plot_by_lane.h"
+#include "interop/logic/plot/plot_qscore_histogram.h"
 %}
 %include "interop/logic/plot/plot_by_cycle.h"
 %include "interop/logic/plot/plot_by_lane.h"
+%include "interop/logic/plot/plot_qscore_histogram.h"
 
 %template(plot_candle_stick_by_cycle) illumina::interop::logic::plot::plot_by_cycle<illumina::interop::model::plot::candle_stick_point>;
 %template(plot_candle_stick_by_lane) illumina::interop::logic::plot::plot_by_lane<illumina::interop::model::plot::candle_stick_point>;
+%template(plot_qscore_histogram) illumina::interop::logic::plot::plot_qscore_histogram<illumina::interop::model::plot::bar_point>;
 

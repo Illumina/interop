@@ -523,6 +523,22 @@ namespace illumina {
                                 *cur += *beg;
                         }
                     }
+                    /** Accumulate q-score histogram into the destination distribution
+                     *
+                     * @param distribution overall distribution
+                     */
+                    template<typename T>
+                    void accumulate_into(std::vector<T>& distribution)const
+                    {
+                        INTEROP_ASSERT(distribution.size()==m_qscore_hist.size());
+                        if(distribution.size() != m_qscore_hist.size()) return;
+                        typename std::vector<T>::iterator it = distribution.begin();
+                        for (typename uint_vector::const_iterator cur = m_qscore_hist.begin(), end = m_qscore_hist.end();
+                             cur != end; ++it, ++cur)
+                        {
+                            (*it) += (*cur);
+                        }
+                    }
 
                 public:
                     /** Get the prefix of the InterOp filename

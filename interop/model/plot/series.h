@@ -16,6 +16,8 @@ namespace illumina { namespace interop { namespace model { namespace plot {
     class series : public data_point_collection<Point>
     {
     public:
+        /** Collection of options for a plot */
+        typedef std::vector<std::string> options_t;
         /** Defines a collection of points */
         typedef data_point_collection<Point> point_collection_t;
     public:
@@ -79,11 +81,28 @@ namespace illumina { namespace interop { namespace model { namespace plot {
         {
             return m_series_type;
         }
+        /** Collection of options
+         *
+         * @return collection of options
+         */
+        const options_t& options()const
+        {
+            return m_options;
+        }
+        /** Collection of options
+         *
+         * @param option string name of option
+         */
+        void add_option(const std::string& option)
+        {
+            m_options.push_back(option);
+        }
 
     private:
         std::string m_title;
         std::string m_color;
         series_types m_series_type;
+        options_t m_options;
     };
 
 

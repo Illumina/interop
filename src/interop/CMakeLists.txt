@@ -94,7 +94,10 @@ set(HEADERS
         ../../interop/model/plot/candle_stick_point.h
         ../../interop/model/plot/plot_data.h
         ../../interop/logic/plot/plot_data.h
-        ../../interop/model/plot/axes.h)
+        ../../interop/model/plot/axes.h
+        ../../interop/logic/plot/plot_qscore_histogram.h
+        ../../interop/model/plot/bar_point.h
+        )
 
 set(INTEROP_HEADERS ${HEADERS} PARENT_SCOPE)
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR CMAKE_COMPILER_IS_GNUCC)

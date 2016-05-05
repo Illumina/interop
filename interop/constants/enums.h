@@ -150,6 +150,18 @@
         INTEROP_ENUM(Black),\
         INTEROP_ENUM(UnknownColor)
 
+/** Enumeration of bar plot options
+ *
+ * @note This macro requires the macro INTEROP_ENUM to be defined before use
+ * @see illumina::interop::constants::bar_plot_options
+ */
+#define INTEROP_ENUM_BAR_PLOT_OPTIONS \
+        /** Bar centered on x-value */\
+        INTEROP_ENUM(CenteredBar),\
+        /** Bar shifted to start on x-value */\
+        INTEROP_ENUM(ShiftedBar),\
+        INTEROP_ENUM(UnknownBarPlotOption)
+
 /** This temp macro converts a enum/description pair into the an enum (first element of the pair) */
 #define INTEROP_ENUM_DESCRIPTION(X, Y, Z) X
 /** This temp macro converts an enum to an enum */
@@ -174,8 +186,10 @@ namespace illumina {
             enum instrument_type {INTEROP_ENUM_INSTRUMENT_TYPES};
             /** Base types for each metric */
             enum metric_base_type {INTEROP_ENUM_METRIC_BASE_TYPES};
-            /** Base types for each metric */
+            /** Color codes for plotting */
             enum plot_colors {INTEROP_ENUM_PLOT_COLORS};
+            /** Options for a bar plot */
+            enum bar_plot_options{ INTEROP_ENUM_BAR_PLOT_OPTIONS };
         }
     }
 }

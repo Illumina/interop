@@ -107,6 +107,24 @@ public:
     {
         return m_base == static_cast<dna_base_t>(ALL_BASES) && logic::utils::is_base_metric(type);
     }
+    /** Test if all reads were requested
+     *
+     * @param type metric type
+     * @return true if all reads were requested
+     */
+    bool all_reads()const
+    {
+        return m_read == static_cast<id_t>(ALL_IDS);
+    }
+    /** Test if all cycles were requested
+     *
+     * @param type metric type
+     * @return true if all cycles were requested
+     */
+    bool all_cycles()const
+    {
+        return m_cycle == static_cast<id_t>(ALL_IDS);
+    }
     /** Test if metric is read metric and specific read is chosen
      *
      * @param type metric type
@@ -115,6 +133,14 @@ public:
     bool is_specific_read(const constants::metric_type type)const
     {
         return m_read != static_cast<id_t>(ALL_IDS) && logic::utils::is_read_metric(type);
+    }
+    /** Test if specific read is chosen
+     *
+     * @return true if a specific read is requested
+     */
+    bool is_specific_read()const
+    {
+        return m_read != static_cast<id_t>(ALL_IDS);
     }
     /** Test if specific surface is chosen
      *
@@ -219,6 +245,14 @@ public:
     id_t read()const
     {
         return m_read;
+    }
+    /** Get cycle to display
+     *
+     * @return cycle
+     */
+    id_t cycle()const
+    {
+        return m_cycle;
     }
     /** Get a description of the lane filter options
      *
