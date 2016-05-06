@@ -1,0 +1,119 @@
+/** Encapsulates all the data for a flowcell heat map
+ *
+ *  @file
+ *  @date 5/6/16
+ *  @version 1.0
+ *  @copyright GNU Public License.
+ */
+#pragma once
+#include "interop/util/assert.h"
+#include "interop/model/plot/series.h"
+#include "interop/model/plot/axes.h"
+#include "interop/model/plot/heatmap_data.h"
+
+namespace illumina { namespace interop { namespace model { namespace plot {
+
+/** Encapsulates all data for a flowcell heat map
+ */
+class flowcell_data : public heatmap_data
+{
+public:
+    /** Resize the flowcell heat map to the given number of rows and columns
+     *
+     * @param lanes number of lanes
+     * @param rows number of rows (tiles)
+     * @param cols number of columns (swaths)
+     */
+    void resize(const size_t lanes, const size_t rows, const size_t cols)
+    {
+        heatmap_data::resize(lanes, rows*cols);
+        m_data.resize(heatmap_data::length());
+    }
+    /** Clear the data
+     */
+    void clear()
+    {
+        heatmap_data::clear();
+        m_data.clear();
+    }
+    /** Set data at given location in the flowcell
+     *
+     * @param lane lane number
+     * @param loc physical tile location
+     * @param tile_name name of the tile
+     * @param value value of the metric
+     */
+    void set_data(const size_t lane, const size_t loc, const ::uint32_t tile_id, const float value)
+    {
+        INTEROP_ASSERT(lane < row_count());
+        INTEROP_ASSERTMSG(loc < column_count(), loc << " < " << column_count());
+        INTEROP_ASSERT(lane < m_data.size());
+        heatmap_data::operator()(lane, loc) = value;
+        m_data[index_of(lane-1, loc-1)] = tile_id;
+    }
+    /** Get the tile id associated with the location
+     *
+     * @param lane
+     * @param loc
+     * @return tile id
+     */
+    ::uint32_t tile_id(const size_t lane, const size_t loc)const
+    {
+        return m_data[index_of(lane-1, loc-1)];
+    }
+    /** Set the axis
+     *
+     * @param plot_axis single axis
+     */
+    void set_saxis(const plot::axis& plot_axis)
+    {
+        set_yaxis(plot_axis);
+    }
+    /** Set the label of the axis
+     *
+     * @param label text label
+     */
+    void set_label(const std::string& label)
+    {
+        set_ylabel(label);
+    }
+    /** Get the single axis
+     *
+     * @return single axis
+     */
+    const plot::axis& saxis()const
+    {
+        return y_axis();
+    }
+    /** Set the sub title
+     *
+     * @param subtitle label string
+     */
+    void set_subtitle(const std::string& subtitle)
+    {
+        m_subtitle = subtitle;
+    }
+    /** Set the limits of the axis
+     *
+     * @param vmin minimum value
+     * @param vmax maximum value
+     */
+    void set_range(const float vmin, const float vmax)
+    {
+        set_yrange(vmin, vmax);
+    }
+    /** Get the sub title
+     *
+     * @return sub title
+     */
+    const std::string& subtitle()const
+    {
+        return m_subtitle;
+    }
+
+private:
+    std::vector< ::uint32_t > m_data;
+    std::string m_subtitle;
+};
+
+}}}}

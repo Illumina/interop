@@ -17,6 +17,7 @@
 #include "interop/util/type_traits.h"
 #include "interop/io/layout/base_metric.h"
 #include "interop/constants/enums.h"
+#include "interop/constants/typedefs.h"
 
 namespace illumina {
     namespace interop {
@@ -28,7 +29,7 @@ namespace illumina {
                 {
                 public:
                     /** Define the base type */
-                    typedef constant_type<constants::metric_base_type, constants::BaseTileType> base_type;
+                    typedef constants::base_tile_t base_t;
                 public:
                     /** Generate a default header
                      *
@@ -69,6 +70,8 @@ namespace illumina {
                     /** Base metric header that adds no functionality
                      */
                     typedef base_metric_header header_type;
+                    /** Define the base type */
+                    typedef constants::base_tile_t base_t;
                     enum
                     {
                         LANE_BIT_COUNT=6, // Supports up to 63 lanes
@@ -194,6 +197,7 @@ namespace illumina {
                     }
                     /** Index of the physical location of tile within the flowcell
                      *
+                     * @deprecated Will be removed in 1.1.x (use physical_location_index instead)
                      * @param method the tile naming method
                      * @param section_per_lane number of sections per lane
                      * @param tile_count number of tiles
@@ -207,12 +211,14 @@ namespace illumina {
                                                  const uint_t swath_count,
                                                  const bool all_surfaces)const
                     {
-                        return phyiscalLocationColumn(method, swath_count, all_surfaces)
-                               * (section_per_lane * tile_count)
-                               + phyiscalLocationRow(method, section_per_lane, tile_count);
+                        const uint_t column = phyiscalLocationColumn(method, swath_count, all_surfaces);
+                        const uint_t row = phyiscalLocationRow(method, section_per_lane, tile_count);
+                        const uint_t row_count = section_per_lane * tile_count;
+                        return column * row_count + row;
                     }
                     /** Column of the physical location of tile within the flowcell
                      *
+                     * @deprecated Will be removed in 1.1.x (use phyiscal_location_column instead)
                      * @param method the tile naming method
                      * @param swath_count number of swaths
                      * @param all_surfaces layout all surfaces of the flowcell
@@ -229,12 +235,76 @@ namespace illumina {
                     }
                     /** Row of the physical location of tile within the flowcell
                      *
+                     * @deprecated Will be removed in 1.1.x (use phyiscal_location_row instead)
                      * @param method the tile naming method
                      * @param section_per_lane number of sections per lane
                      * @param tile_count number of tiles
                      * @return row of the physical location within the flowcell
                      */
                     uint_t phyiscalLocationRow(const illumina::interop::constants::tile_naming_method method,
+                                               const uint_t section_per_lane,
+                                               const uint_t tile_count)const
+                    {
+                        uint_t section;
+                        switch(method)
+                        {
+                            case constants::FiveDigit:
+                                section = ((m_tile % 1000) - (m_tile % 100)) / 100;
+                                if(section == 4) section = 6;
+                                else if(section == 6) section = 4;
+                                section = (section-1) * section_per_lane;
+                                return (section * tile_count) + (m_tile % 100);
+                            case constants::FourDigit:
+                                return m_tile % 100;
+                            default:
+                                return m_tile;
+                        }
+                    }
+
+                    /** Index of the physical location of tile within the flowcell
+                     *
+                     * @param method the tile naming method
+                     * @param section_per_lane number of sections per lane
+                     * @param tile_count number of tiles
+                     * @param swath_count number of swaths
+                     * @param all_surfaces layout all surfaces of the flowcell
+                     * @return index of the physical location within the flowcell
+                     */
+                    size_t physical_location_index(const illumina::interop::constants::tile_naming_method method,
+                                                   const uint_t section_per_lane,
+                                                   const uint_t tile_count,
+                                                   const uint_t swath_count,
+                                                   const bool all_surfaces)const
+                    {
+                        const uint_t column = physical_location_column(method, swath_count, all_surfaces);
+                        const uint_t row = physical_location_row(method, section_per_lane, tile_count);
+                        const uint_t row_count = section_per_lane * tile_count;
+                        return static_cast<size_t>(column * row_count + row);
+                    }
+                    /** Column of the physical location of tile within the flowcell
+                     *
+                     * @param method the tile naming method
+                     * @param swath_count number of swaths
+                     * @param all_surfaces layout all surfaces of the flowcell
+                     * @return column of the physical location within the flowcell
+                     */
+                    uint_t physical_location_column(const illumina::interop::constants::tile_naming_method method,
+                                                  const uint_t swath_count,
+                                                  const bool all_surfaces)const
+                    {
+                        if(!(method == constants::FiveDigit||method == constants::FourDigit)) return 0;
+                        uint_t col = swath(method);
+                        if(all_surfaces && surface(method)==2) col += swath_count;
+                        return col;
+                    }
+                    /** Row of the physical location of tile within the flowcell
+                     *
+                     * @param method the tile naming method
+                     * @param section_per_lane number of sections per lane
+                     * @param tile_count number of tiles
+                     * @return row of the physical location within the flowcell
+                     */
+                    uint_t physical_location_row(const illumina::interop::constants::tile_naming_method method,
                                                const uint_t section_per_lane,
                                                const uint_t tile_count)const
                     {

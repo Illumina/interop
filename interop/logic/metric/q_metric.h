@@ -209,6 +209,15 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
         const size_t q_val_count = count_qvals(metrics);
         return q_val_count > 0 && q_val_count != 50;
     }
+    /** Determine the maximum Q-value
+     *
+     * @param set q_metric set
+     * @return the maximum Q-value
+     */
+    inline size_t max_qval(const model::metric_base::metric_set<model::metrics::q_metric>& metrics)
+    {
+        return is_compressed(metrics) ? static_cast<size_t>(metrics.bins().back().upper()) : count_qvals(metrics);
+    }
     /** Get the index for the given q-value
      *
      * @param metrics q_metric set

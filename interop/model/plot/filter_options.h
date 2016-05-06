@@ -89,6 +89,16 @@ public:
                 valid_swath(metric.swath(m_naming_method)) &&
                 valid_section(metric.section(m_naming_method));
     }
+    /** Test if metric is a valid tile
+     *
+     * @param metric any metric type
+     * @return true if the tile should not be filtered
+     */
+    template<class Metric>
+    bool valid_tile_cycle(const Metric& metric) const
+    {
+        return valid_tile(metric) && valid_cycle(metric, typename Metric::base_t());
+    }
     /** Test if all channels were requested
      *
      * @param type metric type
@@ -254,6 +264,14 @@ public:
     {
         return m_cycle;
     }
+    /** Get a description for the cycle filter option
+     *
+     * @return description for the cycle filter option
+     */
+    std::string cycle_description()const
+    {
+        return (m_cycle == ALL_IDS) ? "All Cycles" : "Cycle " + util::lexical_cast<std::string>(m_cycle);
+    }
     /** Get a description of the lane filter options
      *
      * @return description
@@ -295,6 +313,17 @@ public:
     {
         return (m_read == ALL_IDS) ? "All Reads" :  "Read " + util::lexical_cast<std::string>(m_read);
     }
+
+private:
+    template<class Metric>
+    bool valid_cycle(const Metric& metric, constants::base_cycle_t)const
+    {
+        return metric.cycle()==m_cycle;
+    }
+    template<class Metric>
+    bool valid_cycle(const Metric&, constants::base_tile_t)const{return true;}
+    template<class Metric>
+    bool valid_cycle(const Metric&, constants::base_read_t)const{return true;}
 
 private:
     id_t m_lane;

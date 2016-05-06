@@ -96,7 +96,13 @@ set(HEADERS
         ../../interop/logic/plot/plot_data.h
         ../../interop/model/plot/axes.h
         ../../interop/logic/plot/plot_qscore_histogram.h
+        ../../interop/logic/plot/plot_qscore_heatmap.h
+        ../../interop/logic/plot/plot_flowcell_map.h
         ../../interop/model/plot/bar_point.h
+        ../../interop/model/plot/heatmap_data.h
+        ../../interop/model/plot/chart_data.h
+        ../../interop/model/plot/flowcell_data.h
+        ../../interop/constants/typedefs.h
         )
 
 set(INTEROP_HEADERS ${HEADERS} PARENT_SCOPE)

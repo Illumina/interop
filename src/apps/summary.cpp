@@ -143,7 +143,15 @@ int main(int argc, char** argv)
             std::cerr << ex.what() << std::endl;
             return UNEXPECTED_EXCEPTION;
         }
-        print_summary(std::cout, summary);
+        try
+        {
+            print_summary(std::cout, summary);
+        }
+        catch(const model::index_out_of_bounds_exception& ex)
+        {
+            std::cerr << ex.what() << std::endl;
+            return UNEXPECTED_EXCEPTION;
+        }
     }
     return SUCCESS;
 }

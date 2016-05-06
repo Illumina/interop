@@ -24,7 +24,7 @@ namespace illumina {
                 {
                 public:
                     /** Define the base type */
-                    typedef constant_type<constants::metric_base_type, constants::BaseReadType> base_type;
+                    typedef constants::base_read_t base_t;
 
                 public:
                     /** Constructor */
@@ -62,6 +62,8 @@ namespace illumina {
                     /** A read metric_set header
                      */
                     typedef base_read_metric_header header_type;
+                    /** Define the base type */
+                    typedef constants::base_read_t base_t;
                 public:
                     /** Constructor
                      *

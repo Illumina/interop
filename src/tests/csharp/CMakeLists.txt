@@ -32,6 +32,8 @@ set(CSHARP_TEST_ENABLED ON PARENT_SCOPE)
 include(${CSHARP_USE_FILE})
 
 set(TEST_SRCS
+        logic/PlotFlowcellMap.cs
+        logic/PlotQScoreHeatmap.cs
         logic/PlotQScoreHistogram.cs
         logic/PlotDataByLaneTest.cs
         logic/PlotDataByCycleTest.cs

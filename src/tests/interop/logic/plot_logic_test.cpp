@@ -6,6 +6,8 @@
 #include "interop/logic/plot/plot_by_cycle.h"
 #include "interop/logic/plot/plot_by_lane.h"
 #include "interop/logic/plot/plot_qscore_histogram.h"
+#include "interop/logic/plot/plot_qscore_heatmap.h"
+#include "interop/logic/plot/plot_flowcell_map.h"
 #include "src/tests/interop/metrics/inc/extraction_metrics_test.h"
 #include "src/tests/interop/metrics/inc/tile_metrics_test.h"
 #include "src/tests/interop/metrics/inc/q_metrics_test.h"
@@ -121,4 +123,71 @@ TEST(plot_logic, q_score_histogram)
     EXPECT_NEAR(data.y_axis().min(), 0.0f, tol);
     EXPECT_NEAR(data.x_axis().max(), 45.100002288818359f, tol);
     EXPECT_NEAR(data.y_axis().max(), 9.4780035018920898f, tol);
+}
+
+TEST(plot_logic, q_score_heatmap)
+{
+    const float tol = 1e-3f;
+    model::metrics::run_metrics metrics;
+    model::plot::filter_options options(constants::FourDigit);
+    std::vector<model::run::read_info> reads(2);
+    reads[0] = model::run::read_info(1, 1, 26);
+    reads[1] = model::run::read_info(2, 27, 76);
+    metrics.run_info(model::run::info(
+            "",
+            "",
+            1,
+            model::run::flowcell_layout(2, 2, 2, 16),
+            std::vector<std::string>(),
+            model::run::image_dimensions(),
+            reads
+    ));
+    metrics.legacy_channel_update(constants::HiSeq);
+
+    std::istringstream iss(unittest::q_v6::binary_data());
+    io::read_metrics(iss, metrics.q_metric_set());
+
+    model::plot::heatmap_data data;
+    logic::plot::plot_qscore_heatmap(metrics, options, data);
+    ASSERT_EQ(data.row_count(), 4u);
+    EXPECT_EQ(data.title(), "All Lanes");
+    EXPECT_EQ(data.x_axis().label(), "Cycle");
+    EXPECT_EQ(data.y_axis().label(), "Q Score");
+    EXPECT_NEAR(data.x_axis().min(), 0.0f, tol);
+    EXPECT_NEAR(data.y_axis().min(), 0.0f, tol);
+    EXPECT_NEAR(data.x_axis().max(), 4.0f, tol);
+    EXPECT_NEAR(data.y_axis().max(), 40.0f, tol);
+}
+
+TEST(plot_logic, flowcell_map)
+{
+    const model::plot::filter_options::id_t ALL_IDS = model::plot::filter_options::ALL_IDS;
+    const float tol = 1e-3f;
+    model::metrics::run_metrics metrics;
+    std::vector<model::run::read_info> reads(2);
+    reads[0] = model::run::read_info(1, 1, 26);
+    reads[1] = model::run::read_info(2, 27, 76);
+    metrics.run_info(model::run::info(
+            "",
+            "",
+            1,
+            model::run::flowcell_layout(8, 2, 2, 36, 1, 1, std::vector<std::string>(), constants::FourDigit),
+            std::vector<std::string>(),
+            model::run::image_dimensions(),
+            reads
+    ));
+    model::plot::filter_options options(constants::FourDigit, ALL_IDS, 0, constants::A, ALL_IDS, 1, 1);
+    metrics.legacy_channel_update(constants::HiSeq);
+
+    std::istringstream iss(unittest::extraction_v2::binary_data());
+    io::read_metrics(iss, metrics.extraction_metric_set());
+    ASSERT_GT(metrics.extraction_metric_set().size(), 0u);
+
+    model::plot::flowcell_data data;
+    logic::plot::plot_flowcell_map(metrics, constants::Intensity, options, data);
+    ASSERT_EQ(data.row_count(), 8u);
+    EXPECT_EQ(data.title(), "Intensity");
+    EXPECT_EQ(data.saxis().label(), "Intensity");
+    EXPECT_NEAR(data.saxis().min(), 302.0f, tol);
+    EXPECT_NEAR(data.saxis().max(), 349.0f, tol);
 }

@@ -24,7 +24,7 @@ namespace illumina {
                 {
                 public:
                     /** Define the base type */
-                    typedef constant_type<constants::metric_base_type, constants::BaseCycleType> base_type;
+                    typedef constants::base_cycle_t base_t;
                 public:
                     /** Constructor */
                     base_cycle_metric_header() : m_max_cycle(0){}
@@ -73,6 +73,8 @@ namespace illumina {
                     /** A cycle metric_set header
                      */
                     typedef base_cycle_metric_header header_type;
+                    /** Define the base type */
+                    typedef constants::base_cycle_t base_t;
                 public:
                     /** Constructor
                      *

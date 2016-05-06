@@ -208,9 +208,15 @@ WRAP_VECTOR(illumina::interop::model::summary::run_summary);
 #include "interop/model/plot/filter_options.h"
 #include "interop/model/plot/plot_data.h"
 #include "interop/model/plot/series.h"
+#include "interop/model/plot/chart_data.h"
+#include "interop/model/plot/heatmap_data.h"
+#include "interop/model/plot/flowcell_data.h"
 %}
 %include "interop/model/plot/axes.h"
 %include "interop/model/plot/filter_options.h"
+%include "interop/model/plot/chart_data.h"
+%include "interop/model/plot/heatmap_data.h"
+%include "interop/model/plot/flowcell_data.h"
 
 
 %include "interop/model/plot/data_point.h"
@@ -251,10 +257,14 @@ WRAP_VECTOR(illumina::interop::model::plot::plot_data<illumina::interop::model::
 #include "interop/logic/plot/plot_by_cycle.h"
 #include "interop/logic/plot/plot_by_lane.h"
 #include "interop/logic/plot/plot_qscore_histogram.h"
+#include "interop/logic/plot/plot_qscore_heatmap.h"
+#include "interop/logic/plot/plot_flowcell_map.h"
 %}
 %include "interop/logic/plot/plot_by_cycle.h"
 %include "interop/logic/plot/plot_by_lane.h"
 %include "interop/logic/plot/plot_qscore_histogram.h"
+%include "interop/logic/plot/plot_qscore_heatmap.h"
+%include "interop/logic/plot/plot_flowcell_map.h"
 
 %template(plot_candle_stick_by_cycle) illumina::interop::logic::plot::plot_by_cycle<illumina::interop::model::plot::candle_stick_point>;
 %template(plot_candle_stick_by_lane) illumina::interop::logic::plot::plot_by_lane<illumina::interop::model::plot::candle_stick_point>;

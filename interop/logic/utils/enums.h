@@ -377,6 +377,12 @@ public:
     static bar_plot_options unknown(){return constants::UnknownBarPlotOption;}
 };
 
+template<typename T>
+std::string to_string(T val)
+{
+    return constants::enumeration<T>::to_key(val);
+}
+
 }}}
 
 #undef INTEROP_ENUM_VALUE

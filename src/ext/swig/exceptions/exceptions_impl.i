@@ -18,6 +18,13 @@ namespace std
 #if defined(SWIGCSHARP)
 %include "src/ext/swig/exceptions/exceptions_csharp.i"
 
+
+// TODO: Add to Python binding?
+ %typemap(throws, canthrow=1) std::invalid_argument {
+   SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, $1.what());
+   return $null;
+ }
+
 // TODO: use built in c++ stdexcept
 %typemap(throws, canthrow=1) illumina::interop::model::index_out_of_bounds_exception {
   SWIG_CSharpSetPendingException(SWIG_CSharpIndexOutOfRangeException, $1.what());

@@ -14,8 +14,6 @@
 #include "interop/model/plot/filter_options.h"
 #include "interop/model/plot/series.h"
 #include "interop/model/plot/bar_point.h"
-#include "interop/logic/metric/metric_value.h"
-#include "interop/logic/plot/plot_point.h"
 #include "interop/logic/plot/plot_data.h"
 
 namespace illumina { namespace interop { namespace logic { namespace plot {
@@ -100,9 +98,9 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
      */
     template<typename I, typename Point>
     float plot_binned_histogram(I beg,
-                                 I end,
-                                 const std::vector<float>& histogram,
-                                 model::plot::data_point_collection<Point>& points)
+                                I end,
+                                const std::vector<float>& histogram,
+                                model::plot::data_point_collection<Point>& points)
     {
         float max_x_value = 0;
         points.resize(std::distance(beg, end));
@@ -129,7 +127,6 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
     /** Plot a histogram of q-scores
      *
      * @param metrics run metrics
-     * @param type specific metric value to plot by lane
      * @param options options to filter the data
      * @param data output plot data
      */
@@ -142,6 +139,10 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
         typedef model::metric_base::metric_set<model::metrics::q_metric> q_metric_set_t;
 
         const q_metric_set_t& q_metric_set = metrics.get_set<model::metrics::q_metric>();
+
+        data.clear();
+        if(q_metric_set.size()==0)return;
+
         const size_t first_cycle = options.all_reads() ? 1 : metrics.run_info().read(options.read()).first_cycle();
         const size_t last_cycle = get_last_filtered_cycle(metrics.run_info(),
                                                           options,
