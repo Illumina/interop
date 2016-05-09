@@ -61,7 +61,7 @@ struct error_v3 : metric_test<model::metrics::error_metric, 3>
      *
      * @return 8 lanes
      */
-    static size_t lane_count(){return 8;}
+    static model::metric_base::base_metric::uint_t lane_count(){return 8;}
     /** Get reads describing data
      *
      * @return reads vector

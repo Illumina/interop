@@ -17,16 +17,22 @@ namespace illumina { namespace interop { namespace model { namespace plot {
  */
 class flowcell_data : public heatmap_data
 {
+
+public:
+    /** Constructor */
+    flowcell_data() : m_swath_count(0), m_tile_count(0){}
 public:
     /** Resize the flowcell heat map to the given number of rows and columns
      *
      * @param lanes number of lanes
-     * @param rows number of rows (tiles)
-     * @param cols number of columns (swaths)
+     * @param swaths number of swaths
+     * @param tiles number of tiles
      */
-    void resize(const size_t lanes, const size_t rows, const size_t cols)
+    void resize(const size_t lanes, const size_t swaths, const size_t tiles)
     {
-        heatmap_data::resize(lanes, rows*cols);
+        m_swath_count = swaths;
+        m_tile_count = tiles;
+        heatmap_data::resize(lanes, swaths*tiles);
         m_data.resize(heatmap_data::length());
     }
     /** Clear the data
@@ -110,10 +116,36 @@ public:
     {
         return m_subtitle;
     }
+    /** Get number of lanes
+     *
+     * @return number of lanes
+     */
+    size_t lane_count()const
+    {
+        return row_count();
+    }
+    /** Get number of swaths
+     *
+     * @return number of swaths
+     */
+    size_t swath_count()const
+    {
+        return m_swath_count;
+    }
+    /** Get number of tiles
+     *
+     * @return number of tiles
+     */
+    size_t tile_count()const
+    {
+        return m_tile_count;
+    }
 
 private:
     std::vector< ::uint32_t > m_data;
     std::string m_subtitle;
+    size_t m_swath_count;
+    size_t m_tile_count;
 };
 
 }}}}

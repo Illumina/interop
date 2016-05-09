@@ -80,7 +80,7 @@ namespace illumina{ namespace interop { namespace unittest {
          *
          * @return 8 lanes
          */
-        static size_t lane_count(){return 8;}
+        static model::metric_base::base_metric::uint_t lane_count(){return 8;}
         /** Get reads describing data
          *
          * @return reads vector

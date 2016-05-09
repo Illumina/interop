@@ -177,6 +177,21 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
         data.set_subtitle(subtitle);
         data.set_label(utils::to_description(type));
     }
+    /** Plot a flowcell map
+     *
+     * @param metrics run metrics
+     * @param metric_name specific metric value to plot by cycle
+     * @param options options to filter the data
+     * @param data output flowcell map
+     */
+    inline void plot_flowcell_map(const model::metrics::run_metrics& metrics,
+                                  const std::string& metric_name,
+                                  const model::plot::filter_options& options,
+                                  model::plot::flowcell_data& data) throw(std::invalid_argument)
+    {
+        typedef constants::enumeration<constants::metric_type> metric_enum_t;
+        plot_flowcell_map(metrics, metric_enum_t::parse(metric_name), options, data);
+    }
 
 
 }}}}

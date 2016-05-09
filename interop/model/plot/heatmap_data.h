@@ -23,7 +23,7 @@ public:
     heatmap_data() : m_num_columns(0), m_num_rows(0){}
 
 public:
-    /** Resize the heapmap to the given number of rows and columns
+    /** Resize the heat map to the given number of rows and columns
      *
      * @param rows number of rows
      * @param cols number of columns
