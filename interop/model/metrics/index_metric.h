@@ -122,6 +122,8 @@ public:
     /** Define index info type
      */
     typedef index_info index_info_t;
+    /** Define a constant iterator */
+    typedef index_array_t::const_iterator const_iterator;
 public:
     /** Constructor
      */

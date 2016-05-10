@@ -14,10 +14,11 @@
 namespace illumina { namespace interop { namespace model { namespace plot {
 
 /** Encapsulates all data for a flowcell heat map
+ *
+ * @todo refactor so it does not depend on 2-axes (from heatmap/chart_data)
  */
 class flowcell_data : public heatmap_data
 {
-
 public:
     /** Constructor */
     flowcell_data() : m_swath_count(0), m_tile_count(0){}

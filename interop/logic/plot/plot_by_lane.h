@@ -70,7 +70,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
      */
     template<class Point>
     void plot_by_lane(const model::metrics::run_metrics& metrics,
-                      constants::metric_type type,
+                      const constants::metric_type type,
                       const model::plot::filter_options& options,
                       model::plot::plot_data<Point>& data)
     {

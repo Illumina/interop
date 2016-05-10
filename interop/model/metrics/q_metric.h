@@ -269,15 +269,15 @@ namespace illumina {
                      * @param lane lane number
                      * @param tile tile number
                      * @param cycle cycle number
-                     * @param qscoreHist q-score histogram
+                     * @param qscore_hist q-score histogram
                      */
                     q_metric(const uint_t lane,
                              const uint_t tile,
                              const uint_t cycle,
-                             const uint_vector& qscoreHist) :
+                             const uint_vector& qscore_hist) :
                             metric_base::base_cycle_metric(lane, tile, cycle),
-                            m_qscore_hist(qscoreHist),
-                            m_qscore_hist_cumulative(qscoreHist.size(), 0)
+                            m_qscore_hist(qscore_hist),
+                            m_qscore_hist_cumulative(qscore_hist.size(), 0)
                     {
                     }
                     /** Constructor
@@ -285,16 +285,16 @@ namespace illumina {
                      * @param lane lane number
                      * @param tile tile number
                      * @param cycle cycle number
-                     * @param qscoreHist q-score histogram
+                     * @param qscore_hist q-score histogram
                      * @param count number of elements in the histogram
                      */
                     q_metric(const uint_t lane,
                              const uint_t tile,
                              const uint_t cycle,
-                             const uint_pointer_t qscoreHist,
+                             const uint_pointer_t qscore_hist,
                              const uint_t count) :
                             metric_base::base_cycle_metric(lane, tile, cycle),
-                            m_qscore_hist(qscoreHist, qscoreHist+count),
+                            m_qscore_hist(qscore_hist, qscore_hist+count),
                             m_qscore_hist_cumulative(count, 0)
                     {
                     }

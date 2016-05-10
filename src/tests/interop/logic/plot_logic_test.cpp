@@ -8,9 +8,12 @@
 #include "interop/logic/plot/plot_qscore_histogram.h"
 #include "interop/logic/plot/plot_qscore_heatmap.h"
 #include "interop/logic/plot/plot_flowcell_map.h"
+#include "interop/logic/plot/plot_sample_qc.h"
 #include "src/tests/interop/metrics/inc/extraction_metrics_test.h"
 #include "src/tests/interop/metrics/inc/tile_metrics_test.h"
 #include "src/tests/interop/metrics/inc/q_metrics_test.h"
+#include "src/tests/interop/metrics/inc/index_metrics_test.h"
+
 using namespace illumina::interop;
 
 TEST(plot_logic, intensity_by_cycle)
@@ -190,4 +193,42 @@ TEST(plot_logic, flowcell_map)
     EXPECT_EQ(data.saxis().label(), "Intensity");
     EXPECT_NEAR(data.saxis().min(), 302.0f, tol);
     EXPECT_NEAR(data.saxis().max(), 349.0f, tol);
+}
+
+TEST(plot_logic, sample_qc)
+{
+    const model::plot::filter_options::id_t ALL_IDS = model::plot::filter_options::ALL_IDS;
+    const float tol = 1e-3f;
+    model::metrics::run_metrics metrics;
+    std::vector<model::run::read_info> reads(2);
+    reads[0] = model::run::read_info(1, 1, 26);
+    reads[1] = model::run::read_info(2, 27, 76);
+    metrics.run_info(model::run::info(
+            "",
+            "",
+            1,
+            model::run::flowcell_layout(8, 2, 2, 36, 1, 1, std::vector<std::string>(), constants::FourDigit),
+            std::vector<std::string>(),
+            model::run::image_dimensions(),
+            reads
+    ));
+    model::plot::filter_options options(constants::FourDigit, ALL_IDS, 0, constants::A, ALL_IDS, 1, 1);
+    metrics.legacy_channel_update(constants::HiSeq);
+
+    std::istringstream iss(unittest::index_v1::binary_data());
+    io::read_metrics(iss, metrics.index_metric_set());
+    std::istringstream iss2(unittest::tile_v2::binary_data());
+    io::read_metrics(iss2, metrics.tile_metric_set());
+    ASSERT_GT(metrics.index_metric_set().size(), 0u);
+
+    model::plot::plot_data<model::plot::bar_point> data;
+    logic::plot::plot_sample_qc(metrics, 1, data);
+    ASSERT_EQ(data.size(), 1u);
+    EXPECT_EQ(data[0].title(), "% reads");
+    EXPECT_EQ(data.x_axis().label(), "Index Number");
+    EXPECT_EQ(data.y_axis().label(), "% Reads Identified (PF)");
+    EXPECT_NEAR(data.x_axis().min(), 0.0f, tol);
+    EXPECT_NEAR(data.y_axis().min(), 0.0f, tol);
+    EXPECT_NEAR(data.x_axis().max(), 0, tol);
+    EXPECT_NEAR(data.y_axis().max(), 5, tol);
 }

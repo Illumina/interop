@@ -103,6 +103,8 @@ set(HEADERS
         ../../interop/model/plot/chart_data.h
         ../../interop/model/plot/flowcell_data.h
         ../../interop/constants/typedefs.h
+        ../../interop/logic/plot/plot_sample_qc.h
+
         )
 
 set(INTEROP_HEADERS ${HEADERS} PARENT_SCOPE)
