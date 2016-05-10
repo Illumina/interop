@@ -10,6 +10,8 @@
 
 namespace illumina { namespace interop { namespace model { namespace summary {
 
+    /** Summary of metrics for index reads by lane
+     */
     class index_lane_summary
     {
     public:
@@ -51,6 +53,23 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         }
 
     public:
+        /** Reserve space for the number of indexes
+         *
+         * @param n number of indexes
+         */
+        void reserve(const size_type n)
+        {
+            m_count_summaries.reserve(n);
+        }
+        /** Add a new index count summary
+         *
+         * @todo determine why SWIG does not work with const_reference typedef
+         * @param count_summary index count summary
+         */
+        void push_back(const index_count_summary& count_summary)
+        {
+            m_count_summaries.push_back(count_summary);
+        }
         /** Get reference to lane summary at given index
          *
          * @param n index
@@ -58,7 +77,7 @@ namespace illumina { namespace interop { namespace model { namespace summary {
          */
         reference operator[](const size_type n) throw( model::index_out_of_bounds_exception )
         {
-            if(n >= m_count_summaries.size()) throw index_out_of_bounds_exception("Read index exceeds read count");
+            if(n >= m_count_summaries.size()) throw index_out_of_bounds_exception("Index sequence index exceeds index sequence count");
             return m_count_summaries[n];
         }
         /** Get constant reference to lane summary at given index
@@ -68,7 +87,7 @@ namespace illumina { namespace interop { namespace model { namespace summary {
          */
         const_reference operator[](const size_type n)const throw( model::index_out_of_bounds_exception )
         {
-            if(n >= m_count_summaries.size()) throw index_out_of_bounds_exception("Read index exceeds read count");
+            if(n >= m_count_summaries.size()) throw index_out_of_bounds_exception("Index sequence  index exceeds index sequence count");
             return m_count_summaries[n];
         }
         /** Get reference to lane summary at given index
@@ -76,9 +95,9 @@ namespace illumina { namespace interop { namespace model { namespace summary {
          * @param n index
          * @return reference to lane summary
          */
-        reference at(const size_type n) throw( model::index_out_of_bounds_exception )
+        index_count_summary& at(const size_type n) throw( model::index_out_of_bounds_exception )
         {
-            if(n >= m_count_summaries.size()) throw index_out_of_bounds_exception("Read index exceeds read count");
+            if(n >= m_count_summaries.size()) throw index_out_of_bounds_exception("Index sequence  index exceeds index sequence count");
             return m_count_summaries[n];
         }
         /** Get constant reference to lane summary at given index
@@ -88,14 +107,14 @@ namespace illumina { namespace interop { namespace model { namespace summary {
          */
         const_reference at(const size_type n)const throw( model::index_out_of_bounds_exception )
         {
-            if(n >= m_count_summaries.size()) throw index_out_of_bounds_exception("Read index exceeds read count");
+            if(n >= m_count_summaries.size()) throw index_out_of_bounds_exception("Index sequence  index exceeds index sequence count");
             return m_count_summaries[n];
         }
         /** Get number of summaries by read
          *
          * @return number of summaries by read
          */
-        size_t size()const
+        size_type size()const
         {
             return m_count_summaries.size();
         }
@@ -157,9 +176,9 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         {
             return m_total_fraction_mapped_reads;
         }
-        /** Standard deviation of the mapped reads
+        /** Coefficient of variation of the mapped reads
          *
-         * @return standard deviation of the mapped reads
+         * @return coefficient of variationof the mapped reads
          */
         float mapped_reads_cv()const
         {
@@ -180,6 +199,32 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         float max_mapped_reads()const
         {
             return m_max_mapped_reads;
+        }
+
+    public:
+        /** Set the data for the lane summary
+         *
+         * @param total_mapped_reads number of reads mapped
+         * @param pf_cluster_count_total number of PF clusters
+         * @param cluster_count_total number of clusters
+         * @param min_fraction_mapped minimum fraction of reads mapped
+         * @param max_fraction_mapped maximum fraction of reads mapped
+         * @param cv_fraction_mapped coefficient of variation of fraction of reads mapped
+         */
+        void set(const size_t total_mapped_reads,
+                 const float pf_cluster_count_total,
+                 const float cluster_count_total,
+                 const float min_fraction_mapped,
+                 const float max_fraction_mapped,
+                 const float cv_fraction_mapped)
+        {
+            m_total_reads = static_cast<size_t>(cluster_count_total);
+            m_total_pf_reads = static_cast<size_t>(pf_cluster_count_total);
+            m_total_fraction_mapped_reads = (pf_cluster_count_total == 0) ? 0 :
+                                            total_mapped_reads/pf_cluster_count_total*100;
+            m_mapped_reads_cv = cv_fraction_mapped;
+            m_min_mapped_reads = (m_total_reads==0) ? 0 : min_fraction_mapped;
+            m_max_mapped_reads = (m_total_reads==0) ? 0 : max_fraction_mapped;
         }
 
     private:

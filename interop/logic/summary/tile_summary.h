@@ -41,7 +41,8 @@ namespace summary
     * @param run destination run summary
     */
     template<typename I>
-    void summarize_tile_metrics(I beg, I end, model::summary::run_summary &run) throw( model::index_out_of_bounds_exception )
+    void summarize_tile_metrics(I beg, I end, model::summary::run_summary &run)
+                                                                throw( model::index_out_of_bounds_exception )
     {
         typedef typename model::metrics::tile_metric::read_metric_vector read_metric_vector_t;
         typedef typename read_metric_vector_t::const_iterator const_read_metric_iterator;
@@ -60,12 +61,14 @@ namespace summary
         for(;beg != end;++beg)
         {
             const size_t lane = beg->lane()-1;
-            if(lane >= tile_data_by_lane.size()) throw model::index_out_of_bounds_exception("Lane exceeds lane count in RunInfo.xml");
+            if(lane >= tile_data_by_lane.size())
+                throw model::index_out_of_bounds_exception("Lane exceeds lane count in RunInfo.xml");
             tile_data_by_lane[beg->lane()-1].push_back(*beg);// TODO: make more efficient by copying only tile data
             for(const_read_metric_iterator rb = beg->read_metrics().begin(), re=beg->read_metrics().end();rb != re;++rb)
             {
                 const size_t read = rb->read()-1;
-                if(read >= read_data_by_lane_read.read_count()) throw model::index_out_of_bounds_exception("Read exceeds read count in RunInfo.xml");
+                if(read >= read_data_by_lane_read.read_count())
+                    throw model::index_out_of_bounds_exception("Read exceeds read count in RunInfo.xml");
                 read_data_by_lane_read(rb->read() - 1, beg->lane() - 1).push_back(*rb);
             }
         }

@@ -119,7 +119,6 @@ public:
     }
     /** Test if all reads were requested
      *
-     * @param type metric type
      * @return true if all reads were requested
      */
     bool all_reads()const
@@ -128,7 +127,6 @@ public:
     }
     /** Test if all cycles were requested
      *
-     * @param type metric type
      * @return true if all cycles were requested
      */
     bool all_cycles()const

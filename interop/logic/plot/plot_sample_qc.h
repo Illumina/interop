@@ -18,7 +18,8 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
 
    /** Populate reads identified versus the index
     *
-    * @param metrics set of metric records
+    * @param index_metrics set of metric records
+    * @param tile_metrics source collection of tile metrics
     * @param proxy functor that takes a metric record and returns a metric value
     * @param options filter for metric records
     * @param type type of metric to extract using the proxy functor

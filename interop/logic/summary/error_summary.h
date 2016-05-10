@@ -65,8 +65,10 @@ void cache_error_by_lane_read(I beg,
         {
             INTEROP_ASSERT(read < summary_by_lane_read.read_count());
             const size_t lane = ebeg->first.first-1;
-            if(lane >= summary_by_lane_read.lane_count()) throw model::index_out_of_bounds_exception("Lane exceeds number of lanes in RunInfo.xml");
-            if(max_cycle < std::numeric_limits<size_t>::max() && max_error_cycle[read] < max_cycle) summary_by_lane_read(read, lane).push_back(0);
+            if(lane >= summary_by_lane_read.lane_count())
+                throw model::index_out_of_bounds_exception("Lane exceeds number of lanes in RunInfo.xml");
+            if(max_cycle < std::numeric_limits<size_t>::max() && max_error_cycle[read] < max_cycle)
+                summary_by_lane_read(read, lane).push_back(0);
             else summary_by_lane_read(read, lane).push_back(divide(ebeg->second.first,ebeg->second.second));
         }
     }

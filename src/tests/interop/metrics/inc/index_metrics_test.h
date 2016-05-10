@@ -10,6 +10,8 @@
 #include <gtest/gtest.h>
 #include "metric_test.h"
 #include "interop/model/metrics/index_metric.h"
+#include "interop/model/run/info.h"
+#include "interop/model/summary/index_flowcell_summary.h"
 
 
 namespace illumina{ namespace interop { namespace unittest {
@@ -78,6 +80,35 @@ namespace illumina{ namespace interop { namespace unittest {
                     ,100,101,120,101,115
             };
             return to_string(tmp);
+        }
+        /** Get the expected run info
+         *
+         * @return expected run info
+         */
+        static model::run::info run_info()
+        {
+            std::vector<model::run::read_info> reads(1, model::run::read_info(1, 1, 3, false));
+            std::vector<std::string> channels;
+            channels.push_back("Red");
+            channels.push_back("Green");
+            model::run::info run_info("XX",
+                                      "",
+                                      1,
+                                      model::run::flowcell_layout(8),
+                                      channels,
+                                      model::run::image_dimensions(),
+                                      reads);
+            return run_info;
+        }
+        /** Get the expected index summary
+         *
+         * @return expected index summary
+         */
+        static model::summary::index_flowcell_summary summary()
+        {
+            model::summary::index_flowcell_summary index_summary(8);
+
+            return index_summary;
         }
 
     };

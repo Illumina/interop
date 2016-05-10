@@ -13,6 +13,8 @@
 
 namespace illumina { namespace interop { namespace model { namespace summary {
 
+    /** Summary of metrics for index reads for the entire flowcell
+     */
     class index_flowcell_summary
     {
     public:
@@ -31,12 +33,22 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         typedef lane_summary_vector_t::size_type size_type;
     public:
         /** Constructor
+         *
+         * @param n number of lanes
          */
-        index_flowcell_summary()
+        index_flowcell_summary(const size_t n=0) : m_lane_summaries(n)
         {
         }
-        
-    public: 
+
+    public:
+        /** Allocate space for the number of lanes
+         *
+         * @param n number of lanes
+         */
+        void resize(const size_type n)
+        {
+            m_lane_summaries.resize(n);
+        }
         /** Get reference to lane summary at given index
          *
          * @param n index
@@ -44,7 +56,7 @@ namespace illumina { namespace interop { namespace model { namespace summary {
          */
         reference operator[](const size_type n) throw( model::index_out_of_bounds_exception )
         {
-            if(n >= m_lane_summaries.size()) throw index_out_of_bounds_exception("Read index exceeds read count");
+            if(n >= m_lane_summaries.size()) throw index_out_of_bounds_exception("Lane index exceeds lane count");
             return m_lane_summaries[n];
         }
         /** Get constant reference to lane summary at given index
@@ -54,7 +66,7 @@ namespace illumina { namespace interop { namespace model { namespace summary {
          */
         const_reference operator[](const size_type n)const throw( model::index_out_of_bounds_exception )
         {
-            if(n >= m_lane_summaries.size()) throw index_out_of_bounds_exception("Read index exceeds read count");
+            if(n >= m_lane_summaries.size()) throw index_out_of_bounds_exception("Lane index exceeds lane count");
             return m_lane_summaries[n];
         }
         /** Get reference to lane summary at given index
@@ -62,9 +74,9 @@ namespace illumina { namespace interop { namespace model { namespace summary {
          * @param n index
          * @return reference to lane summary
          */
-        reference at(const size_type n) throw( model::index_out_of_bounds_exception )
+        index_lane_summary& at(const size_type n) throw( model::index_out_of_bounds_exception )
         {
-            if(n >= m_lane_summaries.size()) throw index_out_of_bounds_exception("Read index exceeds read count");
+            if(n >= m_lane_summaries.size()) throw index_out_of_bounds_exception("Lane index exceeds lane count");
             return m_lane_summaries[n];
         }
         /** Get constant reference to lane summary at given index
@@ -74,7 +86,7 @@ namespace illumina { namespace interop { namespace model { namespace summary {
          */
         const_reference at(const size_type n)const throw( model::index_out_of_bounds_exception )
         {
-            if(n >= m_lane_summaries.size()) throw index_out_of_bounds_exception("Read index exceeds read count");
+            if(n >= m_lane_summaries.size()) throw index_out_of_bounds_exception("Lane index exceeds read count");
             return m_lane_summaries[n];
         }
         /** Get number of summaries by read

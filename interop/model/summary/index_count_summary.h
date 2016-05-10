@@ -20,18 +20,18 @@ namespace illumina { namespace interop { namespace model { namespace summary {
          * @param id index unique identifier (based on a counter)
          * @param index1 index sequence 1
          * @param index2 index sequence 2
-         * @param fraction_mapped fraction of reads mapped
-         * @param count number of indices
          * @param sample_id sample id
          * @param project_name project name
+         * @param count number of indices
+         * @param fraction_mapped fraction of reads mapped
          */
         index_count_summary(const size_t id=0,
                             const std::string& index1="",
                             const std::string index2="",
-                            const float fraction_mapped=0.0f,
-                            const size_t count=0,
                             const std::string& sample_id="",
-                            const std::string& project_name="") : m_id(id),
+                            const std::string& project_name="",
+                            const size_t count=0,
+                            const float fraction_mapped=0.0f) : m_id(id),
                                                                   m_index1(index1),
                                                                   m_index2(index2),
                                                                   m_fraction_mapped(fraction_mapped),
@@ -41,7 +41,7 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         {}
 
     public:
-        /* Get the index unique identifier (based on a counter)
+        /** Get the index unique identifier (based on a counter)
          *
          * @return index identifier
          */
@@ -96,6 +96,27 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         const std::string& project_name()const
         {
             return m_project_name;
+        }
+
+    public:
+        /** Update the count
+         *
+         * @param count count to add
+         * @return reference to this object
+         */
+        index_count_summary& operator+=(const size_t count)
+        {
+            m_count += count;
+            return *this;
+        }
+        /** Update the fraction mapped from the total PF cluster count
+         *
+         * @param total_pf_cluster_count total PF cluster count
+         */
+        void update_fraction_mapped(const float total_pf_cluster_count)
+        {
+            if(total_pf_cluster_count != 0.0f)
+                m_fraction_mapped = m_count / total_pf_cluster_count * 100.0f;
         }
 
     private:

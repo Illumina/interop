@@ -33,7 +33,7 @@ public:
      *
      * @param x x-coordinate
      * @param height height of the bar
-     * @param w width of the bar
+     * @param width width of the bar
      */
     void set(const x_type x, const y_type height, const float width=1)
     {

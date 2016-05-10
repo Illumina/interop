@@ -47,7 +47,7 @@ public:
      *
      * @param lane lane number
      * @param loc physical tile location
-     * @param tile_name name of the tile
+     * @param tile_id id of the tile
      * @param value value of the metric
      */
     void set_data(const size_t lane, const size_t loc, const ::uint32_t tile_id, const float value)

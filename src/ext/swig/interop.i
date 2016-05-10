@@ -159,6 +159,9 @@ WRAP_VECTOR(illumina::interop::model::summary::run_summary);
 #include "interop/model/summary/metric_stat.h"
 #include "interop/model/summary/read_summary.h"
 #include "interop/model/summary/run_summary.h"
+#include "interop/model/summary/index_count_summary.h"
+#include "interop/model/summary/index_lane_summary.h"
+#include "interop/model/summary/index_flowcell_summary.h"
 
 
 #include "interop/model/run/flowcell_layout.h"
@@ -184,13 +187,27 @@ WRAP_VECTOR(illumina::interop::model::summary::run_summary);
 %include "interop/model/run/info.h"
 %include "interop/model/run/parameters.h"
 
+
+%include "interop/model/summary/index_count_summary.h"
+
+WRAP_AS_VECTOR(illumina::interop::model::summary::index_count_summary);
+WRAP_VECTOR(illumina::interop::model::summary::index_lane_summary);
+%include "interop/model/summary/index_lane_summary.h"
+
+WRAP_VECTOR(illumina::interop::model::summary::index_flowcell_summary);
+WRAP_AS_VECTOR(illumina::interop::model::summary::index_lane_summary);
+%include "interop/model/summary/index_flowcell_summary.h"
+
 //
 // Setup typemaps for summary metrics
 //
-%apply size_t { std::vector<illumina::interop::model::summary::lane_summary>::size_type };
-%apply size_t { std::vector<illumina::interop::model::summary::read_summary>::size_type };
+WRAP_AS_VECTOR(illumina::interop::model::summary::lane_summary);
+WRAP_AS_VECTOR(illumina::interop::model::summary::read_summary);
+
 %template(lane_summary_vector) std::vector<illumina::interop::model::summary::lane_summary>;
 %template(read_summary_vector) std::vector<illumina::interop::model::summary::read_summary>;
+%template(index_count_summary_vector) std::vector<illumina::interop::model::summary::index_count_summary>;
+%template(index_lane_summary_vector) std::vector<illumina::interop::model::summary::index_lane_summary>;
 %template(read_info_vector) std::vector<illumina::interop::model::run::read_info>;
 
 %include "interop/model/run_metrics.h"
@@ -249,7 +266,12 @@ WRAP_VECTOR(illumina::interop::model::plot::plot_data<illumina::interop::model::
 %template(candle_stick_plot_data) illumina::interop::model::plot::plot_data<illumina::interop::model::plot::candle_stick_point>;
 %template(bar_plot_data) illumina::interop::model::plot::plot_data<illumina::interop::model::plot::bar_point>;
 
+// Summary Logic
+%{
+#include "interop/logic/summary/index_summary.h"
+%}
 
+%include "interop/logic/summary/index_summary.h"
 
 // Plotting logic
 

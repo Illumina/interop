@@ -78,7 +78,7 @@ public:
      */
     /** Get the index sequence
      *
-     * @note this can be two sequences, which are seperated by a '-'
+     * @note this can be two sequences, which are seperated by a '-' or a '+'
      * @return index sequence
      */
     const std::string& index_seq()const{return m_index_seq;}
@@ -99,7 +99,7 @@ public:
     size_t count()const{return m_count;}
     /** Test if the sequence is a dual index
      *
-     * The two sequences in a dual index are separated by a '-'
+     * The two sequences in a dual index are separated by a '-' or a '+'
      *
      * @return true if the sequence is a dual index
      */

@@ -1,4 +1,4 @@
-/** Summary logic for extraction metrics
+/** Summary logic for run metrics
  *
  *  @file
  *  @date  3/10/16
@@ -45,7 +45,7 @@ namespace summary
         }
     }
 
-    /** Summarize a collection extraction metrics
+    /** Summarize a collection run metrics
      *
      * @TODO speed up calculation by adding no_median flag
      *

@@ -14,6 +14,7 @@
 #include "inc/extraction_metrics_test.h"
 #include "inc/tile_metrics_test.h"
 #include "inc/q_metrics_test.h"
+#include "inc/index_metrics_test.h"
 #include "inc/summary_fixture.h"
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::io;
@@ -159,6 +160,48 @@ TEST(summary_metrics_test, empty_run_metrics)
     logic::summary::summarize_run_metrics(metrics, summary);
 }
 
+/** TODO take tile metrics and index metrics from the same run */
+TEST(index_summary_test, lane_summary)
+{
+    model::summary::index_flowcell_summary expected(index_v1::summary());
+    model::summary::index_flowcell_summary actual;
+    model::metrics::run_metrics metrics(index_v1::run_info());
+    try
+    {
+        std::istringstream fin1(index_v1::binary_data());
+        illumina::interop::io::read_metrics(fin1, metrics.get_set<model::metrics::index_metric>());
+        std::istringstream fin2(tile_v2::binary_data());
+        illumina::interop::io::read_metrics(fin2, metrics.get_set<model::metrics::tile_metric>());
+    }
+    catch (const std::exception &) { }
+    logic::summary::summarize_index_metrics(metrics, actual);
 
+    const float tol = 1e-7f;
+    ASSERT_EQ(expected.size(), actual.size());
+    for(size_t lane=0;lane < expected.size();++lane)
+    {
+        const model::summary::index_lane_summary& expected_lane = expected[lane];
+        const model::summary::index_lane_summary& actual_lane = actual[lane];
+        EXPECT_EQ(expected_lane.total_reads(), actual_lane.total_reads());
+        EXPECT_EQ(expected_lane.total_pf_reads(), actual_lane.total_pf_reads());
+        EXPECT_NEAR(expected_lane.total_fraction_mapped_reads(), actual_lane.total_fraction_mapped_reads(), tol);
+        EXPECT_NEAR(expected_lane.mapped_reads_cv(), actual_lane.mapped_reads_cv(), tol);
+        EXPECT_NEAR(expected_lane.min_mapped_reads(), actual_lane.min_mapped_reads(), tol);
+        EXPECT_NEAR(expected_lane.max_mapped_reads(), actual_lane.max_mapped_reads(), tol);
+        ASSERT_EQ(expected_lane.size(), actual_lane.size());
+        for(size_t index=0;index < expected_lane.size();++index)
+        {
+            const model::summary::index_count_summary& expected_count = expected_lane[index];
+            const model::summary::index_count_summary& actual_count = actual_lane[index];
+            EXPECT_EQ(expected_count.id(), actual_count.id());
+            EXPECT_EQ(expected_count.index1(), actual_count.index1());
+            EXPECT_EQ(expected_count.index2(), actual_count.index2());
+            EXPECT_EQ(expected_count.count(), actual_count.count());
+            EXPECT_EQ(expected_count.sample_id(), actual_count.sample_id());
+            EXPECT_EQ(expected_count.project_name(), actual_count.project_name());
+            EXPECT_NEAR(expected_count.fraction_mapped(), actual_count.fraction_mapped(), tol);
+        }
+    }
+};
 
 
