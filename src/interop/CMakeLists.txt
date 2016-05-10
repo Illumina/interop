@@ -104,7 +104,9 @@ set(HEADERS
         ../../interop/model/plot/flowcell_data.h
         ../../interop/constants/typedefs.h
         ../../interop/logic/plot/plot_sample_qc.h
-
+        ../../interop/model/summary/index_lane_summary.h
+        ../../interop/model/summary/index_flowcell_summary.h
+        ../../interop/model/summary/index_count_summary.h
         )
 
 set(INTEROP_HEADERS ${HEADERS} PARENT_SCOPE)

@@ -78,6 +78,7 @@ public:
      */
     /** Get the index sequence
      *
+     * @note this can be two sequences, which are seperated by a '-'
      * @return index sequence
      */
     const std::string& index_seq()const{return m_index_seq;}
@@ -91,12 +92,49 @@ public:
      * @return sample project
      */
     const std::string& sample_proj()const{return m_sample_proj;}
-    /** Get the number of index sequences
+    /** Get the number of clusters (per tile) that have this index sequences
      *
-     * @return number of index sequences
+     * @return number of clusters
      */
     size_t count()const{return m_count;}
+    /** Test if the sequence is a dual index
+     *
+     * The two sequences in a dual index are separated by a '-'
+     *
+     * @return true if the sequence is a dual index
+     */
+    bool is_dual()const
+    {
+        return index_of_separator() != std::string::npos;
+    }
+    /** Get the first sequence in a dual index (or full sequence for single index)
+     *
+     * @return index 1 or full sequence for single index
+     */
+    std::string index1()const
+    {
+        const std::string::size_type pos = index_of_separator();
+        if(pos != std::string::npos) return m_index_seq.substr(0, pos);
+        return m_index_seq;
+    }
+    /** Get the second sequence in a dual index (or empty string for single index)
+     *
+     * @return index 2 or empty string for single index
+     */
+    std::string index2()const
+    {
+        const std::string::size_type pos = index_of_separator();
+        if(pos != std::string::npos) return m_index_seq.substr(pos+1);
+        return "";
+    }
     /** @} */
+private:
+    std::string::size_type index_of_separator()const
+    {
+        const std::string::size_type pos = m_index_seq.find('-');
+        if(pos != std::string::npos) return pos;
+        return m_index_seq.find('+');
+    }
 
 private:
     std::string m_index_seq;
