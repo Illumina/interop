@@ -159,6 +159,8 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
             data.set_range(std::max(lower - 2 * (upper - lower), values_for_scaling[0]),
                            std::min(values_for_scaling.back(), upper + 2 * (upper - lower)));
         }
+        else data.set_range(0,0);
+        if(type == constants::ErrorRate) data.set_range(0, std::min(5.0f, data.saxis().max()));
 
         std::string title = metrics.run_info().flowcell().barcode();
         if(title != "") title += " ";
