@@ -58,7 +58,7 @@ public:
     static const key_t& to_key(const enum_t type)
     {
         typename type_key_map_t::const_iterator it = type_to_key_map().find(type);
-        if(it == type_to_key_map().end()) throw std::runtime_error("Unexpected error finding enum type"); // TODO: Create Exception
+        if(it == type_to_key_map().end()) throw std::logic_error("Unexpected error finding enum type"); // TODO: Create Exception
         return it->second;
     }
     /** Get string list of available enumeration types

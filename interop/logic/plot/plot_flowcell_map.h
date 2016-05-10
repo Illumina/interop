@@ -69,7 +69,8 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
     inline void plot_flowcell_map(const model::metrics::run_metrics& metrics,
                                   const constants::metric_type type,
                                   const model::plot::filter_options& options,
-                                  model::plot::flowcell_data& data) throw(std::invalid_argument)
+                                  model::plot::flowcell_data& data)
+                throw(std::invalid_argument, std::logic_error, model::invalid_metric_type)
     {
         const model::run::flowcell_layout& layout = metrics.run_info().flowcell();
         data.clear();
