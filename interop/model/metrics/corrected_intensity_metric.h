@@ -289,11 +289,14 @@ namespace illumina {
                     /** Get the total number of clusters called
                      *
                      * @note Supported by all versions
+                     * @param nocalls if true include no calls
                      * @return total number of clusters called
                      */
-                    uint_t total_calls()const
+                    uint_t total_calls(const bool nocalls=false)const
                     {
-                        return std::accumulate(m_called_counts.begin(), m_called_counts.end(), 0);
+                        if(nocalls)
+                            return std::accumulate(m_called_counts.begin(), m_called_counts.end(), 0);
+                        return std::accumulate(m_called_counts.begin()+1, m_called_counts.end(), 0);
                     }
                     /** Get the total summed intensity for all clusters
                      *
@@ -321,11 +324,11 @@ namespace illumina {
                      */
                     float percent_base(const constants::dna_bases index)const
                     {
-                        uint_t total = total_calls();
+                        uint_t total = total_calls(index == constants::NC);
                         if(total == 0) return std::numeric_limits<float>::quiet_NaN();
                         return called_counts(index) / static_cast<float>(total) * 100;
                     }
-                    /** Get the percentage per base
+                    /** Get the percentage per base (does not include no calls)
                      *
                      * @note Supported by all versions
                      * @return percentage for given base
@@ -421,7 +424,7 @@ namespace illumina {
                      */
                     float percentBase(difference_type index)const
                     {
-                        uint_t total = totalCalls();
+                        uint_t total = totalCalls(static_cast<constants::dna_bases>(index) == constants::NC);
                         if(total == 0) return std::numeric_limits<float>::quiet_NaN();
                         return calledCounts(index) / static_cast<float>(total) * 100;
                     }
@@ -440,7 +443,8 @@ namespace illumina {
                     {
                         INTEROP_ASSERT((index+1) < static_cast<difference_type>(constants::NUM_OF_BASES_AND_NC));
                         return m_called_counts[static_cast<uint_t>(index+1)];
-                    } /** The signal to noise ratio is calculated as mean called intensity divided by standard deviation
+                    }
+                    /** The signal to noise ratio is calculated as mean called intensity divided by standard deviation
                      * of non called intensities.
                      *
                      * @deprecated Will be removed in 1.1.x (use signal_to_noise instead)
@@ -457,9 +461,11 @@ namespace illumina {
                      * @note Supported by all versions
                      * @return total number of clusters called
                      */
-                    uint_t totalCalls()const
+                    uint_t totalCalls(const bool nocalls=false)const
                     {
-                        return std::accumulate(m_called_counts.begin(), m_called_counts.end(), 0);
+                        if(nocalls)
+                            return std::accumulate(m_called_counts.begin(), m_called_counts.end(), 0);
+                        return std::accumulate(m_called_counts.begin()+1, m_called_counts.end(), 0);
                     }
                     /** Get the total summed intensity for all clusters
                      *

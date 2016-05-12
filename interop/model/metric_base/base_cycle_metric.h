@@ -20,7 +20,7 @@ namespace illumina {
         namespace model {
             namespace metric_base {
                 /** Defines default base header for metric */
-                class base_cycle_metric_header
+                class base_cycle_metric_header  : public empty_header
                 {
                 public:
                     /** Define the base type */

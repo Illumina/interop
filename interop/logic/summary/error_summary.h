@@ -35,7 +35,8 @@ void cache_error_by_lane_read(I beg,
                               I end,
                               const size_t max_cycle,
                               const std::vector<read_cycle>& cycle_to_read,
-                              summary_by_lane_read<float>& summary_by_lane_read) throw( model::index_out_of_bounds_exception )
+                              summary_by_lane_read<float>& summary_by_lane_read)
+                                throw( model::index_out_of_bounds_exception )
 {
     typedef std::vector<size_t> cycle_vector_t;
     typedef std::pair<size_t, size_t> key_t;

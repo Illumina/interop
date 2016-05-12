@@ -23,9 +23,15 @@ namespace illumina {
     namespace interop {
         namespace model {
             namespace metric_base {
+                /** This is a sentinel used to ignore a metric set in certain situations
+                 *
+                 * @see illumina::interop::logic::metric::table_entry::update
+                 */
+                class empty_header { };
+                // Forward declaration
                 class base_metric;
                 /** Defines default base header for metric */
-                class base_metric_header
+                class base_metric_header : public empty_header
                 {
                 public:
                     /** Define the base type */
@@ -52,7 +58,7 @@ namespace illumina {
                  *
                  * @see illumina::interop::logic::metric::table_entry::update
                  */
-                class empty_metric {};
+                class empty_metric { };
                 /** Base class for InterOp classes that contain tile specific metrics
                  *
                  * These classes define both a lane and tile identifier.
@@ -328,6 +334,11 @@ namespace illumina {
                                 return m_tile;
                         }
                     }
+                    /** Empty prefix string
+                     *
+                     * @return empty string
+                     */
+                    static const char* prefix(){return "";}
 
                 private:
                     uint_t m_lane;

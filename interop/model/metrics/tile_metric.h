@@ -120,6 +120,8 @@ namespace illumina {
                     /** Define map between read ids and read metrics
                      */
                     typedef std::vector<read_metric> read_metric_vector;
+                    /** Define a const read iterator */
+                    typedef read_metric_vector::const_iterator const_iterator;
                     /** Read metric type
                      */
                     typedef read_metric read_metric_type;
@@ -241,7 +243,7 @@ namespace illumina {
                      * @return vector of metrics for each read
                      */
                     const read_metric_vector & read_metrics()const{return m_read_metrics;}
-                    /** Percent aligned for read
+                    /** Percent aligned for read at specified index
                      *
                      * @note If percent aligned was never estimated, then it will be NaN
                      *
@@ -254,7 +256,7 @@ namespace illumina {
                             return std::numeric_limits<float>::quiet_NaN();
                         return m_read_metrics[n].percent_aligned();
                     }
-                    /** Percent phasing for read
+                    /** Percent phasing for read at specified index
                      *
                      * @param n index of read
                      * @return percent phasing (or NaN is out of bounds)
@@ -265,7 +267,7 @@ namespace illumina {
                             return std::numeric_limits<float>::quiet_NaN();
                         return m_read_metrics[n].percent_phasing();
                     }
-                    /** Percent prephasing for read
+                    /** Percent prephasing for read at specified index
                      *
                      * @param n index of read
                      * @return percent prephasing (or NaN is out of bounds)
@@ -275,6 +277,41 @@ namespace illumina {
                         if(n>=m_read_metrics.size())
                             return std::numeric_limits<float>::quiet_NaN();
                         return m_read_metrics[n].percent_prephasing();
+                    }
+                    /** Percent aligned for read read number
+                     *
+                     * @note If percent aligned was never estimated, then it will be NaN
+                     *
+                     * @param number number of read
+                     * @return percent aligned (or NaN is out of bounds)
+                     */
+                    float percent_aligned_at(const size_t number)const
+                    {
+                        for(const_iterator b=m_read_metrics.begin(), e = m_read_metrics.end();b != e;++b)
+                            if( b->read() == number ) return b->percent_aligned();
+                        return std::numeric_limits<float>::quiet_NaN();
+                    }
+                    /** Percent phasing for read read number
+                     *
+                     * @param number number of read
+                     * @return percent phasing (or NaN is out of bounds)
+                     */
+                    float percent_phasing_at(const size_t number)const
+                    {
+                        for(const_iterator b=m_read_metrics.begin(), e = m_read_metrics.end();b != e;++b)
+                            if( b->read() == number ) return b->percent_phasing();
+                        return std::numeric_limits<float>::quiet_NaN();
+                    }
+                    /** Percent prephasing for read number
+                     *
+                     * @param number number of read
+                     * @return percent prephasing (or NaN is out of bounds)
+                     */
+                    float percent_prephasing_at(const size_t number)const
+                    {
+                        for(const_iterator b=m_read_metrics.begin(), e = m_read_metrics.end();b != e;++b)
+                            if( b->read() == number ) return b->percent_prephasing();
+                        return std::numeric_limits<float>::quiet_NaN();
                     }
                     /** Number of reads
                      *

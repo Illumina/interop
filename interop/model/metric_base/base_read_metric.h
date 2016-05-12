@@ -20,7 +20,7 @@ namespace illumina {
             namespace metric_base {
                 class base_read_metric;
                 /** Defines default base read header for metric */
-                class base_read_metric_header
+                class base_read_metric_header  : public empty_header
                 {
                 public:
                     /** Define the base type */

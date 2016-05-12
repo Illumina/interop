@@ -13,8 +13,6 @@ namespace illumina { namespace interop {  namespace logic { namespace utils {
 
     namespace detail
     {
-            /** This macro maps an enum description to a string/enum pair */
-#           define INTEROP_ENUM_DESCRIPTION(X, Y, Z) name_type_pair_t(Z,X)
             /** Specialization that maps metric group types to their string names */
             template<typename E>
             class metric_to_group
@@ -34,7 +32,10 @@ namespace illumina { namespace interop {  namespace logic { namespace utils {
                 static const name_type_vector_t& key_type_pair_vector()
                 {
                     using namespace constants;
+                    /** This macro maps an enum description to a string/enum pair */
+#           define INTEROP_ENUM_DESCRIPTION(X, Y, Z) name_type_pair_t(Z,X)
                     static const name_type_pair_t name_types[] = {INTEROP_ENUM_METRIC_TYPES};
+#           undef INTEROP_ENUM_DESCRIPTION
                     static const name_type_vector_t tmp(name_types, name_types+util::length_of(name_types));
                     return tmp;
                 }
@@ -44,9 +45,6 @@ namespace illumina { namespace interop {  namespace logic { namespace utils {
                  */
                 static E unknown(){return constants::UnknownMetricType;}
             };
-#           undef INTEROP_ENUM_DESCRIPTION
-            /** This macro maps an enum description to a string/enum pair */
-#           define INTEROP_ENUM_DESCRIPTION(X, Y, Z) name_type_pair_t(Y,X)
             /** Specialization that maps metric group types to their string names
              *
              * @todo replace by macro?
@@ -69,7 +67,10 @@ namespace illumina { namespace interop {  namespace logic { namespace utils {
                 static const name_type_vector_t& key_type_pair_vector()
                 {
                     using namespace constants;
+                    /** This macro maps an enum description to a string/enum pair */
+#           define INTEROP_ENUM_DESCRIPTION(X, Y, Z) name_type_pair_t(Y,X)
                     static const name_type_pair_t name_types[] = {INTEROP_ENUM_METRIC_TYPES};
+#           undef INTEROP_ENUM_DESCRIPTION
                     static const name_type_vector_t tmp(name_types, name_types+util::length_of(name_types));
                     return tmp;
                 }
@@ -79,7 +80,6 @@ namespace illumina { namespace interop {  namespace logic { namespace utils {
                  */
                 static E unknown(){return constants::UnknownMetricType;}
             };
-#           undef INTEROP_ENUM_DESCRIPTION
     }
     /** Convert metric type to metric group
      *

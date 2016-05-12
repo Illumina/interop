@@ -347,6 +347,37 @@ public:
 };
 
 
+/** Specialization that maps metric data types to their string names
+ */
+template<>
+class name_type_vector_builder<metric_data>
+{
+public:
+    /** Define string key type */
+    typedef std::string key_t;
+private:
+    typedef std::pair<key_t, metric_data> name_type_pair_t;
+    typedef std::vector< name_type_pair_t > name_type_vector_t;
+
+public:
+    /** Get vector that maps enumeration string names to enumeration values
+     *
+     * @return vector of enumeration string names and enumeration values
+     */
+    static const name_type_vector_t& key_type_pair_vector()
+    {
+        static const name_type_pair_t name_types[] = {INTEROP_ENUM_METRIC_DATA_TYPES};
+        static const name_type_vector_t tmp(name_types, name_types+util::length_of(name_types));
+        return tmp;
+    }
+    /** Get the unknown type
+     *
+     * @return unknown type
+     */
+    static metric_data unknown(){return constants::UnknownMetricData;}
+};
+
+
 /** Specialization that maps metric group types to their string names
  */
 template<>

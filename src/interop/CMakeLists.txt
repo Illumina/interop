@@ -107,7 +107,11 @@ set(HEADERS
         ../../interop/model/summary/index_lane_summary.h
         ../../interop/model/summary/index_flowcell_summary.h
         ../../interop/model/summary/index_count_summary.h
-        ../../interop/logic/summary/index_summary.h)
+        ../../interop/logic/summary/index_summary.h
+        ../../interop/logic/table/populate_imaging_table.h
+        ../../interop/model/table/imaging_table.h
+        ../../interop/util/string.h
+        )
 
 set(INTEROP_HEADERS ${HEADERS} PARENT_SCOPE)
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR CMAKE_COMPILER_IS_GNUCC)

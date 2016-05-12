@@ -228,15 +228,17 @@ namespace illumina {
                     }
                     /** Get an array of maximum intensity values
                      *
-                     * These values are estimated to be a 9x percentile of intensities extracted from the image
+                     * These values are estimated to be a 9x percentile of intensities extracted from each image, e.g.
+                     * each channel.
                      *
                      * @return vector of intensity values
                      */
                     const ushort_array_t &max_intensity_values()const{return m_max_intensity_values;}
                     /** Get an array of focus scores
                      *
-                     * These values are estimated using full width half max (FWHM).
+                     * These values are estimated using full width half max (FWHM) from each image, e.g. each channel.
                      *
+                     * @deprecated Will be removed in 1.1.x (use focus_scores instead)
                      * @return vector of focus scores
                      */
                     const float_array_t& focus_scores()const{return m_focus_scores;}

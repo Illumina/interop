@@ -54,6 +54,20 @@
         INTEROP_ENUM(MetricCount),\
         INTEROP_ENUM(UnknownMetricGroup)
 
+
+/** Enumeration of each metric data type
+ *
+ * @note This macro requires the macro INTEROP_ENUM to be defined before use
+ * @see illumina::interop::constants::metric_data
+ */
+#define INTEROP_ENUM_METRIC_DATA_TYPES \
+        INTEROP_ENUM(IdType),\
+        INTEROP_ENUM(ValueType),\
+        INTEROP_ENUM(ChannelArray),\
+        INTEROP_ENUM(BaseArray),\
+        INTEROP_ENUM(MetricDataCount),\
+        INTEROP_ENUM(UnknownMetricData)
+
 /** Enumeration of tile naming methods
  *
  * @note This macro requires the macro INTEROP_ENUM to be defined before use
@@ -190,6 +204,8 @@ namespace illumina {
             enum plot_colors {INTEROP_ENUM_PLOT_COLORS};
             /** Options for a bar plot */
             enum bar_plot_options{ INTEROP_ENUM_BAR_PLOT_OPTIONS };
+            /** Options for a bar plot */
+            enum metric_data{ INTEROP_ENUM_METRIC_DATA_TYPES };
         }
     }
 }
