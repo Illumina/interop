@@ -83,16 +83,6 @@ namespace illumina {
                      */
                     /** Calculated error rate, as determined by a spiked in PhiX control sample.
                      *
-                     * @deprecated Will be removed in 1.1.x (use error_rate instead)
-                     * @note Supported by all versions
-                     * @return error rate
-                     */
-                    float errorRate()const
-                    {
-                        return m_error_rate;
-                    }
-                    /** Calculated error rate, as determined by a spiked in PhiX control sample.
-                     *
                      * @note Supported by all versions
                      * @return error rate
                      */
@@ -110,7 +100,7 @@ namespace illumina {
                      * @param n index of read
                      * @return total number of errors
                      */
-                    uint_t mismatch_cluster_count(size_t n)const
+                    uint_t mismatch_cluster_count(const size_t n)const
                     {
                        INTEROP_ASSERT(n<MAX_MISMATCH);
                         return m_mismatch_cluster_count[n];
@@ -138,6 +128,16 @@ namespace illumina {
                         return m_mismatch_cluster_count;
                     }
                     /** @} */
+                    /** Calculated error rate, as determined by a spiked in PhiX control sample.
+                     *
+                     * @deprecated Will be removed in 1.1.x (use error_rate instead)
+                     * @note Supported by all versions
+                     * @return error rate
+                     */
+                    float errorRate()const
+                    {
+                        return m_error_rate;
+                    }
 
                 public:
                     /** Get the prefix of the InterOp filename

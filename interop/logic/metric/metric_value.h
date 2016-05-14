@@ -15,7 +15,6 @@
 #include "interop/model/metrics/q_metric.h"
 #include "interop/model/metrics/error_metric.h"
 #include "interop/model/metrics/corrected_intensity_metric.h"
-#include "../../constants/enums.h"
 
 
 namespace illumina { namespace interop { namespace logic { namespace metric {

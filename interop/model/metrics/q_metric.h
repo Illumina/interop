@@ -123,16 +123,6 @@ namespace illumina {
                      */
                     /** Get a q-score bin
                      *
-                     * @deprecated Will be removed in 1.1.x (use bin_at instead)
-                     * @return q-score bin
-                     */
-                    const q_score_bin& binAt(const size_t n)const
-                    {
-                       INTEROP_ASSERT(n < binCount());
-                        return m_qscore_bins[n];
-                    }
-                    /** Get a q-score bin
-                     *
                      * @return q-score bin
                      */
                     const q_score_bin& bin_at(const size_t n)const
@@ -156,12 +146,6 @@ namespace illumina {
                     {
                         return m_qscore_bins;
                     }
-                    /** Get the number of bins in header
-                     *
-                     * @deprecated Will be removed in 1.1.x (use bin_count instead)
-                     * @return number of bins in header
-                     */
-                    size_t binCount()const{return m_qscore_bins.size();}
                     /** Get the number of bins in header
                      *
                      * @return number of bins in header
@@ -192,6 +176,12 @@ namespace illumina {
                         return index+1;
                     }
                     /** @} */
+                    /** Get the number of bins in header
+                     *
+                     * @deprecated Will be removed in 1.1.x (use bin_count instead)
+                     * @return number of bins in header
+                     */
+                    size_t binCount()const{return m_qscore_bins.size();}
                     /** Generate a default header
                      *
                      * @return default header
@@ -312,25 +302,6 @@ namespace illumina {
                      */
                     /** Q-score value of the histogram
                      *
-                     * @deprecated Will be removed in 1.1.x (use qscore_hist instead)
-                     * @return q-score value of the histogram
-                     */
-                    uint_t qscoreHist(const size_t n)const
-                    {
-                       INTEROP_ASSERT(n<m_qscore_hist.size());
-                        return m_qscore_hist[n];
-                    }
-                    /** Q-score histogram
-                     *
-                     * @deprecated Will be removed in 1.1.x (use qscore_hist instead)
-                     * @return q-score histogram
-                     */
-                    const uint_vector& qscoreHist()const
-                    {
-                        return m_qscore_hist;
-                    }
-                    /** Q-score value of the histogram
-                     *
                      * @return q-score value of the histogram
                      */
                     uint_t qscore_hist(const size_t n)const
@@ -446,11 +417,30 @@ namespace illumina {
                      * @return percent of cluster over the given q-score
                      */
                     float percent_over_qscore(const uint_t qscore,
-                                              const qscore_bin_vector_type& bins=qscore_bin_vector_type())const
+                                              const qscore_bin_vector_type& bins)const
                     {
                         const float total = static_cast<float>(sum_qscore());
                         if(total == 0.0f) return std::numeric_limits<float>::quiet_NaN();
                         uint_t totalCount=total_over_qscore(qscore, bins);
+                        return 100 * totalCount / total;
+                    }
+                    /** Percent of clusters over the given q-score
+                     *
+                     * This calculates over the local histogram. This function either requires the bins from the header
+                     * or the index of the q-value for the first parameter. Note that the header is apart of the
+                     * metric set (q_metrics).
+                     *
+                     * @snippet src/examples/example_q_metric.cpp Calculating Percent >= Q30
+                     *
+                     * @sa q_score_header::bins()
+                     * @param qscore percentage of clusters over the given q-score value
+                     * @return percent of cluster over the given q-score
+                     */
+                    float percent_over_qscore(const uint_t qscore)const
+                    {
+                        const float total = static_cast<float>(sum_qscore());
+                        if(total == 0.0f) return std::numeric_limits<float>::quiet_NaN();
+                        uint_t totalCount=total_over_qscore(qscore);
                         return 100 * totalCount / total;
                     }
                     /** Percent of clusters over the given q-score
@@ -538,6 +528,25 @@ namespace illumina {
                         {
                             (*it) += (*cur);
                         }
+                    }
+                    /** Q-score value of the histogram
+                     *
+                     * @deprecated Will be removed in 1.1.x (use qscore_hist instead)
+                     * @return q-score value of the histogram
+                     */
+                    uint_t qscoreHist(const size_t n)const
+                    {
+                        INTEROP_ASSERT(n<m_qscore_hist.size());
+                        return m_qscore_hist[n];
+                    }
+                    /** Q-score histogram
+                     *
+                     * @deprecated Will be removed in 1.1.x (use qscore_hist instead)
+                     * @return q-score histogram
+                     */
+                    const uint_vector& qscoreHist()const
+                    {
+                        return m_qscore_hist;
                     }
 
                 public:

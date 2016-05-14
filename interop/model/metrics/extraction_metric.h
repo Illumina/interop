@@ -188,15 +188,6 @@ namespace illumina {
                      */
                     /** Date time extraction completed
                      *
-                     * @deprecated Will be removed in 1.1.x (use date_time instead)
-                     * @return date time code
-                     */
-                    ulong_t dateTime()const
-                    {
-                        return m_date_time;
-                    }
-                    /** Date time extraction completed
-                     *
                      * @return date time code
                      */
                     ulong_t date_time()const
@@ -218,7 +209,7 @@ namespace illumina {
                      * @param channel channel index
                      * @return median 90th percentile of the intensities
                      */
-                    ushort_t max_intensity(size_t channel)const
+                    ushort_t max_intensity(const size_t channel)const
                     {
                        INTEROP_ASSERT(channel<MAX_CHANNELS);
                        INTEROP_ASSERT(m_max_intensity_values.size() == MAX_CHANNELS);
@@ -226,22 +217,10 @@ namespace illumina {
                     }
                     /** Median Full Width Half Max (FWHM) Focus Metric
                      *
-                     * @deprecated Will be removed in 1.1.x (use focus_score instead)
                      * @param channel channel index
                      * @return focus metric as measured by FWHM
                      */
-                    float focusScore(size_t channel)const
-                    {
-                        INTEROP_ASSERT(channel <MAX_CHANNELS);
-                        INTEROP_ASSERT(m_focus_scores.size()==MAX_CHANNELS);
-                        return m_focus_scores[channel];
-                    }
-                    /** Median Full Width Half Max (FWHM) Focus Metric
-                     *
-                     * @param channel channel index
-                     * @return focus metric as measured by FWHM
-                     */
-                    float focus_score(size_t channel)const
+                    float focus_score(const size_t channel)const
                     {
                         INTEROP_ASSERT(channel <MAX_CHANNELS);
                         INTEROP_ASSERT(m_focus_scores.size()==MAX_CHANNELS);
@@ -260,7 +239,7 @@ namespace illumina {
                      *
                      * @return vector of focus scores
                      */
-                    const float_array_t& focusScores()const{return m_focus_scores;}
+                    const float_array_t& focus_scores()const{return m_focus_scores;}
                     /** Get the number of channels
                      *
                      * @return number of channels
@@ -270,6 +249,35 @@ namespace illumina {
                         return MAX_CHANNELS;
                     }
                     /** @} */
+                    /** Median Full Width Half Max (FWHM) Focus Metric
+                     *
+                     * @deprecated Will be removed in 1.1.x (use focus_score instead)
+                     * @param channel channel index
+                     * @return focus metric as measured by FWHM
+                     */
+                    float focusScore(size_t channel)const
+                    {
+                        INTEROP_ASSERT(channel <MAX_CHANNELS);
+                        INTEROP_ASSERT(m_focus_scores.size()==MAX_CHANNELS);
+                        return m_focus_scores[channel];
+                    }
+                    /** Date time extraction completed
+                     *
+                     * @deprecated Will be removed in 1.1.x (use date_time instead)
+                     * @return date time code
+                     */
+                    ulong_t dateTime()const
+                    {
+                        return m_date_time;
+                    }
+                    /** Get an array of focus scores
+                     *
+                     * These values are estimated using full width half max (FWHM).
+                     *
+                     * @deprecated Will be removed in 1.1.x (use focus_scores instead)
+                     * @return vector of focus scores
+                     */
+                    const float_array_t& focusScores()const{return m_focus_scores;}
 
                 public:
                     /** Get the prefix of the InterOp filename

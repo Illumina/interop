@@ -48,11 +48,16 @@ namespace illumina {
                      */
                     void update_max_cycle(const base_metric&){}
                 };
+                /** This is a sentinel used to ignore a metric in certain situations
+                 *
+                 * @see illumina::interop::logic::metric::table_entry::update
+                 */
+                class empty_metric {};
                 /** Base class for InterOp classes that contain tile specific metrics
                  *
                  * These classes define both a lane and tile identifier.
                  */
-                class base_metric
+                class base_metric : public empty_metric
                 {
                 public:
                     /** Unsigned long

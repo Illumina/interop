@@ -27,7 +27,7 @@ namespace illumina { namespace interop { namespace model { namespace summary {
          */
         index_count_summary(const size_t id=0,
                             const std::string& index1="",
-                            const std::string index2="",
+                            const std::string& index2="",
                             const std::string& sample_id="",
                             const std::string& project_name="",
                             const size_t count=0,

@@ -153,22 +153,68 @@ namespace illumina {
                      *
                      * @return minimum contrast intensity
                      */
-                    ushort_t minContrast(size_t channel)const
+                    ushort_t min_contrast(const size_t channel)const
                     {
-                       INTEROP_ASSERT(channel < m_channelCount);
+                        INTEROP_ASSERT(channel < m_channelCount);
                         return m_minContrast[channel];
                     }
                     /** Maximum contrast intensity
                      *
                      * @return maximum contrast intensity
                      */
-                    ushort_t maxContrast(size_t channel)const
+                    ushort_t max_contrast(const size_t channel)const
                     {
-                       INTEROP_ASSERT(channel < m_channelCount);
+                        INTEROP_ASSERT(channel < m_channelCount);
                         return m_maxContrast[channel];
                     }
                     /** Minimum contrast intensity
                      *
+                     * @return minimum contrast intensity
+                     */
+                    const ushort_array_t& min_contrast_array()const
+                    {
+                        return m_minContrast;
+                    }
+                    /** Maximum contrast intensity
+                     *
+                     * @return maximum contrast intensity
+                     */
+                    const ushort_array_t& max_contrast_array()const
+                    {
+                        return m_maxContrast;
+                    }
+                    /** Number of channels
+                     *
+                     * @return number of channels
+                     */
+                    ushort_t channel_count()const
+                    {
+                        return m_channelCount;
+                    }
+                    /** @} */
+                    /** Minimum contrast intensity
+                     *
+                     * @deprecated Will be removed in 1.1.x (use min_contrast instead)
+                     * @return minimum contrast intensity
+                     */
+                    ushort_t minContrast(size_t channel)const
+                    {
+                        INTEROP_ASSERT(channel < m_channelCount);
+                        return m_minContrast[channel];
+                    }
+                    /** Maximum contrast intensity
+                     *
+                     * @deprecated Will be removed in 1.1.x (use max_contrast instead)
+                     * @return maximum contrast intensity
+                     */
+                    ushort_t maxContrast(size_t channel)const
+                    {
+                        INTEROP_ASSERT(channel < m_channelCount);
+                        return m_maxContrast[channel];
+                    }
+                    /** Minimum contrast intensity
+                     *
+                     * @deprecated Will be removed in 1.1.x (use min_contrast_array instead)
                      * @return minimum contrast intensity
                      */
                     const ushort_array_t& minContrast()const
@@ -177,6 +223,7 @@ namespace illumina {
                     }
                     /** Maximum contrast intensity
                      *
+                     * @deprecated Will be removed in 1.1.x (use max_contrast_array instead)
                      * @return maximum contrast intensity
                      */
                     const ushort_array_t& maxContrast()const
@@ -185,13 +232,13 @@ namespace illumina {
                     }
                     /** Number of channels
                      *
+                     * @deprecated Will be removed in 1.1.x (use channel_count instead)
                      * @return number of channels
                      */
                     ushort_t channelCount()const
                     {
                         return m_channelCount;
                     }
-                    /** @} */
 
                 public:
                     /** Get the prefix of the InterOp filename

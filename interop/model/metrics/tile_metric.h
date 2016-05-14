@@ -209,30 +209,6 @@ namespace illumina {
                      */
                     /** Density of clusters for each tile (in clusters per mm2)
                      *
-                     * @deprecated Will be removed in 1.1.x (use cluster_density instead)
-                     * @return cluster density
-                     */
-                    float clusterDensity()const{return m_cluster_density;}
-                    /** Density of clusters passing filter for each tile (in clusters per mm2)
-                     *
-                     * @deprecated Will be removed in 1.1.x (use cluster_density_pf instead)
-                     * @return cluster density passing filter
-                     */
-                    float clusterDensityPf()const{return m_cluster_density_pf;}
-                    /** Number of clusters for each tile
-                     *
-                     * @deprecated Will be removed in 1.1.x (use cluster_count instead)
-                     * @return number of clusters
-                     */
-                    float clusterCount()const{return m_cluster_count;}
-                    /** Number of clusters passing filter for each tile
-                     *
-                     * @deprecated Will be removed in 1.1.x (use cluster_count_pf instead)
-                     * @return number of clusters passing filter
-                     */
-                    float clusterCountPf()const{return m_cluster_count_pf;}
-                    /** Density of clusters for each tile (in clusters per mm2)
-                     *
                      * @return cluster density
                      */
                     float cluster_density()const{return m_cluster_density;}
@@ -270,31 +246,34 @@ namespace illumina {
                      * @note If percent aligned was never estimated, then it will be NaN
                      *
                      * @param n index of read
-                     * @return percent aligned
+                     * @return percent aligned (or NaN is out of bounds)
                      */
                     float percent_aligned(const size_t n)const
                     {
-                        INTEROP_ASSERT(n<m_read_metrics.size());
+                        if(n>=m_read_metrics.size())
+                            return std::numeric_limits<float>::quiet_NaN();
                         return m_read_metrics[n].percent_aligned();
                     }
                     /** Percent phasing for read
                      *
                      * @param n index of read
-                     * @return percent phasing
+                     * @return percent phasing (or NaN is out of bounds)
                      */
                     float percent_phasing(const size_t n)const
                     {
-                        INTEROP_ASSERT(n<m_read_metrics.size());
+                        if(n>=m_read_metrics.size())
+                            return std::numeric_limits<float>::quiet_NaN();
                         return m_read_metrics[n].percent_phasing();
                     }
                     /** Percent prephasing for read
                      *
                      * @param n index of read
-                     * @return percent prephasing
+                     * @return percent prephasing (or NaN is out of bounds)
                      */
                     float percent_prephasing(const size_t n)const
                     {
-                        INTEROP_ASSERT(n<m_read_metrics.size());
+                        if(n>=m_read_metrics.size())
+                            return std::numeric_limits<float>::quiet_NaN();
                         return m_read_metrics[n].percent_prephasing();
                     }
                     /** Number of reads
@@ -306,6 +285,30 @@ namespace illumina {
                         return m_read_metrics.size();
                     }
                     /* @} */
+                    /** Density of clusters for each tile (in clusters per mm2)
+                     *
+                     * @deprecated Will be removed in 1.1.x (use cluster_density instead)
+                     * @return cluster density
+                     */
+                    float clusterDensity()const{return m_cluster_density;}
+                    /** Density of clusters passing filter for each tile (in clusters per mm2)
+                     *
+                     * @deprecated Will be removed in 1.1.x (use cluster_density_pf instead)
+                     * @return cluster density passing filter
+                     */
+                    float clusterDensityPf()const{return m_cluster_density_pf;}
+                    /** Number of clusters for each tile
+                     *
+                     * @deprecated Will be removed in 1.1.x (use cluster_count instead)
+                     * @return number of clusters
+                     */
+                    float clusterCount()const{return m_cluster_count;}
+                    /** Number of clusters passing filter for each tile
+                     *
+                     * @deprecated Will be removed in 1.1.x (use cluster_count_pf instead)
+                     * @return number of clusters passing filter
+                     */
+                    float clusterCountPf()const{return m_cluster_count_pf;}
 
                 public:
                     /** Get the prefix of the InterOp filename

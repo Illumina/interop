@@ -206,7 +206,7 @@ public:
      * @param n index of index
      * @return inex
      */
-    const index_info& indices(size_t n)const
+    const index_info& indices(const size_t n)const
     {
        INTEROP_ASSERT(n<m_indices.size());
         return m_indices[n];
