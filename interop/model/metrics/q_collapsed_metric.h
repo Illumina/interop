@@ -176,6 +176,38 @@ namespace illumina { namespace interop { namespace model { namespace metrics {
         {
             return m_cumulative_total;
         }
+        /** Percent >= Q20
+         *
+         * @return % >= Q20
+         */
+        float percent_over_q20()const
+        {
+            return 100.0f * m_q20 / m_total;
+        }
+        /** Percent >= Q30
+         *
+         * @return % >= Q30
+         */
+        float percent_over_q30()const
+        {
+            return 100.0f * m_q30 / m_total;
+        }
+        /** Percent >= Q20 accumulated up to the current cycle
+         *
+         * @return % >= Q20 accumulated up to the current cycle
+         */
+        float cumulative_percent_over_q20()const
+        {
+            return 100.0f * m_cumulative_q20 / m_cumulative_total;
+        }
+        /** Percent >= Q30 accumulated up to the current cycle
+         *
+         * @return % >= Q30 accumulated up to the current cycle
+         */
+        float cumulative_percent_over_q30()const
+        {
+            return 100.0f * m_cumulative_q30 / m_cumulative_total;
+        }
         /** @} */
         /** Accumulate q-score histogram from last cycle
          *

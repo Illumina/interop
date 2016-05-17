@@ -58,8 +58,8 @@ TYPED_TEST_CASE(summary_metrics_test, Formats);
 TYPED_TEST(summary_metrics_test, run_summary)
 {
     const float tol = 1e-7f;
-    EXPECT_EQ(TypeParam::actual.size(), TypeParam::expected.size());
-    EXPECT_EQ(TypeParam::actual.lane_count(), TypeParam::expected.lane_count());
+    ASSERT_EQ(TypeParam::actual.size(), TypeParam::expected.size());
+    ASSERT_EQ(TypeParam::actual.lane_count(), TypeParam::expected.lane_count());
     EXPECT_NEAR(TypeParam::actual.total_summary().error_rate(), TypeParam::expected.total_summary().error_rate(), tol);
     EXPECT_NEAR(TypeParam::actual.total_summary().percent_aligned(), TypeParam::expected.total_summary().percent_aligned(), tol);
     EXPECT_NEAR(TypeParam::actual.total_summary().first_cycle_intensity(), TypeParam::expected.total_summary().first_cycle_intensity(), tol);
@@ -86,8 +86,9 @@ TYPED_TEST(summary_metrics_test, run_summary)
  */
 TYPED_TEST(summary_metrics_test, read_summary)
 {
+    ASSERT_EQ(TypeParam::actual.size(), TypeParam::expected.size());
     const float tol = 1e-7f;
-    for(size_t read=0;read<std::min(TypeParam::actual.size(), TypeParam::expected.size());++read)
+    for(size_t read=0;read<TypeParam::expected.size();++read)
     {
         const model::summary::read_summary &actual_read_summary = TypeParam::actual[read];
         const model::summary::read_summary &expected_read_summary = TypeParam::expected[read];
@@ -113,9 +114,11 @@ TYPED_TEST(summary_metrics_test, lane_summary)
     const float density_tol = 1e-7f;
     const float tol = 1e-7f;
 #endif
-    for(size_t read=0;read<std::min(TypeParam::actual.size(), TypeParam::expected.size());++read)
+    ASSERT_EQ(TypeParam::actual.size(), TypeParam::expected.size());
+    for(size_t read=0;read<TypeParam::expected.size();++read)
     {
-        for(size_t lane=0;lane<std::min(TypeParam::actual[read].size(), TypeParam::expected[read].size());++lane)
+        ASSERT_EQ(TypeParam::actual[read].size(), TypeParam::expected[read].size());
+        for(size_t lane=0;lane<TypeParam::expected[read].size();++lane)
         {
             const model::summary::lane_summary& actual_lane_summary = TypeParam::actual[read][lane];
             const model::summary::lane_summary& expected_lane_summary = TypeParam::expected[read][lane];

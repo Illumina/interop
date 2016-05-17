@@ -132,7 +132,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
      * @param data output plot data
      */
     template<class Point>
-    void plot_by_cycle(const model::metrics::run_metrics& metrics,
+    void plot_by_cycle(model::metrics::run_metrics& metrics,
                        const constants::metric_type type,
                        const model::plot::filter_options& options,
                        model::plot::plot_data<Point>& data)
@@ -207,17 +207,37 @@ namespace illumina { namespace interop { namespace logic { namespace plot
             case constants::Q:
             {
                 data.assign(1, model::plot::series<Point>());
-                const size_t qbin = metric::index_for_q_value(metrics.get_set<model::metrics::q_metric>(),
-                                                              (type == constants::PercentQ20 ||
-                                                               type == constants::AccumPercentQ20) ? 20 : 30);
-                metric::metric_value<model::metrics::q_metric> proxy2(qbin,
-                                                                      metrics.get_set<model::metrics::q_metric>().bins());
-                populate_candle_stick_by_cycle(
-                        metrics.get_set<model::metrics::q_metric>(),
-                        proxy2,
-                        options,
-                        type,
-                        data[0]);
+                if(options.is_specific_surface())
+                {
+                    typedef model::metrics::q_collapsed_metric metric_t;
+                    metric::metric_value<metric_t> proxy2;
+                    if(0 == metrics.get_set<metric_t>().size())
+                        logic::metric::create_collapse_q_metrics(metrics.get_set<model::metrics::q_metric>(),
+                                                                 metrics.get_set<metric_t>());
+                    populate_candle_stick_by_cycle(
+                            metrics.get_set<metric_t>(),
+                            proxy2,
+                            options,
+                            type,
+                            data[0]);
+                }
+                else
+                {
+                    typedef model::metrics::q_by_lane_metric metric_t;
+                    if(0 == metrics.get_set<metric_t>().size())
+                        logic::metric::create_q_metrics_by_lane(metrics.get_set<model::metrics::q_metric>(),
+                                                                 metrics.get_set<metric_t>());
+                    const size_t qbin = metric::index_for_q_value(metrics.get_set<metric_t>(),
+                                                               (type == constants::PercentQ20 ||
+                                                                type == constants::AccumPercentQ20) ? 20 : 30);
+                    metric::metric_value<metric_t> proxy2(qbin,metrics.get_set<metric_t>().bins());
+                    populate_candle_stick_by_cycle(
+                            metrics.get_set<metric_t>(),
+                            proxy2,
+                            options,
+                            type,
+                            data[0]);
+                }
                 break;
             }
             case constants::Error://TODO: skip last cycle of read for error metric
@@ -273,7 +293,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
      * @param data output plot data
      */
     template<class Point>
-    void plot_by_cycle(const model::metrics::run_metrics& metrics,
+    void plot_by_cycle(model::metrics::run_metrics& metrics,
                        const std::string& metric_name,
                        const model::plot::filter_options& options,
                        model::plot::plot_data<Point>& data)

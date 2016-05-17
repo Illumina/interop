@@ -115,6 +115,7 @@ TEST(plot_logic, q_score_histogram)
 
     std::istringstream iss(unittest::q_v6::binary_data());
     io::read_metrics(iss, metrics.q_metric_set());
+    metrics.finalize_after_load();
 
     model::plot::plot_data<model::plot::bar_point> data;
     logic::plot::plot_qscore_histogram(metrics, options, data);
@@ -149,6 +150,7 @@ TEST(plot_logic, q_score_heatmap)
 
     std::istringstream iss(unittest::q_v6::binary_data());
     io::read_metrics(iss, metrics.q_metric_set());
+    metrics.finalize_after_load();
 
     model::plot::heatmap_data data;
     logic::plot::plot_qscore_heatmap(metrics, options, data);

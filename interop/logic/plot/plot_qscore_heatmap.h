@@ -39,7 +39,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
         {
             if( !options.valid_tile(*beg) ) continue;
             for(size_t bin =0;bin < bins.size();++bin)
-                data(beg->cycle()-1, bins[bin].value()) += beg->qscore_hist(bin);
+                data(beg->cycle()-1, bins[bin].value()-1) += beg->qscore_hist(bin);
         }
     }
     /** Populate the q-score heatmap based on the filter options
@@ -94,40 +94,72 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
             {
                 for(size_t cycle = 0;cycle < max_cycle;++cycle)
                 {
-                    data(cycle, bin) = data(cycle, beg->value());
+                    data(cycle, bin) = data(cycle, beg->value()-1);
                 }
             }
         }
     }
-
+    /** Plot a heat map of q-scores
+     *
+     * @param metrics q-metrics (full or by lane)
+     * @param options options to filter the data
+     * @param data output heat map datall
+     */
+    template<class Metric>
+    void populate_heatmap(const model::metric_base::metric_set<Metric>& metric_set,
+                          const model::plot::filter_options& options,
+                          model::plot::heatmap_data& data)
+    {
+        const size_t max_q_val = logic::metric::max_qval(metric_set);
+        const size_t max_cycle = metric_set.max_cycle();
+        data.resize(max_cycle + 1, max_q_val);
+        INTEROP_ASSERT(data.row_count() > 0);
+        INTEROP_ASSERTMSG(data.column_count() > 0, max_q_val << ", " << metric_set.size() << ", " << metric_set.bin_count() << ", " << metric::is_compressed(metric_set) << ", " << metric_set.bins().back().upper());
+        const bool is_compressed = logic::metric::is_compressed(metric_set);
+        if(is_compressed)
+            populate_heatmap_from_compressed(metric_set.begin(),
+                                             metric_set.end(),
+                                             metric_set.bins(),
+                                             options,
+                                             data);
+        else
+            populate_heatmap_from_uncompressed(metric_set.begin(),
+                                               metric_set.end(),
+                                               options,
+                                               data);
+        normalize_heatmap(data);
+        remap_to_bins(metric_set.bins().begin(),
+                      metric_set.bins().end(),
+                      max_cycle,
+                      data);
+    }
     /** Plot a heat map of q-scores
      *
      * @param metrics run metrics
      * @param options options to filter the data
      * @param data output heat map data
      */
-    inline void plot_qscore_heatmap(const model::metrics::run_metrics& metrics,
+    inline void plot_qscore_heatmap(model::metrics::run_metrics& metrics,
                                     const model::plot::filter_options& options,
                                     model::plot::heatmap_data& data)
     {
-        typedef model::metric_base::metric_set<model::metrics::q_metric> q_metric_set_t;
-
-        const q_metric_set_t& q_metric_set = metrics.get_set<model::metrics::q_metric>();
         data.clear();
-        if(q_metric_set.size()==0)return;
-
-        const size_t max_q_val = logic::metric::max_qval(q_metric_set);
-        data.resize(q_metric_set.max_cycle()+1, max_q_val);
-        if(logic::metric::is_compressed(q_metric_set))
-            populate_heatmap_from_compressed(q_metric_set.begin(),
-                                             q_metric_set.end(),
-                                             q_metric_set.bins(),
-                                             options,
-                                             data);
+        if(options.is_specific_surface())
+        {
+            typedef model::metrics::q_metric metric_t;
+            if (metrics.get_set<metric_t>().size() == 0)return;
+            populate_heatmap(metrics.get_set<metric_t>(), options, data);
+        }
         else
-            populate_heatmap_from_uncompressed(q_metric_set.begin(), q_metric_set.end(), options, data);
-        normalize_heatmap(data);
-        remap_to_bins(q_metric_set.bins().begin(), q_metric_set.bins().end(), q_metric_set.max_cycle(), data);
+        {
+            typedef model::metrics::q_by_lane_metric metric_t;
+            if(0 == metrics.get_set<metric_t>().size())
+                logic::metric::create_q_metrics_by_lane(metrics.get_set<model::metrics::q_metric>(),
+                                                        metrics.get_set<metric_t>());
+            if (metrics.get_set<metric_t>().size() == 0)return;
+            populate_heatmap(metrics.get_set<metric_t>(), options, data);
+        }
+
         data.set_xrange(0, static_cast<float>(data.row_count()));
         data.set_yrange(0, static_cast<float>(data.column_count()));
 

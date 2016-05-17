@@ -108,6 +108,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
         {
             for (size_t i=0; beg != end; ++beg, ++i)
             {
+                INTEROP_ASSERT(i < histogram.size());
                 points[i].set(beg->lower(), histogram[i], static_cast<float>(beg->upper()-beg->lower()+1));
                 max_x_value = std::max(max_x_value, points[i].x()+points[i].width());
             }
@@ -116,7 +117,9 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
         {
             for (size_t i=0; beg != end; ++beg, ++i)
             {
-                const size_t bin = static_cast<size_t>(beg->value());
+                const size_t bin = static_cast<size_t>(beg->value())-1;
+                INTEROP_ASSERTMSG(bin < histogram.size(), bin << " < " << histogram.size());
+                if(histogram[bin] == 0)continue;
                 points[i].set(beg->lower(), histogram[bin], static_cast<float>(beg->upper()-beg->lower()+1));
                 max_x_value = std::max(max_x_value, points[i].x()+points[i].width());
             }
@@ -131,39 +134,75 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
      * @param data output plot data
      */
     template<class Point>
-    void plot_qscore_histogram(const model::metrics::run_metrics& metrics,
+    void plot_qscore_histogram(model::metrics::run_metrics& metrics,
                                const model::plot::filter_options& options,
                                model::plot::plot_data<Point>& data)
     {
-        typedef model::metric_base::metric_set<model::metrics::q_metric> q_metric_set_t;
-
-        const q_metric_set_t& q_metric_set = metrics.get_set<model::metrics::q_metric>();
-
         data.clear();
-        if(q_metric_set.size()==0)return;
-
         const size_t first_cycle = options.all_reads() ? 1 : metrics.run_info().read(options.read()).first_cycle();
-        const size_t last_cycle = get_last_filtered_cycle(metrics.run_info(),
-                                                          options,
-                                                          metrics.get_set<model::metrics::q_metric>().max_cycle());
 
         data.assign(1, model::plot::series<Point>("Q Score", "", model::plot::series<Point>::Bar));
 
         data[0].add_option(constants::to_string(constants::ShiftedBar));
 
         std::vector<float> histogram;
-        populate_distribution(
-                q_metric_set.begin(),
-                q_metric_set.end(),
-                options,
-                first_cycle,
-                last_cycle,
-                histogram);
-        const std::string axis_scale = scale_histogram(histogram);
         float max_x_value;
-        if(!q_metric_set.bins().empty())
-            max_x_value=plot_binned_histogram(q_metric_set.bins().begin(), q_metric_set.bins().end(), histogram, data[0]);
-        else max_x_value=plot_unbinned_histogram(histogram, data[0]);
+
+        if(options.is_specific_surface())
+        {
+            typedef model::metrics::q_metric metric_t;
+            const size_t last_cycle = get_last_filtered_cycle(metrics.run_info(),
+                                                              options,
+                                                              metrics.get_set<metric_t>().max_cycle());
+            if(metrics.get_set<metric_t>().size() == 0)
+            {
+                data.clear();
+                return;
+            }
+            populate_distribution(
+                    metrics.get_set<metric_t>().begin(),
+                    metrics.get_set<metric_t>().end(),
+                    options,
+                    first_cycle,
+                    last_cycle,
+                    histogram);
+            if(!metrics.get_set<metric_t>().bins().empty())
+                max_x_value=plot_binned_histogram(metrics.get_set<metric_t>().bins().begin(),
+                                                  metrics.get_set<metric_t>().bins().end(),
+                                                  histogram,
+                                                  data[0]);
+            else max_x_value=plot_unbinned_histogram(histogram, data[0]);
+        }
+        else
+        {
+            typedef model::metrics::q_by_lane_metric metric_t;
+            if(0 == metrics.get_set<metric_t>().size())
+                logic::metric::create_q_metrics_by_lane(metrics.get_set<model::metrics::q_metric>(),
+                                                        metrics.get_set<metric_t>());
+            if(0 == metrics.get_set<metric_t>().size())
+            {
+                data.clear();
+                return;
+            }
+            const size_t last_cycle = get_last_filtered_cycle(metrics.run_info(),
+                                                              options,
+                                                              metrics.get_set<metric_t>().max_cycle());
+            INTEROP_ASSERT(0 != metrics.get_set<metric_t>().size());
+            populate_distribution(
+                    metrics.get_set<metric_t>().begin(),
+                    metrics.get_set<metric_t>().end(),
+                    options,
+                    first_cycle,
+                    last_cycle,
+                    histogram);
+            if(!metrics.get_set<metric_t>().bins().empty())
+                max_x_value=plot_binned_histogram(metrics.get_set<metric_t>().bins().begin(),
+                                                  metrics.get_set<metric_t>().bins().end(),
+                                                  histogram,
+                                                  data[0]);
+            else max_x_value=plot_unbinned_histogram(histogram, data[0]);
+        }
+        const std::string axis_scale = scale_histogram(histogram);
 
         auto_scale_y(data, false);
         data.set_xrange(1, max_x_value*1.1f);

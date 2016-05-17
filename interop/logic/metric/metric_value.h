@@ -63,21 +63,22 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
     };
 
 
-    /** Specialization for model::metrics::q_metric
+    /** Specialization for model::metrics::q_by_lane_metric
      *
      * Supports enums: PercentQ20, PercentQ30, AccumPercentQ20, AccumPercentQ30, and QScore
      */
     template<>
-    class metric_value<model::metrics::q_metric>
+    class metric_value<model::metrics::q_by_lane_metric>
     {
-        typedef model::metrics::q_metric::uint_t uint_t;
+        typedef model::metrics::q_by_lane_metric::uint_t uint_t;
     public:
         /** Constructor
          *
          * @param _index_for_qvalue Q20 or Q30 index
          * @param _bins bins for Q-value histogram
          */
-        metric_value(const size_t _index_for_qvalue, const model::metrics::q_metric::qscore_bin_vector_type& _bins) :
+        metric_value(const size_t _index_for_qvalue,
+                     const model::metrics::q_by_lane_metric::qscore_bin_vector_type& _bins) :
                 index_for_qvalue(static_cast<uint_t>(_index_for_qvalue)), bins(_bins){}
         /** Get the metric value corresponding to the metric_type enum value
          *
@@ -85,7 +86,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
          * @param type metric type
          * @return metric value
          */
-        float operator()(const model::metrics::q_metric& metric, const constants::metric_type type)const
+        float operator()(const model::metrics::q_by_lane_metric& metric, const constants::metric_type type)const
         {
             switch(type)
             {
@@ -104,6 +105,41 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
     private:
         const uint_t index_for_qvalue;
         const model::metrics::q_metric::qscore_bin_vector_type& bins;
+    };
+
+    /** Specialization for model::metrics::q_collapsed_metric
+     *
+     * Supports enums: PercentQ20, PercentQ30, AccumPercentQ20, AccumPercentQ30, and QScore
+     */
+    template<>
+    class metric_value<model::metrics::q_collapsed_metric>
+    {
+        typedef model::metrics::q_collapsed_metric::uint_t uint_t;
+    public:
+        /** Get the metric value corresponding to the metric_type enum value
+         *
+         * @param metric q-metric
+         * @param type metric type
+         * @return metric value
+         */
+        float operator()(const model::metrics::q_collapsed_metric& metric, const constants::metric_type type)const
+        {
+            switch(type)
+            {
+                case constants::PercentQ20:
+                    return metric.percent_over_q20();
+                case constants::PercentQ30:
+                    return metric.percent_over_q30();
+                case constants::AccumPercentQ20:
+                    return metric.cumulative_percent_over_q20();
+                case constants::AccumPercentQ30:
+                    return metric.cumulative_percent_over_q30();
+                case constants::QScore:
+                    return static_cast<float>(metric.median_qscore());
+                default:
+                    throw model::invalid_metric_type("Unknown metric type");
+            }
+        }
     };
 
     /** Specialization for model::metrics::error_metric

@@ -52,7 +52,7 @@ namespace summary
      * @param metrics source collection of all metrics
      * @param summary destination run summary
      */
-    inline void summarize_run_metrics(const model::metrics::run_metrics& metrics, model::summary::run_summary& summary)
+    inline void summarize_run_metrics(model::metrics::run_metrics& metrics, model::summary::run_summary& summary)
     throw( model::index_out_of_bounds_exception, model::invalid_channel_exception )
     {
         using namespace model::metrics;
@@ -77,12 +77,13 @@ namespace summary
                                      intensity_channel,
                                      summary);
 
-        const size_t q30_index = logic::metric::index_for_q_value(metrics.get_set<q_metric>(), 30);
-        summarize_quality_metrics(metrics.get_set<q_metric>().begin(),
-                                  metrics.get_set<q_metric>().end(),
-                                  cycle_to_read,
-                                  q30_index,
-                                  summary);
+        if(0 == metrics.get_set<q_collapsed_metric>().size())
+            logic::metric::create_collapse_q_metrics(metrics.get_set<model::metrics::q_metric>(),
+                                                     metrics.get_set<q_collapsed_metric>());
+        summarize_collapsed_quality_metrics(metrics.get_set<q_collapsed_metric>().begin(),
+                                            metrics.get_set<q_collapsed_metric>().end(),
+                                            cycle_to_read,
+                                            summary);
         summarize_tile_count(metrics, summary);
 
         summarize_cycle_state(metrics.get_set<error_metric>().begin(),

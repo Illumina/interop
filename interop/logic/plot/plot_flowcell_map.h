@@ -66,7 +66,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
      * @param options options to filter the data
      * @param data output flowcell map
      */
-    inline void plot_flowcell_map(const model::metrics::run_metrics& metrics,
+    inline void plot_flowcell_map(model::metrics::run_metrics& metrics,
                                   const constants::metric_type type,
                                   const model::plot::filter_options& options,
                                   model::plot::flowcell_data& data)
@@ -121,13 +121,12 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
             }
             case constants::Q:
             {
-                typedef model::metrics::q_metric metric_t;
+                typedef model::metrics::q_collapsed_metric metric_t;
                 typedef model::metric_base::metric_set<metric_t> metric_set_t;
-                const metric_set_t& metric_set = metrics.get_set<metric_t>();
-                const size_t qbin = metric::index_for_q_value(metric_set,
-                                                              (type == constants::PercentQ20 ||
-                                                               type == constants::AccumPercentQ20) ? 20 : 30);
-                metric::metric_value<metric_t> proxy(qbin, metric_set.bins());
+                metric_set_t &metric_set = metrics.get_set<metric_t>();
+                if(0 == metric_set.size())
+                    logic::metric::create_collapse_q_metrics(metrics.get_set<model::metrics::q_metric>(), metric_set);
+                metric::metric_value<metric_t> proxy;
                 populate_flowcell_map(metric_set.begin(), metric_set.end(), proxy, type, layout, options, data,
                                       values_for_scaling);
                 break;
@@ -184,7 +183,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
      * @param options options to filter the data
      * @param data output flowcell map
      */
-    inline void plot_flowcell_map(const model::metrics::run_metrics& metrics,
+    inline void plot_flowcell_map(model::metrics::run_metrics& metrics,
                                   const std::string& metric_name,
                                   const model::plot::filter_options& options,
                                   model::plot::flowcell_data& data) throw(std::invalid_argument)

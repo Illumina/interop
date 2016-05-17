@@ -56,6 +56,8 @@ public:
      */
     float& operator()(const size_t row, const size_t col)
     {
+        INTEROP_ASSERTMSG(row < row_count(), row << " < " << row_count());
+        INTEROP_ASSERTMSG(col < column_count(), col << " < " << column_count());
         const size_t idx = index_of(row, col);
         INTEROP_ASSERT(idx < m_data.size());
         return m_data[idx];

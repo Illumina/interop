@@ -149,6 +149,16 @@ public:
             if(m_run_info.channels().empty())
                 throw io::format_exception("Channel names are missing from the RunInfo.xml, and RunParameters.xml does not contain sufficient information on the instrument run.");
         }
+        finalize_after_load(count);
+    }
+    /** Finalize the metric sets after loading from disk
+     *
+     * @param count number of bins for legacy q-metrics
+     */
+    void finalize_after_load(size_t count=std::numeric_limits<size_t>::max())
+    {
+        if(count==std::numeric_limits<size_t>::max())
+            count = logic::metric::count_legacy_q_score_bins(get_set<q_metric>());
         logic::metric::populate_legacy_q_score_bins(get_set<q_metric>().bins(), m_run_parameters.instrument_type(), count);
         if(get_set<q_collapsed_metric>().size()==0)
             logic::metric::create_collapse_q_metrics(get_set<q_metric>(), get_set<q_collapsed_metric>());
@@ -157,6 +167,7 @@ public:
         logic::metric::populate_cumulative_distribution(get_set<q_metric>());
         logic::metric::populate_cumulative_distribution(get_set<q_by_lane_metric>());
         logic::metric::populate_cumulative_distribution(get_set<q_collapsed_metric>());
+        INTEROP_ASSERT(get_set<q_metric>().size()==get_set<q_collapsed_metric>().size());
     }
     /** Test if all metrics are empty
      *

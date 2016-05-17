@@ -42,42 +42,40 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
         ::uint64_t total;
     };
 
-    /** Summarize a collection quality metrics
-     *
-     * @sa model::summary::lane_summary::percent_gt_q30
-     * @sa model::summary::lane_summary::yield_g
-     * @sa model::summary::lane_summary::projected_yield_g
-     *
-     * @sa model::summary::read_summary::percent_gt_q30
-     * @sa model::summary::read_summary::yield_g
-     * @sa model::summary::read_summary::projected_yield_g
-     *
-     * @sa model::summary::run_summary::percent_gt_q30
-     * @sa model::summary::run_summary::yield_g
-     * @sa model::summary::run_summary::projected_yield_g
-     *
-     * @param beg iterator to start of a collection of q metrics
-     * @param end iterator to end of a collection of q metrics
-     * @param cycle_to_read map cycle to the read number and cycle within read number
-     * @param qval30_index index of Q30 bin
-     * @param run destination run summary
-     */
+   /** Summarize a collection collapsed quality metrics
+    *
+    * @sa model::summary::lane_summary::percent_gt_q30
+    * @sa model::summary::lane_summary::yield_g
+    * @sa model::summary::lane_summary::projected_yield_g
+    *
+    * @sa model::summary::read_summary::percent_gt_q30
+    * @sa model::summary::read_summary::yield_g
+    * @sa model::summary::read_summary::projected_yield_g
+    *
+    * @sa model::summary::run_summary::percent_gt_q30
+    * @sa model::summary::run_summary::yield_g
+    * @sa model::summary::run_summary::projected_yield_g
+    *
+    * @param beg iterator to start of a collection of collapsed q metrics
+    * @param end iterator to end of a collection of collapsed q metrics
+    * @param cycle_to_read map cycle to the read number and cycle within read number
+    * @param run destination run summary
+    */
     template<typename I>
-    void summarize_quality_metrics(I beg,
-                                   I end,
-                                   const read_cycle_vector_t& cycle_to_read,
-                                   const size_t qval_index,
-                                   model::summary::run_summary &run) throw( model::index_out_of_bounds_exception )
+    void summarize_collapsed_quality_metrics(I beg,
+                                             I end,
+                                             const read_cycle_vector_t& cycle_to_read,
+                                             model::summary::run_summary &run)
+                                            throw( model::index_out_of_bounds_exception )
     {
-        typedef model::metrics::q_metric::uint_t uint_t;
         typedef model::summary::lane_summary lane_summary;
         typedef std::vector< size_t > size_vector_t;
         typedef std::vector< size_vector_t > size_vector2d_t;
         typedef std::vector< qval_total > qval_total_vector_t;
         typedef std::vector < qval_total_vector_t > qval_total_vector2d_t;
         typedef std::set<size_t> tile_lookup_t;
-        if(beg == end) return;
-        if(run.size()==0)return;
+        if( beg == end ) return;
+        if( run.size()==0 )return;
         qval_total_vector2d_t cache(run.size(), qval_total_vector_t(run.lane_count()));
         size_vector2d_t metrics_in_read(run.size(), size_vector_t(run.lane_count()));
         tile_lookup_t tile_lookup;
@@ -94,8 +92,8 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
             INTEROP_ASSERT(read_number < metrics_in_read.size());
             INTEROP_ASSERT(lane < metrics_in_read[read_number].size());
             if(lane >= run.lane_count()) throw model::index_out_of_bounds_exception("Lane exceeds lane count in RunInfo.xml");
-            cache[read_number][lane].above_qval+=beg->total_over_qscore(static_cast<uint_t>(qval_index));
-            cache[read_number][lane].total += beg->sum_qscore();
+            cache[read_number][lane].above_qval+=beg->q30();
+            cache[read_number][lane].total += beg->total();
             tile_lookup.insert(beg->tile());
             metrics_in_read[read_number][lane] += 1;
         }
@@ -136,13 +134,13 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
                 }
             }
             run[read].summary().projected_yield_g(std::accumulate(run[read].begin(),
+                                                                  run[read].end(),
+                                                                  float(0),
+                                                                  util::op::const_member_function(&lane_summary::projected_yield_g)));
+            run[read].summary().yield_g(std::accumulate(run[read].begin(),
                                                         run[read].end(),
                                                         float(0),
-                                                        util::op::const_member_function(&lane_summary::projected_yield_g)));
-            run[read].summary().yield_g(std::accumulate(run[read].begin(),
-                                              run[read].end(),
-                                              float(0),
-                                              util::op::const_member_function(&lane_summary::yield_g)));
+                                                        util::op::const_member_function(&lane_summary::yield_g)));
             run[read].summary().percent_gt_q30(100 * divide(float(useable_calls_gt_q30_by_read), float(total_useable_calls_by_read)));
             total_useable_calls += total_useable_calls_by_read;
             useable_calls_gt_q30 += useable_calls_gt_q30_by_read;
@@ -166,7 +164,6 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
         run.total_summary().yield_g(yield_g);
         run.total_summary().percent_gt_q30(100 * divide(float(useable_calls_gt_q30), float(total_useable_calls)));
     }
-
 }
 }
 }

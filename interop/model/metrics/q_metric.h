@@ -169,10 +169,10 @@ namespace illumina {
                      */
                     size_t index_for_q_value(const size_t qval)const
                     {
-                        if(m_qscore_bins.size() == 0) return qval;
+                        if(m_qscore_bins.size() == 0) return qval-1;
                         size_t index=0;
                         while(index < m_qscore_bins.size() && binAt(index).value() < qval) index++;
-                        return index+1;
+                        return index;
                     }
                     /** @} */
                     /** Get the number of bins in header
@@ -359,13 +359,13 @@ namespace illumina {
                         if(bins.size() == 0)
                         {
                            INTEROP_ASSERT(qscore > 0);
-                            totalCount = std::accumulate(m_qscore_hist.begin()+qscore-1, m_qscore_hist.end(), 0);
+                            totalCount = std::accumulate(m_qscore_hist.begin()+qscore, m_qscore_hist.end(), 0);
                         }
                         else
                         {
                             for(size_t i=0;i<bins.size();i++)
                             {
-                                if( bins[i].value() > qscore)
+                                if( bins[i].value() >= qscore)
                                     totalCount += m_qscore_hist[i];
                             }
                         }
@@ -390,13 +390,13 @@ namespace illumina {
                         if(bins.size() == 0)
                         {
                            INTEROP_ASSERT(qscore > 0);
-                            totalCount = std::accumulate(m_qscore_hist_cumulative.begin() + qscore - 1, m_qscore_hist_cumulative.end(), 0);
+                            totalCount = std::accumulate(m_qscore_hist_cumulative.begin() + qscore, m_qscore_hist_cumulative.end(), 0);
                         }
                         else
                         {
                             for(size_t i=0;i<bins.size();i++)
                             {
-                                if( bins[i].value() > qscore)
+                                if( bins[i].value() >= qscore)
                                     totalCount += m_qscore_hist_cumulative[i];
                             }
                         }

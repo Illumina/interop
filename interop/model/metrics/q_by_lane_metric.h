@@ -74,8 +74,10 @@ namespace illumina { namespace interop { namespace model { namespace metrics {
         static const char* suffix(){return "ByLane";}
     };
 
-}}
-namespace io {
+}}}}
+
+namespace illumina { namespace interop { namespace io
+{
     /** Specialization of metric type adapter
      *
      * This class allows a metric derived from another metric to use it's format
@@ -87,5 +89,4 @@ namespace io {
         /** Define the template parameter as the target type */
         typedef model::metrics::q_metric metric_t;
     };
-
 }}}

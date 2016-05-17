@@ -18,6 +18,7 @@
 using namespace illumina::interop::model::metrics;
 
 namespace illumina{ namespace interop{ namespace io {
+
 #pragma pack(1)
             /** Q-score Metric Record Layout Version 4
              *
@@ -75,7 +76,9 @@ namespace illumina{ namespace interop{ namespace io {
                 template<class Stream, class Metric, class Header>
                 static std::streamsize map_stream(Stream& stream, Metric& metric, Header&, const bool)
                 {
-                    return stream_map< count_t >(stream, metric.m_qscore_hist, q_metric::MAX_Q_BINS);
+                    const std::streamsize count =  stream_map< count_t >(stream, metric.m_qscore_hist, q_metric::MAX_Q_BINS);
+                    resize_accumulated(stream, metric);
+                    return count;
                 }
                 /** Compute the layout size
                  *
@@ -93,6 +96,13 @@ namespace illumina{ namespace interop{ namespace io {
                 {
                     return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t));
                 }
+
+            private:
+                static void resize_accumulated(std::istream&, q_metric& metric)
+                {
+                    metric.m_qscore_hist_cumulative.resize(metric.m_qscore_hist.size(), 0);
+                }
+                static void resize_accumulated(std::ostream&, const q_metric&){}
             };
             /** Q-score Metric Record Layout Version 5
              *
@@ -181,9 +191,12 @@ namespace illumina{ namespace interop{ namespace io {
                             INTEROP_ASSERTMSG(i< metric.m_qscore_hist.size(), metric.m_qscore_hist.size());
                             metric.m_qscore_hist[i] = hist[header.m_qscore_bins[i].value()-1];
                         }
+                        resize_accumulated(stream, metric);
                         return count;
                     }
-                    return stream_map< count_t >(stream, metric.m_qscore_hist, q_metric::MAX_Q_BINS);
+                    const std::streamsize count = stream_map< count_t >(stream, metric.m_qscore_hist, q_metric::MAX_Q_BINS);
+                    resize_accumulated(stream, metric);
+                    return count;
                 }
                 /** Write metric to the output stream
                  *
@@ -313,6 +326,13 @@ namespace illumina{ namespace interop{ namespace io {
                     for(size_t i=0;i<bins.size();++i) tmp[i] = static_cast< bin_t >(bins[i].m_value);
                 }
                 static void copy_value_write(std::vector<q_score_bin>&, bin_t*) { }
+
+            private:
+                static void resize_accumulated(std::istream&, q_metric& metric)
+                {
+                    metric.m_qscore_hist_cumulative.resize(metric.m_qscore_hist.size(), 0);
+                }
+                static void resize_accumulated(std::ostream&, const q_metric&){}
             };
             /** Q-score Metric Record Layout Version 6
              *
@@ -393,7 +413,9 @@ namespace illumina{ namespace interop{ namespace io {
                 template<class Stream, class Metric, class Header>
                 static std::streamsize map_stream(Stream& stream, Metric& metric, Header& header, const bool)
                 {
-                    return stream_map< count_t >(stream, metric.m_qscore_hist, header.bin_count());
+                    const std::streamsize count = stream_map< count_t >(stream, metric.m_qscore_hist, header.bin_count());
+                    resize_accumulated(stream, metric);
+                    return count;
                 }
                 /** Compute the layout size
                  *
@@ -499,6 +521,13 @@ namespace illumina{ namespace interop{ namespace io {
                     for(size_t i=0;i<bins.size();++i) tmp[i] = static_cast< bin_t >(bins[i].m_value);
                 }
                 static void copy_value_write(std::vector<q_score_bin>&, bin_t*) { }
+
+            private:
+                static void resize_accumulated(std::istream&, q_metric& metric)
+                {
+                    metric.m_qscore_hist_cumulative.resize(metric.m_qscore_hist.size(), 0);
+                }
+                static void resize_accumulated(std::ostream&, const q_metric&){}
             };
 
 #pragma pack()// DO NOT MOVE

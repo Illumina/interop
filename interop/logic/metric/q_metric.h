@@ -287,7 +287,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
     }
     /** Test whether the q-values are compressed
      *
-     * @param q_metric_set q-metric set
+     * @param q_metric_set q_metric set
      * @return true if the histogram is compressed (no all zero columns)
      */
     inline bool is_compressed(const model::metric_base::metric_set<model::metrics::q_by_lane_metric>& q_metric_set)
@@ -301,6 +301,16 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
      * @return the maximum Q-value
      */
     inline size_t max_qval(const model::metric_base::metric_set<model::metrics::q_metric>& q_metric_set)
+    {
+        return is_compressed(q_metric_set) ?
+               static_cast<size_t>(q_metric_set.bins().back().upper()) : count_qvals(q_metric_set);
+    }
+    /** Determine the maximum Q-value
+     *
+     * @param q_metric_set q-metric set
+     * @return the maximum Q-value
+     */
+    inline size_t max_qval(const model::metric_base::metric_set<model::metrics::q_by_lane_metric>& q_metric_set)
     {
         return is_compressed(q_metric_set) ?
                static_cast<size_t>(q_metric_set.bins().back().upper()) : count_qvals(q_metric_set);
@@ -347,18 +357,18 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
     }
     /** Generate by lane Q-metric data from Q-metrics
      *
-     * @param q_metric_set q-metric set
+     * @param metrics Q-metrics
      * @param collapsed collapsed Q-metrics
      */
-    inline void create_q_metrics_by_lane(const model::metric_base::metric_set<model::metrics::q_metric>& q_metric_set,
+    inline void create_q_metrics_by_lane(const model::metric_base::metric_set<model::metrics::q_metric>& metrics,
                                          model::metric_base::metric_set<model::metrics::q_by_lane_metric>& bylane)
     {
         typedef model::metric_base::metric_set<model::metrics::q_metric>::const_iterator const_iterator;
         typedef model::metric_base::metric_set<model::metrics::q_metric>::header_type header_type;
         typedef model::metric_base::base_cycle_metric::id_t id_t;
 
-        bylane = static_cast<const header_type&>(q_metric_set);
-        for(const_iterator beg = q_metric_set.begin(), end = q_metric_set.end();beg != end;++beg)
+        bylane = static_cast<const header_type&>(metrics);
+        for(const_iterator beg = metrics.begin(), end = metrics.end();beg != end;++beg)
         {
             const id_t id = model::metric_base::base_cycle_metric::id(beg->lane(), 0, beg->cycle());
             if(bylane.has_metric(id))
