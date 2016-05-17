@@ -62,6 +62,8 @@ namespace illumina {
                     typedef typename metric_array_t::const_iterator const_iterator;
                     /** Metric iterator */
                     typedef typename metric_array_t::iterator iterator;
+                private:
+                    typedef std::map<id_t, size_t> id_map_t;
 
                 public:
                     /** Constructor
@@ -124,15 +126,45 @@ namespace illumina {
                     }
 
                 public:
+                    /** Find index of metric given the id. If not found, return number of metrics
+                     *
+                     * @param lane lane
+                     * @param tile tile
+                     * @param cycle cycle
+                     * @return index of metric or number of metrics
+                     */
+                    size_t find(const uint_t lane, const uint_t tile, const uint_t cycle=0)const
+                    {
+                        return find(metric_type::id(lane, tile, cycle));
+                    }
+                    /** Find index of metric given the id. If not found, return number of metrics
+                     *
+                     * @param id id
+                     * @return index of metric or number of metrics
+                     */
+                    size_t find(const id_t id)const
+                    {
+                        typename id_map_t::const_iterator it = m_id_map.find(id);
+                        if(it == m_id_map.end()) return size();
+                        return it->second;
+                    }
                     /** Test if set has metric
                      *
                      * @param lane lane
                      * @param tile tile
                      * @param cycle cycle
                      */
-                    bool has_metric(uint_t lane, uint_t tile, uint_t cycle=0)const
+                    bool has_metric(const uint_t lane, const uint_t tile, const uint_t cycle=0)const
                     {
-                        return m_id_map.find(metric_type::id(lane, tile, cycle)) != m_id_map.end();
+                        return has_metric(metric_type::id(lane, tile, cycle));
+                    }
+                    /** Test if set has metric
+                     *
+                     * @param id id
+                     */
+                    bool has_metric(const id_t id)const
+                    {
+                        return m_id_map.find(id) != m_id_map.end();
                     }
                     /** Add a metric to the metric set
                      *
@@ -467,7 +499,7 @@ namespace illumina {
 
                     // TODO: remove the following
                     /** Map unique identifiers to the index of the metric */
-                    std::map<id_t, size_t> m_id_map;
+                    id_map_t m_id_map;
                 };
             }
         }

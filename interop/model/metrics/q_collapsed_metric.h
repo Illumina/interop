@@ -177,6 +177,23 @@ namespace illumina { namespace interop { namespace model { namespace metrics {
             return m_cumulative_total;
         }
         /** @} */
+        /** Accumulate q-score histogram from last cycle
+         *
+         * This helper function also allocates memory for the cumulative q-score histogram.
+         *
+         * @param metric last cycle q-metric
+         */
+        void accumulate(const q_collapsed_metric& metric)
+        {
+            m_cumulative_q20 = m_q20;
+            m_cumulative_q30 = m_q30;
+            m_cumulative_total = m_total;
+            if(&metric != this) {
+                m_cumulative_q20 += metric.m_cumulative_q20;
+                m_cumulative_q30 += metric.m_cumulative_q30;
+                m_cumulative_total += metric.m_cumulative_total;
+            }
+        }
 
     public:
         /** Get the prefix of the InterOp filename

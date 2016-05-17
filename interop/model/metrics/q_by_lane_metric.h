@@ -24,6 +24,21 @@ namespace illumina { namespace interop { namespace model { namespace metrics {
             /** Unique type code for metric */
             TYPE = constants::QByLane
         };
+    public:
+        /** Constructor
+         */
+        q_by_lane_metric() {}
+        /** Constructor
+         *
+         * @param lane lane number
+         * @param tile tile number
+         * @param cycle cycle number
+         * @param qscore_hist q-score histogram
+         */
+        q_by_lane_metric(const uint_t lane,
+                 const uint_t tile,
+                 const uint_t cycle,
+                 const uint_vector& qscore_hist) : q_metric(lane, tile, cycle, qscore_hist){}
 
         /** @defgroup q_metric_by_lane Quality Metrics By Lane
          *
@@ -35,6 +50,21 @@ namespace illumina { namespace interop { namespace model { namespace metrics {
          * @ingroup run_metrics
          * @see illumina::interop::model::metrics::q_metric
          */
+
+    public:
+        /** Accummulate another q_metric from the same lane/cycle
+         *
+         * @param metric q_metric from same lane/cycle
+         */
+        void accumulate_by_lane(const q_metric& metric)
+        {
+            typedef uint_vector::const_iterator const_iterator;
+            typedef uint_vector::iterator iterator;
+            iterator it = m_qscore_hist.begin();
+            for (const_iterator beg = metric.qscore_hist().begin(), end = metric.qscore_hist().end();
+                 beg != end; ++beg, ++it)
+                *it += *beg;
+        }
 
     public:
         /** Get the suffix of the InterOp filename

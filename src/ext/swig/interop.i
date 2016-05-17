@@ -94,6 +94,8 @@
 #include "interop/model/metrics/q_metric.h"
 #include "interop/model/metrics/tile_metric.h"
 #include "interop/model/metrics/index_metric.h"
+#include "interop/model/metrics/q_collapsed_metric.h"
+#include "interop/model/metrics/q_by_lane_metric.h"
 %}
 
 %template(index_info_vector) std::vector< illumina::interop::model::metrics::index_info  >;
@@ -112,6 +114,8 @@
 %include "interop/model/metrics/q_metric.h"
 %include "interop/model/metrics/tile_metric.h"
 %include "interop/model/metrics/index_metric.h"
+%include "interop/model/metrics/q_collapsed_metric.h"
+%include "interop/model/metrics/q_by_lane_metric.h"
 
 WRAP_TEMPLATE_CYCLE_BASE(corrected_intensity_metric)
 WRAP_TEMPLATE_CYCLE_BASE(error_metric)
@@ -120,6 +124,9 @@ WRAP_TEMPLATE_CYCLE_BASE(image_metric)
 WRAP_Q_METRIC(q_metric)
 WRAP_TILE_METRIC(tile_metric)
 WRAP_TEMPLATE_BASE(index_metric)
+WRAP_TEMPLATE_CYCLE_BASE(q_collapsed_metric)
+WRAP_TEMPLATE_CYCLE_BASE(q_by_lane_metric)
+
 
 %{
 #include "interop/model/metric_sets/corrected_intensity_metric_set.h"

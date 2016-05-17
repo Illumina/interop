@@ -555,8 +555,10 @@ namespace illumina {
                      */
                     static const char* prefix(){return "Q";}
 
-                private:
+                protected:
+                    /** Unsigned int vector for q-score histogram */
                     uint_vector m_qscore_hist;
+                private:
                     uint_vector m_qscore_hist_cumulative;
 
                     template<class MetricType, int Version>

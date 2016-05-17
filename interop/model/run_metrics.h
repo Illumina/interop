@@ -150,6 +150,13 @@ public:
                 throw io::format_exception("Channel names are missing from the RunInfo.xml, and RunParameters.xml does not contain sufficient information on the instrument run.");
         }
         logic::metric::populate_legacy_q_score_bins(get_set<q_metric>().bins(), m_run_parameters.instrument_type(), count);
+        if(get_set<q_collapsed_metric>().size()==0)
+            logic::metric::create_collapse_q_metrics(get_set<q_metric>(), get_set<q_collapsed_metric>());
+        if(get_set<q_by_lane_metric>().size()==0)
+            logic::metric::create_q_metrics_by_lane(get_set<q_metric>(), get_set<q_by_lane_metric>());
+        logic::metric::populate_cumulative_distribution(get_set<q_metric>());
+        logic::metric::populate_cumulative_distribution(get_set<q_by_lane_metric>());
+        logic::metric::populate_cumulative_distribution(get_set<q_collapsed_metric>());
     }
     /** Test if all metrics are empty
      *

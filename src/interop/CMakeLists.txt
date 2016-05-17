@@ -8,7 +8,8 @@ set(SRCS
         model/metrics/extraction_metric.cpp
         model/metrics/image_metric.cpp
         model/metrics/q_metric.cpp
-        model/metrics/index_metric.cpp model/metrics/q_collapsed_metric.cpp)
+        model/metrics/index_metric.cpp
+        model/metrics/q_collapsed_metric.cpp)
 
 set(HEADERS
         ../../interop/model/summary/cycle_state_summary.h
