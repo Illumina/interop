@@ -69,7 +69,7 @@ namespace illumina {
                      * @param header header information for the metric set
                      * @param version version of the file format
                      */
-                    metric_set(const header_type& header=header_type::default_header(), const ::int16_t version=0) : header_type(header), m_version(version), m_interopName(T::prefix()) {}
+                    metric_set(const header_type& header=header_type::default_header(), const ::int16_t version=0) : header_type(header), m_version(version) {}
                     /** Constructor
                      *
                      * @param vec array of metrics
@@ -79,8 +79,7 @@ namespace illumina {
                     metric_set(const metric_array_t& vec, const ::int16_t version, const header_type& header) :
                             header_type(header),
                             m_data(vec),
-                            m_version(version),
-                            m_interopName(T::prefix())
+                            m_version(version)
                     {
                         size_t offset = 0;
                         for(typename metric_array_t::const_iterator b=vec.begin(), e=vec.end();b != e;++b) {
@@ -323,14 +322,6 @@ namespace illumina {
                         m_id_map.clear();
                         m_data.clear();
                     }
-                    /** Get the name of the InterOp
-                     *
-                     * @return name of the InterOp
-                     */
-                    const std::string& name()const
-                    {
-                        return m_interopName;
-                    }
                     /** Get the metrics in a vector
                      *
                      * @return vector of metrics
@@ -344,6 +335,11 @@ namespace illumina {
                      * @return prefix
                      */
                     static const char* prefix(){return T::prefix();}
+                    /** Get the suffix of the InterOp filename
+                     *
+                     * @return suffix
+                     */
+                    static const char* suffix(){return T::suffix();}
                     /** The metric at the underlying index has changed, update the
                      * metric set.
                      *
@@ -468,8 +464,6 @@ namespace illumina {
                     metric_array_t m_data;
                     /** Version of the metric read */
                     ::int16_t m_version;
-                    /** Prefix of the interop name */
-                    std::string m_interopName;
 
                     // TODO: remove the following
                     /** Map unique identifiers to the index of the metric */

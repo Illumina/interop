@@ -40,7 +40,8 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
      *
      * @param metrics q-metric set
      */
-    inline void populate_cumulative_distribution(model::metric_base::metric_set<model::metrics::q_metric>& metrics) throw( model::index_out_of_bounds_exception )
+    inline void populate_cumulative_distribution(model::metric_base::metric_set<model::metrics::q_metric>& metrics)
+                                                    throw( model::index_out_of_bounds_exception )
     {
         if(metrics.size()==0) return;
         typedef model::metrics::q_metric q_metric;
@@ -60,9 +61,12 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
                                                      // subsequent with the previous cycle.
                                                      // Also this is not 0-indexed, so we start with 2, the 2nd cycle
                 for(uint_t cycle = second_cycle_start;cycle <= metrics.max_cycle();++cycle)
-                {
-                    if(!metrics.has_metric(*lane_beg, *tile_beg, cycle) || !metrics.has_metric(*lane_beg, *tile_beg, cycle-1)) continue;// TODO: if this happens zero out following q-scores
-                    metrics.get_metric_ref(*lane_beg, *tile_beg, cycle).accumulate(metrics.get_metric_ref(*lane_beg, *tile_beg, cycle-1));
+                {   // TODO: if this happens zero out following q-scores
+                    if(!metrics.has_metric(*lane_beg, *tile_beg, cycle) ||
+                            !metrics.has_metric(*lane_beg, *tile_beg, cycle-1)) continue;
+                    metrics.get_metric_ref(*lane_beg, *tile_beg, cycle).accumulate(
+                            metrics.get_metric_ref(*lane_beg, *tile_beg, cycle-1)
+                    );
                 }
             }
         }
@@ -82,7 +86,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
         if(!metrics.bins().empty()) return 0;   // If the metrics already have a header they do not require binning
 
         const size_t max_bin_count = 7;
-        model::metric_base::metric_set<model::metrics::q_metric>::const_iterator beg = metrics.begin(), end=metrics.end();
+        model::metric_base::metric_set<model::metrics::q_metric>::const_iterator beg = metrics.begin(),end=metrics.end();
         if(beg == end) return 0 ;
         typedef model::metrics::q_metric::uint_t uint_t;
         std::set<uint_t> bins_found;
@@ -112,7 +116,9 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
      * @param instrument instrument type
      * @param count number of bins
      */
-    inline void populate_legacy_q_score_bins(std::vector<model::metrics::q_score_bin>& q_score_bins, const constants::instrument_type instrument, const size_t count)
+    inline void populate_legacy_q_score_bins(std::vector<model::metrics::q_score_bin>& q_score_bins,
+                                             const constants::instrument_type instrument,
+                                             const size_t count)
     {
         typedef model::metrics::q_score_bin q_score_bin;
         if(!requires_legacy_bins(count)) return;
@@ -185,7 +191,9 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
      * @param q_score_bins vector of q-score bins
      * @param instrument type
      */
-    inline void populate_legacy_q_score_bins(model::metric_base::metric_set<model::metrics::q_metric>& metrics, std::vector<model::metrics::q_score_bin>& q_score_bins, const constants::instrument_type instrument)
+    inline void populate_legacy_q_score_bins(model::metric_base::metric_set<model::metrics::q_metric>& metrics,
+                                             std::vector<model::metrics::q_score_bin>& q_score_bins,
+                                             const constants::instrument_type instrument)
     {
         const size_t count = count_legacy_q_score_bins(metrics);
         populate_legacy_q_score_bins(q_score_bins, instrument, count);
@@ -224,7 +232,8 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
      * @param qval threshold
      * @return index of q-val above given threshold
      */
-    inline size_t index_for_q_value(const model::metric_base::metric_set<model::metrics::q_metric>& metrics, const size_t qval)
+    inline size_t index_for_q_value(const model::metric_base::metric_set<model::metrics::q_metric>& metrics,
+                                    const size_t qval)
     {
         if(!is_compressed(metrics)) return qval;
         return metrics.index_for_q_value(qval);

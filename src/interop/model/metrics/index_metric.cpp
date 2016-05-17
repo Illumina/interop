@@ -67,13 +67,14 @@ struct generic_layout<index_metric, 1> : public default_layout<1>
     /** Defines an empty header */
     typedef void* header_t;
     /** No record size is required for this stream */
-    typedef no_value record_size_t;
+    //typedef fixed_record_size<sizeof(metric_id_t)> record_size_t;
+    enum{BYTE_COUNT=1, RECORD_SIZE=sizeof(metric_id_t)+BYTE_COUNT};
 
     /** Read metric from the input stream
      *
      * @param in input stream
      * @param metric destination metric
-     * @return number of bytes read or total number of bytes written
+     * @return sentinel
      */
     template<class Metric, class Header>
     static std::streamsize map_stream(std::istream& in, Metric& metric, Header&, const bool)
@@ -98,13 +99,13 @@ struct generic_layout<index_metric, 1> : public default_layout<1>
         }
         else beg->m_count += count;
 
-        return 1;
+        return BYTE_COUNT;
     }
     /** Write metric to the output stream
      *
      * @param out output stream
      * @param metric source metric
-     * @return number of bytes read or total number of bytes written
+     * @return sentinel
      */
     template<class Metric, class Header>
     static std::streamsize map_stream(std::ostream& out, Metric& metric, Header&, const bool)
@@ -120,17 +121,17 @@ struct generic_layout<index_metric, 1> : public default_layout<1>
             write_binary(out, beg->sample_id());
             write_binary(out, beg->sample_proj());
         }
-        return 1;
+        return BYTE_COUNT;
     }
     /** Compute the layout size
      *
      * @note The size of the record is not known ahead of time, so we just return 1.
      *
-     * @return 1
+     * @return sentinel
      */
     static record_size_t computeSize(const index_metric::header_type&)
     {
-        return record_size_t();
+        return static_cast<record_size_t>(RECORD_SIZE);
     }
     /** Compute header size
      *
@@ -139,6 +140,15 @@ struct generic_layout<index_metric, 1> : public default_layout<1>
     static size_t computeHeaderSize(const index_metric::header_type&)
     {
         return sizeof(version_t);
+    }
+    /** Skip reading/writing record size to this file
+     *
+     * @return sentinel
+     */
+    template<class Stream>
+    static record_size_t map_stream_record_size(Stream&, record_size_t)
+    {
+        return static_cast<record_size_t>(RECORD_SIZE);
     }
 };
 

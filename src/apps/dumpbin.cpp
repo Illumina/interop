@@ -78,7 +78,7 @@ struct metric_writer
         if(metrics.size()==0) return;
         std::ostringstream fout;
         io::write_metrics(fout, metrics, metrics.version());
-        m_out << metrics.prefix() << std::endl;
+        m_out << io::interop_basename<MetricSet>() << std::endl;
         write_bytes_as_string(m_out, fout.str(), m_max_line);
     }
 private:

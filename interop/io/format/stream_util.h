@@ -2,7 +2,6 @@
  *
  *
  *  @file
- *
  *  @date 9/8/15
  *  @version 1.0
  *  @copyright GNU Public License.
@@ -21,20 +20,6 @@
 namespace illumina {
     namespace interop {
         namespace io {
-
-            /** Indicates no value should be read from or written to the stream
-             */
-            struct no_value
-            {
-                /** Convert to unsigned integer
-                 *
-                 * This is a sentinel value used only by index metrics. The actual index metric returns
-                 * a value of 1, but the full record size calculated includes the lane,tile,read, which
-                 * is of size 6. So, 6+1=7.
-                 * @return 7
-                 */
-                operator size_t()const{return 7;}
-            };
 
             /** Read an array of data from an input stream
              *
@@ -68,15 +53,6 @@ namespace illumina {
                 T val;
                 read_binary(in, &val, 1);
                 return val;
-            }
-            /** Read nothing from the stream
-             *
-             * @return 1
-             */
-            template<>
-            inline no_value read_binary< no_value >(std::istream &)
-            {
-                return no_value();
             }
             /** Read a vector of data from an input stream
              *
@@ -136,12 +112,6 @@ namespace illumina {
             void write_binary(std::ostream &out, const T &buffer)
             {
                 write_binary(out, &buffer, 1);
-            }
-            /** Write nothing to the stream
-             */
-            template<>
-            inline void write_binary<no_value>(std::ostream &, const no_value&)
-            {
             }
             /** Write an vector of data to an output stream
              *

@@ -83,11 +83,6 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
             throw std::invalid_argument("All reads is unsupported");
         switch(logic::utils::to_group(type))
         {
-            case constants::MetricCount:
-            case constants::UnknownMetricGroup:
-            case constants::Index:
-            case constants::Image:
-                throw std::invalid_argument("Unsupported metric type: "+constants::to_string(type));
             case constants::Tile:
             {
                 typedef model::metrics::tile_metric metric_t;
@@ -147,6 +142,8 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                                       values_for_scaling);
                 break;
             }
+            default:
+                throw std::invalid_argument("Unsupported metric type: "+constants::to_string(type));
         };
 
         if(!values_for_scaling.empty())

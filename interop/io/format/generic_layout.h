@@ -52,6 +52,18 @@ namespace illumina {
                 {
                     return 0;
                 }
+                /** Map reading/writing the record size to the stream
+                 *
+                 * @param stream input/output stream
+                 * @param record_size size of the record
+                 * @return size of the record
+                 */
+                template<class Stream, class RecordSize>
+                static RecordSize map_stream_record_size(Stream& stream, RecordSize record_size)
+                {
+                    stream_map< RecordSize >(stream, record_size);
+                    return record_size;
+                }
             };
         }
     }

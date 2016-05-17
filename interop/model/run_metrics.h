@@ -14,6 +14,8 @@
 #include "interop/model/metrics/image_metric.h"
 #include "interop/model/metrics/index_metric.h"
 #include "interop/model/metrics/q_metric.h"
+#include "interop/model/metrics/q_by_lane_metric.h"
+#include "interop/model/metrics/q_collapsed_metric.h"
 #include "interop/model/metrics/tile_metric.h"
 #include "interop/io/metric_file_stream.h"
 #include "interop/model/run/info.h"
@@ -44,6 +46,8 @@ class run_metrics
             image_metric,
             index_metric,
             q_metric,
+            q_by_lane_metric,
+            q_collapsed_metric,
             tile_metric
     >::result_t metric_type_list_t;
     template<class T> struct create_metric_set{typedef metric_base::metric_set<T> result_t;};

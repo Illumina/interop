@@ -103,6 +103,11 @@ namespace illumina {
                     { }
 
                 public:
+                    /** Get the metric name suffix
+                     *
+                     * @return empty string
+                     */
+                    static const char* suffix(){return "";}
                     /** Set the base metric identifiers
                      *
                      * @param base layout base

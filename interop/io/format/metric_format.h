@@ -2,7 +2,6 @@
  *
  *
  *  @file
- *
  *  @date 8/15/15
  *  @version 1.0
  *  @copyright GNU Public License.
@@ -33,6 +32,8 @@ namespace illumina {
                 typedef typename Metric::header_type header_t;
                 /** Define a layout ID type */
                 typedef typename Layout::metric_id_t metric_id_t;
+                /** Define the record size type */
+                typedef typename Layout::record_size_t record_size_t;
 
                 /** Write the header of a metric InterOp to the given output stream
                  *
@@ -43,7 +44,7 @@ namespace illumina {
                 {
                     const ::uint8_t version = static_cast< ::uint8_t >(Layout::VERSION);
                     write_binary(out, version);
-                    write_binary(out, Layout::computeSize(header));
+                    Layout::map_stream_record_size(out, Layout::computeSize(header));
                     Layout::map_stream_for_header(out, header);
                 }
                 /** Write a metric record to the given output stream
@@ -68,7 +69,8 @@ namespace illumina {
                 std::streamsize read_header(std::istream& in, header_t& header)
                 {
                     if(in.fail()) throw incomplete_file_exception("Insufficient header data read from the file");
-                    const std::streamsize record_size = read_binary< typename Layout::record_size_t >(in);
+                    const std::streamsize record_size = Layout::map_stream_record_size(in,
+                                                                                       static_cast<record_size_t>(0));
                     Layout::map_stream_for_header(in, header);
 
                     if(in.fail())
@@ -77,7 +79,9 @@ namespace illumina {
                     if(record_size != layout_size)
                         throw bad_format_exception(std::string("Record size does not match layout size, record size: ")
                                                    +util::lexical_cast<std::string>(record_size)+" != layout size: "
-                                                   +util::lexical_cast<std::string>(layout_size));
+                                                   +util::lexical_cast<std::string>(layout_size)+" for "+
+                                                           Metric::prefix()+" "+Metric::suffix()+" v"+
+                                                           util::lexical_cast<std::string>(Layout::VERSION));
                     return record_size;
                 }
                 /** Read a metric set from the given input stream

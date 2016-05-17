@@ -51,6 +51,8 @@
         INTEROP_ENUM(Index),\
         INTEROP_ENUM(Q),\
         INTEROP_ENUM(Tile),\
+        INTEROP_ENUM(QByLane),\
+        INTEROP_ENUM(QCollapsed),\
         INTEROP_ENUM(MetricCount),\
         INTEROP_ENUM(UnknownMetricGroup)
 

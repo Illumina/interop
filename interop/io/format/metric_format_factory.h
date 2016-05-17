@@ -42,6 +42,17 @@
 namespace illumina {
     namespace interop {
         namespace io {
+            /** Metric type adapter
+             *
+             * This class allows a metric derived from another metric to use it's format
+             * For example, q_by_lane_metric uses the q_metric format
+             */
+            template<typename Metric>
+            struct metric_format_adapter
+            {
+                /** Define the template parameter as the target type */
+                typedef Metric metric_t;
+            };
             /** Factory for generating metric formats
              *
              * This class defines static methods to register a metric format. The registered metric formats can
@@ -54,11 +65,13 @@ namespace illumina {
             {
                 /** Define the metric type */
                 typedef Metric metric_type;
+                /** Define the abstract format type */
+                typedef abstract_metric_format<metric_type> abstract_metric_format_t;
                 /** Define the header type */
                 typedef typename Metric::header_type header_type;
                 /** Define a unique pointer to a metric format
                  */
-                typedef stdbp::unique_ptr< abstract_metric_format<Metric> > metric_format_pointer;
+                typedef stdbp::unique_ptr< abstract_metric_format_t > metric_format_pointer;
                 /** Define a map between format version and the format
                  */
                 typedef std::map<int, metric_format_pointer> metric_format_map;
@@ -66,7 +79,7 @@ namespace illumina {
                  *
                  * This constructor is used to statically register a matric format in a source file.
                  */
-                metric_format_factory(abstract_metric_format<Metric>* pformat)
+                metric_format_factory(abstract_metric_format_t* pformat)
                 {
                    INTEROP_ASSERT(pformat!=0);
                     metric_formats()[pformat->version()]=metric_format_pointer(pformat);

@@ -182,7 +182,8 @@ int read_metrics_from_file(const std::string& filename, MetricSet& metrics)
     }
     if(metrics.size()==0)
     {
-        if(kPrintError) std::cerr << "Empty metric file: " << metrics.name() << std::endl;
+
+        if(kPrintError) std::cerr << "Empty metric file: " << io::interop_basename<MetricSet>() << std::endl;
         return EMPTY_INTEROP;
     }
     return 0;
@@ -205,7 +206,7 @@ int copy_tile_metrics(const std::string& input, const std::string& output, unsig
     int res;
     if((res=read_metrics_from_file(input, metrics)) != 0) return res;
 
-    std::cout << metrics.name() << ": " << metrics.version() << std::endl;
+    std::cout << io::interop_basename<tile_metrics>() << ": " << metrics.version() << std::endl;
     try {
         io::write_interop(output, metrics);
     }
@@ -268,7 +269,7 @@ int copy_cycle_metrics(const std::string& input, const std::string& output, unsi
     int res;
     if((res=read_metrics_from_file(input, metrics)) != 0) return res;
 
-    std::cout << metrics.name() << ": " << metrics.version() << std::endl;
+    std::cout << io::interop_basename<MetricSet>() << ": " << metrics.version() << std::endl;
 
     metric_array_t subset;
 

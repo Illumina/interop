@@ -6,7 +6,6 @@
  *  - InterOp/QMetricsOut.bin
  *
  *  @file
- *
  *  @date 8/21/2015
  *  @version 1.0
  *  @copyright GNU Public License.
@@ -45,7 +44,7 @@ namespace illumina {
                     /** Assign type val to point2d
                      *
                      * @param val type that defines m_x and m_y
-                     * @return point2d
+                     * @return q_score_bin
                      */
                     template<class T>
                     q_score_bin& operator=(const T& val)

@@ -8,7 +8,7 @@ set(SRCS
         model/metrics/extraction_metric.cpp
         model/metrics/image_metric.cpp
         model/metrics/q_metric.cpp
-        model/metrics/index_metric.cpp)
+        model/metrics/index_metric.cpp model/metrics/q_collapsed_metric.cpp)
 
 set(HEADERS
         ../../interop/model/summary/cycle_state_summary.h
@@ -111,6 +111,8 @@ set(HEADERS
         ../../interop/logic/table/populate_imaging_table.h
         ../../interop/model/table/imaging_table.h
         ../../interop/util/string.h
+        ../../interop/model/metrics/q_collapsed_metric.h
+        ../../interop/model/metrics/q_by_lane_metric.h
         )
 
 set(INTEROP_HEADERS ${HEADERS} PARENT_SCOPE)

@@ -30,27 +30,41 @@ namespace illumina {
                 }
                 /** Generate a file name from a run directory and the InterOp name
                  *
-                 * @param name name of the interop file
+                 * @note The 'Out' suffix is appended when we read the file. We excluded the Out in certain conditions
+                 * when writing the file.
+                 *
+                 * @param prefix prefix name of the interop file
+                 * @param suffix suffix name of the interop file
                  * @param useOut if true, append "Out" to the end of the filename
                  * @return file path to the InterOp directory
                  */
-                inline std::string interop_basename(const std::string& name, bool useOut = true) {
-                    return name + "Metrics" + ((useOut) ? ("Out.bin") : (".bin"));
+                inline std::string interop_basename(const std::string& prefix,
+                                                    const std::string& suffix,
+                                                    const bool useOut = true)
+                {
+                    return prefix + "Metrics" + suffix + ((useOut) ? ("Out.bin") : (".bin"));
                 }
                 /** Generate a file name from a run directory and the InterOp name
                  *
+                 * @note The 'Out' suffix is appended when we read the file. We excluded the Out in certain conditions
+                 * when writing the file.
+                 *
                  * @param runDirectory file path to the run directory
-                 * @param name name of the interop file
+                 * @param prefix prefix name of the interop file
+                 * @param suffix suffix name of the interop file
                  * @param useOut if true, append "Out" to the end of the filename
                  * @return file path to the InterOp directory
                  */
-                inline std::string interop_filename(const std::string& runDirectory, const std::string& name, bool useOut = true)
+                inline std::string interop_filename(const std::string& runDirectory,
+                                                    const std::string& prefix,
+                                                    const std::string& suffix,
+                                                    const bool useOut = true)
                 {
-                    if(io::basename(runDirectory) == interop_basename(name, useOut))
+                    if(io::basename(runDirectory) == interop_basename(prefix, suffix, useOut))
                         return runDirectory;
                     if(io::basename(runDirectory) == "InterOp")
-                        return io::combine(runDirectory, interop_basename(name, useOut));
-                    return io::combine(interop_directory_name(runDirectory), interop_basename(name, useOut));
+                        return io::combine(runDirectory, interop_basename(prefix, suffix, useOut));
+                    return io::combine(interop_directory_name(runDirectory), interop_basename(prefix, suffix, useOut));
                 }
                 /** Memory buffer for a stream
                  *
@@ -67,6 +81,33 @@ namespace illumina {
                     }
                 };
             }
+            /** Generate a file name from a run directory and the metric type
+             *
+             * @note The 'Out' suffix is appended when we read the file. We excluded the Out in certain conditions
+             * when writing the file.
+             *
+             * @param runDirectory file path to the run directory
+             * @param useOut if true, append "Out" to the end of the filename
+             * @return file path to the InterOp directory
+             */
+            template<class MetricType>
+            std::string interop_filename(const std::string& runDirectory, bool useOut = true)
+            {
+                return detail::interop_filename(runDirectory, MetricType::prefix(), MetricType::suffix(), useOut);
+            }
+            /** Generate a file name from a run directory and the metric type
+             *
+             * @note The 'Out' suffix is appended when we read the file. We excluded the Out in certain conditions
+             * when writing the file.
+             *
+             * @param useOut if true, append "Out" to the end of the filename
+             * @return file path to the InterOp directory
+             */
+            template<class MetricType>
+            std::string interop_basename(bool useOut = true)
+            {
+                return detail::interop_basename(MetricType::prefix(), MetricType::suffix(), useOut);
+            }
             /** Read the binary InterOp file into the given metric set
              *
              * @param in input stream
@@ -76,8 +117,11 @@ namespace illumina {
             void read_metrics(std::istream& in, MetricSet& metrics)
             {
                 typedef typename MetricSet::metric_type metric_type;
-                typedef metric_format_factory <metric_type> factory_type;
+                typedef typename metric_format_adapter<metric_type>::metric_t format_metric_t;
+                typedef metric_format_factory <format_metric_t> factory_type;
                 typedef typename factory_type::metric_format_map metric_format_map;
+                typedef typename metric_type::id_t id_t;
+                typedef std::map<id_t, size_t> offset_map_t;
                 metric_format_map& format_map=factory_type::metric_formats();
 
                 if(!in.good())
@@ -87,14 +131,14 @@ namespace illumina {
                 if(version == -1)
                     throw incomplete_file_exception("Empty file found");
                 if (format_map.find(version) == format_map.end())
-                    throw bad_format_exception("No format found to parse file with version: " +
+                    throw bad_format_exception("No format found to parse "+interop_basename<MetricSet>()+" with version: " +
                                                util::lexical_cast<std::string>(version) + " of " +
                                                util::lexical_cast<std::string>(format_map.size()));
-               INTEROP_ASSERT(format_map[version]);
+                INTEROP_ASSERT(format_map[version]);
                 metrics.set_version(static_cast< ::int16_t>(version));
                 const std::streamsize record_size = format_map[version]->read_header(in, metrics);
 
-                std::map<typename metric_type::id_t, size_t> metric_offset_map;
+                offset_map_t metric_offset_map;
                 while(in)
                 {
                     metric_type metric;// Moving this out breaks index metrics - TODO: fix by adding clear to index metrics (or move) or swap
@@ -155,9 +199,11 @@ namespace illumina {
              * @return size of a single metric record
              */
             template<class MetricType>
-            size_t record_size(const typename MetricType::header_type& header, const ::int16_t version = MetricType::LATEST_VERSION)
+            size_t record_size(const typename MetricType::header_type& header,
+                               const ::int16_t version = MetricType::LATEST_VERSION)
             {
-                typedef metric_format_factory <MetricType> factory_type;
+                typedef typename metric_format_adapter<MetricType>::metric_t format_metric_t;
+                typedef metric_format_factory <format_metric_t> factory_type;
                 typedef typename factory_type::metric_format_map metric_format_map;
                 metric_format_map& format_map=factory_type::metric_formats();
 
@@ -166,7 +212,7 @@ namespace illumina {
                                                util::lexical_cast<std::string>(version) + " of " +
                                                util::lexical_cast<std::string>(format_map.size()));
 
-               INTEROP_ASSERT(format_map[version]);
+                INTEROP_ASSERT(format_map[version]);
                 return format_map[version]->record_size(header);
             }
             /** Get the size of a metric file header
@@ -176,9 +222,11 @@ namespace illumina {
              * @return size of metric file header
              */
             template<class MetricType>
-            size_t header_size(const typename MetricType::header_type& header, const ::int16_t version = MetricType::LATEST_VERSION)
+            size_t header_size(const typename MetricType::header_type& header,
+                               const ::int16_t version = MetricType::LATEST_VERSION)
             {
-                typedef metric_format_factory <MetricType> factory_type;
+                typedef typename metric_format_adapter<MetricType>::metric_t format_metric_t;
+                typedef metric_format_factory <format_metric_t> factory_type;
                 typedef typename factory_type::metric_format_map metric_format_map;
                 metric_format_map& format_map=factory_type::metric_formats();
 
@@ -198,9 +246,13 @@ namespace illumina {
              * @param version version of the format
              */
             template<class MetricType>
-            void write_metric(std::ostream& out, const MetricType& metric, const typename MetricType::header_type& header, const ::int16_t version)
+            void write_metric(std::ostream& out,
+                              const MetricType& metric,
+                              const typename MetricType::header_type& header,
+                              const ::int16_t version)
             {
-                typedef metric_format_factory <MetricType> factory_type;
+                typedef typename metric_format_adapter<MetricType>::metric_t format_metric_t;
+                typedef metric_format_factory <format_metric_t> factory_type;
                 typedef typename factory_type::metric_format_map metric_format_map;
                 metric_format_map& format_map=factory_type::metric_formats();
 
@@ -219,9 +271,12 @@ namespace illumina {
              * @param header metric header
              */
             template<class MetricType>
-            void write_metric_header(std::ostream& out, const ::int16_t version, const typename MetricType::header_type& header=typename MetricType::header_type())
+            void write_metric_header(std::ostream& out,
+                                     const ::int16_t version,
+                                     const typename MetricType::header_type& header=typename MetricType::header_type())
             {
-                typedef metric_format_factory <MetricType> factory_type;
+                typedef typename metric_format_adapter<MetricType>::metric_t format_metric_t;
+                typedef metric_format_factory <format_metric_t> factory_type;
                 typedef typename factory_type::metric_format_map metric_format_map;
                 metric_format_map& format_map=factory_type::metric_formats();
                 if (format_map.find(version) == format_map.end())
@@ -239,10 +294,11 @@ namespace illumina {
              * @param version version of the InterOp to write (if less than 0, get from metric set)
              */
             template<class MetricSet>
-            static void write_metrics(std::ostream &out, const MetricSet &metrics, int version = -1)
+            static void write_metrics(std::ostream &out, const MetricSet &metrics, ::int16_t version = -1)
             {
                 typedef typename MetricSet::metric_type metric_type;
-                typedef metric_format_factory <metric_type> factory_type;
+                typedef typename metric_format_adapter<metric_type>::metric_t format_metric_t;
+                typedef metric_format_factory <format_metric_t> factory_type;
                 typedef typename factory_type::metric_format_map metric_format_map;
                 metric_format_map& format_map=factory_type::metric_formats();
 

@@ -25,6 +25,8 @@
  *  - IndexMetricsOut.bin
  *  - QMetricsOut.bin
  *  - TileMetricsOut.bin
+ *  - QMetrics2030Out.bin
+ *  - QMetricsByLaneOut.bin
  *
  *  Alternatively, you can provide a directory that contains InterOp files (e.g. 140131_1287_0851_A01n401drr/InterOp) or
  *  a specific InterOp file (e.g. 140131_1287_0851_A01n401drr/InterOp/TileMetricsOut.csv).
@@ -118,17 +120,20 @@
 #include <iostream>
 #include <iomanip>
 #include "interop/io/metric_file_stream.h"
+#include "interop/model/metrics/q_metric.h"
+#include "interop/model/metrics/q_by_lane_metric.h"
+#include "interop/model/metrics/q_collapsed_metric.h"
 #include "interop/model/metrics/tile_metric.h"
 #include "interop/model/metrics/error_metric.h"
 #include "interop/model/metrics/corrected_intensity_metric.h"
 #include "interop/model/metrics/extraction_metric.h"
 #include "interop/model/metrics/image_metric.h"
-#include "interop/model/metrics/q_metric.h"
 #include "interop/model/metrics/index_metric.h"
 #include "interop/logic/metric/q_metric.h"
 #include "interop/version.h"
 
 using namespace illumina::interop::model::metrics;
+using namespace illumina::interop::model::metric_base;
 using namespace illumina::interop;
 
 /** Exit codes that can be produced by the application
@@ -173,7 +178,7 @@ int write_interops(std::ostream& out, const std::string& filename);
 /** Set false if you want to disable error messages printing to the error stream */
 bool kPrintError=true;
 /** Set greater than zero if you want to view less recoreds */
-int kMaxRecordCount=0;
+int kMaxRecordCount=3;
 
 
 int main(int argc, char** argv)
@@ -218,18 +223,18 @@ int read_metrics_from_file(const std::string& filename, MetricSet& metrics)
     catch(const io::file_not_found_exception&){return 1;}
     catch(const io::bad_format_exception& ex)
     {
-        if(kPrintError) std::cerr << metrics.name() << " - " << ex.what() << std::endl;
+        if(kPrintError) std::cerr << io::interop_basename<MetricSet>() << " - " << ex.what() << std::endl;
         return BAD_FORMAT;
     }
     catch(const io::incomplete_file_exception&){ }
     catch(const std::exception& ex)
     {
-        if(kPrintError) std::cerr << metrics.name() << " - " << ex.what() << std::endl;
+        if(kPrintError) std::cerr << io::interop_basename<MetricSet>() << " - " << ex.what() << std::endl;
         return UNEXPECTED_EXCEPTION;
     }
     if(metrics.size()==0)
     {
-        if(kPrintError) std::cerr << "Empty metric file: " << metrics.name() << std::endl;
+        if(kPrintError) std::cerr << "Empty metric file: " << io::interop_basename<MetricSet>() << std::endl;
         return EMPTY_INTEROP;
     }
     // @ [Reading a binary InterOp file]
@@ -258,7 +263,7 @@ template<class MetricSet>
 void write_header(std::ostream& out, const MetricSet& metrics)
 {
     out << "# " << metrics.version() << "\n";
-    out << "# " << metrics.name() << "\n";
+    out << "# " << io::interop_basename<MetricSet>()<< "\n";
 }
 /** Write a standard id for every metric derived from base metric
  *
@@ -505,6 +510,42 @@ int write_image_metrics(std::ostream& out, const std::string& filename)
 
     return res;
 }
+/** Write collapsed q-metrics to the output stream
+ *
+ * Binary File:
+ *      QMetrics2030Out.bin
+ *
+ * Format:
+ *  # 6
+ *  # Q2030
+ *  Lane,Tile,Cycle,Q20,Q30,Total,MedianQScore
+ *  1,1105,1,2447414,2334829,2566750,33
+ *  1,1103,1,2436317,2327796,2543605,33
+ *  1,1106,1,2474217,2366046,2583629,33
+ *
+ * @param out output stream
+ * @param filename path to run folder
+ * @return error code or 0
+ */
+int write_collapsed_q_metrics(std::ostream& out, const std::string& filename)
+{
+    typedef metric_set<q_collapsed_metric> q_collapsed_metric_set;
+    typedef q_collapsed_metric_set::const_iterator const_iterator;
+    q_collapsed_metric_set metrics;
+    int res = read_metrics_from_file(filename, metrics);
+    if(res != 0) return res;
+
+    write_header(out, metrics);
+    out << "Lane,Tile,Cycle,Q20,Q30,Total,MedianQScore\n";
+    for(const_iterator beg = metrics.metrics().begin(), end = vec_end(metrics.metrics());beg != end;++beg)
+    {
+        const q_collapsed_metric& metric = *beg;
+        write_id(out, metric);
+        out << metric.q20() <<"," << metric.q30() << "," << metric.total() << "," << metric.median_qscore() << "\n";
+    }
+    return res;
+}
+
 /** Write q-metrics to the output stream
  *
  * Binary File:
@@ -573,6 +614,77 @@ int write_q_metrics(std::ostream& out, const std::string& filename)
 
     return res;
 }
+
+
+/** Write q-metrics by lane to the output stream
+ *
+ * Binary File:
+ *      QMetricsByLaneOut.bin
+ *
+ * Format:
+ *  # 6
+ *  # Q
+ *  Type,Bin1,Bin2,Bin3,Bin4,Bin5,Bin6,Bin7
+ *  Lower,2,10,20,25,30,35,40
+ *  Upper,9,19,24,29,34,39,40
+ *  Value,2,14,21,27,32,36,40
+ *  # 6
+ *  # Q
+ *  Lane,Tile,Cycle,BinCount,BinCount1,BinCount2,BinCount3,BinCount4,BinCount5,BinCount6,BinCount7
+ *  1,0,1,7,0,16517,8618,324,535810,0,0
+ *  1,0,2,7,0,24839,7864,690,527876,0,0
+ *
+ * @param out output stream
+ * @param filename path to run folder
+ * @return error code or 0
+ */
+int write_q_by_lane_metrics(std::ostream& out, const std::string& filename)
+{
+    typedef model::metric_base::metric_set<q_by_lane_metric> q_metric_set;
+    q_metric_set metrics;
+    int res = read_metrics_from_file(filename, metrics);
+    if(res != 0) return res;
+
+    if(metrics.binCount()>0)
+    {
+        write_header(out, metrics);
+        out << "Type";
+        for (size_t i = 0; i < metrics.binCount(); i++)
+            out << ",Bin" << i + 1;
+        out << "\n";
+        out << "Lower";
+        for (size_t i = 0; i < metrics.binCount(); i++)
+            out << "," << metrics.binAt(i).lower();
+        out << "\n";
+        out << "Upper";
+        for (size_t i = 0; i < metrics.binCount(); i++)
+            out << "," << metrics.binAt(i).upper();
+        out << "\n";
+        out << "Value";
+        for (size_t i = 0; i < metrics.binCount(); i++)
+            out << "," << metrics.binAt(i).value();
+        out << "\n";
+    }
+
+    write_header(out, metrics);
+    out << "Lane,Tile,Cycle,BinCount";
+    const size_t hist_bin_count = logic::metric::count_q_metric_bins(metrics);
+    for(size_t i=0;i<hist_bin_count;++i)
+        out << ",BinCount" << i+1;
+    out << "\n";
+    for(q_metric_set::metric_array_t::const_iterator beg = metrics.metrics().begin(), end = vec_end(metrics.metrics());beg != end;++beg)
+    {
+        const q_metric& metric = *beg;
+        write_id(out, metric);
+        out  << metric.size();
+        for(size_t i=0;i<metric.size();i++)
+            out << "," << metric.qscoreHist(i);
+        out << "\n";
+    }
+
+    return res;
+}
+
 /** Write index metrics to the output stream
  *
  * Binary File:
@@ -632,6 +744,8 @@ int encode_error(int res, int type)
  *  5. Image
  *  6. Q
  *  7. Index
+ *  8. Collapsed Q
+ *  9. By Lane Q
  *
  * @param out output stream
  * @param filename path to run folder
@@ -653,8 +767,13 @@ int write_interops(std::ostream& out, const std::string& filename)
     if(res == 0) valid_count++;
     if((res=write_q_metrics(out, filename)) > 1) return encode_error(res, 6);
     if(res == 0) valid_count++;
-    if((res=write_index_metrics(out, filename)) > 1) return encode_error(res, 6);
+    if((res=write_index_metrics(out, filename)) > 1) return encode_error(res, 7);
     if(res == 0) valid_count++;
+    if((res=write_collapsed_q_metrics(out, filename)) > 1) return encode_error(res, 8);
+    if(res == 0) valid_count++;
+    if((res=write_q_by_lane_metrics(out, filename)) > 1) return encode_error(res, 9);
+    if(res == 0) valid_count++;
+
     if(valid_count == 0)
     {
         if(kPrintError) std::cerr << "No files found" << std::endl;

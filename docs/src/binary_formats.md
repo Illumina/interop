@@ -23,4 +23,10 @@ The documentation for the model notes when an attribute is only populated by a s
  - @subpage q_v5 "Q-Metrics Version 5"
  - @subpage q_v6 "Q-Metrics Version 6"
  - @subpage tile_v2 "Tile Version 2"
+ - @subpage q_collapsed_v2 "Collapsed Q-Metrics Version 2"
+ - @subpage q_collapsed_v3 "Collapsed Q-Metrics Version 3"
+ - @subpage q_collapsed_v4 "Collapsed Q-Metrics Version 4"
+ - @subpage q_collapsed_v5 "Collapsed Q-Metrics Version 5"
+ - @subpage q_collapsed_v6 "Collapsed Q-Metrics Version 6"
+ 
 
