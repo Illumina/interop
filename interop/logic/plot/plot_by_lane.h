@@ -119,8 +119,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                        const model::plot::filter_options& options,
                        model::plot::plot_data<Point>& data)
     {
-        typedef constants::enumeration<constants::metric_type> metric_enum_t;
-        plot_by_lane(metrics, metric_enum_t::parse(metric_name), options, data);
+        plot_by_lane(metrics, constants::parse<constants::metric_type>(metric_name), options, data);
     }
 
 

@@ -114,6 +114,7 @@ set(HEADERS
         ../../interop/util/string.h
         ../../interop/model/metrics/q_collapsed_metric.h
         ../../interop/model/metrics/q_by_lane_metric.h
+        ../../interop/util/constant_mapping.h
         )
 
 set(INTEROP_HEADERS ${HEADERS} PARENT_SCOPE)

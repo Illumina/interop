@@ -35,10 +35,10 @@ namespace illumina { namespace interop { namespace logic { namespace plot
      */
     template<typename MetricSet, typename MetricProxy, typename Point>
     void populate_metric_average_by_cycle(const MetricSet& metrics,
-                                   MetricProxy& proxy,
-                                   const model::plot::filter_options& options,
-                                   const constants::metric_type type,
-                                   model::plot::data_point_collection<Point>& points)
+                                          MetricProxy& proxy,
+                                          const model::plot::filter_options& options,
+                                          const constants::metric_type type,
+                                          model::plot::data_point_collection<Point>& points)
     {
         const size_t max_cycle = metrics.max_cycle();
         points.assign(max_cycle, Point());
@@ -95,7 +95,6 @@ namespace illumina { namespace interop { namespace logic { namespace plot
     template<class Point>
     void setup_series_by_channel(const std::vector<std::string>& channels, model::plot::plot_data<Point>& data)
     {
-        typedef constants::enumeration<constants::plot_colors> plot_colors_enum_t;
         typedef model::plot::series<Point> series_t;
         data.resize(channels.size());
         std::vector<size_t> expected_order(channels.size());
@@ -104,7 +103,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
         {
             data[i] = series_t(
                     channels[i],
-                    plot_colors_enum_t::keys()[expected_order[i]],
+                    constants::to_string(static_cast<constants::plot_colors>(expected_order[i])),
                     series_t::Line);
         }
     }
@@ -115,16 +114,13 @@ namespace illumina { namespace interop { namespace logic { namespace plot
     template<class Point>
     void setup_series_by_base(model::plot::plot_data<Point>& data)
     {
-        typedef constants::enumeration<constants::plot_colors> plot_colors_enum_t;
-        typedef constants::enumeration<constants::dna_bases> dna_base_enum_t;
         typedef model::plot::series<Point> series_t;
-        std::vector<std::string> bases = dna_base_enum_t::keys();
         data.resize(constants::NUM_OF_BASES);
         for(size_t i=0;i<data.size();++i)
         {
             data[i] = series_t(
-                    bases[i],
-                    plot_colors_enum_t::keys()[i],
+                    constants::to_string(static_cast<constants::dna_bases>(i)),
+                    constants::to_string(static_cast<constants::plot_colors>(i)),
                     series_t::Line);
         }
     }
@@ -282,9 +278,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                        const model::plot::filter_options& options,
                        model::plot::plot_data<Point>& data)
     {
-        typedef constants::enumeration<constants::metric_type> metric_enum_t;
-
-        plot_by_cycle(metrics, metric_enum_t::parse(metric_name), options, data);
+        plot_by_cycle(metrics, constants::parse<constants::metric_type>(metric_name), options, data);
     }
 }
 }}}

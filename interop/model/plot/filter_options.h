@@ -292,8 +292,7 @@ public:
      */
     std::string base_description()const
     {
-        typedef constants::enumeration<dna_base_t> enum_t;
-        return (m_base == static_cast<dna_base_t>(ALL_BASES)) ? "All Bases" :  "Base " + enum_t::to_key(m_base);
+        return (m_base == static_cast<dna_base_t>(ALL_BASES)) ? "All Bases" :  "Base " + constants::to_string(m_base);
     }
     /** Get a description of the surface filter options
      *

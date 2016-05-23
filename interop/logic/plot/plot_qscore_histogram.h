@@ -135,7 +135,6 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                                const model::plot::filter_options& options,
                                model::plot::plot_data<Point>& data)
     {
-        typedef constants::enumeration<constants::bar_plot_options> bar_plot_options_t;
         typedef model::metric_base::metric_set<model::metrics::q_metric> q_metric_set_t;
 
         const q_metric_set_t& q_metric_set = metrics.get_set<model::metrics::q_metric>();
@@ -149,7 +148,8 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                                                           metrics.get_set<model::metrics::q_metric>().max_cycle());
 
         data.assign(1, model::plot::series<Point>("Q Score", "", model::plot::series<Point>::Bar));
-        data[0].add_option(bar_plot_options_t::to_key(constants::ShiftedBar));
+
+        data[0].add_option(constants::to_string(constants::ShiftedBar));
 
         std::vector<float> histogram;
         populate_distribution(

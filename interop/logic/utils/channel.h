@@ -179,7 +179,7 @@ namespace illumina { namespace interop { namespace logic { namespace utils
                 channels.push_back("G");
                 channels.push_back("T");
                 break;
-            case constants::UnknownInstrument:
+            default:
                 break;
         };
         return channels;

@@ -97,8 +97,7 @@ void info::parse(char *data)  throw(    xml::xml_file_not_found_exception,
             {
                 std::string naming_convention;
                 set_data(p_tile_set->first_attribute("TileNamingConvention"), naming_convention);
-                typedef constants::enumeration<constants::tile_naming_method> tile_naming_method_t;
-                m_flowcell.m_naming_method = tile_naming_method_t::parse(naming_convention);
+                m_flowcell.m_naming_method = constants::parse<constants::tile_naming_method>(naming_convention);
                 set_data(p_tile_set->first_node("Tiles"), "Tiles", m_flowcell.m_tiles);
             }
         }

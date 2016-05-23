@@ -8,6 +8,7 @@
 #pragma once
 #include <vector>
 #include <string>
+#include "interop/util/constant_mapping.h"
 #include "interop/util/string.h"
 #include "interop/util/length_of.h"
 #include "interop/constants/enums.h"
@@ -23,40 +24,6 @@
 namespace illumina { namespace interop { namespace logic { namespace table {
 
 
-    namespace detail
-    {
-        /** Specialization that maps metric group types to their string names */
-        template<typename E>
-        class imaging_column_to_data_type
-        {
-        public:
-            /** Define string key type */
-            typedef constants::metric_data key_t;
-        private:
-            typedef std::pair<key_t, E> name_type_pair_t;
-            typedef std::vector< name_type_pair_t > name_type_vector_t;
-
-        public:
-            /** Get vector that maps enumeration string names to enumeration values
-             *
-             * @return vector of enumeration string names and enumeration values
-             */
-            static const name_type_vector_t& key_type_pair_vector()
-            {
-                /** This macro maps an enum description to a string/enum pair */
-#               define INTEROP_TUPLE6(Name, Ignored2, Ignored3, Ignored4, Ignored5, Data) name_type_pair_t(constants::Data,model::table::Name),
-                static const name_type_pair_t name_types[] = {INTEROP_IMAGING_COLUMN_TYPES name_type_pair_t(constants::MetricDataCount, model::table::ImagingColumnCount)};
-#               undef INTEROP_TUPLE6
-                static const name_type_vector_t tmp(name_types, name_types+util::length_of(name_types));
-                return tmp;
-            }
-            /** Get the unknown type
-             *
-             * @return unknown type
-             */
-            static E unknown(){return constants::UnknownMetricType;}
-        };
-    }
     /** Convert a column type to the data type
      *
      * @param type imaging table column type
@@ -64,7 +31,11 @@ namespace illumina { namespace interop { namespace logic { namespace table {
      */
     inline constants::metric_data to_data_type(const model::table::column_type type)
     {
-        return constants::enumeration<model::table::column_type, detail::imaging_column_to_data_type>::to_key(type);
+        typedef std::pair<model::table::column_type, constants::metric_data > mapped_t;
+#       define INTEROP_TUPLE6(Name, Ignored2, Ignored3, Ignored4, Ignored5, Data) mapped_t(model::table::Name, constants::Data),
+        static const mapped_t name_types[] = {INTEROP_IMAGING_COLUMN_TYPES};// mapped_t(model::table::ImagingColumnCount, constants::MetricDataCount)};
+#       undef INTEROP_TUPLE6
+        return util::constant_mapping_get(name_types, type, constants::UnknownMetricData);
     }
     /** Convert a column index to the data type
      *
@@ -145,10 +116,11 @@ namespace illumina { namespace interop { namespace logic { namespace table {
                 }
                 case constants::BaseArray:
                 {
-                    typedef constants::enumeration<constants::dna_bases> dna_bases_t;
-                    const std::vector<std::string>& bases = dna_bases_t::keys();
-                    for(size_t base = 0;base < bases.size();++base)
-                        headers.push_back(model::table::column_header(title, bases[base]));
+                    for(size_t base = 0;base < constants::NUM_OF_BASES;++base)
+                        headers.push_back(
+                                model::table::column_header(title,
+                                                            constants::to_string(static_cast<constants::dna_bases>(base))));
+
                     break;
                 }
                 case constants::ChannelArray:

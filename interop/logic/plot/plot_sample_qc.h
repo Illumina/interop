@@ -78,10 +78,9 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                                const size_t lane,
                                model::plot::plot_data<model::plot::bar_point>& data)
     {
-        typedef constants::enumeration<constants::bar_plot_options> bar_plot_options_t;
         typedef model::plot::series<model::plot::bar_point> bar_series_t;
         data.assign(1, bar_series_t("% reads", "Green", bar_series_t::Bar));
-        data[0].add_option(bar_plot_options_t::to_key(constants::CenteredBar));
+        data[0].add_option(constants::to_string(constants::CenteredBar));
         data.set_xlabel("Index Number");
         data.set_ylabel("% Reads Identified (PF)");
 

@@ -7,6 +7,8 @@
  */
 
 #pragma once
+#include <climits>
+#include <limits>
 #include "interop/util/cstdint.h"
 
 /** Enumeration of each metric type
@@ -76,7 +78,6 @@
  * @see illumina::interop::constants::tile_naming_method
  */
 #define INTEROP_ENUM_TILE_NAMING_METHODS \
-        INTEROP_ENUM(UnknownTileNamingMethod),\
         /** Four digit tiles for HiSeq and modern MiSeqs */\
         INTEROP_ENUM(FourDigit),\
         /** Five digit tiles for NextSeq and ... */\
@@ -84,7 +85,8 @@
         /** Absolute naming for tiles GAs and old MiSeqs*/\
         INTEROP_ENUM(Absolute),\
         /** Number of naming methods */\
-        INTEROP_ENUM(TileNamingMethodCount)
+        INTEROP_ENUM(TileNamingMethodCount),\
+        INTEROP_ENUM(UnknownTileNamingMethod)
 
 /** Enumeration of DNA bases
  *
@@ -116,9 +118,9 @@
  * @see illumina::interop::constants::surface_type
  */
 #define INTEROP_ENUM_SURFACE_TYPES \
-        INTEROP_ENUM(UnknownSurface),\
         INTEROP_ENUM(Top),\
-        INTEROP_ENUM(Bottom)
+        INTEROP_ENUM(Bottom),\
+        INTEROP_ENUM(UnknownSurface)
 
 
 /** Enumeration of instrument types
@@ -127,12 +129,13 @@
  * @see illumina::interop::constants::instrument_type
  */
 #define INTEROP_ENUM_INSTRUMENT_TYPES \
-        INTEROP_ENUM(UnknownInstrument),\
         INTEROP_ENUM(HiSeq),\
         INTEROP_ENUM(HiScan),\
         INTEROP_ENUM(MiSeq),\
         INTEROP_ENUM(NextSeq),\
-        INTEROP_ENUM(MiniSeq)
+        INTEROP_ENUM(MiniSeq), \
+        INTEROP_ENUM(InstrumentCount), \
+        INTEROP_ENUM(UnknownInstrument)
 
 /** Enumeration of instrument types
  *
@@ -178,6 +181,7 @@
         INTEROP_ENUM(ShiftedBar),\
         INTEROP_ENUM(UnknownBarPlotOption)
 
+#define INTEROP_UNKNOWN 0xff
 /** This temp macro converts a enum/description pair into the an enum (first element of the pair) */
 #define INTEROP_ENUM_DESCRIPTION(X, Y, Z) X
 /** This temp macro converts an enum to an enum */
@@ -187,27 +191,28 @@
 namespace illumina {
     namespace interop {
         namespace constants {
-
+            /** Common codes for all enums */
+            enum common { Unknown = INTEROP_UNKNOWN};
             /** Codes for each metric type */
-            enum metric_type {INTEROP_ENUM_METRIC_TYPES};
+            enum metric_type {INTEROP_ENUM_METRIC_TYPES = INTEROP_UNKNOWN};
             /** Codes for each metric group */
-            enum metric_group {INTEROP_ENUM_METRIC_GROUPS };
+            enum metric_group {INTEROP_ENUM_METRIC_GROUPS = INTEROP_UNKNOWN };
             /** Tile naming conventions used in various Illumina Platforms */
-            enum tile_naming_method {INTEROP_ENUM_TILE_NAMING_METHODS};
+            enum tile_naming_method {INTEROP_ENUM_TILE_NAMING_METHODS = INTEROP_UNKNOWN};
             /** DNA base constants */
-            enum dna_bases {INTEROP_ENUM_DNA_BASE_TYPES};
+            enum dna_bases {INTEROP_ENUM_DNA_BASE_TYPES = INTEROP_UNKNOWN};
             /** Flow cell surface code */
-            enum surface_type {INTEROP_ENUM_SURFACE_TYPES};
+            enum surface_type {INTEROP_ENUM_SURFACE_TYPES = INTEROP_UNKNOWN};
             /** Instrument type */
-            enum instrument_type {INTEROP_ENUM_INSTRUMENT_TYPES};
+            enum instrument_type {INTEROP_ENUM_INSTRUMENT_TYPES = INTEROP_UNKNOWN};
             /** Base types for each metric */
-            enum metric_base_type {INTEROP_ENUM_METRIC_BASE_TYPES};
+            enum metric_base_type {INTEROP_ENUM_METRIC_BASE_TYPES = INTEROP_UNKNOWN};
             /** Color codes for plotting */
-            enum plot_colors {INTEROP_ENUM_PLOT_COLORS};
+            enum plot_colors {INTEROP_ENUM_PLOT_COLORS = INTEROP_UNKNOWN};
             /** Options for a bar plot */
-            enum bar_plot_options{ INTEROP_ENUM_BAR_PLOT_OPTIONS };
+            enum bar_plot_options{ INTEROP_ENUM_BAR_PLOT_OPTIONS  = INTEROP_UNKNOWN};
             /** Options for a bar plot */
-            enum metric_data{ INTEROP_ENUM_METRIC_DATA_TYPES };
+            enum metric_data{ INTEROP_ENUM_METRIC_DATA_TYPES  = INTEROP_UNKNOWN};
         }
     }
 }

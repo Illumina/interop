@@ -6,7 +6,8 @@
  *  @copyright GNU Public License.
  */
 #pragma once
-#include<map>
+#include <map>
+#include "interop/util/constant_mapping.h"
 #include "interop/constants/enums.h"
 #include "interop/util/length_of.h"
 
@@ -18,401 +19,192 @@
 #define INTEROP_ENUM_VALUE(X, V) name_type_pair_t(#X,X)
 
 namespace illumina { namespace interop {  namespace constants {
-
-/** Build a mapping between an enumeration string and type */
-template<typename T>
-class name_type_vector_builder;
-
-/** Convert between a string and an enumeration type
- */
-template<typename E, template<typename> class B=name_type_vector_builder>
-class enumeration
-{
-    typedef E enum_t;
-    typedef B<enum_t> builder_t;
-    typedef typename builder_t::key_t key_t;
-    typedef std::map<key_t, enum_t> key_type_map_t;
-    typedef std::map<enum_t, key_t> type_key_map_t;
-    typedef std::vector< std::pair<enum_t, key_t> > type_key_pair_vector_t;
-public:
-    /** Name/value pair for enumeration */
-    typedef std::vector< std::pair<key_t,enum_t> > key_type_pair_vector_t;
-
-public:
-    /** Parse string to get enumeration type
+    /** Template class declaration to map enum types to string representations
      *
-     * @param key key of enumeration type
-     * @return enumeration type
+     * @note only the specializations do something
      */
-    static enum_t parse(const key_t& key)
+    template<typename Enum>
+    class enumeration_string_mapping;
+
+    template<typename Enum>
+    std::string to_string(Enum value)
     {
-        typename key_type_map_t::const_iterator it = key_to_type_map().find(key);
-        if(it == key_to_type_map().end()) return builder_t::unknown();
-        return it->second;
+        typedef util::constant_mapping<Enum, std::string> mapping_t;
+        typedef enumeration_string_mapping<Enum> enum_map_t;
+        return enum_map_t::setup(mapping_t::mapping).get(value, std::string("Unknown"));
     }
-    /** Convert enumeration type to string representation
-     *
-     * @param type enumeration type
-     * @return key of enumeration type
-     */
-    static const key_t& to_key(const enum_t type)
+
+    template<typename Enum>
+    Enum parse(const std::string& name)
     {
-        typename type_key_map_t::const_iterator it = type_to_key_map().find(type);
-        if(it == type_to_key_map().end()) throw std::logic_error("Unexpected error finding enum type"); // TODO: Create Exception
-        return it->second;
+        typedef util::constant_mapping<std::string, Enum> mapping_t;
+        typedef enumeration_string_mapping<Enum> enum_map_t;
+        return enum_map_t::setup(mapping_t::mapping).get(name, static_cast<Enum>(Unknown));
     }
-    /** Get string list of available enumeration types
-     *
-     * @return string list of available enumeration types
-     */
-    static std::vector<key_t> keys()
+
+    /** Specialization that maps metric_type to a string */
+    template<>
+    class enumeration_string_mapping<metric_type>
     {
-        std::vector<key_t> key_vec;
-        key_vec.reserve(builder_t::key_type_pair_vector().size());
-        for(typename key_type_pair_vector_t::const_iterator beg = builder_t::key_type_pair_vector().begin(),
-                    end=builder_t::key_type_pair_vector().end();beg != end;++beg)
-            key_vec.push_back(beg->first);
-        return key_vec;
-    }
-    /** Get enum list of available enumeration types
-     *
-     * @return enum list of available enumeration types
-     */
-    static std::vector<enum_t> enums()
+        typedef std::pair<std::string, metric_type> name_type_pair_t;
+    public:
+        /** Pass an array of string, enum pairs and its length to the given function
+         *
+         * @param func pointer to a function that takes an array of string/enum pairs as a parameter
+         * @return the value returned by the given function (in the case of `parse` and `to_string` the return value is a singleton)
+         */
+        template<typename R>
+        static const R& setup(R (*func)(const name_type_pair_t*, const size_t))
+        {
+            static const name_type_pair_t name_types[] = {INTEROP_ENUM_METRIC_TYPES};
+            return func(name_types, util::length_of(name_types));
+        }
+    };
+
+    /** Specialization that maps tile_naming_method to a string */
+    template<>
+    class enumeration_string_mapping<tile_naming_method>
     {
-        std::vector<enum_t> name_vec;
-        name_vec.reserve(builder_t::name_type_pair_vector().size());
-        for(typename key_type_pair_vector_t::const_iterator beg = builder_t::name_type_pair_vector().begin(),
-                    end=builder_t::name_type_pair_vector().end();beg != end;++beg)
-            name_vec.push_back(beg->second);
-        return name_vec;
-    }
-    /** Get key/enum pair list of available enumeration types
-     *
-     * @return enum list of available enumeration types
-     */
-    static key_type_pair_vector_t pairs()
+        typedef std::pair<std::string, tile_naming_method> name_type_pair_t;
+    public:
+        /** Pass an array of string, enum pairs and its length to the given function
+         *
+         * @param func pointer to a function that takes an array of string/enum pairs as a parameter
+         * @return the value returned by the given function (in the case of `parse` and `to_string` the return value is a singleton)
+         */
+        template<typename R>
+        static const R& setup(R (*func)(const name_type_pair_t*, const size_t))
+        {
+            static const name_type_pair_t name_types[] = {INTEROP_ENUM_TILE_NAMING_METHODS};
+            return func(name_types, util::length_of(name_types));
+        }
+    };
+    /** Specialization that maps surface_type to a string */
+    template<>
+    class enumeration_string_mapping<surface_type>
     {
-        key_type_pair_vector_t name_vec;
-        name_vec.reserve(builder_t::key_type_pair_vector().size());
-        for(typename key_type_pair_vector_t::const_iterator beg = builder_t::key_type_pair_vector().begin(),
-                    end=builder_t::key_type_pair_vector().end();beg != end;++beg)
-            name_vec.push_back(*beg);
-        return name_vec;
-    }
-    /** Get the unknown type
-     *
-     * @return unknown type
-     */
-    static enum_t unknown(){return builder_t::unknown();}
-
-private:
-    static const key_type_map_t& key_to_type_map()
+        typedef std::pair<std::string, surface_type> name_type_pair_t;
+    public:
+        /** Pass an array of string, enum pairs and its length to the given function
+         *
+         * @param func pointer to a function that takes an array of string/enum pairs as a parameter
+         * @return the value returned by the given function (in the case of `parse` and `to_string` the return value is a singleton)
+         */
+        template<typename R>
+        static const R& setup(R (*func)(const name_type_pair_t*, const size_t))
+        {
+            static const name_type_pair_t name_types[] = {INTEROP_ENUM_SURFACE_TYPES};
+            return func(name_types, util::length_of(name_types));
+        }
+    };
+    /** Specialization that maps dna_bases to a string */
+    template<>
+    class enumeration_string_mapping<dna_bases>
     {
-        static const key_type_map_t m_metric_type_map(builder_t::key_type_pair_vector().begin(),
-                                                       builder_t::key_type_pair_vector().end());
-        return m_metric_type_map;
-    }
-    static const type_key_map_t& type_to_key_map()
+        typedef std::pair<std::string, dna_bases> name_type_pair_t;
+    public:
+        /** Pass an array of string, enum pairs and its length to the given function
+         *
+         * @param func pointer to a function that takes an array of string/enum pairs as a parameter
+         * @return the value returned by the given function (in the case of `parse` and `to_string` the return value is a singleton)
+         */
+        template<typename R>
+        static const R& setup(R (*func)(const name_type_pair_t*, const size_t))
+        {
+            static const name_type_pair_t name_types[] = {INTEROP_ENUM_DNA_BASE_TYPES};
+            return func(name_types, util::length_of(name_types));
+        }
+    };
+    /** Specialization that maps instrument_type to a string */
+    template<>
+    class enumeration_string_mapping<instrument_type>
     {
-        static const type_key_map_t m_metric_type_map(type_key_pair_vector().begin(),
-                                                      type_key_pair_vector().end());
-        return m_metric_type_map;
-    }
-    static const type_key_pair_vector_t& type_key_pair_vector()
+        typedef std::pair<std::string, instrument_type> name_type_pair_t;
+    public:
+        /** Pass an array of string, enum pairs and its length to the given function
+         *
+         * @param func pointer to a function that takes an array of string/enum pairs as a parameter
+         * @return the value returned by the given function (in the case of `parse` and `to_string` the return value is a singleton)
+         */
+        template<typename R>
+        static const R& setup(R (*func)(const name_type_pair_t*, const size_t))
+        {
+            static const name_type_pair_t name_types[] = {INTEROP_ENUM_INSTRUMENT_TYPES};
+            return func(name_types, util::length_of(name_types));
+        }
+    };
+    /** Specialization that maps plot_colors to a string */
+    template<>
+    class enumeration_string_mapping<plot_colors>
     {
-        static type_key_pair_vector_t tmp;
-        if(!tmp.empty()) return tmp;
-        tmp.reserve(builder_t::key_type_pair_vector().size());
-        for(size_t i=0;i<builder_t::key_type_pair_vector().size();++i)
-            tmp.push_back(std::make_pair(builder_t::key_type_pair_vector()[i].second,
-                                    builder_t::key_type_pair_vector()[i].first));
-        return tmp;
-    }
-};
-
-/** Specialization that maps metric types to their string names
- */
-template<>
-class name_type_vector_builder<metric_type>
-{
-public:
-    /** Define string key type */
-    typedef std::string key_t;
-private:
-    typedef std::pair<key_t, metric_type> name_type_pair_t;
-    typedef std::vector< name_type_pair_t > name_type_vector_t;
-
-public:
-    /** Get vector that maps enumeration string names to enumeration values
-     *
-     * @return vector of enumeration string names and enumeration values
-     */
-    static const name_type_vector_t& key_type_pair_vector()
+        typedef std::pair<std::string, plot_colors> name_type_pair_t;
+    public:
+        /** Pass an array of string, enum pairs and its length to the given function
+         *
+         * @param func pointer to a function that takes an array of string/enum pairs as a parameter
+         * @return the value returned by the given function (in the case of `parse` and `to_string` the return value is a singleton)
+         */
+        template<typename R>
+        static const R& setup(R (*func)(const name_type_pair_t*, const size_t))
+        {
+            static const name_type_pair_t name_types[] = {INTEROP_ENUM_PLOT_COLORS};
+            return func(name_types, util::length_of(name_types));
+        }
+    };
+    /** Specialization that maps metric_group to a string */
+    template<>
+    class enumeration_string_mapping<metric_group>
     {
-        static const name_type_pair_t name_types[] = {INTEROP_ENUM_METRIC_TYPES};
-        static const name_type_vector_t tmp(name_types, name_types+util::length_of(name_types));
-        return tmp;
-    }
-    /** Get the unknown type
-     *
-     * @return unknown type
-     */
-    static metric_type unknown(){return constants::UnknownMetricType;}
-};
-
-/** Specialization that maps tile naming methods to their string names
- */
-template<>
-class name_type_vector_builder<tile_naming_method>
-{
-public:
-    /** Define string key type */
-    typedef std::string key_t;
-private:
-    typedef std::pair<key_t, tile_naming_method> name_type_pair_t;
-    typedef std::vector< name_type_pair_t > name_type_vector_t;
-
-public:
-    /** Get vector that maps enumeration string names to enumeration values
-     *
-     * @return vector of enumeration string names and enumeration values
-     */
-    static const name_type_vector_t& key_type_pair_vector()
+        typedef std::pair<std::string, metric_group> name_type_pair_t;
+    public:
+        /** Pass an array of string, enum pairs and its length to the given function
+         *
+         * @param func pointer to a function that takes an array of string/enum pairs as a parameter
+         * @return the value returned by the given function (in the case of `parse` and `to_string` the return value is a singleton)
+         */
+        template<typename R>
+        static const R& setup(R (*func)(const name_type_pair_t*, const size_t))
+        {
+            static const name_type_pair_t name_types[] = {INTEROP_ENUM_METRIC_GROUPS};
+            return func(name_types, util::length_of(name_types));
+        }
+    };
+    /** Specialization that maps metric_data to a string */
+    template<>
+    class enumeration_string_mapping<metric_data>
     {
-        static const name_type_pair_t name_types[] = {INTEROP_ENUM_TILE_NAMING_METHODS};
-        static const name_type_vector_t tmp(name_types, name_types+util::length_of(name_types));
-        return tmp;
-    }
-    /** Get the unknown type
-     *
-     * @return unknown type
-     */
-    static tile_naming_method unknown(){return constants::UnknownTileNamingMethod;}
-};
-
-
-/** Specialization that maps instrument types to their string names
- */
-template<>
-class name_type_vector_builder<instrument_type>
-{
-public:
-    /** Define string key type */
-    typedef std::string key_t;
-private:
-    typedef std::pair<key_t, instrument_type> name_type_pair_t;
-    typedef std::vector< name_type_pair_t > name_type_vector_t;
-
-public:
-    /** Get vector that maps enumeration string names to enumeration values
-     *
-     * @return vector of enumeration string names and enumeration values
-     */
-    static const name_type_vector_t& key_type_pair_vector()
+        typedef std::pair<std::string, metric_data> name_type_pair_t;
+    public:
+        /** Pass an array of string, enum pairs and its length to the given function
+         *
+         * @param func pointer to a function that takes an array of string/enum pairs as a parameter
+         * @return the value returned by the given function (in the case of `parse` and `to_string` the return value is a singleton)
+         */
+        template<typename R>
+        static const R& setup(R (*func)(const name_type_pair_t*, const size_t))
+        {
+            static const name_type_pair_t name_types[] = {INTEROP_ENUM_METRIC_DATA_TYPES};
+            return func(name_types, util::length_of(name_types));
+        }
+    };
+    /** Specialization that maps bar_plot_options to a string */
+    template<>
+    class enumeration_string_mapping<bar_plot_options>
     {
-        static const name_type_pair_t name_types[] = {INTEROP_ENUM_INSTRUMENT_TYPES};
-        static const name_type_vector_t tmp(name_types, name_types+util::length_of(name_types));
-        return tmp;
-    }
-    /** Get the unknown type
-     *
-     * @return unknown type
-     */
-    static instrument_type unknown(){return constants::UnknownInstrument;}
-};
-
-
-
-/** Specialization that maps surface types to their string names
- */
-template<>
-class name_type_vector_builder<surface_type>
-{
-public:
-    /** Define string key type */
-    typedef std::string key_t;
-private:
-    typedef std::pair<key_t, surface_type> name_type_pair_t;
-    typedef std::vector< name_type_pair_t > name_type_vector_t;
-
-public:
-    /** Get vector that maps enumeration string names to enumeration values
-     *
-     * @return vector of enumeration string names and enumeration values
-     */
-    static const name_type_vector_t& key_type_pair_vector()
-    {
-        static const name_type_pair_t name_types[] = {INTEROP_ENUM_SURFACE_TYPES};
-        static const name_type_vector_t tmp(name_types, name_types+util::length_of(name_types));
-        return tmp;
-    }
-    /** Get the unknown type
-     *
-     * @return unknown type
-     */
-    static surface_type unknown(){return constants::UnknownSurface;}
-};
-
-
-/** Specialization that maps DNA base types to their string names
- */
-template<>
-class name_type_vector_builder<dna_bases>
-{
-public:
-    /** Define string key type */
-    typedef std::string key_t;
-private:
-    typedef std::pair<key_t, dna_bases> name_type_pair_t;
-    typedef std::vector< name_type_pair_t > name_type_vector_t;
-
-public:
-    /** Get vector that maps enumeration string names to enumeration values
-     *
-     * @return vector of enumeration string names and enumeration values
-     */
-    static const name_type_vector_t& key_type_pair_vector()
-    {
-        static const name_type_pair_t name_types[] = {INTEROP_ENUM_DNA_BASE_TYPES};
-        static const name_type_vector_t tmp(name_types, name_types+util::length_of(name_types));
-        return tmp;
-    }
-    /** Get the unknown type
-     *
-     * @return unknown type
-     */
-    static dna_bases unknown(){return constants::UnknownBase;}
-};
-
-
-/** Specialization that maps DNA base types to their string names
- */
-template<>
-class name_type_vector_builder<plot_colors>
-{
-public:
-    /** Define string key type */
-    typedef std::string key_t;
-private:
-    typedef std::pair<key_t, plot_colors> name_type_pair_t;
-    typedef std::vector< name_type_pair_t > name_type_vector_t;
-
-public:
-    /** Get vector that maps enumeration string names to enumeration values
-     *
-     * @return vector of enumeration string names and enumeration values
-     */
-    static const name_type_vector_t& key_type_pair_vector()
-    {
-        static const name_type_pair_t name_types[] = {INTEROP_ENUM_PLOT_COLORS};
-        static const name_type_vector_t tmp(name_types, name_types+util::length_of(name_types));
-        return tmp;
-    }
-    /** Get the unknown type
-     *
-     * @return unknown type
-     */
-    static plot_colors unknown(){return constants::UnknownColor;}
-};
-
-/** Specialization that maps metric group types to their string names
- */
-template<>
-class name_type_vector_builder<metric_group>
-{
-public:
-    /** Define string key type */
-    typedef std::string key_t;
-private:
-    typedef std::pair<key_t, metric_group> name_type_pair_t;
-    typedef std::vector< name_type_pair_t > name_type_vector_t;
-
-public:
-    /** Get vector that maps enumeration string names to enumeration values
-     *
-     * @return vector of enumeration string names and enumeration values
-     */
-    static const name_type_vector_t& key_type_pair_vector()
-    {
-        static const name_type_pair_t name_types[] = {INTEROP_ENUM_METRIC_GROUPS};
-        static const name_type_vector_t tmp(name_types, name_types+util::length_of(name_types));
-        return tmp;
-    }
-    /** Get the unknown type
-     *
-     * @return unknown type
-     */
-    static metric_group unknown(){return constants::UnknownMetricGroup;}
-};
-
-
-/** Specialization that maps metric data types to their string names
- */
-template<>
-class name_type_vector_builder<metric_data>
-{
-public:
-    /** Define string key type */
-    typedef std::string key_t;
-private:
-    typedef std::pair<key_t, metric_data> name_type_pair_t;
-    typedef std::vector< name_type_pair_t > name_type_vector_t;
-
-public:
-    /** Get vector that maps enumeration string names to enumeration values
-     *
-     * @return vector of enumeration string names and enumeration values
-     */
-    static const name_type_vector_t& key_type_pair_vector()
-    {
-        static const name_type_pair_t name_types[] = {INTEROP_ENUM_METRIC_DATA_TYPES};
-        static const name_type_vector_t tmp(name_types, name_types+util::length_of(name_types));
-        return tmp;
-    }
-    /** Get the unknown type
-     *
-     * @return unknown type
-     */
-    static metric_data unknown(){return constants::UnknownMetricData;}
-};
-
-
-/** Specialization that maps metric group types to their string names
- */
-template<>
-class name_type_vector_builder<bar_plot_options>
-{
-public:
-    /** Define string key type */
-    typedef std::string key_t;
-private:
-    typedef std::pair<key_t, bar_plot_options> name_type_pair_t;
-    typedef std::vector< name_type_pair_t > name_type_vector_t;
-
-public:
-    /** Get vector that maps enumeration string names to enumeration values
-     *
-     * @return vector of enumeration string names and enumeration values
-     */
-    static const name_type_vector_t& key_type_pair_vector()
-    {
-        static const name_type_pair_t name_types[] = {INTEROP_ENUM_BAR_PLOT_OPTIONS};
-        static const name_type_vector_t tmp(name_types, name_types+util::length_of(name_types));
-        return tmp;
-    }
-    /** Get the unknown type
-     *
-     * @return unknown type
-     */
-    static bar_plot_options unknown(){return constants::UnknownBarPlotOption;}
-};
-
-template<typename T>
-std::string to_string(T val)
-{
-    return constants::enumeration<T>::to_key(val);
-}
+        typedef std::pair<std::string, bar_plot_options> name_type_pair_t;
+    public:
+        /** Pass an array of string, enum pairs and its length to the given function
+         *
+         * @param func pointer to a function that takes an array of string/enum pairs as a parameter
+         * @return the value returned by the given function (in the case of `parse` and `to_string` the return value is a singleton)
+         */
+        template<typename R>
+        static const R& setup(R (*func)(const name_type_pair_t*, const size_t))
+        {
+            static const name_type_pair_t name_types[] = {INTEROP_ENUM_BAR_PLOT_OPTIONS};
+            return func(name_types, util::length_of(name_types));
+        }
+    };
 
 }}}
 

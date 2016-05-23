@@ -15,14 +15,14 @@ using namespace illumina::interop;
 
 TEST(enum_parsing_test, parse_metric_type)
 {
-    EXPECT_EQ(constants::enumeration<constants::metric_type>::parse("Intensity"), constants::Intensity);
-    EXPECT_EQ(constants::enumeration<constants::metric_type>::parse("FWHM"), constants::FWHM);
-    EXPECT_EQ(constants::enumeration<constants::metric_type>::parse("Gobble"), constants::UnknownMetricType);
+    EXPECT_EQ(constants::parse<constants::metric_type>("Intensity"), constants::Intensity);
+    EXPECT_EQ(constants::parse<constants::metric_type>("FWHM"), constants::FWHM);
+    EXPECT_EQ(constants::parse<constants::metric_type>("Gobble"), constants::UnknownMetricType);
 }
 
 TEST(enum_parsing_test, metric_type_to_string)
 {
-    EXPECT_EQ(constants::enumeration<constants::metric_type>::to_key(constants::Intensity), std::string("Intensity"));
+    EXPECT_EQ(constants::to_string(constants::Intensity), std::string("Intensity"));
 }
 
 TEST(enum_parsing_test, metric_type_to_group)

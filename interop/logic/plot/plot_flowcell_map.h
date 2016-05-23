@@ -189,8 +189,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                                   const model::plot::filter_options& options,
                                   model::plot::flowcell_data& data) throw(std::invalid_argument)
     {
-        typedef constants::enumeration<constants::metric_type> metric_enum_t;
-        plot_flowcell_map(metrics, metric_enum_t::parse(metric_name), options, data);
+        plot_flowcell_map(metrics, constants::parse<constants::metric_type>(metric_name), options, data);
     }
 
 
