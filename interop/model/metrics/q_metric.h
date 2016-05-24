@@ -104,13 +104,13 @@ namespace illumina {
                 public:
                     /** Constructor
                      */
-                    q_score_header() : m_bin_count(0) {}
+                    q_score_header() {}
                     /** Constructor
                      *
                      * @param bins q-score bin vector
                      */
                     q_score_header(const qscore_bin_vector_type& bins) :
-                            m_qscore_bins(bins), m_bin_count(bins.size()){}
+                            m_qscore_bins(bins){}
 
                     /** @defgroup q_score_header Quality Metric Header
                      *
@@ -150,17 +150,6 @@ namespace illumina {
                      * @return number of bins in header
                      */
                     size_t bin_count()const{return m_qscore_bins.size();}
-                    /** Get the number of bins for each metric
-                     *
-                     * If the number of header bins is 0, then this returns 50.
-                     *
-                     * @return number of bins for each metric
-                     */
-                    q_score_bin::bin_type max_q_value()const
-                    {
-                        return m_bin_count == static_cast<size_t>(MAX_Q_BINS) ||
-                                       m_bin_count == 0 ? static_cast<q_score_bin::bin_type>(MAX_Q_BINS) : m_qscore_bins.back().upper();
-                    }
                     /** Get the index for the given q-value
                      *
                      * @note Never call this function directly, use interop::logic::metric::index_for_q_value
@@ -215,7 +204,6 @@ namespace illumina {
                     /** Q-score bins */
                     qscore_bin_vector_type m_qscore_bins;
                 private:
-                    size_t m_bin_count;
                     template<class MetricType, int Version>
                     friend struct io::generic_layout;
                 };

@@ -79,6 +79,11 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                                model::plot::plot_data<model::plot::bar_point>& data)
     {
         typedef model::plot::series<model::plot::bar_point> bar_series_t;
+        if(metrics.get_set<model::metrics::index_metric>().size() == 0)
+        {
+            data.clear();
+            return;
+        }
         data.assign(1, bar_series_t("% reads", "Green", bar_series_t::Bar));
         data[0].add_option(constants::to_string(constants::CenteredBar));
         data.set_xlabel("Index Number");

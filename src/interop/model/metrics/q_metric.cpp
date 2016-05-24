@@ -246,9 +246,9 @@ namespace illumina{ namespace interop{ namespace io {
                     count += stream_map< bool_t >(stream, has_bins);
                     if(stream.fail()) return count;
                     if(!has_bins) return count;
-                    count+=stream_map< bin_count_t>(stream, header.m_bin_count);
+                    bin_count_t bin_count = static_cast<bin_count_t>(header.bin_count());
+                    count+=stream_map< bin_count_t>(stream, bin_count);
                     if(stream.fail()) return count;
-                    const bin_count_t bin_count = static_cast< bin_count_t >(header.m_bin_count);
                     INTEROP_ASSERT(bin_count>0);
                     bin_t tmp[q_metric::MAX_Q_BINS];
                     map_resize(header.m_qscore_bins, bin_count);
@@ -279,7 +279,7 @@ namespace illumina{ namespace interop{ namespace io {
                             sizeof(version_t) + // version
                             sizeof(bool_t) + // has bins
                             sizeof(bin_count_t) + // number of bins
-                            header.m_bin_count*3*sizeof(bin_t));
+                            header.bin_count()*3*sizeof(bin_t));
                 }
             private:
                 template<size_t N>
@@ -441,9 +441,9 @@ namespace illumina{ namespace interop{ namespace io {
                     count += stream_map< bool_t >(stream, has_bins);
                     if(stream.fail()) return count;
                     if(!has_bins) return count;
-                    count+=stream_map< bin_count_t >(stream, header.m_bin_count);
+                    bin_count_t bin_count = static_cast<bin_count_t>(header.bin_count());
+                    count+=stream_map< bin_count_t >(stream, bin_count);
                     if(stream.fail()) return count;
-                    const bin_count_t bin_count = static_cast< bin_count_t >(header.m_bin_count);
                     INTEROP_ASSERT(bin_count>0);
                     bin_t tmp[q_metric::MAX_Q_BINS];
                     map_resize(header.m_qscore_bins, bin_count);
@@ -474,7 +474,7 @@ namespace illumina{ namespace interop{ namespace io {
                            sizeof(version_t) + // version
                            sizeof(bool_t) + // has bins
                            sizeof(bin_count_t) + // number of bins
-                           header.m_bin_count*3*sizeof(bin_t));
+                           header.bin_count()*3*sizeof(bin_t));
                 }
             private:
                 template<size_t N>

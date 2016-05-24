@@ -97,11 +97,16 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
         data.set_ylabel(utils::to_description(type));
 
         std::string title = metrics.run_info().flowcell().barcode();
-        if(title != "") title += " ";
         if(options.is_specific_read(type))
-            title += " " + options.read_description();
+        {
+            if(title != "") title += " ";
+            title += options.read_description();
+        }
         if(metrics.run_info().flowcell().surface_count()>1 && options.is_specific_surface())
-            title += " " + options.surface_description();
+        {
+            if(title != "") title += " ";
+            title += options.surface_description();
+        }
         data.set_title(title);
     }
 

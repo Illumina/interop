@@ -161,7 +161,7 @@
         public bool IsBinned { get { return binCount() > 0; }}
         public int NumQVals(){ return (int)c_csharp_interop.count_q_metric_bins(this); }
         public bool IsCompressed { get { return NumQVals() > 0 && NumQVals() != 50; } }
-        public int MaxQVal(){ return (int)max_q_value(); }
+        public int MaxQVal(){ return (int)c_csharp_interop.max_qval(this); }
 
         public void build_bins(instrument_type instrument)
         {
