@@ -96,7 +96,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
                     cluster_count_total,
                     min_fraction_mapped,
                     max_fraction_mapped,
-                    (avg_fraction_mapped != 0) ? std_fraction_mapped/avg_fraction_mapped : 0);
+                    std_fraction_mapped/avg_fraction_mapped);
     }
     /** Summarize a collection index metrics for a specific lane
      *

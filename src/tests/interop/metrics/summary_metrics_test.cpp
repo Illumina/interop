@@ -188,7 +188,8 @@ TEST(index_summary_test, lane_summary)
         EXPECT_EQ(expected_lane.total_reads(), actual_lane.total_reads());
         EXPECT_EQ(expected_lane.total_pf_reads(), actual_lane.total_pf_reads());
         EXPECT_NEAR(expected_lane.total_fraction_mapped_reads(), actual_lane.total_fraction_mapped_reads(), tol);
-        EXPECT_NEAR(expected_lane.mapped_reads_cv(), actual_lane.mapped_reads_cv(), tol);
+        if(!std::isnan(expected_lane.mapped_reads_cv()) && !std::isnan(actual_lane.mapped_reads_cv()))
+            EXPECT_NEAR(expected_lane.mapped_reads_cv(), actual_lane.mapped_reads_cv(), tol);
         EXPECT_NEAR(expected_lane.min_mapped_reads(), actual_lane.min_mapped_reads(), tol);
         EXPECT_NEAR(expected_lane.max_mapped_reads(), actual_lane.max_mapped_reads(), tol);
         ASSERT_EQ(expected_lane.size(), actual_lane.size());

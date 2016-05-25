@@ -106,8 +106,10 @@ namespace illumina{ namespace interop { namespace unittest {
          */
         static model::summary::index_flowcell_summary summary()
         {
+            const float NaN = std::numeric_limits<float>::quiet_NaN();
             model::summary::index_flowcell_summary index_summary(8);
-
+            for(size_t lane = 0;lane<index_summary.size();++lane)
+                index_summary[lane] = model::summary::index_lane_summary(0, 0, 0, NaN);
             return index_summary;
         }
 
