@@ -141,9 +141,16 @@ namespace illumina { namespace interop { namespace model { namespace table {
             /** Place holder for functions that take no parameters */
             Void
         };
+        /* Defines the initialization of the fields in this class.
+         *
+         * Example:
+         * INTEROP_TUPLE6(Lane, metric_base::base_metric, lane, Void, UInt, IdType) ->
+         * table_entry() : Lane(), Q20(), Q30(), NamingConvention(0) {}
+         */
+#       define INTEROP_TUPLE6(Id, Ignored1, Ignored2, Ignored3, Ignored4, Ignored5) Id(),
         /** Constructor
          */
-        table_entry(){}
+        table_entry() : INTEROP_IMAGING_COLUMN_TYPES Q20(), Q30(), NamingConvention(constants::UnknownTileNamingMethod){}
         /** Constructor
          *
          * @param metric metric record
@@ -160,15 +167,17 @@ namespace illumina { namespace interop { namespace model { namespace table {
                     const size_t q20_idx,
                     const size_t q30_idx,
                     const naming_method naming_convention) :
-                Cycle(metric.cycle()),
-                Read(static_cast<UIntIdType>(read)),
-                CycleWithinRead(static_cast<UIntIdType>(cycle_in_read)),
+                INTEROP_IMAGING_COLUMN_TYPES
                 Q20(static_cast<uint_t>(q20_idx)),
                 Q30(static_cast<uint_t>(q30_idx)),
                 NamingConvention(naming_convention)
         {
+            Cycle = metric.cycle();
+            Read = static_cast<UIntIdType>(read);
+            CycleWithinRead = static_cast<UIntIdType>(cycle_in_read);
             update(metric);
         }
+#       undef INTEROP_TUPLE6 // Reuse this for another conversion
 
         /* For every entry in INTEROP_IMAGING_COLUMN_TYPES
          * Create a field for the table_entry class

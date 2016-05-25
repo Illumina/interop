@@ -1,8 +1,9 @@
 /** @page apps Applications
  *
- * @brief Write a Q-score histogram to the console as a CSV file
+ * @brief Write a Q-score histogram to the console as at TSV (tab separated values) with a GNUPlot header
  *
- * This application
+ * This application writes out of file that is compatible with both TSV (tab separated values) and GNUPlot, a
+ * command line plotting tool available on Linux, Mac OSX and Windows.
  *
  * Running the Program
  * -------------------
@@ -13,8 +14,25 @@
  *
  * In this sample, 140131_1287_0851_A01n401drr is a run folder and the summary is written to the standard output.
  *
- * # Version: v1.0.4-70-g9bcfb5a-dirty
- * set title ""
+ * # Version: v1.0.4-117-g05ea745-dirty
+ * # Run Folder: 1Read0Index_120423_117213Bin1R0I
+ * set terminal png nocrop
+ * set output 'q-hist.png'
+ * set style fill solid noborder
+ * set title "D0TM0ACXX All Lanes"
+ * set style data histograms
+ * set yrange [0 : 2.148 ]
+ * set xrange [1 : 38.5 ]
+ * set ylabel "Total (million)"
+ * set xlabel "Q Score"
+ * plot "-" using 1:2:3:xtic(1) with boxes notitle
+ * 0       0       0
+ * 10      0.0119  10
+ * 20      0.003569        5
+ * 25      0.036075        5
+ * 30      1.95263 5
+ * 0       0       0
+ * 0       0       0
  *
  */
 
@@ -95,6 +113,9 @@ int main(int argc, char** argv)
         logic::plot::plot_qscore_histogram(run, options, data);
         if(data.size() == 0 ) continue;
         std::ostream& out = std::cout;
+        // -----------------------------------------
+        // GNUPlot compatible header
+        // -----------------------------------------
         out << "set terminal png nocrop" << std::endl;
         out << "set output \'q-hist.png\'" << std::endl;
         out << "set style fill solid noborder" << std::endl;
@@ -105,7 +126,9 @@ int main(int argc, char** argv)
         out << "set ylabel \"" << data.y_axis().label() << "\"" << std::endl;
         out << "set xlabel \"" << data.x_axis().label() << "\"" << std::endl;
         out << "plot \"-\" using 1:2:3:xtic(1) with boxes notitle" << std::endl;
+        // -----------------------------------------
         const model::plot::data_point_collection<model::plot::bar_point>& points = data[0];
+        // Tab separated values
         for(size_t i=0;i<points.size();++i)
         {
             out << points[i].x() << "\t" << points[i].y() << "\t" << points[i].width() << std::endl;
