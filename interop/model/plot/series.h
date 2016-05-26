@@ -61,7 +61,7 @@ namespace illumina { namespace interop { namespace model { namespace plot {
          *
          * @return series label
          */
-        const std::string& title()
+        const std::string& title()const
         {
             return m_title;
         }
@@ -69,7 +69,7 @@ namespace illumina { namespace interop { namespace model { namespace plot {
          *
          * @return color name or code of the series
          */
-        const std::string& color()
+        const std::string& color()const
         {
             return m_color;
         }
@@ -77,7 +77,7 @@ namespace illumina { namespace interop { namespace model { namespace plot {
          *
          * @return type of the series
          */
-        series_types series_type()
+        series_types series_type()const
         {
             return m_series_type;
         }

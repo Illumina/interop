@@ -139,6 +139,14 @@ public:
     {
         return tile_count()*sections_per_lane();
     }
+    /** Set the tile naming method
+     *
+     * @param naming_method tile naming method
+     */
+    void set_naming_method(const constants::tile_naming_method naming_method)
+    {
+        m_naming_method = naming_method;
+    }
 
 private:
     tile_naming_method_t m_naming_method;

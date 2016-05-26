@@ -40,7 +40,7 @@
 #include <iomanip>
 #include "interop/io/metric_file_stream.h"
 #include "interop/model/run_metrics.h"
-#include "interop/logic/plot/plot_qscore_histogram.h"
+#include "interop/logic/plot/plot_qscore_heatmap.h"
 #include "interop/io/plot/gnuplot.h"
 #include "interop/version.h"
 #include "inc/application.h"
@@ -77,25 +77,12 @@ int main(int argc, char** argv)
                                             model::plot::filter_options::ALL_IDS
                                             //,1
                                             );
-        model::plot::plot_data<model::plot::bar_point> data;
-        try
-        {
-            logic::plot::plot_qscore_histogram(run, options, data);
-        }
-        catch(const model::invalid_read_exception& ex)
-        {
-            std::cerr << ex.what() << std::endl;
-            return UNEXPECTED_EXCEPTION;
-        }
-        catch(const model::index_out_of_bounds_exception& ex)
-        {
-            std::cerr << ex.what() << std::endl;
-            return UNEXPECTED_EXCEPTION;
-        }
-        if(data.size() == 0 ) continue;
+        model::plot::heatmap_data data;
+        logic::plot::plot_qscore_heatmap(run, options, data);
+        if(data.length() == 0 ) continue;
         std::ostream& out = std::cout;
         io::plot::gnuplot_writer plot_writer;
-        plot_writer.write_chart(out, data, "q-hist.png");
+        plot_writer.write_heatmap(out, data, "q_heatmap.png");
 
     }
     return SUCCESS;

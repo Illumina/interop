@@ -112,6 +112,7 @@ TEST(plot_logic, q_score_histogram)
             reads
     ));
     metrics.legacy_channel_update(constants::HiSeq);
+    metrics.set_naming_method(constants::FourDigit);
 
     std::istringstream iss(unittest::q_v6::binary_data());
     io::read_metrics(iss, metrics.q_metric_set());
@@ -147,6 +148,7 @@ TEST(plot_logic, q_score_heatmap)
             reads
     ));
     metrics.legacy_channel_update(constants::HiSeq);
+    metrics.set_naming_method(constants::FourDigit);
 
     std::istringstream iss(unittest::q_v6::binary_data());
     io::read_metrics(iss, metrics.q_metric_set());

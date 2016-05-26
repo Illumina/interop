@@ -1,6 +1,6 @@
 
 function(add_application _target _source_files)
-    add_executable(${_target} ${_source_files})
+    add_executable(${_target} ${_source_files} inc/application.h)
     target_link_libraries(${_target} ${INTEROP_LIB})
 
     if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR CMAKE_COMPILER_IS_GNUCC)
@@ -26,3 +26,7 @@ add_application(cyclesim cyclesim.cpp)
 add_application(summary summary.cpp)
 add_application(dumpbin dumpbin.cpp)
 add_application(plot_qscore_histogram plot_qscore_histogram.cpp)
+add_application(plot_by_cycle plot_by_cycle.cpp)
+add_application(plot_by_lane plot_by_lane.cpp)
+add_application(plot_flowcell plot_flowcell.cpp)
+add_application(plot_qscore_heatmap plot_qscore_heatmap.cpp)

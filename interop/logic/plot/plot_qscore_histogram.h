@@ -43,7 +43,6 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
             if( !options.valid_tile(*beg) || beg->cycle() < first_cycle || beg->cycle() > last_cycle) continue;
             beg->accumulate_into(histogram);
         }
-        for(size_t i=0;i<histogram.size();++i) histogram[i] /= 1e6f;
     }
     /** Scale the histogram if necessary and provide the scale label
      *
@@ -53,7 +52,11 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
     inline std::string scale_histogram(std::vector<float>& histogram)
     {
         float max_height = 0;
-        for(size_t i=0;i<histogram.size();++i) max_height = std::max(max_height, histogram[i]);
+        for(size_t i=0;i<histogram.size();++i)
+        {
+            histogram[i] /= 1e6f;
+            max_height = std::max(max_height, histogram[i]);
+        }
         if(max_height < 10000) return "million";
         for(size_t i=0;i<histogram.size();++i) histogram[i] /= 1000;
         return "billion";
@@ -68,7 +71,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
      */
     inline size_t get_last_filtered_cycle(const model::run::info &run_info,
                              const model::plot::filter_options &options,
-                             const size_t max_cycle)
+                             const size_t max_cycle) throw(model::invalid_read_exception)
     {
         size_t last_cycle = options.all_reads() ? max_cycle : run_info.read(options.read()).last_cycle();
         if(!options.all_cycles()) last_cycle = std::min(last_cycle, static_cast<size_t>(options.cycle()));
@@ -136,7 +139,8 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
     template<class Point>
     void plot_qscore_histogram(model::metrics::run_metrics& metrics,
                                const model::plot::filter_options& options,
-                               model::plot::plot_data<Point>& data)
+                               model::plot::plot_data<Point>& data) throw(model::invalid_read_exception,
+                                                                        model::index_out_of_bounds_exception)
     {
         data.clear();
         const size_t first_cycle = options.all_reads() ? 1 : metrics.run_info().read(options.read()).first_cycle();
@@ -145,6 +149,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
 
         data[0].add_option(constants::to_string(constants::ShiftedBar));
 
+        std::string axis_scale;
         std::vector<float> histogram;
         float max_x_value;
 
@@ -166,6 +171,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                     first_cycle,
                     last_cycle,
                     histogram);
+            axis_scale = scale_histogram(histogram);
             if(!metrics.get_set<metric_t>().bins().empty())
                 max_x_value=plot_binned_histogram(metrics.get_set<metric_t>().bins().begin(),
                                                   metrics.get_set<metric_t>().bins().end(),
@@ -195,6 +201,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                     first_cycle,
                     last_cycle,
                     histogram);
+            axis_scale = scale_histogram(histogram);
             if(!metrics.get_set<metric_t>().bins().empty())
                 max_x_value=plot_binned_histogram(metrics.get_set<metric_t>().bins().begin(),
                                                   metrics.get_set<metric_t>().bins().end(),
@@ -202,7 +209,6 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                                                   data[0]);
             else max_x_value=plot_unbinned_histogram(histogram, data[0]);
         }
-        const std::string axis_scale = scale_histogram(histogram);
 
         auto_scale_y(data, false);
         data.set_xrange(1, max_x_value*1.1f);

@@ -86,24 +86,24 @@ namespace summary
                                             summary);
         summarize_tile_count(metrics, summary);
 
-        summarize_cycle_state(metrics.get_set<error_metric>().begin(),
-                              metrics.get_set<error_metric>().end(),
+        summarize_cycle_state(metrics.get_set<tile_metric>(),
+                              metrics.get_set<error_metric>(),
                               cycle_to_read,
                               &model::summary::cycle_state_summary::error_cycle_range,
                               summary);
-        summarize_cycle_state(metrics.get_set<extraction_metric>().begin(),
-                              metrics.get_set<extraction_metric>().end(),
+        summarize_cycle_state(metrics.get_set<tile_metric>(),
+                              metrics.get_set<extraction_metric>(),
                               cycle_to_read,
                               &model::summary::cycle_state_summary::extracted_cycle_range,
                               summary);
-        summarize_cycle_state(metrics.get_set<q_metric>().begin(),
-                              metrics.get_set<q_metric>().end(),
+        summarize_cycle_state(metrics.get_set<tile_metric>(),
+                              metrics.get_set<q_metric>(),
                               cycle_to_read,
                               &model::summary::cycle_state_summary::qscored_cycle_range,
                               summary);
         // Summarize called cycle state
-        summarize_cycle_state(metrics.get_set<corrected_intensity_metric>().begin(),
-                              metrics.get_set<corrected_intensity_metric>().end(),
+        summarize_cycle_state(metrics.get_set<tile_metric>(),
+                              metrics.get_set<corrected_intensity_metric>(),
                               cycle_to_read,
                               &model::summary::cycle_state_summary::called_cycle_range,
                               summary);

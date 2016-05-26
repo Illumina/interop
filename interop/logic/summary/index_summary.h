@@ -30,6 +30,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
                                         model::summary::index_lane_summary &summary)
     throw(model::index_out_of_bounds_exception)
     {
+        typedef typename model::summary::index_lane_summary::read_count_t read_count_t;
         typedef typename model::metrics::index_metric::const_iterator const_index_iterator;
         typedef model::summary::index_count_summary index_count_summary;
         typedef std::map<std::string, index_count_summary> index_count_map_t;
@@ -37,16 +38,16 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
 
         index_count_map_t index_count_map;
         size_t total_mapped_reads = 0;
-        float pf_cluster_count_total = 0;
-        float cluster_count_total = 0;
+        read_count_t pf_cluster_count_total = 0;
+        read_count_t cluster_count_total = 0;
         for(;beg != end;++beg)
         {
             if(beg->lane() != lane) continue;
             try
             {
                 const model::metrics::tile_metric &tile_metric = tile_metrics.get_metric(beg->lane(), beg->tile());
-                pf_cluster_count_total += tile_metric.cluster_count_pf();
-                cluster_count_total += tile_metric.cluster_count();
+                pf_cluster_count_total += static_cast<read_count_t>(tile_metric.cluster_count_pf());
+                cluster_count_total += static_cast<read_count_t>(tile_metric.cluster_count());
 
                 for(const_index_iterator ib = beg->indices().begin(), ie =  beg->indices().end();ib != ie;++ib)
                 {
@@ -76,7 +77,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
         for(map_iterator b = index_count_map.begin(), e = index_count_map.end();b != e;++b)
         {
             index_count_summary& count_summary = b->second;
-            count_summary.update_fraction_mapped(pf_cluster_count_total);
+            count_summary.update_fraction_mapped(static_cast<double>(pf_cluster_count_total));
             const float fraction_mapped = count_summary.fraction_mapped();
             summary.push_back(count_summary);
             max_fraction_mapped = std::max(max_fraction_mapped, fraction_mapped);

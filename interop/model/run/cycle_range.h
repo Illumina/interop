@@ -93,7 +93,6 @@ namespace run
          */
         void update(const cycle_t cycle)
         {
-            INTEROP_ASSERT(cycle>0);
             if(cycle > m_last_cycle) m_last_cycle = cycle;
             if(cycle < m_first_cycle) m_first_cycle = cycle;
         }
@@ -104,7 +103,7 @@ namespace run
         void update(const cycle_range& rng)
         {
             if(rng.m_last_cycle > m_last_cycle) m_last_cycle = rng.m_last_cycle;
-            if(rng.m_first_cycle < m_first_cycle) m_first_cycle = rng.m_first_cycle;
+            if(rng.m_first_cycle < m_first_cycle  ) m_first_cycle = rng.m_first_cycle;
         }
         /** Subtract a cycle range from the first cycle of the read safely.
          *

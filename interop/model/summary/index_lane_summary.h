@@ -28,6 +28,9 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         typedef count_summary_vector_t::const_iterator const_iterator;
         /** Unsigned integral type (usually size_t) */
         typedef count_summary_vector_t::size_type size_type;
+        /** Define a read count type */
+        typedef ::uint64_t read_count_t;
+
     public:
         /** Constructor
          *
@@ -38,8 +41,8 @@ namespace illumina { namespace interop { namespace model { namespace summary {
          * @param min_mapped_reads minimum of the mapped reads
          * @param max_mapped_reads maximum of the mapped reads
          */
-        index_lane_summary(const size_t total_reads=0,
-                           const size_t total_pf_reads=0,
+        index_lane_summary(const read_count_t total_reads=0,
+                           const read_count_t total_pf_reads=0,
                            const float total_fraction_mapped_reads=0,
                            const float mapped_reads_cv=0,
                            const float min_mapped_reads=0,
@@ -156,7 +159,7 @@ namespace illumina { namespace interop { namespace model { namespace summary {
          *
          * @return total reads
          */
-        size_t total_reads()const
+        read_count_t total_reads()const
         {
             return m_total_reads;
         }
@@ -164,7 +167,7 @@ namespace illumina { namespace interop { namespace model { namespace summary {
          *
          * @return total PF reads
          */
-        size_t total_pf_reads()const
+        read_count_t total_pf_reads()const
         {
             return m_total_pf_reads;
         }
@@ -212,16 +215,16 @@ namespace illumina { namespace interop { namespace model { namespace summary {
          * @param cv_fraction_mapped coefficient of variation of fraction of reads mapped
          */
         void set(const size_t total_mapped_reads,
-                 const float pf_cluster_count_total,
-                 const float cluster_count_total,
+                 const read_count_t pf_cluster_count_total,
+                 const read_count_t cluster_count_total,
                  const float min_fraction_mapped,
                  const float max_fraction_mapped,
                  const float cv_fraction_mapped)
         {
-            m_total_reads = static_cast<size_t>(cluster_count_total);
-            m_total_pf_reads = static_cast<size_t>(pf_cluster_count_total);
+            m_total_reads = cluster_count_total;
+            m_total_pf_reads = pf_cluster_count_total;
             m_total_fraction_mapped_reads = (pf_cluster_count_total == 0) ? 0 :
-                                            total_mapped_reads/pf_cluster_count_total*100;
+                                            static_cast<float>(100.0*total_mapped_reads/pf_cluster_count_total);
             m_mapped_reads_cv = cv_fraction_mapped;
             m_min_mapped_reads = (m_total_reads==0) ? 0 : min_fraction_mapped;
             m_max_mapped_reads = (m_total_reads==0) ? 0 : max_fraction_mapped;
@@ -231,8 +234,8 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         count_summary_vector_t m_count_summaries;
 
     private:
-        size_t m_total_reads;
-        size_t m_total_pf_reads;
+        read_count_t m_total_reads;
+        read_count_t m_total_pf_reads;
         float m_total_fraction_mapped_reads;
         float m_mapped_reads_cv;
         float m_min_mapped_reads;

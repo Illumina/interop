@@ -45,28 +45,29 @@ public:
     }
     /** Set data at given location in the flowcell
      *
-     * @param lane lane number
+     * @param lane_idx lane index
      * @param loc physical tile location
      * @param tile_id id of the tile
      * @param value value of the metric
      */
-    void set_data(const size_t lane, const size_t loc, const ::uint32_t tile_id, const float value)
+    void set_data(const size_t lane_idx, const size_t loc, const ::uint32_t tile_id, const float value)
     {
-        INTEROP_ASSERT(lane < row_count());
-        INTEROP_ASSERTMSG(loc < column_count(), loc << " < " << column_count());
-        INTEROP_ASSERT(lane < m_data.size());
-        heatmap_data::operator()(lane, loc) = value;
-        m_data[index_of(lane-1, loc-1)] = tile_id;
+        INTEROP_ASSERT(lane_idx < row_count());
+        INTEROP_ASSERTMSG((loc) < column_count(), loc << " < " << column_count() << " - rows: " << row_count());
+        //INTEROP_ASSERT(lane < m_data.size());
+        heatmap_data::operator()(lane_idx, loc) = value;
+        m_data[index_of(lane_idx, loc)] = tile_id;
     }
     /** Get the tile id associated with the location
      *
-     * @param lane
+     * @param lane_idx
      * @param loc
      * @return tile id
      */
-    ::uint32_t tile_id(const size_t lane, const size_t loc)const
+    ::uint32_t tile_id(const size_t lane_idx, const size_t loc)const
     {
-        return m_data[index_of(lane-1, loc-1)];
+        INTEROP_ASSERT(index_of(lane_idx, loc) < m_data.size());
+        return m_data[index_of(lane_idx, loc)];
     }
     /** Set the axis
      *

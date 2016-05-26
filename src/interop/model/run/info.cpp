@@ -91,7 +91,7 @@ void info::parse(char *data)  throw(    xml::xml_file_not_found_exception,
             xml_node_ptr p_tile_set = p_node->first_node("TileSet");
             if(p_tile_set == 0)
             {
-                m_flowcell.m_naming_method = constants::Absolute;
+                m_flowcell.m_naming_method = constants::UnknownTileNamingMethod;
             }
             else
             {
@@ -160,6 +160,11 @@ void info::read(const std::string& run_folder) throw(   xml::xml_file_not_found_
                                                         xml::missing_xml_element_exception,
                                                         xml::xml_parse_exception)
 {
+    if(run_folder.find("RunInfo.xml") != std::string::npos)
+    {
+        read_file(run_folder);
+        return;
+    }
     read_file(io::combine(run_folder, "RunInfo.xml"));
 }
 

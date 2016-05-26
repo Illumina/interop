@@ -26,7 +26,6 @@ namespace illumina.interop.csharp.unittest
             for(int i=0;i<expected_binary_data.Length;i++) expected_binary_data[i] = (byte)tmp[i];
             run_metrics run = new run_metrics();
             c_csharp_interop.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, run.q_metric_set());
-            run.finalize_after_load();
             uint ALL_IDS = (uint)filter_options.UseAll.ALL_IDS;
             filter_options options = new filter_options(tile_naming_method.FourDigit, ALL_IDS, 0, dna_bases.A, ALL_IDS, 1, 1);
             read_info_vector reads = new read_info_vector();
@@ -42,6 +41,7 @@ namespace illumina.interop.csharp.unittest
                     reads
             ));
             run.legacy_channel_update(instrument_type.HiSeq);
+            run.finalize_after_load();
 
             flowcell_data data = new flowcell_data();
             c_csharp_interop.plot_flowcell_map(run,  metric_type.QScore, options, data);

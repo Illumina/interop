@@ -35,11 +35,13 @@ public:
                        const float p75=0,
                        const float lower=std::numeric_limits<y_type>::quiet_NaN(),
                        const float upper=std::numeric_limits<y_type>::quiet_NaN(),
+                       const size_t data_point_count=0,
                        const float_vector_t& outliers=float_vector_t()) : data_point<float, float>(x, p50),
                                                                           m_p25(p25),
                                                                           m_p75(p75),
                                                                           m_lower(lower),
                                                                           m_upper(upper),
+                                                                          m_data_point_count(data_point_count),
                                                                           m_outliers(outliers)
     {}
 
@@ -108,12 +110,21 @@ public:
     {
         return m_outliers;
     }
+    /** Get number of points the candle stick summarizes
+     *
+     * @return number of data points
+     */
+    size_t data_point_count()const
+    {
+        return m_data_point_count;
+    }
 
 private:
     y_type m_p25;
     y_type m_p75;
     y_type m_lower;
     y_type m_upper;
+    size_t m_data_point_count;
     float_vector_t m_outliers;
 };
 

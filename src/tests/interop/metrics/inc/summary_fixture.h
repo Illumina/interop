@@ -32,6 +32,7 @@ namespace illumina{ namespace interop { namespace unittest {
                                       channels,
                                       model::run::image_dimensions(),
                                       reads);
+            run_info.set_naming_method(constants::FourDigit);
             model::metrics::run_metrics metrics(run_info);
             try
             {

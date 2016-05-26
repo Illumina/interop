@@ -118,6 +118,7 @@
  * @see illumina::interop::constants::surface_type
  */
 #define INTEROP_ENUM_SURFACE_TYPES \
+        INTEROP_ENUM(SentinelSurface),\
         INTEROP_ENUM(Top),\
         INTEROP_ENUM(Bottom),\
         INTEROP_ENUM(UnknownSurface)

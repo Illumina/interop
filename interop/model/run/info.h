@@ -153,6 +153,14 @@ public:
      * @param channels channel labels
      */
     void channels(const str_vector_t& channels){ m_channels = channels;}
+    /** Set the tile naming method
+     *
+     * @param naming_method tile naming method
+     */
+    void set_naming_method(const constants::tile_naming_method naming_method)
+    {
+        m_flowcell.set_naming_method(naming_method);
+    }
     /** @} */
 
 public:

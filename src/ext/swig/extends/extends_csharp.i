@@ -2,8 +2,8 @@
 %define SHARED_METRIC_SET_METHODS(metric_t)
     private long _dataSourceLength;
     private bool _dataSourceExists;
-    public long DataSourceLength { get{return _dataSourceLength;} set{_dataSourceLength=value;} }
-    public bool DataSourceExists { get{return _dataSourceExists;} set{_dataSourceExists=value;} }
+    public long DataSourceLength { get{return size();} set{} }
+    public bool DataSourceExists { get{return size() > 0;} set{} }
     public byte Version { get{ return (byte)version(); } }
     public global::System.Int64 GetKey(int lane, int tile)
     {

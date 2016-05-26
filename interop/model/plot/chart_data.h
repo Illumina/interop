@@ -119,6 +119,14 @@ public:
     {
         return m_title;
     }
+    /** Get the X/Y axes
+     *
+     * @return x/y axes
+     */
+    const axes& xyaxes()const
+    {
+        return m_axes;
+    }
 
 private:
     axes m_axes;

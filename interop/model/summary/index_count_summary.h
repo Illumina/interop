@@ -113,10 +113,10 @@ namespace illumina { namespace interop { namespace model { namespace summary {
          *
          * @param total_pf_cluster_count total PF cluster count
          */
-        void update_fraction_mapped(const float total_pf_cluster_count)
+        void update_fraction_mapped(const double total_pf_cluster_count)
         {
             if(total_pf_cluster_count != 0.0f)
-                m_fraction_mapped = m_count / total_pf_cluster_count * 100.0f;
+                m_fraction_mapped = static_cast<float>(m_count / total_pf_cluster_count * 100.0);
         }
 
     private:

@@ -38,6 +38,25 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
     {
         return count_q_metric_bins(metric_set.begin(), metric_set.end());
     }
+    /** Count the number of bins in the q metric
+     *
+     * @param q_metric_set q-metric set
+     * @return number of bins
+     */
+    inline size_t count_q_metric_bins(const model::metric_base::metric_set<model::metrics::q_by_lane_metric>& metric_set)
+    {
+        return count_q_metric_bins(metric_set.begin(), metric_set.end());
+    }
+    /** Count the number of bins in the q metric
+     *
+     * @note Always returns 0
+     * @param q_metric_set q-metric set
+     * @return 0
+     */
+    inline size_t count_q_metric_bins(const model::metric_base::metric_set<model::metrics::q_collapsed_metric>&)
+    {
+        return 0;
+    }
     /** Populate cumulative q-metric distribution
      *
      * @param metric_set q-metric set
@@ -55,11 +74,11 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
         id_vector lane_ids = metric_set.lanes();
         for(const_id_iterator lane_beg = lane_ids.begin(), lane_end = lane_ids.end();lane_beg != lane_end;++lane_beg)
         {
-            const size_t lane_id = *lane_beg;
+            const uint_t lane_id = *lane_beg;
             id_vector tile_ids = metric_set.tile_numbers_for_lane(lane_id);
             for(const_id_iterator tile_beg = tile_ids.begin(), tile_end = tile_ids.end();tile_beg != tile_end;++tile_beg)
             {
-                const size_t tile_id = *tile_beg;
+                const uint_t tile_id = *tile_beg;
                 size_t prev_idx = metric_set.find(lane_id, tile_id, 1);
                 if(prev_idx >= metric_set.size()) continue;
                 QMetric& metric = metric_set.at(prev_idx);
@@ -257,6 +276,38 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
         const size_t count = count_legacy_q_score_bins(q_metric_set);
         populate_legacy_q_score_bins(q_score_bins, instrument, count);
     }
+    /** Populate the q-score header bins from the data
+     *
+     * This only for legacy platforms that use older q-metric formats, which do not include bin information
+     * in the header.
+     *
+     * @param q_metric_set q-metric set
+     * @param q_score_bins vector of q-score bins
+     * @param instrument type
+     */
+    inline void populate_legacy_q_score_bins(model::metric_base::metric_set<model::metrics::q_by_lane_metric>& q_metric_set,
+                                             std::vector<model::metrics::q_score_bin>& q_score_bins,
+                                             const constants::instrument_type instrument)
+    {
+        const size_t count = count_legacy_q_score_bins(q_metric_set);
+        populate_legacy_q_score_bins(q_score_bins, instrument, count);
+    }
+    /** Populate the q-score header bins from the data
+     *
+     * This only for legacy platforms that use older q-metric formats, which do not include bin information
+     * in the header.
+     *
+     * @param q_metric_set q-metric set
+     * @param q_score_bins vector of q-score bins
+     * @param instrument type
+     */
+    inline void populate_legacy_q_score_bins(model::metric_base::metric_set<model::metrics::q_collapsed_metric>& q_metric_set,
+                                             std::vector<model::metrics::q_score_bin>& q_score_bins,
+                                             const constants::instrument_type instrument)
+    {
+        const size_t count = count_legacy_q_score_bins(q_metric_set);
+        populate_legacy_q_score_bins(q_score_bins, instrument, count);
+    }
     /** Test whether the q-values are compressed
      *
      * @param q_metric_set q-metric set
@@ -268,12 +319,21 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
     }
     /** Test whether the q-values are compressed
      *
-     * @param q_metric_set q-metric set
+     * @param q_metric_set by lane q-metric set
      * @return number of q-vals
      */
-    inline size_t count_qvals(const model::metric_base::metric_set<model::metrics::q_by_lane_metric>& q_metric_set)
+    inline size_t count_qvals( const model::metric_base::metric_set<model::metrics::q_by_lane_metric>& q_metric_set)
     {
         return q_metric_set.size() > 0 ? q_metric_set.metrics()[0].size() : 0;
+    }
+    /** Test whether the q-values are compressed
+     *
+     * @note This always returns 0
+     * @return 0
+     */
+    inline size_t count_qvals( const model::metric_base::metric_set<model::metrics::q_collapsed_metric>&)
+    {
+        return 0;
     }
     /** Test whether the q-values are compressed
      *
@@ -287,7 +347,17 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
     }
     /** Test whether the q-values are compressed
      *
-     * @param q_metric_set q_metric set
+     * @param q_metric_set collapsed q-metric set
+     * @return true if the histogram is compressed (no all zero columns)
+     */
+    inline bool is_compressed(const model::metric_base::metric_set<model::metrics::q_collapsed_metric>& q_metric_set)
+    {
+        const size_t q_val_count = count_qvals(q_metric_set);
+        return q_val_count > 0 && q_val_count != model::metrics::q_metric::MAX_Q_BINS;
+    }
+    /** Test whether the q-values are compressed
+     *
+     * @param q_metric_set by lane q_metric set
      * @return true if the histogram is compressed (no all zero columns)
      */
     inline bool is_compressed(const model::metric_base::metric_set<model::metrics::q_by_lane_metric>& q_metric_set)
@@ -300,17 +370,27 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
      * @param q_metric_set q-metric set
      * @return the maximum Q-value
      */
-    inline size_t max_qval(const model::metric_base::metric_set<model::metrics::q_metric>& q_metric_set)
+    inline size_t max_qval(
+            const model::metric_base::metric_set<model::metrics::q_metric>& q_metric_set)
+    {
+        return is_compressed(q_metric_set) ? q_metric_set.bins().back().upper() : count_qvals(q_metric_set);
+    }
+    /** Determine the maximum Q-value
+     *
+     * @param q_metric_set by lane q-metric set
+     * @return the maximum Q-value
+     */
+    inline size_t max_qval(const model::metric_base::metric_set<model::metrics::q_by_lane_metric>& q_metric_set)
     {
         return is_compressed(q_metric_set) ?
                static_cast<size_t>(q_metric_set.bins().back().upper()) : count_qvals(q_metric_set);
     }
     /** Determine the maximum Q-value
      *
-     * @param q_metric_set q-metric set
+     * @param q_metric_set collapsed q-metric set
      * @return the maximum Q-value
      */
-    inline size_t max_qval(const model::metric_base::metric_set<model::metrics::q_by_lane_metric>& q_metric_set)
+    inline size_t max_qval(const model::metric_base::metric_set<model::metrics::q_collapsed_metric>& q_metric_set)
     {
         return is_compressed(q_metric_set) ?
                static_cast<size_t>(q_metric_set.bins().back().upper()) : count_qvals(q_metric_set);
@@ -321,8 +401,9 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
      * @param qval threshold
      * @return index of q-val above given threshold
      */
-    inline size_t index_for_q_value(const model::metric_base::metric_set<model::metrics::q_metric>& q_metric_set,
-                                    const size_t qval)
+    inline size_t index_for_q_value(
+            const model::metric_base::metric_set<model::metrics::q_metric>& q_metric_set,
+            const size_t qval)
     {
         if(!is_compressed(q_metric_set)) return qval;
         return q_metric_set.index_for_q_value(qval);
@@ -338,8 +419,8 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
         typedef model::metric_base::metric_set<model::metrics::q_metric>::const_iterator const_iterator;
         typedef model::metric_base::metric_set<model::metrics::q_metric>::uint_t uint_t;
 
-        const size_t q20_idx = index_for_q_value(metric_set, 20);
-        const size_t q30_idx = index_for_q_value(metric_set, 30);
+        const uint_t q20_idx = static_cast<uint_t>(index_for_q_value(metric_set, 20));
+        const uint_t q30_idx = static_cast<uint_t>(index_for_q_value(metric_set, 30));
         for(const_iterator beg = metric_set.begin(), end = metric_set.end();beg != end;++beg)
         {
             const uint_t q20 = beg->total_over_qscore(q20_idx);

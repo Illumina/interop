@@ -158,7 +158,15 @@ namespace illumina {
                      * @return lane number
                      */
                     uint_t lane()const{return m_lane;}
-                    /** Tile number
+                    /** Tile id
+                     *
+                     * The tile id can have either a 4-digit format or a 5-digit format.
+                     *
+                     * 4-digit:
+                     * 1234 -> surface (1) swath (2) tile_number (34)
+                     *
+                     * 5-digit:
+                     * 12345 -> surface (1) swath (2) section(3) tile_number (45)
                      *
                      * @return tile number
                      */
@@ -305,13 +313,13 @@ namespace illumina {
                      * @return column of the physical location within the flowcell
                      */
                     uint_t physical_location_column(const illumina::interop::constants::tile_naming_method method,
-                                                  const uint_t swath_count,
-                                                  const bool all_surfaces)const
+                                                    const uint_t swath_count,
+                                                    const bool all_surfaces)const
                     {
                         if(!(method == constants::FiveDigit||method == constants::FourDigit)) return 0;
                         uint_t col = swath(method);
                         if(all_surfaces && surface(method)==2) col += swath_count;
-                        return col;
+                        return col-1;
                     }
                     /** Row of the physical location of tile within the flowcell
                      *
@@ -332,11 +340,11 @@ namespace illumina {
                                 if(section == 4) section = 6;
                                 else if(section == 6) section = 4;
                                 section = (section-1) * section_per_lane;
-                                return (section * tile_count) + (m_tile % 100);
+                                return (section * tile_count) + (m_tile % 100)-1;
                             case constants::FourDigit:
-                                return m_tile % 100;
+                                return m_tile % 100-1;
                             default:
-                                return m_tile;
+                                return m_tile-1;
                         }
                     }
                     /** Empty prefix string

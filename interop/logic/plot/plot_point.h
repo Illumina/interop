@@ -40,7 +40,8 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
             util::outliers_lower(beg, end, lower, std::back_inserter(outliers));
             util::outliers_upper(beg, end, upper, std::back_inserter(outliers));
         }
-        point = model::plot::candle_stick_point(x, p25, p50, p75, lower, upper, outliers);
+        size_t count = static_cast<size_t>(std::distance(beg,end));
+        point = model::plot::candle_stick_point(x, p25, p50, p75, lower, upper, count, outliers);
         outliers.clear();
     }
 

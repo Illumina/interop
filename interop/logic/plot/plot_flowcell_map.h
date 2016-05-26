@@ -46,7 +46,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
             if( !options.valid_tile_cycle(*beg) ) continue;
             const float val = proxy(*beg, type);
             if(std::isnan(val)) continue;
-            data.set_data(beg->lane(),
+            data.set_data(beg->lane()-1,
                           beg->physical_location_index(
                                   layout.naming_method(),
                                   layout.sections_per_lane(),
@@ -70,16 +70,21 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                                   const constants::metric_type type,
                                   const model::plot::filter_options& options,
                                   model::plot::flowcell_data& data)
-                throw(std::invalid_argument, std::logic_error, model::invalid_metric_type)
+                                  throw(std::invalid_argument, std::logic_error, model::invalid_metric_type)
     {
+
         const model::run::flowcell_layout& layout = metrics.run_info().flowcell();
         data.clear();
         data.resize(layout.lane_count(), layout.total_swaths(!options.is_specific_surface()), layout.tiles_per_lane());
         std::vector<float> values_for_scaling;
         values_for_scaling.reserve(data.length());
-        if(options.all_cycles())
+
+        if(metrics.run_info().flowcell().naming_method() == constants::UnknownTileNamingMethod)
+            throw std::invalid_argument("Unknown tile naming method - update your RunInfo.xml");
+
+        if(utils::is_cycle_metric(type) && options.all_cycles())
             throw std::invalid_argument("All cycles is unsupported");
-        if(options.all_reads())
+        if(utils::is_read_metric(type) && options.all_reads())
             throw std::invalid_argument("All reads is unsupported");
         switch(logic::utils::to_group(type))
         {

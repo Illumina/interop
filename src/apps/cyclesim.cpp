@@ -49,27 +49,11 @@
 #include "interop/model/metric_sets/image_metric_set.h"
 #include "interop/model/metric_sets/q_metric_set.h"
 #include "interop/version.h"
+#include "inc/application.h"
 
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop;
 
-/** Exit codes that can be produced by the application
- */
-enum exit_codes
-{
-    /** The program exited cleanly, 0 */
-    SUCCESS,
-    /** Invalid arguments were given to the application*/
-    INVALID_ARGUMENTS,
-    /** Empty InterOp directory*/
-    NO_INTEROPS_FOUND,
-    /** InterOp file has a bad format */
-    BAD_FORMAT,
-    /** Unknown error has occurred*/
-    UNEXPECTED_EXCEPTION,
-    /** InterOp file has not records */
-    EMPTY_INTEROP
-};
 /** Write a help message to the output stream
  *
  * @param out output stream
@@ -344,7 +328,7 @@ int write_interops(const std::string& filename, const std::string& output, unsig
     if(valid_count == 0)
     {
         if(kPrintError) std::cerr << "No files found" << std::endl;
-        return NO_INTEROPS_FOUND;
+        return EMPTY_INTEROP;
     }
     return 0;
 }

@@ -21,6 +21,7 @@
 #include "interop/model/run/info.h"
 #include "interop/model/run/parameters.h"
 #include "interop/logic/metric/q_metric.h"
+#include "interop/logic/metric/tile_metric.h"
 #include "interop/logic/utils/channel.h"
 
 namespace illumina { namespace interop { namespace model { namespace metrics {
@@ -69,6 +70,11 @@ public:
     typedef metric_base::metric_set<q_metric> q_metric_set_t;
     /** Define tile metric set */
     typedef metric_base::metric_set<tile_metric> tile_metric_set_t;
+    /** Define collapsed q-metric set */
+    typedef metric_base::metric_set<q_collapsed_metric> q_collapsed_metric_set_t;
+    /** Define by lane q-metric set */
+    typedef metric_base::metric_set<q_by_lane_metric> q_by_lane_metric_set_t;
+
 
 public:
     /** Define corrected intensity metric set */
@@ -124,10 +130,48 @@ public:
                                                     io::file_not_found_exception,
                                                     io::bad_format_exception,
                                                     io::incomplete_file_exception,
-                                                    io::format_exception)
+                                                    io::format_exception,
+                                                    model::index_out_of_bounds_exception)
     {
         read_metrics(run_folder);
+        const size_t count = read_xml(run_folder);
+        finalize_after_load(count);
+    }
+    /** Read XML files: RunInfo.xml and possibly RunParameters.xml
+     *
+     * @param run_folder run folder path
+     */
+    size_t read_xml(const std::string& run_folder) throw( xml::xml_file_not_found_exception,
+                                                    xml::bad_xml_format_exception,
+                                                    xml::empty_xml_format_exception,
+                                                    xml::missing_xml_element_exception,
+                                                    xml::xml_parse_exception)
+    {
+        read_run_info(run_folder);
+        return read_run_parameters(run_folder);
+    }
+    /** Read RunInfo.xml
+     *
+     * @param run_folder run folder path
+     */
+    void read_run_info(const std::string& run_folder) throw( xml::xml_file_not_found_exception,
+                                                        xml::bad_xml_format_exception,
+                                                        xml::empty_xml_format_exception,
+                                                        xml::missing_xml_element_exception,
+                                                        xml::xml_parse_exception)
+    {
         m_run_info.read(run_folder);
+    }
+    /** Read RunParameters.xml if necessary
+     *
+     * @param run_folder run folder path
+     */
+    size_t read_run_parameters(const std::string& run_folder) throw( xml::xml_file_not_found_exception,
+                                                                    xml::bad_xml_format_exception,
+                                                                    xml::empty_xml_format_exception,
+                                                                    xml::missing_xml_element_exception,
+                                                                    xml::xml_parse_exception)
+    {
         const size_t count = logic::metric::count_legacy_q_score_bins(get_set<q_metric>());
         if(m_run_info.channels().empty() || logic::metric::requires_legacy_bins(count))
         {
@@ -143,20 +187,24 @@ public:
                     throw io::file_not_found_exception("RunParameters.xml required for legacy run folders and is missing");
             }
         }
-        if(m_run_info.channels().empty())
-        {
-            legacy_channel_update(m_run_parameters.instrument_type());
-            if(m_run_info.channels().empty())
-                throw io::format_exception("Channel names are missing from the RunInfo.xml, and RunParameters.xml does not contain sufficient information on the instrument run.");
-        }
-        finalize_after_load(count);
+        return count;
     }
+
     /** Finalize the metric sets after loading from disk
      *
      * @param count number of bins for legacy q-metrics
      */
     void finalize_after_load(size_t count=std::numeric_limits<size_t>::max())
+                                throw (io::format_exception, std::invalid_argument, model::index_out_of_bounds_exception)
     {
+        if(m_run_info.flowcell().naming_method() == constants::UnknownTileNamingMethod)
+        {
+            m_run_info.set_naming_method(logic::metric::tile_naming_method_from_metric(get_set<metrics::tile_metric>()));
+            if(m_run_info.flowcell().naming_method() == constants::UnknownTileNamingMethod)
+                m_run_info.set_naming_method(logic::metric::tile_naming_method_from_metric(get_set<metrics::extraction_metric>()));
+            if(m_run_info.flowcell().naming_method() == constants::UnknownTileNamingMethod)
+                m_run_info.set_naming_method(logic::metric::tile_naming_method_from_metric(get_set<metrics::q_metric>()));
+        }
         if(count==std::numeric_limits<size_t>::max())
             count = logic::metric::count_legacy_q_score_bins(get_set<q_metric>());
         logic::metric::populate_legacy_q_score_bins(get_set<q_metric>().bins(), m_run_parameters.instrument_type(), count);
@@ -168,6 +216,14 @@ public:
         logic::metric::populate_cumulative_distribution(get_set<q_by_lane_metric>());
         logic::metric::populate_cumulative_distribution(get_set<q_collapsed_metric>());
         INTEROP_ASSERT(get_set<q_metric>().size()==get_set<q_collapsed_metric>().size());
+        if(m_run_info.channels().empty())
+        {
+            legacy_channel_update(m_run_parameters.instrument_type());
+            if(m_run_info.channels().empty())
+                throw io::format_exception("Channel names are missing from the RunInfo.xml, and RunParameters.xml does not contain sufficient information on the instrument run.");
+        }
+        if(run_info().flowcell().naming_method() == constants::UnknownTileNamingMethod)
+            throw std::invalid_argument("Unknown tile naming method - update your RunInfo.xml");
     }
     /** Test if all metrics are empty
      *
@@ -186,6 +242,14 @@ public:
     void legacy_channel_update(const constants::instrument_type type)
     {
         m_run_info.channels(logic::utils::update_channel_from_instrument_type(type));
+    }
+    /** Set the tile naming method
+     *
+     * @param naming_method tile naming method
+     */
+    void set_naming_method(const constants::tile_naming_method naming_method)
+    {
+        m_run_info.set_naming_method( naming_method );
     }
 
 public:
@@ -237,6 +301,22 @@ public:
     {
         return get_set<q_metric>();
     }
+    /** Get the set of collapsed quality metrics
+     *
+     * @return set of collapsed quality metrics
+     */
+    q_collapsed_metric_set_t & q_collapsed_metric_set()
+    {
+        return get_set<q_collapsed_metric>();
+    }
+    /** Get the set of by lane quality metrics
+     *
+     * @return set of by lane quality metrics
+     */
+    q_by_lane_metric_set_t & q_by_lane_metric_set()
+    {
+        return get_set<q_by_lane_metric>();
+    }
     /** Get the set of tile metrics
      *
      * @return set of tile metrics
@@ -252,6 +332,22 @@ public:
     void tile_metric_set(const tile_metric_set_t& set)
     {
         get_set<tile_metric>() = set;
+    }
+    /** Set the set of collapsed q-metrics
+     *
+     * @param set set of collapsed q-metrics
+     */
+    void q_collapsed_metric_set(const q_collapsed_metric_set_t& set)
+    {
+        get_set<q_collapsed_metric>() = set;
+    }
+    /** Set the set of by lane q-metrics
+     *
+     * @param set set of by lane q-metrics
+     */
+    void q_by_lane_metric_set(const q_by_lane_metric_set_t& set)
+    {
+        get_set<q_by_lane_metric>() = set;
     }
     /** Set the set of q-metrics
      *

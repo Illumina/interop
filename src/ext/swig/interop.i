@@ -124,8 +124,8 @@ WRAP_TEMPLATE_CYCLE_BASE(image_metric)
 WRAP_Q_METRIC(q_metric)
 WRAP_TILE_METRIC(tile_metric)
 WRAP_TEMPLATE_BASE(index_metric)
-WRAP_TEMPLATE_CYCLE_BASE(q_collapsed_metric)
-WRAP_TEMPLATE_CYCLE_BASE(q_by_lane_metric)
+WRAP_Q_METRIC(q_collapsed_metric)
+WRAP_Q_METRIC(q_by_lane_metric)
 
 
 %{

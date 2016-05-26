@@ -26,7 +26,6 @@ namespace illumina.interop.csharp.unittest
             for(int i=0;i<expected_binary_data.Length;i++) expected_binary_data[i] = (byte)tmp[i];
             run_metrics run = new run_metrics();
             c_csharp_interop.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, run.q_metric_set());
-            run.finalize_after_load();
 
             filter_options options = new filter_options(tile_naming_method.FourDigit);
             read_info_vector reads = new read_info_vector();
@@ -36,12 +35,13 @@ namespace illumina.interop.csharp.unittest
                     "",
                     "",
                     1,
-                    new flowcell_layout(2, 2, 2, 16),
+                    new flowcell_layout(8, 2, 2, 36, 1, 1, new string_vector(), tile_naming_method.FourDigit),
                     new string_vector(),
                     new image_dimensions(),
                     reads
             ));
             run.legacy_channel_update(instrument_type.HiSeq);
+            run.finalize_after_load();
 
             heatmap_data data = new heatmap_data();
             c_csharp_interop.plot_qscore_heatmap(run, options, data);
