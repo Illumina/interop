@@ -1,6 +1,6 @@
 /** @page apps Applications
  *
- * @brief Write metric by cycle plot to the console as at TSV (tab separated values) with a GNUPlot header
+ * @brief Write flowcell heatmap of a metric to the console as at TSV (tab separated values) with a GNUPlot header
  *
  * This application writes out of file that is compatible with both TSV (tab separated values) and GNUPlot, a
  * command line plotting tool available on Linux, Mac OSX and Windows.
@@ -10,12 +10,36 @@
  *
  * The program runs as follows:
  *
- *      $ plot_by_cycle 140131_1287_0851_A01n401drr
+ *      $ plot_flowcell 140131_1287_0851_A01n401drr
  *
  * In this sample, 140131_1287_0851_A01n401drr is a run folder and the summary is written to the standard output.
  *
- * # Version: v1.0.4-117-g05ea745-dirty
- * # Run Folder: 1Read0Index_120423_117213Bin1R0I
+ * # Version: v1.0.4-147-gb6d5c19-dirty
+ * # Run Folder: 1177190_11618Unbin2R1I
+ * set terminal png nocrop
+ * set output 'flowcell.png'
+ * set title "000000000-A1W6M Intensity"
+ * set view map
+ * unset key
+ * unset tics
+ * unset border
+ * set cbrange [103:116]
+ * set palette defined (0 "blue", 0.33 "green", 0.66 "yellow", 1 "orange")
+ * plot "-" matrix with image
+ * 104 110
+ * 106 105
+ * 105 104
+ * 108 103
+ * 111 106
+ * 115 108
+ * 109 106
+ * 113 108
+ * 116 108
+ * 116 107
+ * 114 109
+ * 111 110
+ * 116 109
+ * 116 111
  *
  */
 

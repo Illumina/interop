@@ -149,8 +149,6 @@ namespace illumina{ namespace interop{ namespace io {
         }
         /** Does not read/write record size, this is done in `map_stream_for_header`
          *
-         * @param stream input/output stream
-         * @param record_size size of the record
          * @return size of the record
          */
         template<class Stream>
@@ -425,7 +423,6 @@ namespace illumina{ namespace interop{ namespace io {
         }
         /** Compute header size
          *
-         * @param header q-metric header
          * @return header size
          */
         static record_size_t computeHeaderSize(const q_collapsed_metric::header_type&)
@@ -434,8 +431,6 @@ namespace illumina{ namespace interop{ namespace io {
         }
         /** Does not read/write record size, this is done in `map_stream_for_header`
          *
-         * @param stream input/output stream
-         * @param record_size size of the record
          * @return size of the record
          */
         template<class Stream>

@@ -126,6 +126,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
     }
     /** Plot a specified metric value by cycle
      *
+     * @ingroup plot_logic
      * @param metrics run metrics
      * @param type specific metric value to plot by cycle
      * @param options options to filter the data
@@ -138,7 +139,8 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                        model::plot::plot_data<Point>& data)
     {
         data.clear();
-        if(!utils::is_cycle_metric(type)) throw model::invalid_metric_type("Only cycle metrics are supported");
+        if(!utils::is_cycle_metric(type))
+            throw model::invalid_metric_type("Only cycle metrics are supported");
         switch(logic::utils::to_group(type))
         {
             case constants::Extraction:
@@ -286,6 +288,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
 
     /** Plot a specified metric value by cycle
      *
+     * @ingroup plot_logic
      * @todo Is this temporary?
      * @param metrics run metrics
      * @param metric_name name of metric value to plot by cycle

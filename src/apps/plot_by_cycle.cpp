@@ -14,9 +14,20 @@
  *
  * In this sample, 140131_1287_0851_A01n401drr is a run folder and the summary is written to the standard output.
  *
- * # Version: v1.0.4-117-g05ea745-dirty
- * # Run Folder: 1Read0Index_120423_117213Bin1R0I
- *
+ * # Version: v1.0.4-147-gb6d5c19-dirty
+ * # Run Folder: 1177190_11618Unbin2R1I
+ * set terminal png nocrop
+ * set output 'plot_by_cycle.png'
+ * set title "000000000-A1W6M All Lanes Channel A All Surfaces"
+ * set yrange [0 : 850.85 ]
+ * set ylabel "Intensity"
+ * set xrange [0 : 80 ]
+ * set xlabel "Cycle"
+ * plot "-" using 1:3:2:6:5 with candlesticks notitle lt rgb "black" whiskerbars
+ * 1	98.5	106	109	111	118.5
+ * 2	83.5	103	110	116	135.5
+ * 3	87	102	107	112	127
+ * e
  */
 
 #include <iostream>
@@ -60,7 +71,15 @@ int main(int argc, char** argv)
                                             );
 
         model::plot::plot_data<model::plot::candle_stick_point> data;
-        logic::plot::plot_by_cycle(run, constants::Intensity, options, data);
+
+        try{
+            logic::plot::plot_by_cycle(run, constants::Intensity, options, data);
+        }
+        catch(const std::exception& ex)
+        {
+            std::cerr << ex.what() << std::endl;
+            return UNEXPECTED_EXCEPTION;
+        }
 
         if(data.size() == 0 ) continue;
         std::ostream& out = std::cout;

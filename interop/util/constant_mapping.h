@@ -36,22 +36,24 @@ namespace illumina { namespace interop { namespace util
         /** Get instance of singleton
          *
          * @param pairs array of values mapping Key to Value
+         * @param pair_count number of pairs in array
          * @return instance of singleton
          */
-        static const constant_mapping<Key, Value> &mapping(const std::pair<Key, Value>* pairs, size_t n)
+        static const constant_mapping<Key, Value> &mapping(const std::pair<Key, Value>* pairs, size_t pair_count)
         {
-            static constant_mapping<Key, Value> singleton(pairs, n); // Only called once
+            static constant_mapping<Key, Value> singleton(pairs, pair_count); // Only called once
             return singleton;
         }
         /** Get instance of singleton
          *
          * @note This reverse the input pair to setup a reverse mapping
          * @param pairs array of values mapping Key to Value
+         * @param pair_count number of pairs in array
          * @return instance of singleton
          */
-        static const constant_mapping<Key, Value> &mapping(const std::pair<Value, Key>* pairs, size_t n)
+        static const constant_mapping<Key, Value> &mapping(const std::pair<Value, Key>* pairs, size_t pair_count)
         {
-            static constant_mapping<Key, Value> singleton(pairs, n); // Only called once
+            static constant_mapping<Key, Value> singleton(pairs, pair_count); // Only called once
             return singleton;
         }
         /** Get the value corresponding to the key or default_value if none exists

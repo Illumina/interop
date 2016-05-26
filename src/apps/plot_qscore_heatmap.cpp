@@ -1,6 +1,6 @@
 /** @page apps Applications
  *
- * @brief Write a Q-score histogram to the console as at TSV (tab separated values) with a GNUPlot header
+ * @brief Write a Q-score heat map to the console as at TSV (tab separated values) with a GNUPlot header
  *
  * This application writes out of file that is compatible with both TSV (tab separated values) and GNUPlot, a
  * command line plotting tool available on Linux, Mac OSX and Windows.
@@ -10,30 +10,23 @@
  *
  * The program runs as follows:
  *
- *      $ plot_qscore_histogram 140131_1287_0851_A01n401drr
+ *      $ plot_qscore_heatmap 140131_1287_0851_A01n401drr
  *
  * In this sample, 140131_1287_0851_A01n401drr is a run folder and the summary is written to the standard output.
  *
- * # Version: v1.0.4-117-g05ea745-dirty
- * # Run Folder: 1Read0Index_120423_117213Bin1R0I
+ * # Version: v1.0.4-147-gc04a08b
+ * # Run Folder: 131212_221Bin1R0I
  * set terminal png nocrop
- * set output 'q-hist.png'
- * set style fill solid noborder
- * set title "D0TM0ACXX All Lanes"
- * set style data histograms
- * set yrange [0 : 2.148 ]
- * set xrange [1 : 38.5 ]
- * set ylabel "Total (million)"
- * set xlabel "Q Score"
- * plot "-" using 1:2:3:xtic(1) with boxes notitle
- * 0       0       0
- * 10      0.0119  10
- * 20      0.003569        5
- * 25      0.036075        5
- * 30      1.95263 5
- * 0       0       0
- * 0       0       0
- *
+ * set output 'q_heatmap.png'
+ * set title "02D224DRR All Lanes"
+ * set yrange [0 : 45 ]
+ * set ylabel "Q Score"
+ * set xrange [0 : 31 ]
+ * set xlabel "Cycle"
+ * set view map
+ * plot "-" matrix with image
+ * 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ * 0 0 0 0 0 0 0.017353 0.017634 0.0162293 0.019017 0.0131606 0.0134416 0.0162293 0.024895 0.0209836 0.0229501 0.0137009 0.019017 0.0162293 0.00922758 0.0243331 0 0.0380556 0.042248 0.0551277 0.0355272 0.0433718 0.437348 0.261354 1.08708 0
  */
 
 #include <iostream>
@@ -78,7 +71,15 @@ int main(int argc, char** argv)
                                             //,1
                                             );
         model::plot::heatmap_data data;
-        logic::plot::plot_qscore_heatmap(run, options, data);
+        try
+        {
+            logic::plot::plot_qscore_heatmap(run, options, data);
+        }
+        catch(const std::exception& ex)
+        {
+            std::cerr << ex.what() << std::endl;
+            return UNEXPECTED_EXCEPTION;
+        }
         if(data.length() == 0 ) continue;
         std::ostream& out = std::cout;
         io::plot::gnuplot_writer plot_writer;

@@ -24,7 +24,7 @@ namespace illumina { namespace interop { namespace io {  namespace  plot {
          *
          * @param out output stream
          * @param data flowcell heatmap data
-         * @param optional output image path for the script
+         * @param output_image_path optional output image path for the script
          */
         void write_flowcell(std::ostream& out,
                            const model::plot::flowcell_data& data,
@@ -52,12 +52,11 @@ namespace illumina { namespace interop { namespace io {  namespace  plot {
                 out << "\n";
             }
         }
-        /** Write the flowcell heat map of tile ids to the output stream using the GNUPlot format
+        /** Write the flowcell heat map to the output stream using the GNUPlot format
          *
-         * @note This writes out Tile Ids instead of metrics
          * @param out output stream
          * @param data flowcell heatmap data
-         * @param optional output image path for the script
+         * @param output_image_path optional output image path for the script
          */
         void write_flowcell_tile_id(std::ostream& out,
                                     const model::plot::flowcell_data& data,
@@ -86,7 +85,7 @@ namespace illumina { namespace interop { namespace io {  namespace  plot {
          *
          * @param out output stream
          * @param data heat map data
-         * @param optional output image path for the script
+         * @param output_image_path optional output image path for the script
          */
         void write_heatmap(std::ostream& out,
                            const model::plot::heatmap_data& data,
@@ -111,7 +110,7 @@ namespace illumina { namespace interop { namespace io {  namespace  plot {
          *
          * @param out output stream
          * @param data plot data for a line, candlestick or bar plot
-         * @param optional output image path for the script
+         * @param output_image_path optional output image path for the script
          */
         template<typename Point>
         void write_chart(std::ostream& out,
@@ -340,7 +339,7 @@ namespace illumina { namespace interop { namespace io {  namespace  plot {
          *
          * @param out output stream
          * @param series series data for a line, candlestick or bar plot
-         * @param sep seperator between features
+         * @param sep separator between features
          */
         template<typename P>
         void write_color(std::ostream& out, const model::plot::series<P>& series, const char sep=' ')

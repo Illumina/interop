@@ -45,15 +45,40 @@ namespace summary
         }
     }
 
+    namespace detail
+    {
+        /** Predicate for std::partition to shuffle all non empty summaries to the start of the array
+         *
+         * @param summary lane summary
+         * @return true if the summary is not empty
+         */
+        inline bool not_empty(const model::summary::lane_summary& summary)
+        {
+            return summary.tile_count() > 0;
+        }
+        /** Predicate to sort lane summaries by lane number
+         *
+         * @param lhs left hand side summary
+         * @param rhs right hand side summary
+         * @return true if lhs < rhs
+         */
+        inline bool less_than(const model::summary::lane_summary& lhs, const model::summary::lane_summary& rhs)
+        {
+            return lhs.lane() < rhs.lane();
+        }
+    }
+
     /** Summarize a collection run metrics
      *
-     * @TODO speed up calculation by adding no_median flag
+     * TODO speed up calculation by adding no_median flag
      *
+     * @ingroup summary_logic
      * @param metrics source collection of all metrics
      * @param summary destination run summary
      */
     inline void summarize_run_metrics(model::metrics::run_metrics& metrics, model::summary::run_summary& summary)
-    throw( model::index_out_of_bounds_exception, model::invalid_channel_exception )
+                                                        throw( model::index_out_of_bounds_exception,
+                                                        model::invalid_channel_exception )
     {
         using namespace model::metrics;
         if(metrics.empty()) return;
@@ -107,6 +132,18 @@ namespace summary
                               cycle_to_read,
                               &model::summary::cycle_state_summary::called_cycle_range,
                               summary);
+
+        // Remove the empty lane summary entries
+        size_t max_lane_count = 0;
+        for(size_t read=0;read<summary.size();++read)
+        {
+            // Shuffle all non-zero tile_count models to beginning of the array
+            summary[read].resize(std::distance(summary[read].begin(),
+                                 std::partition(summary[read].begin(), summary[read].end(), detail::not_empty)));
+            std::sort(summary[read].begin(), summary[read].end(), detail::less_than);
+            max_lane_count = std::max(summary[read].size(), max_lane_count);
+        }
+        summary.lane_count(max_lane_count);
     }
 
 }

@@ -121,25 +121,26 @@ namespace illumina{ namespace interop { namespace unittest {
         static model::summary::run_summary summary()
         {
             std::vector<model::run::read_info> read_infos = reads();
-            model::summary::run_summary summary(read_infos.begin(), read_infos.end(), lane_count());
+            model::summary::run_summary summary(read_infos.begin(), read_infos.end(), 1);
             for(size_t read=0;read<read_infos.size();++read)
             {
-                summary[read][6].tile_count(3);
-                summary[read][6].reads_pf(9738715);
-                summary[read][6].reads(19412848);
-                summary[read][6].density() = model::summary::metric_stat(2355119.25f, 0, 2355119.25f);
-                summary[read][6].density_pf() = model::summary::metric_stat(1181477.125f, 27380.955078125f, 1174757.75f);
-                summary[read][6].cluster_count() = model::summary::metric_stat(6470949.5f, 0, 6470949);
-                summary[read][6].cluster_count_pf() = model::summary::metric_stat(3246238.25f, 75232.1640625f, 3227776);
-                summary[read][6].percent_pf() = model::summary::metric_stat(50.166339874267578f, 1.1626163721084595f, 49.881031036376953f);
+                summary[read][0].lane(7);
+                summary[read][0].tile_count(3);
+                summary[read][0].reads_pf(9738715);
+                summary[read][0].reads(19412848);
+                summary[read][0].density() = model::summary::metric_stat(2355119.25f, 0, 2355119.25f);
+                summary[read][0].density_pf() = model::summary::metric_stat(1181477.125f, 27380.955078125f, 1174757.75f);
+                summary[read][0].cluster_count() = model::summary::metric_stat(6470949.5f, 0, 6470949);
+                summary[read][0].cluster_count_pf() = model::summary::metric_stat(3246238.25f, 75232.1640625f, 3227776);
+                summary[read][0].percent_pf() = model::summary::metric_stat(50.166339874267578f, 1.1626163721084595f, 49.881031036376953f);
             }
-            summary[0][6].phasing() = model::summary::metric_stat(0.10935487598180771f, 0.026172075420618057f, 0.11908555030822754f);
-            summary[0][6].prephasing() = model::summary::metric_stat(0.1159147247672081f, 0.021491257473826408f, 0.11990892142057419f);
-            summary[0][6].percent_aligned() = model::summary::metric_stat(2.5763518810272217f, 0.074578315019607544f, 2.6163086891174316f);
+            summary[0][0].phasing() = model::summary::metric_stat(0.10935487598180771f, 0.026172075420618057f, 0.11908555030822754f);
+            summary[0][0].prephasing() = model::summary::metric_stat(0.1159147247672081f, 0.021491257473826408f, 0.11990892142057419f);
+            summary[0][0].percent_aligned() = model::summary::metric_stat(2.5763518810272217f, 0.074578315019607544f, 2.6163086891174316f);
 
-            summary[1][6].phasing() = model::summary::metric_stat(0.079711258411407471f, 0, 0.079711258411407471f);
-            summary[1][6].prephasing() = model::summary::metric_stat(0.11990892142057419f, 0, 0.11990892142057419f);
-            summary[1][6].percent_aligned() = model::summary::metric_stat(2.6163086891174316, 0, 2.6163086891174316f);
+            summary[1][0].phasing() = model::summary::metric_stat(0.079711258411407471f, 0, 0.079711258411407471f);
+            summary[1][0].prephasing() = model::summary::metric_stat(0.11990892142057419f, 0, 0.11990892142057419f);
+            summary[1][0].percent_aligned() = model::summary::metric_stat(2.6163086891174316, 0, 2.6163086891174316f);
 
             summary[0].summary().percent_aligned(2.5763518810272217f);
             summary[1].summary().percent_aligned(2.6163086891174316f);

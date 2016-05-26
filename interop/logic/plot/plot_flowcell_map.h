@@ -61,6 +61,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
 
     /** Plot a flowcell map
      *
+     * @ingroup plot_logic
      * @param metrics run metrics
      * @param type specific metric value to plot by cycle
      * @param options options to filter the data
@@ -84,7 +85,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
 
         if(utils::is_cycle_metric(type) && options.all_cycles())
             throw std::invalid_argument("All cycles is unsupported");
-        if(utils::is_read_metric(type) && options.all_reads())
+        if(utils::is_read_metric(type) && options.all_reads() && metrics.run_info().reads().size() > 1)
             throw std::invalid_argument("All reads is unsupported");
         switch(logic::utils::to_group(type))
         {
@@ -183,6 +184,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
     }
     /** Plot a flowcell map
      *
+     * @ingroup plot_logic
      * @param metrics run metrics
      * @param metric_name specific metric value to plot by cycle
      * @param options options to filter the data
@@ -191,8 +193,12 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
     inline void plot_flowcell_map(model::metrics::run_metrics& metrics,
                                   const std::string& metric_name,
                                   const model::plot::filter_options& options,
-                                  model::plot::flowcell_data& data) throw(std::invalid_argument)
+                                  model::plot::flowcell_data& data)
+                                  throw(std::invalid_argument, std::logic_error, model::invalid_metric_type)
     {
+        const constants::metric_type type = constants::parse<constants::metric_type>(metric_name);
+        if(type == constants::UnknownMetricType)
+            throw std::invalid_argument("Unsupported metric type: "+metric_name);
         plot_flowcell_map(metrics, constants::parse<constants::metric_type>(metric_name), options, data);
     }
 

@@ -85,13 +85,14 @@ namespace illumina{ namespace interop { namespace unittest {
         static model::summary::run_summary summary()
         {
             std::vector<model::run::read_info> read_infos = reads();
-            model::summary::run_summary summary(read_infos.begin(), read_infos.end(), lane_count());
-            summary[0][6].first_cycle_intensity()=model::summary::metric_stat(321, 24.75883674621582f, 312);
-            summary[0][6].cycle_state().extracted_cycle_range(model::run::cycle_range(1, 1));
+            model::summary::run_summary summary(read_infos.begin(), read_infos.end(), 1);
+            summary[0][0].lane(7);
+            summary[0][0].first_cycle_intensity()=model::summary::metric_stat(321, 24.75883674621582f, 312);
+            summary[0][0].cycle_state().extracted_cycle_range(model::run::cycle_range(1, 1));
             summary[0].summary().first_cycle_intensity(321);
             summary.total_summary().first_cycle_intensity(321);
             summary.nonindex_summary().first_cycle_intensity(321);
-            summary[0][6].tile_count(3);
+            summary[0][0].tile_count(3);
             summary.cycle_state().extracted_cycle_range(model::run::cycle_range(1, 1));
             return summary;
         }

@@ -198,6 +198,14 @@ public:
     {
         return m_lane_count;
     }
+    /** Set number of lanes
+     *
+     * @param lane_count number of lanes
+     */
+    void lane_count(const size_t lane_count)
+    {
+        m_lane_count = lane_count;
+    }
 
 public:
     /** Get summary metrics

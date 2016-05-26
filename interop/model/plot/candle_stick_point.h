@@ -27,6 +27,7 @@ public:
      * @param p75 75th percentile
      * @param lower lower spread
      * @param upper upper spread
+     * @param data_point_count number of data points summarized by statistics
      * @param outliers collection of outliers
      */
     candle_stick_point(const float x=0,

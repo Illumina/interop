@@ -162,7 +162,7 @@ int write_interops(std::ostream& out, const std::string& filename);
 /** Set false if you want to disable error messages printing to the error stream */
 bool kPrintError=true;
 /** Set greater than zero if you want to view less recoreds */
-int kMaxRecordCount=3;
+int kMaxRecordCount=0;
 
 
 int main(int argc, char** argv)

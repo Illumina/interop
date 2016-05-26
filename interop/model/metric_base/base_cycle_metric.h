@@ -67,7 +67,7 @@ namespace illumina {
                     enum
                     {
                         /** Base for records written out once for each tile/cycle */
-                                BASE_TYPE = constants::BaseCycleType
+                        BASE_TYPE = constants::BaseCycleType
                     };
                 public:
                     /** A cycle metric_set header

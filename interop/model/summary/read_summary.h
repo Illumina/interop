@@ -59,7 +59,8 @@ public:
      */
     const_reference operator[](const size_type n)const throw( model::index_out_of_bounds_exception )
     {
-        if(n >= m_summary_by_lane.size()) throw index_out_of_bounds_exception("Lane index exceeds read count");
+        if(n >= m_summary_by_lane.size())
+            throw index_out_of_bounds_exception("Lane index exceeds lane count");
         return m_summary_by_lane[n];
     }
     /** Get constant reference to lane_summary at given index
@@ -69,7 +70,8 @@ public:
      */
     const_reference at(const size_type n)const throw( model::index_out_of_bounds_exception )
     {
-        if(n >= m_summary_by_lane.size()) throw index_out_of_bounds_exception("Lane index exceeds read count");
+        if(n >= m_summary_by_lane.size())
+            throw index_out_of_bounds_exception("Lane index exceeds lane count");
         return m_summary_by_lane[n];
     }
     /** Get number of summaries by lane
@@ -132,7 +134,8 @@ public:
      */
     reference operator[](const size_type n) throw( model::index_out_of_bounds_exception )
     {
-        if(n >= m_summary_by_lane.size()) throw index_out_of_bounds_exception("Lane index exceeds read count");
+        if(n >= m_summary_by_lane.size())
+            throw index_out_of_bounds_exception("Lane index exceeds lane count");
         return m_summary_by_lane[n];
     }
     /** Get reference to lane_summary at given index
@@ -142,7 +145,8 @@ public:
      */
     lane_summary& at(const size_type n) throw( model::index_out_of_bounds_exception )
     {
-        if(n >= m_summary_by_lane.size()) throw index_out_of_bounds_exception("Lane index exceeds read count");
+        if(n >= m_summary_by_lane.size())
+            throw index_out_of_bounds_exception("Lane index exceeds lane count");
         return m_summary_by_lane[n];
     }
     /** Get random access iterator to start of summaries by lane

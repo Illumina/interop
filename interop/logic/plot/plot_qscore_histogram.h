@@ -88,8 +88,16 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                                  model::plot::data_point_collection<Point>& points)
     {
         points.resize(histogram.size());
-        for(size_t i=0;i<histogram.size();++i) points[i].set(static_cast<float>(i+1), histogram[i]);
-        return static_cast<float>(histogram.size()+1);
+        size_t point_index = 0;
+        for(size_t i=0;i<histogram.size();++i)
+        {
+            if(histogram[i] == 0) continue;
+            points[point_index].set(static_cast<float>(i+1), histogram[i]);
+            ++point_index;
+        }
+        points.resize(point_index);
+        if(point_index == 0) return 0;
+        return static_cast<float>(points[point_index-1].x()+1);
     }
     /** Plot a binned histogram
      *
@@ -107,12 +115,15 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
     {
         float max_x_value = 0;
         points.resize(std::distance(beg, end));
+        size_t point_index = 0;
         if(points.size() == histogram.size()) //Compressed
         {
             for (size_t i=0; beg != end; ++beg, ++i)
             {
                 INTEROP_ASSERT(i < histogram.size());
-                points[i].set(beg->lower(), histogram[i], static_cast<float>(beg->upper()-beg->lower()+1));
+                if(histogram[i] == 0)continue;
+                points[point_index].set(beg->lower(), histogram[i], static_cast<float>(beg->upper()-beg->lower()+1));
+                ++point_index;
                 max_x_value = std::max(max_x_value, points[i].x()+points[i].width());
             }
         }
@@ -123,15 +134,18 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                 const size_t bin = static_cast<size_t>(beg->value())-1;
                 INTEROP_ASSERTMSG(bin < histogram.size(), bin << " < " << histogram.size());
                 if(histogram[bin] == 0)continue;
-                points[i].set(beg->lower(), histogram[bin], static_cast<float>(beg->upper()-beg->lower()+1));
+                points[point_index].set(beg->lower(), histogram[bin], static_cast<float>(beg->upper()-beg->lower()+1));
+                ++point_index;
                 max_x_value = std::max(max_x_value, points[i].x()+points[i].width());
             }
         }
+        points.resize(point_index);
         return max_x_value;
     }
 
     /** Plot a histogram of q-scores
      *
+     * @ingroup plot_logic
      * @param metrics run metrics
      * @param options options to filter the data
      * @param data output plot data
@@ -147,7 +161,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
 
         data.assign(1, model::plot::series<Point>("Q Score", "", model::plot::series<Point>::Bar));
 
-        data[0].add_option(constants::to_string(constants::ShiftedBar));
+        data[0].add_option(constants::to_string(constants::Shifted));
 
         std::string axis_scale;
         std::vector<float> histogram;
@@ -161,7 +175,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                                                               metrics.get_set<metric_t>().max_cycle());
             if(metrics.get_set<metric_t>().size() == 0)
             {
-                data.clear();
+                //data.clear(); // TODO: Add this back?
                 return;
             }
             populate_distribution(
@@ -187,7 +201,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                                                         metrics.get_set<metric_t>());
             if(0 == metrics.get_set<metric_t>().size())
             {
-                data.clear();
+                //data.clear(); // TODO: Add this back?
                 return;
             }
             const size_t last_cycle = get_last_filtered_cycle(metrics.run_info(),

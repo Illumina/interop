@@ -118,6 +118,15 @@ namespace illumina { namespace interop { namespace model { namespace summary {
             if(total_pf_cluster_count != 0.0f)
                 m_fraction_mapped = static_cast<float>(m_count / total_pf_cluster_count * 100.0);
         }
+        /** Compare two index count summaries by their ids
+         *
+         * @param rhs index_count_summary on the right hand side (rhs) of the < symbol
+         * @return true if this is less than rhs
+         */
+        bool operator<(const index_count_summary& rhs)const
+        {
+            return id() < rhs.id();
+        }
 
     private:
         size_t m_id;

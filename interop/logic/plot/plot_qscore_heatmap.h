@@ -135,6 +135,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
     }
     /** Plot a heat map of q-scores
      *
+     * @ingroup plot_logic
      * @param metrics run metrics
      * @param options options to filter the data
      * @param data output heat map data

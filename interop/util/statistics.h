@@ -17,9 +17,7 @@
 #include "interop/util/assert.h"
 #include "interop/util/math.h"
 
-namespace illumina {
-namespace interop {
-namespace util {
+namespace illumina { namespace interop { namespace util {
 
 
 
@@ -236,8 +234,27 @@ I percentile(I beg, I end, const size_t percentile, Compare comp)
     std::nth_element(beg, nth_element_iterator, end, comp);
     return nth_element_iterator;
 }
-/**
+/** Perform linear interpolation between two sets of (x,y) points given a target x value
  *
+ * @param y1 y-value for point 1
+ * @param y2 y-value for point 2
+ * @param x1 x-value for point 1
+ * @param x2 x-value for point 2
+ * @param xt target x-value
+ * @return linearly interoploate y-value for given target x value
+ */
+template<typename F>
+F interpolate_linear(const F y1, const F y2, const F x1, const F x2, const F xt)
+{
+    return y1 + (y2-y1) / (x2-x1) * (xt - x1);
+}
+
+/** Calculate the interoploate percentile given a sorted array
+ *
+ * @param beg iterator to start of sorted array
+ * @param end iterator to end of sorted array
+ * @param percentile target percentile [0-100]
+ * @return interopated value of array corresponeding to given percentile
  */
 template<typename F, typename I>
 F percentile_sorted(I beg, I end, const size_t percentile)
@@ -246,8 +263,12 @@ F percentile_sorted(I beg, I end, const size_t percentile)
     INTEROP_ASSERT(percentile > 0 && percentile <= 100);
     const size_t n = static_cast<size_t>(std::distance(beg, end));
     const size_t nth_index = static_cast<size_t>(std::ceil(percentile * n / 100.0) - 1);
-    if(nth_index==n) return *(end-1);
-    return *(beg+nth_index);
+    if(nth_index>=(n-1)) return *(end-1);
+    const F y1 = *(beg+nth_index);
+    const F y2 = *(beg+nth_index+1);
+    const F x1 = 100.0f * (nth_index + 0.5f) / n;
+    const F x2 = 100.0f * (nth_index + 0.5f + 1) / n;
+    return interpolate_linear(y1, y2, x1, x2, static_cast<float>(percentile));
 }
 /** Sort NaNs to the end of the collection return iterator to first NaN value
  *
@@ -423,7 +444,5 @@ R variance(I beg, I end)
     return variance<R>(beg, end, op::operator_none());
 }
 
-}
-}
-}
+}}}
 

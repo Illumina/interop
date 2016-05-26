@@ -97,30 +97,12 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
             }
         }
     }
-    /** Populate cumulative q-metric distribution
-     *
-     * @param q_metric_set q-metric set
-     */
-    inline void populate_cumulative_distribution(model::metric_base::metric_set<model::metrics::q_metric>& q_metric_set)
-                    throw( model::index_out_of_bounds_exception )
-    {
-        populate_cumulative_distribution_t(q_metric_set);
-    }
-    /** Populate cumulative q-metric distribution by lane
-     *
-     * @param q_metric_set q-metric set
-     */
-    inline void populate_cumulative_distribution(model::metric_base::metric_set<model::metrics::q_by_lane_metric>& q_metric_set)
-    throw( model::index_out_of_bounds_exception )
-    {
-        populate_cumulative_distribution_t(q_metric_set);
-    }
     /** Populate cumulative collapsed q-metric distribution
      *
      * @param q_metric_set q-metric set
      */
     inline void populate_cumulative_distribution(model::metric_base::metric_set<model::metrics::q_collapsed_metric>& q_metric_set)
-                                                            throw( model::index_out_of_bounds_exception )
+                                                                                throw( model::index_out_of_bounds_exception )
     {
         if(q_metric_set.size()==0) return;
         typedef model::metrics::q_collapsed_metric q_collapsed_metric;
@@ -147,6 +129,26 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
                 prev_idx=cur_idx;
             }
         }
+    }
+    /** Populate cumulative q-metric distribution
+     *
+     * @note This can exist here or in SWIG. This is a swig interface function.
+     * @param q_metric_set q-metric set
+     */
+    inline void populate_cumulative_distribution(model::metric_base::metric_set<model::metrics::q_metric>& q_metric_set)
+                    throw( model::index_out_of_bounds_exception )
+    {
+        populate_cumulative_distribution_t(q_metric_set);
+    }
+    /** Populate cumulative q-metric distribution by lane
+     *
+     * @note This can exist here or in SWIG. This is a swig interface function.
+     * @param q_metric_set q-metric set
+     */
+    inline void populate_cumulative_distribution(model::metric_base::metric_set<model::metrics::q_by_lane_metric>& q_metric_set)
+    throw( model::index_out_of_bounds_exception )
+    {
+        populate_cumulative_distribution_t(q_metric_set);
     }
     /** Count number of unique counts to determine number
      * of unique bins for legacy binning
@@ -382,8 +384,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
      */
     inline size_t max_qval(const model::metric_base::metric_set<model::metrics::q_by_lane_metric>& q_metric_set)
     {
-        return is_compressed(q_metric_set) ?
-               static_cast<size_t>(q_metric_set.bins().back().upper()) : count_qvals(q_metric_set);
+        return is_compressed(q_metric_set) ? q_metric_set.bins().back().upper() : count_qvals(q_metric_set);
     }
     /** Determine the maximum Q-value
      *

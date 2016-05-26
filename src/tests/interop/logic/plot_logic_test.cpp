@@ -90,7 +90,7 @@ TEST(plot_logic, pf_clusters_by_lane)
     EXPECT_NEAR(data.x_axis().min(), 0.0f, tol);
     EXPECT_NEAR(data.y_axis().min(), 0.0f, tol);
     EXPECT_NEAR(data.x_axis().max(), 8.0f, tol);
-    EXPECT_NEAR(data.y_axis().max(), 4.259528636932373f, tol);
+    EXPECT_NEAR(data.y_axis().max(),  4.2389097213745117f, tol);
 
 }
 
@@ -125,8 +125,8 @@ TEST(plot_logic, q_score_histogram)
     EXPECT_EQ(data.x_axis().label(), "Q Score");
     EXPECT_EQ(data.y_axis().label(), "Total (million)");
     EXPECT_NEAR(data.x_axis().min(), 1.0f, tol);
-    EXPECT_NEAR(data.y_axis().min(), 0.0f, tol);
-    EXPECT_NEAR(data.x_axis().max(), 45.100002288818359f, tol);
+    EXPECT_NEAR(data.y_axis().min(), 0.0058109997771680355f, tol);
+    EXPECT_NEAR(data.x_axis().max(), 0.0f, tol);
     EXPECT_NEAR(data.y_axis().max(), 9.4780035018920898f, tol);
 }
 

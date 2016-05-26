@@ -6,6 +6,7 @@
  *  @copyright GNU Public License.
  */
 #pragma once
+#include <algorithm>
 #include "interop/model/summary/index_count_summary.h"
 
 namespace illumina { namespace interop { namespace model { namespace summary {
@@ -202,6 +203,12 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         float max_mapped_reads()const
         {
             return m_max_mapped_reads;
+        }
+        /** Sort the index summaries in each lane
+         */
+        void sort()
+        {
+            std::stable_sort(begin(), end());
         }
 
     public:

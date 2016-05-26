@@ -1,6 +1,6 @@
 /** @page apps Applications
  *
- * @brief Write metric by cycle plot to the console as at TSV (tab separated values) with a GNUPlot header
+ * @brief Write metric by lane plot to the console as at TSV (tab separated values) with a GNUPlot header
  *
  * This application writes out of file that is compatible with both TSV (tab separated values) and GNUPlot, a
  * command line plotting tool available on Linux, Mac OSX and Windows.
@@ -10,12 +10,24 @@
  *
  * The program runs as follows:
  *
- *      $ plot_by_cycle 140131_1287_0851_A01n401drr
+ *      $ plot_by_lane 140131_1287_0851_A01n401drr
  *
  * In this sample, 140131_1287_0851_A01n401drr is a run folder and the summary is written to the standard output.
  *
- * # Version: v1.0.4-117-g05ea745-dirty
- * # Run Folder: 1Read0Index_120423_117213Bin1R0I
+ * # Version: v1.0.4-147-gb6d5c19-dirty
+ * # Run Folder: 11115124_11854Unbin2R2I
+ * set terminal png nocrop
+ * set output 'plot_by_lane.png'
+ * set title "000000000-ABWLV"
+ * set yrange [0 : 1528.36 ]
+ * set ylabel "Density (K/mm2)"
+ * set xrange [0 : 2 ]
+ * set xlabel "Lane"
+ * plot "-" using 1:3:2:6:5 with candlesticks title "Density (K/mm2)" lt rgb "blue" whiskerbars ,"-" using 1:3:2:6:5 with candlesticks title "PF" lt rgb "dark-green" whiskerbars
+ * 1	1164.6	1205.49	1218.97	1232.75	1273.63
+ * e
+ * 1	955.386	1015.23	1036.47	1055.12	1114.97
+ * e
  *
  */
 
@@ -62,7 +74,15 @@ int main(int argc, char** argv)
                                             );
 
         model::plot::plot_data<model::plot::candle_stick_point> data;
-        logic::plot::plot_by_lane(run, constants::Density, options, data);
+        try
+        {
+            logic::plot::plot_by_lane(run, constants::ClusterCount, options, data);
+        }
+        catch(const std::exception& ex)
+        {
+            std::cerr << ex.what() << std::endl;
+            return UNEXPECTED_EXCEPTION;
+        }
 
         if(data.size() == 0 ) continue;
         std::ostream& out = std::cout;

@@ -88,7 +88,7 @@ namespace illumina {
                         LANE_BIT_COUNT=6, // Supports up to 63 lanes
                         TILE_BIT_COUNT=32,
                         LANE_BIT_SHIFT=LANE_BIT_COUNT, // Supports up to 63 lanes
-                        TILE_BIT_SHIFT=LANE_BIT_COUNT+TILE_BIT_COUNT,
+                        TILE_BIT_SHIFT=/*LANE_BIT_COUNT+*/TILE_BIT_COUNT, // TODO change back
                         /** Base for records written out once for each tile */
                         BASE_TYPE = constants::BaseTileType
                     };

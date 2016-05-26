@@ -69,9 +69,9 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
 
     /** Plot reads identified versus index
      *
+     * @ingroup plot_logic
      * @param metrics run metrics
      * @param lane lane number
-     * @param options options to filter the data
      * @param data output plot data
      */
     inline void plot_sample_qc(const model::metrics::run_metrics& metrics,
@@ -85,7 +85,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
             return;
         }
         data.assign(1, bar_series_t("% reads", "Green", bar_series_t::Bar));
-        data[0].add_option(constants::to_string(constants::CenteredBar));
+        data[0].add_option(constants::to_string(constants::Centered));
         data.set_xlabel("Index Number");
         data.set_ylabel("% Reads Identified (PF)");
 

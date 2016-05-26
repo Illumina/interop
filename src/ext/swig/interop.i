@@ -273,6 +273,13 @@ WRAP_VECTOR(illumina::interop::model::plot::plot_data<illumina::interop::model::
 %template(candle_stick_plot_data) illumina::interop::model::plot::plot_data<illumina::interop::model::plot::candle_stick_point>;
 %template(bar_plot_data) illumina::interop::model::plot::plot_data<illumina::interop::model::plot::bar_point>;
 
+// Metric Logic
+%{
+#include "interop/logic/metric/q_metric.h"
+%}
+
+%include "interop/logic/metric/q_metric.h"
+
 // Summary Logic
 %{
 #include "interop/logic/summary/index_summary.h"

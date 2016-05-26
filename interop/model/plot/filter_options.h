@@ -300,7 +300,7 @@ public:
      */
     std::string surface_description()const
     {
-        return (m_surface == ALL_IDS) ? "All Surfaces" :  "Surface " + util::lexical_cast<std::string>(m_surface);
+        return (m_surface == ALL_IDS) ? "All Surfaces" :  constants::to_string(static_cast<constants::surface_type >(m_surface))+" Surface";
     }
     /** Get a description of the read filter options
      *

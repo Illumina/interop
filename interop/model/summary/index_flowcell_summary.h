@@ -86,7 +86,7 @@ namespace illumina { namespace interop { namespace model { namespace summary {
          */
         const_reference at(const size_type n)const throw( model::index_out_of_bounds_exception )
         {
-            if(n >= m_lane_summaries.size()) throw index_out_of_bounds_exception("Lane index exceeds read count");
+            if(n >= m_lane_summaries.size()) throw index_out_of_bounds_exception("Lane index exceeds lane count");
             return m_lane_summaries[n];
         }
         /** Get number of summaries by read
@@ -128,6 +128,13 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         const_iterator end()const
         {
             return m_lane_summaries.end();
+        }
+        /** Sort the index summaries in each lane
+         */
+        void sort()
+        {
+            for(iterator b = begin(), e=end();b != e;++b)
+                b->sort();
         }
 
     private:

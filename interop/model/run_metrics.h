@@ -131,7 +131,8 @@ public:
                                                     io::bad_format_exception,
                                                     io::incomplete_file_exception,
                                                     io::format_exception,
-                                                    model::index_out_of_bounds_exception)
+                                                    model::index_out_of_bounds_exception,
+                                                    std::invalid_argument)
     {
         read_metrics(run_folder);
         const size_t count = read_xml(run_folder);
@@ -141,7 +142,8 @@ public:
      *
      * @param run_folder run folder path
      */
-    size_t read_xml(const std::string& run_folder) throw( xml::xml_file_not_found_exception,
+    size_t read_xml(const std::string& run_folder) throw( io::file_not_found_exception,
+                                                    xml::xml_file_not_found_exception,
                                                     xml::bad_xml_format_exception,
                                                     xml::empty_xml_format_exception,
                                                     xml::missing_xml_element_exception,
@@ -166,7 +168,8 @@ public:
      *
      * @param run_folder run folder path
      */
-    size_t read_run_parameters(const std::string& run_folder) throw( xml::xml_file_not_found_exception,
+    size_t read_run_parameters(const std::string& run_folder) throw( io::file_not_found_exception,
+                                                                    xml::xml_file_not_found_exception,
                                                                     xml::bad_xml_format_exception,
                                                                     xml::empty_xml_format_exception,
                                                                     xml::missing_xml_element_exception,
@@ -194,8 +197,9 @@ public:
      *
      * @param count number of bins for legacy q-metrics
      */
-    void finalize_after_load(size_t count=std::numeric_limits<size_t>::max())
-                                throw (io::format_exception, std::invalid_argument, model::index_out_of_bounds_exception)
+    void finalize_after_load(size_t count=std::numeric_limits<size_t>::max()) throw (io::format_exception,
+                                                                                    std::invalid_argument,
+                                                                                    model::index_out_of_bounds_exception)
     {
         if(m_run_info.flowcell().naming_method() == constants::UnknownTileNamingMethod)
         {

@@ -84,9 +84,6 @@ namespace illumina { namespace interop { namespace model { namespace metrics {
          * @param q30 Q30 cluster count
          * @param total total clusters
          * @param median_qscore median q-score
-         * @param cumulative_q20 Q20 cluster count cumulative over cycles
-         * @param cumulative_q30 Q30 cluster count cumulative over cycles
-         * @param total total clusters cumulative over cycles
          */
         q_collapsed_metric(const uint_t lane,
                            const uint_t tile,
@@ -94,18 +91,15 @@ namespace illumina { namespace interop { namespace model { namespace metrics {
                            const uint_t q20,
                            const uint_t q30,
                            const uint_t total,
-                           const uint_t median_qscore,
-                           const ulong_t cumulative_q20=0,
-                           const ulong_t cumulative_q30=0,
-                           const ulong_t cumulative_total=0) :
+                           const uint_t median_qscore) :
                 metric_base::base_cycle_metric(lane, tile, cycle),
                 m_q20(q20),
                 m_q30(q30),
                 m_total(total),
                 m_median_qscore(median_qscore),
-                m_cumulative_q20(cumulative_q20),
-                m_cumulative_q30(cumulative_q30),
-                m_cumulative_total(cumulative_total)
+                m_cumulative_q20(0),
+                m_cumulative_q30(0),
+                m_cumulative_total(0)
 
         {
         }

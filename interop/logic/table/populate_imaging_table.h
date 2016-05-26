@@ -178,6 +178,7 @@ namespace illumina { namespace interop { namespace logic { namespace table {
 
     /** Populate the imaging table from all the metrics in run_metrics
      *
+     * @ingroup table_logic
      * @param metrics run metrics
      * @param table collection of table rows
      * @param filled_columns collection boolean values indicating which columns are filled

@@ -36,6 +36,8 @@ public:
     }
     /** Get value at given row and column
      *
+     * TODO: This should thrown an exception if wrong
+     *
      * @param row row index
      * @param col column index
      * @return value
@@ -50,6 +52,8 @@ public:
     }
     /** Get value at given row and column
      *
+     * TODO: This should thrown an exception if wrong
+     *
      * @param row row index
      * @param col column index
      * @return value
@@ -63,6 +67,8 @@ public:
         return m_data[idx];
     }
     /** Get value at given row and column
+     *
+     * TODO: This should thrown an exception if wrong
      *
      * @param row row index
      * @param col column index

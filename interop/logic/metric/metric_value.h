@@ -219,9 +219,9 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
     public:
         /** Constructor
          *
-         * @param _read specific read to select
+         * @param read specific read to select
          */
-        metric_value(const size_t _read) : read(_read){}
+        metric_value(const size_t read) : m_read(read == 0 ? 1 : read){}
         /** Get the metric value corresponding to the metric_type enum value
          *
          * @param metric error metric
@@ -232,6 +232,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
         {
             const float density_scale = 1000;
             const float count_scale = 1000000;
+            const float NaN = std::numeric_limits<float>::quiet_NaN();
             switch(type)
             {
                 case constants::DensityPF:
@@ -254,41 +255,41 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
                 {
                     for(size_t i=0;i<metric.read_metrics().size();++i)
                     {
-                        if (read == metric.read_metrics()[i].read())
+                        if (m_read == metric.read_metrics()[i].read())
                         {
                             return metric.read_metrics()[i].percent_aligned();
                         }
                     }
-                    return std::numeric_limits<float>::quiet_NaN();
+                    return NaN;
                 }
                 case constants::PercentPhasing:
                 {
                     for(size_t i=0;i<metric.read_metrics().size();++i)
                     {
-                        if (read == metric.read_metrics()[i].read())
+                        if (m_read == metric.read_metrics()[i].read())
                         {
                             return metric.read_metrics()[i].percent_phasing();
                         }
                     }
-                    return std::numeric_limits<float>::quiet_NaN();
+                    return NaN;
                 }
                 case constants::PercentPrephasing:
                 {
                     for(size_t i=0;i<metric.read_metrics().size();++i)
                     {
-                        if (read == metric.read_metrics()[i].read())
+                        if (m_read == metric.read_metrics()[i].read())
                         {
                             return metric.read_metrics()[i].percent_prephasing();
                         }
                     }
-                    return std::numeric_limits<float>::quiet_NaN();
+                    return NaN;
                 }
                 default:
                     throw model::invalid_metric_type("Unknown metric type");
             }
         }
     private:
-        const size_t read;
+        const size_t m_read;
     };
 
 }}}}

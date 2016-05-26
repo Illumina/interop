@@ -81,7 +81,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
             const float fraction_mapped = count_summary.fraction_mapped();
             summary.push_back(count_summary);
             max_fraction_mapped = std::max(max_fraction_mapped, fraction_mapped);
-            min_fraction_mapped = std::min(max_fraction_mapped, fraction_mapped);
+            min_fraction_mapped = std::min(min_fraction_mapped, fraction_mapped);
         }
 
         const float avg_fraction_mapped =util::mean<float>(summary.begin(),
@@ -118,6 +118,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
     }
     /** Summarize a collection index metrics
      *
+     * @ingroup summary_logic
      * @param index_metrics source collection of index metrics
      * @param tile_metrics source collection of tile metrics
      * @param lane_count number of lanes
@@ -127,7 +128,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
                                         const model::metric_base::metric_set<model::metrics::tile_metric>& tile_metrics,
                                         const size_t lane_count,
                                         model::summary::index_flowcell_summary &summary)
-    throw(model::index_out_of_bounds_exception)
+                                        throw(model::index_out_of_bounds_exception)
     {
         summary.resize(lane_count);
         for(size_t lane=1;lane <= lane_count;++lane)
@@ -138,12 +139,13 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
 
     /** Summarize index metrics from run metrics
      *
+     * @ingroup summary_logic
      * @param metrics source collection of all metrics
      * @param summary destination index flowcell summary
      */
     inline void summarize_index_metrics(const model::metrics::run_metrics &metrics,
                                         model::summary::index_flowcell_summary &summary)
-    throw(model::index_out_of_bounds_exception)
+                                            throw(model::index_out_of_bounds_exception)
     {
         const size_t lane_count = metrics.run_info().flowcell().lane_count();
         summarize_index_metrics(metrics.get_set<model::metrics::index_metric>(),

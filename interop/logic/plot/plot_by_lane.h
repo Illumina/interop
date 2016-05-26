@@ -63,6 +63,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
 
     /** Plot a specified metric value by lane
      *
+     * @ingroup plot_logic
      * @param metrics run metrics
      * @param type specific metric value to plot by lane
      * @param options options to filter the data
@@ -78,6 +79,10 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
         metric::metric_value<model::metrics::tile_metric> proxy3(options.read());
         populate_candle_stick_by_lane(metrics.get_set<model::metrics::tile_metric>(), proxy3, options, type,
                                       data[0]);
+
+        const size_t read_count = metrics.run_info().reads().size();
+        if(utils::is_read_metric(type) && options.all_reads() && read_count > 1)
+            throw std::invalid_argument("All reads is unsupported for run with "+util::lexical_cast<std::string>(read_count));
 
         if(type == constants::ClusterCount || type == constants::Density )
         {
@@ -112,6 +117,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
 
     /** Plot a specified metric value by cycle
      *
+     * @ingroup plot_logic
      * @todo Is this temporary?
      * @param metrics run metrics
      * @param metric_name name of metric value to plot by cycle
