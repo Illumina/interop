@@ -129,7 +129,7 @@ struct generic_layout<index_metric, 1> : public default_layout<1>
      *
      * @return sentinel
      */
-    static record_size_t computeSize(const index_metric::header_type&)
+    static record_size_t compute_size(const index_metric::header_type&)
     {
         return static_cast<record_size_t>(RECORD_SIZE);
     }
@@ -137,7 +137,7 @@ struct generic_layout<index_metric, 1> : public default_layout<1>
      *
      * @return header size
      */
-    static size_t computeHeaderSize(const index_metric::header_type&)
+    static size_t compute_header_size(const index_metric::header_type&)
     {
         return sizeof(version_t);
     }

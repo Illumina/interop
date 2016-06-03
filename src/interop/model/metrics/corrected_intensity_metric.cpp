@@ -102,7 +102,7 @@ namespace illumina{ namespace interop{ namespace io {
                  *
                  * @return size of the record
                  */
-                static record_size_t computeSize(const corrected_intensity_metric::header_type&)
+                static record_size_t compute_size(const corrected_intensity_metric::header_type&)
                 {
                     return static_cast<record_size_t>(
                             sizeof(metric_id_t)+
@@ -117,7 +117,7 @@ namespace illumina{ namespace interop{ namespace io {
                  *
                  * @return header size
                  */
-                static record_size_t computeHeaderSize(const corrected_intensity_metric::header_type&)
+                static record_size_t compute_header_size(const corrected_intensity_metric::header_type&)
                 {
                     return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t));
                 }
@@ -198,7 +198,7 @@ namespace illumina{ namespace interop{ namespace io {
                  *
                  * @return size of the record
                  */
-                static record_size_t computeSize(const corrected_intensity_metric::header_type&)
+                static record_size_t compute_size(const corrected_intensity_metric::header_type&)
                 {
                     return static_cast<record_size_t>(
                             sizeof(metric_id_t)+
@@ -210,7 +210,7 @@ namespace illumina{ namespace interop{ namespace io {
                  *
                  * @return header size
                  */
-                static record_size_t computeHeaderSize(const corrected_intensity_metric::header_type&)
+                static record_size_t compute_header_size(const corrected_intensity_metric::header_type&)
                 {
                     return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t));
                 }

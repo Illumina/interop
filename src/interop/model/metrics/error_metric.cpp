@@ -88,7 +88,7 @@ namespace illumina{ namespace interop{ namespace io {
                  *
                  * @return size of the record
                  */
-                static record_size_t computeSize(const error_metric::header_type&)
+                static record_size_t compute_size(const error_metric::header_type&)
                 {
                     return static_cast<record_size_t>(sizeof(metric_id_t)+
                             sizeof(error_t)+                                  // m_error_rate
@@ -99,7 +99,7 @@ namespace illumina{ namespace interop{ namespace io {
                  *
                  * @return header size
                  */
-                static record_size_t computeHeaderSize(const error_metric::header_type&)
+                static record_size_t compute_header_size(const error_metric::header_type&)
                 {
                     return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t));
                 }

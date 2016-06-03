@@ -84,7 +84,7 @@ namespace illumina{ namespace interop{ namespace io {
                  *
                  * @return size of the record
                  */
-                static record_size_t computeSize(const q_metric::header_type&)
+                static record_size_t compute_size(const q_metric::header_type&)
                 {
                     return static_cast<record_size_t>(sizeof(metric_id_t)+sizeof(count_t)*q_metric::MAX_Q_BINS);
                 }
@@ -92,7 +92,7 @@ namespace illumina{ namespace interop{ namespace io {
                  *
                  * @return header size
                  */
-                static record_size_t computeHeaderSize(const q_metric::header_type&)
+                static record_size_t compute_header_size(const q_metric::header_type&)
                 {
                     return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t));
                 }
@@ -226,7 +226,7 @@ namespace illumina{ namespace interop{ namespace io {
                  *
                  * @return size of the record
                  */
-                static record_size_t computeSize(const q_metric::header_type&)
+                static record_size_t compute_size(const q_metric::header_type&)
                 {
                     return static_cast<record_size_t>(sizeof(metric_id_t)+sizeof(count_t)*q_metric::MAX_Q_BINS);
                 }
@@ -272,7 +272,7 @@ namespace illumina{ namespace interop{ namespace io {
                  * @param header q-metric header
                  * @return header size
                  */
-                static record_size_t computeHeaderSize(const q_metric::header_type& header)
+                static record_size_t compute_header_size(const q_metric::header_type& header)
                 {
                     if(header.bin_count()==0) return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t) + sizeof(bool_t));
                     return static_cast<record_size_t>(sizeof(record_size_t) +
@@ -421,7 +421,7 @@ namespace illumina{ namespace interop{ namespace io {
                  *
                  * @return size of the record
                  */
-                static record_size_t computeSize(const q_metric::header_type& header)
+                static record_size_t compute_size(const q_metric::header_type& header)
                 {
                     return static_cast<record_size_t>(sizeof(metric_id_t)+sizeof(count_t)*header.bin_count());
                 }
@@ -467,7 +467,7 @@ namespace illumina{ namespace interop{ namespace io {
                  * @param header q-metric header
                  * @return header size
                  */
-                static record_size_t computeHeaderSize(const q_metric::header_type& header)
+                static record_size_t compute_header_size(const q_metric::header_type& header)
                 {
                     if(header.bin_count()==0) return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t) + sizeof(bool_t));
                     return static_cast<record_size_t>(sizeof(record_size_t) +

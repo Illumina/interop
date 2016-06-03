@@ -106,7 +106,7 @@ namespace illumina{ namespace interop{ namespace io {
          *
          * @return 1
          */
-        static record_size_t computeSize(const q_collapsed_metric::header_type&)
+        static record_size_t compute_size(const q_collapsed_metric::header_type&)
         {
             return static_cast<record_size_t>(TOTAL_RECORD_SIZE);
         }
@@ -115,7 +115,7 @@ namespace illumina{ namespace interop{ namespace io {
          *
          * @return header size
          */
-        static size_t computeHeaderSize(const q_collapsed_metric::header_type &)
+        static size_t compute_header_size(const q_collapsed_metric::header_type &)
         {
             return static_cast<size_t>(sizeof(record_size_t) + sizeof(version_t));
         }
@@ -378,7 +378,7 @@ namespace illumina{ namespace interop{ namespace io {
          *
          * @return size of the record
          */
-        static record_size_t computeSize(const q_collapsed_metric::header_type &)
+        static record_size_t compute_size(const q_collapsed_metric::header_type &)
         {
             return static_cast<record_size_t>(TOTAL_RECORD_SIZE);
         }
@@ -425,7 +425,7 @@ namespace illumina{ namespace interop{ namespace io {
          *
          * @return header size
          */
-        static record_size_t computeHeaderSize(const q_collapsed_metric::header_type&)
+        static record_size_t compute_header_size(const q_collapsed_metric::header_type&)
         {
             return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t) + sizeof(bool_t));
         }

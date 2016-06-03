@@ -117,7 +117,7 @@ namespace illumina{ namespace interop{ namespace io {
                  *
                  * @return record size
                  */
-                static record_size_t computeSize(const image_metric::header_type&)
+                static record_size_t compute_size(const image_metric::header_type&)
                 {
                     return static_cast< record_size_t >(
                             sizeof(metric_id_t)+sizeof(record_t)
@@ -127,7 +127,7 @@ namespace illumina{ namespace interop{ namespace io {
                  *
                  * @return header size
                  */
-                static record_size_t computeHeaderSize(const image_metric::header_type&)
+                static record_size_t compute_header_size(const image_metric::header_type&)
                 {
                     return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t));
                 }
@@ -210,7 +210,7 @@ namespace illumina{ namespace interop{ namespace io {
                  *
                  * @return size of the record
                  */
-                static record_size_t computeSize(const image_metric::header_type& header)
+                static record_size_t compute_size(const image_metric::header_type& header)
                 {
                     return static_cast<record_size_t>(sizeof(metric_id_t)+header.channelCount()*sizeof(contrast_t)*2);
                 }
@@ -231,7 +231,7 @@ namespace illumina{ namespace interop{ namespace io {
                  *
                  * @return header size
                  */
-                static record_size_t computeHeaderSize(const image_metric::header_type&)
+                static record_size_t compute_header_size(const image_metric::header_type&)
                 {
                     return static_cast<record_size_t>(sizeof(channel_count_t) + sizeof(record_size_t) + sizeof(version_t));
                 }
