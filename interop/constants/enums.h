@@ -13,185 +13,185 @@
 
 /** Enumeration of each metric type
  *
- * @note This macro requires the macro INTEROP_ENUM_DESCRIPTION to be defined before use
+ * @note This macro requires the macro INTEROP_TUPLE3 to be defined before use
  * @see illumina::interop::constants::metric_type
  */
 #define INTEROP_ENUM_METRIC_TYPES \
-        INTEROP_ENUM_DESCRIPTION(Intensity, "Intensity", Extraction),\
-        INTEROP_ENUM_DESCRIPTION(FWHM, "FWHM", Extraction),\
-        INTEROP_ENUM_DESCRIPTION(PercentBase, "% Base", CorrectedInt),\
-        INTEROP_ENUM_DESCRIPTION(PercentQ20, "% >=Q20", Q),\
-        INTEROP_ENUM_DESCRIPTION(PercentQ30, "% >=Q30", Q),\
-        INTEROP_ENUM_DESCRIPTION(AccumPercentQ20, "% >=Q20 (Accum)", Q),\
-        INTEROP_ENUM_DESCRIPTION(AccumPercentQ30, "% >=Q30 (Accum)", Q),\
-        INTEROP_ENUM_DESCRIPTION(QScore, "Median QScore", Q),\
-        INTEROP_ENUM_DESCRIPTION(Clusters, "Density", Tile),\
-        /*INTEROP_ENUM_DESCRIPTION(Density, "Density (K/mm2)", Tile),*/ \
-        INTEROP_ENUM_DESCRIPTION(ClustersPF, "Density PF", Tile),\
-        /*INTEROP_ENUM_DESCRIPTION(DensityPF, "Density PF", Tile),*/\
-        INTEROP_ENUM_DESCRIPTION(ClusterCount, "Clusters", Tile),\
-        /*INTEROP_ENUM_DESCRIPTION(ClusterCount, "Cluster Count", Tile),*/\
-        INTEROP_ENUM_DESCRIPTION(ClusterCountPF, "Clusters PF", Tile),\
-        INTEROP_ENUM_DESCRIPTION(AlignedReadCount, "Aligned Read Count", Tile),\
-        INTEROP_ENUM_DESCRIPTION(ErrorRate, "Error Rate", Error),\
-        INTEROP_ENUM_DESCRIPTION(PercentPhasing, "% Phasing", Tile),\
-        INTEROP_ENUM_DESCRIPTION(PercentPrephasing, "% Prephasing", Tile),\
-        INTEROP_ENUM_DESCRIPTION(PercentAligned, "% Aligned", Tile),\
-        INTEROP_ENUM_DESCRIPTION(CorrectedIntensity, "Corrected Int", CorrectedInt),\
-        INTEROP_ENUM_DESCRIPTION(CalledIntensity, "Called Int", CorrectedInt),\
-        INTEROP_ENUM_DESCRIPTION(SignalToNoise, "Signal To Noise", CorrectedInt),\
-        INTEROP_ENUM_DESCRIPTION(MetricTypeCount, "!!!!BAD!!!!", UnknownMetricGroup),\
-        INTEROP_ENUM_DESCRIPTION(UnknownMetricType, "!!!!BAD!!!!", UnknownMetricGroup)
+        INTEROP_TUPLE3(Intensity, "Intensity", Extraction),\
+        INTEROP_TUPLE3(FWHM, "FWHM", Extraction),\
+        INTEROP_TUPLE3(PercentBase, "% Base", CorrectedInt),\
+        INTEROP_TUPLE3(PercentQ20, "% >=Q20", Q),\
+        INTEROP_TUPLE3(PercentQ30, "% >=Q30", Q),\
+        INTEROP_TUPLE3(AccumPercentQ20, "% >=Q20 (Accum)", Q),\
+        INTEROP_TUPLE3(AccumPercentQ30, "% >=Q30 (Accum)", Q),\
+        INTEROP_TUPLE3(QScore, "Median QScore", Q),\
+        INTEROP_TUPLE3(Clusters, "Density", Tile),\
+        /*INTEROP_TUPLE3(Density, "Density (K/mm2)", Tile),*/ \
+        INTEROP_TUPLE3(ClustersPF, "Density PF", Tile),\
+        /*INTEROP_TUPLE3(DensityPF, "Density PF", Tile),*/\
+        INTEROP_TUPLE3(ClusterCount, "Clusters", Tile),\
+        /*INTEROP_TUPLE3(ClusterCount, "Cluster Count", Tile),*/\
+        INTEROP_TUPLE3(ClusterCountPF, "Clusters PF", Tile),\
+        INTEROP_TUPLE3(AlignedReadCount, "Aligned Read Count", Tile),\
+        INTEROP_TUPLE3(ErrorRate, "Error Rate", Error),\
+        INTEROP_TUPLE3(PercentPhasing, "% Phasing", Tile),\
+        INTEROP_TUPLE3(PercentPrephasing, "% Prephasing", Tile),\
+        INTEROP_TUPLE3(PercentAligned, "% Aligned", Tile),\
+        INTEROP_TUPLE3(CorrectedIntensity, "Corrected Int", CorrectedInt),\
+        INTEROP_TUPLE3(CalledIntensity, "Called Int", CorrectedInt),\
+        INTEROP_TUPLE3(SignalToNoise, "Signal To Noise", CorrectedInt),\
+        INTEROP_TUPLE3(MetricTypeCount, "!!!!BAD!!!!", UnknownMetricGroup),\
+        INTEROP_TUPLE3(UnknownMetricType, "!!!!BAD!!!!", UnknownMetricGroup)
 
 /** Enumeration of each metric group
  *
- * @note This macro requires the macro INTEROP_ENUM to be defined before use
+ * @note This macro requires the macro INTEROP_TUPLE1 to be defined before use
  * @see illumina::interop::constants::metric_group
  */
 #define INTEROP_ENUM_METRIC_GROUPS \
-        INTEROP_ENUM(CorrectedInt),\
-        INTEROP_ENUM(Error),\
-        INTEROP_ENUM(Extraction),\
-        INTEROP_ENUM(Image),\
-        INTEROP_ENUM(Index),\
-        INTEROP_ENUM(Q),\
-        INTEROP_ENUM(Tile),\
-        INTEROP_ENUM(QByLane),\
-        INTEROP_ENUM(QCollapsed),\
-        INTEROP_ENUM(MetricCount),\
-        INTEROP_ENUM(UnknownMetricGroup)
+        INTEROP_TUPLE1(CorrectedInt),\
+        INTEROP_TUPLE1(Error),\
+        INTEROP_TUPLE1(Extraction),\
+        INTEROP_TUPLE1(Image),\
+        INTEROP_TUPLE1(Index),\
+        INTEROP_TUPLE1(Q),\
+        INTEROP_TUPLE1(Tile),\
+        INTEROP_TUPLE1(QByLane),\
+        INTEROP_TUPLE1(QCollapsed),\
+        INTEROP_TUPLE1(MetricCount),\
+        INTEROP_TUPLE1(UnknownMetricGroup)
 
 
 /** Enumeration of each metric data type
  *
- * @note This macro requires the macro INTEROP_ENUM to be defined before use
+ * @note This macro requires the macro INTEROP_TUPLE1 to be defined before use
  * @see illumina::interop::constants::metric_data
  */
 #define INTEROP_ENUM_METRIC_DATA_TYPES \
-        INTEROP_ENUM(IdType),\
-        INTEROP_ENUM(ValueType),\
-        INTEROP_ENUM(ChannelArray),\
-        INTEROP_ENUM(BaseArray),\
-        INTEROP_ENUM(MetricDataCount),\
-        INTEROP_ENUM(UnknownMetricData)
+        INTEROP_TUPLE1(IdType),\
+        INTEROP_TUPLE1(ValueType),\
+        INTEROP_TUPLE1(ChannelArray),\
+        INTEROP_TUPLE1(BaseArray),\
+        INTEROP_TUPLE1(MetricDataCount),\
+        INTEROP_TUPLE1(UnknownMetricData)
 
 /** Enumeration of tile naming methods
  *
- * @note This macro requires the macro INTEROP_ENUM to be defined before use
+ * @note This macro requires the macro INTEROP_TUPLE1 to be defined before use
  * @see illumina::interop::constants::tile_naming_method
  */
 #define INTEROP_ENUM_TILE_NAMING_METHODS \
         /** Four digit tiles for HiSeq and modern MiSeqs */\
-        INTEROP_ENUM(FourDigit),\
+        INTEROP_TUPLE1(FourDigit),\
         /** Five digit tiles for NextSeq and ... */\
-        INTEROP_ENUM(FiveDigit),\
+        INTEROP_TUPLE1(FiveDigit),\
         /** Absolute naming for tiles GAs and old MiSeqs*/\
-        INTEROP_ENUM(Absolute),\
+        INTEROP_TUPLE1(Absolute),\
         /** Number of naming methods */\
-        INTEROP_ENUM(TileNamingMethodCount),\
-        INTEROP_ENUM(UnknownTileNamingMethod)
+        INTEROP_TUPLE1(TileNamingMethodCount),\
+        INTEROP_TUPLE1(UnknownTileNamingMethod)
 
 /** Enumeration of DNA bases
  *
- * @note This macro requires the macro INTEROP_ENUM to be defined before use
- * @note This macro requires the macro INTEROP_ENUM_VALUE to be defined before use
+ * @note This macro requires the macro INTEROP_TUPLE1 to be defined before use
+ * @note This macro requires the macro INTEROP_TUPLE2 to be defined before use
  * @see illumina::interop::constants::dna_bases
  */
 #define INTEROP_ENUM_DNA_BASE_TYPES \
         /** No calls */ \
-        INTEROP_ENUM_VALUE(NC, -1), \
+        INTEROP_TUPLE2(NC, -1), \
         /** DNA base adenine */ \
-        INTEROP_ENUM(A), \
+        INTEROP_TUPLE1(A), \
         /** DNA base cytosine */ \
-        INTEROP_ENUM(C), \
+        INTEROP_TUPLE1(C), \
         /** DNA base guanine */ \
-        INTEROP_ENUM(G), \
+        INTEROP_TUPLE1(G), \
         /** DNA base thymine */ \
-        INTEROP_ENUM(T), \
+        INTEROP_TUPLE1(T), \
         /** Number of bases */ \
-        INTEROP_ENUM(NUM_OF_BASES), \
+        INTEROP_TUPLE1(NUM_OF_BASES), \
         /** Number of bases including no calls*/ \
-        INTEROP_ENUM(NUM_OF_BASES_AND_NC), \
+        INTEROP_TUPLE1(NUM_OF_BASES_AND_NC), \
         /** Unknown base */ \
-        INTEROP_ENUM(UnknownBase)
+        INTEROP_TUPLE1(UnknownBase)
 
 /** Enumeration of surface types
  *
- * @note This macro requires the macro INTEROP_ENUM to be defined before use
+ * @note This macro requires the macro INTEROP_TUPLE1 to be defined before use
  * @see illumina::interop::constants::surface_type
  */
 #define INTEROP_ENUM_SURFACE_TYPES \
-        INTEROP_ENUM(SentinelSurface),\
-        INTEROP_ENUM(Top),\
-        INTEROP_ENUM(Bottom),\
-        INTEROP_ENUM(UnknownSurface)
+        INTEROP_TUPLE1(SentinelSurface),\
+        INTEROP_TUPLE1(Top),\
+        INTEROP_TUPLE1(Bottom),\
+        INTEROP_TUPLE1(UnknownSurface)
 
 
 /** Enumeration of instrument types
  *
- * @note This macro requires the macro INTEROP_ENUM to be defined before use
+ * @note This macro requires the macro INTEROP_TUPLE1 to be defined before use
  * @see illumina::interop::constants::instrument_type
  */
 #define INTEROP_ENUM_INSTRUMENT_TYPES \
-        INTEROP_ENUM(HiSeq),\
-        INTEROP_ENUM(HiScan),\
-        INTEROP_ENUM(MiSeq),\
-        INTEROP_ENUM(NextSeq),\
-        INTEROP_ENUM(MiniSeq), \
-        INTEROP_ENUM(InstrumentCount), \
-        INTEROP_ENUM(UnknownInstrument)
+        INTEROP_TUPLE1(HiSeq),\
+        INTEROP_TUPLE1(HiScan),\
+        INTEROP_TUPLE1(MiSeq),\
+        INTEROP_TUPLE1(NextSeq),\
+        INTEROP_TUPLE1(MiniSeq), \
+        INTEROP_TUPLE1(InstrumentCount), \
+        INTEROP_TUPLE1(UnknownInstrument)
 
 /** Enumeration of instrument types
  *
- * @note This macro requires the macro INTEROP_ENUM to be defined before use
+ * @note This macro requires the macro INTEROP_TUPLE1 to be defined before use
  * @see illumina::interop::constants::instrument_type
  */
 #define INTEROP_ENUM_METRIC_BASE_TYPES \
         /** Tile base types are written out once for each tile */\
-        INTEROP_ENUM(BaseTileType),\
+        INTEROP_TUPLE1(BaseTileType),\
         /** Cycle base types are written out once for each tile and cycle */\
-        INTEROP_ENUM(BaseCycleType),\
+        INTEROP_TUPLE1(BaseCycleType),\
         /** Read base types are written out once for each tile and read */\
-        INTEROP_ENUM(BaseReadType),\
-        INTEROP_ENUM(BaseMetricCount),\
-        INTEROP_ENUM(UnknownBaseType)
+        INTEROP_TUPLE1(BaseReadType),\
+        INTEROP_TUPLE1(BaseMetricCount),\
+        INTEROP_TUPLE1(UnknownBaseType)
 
 
 /** Enumeration of channel colors (assuming expected order)
  *
- * @note This macro requires the macro INTEROP_ENUM to be defined before use
+ * @note This macro requires the macro INTEROP_TUPLE1 to be defined before use
  * @see illumina::interop::constants::plot_colors
  */
 #define INTEROP_ENUM_PLOT_COLORS \
         /** Color for red channel (or A) */\
-        INTEROP_ENUM(Red),\
+        INTEROP_TUPLE1(Red),\
         /** Color for green channel or (C) */\
-        INTEROP_ENUM(Green),\
+        INTEROP_TUPLE1(Green),\
         /** Color for G */\
-        INTEROP_ENUM(Blue),\
+        INTEROP_TUPLE1(Blue),\
         /** Color for T */\
-        INTEROP_ENUM(Black),\
-        INTEROP_ENUM(UnknownColor)
+        INTEROP_TUPLE1(Black),\
+        INTEROP_TUPLE1(UnknownColor)
 
 /** Enumeration of bar plot options
  *
- * @note This macro requires the macro INTEROP_ENUM to be defined before use
+ * @note This macro requires the macro INTEROP_TUPLE1 to be defined before use
  * @see illumina::interop::constants::bar_plot_options
  */
 #define INTEROP_ENUM_BAR_PLOT_OPTIONS \
         /** Bar centered on x-value */\
-        INTEROP_ENUM(Centered),\
+        INTEROP_TUPLE1(Centered),\
         /** Bar shifted to start on x-value */\
-        INTEROP_ENUM(Shifted),\
-        INTEROP_ENUM(UnknownBarPlotOption)
+        INTEROP_TUPLE1(Shifted),\
+        INTEROP_TUPLE1(UnknownBarPlotOption)
 
 #define INTEROP_UNKNOWN 0xff
 /** This temp macro converts a enum/description pair into the an enum (first element of the pair) */
-#define INTEROP_ENUM_DESCRIPTION(X, Y, Z) X
+#define INTEROP_TUPLE3(X, Y, Z) X
 /** This temp macro converts an enum to an enum */
-#define INTEROP_ENUM(X) X
+#define INTEROP_TUPLE1(X) X
 /** This temp macro converts an enum/value pair to an enum */
-#define INTEROP_ENUM_VALUE(X, V) X=V
+#define INTEROP_TUPLE2(X, V) X=V
 namespace illumina {
     namespace interop {
         namespace constants {
@@ -221,7 +221,7 @@ namespace illumina {
     }
 }
 
-#undef INTEROP_ENUM_VALUE
-#undef INTEROP_ENUM
-#undef INTEROP_ENUM_DESCRIPTION
+#undef INTEROP_TUPLE2
+#undef INTEROP_TUPLE1
+#undef INTEROP_TUPLE3
 

@@ -22,9 +22,9 @@ namespace illumina { namespace interop {  namespace logic { namespace utils {
         using namespace constants;
         // TODO: This can be reduced to a single macro define
         typedef std::pair<metric_type, metric_group > mapped_t;
-#       define INTEROP_ENUM_DESCRIPTION(Metric, Description, Group) mapped_t(Metric,Group)
+#       define INTEROP_TUPLE3(Metric, Description, Group) mapped_t(Metric,Group)
         static const mapped_t name_types[] = {INTEROP_ENUM_METRIC_TYPES};
-#       undef INTEROP_ENUM_DESCRIPTION
+#       undef INTEROP_TUPLE3
         return util::constant_mapping_get(name_types, type, UnknownMetricGroup);
     }
     /** Convert metric type to string description
@@ -37,9 +37,9 @@ namespace illumina { namespace interop {  namespace logic { namespace utils {
         using namespace constants;
         // TODO: This can be reduced to a single macro define
         typedef std::pair<metric_type, std::string > mapped_t;
-#       define INTEROP_ENUM_DESCRIPTION(Metric, Description, Group) mapped_t(Metric,Description)
+#       define INTEROP_TUPLE3(Metric, Description, Group) mapped_t(Metric,Description)
         static const mapped_t name_types[] = {INTEROP_ENUM_METRIC_TYPES};
-#       undef INTEROP_ENUM_DESCRIPTION
+#       undef INTEROP_TUPLE3
         return util::constant_mapping_get(name_types, type, std::string("UnknownDescription"));
     }
     /** Test if metric type is indexed by DNA base

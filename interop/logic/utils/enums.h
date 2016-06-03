@@ -12,11 +12,11 @@
 #include "interop/util/length_of.h"
 
 /** This macro maps an enum description to a string/enum pair */
-#define INTEROP_ENUM_DESCRIPTION(X, Y, Z) name_type_pair_t(#X,X)
+#define INTEROP_TUPLE3(X, IGNORED_1, IGNORED_2) name_type_pair_t(#X,X)
 /** This macro maps an enum to a string/enum pair */
-#define INTEROP_ENUM(X) name_type_pair_t(#X,X)
+#define INTEROP_TUPLE1(X) name_type_pair_t(#X,X)
 /** This temp macro converts an enum/value pair to an enum */
-#define INTEROP_ENUM_VALUE(X, V) name_type_pair_t(#X,X)
+#define INTEROP_TUPLE2(X, IGNORED_1) name_type_pair_t(#X,X)
 
 namespace illumina { namespace interop {  namespace constants {
     /** Template class declaration to map enum types to string representations
@@ -208,6 +208,6 @@ namespace illumina { namespace interop {  namespace constants {
 
 }}}
 
-#undef INTEROP_ENUM_VALUE
-#undef INTEROP_ENUM
-#undef INTEROP_ENUM_DESCRIPTION
+#undef INTEROP_TUPLE2
+#undef INTEROP_TUPLE1
+#undef INTEROP_TUPLE3
