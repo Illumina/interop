@@ -84,11 +84,12 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
         if(utils::is_read_metric(type) && options.all_reads() && read_count > 1)
             throw std::invalid_argument("All reads is unsupported for run with "+util::lexical_cast<std::string>(read_count));
 
-        if(type == constants::ClusterCount || type == constants::Density )
+        if(type == constants::ClusterCount || type == constants::Clusters )//constants::Density )
         {
             data.push_back(model::plot::series<Point>("PF", "DarkGreen"));
             const constants::metric_type second_type =
-                    (type==constants::Density ? constants::DensityPF : constants::ClusterCountPF);
+                    (type==constants::Clusters ? constants::ClustersPF : constants::ClusterCountPF);
+                    //(type==constants::Density ? constants::DensityPF : constants::ClusterCountPF);
             populate_candle_stick_by_lane(metrics.get_set<model::metrics::tile_metric>(), proxy3, options, second_type,
                                           data[1]);
         }
@@ -130,7 +131,10 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                        const model::plot::filter_options& options,
                        model::plot::plot_data<Point>& data)
     {
-        plot_by_lane(metrics, constants::parse<constants::metric_type>(metric_name), options, data);
+        const constants::metric_type type = constants::parse<constants::metric_type>(metric_name);
+        if(type == constants::UnknownMetricType)
+            throw std::invalid_argument("Unsupported metric type: "+metric_name);
+        plot_by_lane(metrics, type, options, data);
     }
 
 

@@ -235,11 +235,11 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
             const float NaN = std::numeric_limits<float>::quiet_NaN();
             switch(type)
             {
-                case constants::DensityPF:
+                case constants::ClustersPF://constants::DensityPF:
                 {
                     return metric.cluster_density_pf() / density_scale;
                 }
-                case constants::Density:
+                case constants::Clusters://Density:
                 {
                     return  metric.cluster_density() / density_scale;
                 }

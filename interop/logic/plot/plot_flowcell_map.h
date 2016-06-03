@@ -199,7 +199,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
         const constants::metric_type type = constants::parse<constants::metric_type>(metric_name);
         if(type == constants::UnknownMetricType)
             throw std::invalid_argument("Unsupported metric type: "+metric_name);
-        plot_flowcell_map(metrics, constants::parse<constants::metric_type>(metric_name), options, data);
+        plot_flowcell_map(metrics, type, options, data);
     }
 
 

@@ -48,6 +48,14 @@ public:
     {
         return m_width;
     }
+    /** Get minimum y-value
+     *
+     * @return 0
+     */
+    float min_value()const
+    {
+        return 0;
+    }
 
 private:
     float m_width;

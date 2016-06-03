@@ -64,7 +64,7 @@ int main(int argc, char** argv)
                                             model::plot::filter_options::ALL_IDS,
                                             0,
                 //model::plot::filter_options::ALL_CHANNELS,
-                                            (constants::dna_bases)model::plot::filter_options::ALL_BASES,
+        constants::G, //(constants::dna_bases)model::plot::filter_options::ALL_BASES,
                                             model::plot::filter_options::ALL_IDS,
                                             model::plot::filter_options::ALL_IDS
                                             //,1
@@ -73,7 +73,7 @@ int main(int argc, char** argv)
         model::plot::plot_data<model::plot::candle_stick_point> data;
 
         try{
-            logic::plot::plot_by_cycle(run, constants::Intensity, options, data);
+            logic::plot::plot_by_cycle(run, constants::CorrectedIntensity, options, data);
         }
         catch(const std::exception& ex)
         {

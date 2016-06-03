@@ -301,7 +301,10 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                        const model::plot::filter_options& options,
                        model::plot::plot_data<Point>& data)
     {
-        plot_by_cycle(metrics, constants::parse<constants::metric_type>(metric_name), options, data);
+        const constants::metric_type type = constants::parse<constants::metric_type>(metric_name);
+        if(type == constants::UnknownMetricType)
+            throw std::invalid_argument("Unsupported metric type: "+metric_name);
+        plot_by_cycle(metrics, type, options, data);
     }
 }
 }}}

@@ -249,12 +249,12 @@ F interpolate_linear(const F y1, const F y2, const F x1, const F x2, const F xt)
     return y1 + (y2-y1) / (x2-x1) * (xt - x1);
 }
 
-/** Calculate the interoploate percentile given a sorted array
+/** Calculate the interpolated percentile given a sorted array
  *
  * @param beg iterator to start of sorted array
  * @param end iterator to end of sorted array
  * @param percentile target percentile [0-100]
- * @return interopated value of array corresponeding to given percentile
+ * @return interpolated value of array corresponding to given percentile
  */
 template<typename F, typename I>
 F percentile_sorted(I beg, I end, const size_t percentile)
@@ -262,7 +262,13 @@ F percentile_sorted(I beg, I end, const size_t percentile)
     INTEROP_ASSERT(beg != end);
     INTEROP_ASSERT(percentile > 0 && percentile <= 100);
     const size_t n = static_cast<size_t>(std::distance(beg, end));
-    const size_t nth_index = static_cast<size_t>(std::ceil(percentile * n / 100.0) - 1);
+    if(n == 0) return std::numeric_limits<F>::quiet_NaN();
+    size_t nth_index = static_cast<size_t>(std::ceil(percentile * n / 100.0) - 1);
+    if( (n*percentile/100.0f - nth_index) < 0.5f)
+    {
+        if(nth_index == 0) return *beg;
+        nth_index--;
+    }
     if(nth_index>=(n-1)) return *(end-1);
     const F y1 = *(beg+nth_index);
     const F y2 = *(beg+nth_index+1);

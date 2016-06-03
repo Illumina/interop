@@ -25,9 +25,10 @@
         INTEROP_ENUM_DESCRIPTION(AccumPercentQ20, "% >=Q20 (Accum)", Q),\
         INTEROP_ENUM_DESCRIPTION(AccumPercentQ30, "% >=Q30 (Accum)", Q),\
         INTEROP_ENUM_DESCRIPTION(QScore, "Median QScore", Q),\
-        INTEROP_ENUM_DESCRIPTION(Density, "Cluster Density (K/mm2)", Tile),\
+        INTEROP_ENUM_DESCRIPTION(Clusters, "Density", Tile),\
         /*INTEROP_ENUM_DESCRIPTION(Density, "Density (K/mm2)", Tile),*/ \
-        INTEROP_ENUM_DESCRIPTION(DensityPF, "Density PF", Tile),\
+        INTEROP_ENUM_DESCRIPTION(ClustersPF, "Density PF", Tile),\
+        /*INTEROP_ENUM_DESCRIPTION(DensityPF, "Density PF", Tile),*/\
         INTEROP_ENUM_DESCRIPTION(ClusterCount, "Clusters", Tile),\
         /*INTEROP_ENUM_DESCRIPTION(ClusterCount, "Cluster Count", Tile),*/\
         INTEROP_ENUM_DESCRIPTION(ClusterCountPF, "Clusters PF", Tile),\
@@ -38,7 +39,7 @@
         INTEROP_ENUM_DESCRIPTION(PercentAligned, "% Aligned", Tile),\
         INTEROP_ENUM_DESCRIPTION(CorrectedIntensity, "Corrected Int", CorrectedInt),\
         INTEROP_ENUM_DESCRIPTION(CalledIntensity, "Called Int", CorrectedInt),\
-        INTEROP_ENUM_DESCRIPTION(SignalToNoise, "Signal to Noise", CorrectedInt),\
+        INTEROP_ENUM_DESCRIPTION(SignalToNoise, "Signal To Noise", CorrectedInt),\
         INTEROP_ENUM_DESCRIPTION(MetricTypeCount, "!!!!BAD!!!!", UnknownMetricGroup),\
         INTEROP_ENUM_DESCRIPTION(UnknownMetricType, "!!!!BAD!!!!", UnknownMetricGroup)
 

@@ -123,8 +123,8 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                 INTEROP_ASSERT(i < histogram.size());
                 if(histogram[i] == 0)continue;
                 points[point_index].set(beg->lower(), histogram[i], static_cast<float>(beg->upper()-beg->lower()+1));
+                max_x_value = std::max(max_x_value, points[point_index].x()+points[point_index].width());
                 ++point_index;
-                max_x_value = std::max(max_x_value, points[i].x()+points[i].width());
             }
         }
         else // Uncompressed
@@ -135,8 +135,8 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                 INTEROP_ASSERTMSG(bin < histogram.size(), bin << " < " << histogram.size());
                 if(histogram[bin] == 0)continue;
                 points[point_index].set(beg->lower(), histogram[bin], static_cast<float>(beg->upper()-beg->lower()+1));
+                max_x_value = std::max(max_x_value, points[point_index].x()+points[point_index].width());
                 ++point_index;
-                max_x_value = std::max(max_x_value, points[i].x()+points[i].width());
             }
         }
         points.resize(point_index);
