@@ -76,7 +76,7 @@ int main(int argc, char** argv)
         model::plot::plot_data<model::plot::candle_stick_point> data;
         try
         {
-            logic::plot::plot_by_lane(run, constants::ClusterCount, options, data);
+            logic::plot::plot_by_lane(run, constants::PercentAligned, options, data);
         }
         catch(const std::exception& ex)
         {
