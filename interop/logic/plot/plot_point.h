@@ -13,57 +13,6 @@
 #include "interop/model/plot/candle_stick_point.h"
 
 namespace illumina { namespace interop { namespace logic { namespace plot {
-    namespace detail
-    {
-        /** Test if v1 < v2 unless v2 > spread
-         */
-        class islesser_with_upper_limit
-        {
-        public:
-            /** Constructor
-             *
-             * @param spread upper limit
-             */
-            islesser_with_upper_limit(const float spread) : m_spread(spread){}
-            /** Test if v1 < v2 unless v2 > spread
-             *
-             * @param v1 value 1
-             * @param v2 value 2
-             * @return true if v1 < v2 and v2 < m_spread
-             */
-            bool operator()(const float v1, const float v2)const
-            {
-                if(v2 < m_spread) return v1 < v2;
-                return v1 > v2;
-            }
-        private:
-            float m_spread;
-        };
-        /** Test if v1 < v2 unless v1 < spread
-         */
-        struct islesser_with_lower_limit
-        {
-        public:
-            /** Constructor
-             *
-             * @param spread lower limit
-             */
-            islesser_with_lower_limit(const float spread) : m_spread(spread){}
-            /** Test if v1 < v2 unless v1 < spread
-             *
-             * @param v1 value 1
-             * @param v2 value 2
-             * @return true if v1 < v2 unless v1 < spread
-             */
-            bool operator()(const float v1, const float v2)const
-            {
-                if(v1 > m_spread) return v1 < v2;
-                return v1 > v2;
-            }
-        private:
-            float m_spread;
-        };
-    }
 
     /** Logic for creating a candle stick point
      *
@@ -76,6 +25,13 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
     template<typename I>
     void plot_candle_stick(model::plot::candle_stick_point& point, I beg, I end, const float x, std::vector<float>& outliers)
     {
+        const float NaN = std::numeric_limits<float>::quiet_NaN();
+        if( beg == end)
+        {
+            point = model::plot::candle_stick_point(x, NaN, NaN, NaN, NaN, NaN, 0, outliers);
+            outliers.clear();
+            return ;
+        }
         std::sort(beg, end);
         const float p25 = util::percentile_sorted<float>(beg, end, 25);
         const float p50 = util::percentile_sorted<float>(beg, end, 50);
@@ -92,8 +48,14 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
             util::outliers_upper(beg, end, upper, std::back_inserter(outliers));
         }
         size_t count = static_cast<size_t>(std::distance(beg,end));
-        const float max_val = *std::max_element(beg, end, detail::islesser_with_upper_limit(upper));
-        const float min_val = *std::min_element(beg, end, detail::islesser_with_lower_limit(lower));
+
+        I upper_it = std::lower_bound(beg, end, upper);// Not less
+        I lower_it = std::lower_bound(beg, end, lower);
+
+        const float max_val = (upper_it != beg) ?
+                              ((upper_it == end || *upper_it > upper) ? *(upper_it-1) : *upper_it) :
+                              ((upper_it != end) ? *upper_it : NaN);
+        const float min_val = (lower_it != end) ? *lower_it : NaN;
         point = model::plot::candle_stick_point(x, p25, p50, p75, min_val, max_val, count, outliers);
         outliers.clear();
     }

@@ -225,7 +225,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
         }
 
         auto_scale_y(data, false);
-        data.set_xrange(1, max_x_value*1.1f);
+        data.set_xrange(1, std::max(1.0f, max_x_value)*1.1f);
 
         data.set_xlabel("Q Score");
         data.set_ylabel("Total ("+axis_scale+")");

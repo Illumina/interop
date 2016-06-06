@@ -81,7 +81,8 @@ int main(int argc, char** argv)
                                             (constants::dna_bases)model::plot::filter_options::ALL_BASES,
                                             model::plot::filter_options::ALL_IDS,
                                             model::plot::filter_options::ALL_IDS
-                                            ,1
+                                            ,
+                                            1
                                             );
 
         model::plot::flowcell_data data;

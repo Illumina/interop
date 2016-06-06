@@ -90,7 +90,7 @@ TEST(plot_logic, pf_clusters_by_lane)
     EXPECT_NEAR(data.x_axis().min(), 0.0f, tol);
     EXPECT_NEAR(data.y_axis().min(), 0.0f, tol);
     EXPECT_NEAR(data.x_axis().max(), 8.0f, tol);
-    EXPECT_NEAR(data.y_axis().max(),  4.1630043983459473f, tol);
+    EXPECT_NEAR(data.y_axis().max(),  3.9946798252130975, tol);
 
 }
 
