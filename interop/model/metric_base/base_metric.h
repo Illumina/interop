@@ -14,6 +14,7 @@
 #include <stdexcept>
 #include <limits>
 #include <cmath>
+#include "interop/util/assert.h"
 #include "interop/util/type_traits.h"
 #include "interop/io/layout/base_metric.h"
 #include "interop/constants/enums.h"
@@ -300,6 +301,9 @@ namespace illumina {
                                                    const uint_t swath_count,
                                                    const bool all_surfaces)const
                     {
+
+                        INTEROP_ASSERT(swath(method) <= swath_count);
+                        INTEROP_ASSERT(number(method) <= tile_count);
                         const uint_t column = physical_location_column(method, swath_count, all_surfaces);
                         const uint_t row = physical_location_row(method, section_per_lane, tile_count);
                         const uint_t row_count = section_per_lane * tile_count;
@@ -339,7 +343,7 @@ namespace illumina {
                                 section = ((m_tile % 1000) - (m_tile % 100)) / 100;
                                 if(section == 4) section = 6;
                                 else if(section == 6) section = 4;
-                                section = (section-1) * section_per_lane;
+                                section = (section-1) % section_per_lane;
                                 return (section * tile_count) + (m_tile % 100)-1;
                             case constants::FourDigit:
                                 return m_tile % 100-1;

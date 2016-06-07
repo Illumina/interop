@@ -230,7 +230,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                         logic::metric::create_q_metrics_by_lane(metrics.get_set<model::metrics::q_metric>(),
                                                                  metrics.get_set<metric_t>());
                     const size_t qbin = metric::index_for_q_value(metrics.get_set<metric_t>(),
-                                                               (type == constants::PercentQ20 ||
+                                                               (type == constants::Q20Percent ||
                                                                 type == constants::AccumPercentQ20) ? 20 : 30);
                     metric::metric_value<metric_t> proxy2(qbin,metrics.get_set<metric_t>().bins());
                     populate_candle_stick_by_cycle(
@@ -264,7 +264,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
             {
                 data.set_yrange(0, std::min(5.0f, data.y_axis().max()));
             }
-            else if(type == constants::PercentBase)
+            else if(type == constants::BasePercent)
             {
                 data.set_yrange(0, std::max(50.0f, data.y_axis().max()));
             }

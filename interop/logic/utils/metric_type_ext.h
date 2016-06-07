@@ -56,7 +56,7 @@ namespace illumina { namespace interop {  namespace logic { namespace utils {
         {
             case CalledIntensity:
             case CorrectedIntensity:
-            case PercentBase:
+            case BasePercent:
                 return true;
             default:
                 return false;
@@ -121,9 +121,9 @@ namespace illumina { namespace interop {  namespace logic { namespace utils {
             case CalledIntensity:
             case CorrectedIntensity:
             case SignalToNoise:
-            case PercentBase:
-            case PercentQ20:
-            case PercentQ30:
+            case BasePercent:
+            case Q20Percent:
+            case Q30Percent:
             case QScore:
             case ErrorRate:
                 return true;

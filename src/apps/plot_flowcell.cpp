@@ -45,6 +45,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include "interop/logic/utils/enums.h"
 #include "interop/io/metric_file_stream.h"
 #include "interop/model/run_metrics.h"
 #include "interop/logic/plot/plot_flowcell_map.h"
@@ -54,6 +55,8 @@
 
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop;
+
+int test_all_filter_options(run_metrics& run);
 
 int main(int argc, char** argv)
 {
@@ -74,7 +77,8 @@ int main(int argc, char** argv)
         int ret = read_run_metrics(argv[i], run);
         if(ret != SUCCESS) return ret;
 
-
+//        test_all_filter_options(run);
+//#ifdef _UNUSED
         model::plot::filter_options options(run.run_info().flowcell().naming_method(),
                                             model::plot::filter_options::ALL_IDS,
                                             0,
@@ -101,8 +105,70 @@ int main(int argc, char** argv)
         io::plot::gnuplot_writer plot_writer;
         plot_writer.write_flowcell(out, data, "flowcell.png");
         //plot_writer.write_flowcell_tile_id(out, data, "flowcell.png");
+//#endif
     }
     return SUCCESS;
 }
 
 
+int test_all_filter_options(run_metrics& run)
+{
+    const char* metric_names[] = {"Intensity", "FWHM", "CorrectedIntensity", "CalledIntensity", "BasePercent",
+                                  "SignalToNoise", "ErrorRate", "Q20Percent", "Q30Percent", "QScore", "Clusters",
+                                  "ClustersPF", "ClusterCount",
+                                  "ClusterCountPF", "PercentPhasing", "PercentPrephasing", "PercentAligned"};
+    typedef model::plot::filter_options::id_t id_t;
+    const constants::tile_naming_method naming_method = run.run_info().flowcell().naming_method();
+    const size_t surface_count = run.run_info().flowcell().surface_count();
+    const id_t ALL_IDS = model::plot::filter_options::ALL_IDS;
+    const id_t lane=ALL_IDS;
+    size_t plot_count = 0;
+    for(size_t i=0;i<util::length_of(metric_names);++i)
+    {
+        const constants::metric_type metric_type = constants::parse<constants::metric_type>(metric_names[i]);
+        const size_t base_count = logic::utils::is_base_metric(metric_type) ? constants::NUM_OF_BASES : 1;
+        const size_t channel_count = logic::utils::is_channel_metric(metric_type) ? run.run_info().channels().size() : 1;
+        const size_t cycle_count = logic::utils::is_cycle_metric(metric_type) ? run.run_info().total_cycles() : 1;
+        const size_t read_count = logic::utils::is_read_metric(metric_type) ? run.run_info().reads().size() : 1;
+        for(size_t base=0;base < base_count;++base)
+        {
+            for(size_t channel=0;channel < channel_count;++channel)
+            {
+                for(size_t cycle=1;cycle <= cycle_count;++cycle)
+                {
+                    for(size_t read=1;read <= read_count;++read)
+                    {
+                        for(size_t surface=0;surface <= surface_count;++surface)
+                        {
+                            model::plot::filter_options options(naming_method,
+                                                                lane,
+                                                                logic::utils::is_channel_metric(metric_type) ? (id_t)channel : (id_t)model::plot::filter_options::ALL_CHANNELS,
+                                                                (constants::dna_bases) (logic::utils::is_base_metric(metric_type) ? base : (size_t)model::plot::filter_options::ALL_BASES),
+                                                                surface,
+                                                                logic::utils::is_read_metric(metric_type) ? read : ALL_IDS,
+                                                                logic::utils::is_cycle_metric(metric_type) ? cycle : ALL_IDS);
+                            model::plot::flowcell_data data;
+                            try
+                            {
+                                logic::plot::plot_flowcell_map(run, metric_names[i], options, data);
+                            }
+                            catch(const model::invalid_read_exception& ex)
+                            {
+                                std::cerr << ex.what() << std::endl;
+                                return UNEXPECTED_EXCEPTION;
+                            }
+                            catch(const model::index_out_of_bounds_exception& ex)
+                            {
+                                std::cerr << ex.what() << std::endl;
+                                return UNEXPECTED_EXCEPTION;
+                            }
+                            plot_count++;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    std::cout << "I just created " << plot_count << " plots" << std::endl;
+    return SUCCESS;
+}

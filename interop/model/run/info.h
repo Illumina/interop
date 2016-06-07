@@ -161,6 +161,28 @@ public:
     {
         m_flowcell.set_naming_method(naming_method);
     }
+    /** Get total number of cycles
+     *
+     * @return total number of cycles
+     */
+    size_t total_cycles()const
+    {
+        size_t total = 0;
+        for(read_vector_t::const_iterator b = m_reads.begin(), e = m_reads.end();b != e;++b)
+            total += b->total_cycles();
+        return total;
+    }
+    /** Get usable number of cycles
+     *
+     * @return usable number of cycles
+     */
+    size_t useable_cycles()const
+    {
+        size_t total = 0;
+        for(read_vector_t::const_iterator b = m_reads.begin(), e = m_reads.end();b != e;++b)
+            total += b->useable_cycles();
+        return total;
+    }
     /** @} */
 
 public:

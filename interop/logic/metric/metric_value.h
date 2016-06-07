@@ -90,8 +90,8 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
         {
             switch(type)
             {
-                case constants::PercentQ20:
-                case constants::PercentQ30:
+                case constants::Q20Percent:
+                case constants::Q30Percent:
                     return metric.percent_over_qscore(index_for_qvalue);
                 case constants::AccumPercentQ20:
                 case constants::AccumPercentQ30:
@@ -126,9 +126,9 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
         {
             switch(type)
             {
-                case constants::PercentQ20:
+                case constants::Q20Percent:
                     return metric.percent_over_q20();
-                case constants::PercentQ30:
+                case constants::Q30Percent:
                     return metric.percent_over_q30();
                 case constants::AccumPercentQ20:
                     return metric.cumulative_percent_over_q20();
@@ -191,7 +191,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
         {
             switch(type)
             {
-                case constants::PercentBase:
+                case constants::BasePercent:
                     return metric.percent_base(base);
                 case constants::CorrectedIntensity:
                     return metric.corrected_int_all(base);

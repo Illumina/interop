@@ -19,9 +19,12 @@
 #define INTEROP_ENUM_METRIC_TYPES \
         INTEROP_TUPLE3(Intensity, "Intensity", Extraction),\
         INTEROP_TUPLE3(FWHM, "FWHM", Extraction),\
-        INTEROP_TUPLE3(PercentBase, "% Base", CorrectedInt),\
-        INTEROP_TUPLE3(PercentQ20, "% >=Q20", Q),\
-        INTEROP_TUPLE3(PercentQ30, "% >=Q30", Q),\
+        /*INTEROP_TUPLE3(PercentBase, "% Base", CorrectedInt), */\
+        INTEROP_TUPLE3(BasePercent, "% Base", CorrectedInt),\
+        /*INTEROP_TUPLE3(PercentQ20, "% >=Q20", Q),*/\
+        INTEROP_TUPLE3(Q20Percent, "% >=Q20", Q),\
+        /*INTEROP_TUPLE3(PercentQ30, "% >=Q30", Q),*/\
+        INTEROP_TUPLE3(Q30Percent, "% >=Q30", Q),\
         INTEROP_TUPLE3(AccumPercentQ20, "% >=Q20 (Accum)", Q),\
         INTEROP_TUPLE3(AccumPercentQ30, "% >=Q30 (Accum)", Q),\
         INTEROP_TUPLE3(QScore, "Median QScore", Q),\
