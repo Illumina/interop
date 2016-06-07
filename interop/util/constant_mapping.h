@@ -39,7 +39,7 @@ namespace illumina { namespace interop { namespace util
          * @param pair_count number of pairs in array
          * @return instance of singleton
          */
-        static const constant_mapping<Key, Value> &mapping(const std::pair<Key, Value>* pairs, size_t pair_count)
+        static const constant_mapping<Key, Value> &fmapping(const std::pair<Key, Value>* pairs, size_t pair_count)
         {
             static constant_mapping<Key, Value> singleton(pairs, pair_count); // Only called once
             return singleton;
@@ -51,7 +51,7 @@ namespace illumina { namespace interop { namespace util
          * @param pair_count number of pairs in array
          * @return instance of singleton
          */
-        static const constant_mapping<Key, Value> &mapping(const std::pair<Value, Key>* pairs, size_t pair_count)
+        static const constant_mapping<Key, Value> &rmapping(const std::pair<Value, Key>* pairs, size_t pair_count)
         {
             static constant_mapping<Key, Value> singleton(pairs, pair_count); // Only called once
             return singleton;
@@ -84,7 +84,7 @@ namespace illumina { namespace interop { namespace util
     const Value &constant_mapping_get(const std::pair<Key, Value> (&pairs)[N], const Key &key,
                                       const Value &default_value)
     {
-        return constant_mapping<Key, Value>::mapping(pairs, N).get(key, default_value);
+        return constant_mapping<Key, Value>::fmapping(pairs, N).get(key, default_value);
     }
 
 }}}

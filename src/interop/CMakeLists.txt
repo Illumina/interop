@@ -117,7 +117,8 @@ set(HEADERS
         ../../interop/util/constant_mapping.h
         ../../interop/io/plot/gnuplot.h
         ../../interop/logic/metric/tile_metric.h
-        ../../interop/logic/logic.h)
+        ../../interop/logic/logic.h
+        )
 
 set(INTEROP_HEADERS ${HEADERS} PARENT_SCOPE)
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR CMAKE_COMPILER_IS_GNUCC)

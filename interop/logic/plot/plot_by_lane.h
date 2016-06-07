@@ -137,5 +137,21 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
         plot_by_lane(metrics, type, options, data);
     }
 
+    /** List metric type names available for by lane plots
+     *
+     * @param names destination vector to fill with metric type names
+     */
+    inline void list_by_lane_metrics(std::vector<std::string>& names)
+    {
+        std::vector<constants::metric_type> types;
+        constants::list_enums(types);
+        names.clear();
+        names.reserve(types.size());
+        for(size_t i=0;i<types.size();++i)
+        {
+            if(utils::is_cycle_metric(types[i])) continue;
+            names.push_back(constants::to_string(types[i]));
+        }
+    }
 
 }}}}

@@ -10,6 +10,18 @@
 #include <climits>
 #include <limits>
 #include "interop/util/cstdint.h"
+/** Enumeration of specific features that can belong to a metric
+ *
+ * @note This macro requires the macro INTEROP_TUPLE2 to be defined before use
+ * @see illumina::interop::constants::metric_feature_type
+ */
+#define INTEROP_ENUM_METRIC_FEATURE_TYPE \
+        INTEROP_TUPLE2(TileFeature, 0x01), \
+        INTEROP_TUPLE2(CycleFeature, 0x02), \
+        INTEROP_TUPLE2(ReadFeature, 0x04), \
+        INTEROP_TUPLE2(BaseFeature, 0x08), \
+        INTEROP_TUPLE2(ChannelFeature, 0x10), \
+        INTEROP_TUPLE1(UnknownMetricFeature)
 
 /** Enumeration of each metric type
  *
@@ -17,34 +29,33 @@
  * @see illumina::interop::constants::metric_type
  */
 #define INTEROP_ENUM_METRIC_TYPES \
-        INTEROP_TUPLE3(Intensity, "Intensity", Extraction),\
-        INTEROP_TUPLE3(FWHM, "FWHM", Extraction),\
-        /*INTEROP_TUPLE3(PercentBase, "% Base", CorrectedInt), */\
-        INTEROP_TUPLE3(BasePercent, "% Base", CorrectedInt),\
-        /*INTEROP_TUPLE3(PercentQ20, "% >=Q20", Q),*/\
-        INTEROP_TUPLE3(Q20Percent, "% >=Q20", Q),\
-        /*INTEROP_TUPLE3(PercentQ30, "% >=Q30", Q),*/\
-        INTEROP_TUPLE3(Q30Percent, "% >=Q30", Q),\
-        INTEROP_TUPLE3(AccumPercentQ20, "% >=Q20 (Accum)", Q),\
-        INTEROP_TUPLE3(AccumPercentQ30, "% >=Q30 (Accum)", Q),\
-        INTEROP_TUPLE3(QScore, "Median QScore", Q),\
-        INTEROP_TUPLE3(Clusters, "Density", Tile),\
-        /*INTEROP_TUPLE3(Density, "Density (K/mm2)", Tile),*/ \
-        INTEROP_TUPLE3(ClustersPF, "Density PF", Tile),\
-        /*INTEROP_TUPLE3(DensityPF, "Density PF", Tile),*/\
-        INTEROP_TUPLE3(ClusterCount, "Clusters", Tile),\
-        /*INTEROP_TUPLE3(ClusterCount, "Cluster Count", Tile),*/\
-        INTEROP_TUPLE3(ClusterCountPF, "Clusters PF", Tile),\
-        INTEROP_TUPLE3(AlignedReadCount, "Aligned Read Count", Tile),\
-        INTEROP_TUPLE3(ErrorRate, "Error Rate", Error),\
-        INTEROP_TUPLE3(PercentPhasing, "% Phasing", Tile),\
-        INTEROP_TUPLE3(PercentPrephasing, "% Prephasing", Tile),\
-        INTEROP_TUPLE3(PercentAligned, "% Aligned", Tile),\
-        INTEROP_TUPLE3(CorrectedIntensity, "Corrected Int", CorrectedInt),\
-        INTEROP_TUPLE3(CalledIntensity, "Called Int", CorrectedInt),\
-        INTEROP_TUPLE3(SignalToNoise, "Signal To Noise", CorrectedInt),\
-        INTEROP_TUPLE3(MetricTypeCount, "!!!!BAD!!!!", UnknownMetricGroup),\
-        INTEROP_TUPLE3(UnknownMetricType, "!!!!BAD!!!!", UnknownMetricGroup)
+        INTEROP_TUPLE4(Intensity, "Intensity", Extraction, CycleFeature|ChannelFeature),\
+        INTEROP_TUPLE4(FWHM, "FWHM", Extraction, CycleFeature|ChannelFeature),\
+        /*INTEROP_TUPLE4(PercentBase, "% Base", CorrectedInt, CycleFeature|BaseFeature), */\
+        INTEROP_TUPLE4(BasePercent, "% Base", CorrectedInt, CycleFeature|BaseFeature),\
+        /*INTEROP_TUPLE4(PercentQ20, "% >=Q20", Q, CycleFeature),*/\
+        INTEROP_TUPLE4(Q20Percent, "% >=Q20", Q, CycleFeature),\
+        /*INTEROP_TUPLE4(PercentQ30, "% >=Q30", Q, CycleFeature),*/\
+        INTEROP_TUPLE4(Q30Percent, "% >=Q30", Q, CycleFeature),\
+        INTEROP_TUPLE4(AccumPercentQ20, "% >=Q20 (Accum)", Q, CycleFeature),\
+        INTEROP_TUPLE4(AccumPercentQ30, "% >=Q30 (Accum)", Q, CycleFeature),\
+        INTEROP_TUPLE4(QScore, "Median QScore", Q, CycleFeature),\
+        INTEROP_TUPLE4(Clusters, "Density", Tile, TileFeature),\
+        /*INTEROP_TUPLE4(Density, "Density (K/mm2)", Tile, TileFeature),*/ \
+        INTEROP_TUPLE4(ClustersPF, "Density PF", Tile, TileFeature),\
+        /*INTEROP_TUPLE4(DensityPF, "Density PF", Tile, TileFeature),*/\
+        INTEROP_TUPLE4(ClusterCount, "Clusters", Tile, TileFeature),\
+        /*INTEROP_TUPLE4(ClusterCount, "Cluster Count", Tile, TileFeature),*/\
+        INTEROP_TUPLE4(ClusterCountPF, "Clusters PF", Tile, TileFeature),\
+        INTEROP_TUPLE4(ErrorRate, "Error Rate", Error, CycleFeature),\
+        INTEROP_TUPLE4(PercentPhasing, "% Phasing", Tile, ReadFeature),\
+        INTEROP_TUPLE4(PercentPrephasing, "% Prephasing", Tile, ReadFeature),\
+        INTEROP_TUPLE4(PercentAligned, "% Aligned", Tile, ReadFeature),\
+        INTEROP_TUPLE4(CorrectedIntensity, "Corrected Int", CorrectedInt, CycleFeature|BaseFeature),\
+        INTEROP_TUPLE4(CalledIntensity, "Called Int", CorrectedInt, CycleFeature|BaseFeature),\
+        INTEROP_TUPLE4(SignalToNoise, "Signal To Noise", CorrectedInt, CycleFeature),\
+        INTEROP_TUPLE4(MetricTypeCount, "!!!!BAD!!!!", UnknownMetricGroup, UnknownMetricFeature),\
+        INTEROP_TUPLE4(UnknownMetricType, "!!!!BAD!!!!", UnknownMetricGroup, UnknownMetricFeature)
 
 /** Enumeration of each metric group
  *
@@ -190,6 +201,8 @@
 
 #define INTEROP_UNKNOWN 0xff
 /** This temp macro converts a enum/description pair into the an enum (first element of the pair) */
+#define INTEROP_TUPLE4(X, Y, Z, A) X
+/** This temp macro converts a enum/description pair into the an enum (first element of the pair) */
 #define INTEROP_TUPLE3(X, Y, Z) X
 /** This temp macro converts an enum to an enum */
 #define INTEROP_TUPLE1(X) X
@@ -220,11 +233,14 @@ namespace illumina {
             enum bar_plot_options{ INTEROP_ENUM_BAR_PLOT_OPTIONS  = INTEROP_UNKNOWN};
             /** Options for a bar plot */
             enum metric_data{ INTEROP_ENUM_METRIC_DATA_TYPES  = INTEROP_UNKNOWN};
+            /** Options describing metric features */
+            enum metric_feature_type {INTEROP_ENUM_METRIC_FEATURE_TYPE};
         }
     }
 }
 
-#undef INTEROP_TUPLE2
 #undef INTEROP_TUPLE1
+#undef INTEROP_TUPLE2
 #undef INTEROP_TUPLE3
+#undef INTEROP_TUPLE4
 

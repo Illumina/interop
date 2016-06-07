@@ -201,6 +201,22 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
             throw std::invalid_argument("Unsupported metric type: "+metric_name);
         plot_flowcell_map(metrics, type, options, data);
     }
+    /** List metric type names available for flowcell
+     *
+     * @param names destination vector to fill with metric type names
+     */
+    inline void list_flowcell_metrics(std::vector<std::string>& names)
+    {
+        std::vector<constants::metric_type> types;
+        constants::list_enums(types);
+        names.clear();
+        names.reserve(types.size());
+        for(size_t i=0;i<types.size();++i)
+        {
+            if(utils::to_feature(types[i]) == constants::UnknownMetricFeature) continue;
+            names.push_back(constants::to_string(types[i]));
+        }
+    }
 
 
 }}}}

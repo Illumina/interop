@@ -22,9 +22,9 @@ namespace illumina { namespace interop {  namespace logic { namespace utils {
         using namespace constants;
         // TODO: This can be reduced to a single macro define
         typedef std::pair<metric_type, metric_group > mapped_t;
-#       define INTEROP_TUPLE3(Metric, Description, Group) mapped_t(Metric,Group)
+#       define INTEROP_TUPLE4(Metric, Description, Group, Feature) mapped_t(Metric,Group)
         static const mapped_t name_types[] = {INTEROP_ENUM_METRIC_TYPES};
-#       undef INTEROP_TUPLE3
+#       undef INTEROP_TUPLE4
         return util::constant_mapping_get(name_types, type, UnknownMetricGroup);
     }
     /** Convert metric type to string description
@@ -37,99 +37,64 @@ namespace illumina { namespace interop {  namespace logic { namespace utils {
         using namespace constants;
         // TODO: This can be reduced to a single macro define
         typedef std::pair<metric_type, std::string > mapped_t;
-#       define INTEROP_TUPLE3(Metric, Description, Group) mapped_t(Metric,Description)
+#       define INTEROP_TUPLE4(Metric, Description, Group, Feature) mapped_t(Metric,Description)
         static const mapped_t name_types[] = {INTEROP_ENUM_METRIC_TYPES};
-#       undef INTEROP_TUPLE3
+#       undef INTEROP_TUPLE4
         return util::constant_mapping_get(name_types, type, std::string("UnknownDescription"));
     }
-    /** Test if metric type is indexed by DNA base
+    /** Convert metric type to metric group
      *
-     * @TODO: replace with above enumeration framework (to_group)
+     * @param type metric type
+     * @return metric group
+     */
+    inline constants::metric_feature_type to_feature(const constants::metric_type type)
+    {
+        using namespace constants;
+        // TODO: This can be reduced to a single macro define
+        typedef std::pair<metric_type, metric_feature_type > mapped_t;
+#       define INTEROP_TUPLE4(Metric, Description, Group, Feature) mapped_t(Metric,static_cast<metric_feature_type>(Feature))
+        static const mapped_t name_types[] = {INTEROP_ENUM_METRIC_TYPES};
+#       undef INTEROP_TUPLE4
+        return util::constant_mapping_get(name_types, type, UnknownMetricFeature);
+    }
+    /** Test if metric type is indexed by DNA base
      *
      * @param type metric type
      * @return true if metric can be indexed by DNA base
      */
     inline bool is_base_metric(const constants::metric_type type)
     {
-        using namespace illumina::interop::constants;
-        switch(type)
-        {
-            case CalledIntensity:
-            case CorrectedIntensity:
-            case BasePercent:
-                return true;
-            default:
-                return false;
-        }
+        return (to_feature(type) & constants::BaseFeature) == constants::BaseFeature;
     }
 
     /** Test if metric type is indexed by channel
-     *
-     * @TODO: replace with above enumeration framework
      *
      * @param type metric type
      * @return true if metric can be indexed by channel
      */
     inline bool is_channel_metric(const constants::metric_type type)
     {
-        using namespace illumina::interop::constants;
-        switch(type)
-        {
-            case Intensity:
-            case FWHM:
-                return true;
-            default:
-                return false;
-        }
+        return (to_feature(type) & constants::ChannelFeature) == constants::ChannelFeature;
     }
 
     /** Test if metric type is produced every read
-     *
-     * @TODO: replace with above enumeration framework
      *
      * @param type metric type
      * @return true if metric is produced every read
      */
     inline bool is_read_metric(const constants::metric_type type)
     {
-        using namespace illumina::interop::constants;
-        switch(type)
-        {
-            case PercentAligned:
-            case PercentPhasing:
-            case PercentPrephasing:
-                return true;
-            default:
-                return false;
-        }
+        return (to_feature(type) & constants::ReadFeature) == constants::ReadFeature;
     }
 
     /** Test if metric type is produced every cycle
-     *
-     * @TODO: replace with above enumeration framework
      *
      * @param type metric type
      * @return true if metric is produced every cycle
      */
     inline bool is_cycle_metric(const constants::metric_type type)
     {
-        using namespace illumina::interop::constants;
-        switch(type)
-        {
-            case Intensity:
-            case FWHM:
-            case CalledIntensity:
-            case CorrectedIntensity:
-            case SignalToNoise:
-            case BasePercent:
-            case Q20Percent:
-            case Q30Percent:
-            case QScore:
-            case ErrorRate:
-                return true;
-            default:
-                return false;
-        }
+        return (to_feature(type) & constants::CycleFeature) == constants::CycleFeature;
     }
 
 }}}}

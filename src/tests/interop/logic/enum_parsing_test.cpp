@@ -18,6 +18,10 @@ TEST(enum_parsing_test, parse_metric_type)
     EXPECT_EQ(constants::parse<constants::metric_type>("Intensity"), constants::Intensity);
     EXPECT_EQ(constants::parse<constants::metric_type>("FWHM"), constants::FWHM);
     EXPECT_EQ(constants::parse<constants::metric_type>("Gobble"), constants::UnknownMetricType);
+
+    std::vector<constants::metric_type> types;
+    constants::list_enums(types);
+    EXPECT_EQ(types[0], constants::Intensity);
 }
 
 TEST(enum_parsing_test, metric_type_to_string)
