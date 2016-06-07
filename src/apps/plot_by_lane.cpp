@@ -69,14 +69,14 @@ int main(int argc, char** argv)
                 //model::plot::filter_options::ALL_CHANNELS,
                                             (constants::dna_bases)model::plot::filter_options::ALL_BASES,
                                             model::plot::filter_options::ALL_IDS,
-                                            model::plot::filter_options::ALL_IDS
+                                            1
                                             //,1
                                             );
 
         model::plot::plot_data<model::plot::candle_stick_point> data;
         try
         {
-            logic::plot::plot_by_lane(run, constants::PercentAligned, options, data);
+            logic::plot::plot_by_lane(run, constants::PercentPrephasing, options, data);
         }
         catch(const std::exception& ex)
         {

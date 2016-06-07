@@ -171,8 +171,8 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
 
         std::string subtitle;
         if(metrics.run_info().flowcell().surface_count()>1)
-            subtitle += " " + options.surface_description();
-        subtitle += " " + options.cycle_description();
+            subtitle += options.surface_description() + " ";
+        subtitle += options.cycle_description();
         if(logic::utils::is_channel_metric(type))
             subtitle += " " + options.channel_description(metrics.run_info().channels());
         if(logic::utils::is_base_metric(type))
