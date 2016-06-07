@@ -444,6 +444,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
      */
     inline void create_q_metrics_by_lane(const model::metric_base::metric_set<model::metrics::q_metric>& metrics,
                                          model::metric_base::metric_set<model::metrics::q_by_lane_metric>& bylane)
+                                        throw(model::index_out_of_bounds_exception)
     {
         typedef model::metric_base::metric_set<model::metrics::q_metric>::const_iterator const_iterator;
         typedef model::metric_base::metric_set<model::metrics::q_metric>::header_type header_type;

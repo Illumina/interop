@@ -293,6 +293,7 @@ namespace illumina {
                      */
                     uint_t qscore_hist(const size_t n)const
                     {
+                        // TODO: Add exception
                         INTEROP_ASSERT(n<m_qscore_hist.size());
                         return m_qscore_hist[n];
                     }
@@ -346,7 +347,8 @@ namespace illumina {
                         uint_t totalCount=0;
                         if(bins.size() == 0)
                         {
-                           INTEROP_ASSERT(qscore > 0);
+                            INTEROP_ASSERT(qscore > 0); // TODO: throw exception here
+                            INTEROP_ASSERT(qscore <= m_qscore_hist.size());
                             totalCount = std::accumulate(m_qscore_hist.begin()+qscore, m_qscore_hist.end(), 0);
                         }
                         else
@@ -373,11 +375,12 @@ namespace illumina {
                     uint_t total_over_qscore_cumulative(const uint_t qscore,
                                                         const qscore_bin_vector_type &bins = qscore_bin_vector_type())const
                     {
-                       INTEROP_ASSERT(m_qscore_hist_cumulative.size() > 0);
+                        INTEROP_ASSERT(m_qscore_hist_cumulative.size() > 0);
                         uint_t totalCount=0;
                         if(bins.size() == 0)
                         {
-                           INTEROP_ASSERT(qscore > 0);
+                            INTEROP_ASSERT(qscore > 0);
+                            INTEROP_ASSERT(qscore <= m_qscore_hist_cumulative.size());
                             totalCount = std::accumulate(m_qscore_hist_cumulative.begin() + qscore, m_qscore_hist_cumulative.end(), 0);
                         }
                         else
@@ -445,7 +448,7 @@ namespace illumina {
                                                          const qscore_bin_vector_type &bins =
                                                          qscore_bin_vector_type())const
                     {
-                       INTEROP_ASSERT(m_qscore_hist_cumulative.size() > 0);
+                        INTEROP_ASSERT(m_qscore_hist_cumulative.size() > 0);
                         const float total = static_cast<float>(sum_qscore_cumulative());
                         if(total == 0.0f) return std::numeric_limits<float>::quiet_NaN();
                         uint_t totalCount= total_over_qscore_cumulative(qscore, bins);
