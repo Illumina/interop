@@ -71,9 +71,9 @@ namespace illumina{ namespace interop{ namespace io {
                 /** Channel */
                 channel_t channel;
                 /**  Minimum contrast */
-                contrast_t minContrast;
+                contrast_t min_contrast;
                 /** Maximum contrast */
-                contrast_t maxContrast;
+                contrast_t max_contrast;
                 /** Read metric from the input stream
                  *
                  * @param stream input stream
@@ -86,10 +86,10 @@ namespace illumina{ namespace interop{ namespace io {
                     record_t rec;
                     std::streamsize count = stream_map< record_t >(stream, rec);
                     if( stream.fail() ) return count;
-                    metric.m_channelCount = image_metric::MAX_CHANNELS;
+                    metric.m_channel_count = image_metric::MAX_CHANNELS;
                     INTEROP_ASSERTMSG(rec.channel < image_metric::MAX_CHANNELS, metric.lane() << "_" << metric.tile()<<" - " << rec.channel);
-                    metric.m_minContrast[rec.channel] = rec.minContrast;
-                    metric.m_maxContrast[rec.channel] = rec.maxContrast;
+                    metric.m_min_contrast[rec.channel] = rec.min_contrast;
+                    metric.m_max_contrast[rec.channel] = rec.max_contrast;
                     return count;
                 }
                 /** Write metric to the output stream
@@ -108,8 +108,8 @@ namespace illumina{ namespace interop{ namespace io {
                     {
                         if(channelIndex > 0) write_binary(stream, metric_id);
                         count += stream_map< channel_t >(stream, channelIndex);
-                        count += stream_map< contrast_t >(stream, metric.m_minContrast[channelIndex]);
-                        count += stream_map< contrast_t >(stream, metric.m_maxContrast[channelIndex]);
+                        count += stream_map< contrast_t >(stream, metric.m_min_contrast[channelIndex]);
+                        count += stream_map< contrast_t >(stream, metric.m_max_contrast[channelIndex]);
                     }
                     return count;
                 }
@@ -201,9 +201,9 @@ namespace illumina{ namespace interop{ namespace io {
                 static std::streamsize map_stream(Stream& stream, Metric& metric, Header& header, const bool)
                 {
                     std::streamsize count = 0;
-                    copy_from(stream, metric.m_channelCount, header.m_channelCount);
-                    count += stream_map< contrast_t >(stream, metric.m_minContrast, header.m_channelCount);
-                    count += stream_map< contrast_t >(stream, metric.m_maxContrast, header.m_channelCount);
+                    copy_from(stream, metric.m_channel_count, header.m_channel_count);
+                    count += stream_map< contrast_t >(stream, metric.m_min_contrast, header.m_channel_count);
+                    count += stream_map< contrast_t >(stream, metric.m_max_contrast, header.m_channel_count);
                     return count;
                 }
                 /** Compute the layout size
@@ -225,7 +225,7 @@ namespace illumina{ namespace interop{ namespace io {
                 template<class Stream, class Header>
                 static std::streamsize map_stream_for_header(Stream& stream, Header& header)
                 {
-                    return stream_map< channel_count_t >(stream, header.m_channelCount);
+                    return stream_map< channel_count_t >(stream, header.m_channel_count);
                 }
                 /** Compute header size
                  *

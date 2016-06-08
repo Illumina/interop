@@ -97,7 +97,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
             }
         }
     }
-    /** Populate cumulative collapsed q-metric distribution
+    /** Populate cumulative by lane q-metric distribution
      *
      * @param q_metric_set q-metric set
      */
@@ -140,7 +140,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
     {
         populate_cumulative_distribution_t(q_metric_set);
     }
-    /** Populate cumulative q-metric distribution by lane
+    /** Populate cumulative cpllapsed q-metric distribution
      *
      * @note This can exist here or in SWIG. This is a swig interface function.
      * @param q_metric_set q-metric set

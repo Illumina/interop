@@ -98,7 +98,7 @@ namespace illumina { namespace interop { namespace logic { namespace table {
      * @return vector of column headers
      */
     inline std::vector<model::table::column_header> imaging_column_headers(const std::vector<std::string>& channels)
-                                                                            throw(std::logic_error)
+                                                                            throw(model::invalid_column_type)
     {
         std::vector<std::string> names = imaging_table_column_names();
         std::vector<model::table::column_header> headers;
@@ -131,7 +131,7 @@ namespace illumina { namespace interop { namespace logic { namespace table {
                 }
                 default:
                 {
-                    throw std::logic_error("Column index does not have a type");
+                    throw model::invalid_column_type("Column index does not have a type");
                 }
             }
         }

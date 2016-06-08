@@ -92,7 +92,7 @@ int main(int argc, char** argv)
         {
             logic::plot::plot_flowcell_map(run, "AccumPercentQ20", options, data);
         }
-        catch(const std::invalid_argument& ex)
+        catch(const std::exception& ex)
         {
             std::cerr << ex.what() << std::endl;
             return UNEXPECTED_EXCEPTION;
@@ -149,12 +149,7 @@ int test_all_filter_options(run_metrics& run)
                             {
                                 logic::plot::plot_flowcell_map(run, metric_names[i], options, data);
                             }
-                            catch(const model::invalid_read_exception& ex)
-                            {
-                                std::cerr << ex.what() << std::endl;
-                                return UNEXPECTED_EXCEPTION;
-                            }
-                            catch(const model::index_out_of_bounds_exception& ex)
+                            catch(const std::exception& ex)
                             {
                                 std::cerr << ex.what() << std::endl;
                                 return UNEXPECTED_EXCEPTION;

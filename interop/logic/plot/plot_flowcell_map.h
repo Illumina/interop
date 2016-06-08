@@ -37,7 +37,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                                const model::run::flowcell_layout& layout,
                                const model::plot::filter_options &options,
                                model::plot::flowcell_data& data,
-                               std::vector<float>& values_for_scaling)
+                               std::vector<float>& values_for_scaling) throw(model::index_out_of_bounds_exception)
     {
         if(beg == end) return;
         const bool all_surfaces = !options.is_specific_surface();
@@ -71,9 +71,10 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                                   const constants::metric_type type,
                                   const model::plot::filter_options& options,
                                   model::plot::flowcell_data& data)
-                                  throw(std::invalid_argument, std::logic_error, model::invalid_metric_type)
+                                  throw(std::invalid_argument,
+                                  model::invalid_metric_type,
+                                  model::index_out_of_bounds_exception)
     {
-
         const model::run::flowcell_layout& layout = metrics.run_info().flowcell();
         data.clear();
         data.resize(layout.lane_count(), layout.total_swaths(!options.is_specific_surface()), layout.tiles_per_lane());

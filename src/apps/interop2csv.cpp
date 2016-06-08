@@ -157,7 +157,7 @@ void print_help(std::ostream& out);
  * @param filename path to run folder
  * @return error code or 0
  */
-int write_interops(std::ostream& out, const std::string& filename);
+int write_interops(std::ostream& out, const std::string& filename)throw(model::index_out_of_bounds_exception);
 
 /** Set false if you want to disable error messages printing to the error stream */
 bool kPrintError=true;
@@ -177,12 +177,20 @@ int main(int argc, char** argv)
     for(int i=1;i<argc;i++)
     {
         std::cout << "# Run Folder: " << io::basename(argv[i]) << std::endl;
-        int res = write_interops(std::cout, argv[i]);
-        if(res != SUCCESS)
+        try
         {
-            std::cout << "# Error: " << res << std::endl;
-            std::cout << "# Version: " << INTEROP_VERSION << std::endl;
-            return res;
+            int res = write_interops(std::cout, argv[i]);
+            if (res != SUCCESS)
+            {
+                std::cout << "# Error: " << res << std::endl;
+                std::cout << "# Version: " << INTEROP_VERSION << std::endl;
+                return res;
+            }
+        }
+        catch(const std::exception& ex)
+        {
+            std::cerr << ex.what() << std::endl;
+            return UNEXPECTED_EXCEPTION;
         }
     }
     std::cout << "# Version: " << INTEROP_VERSION << std::endl;
@@ -424,7 +432,7 @@ int write_corrected_intensity_metrics(std::ostream& out, const std::string& file
  * @param filename path to run folder
  * @return error code or 0
  */
-int write_extraction_metrics(std::ostream& out, const std::string& filename)
+int write_extraction_metrics(std::ostream& out, const std::string& filename) throw(model::index_out_of_bounds_exception)
 {
     typedef model::metric_base::metric_set<extraction_metric> extraction_metric_set;
     extraction_metric_set metrics;
@@ -735,7 +743,7 @@ int encode_error(int res, int type)
  * @param filename path to run folder
  * @return error code or 0
  */
-int write_interops(std::ostream& out, const std::string& filename)
+int write_interops(std::ostream& out, const std::string& filename) throw(model::index_out_of_bounds_exception)
 {
     int res;
     int valid_count = 0;

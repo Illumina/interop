@@ -47,6 +47,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
          * @return metric value
          */
         float operator()(const model::metrics::extraction_metric& metric, const constants::metric_type type)const
+                                                                    throw(model::index_out_of_bounds_exception)
         {
             switch(type)
             {
@@ -87,6 +88,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
          * @return metric value
          */
         float operator()(const model::metrics::q_by_lane_metric& metric, const constants::metric_type type)const
+                                                        throw(model::index_out_of_bounds_exception)
         {
             switch(type)
             {
@@ -193,6 +195,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
          * @return metric value
          */
         float operator()(const model::metrics::corrected_intensity_metric& metric, const constants::metric_type type)const
+                                                                              throw(model::index_out_of_bounds_exception)
         {
             switch(type)
             {
@@ -234,6 +237,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
          * @return metric value
          */
         float operator()(const model::metrics::tile_metric& metric, const constants::metric_type type)const
+                                                             throw(model::index_out_of_bounds_exception)
         {
             const float density_scale = 1000;
             const float count_scale = 1000000;

@@ -13,104 +13,49 @@ namespace std
 #include "interop/model/model_exceptions.h"
 #include "interop/util/xml_exceptions.h"
 %}
+//%include "interop/model/model_exceptions.h"
 
 
 #if defined(SWIGCSHARP)
-%include "src/ext/swig/exceptions/exceptions_csharp.i"
 
+    %include "src/ext/swig/exceptions/exceptions_csharp.i"
 
-// TODO: Add to Python binding?
- %typemap(throws, canthrow=1) std::invalid_argument {
-   SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, $1.what());
-   return $null;
- }
-
-// TODO: use built in c++ stdexcept
-%typemap(throws, canthrow=1) illumina::interop::model::index_out_of_bounds_exception {
-  SWIG_CSharpSetPendingException(SWIG_CSharpIndexOutOfRangeException, $1.what());
-  return $null;
-}
-%typemap(throws, canthrow=1) illumina::interop::model::invalid_channel_exception {
-  SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, $1.what());
-  return $null;
-}
-
-// TODO: wrap these
-%typemap(throws, canthrow=1) illumina::interop::xml::xml_format_exception {
-  SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, $1.what());
-  return $null;
-}
-%typemap(throws, canthrow=1) illumina::interop::xml::xml_file_not_found_exception {
-  SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, $1.what());
-  return $null;
-}
-%typemap(throws, canthrow=1) illumina::interop::xml::xml_parse_exception {
-  SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, $1.what());
-  return $null;
-}
-%typemap(throws, canthrow=1) illumina::interop::xml::bad_xml_format_exception {
-  SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, $1.what());
-  return $null;
-}
-%typemap(throws, canthrow=1) illumina::interop::xml::empty_xml_format_exception {
-  SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, $1.what());
-  return $null;
-}
-%typemap(throws, canthrow=1) illumina::interop::xml::missing_xml_element_exception {
-  SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, $1.what());
-  return $null;
-}
-
+    %typemap(throws, canthrow=1) std::invalid_argument {
+        SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, $1.what());
+        return $null;
+    }
 
 #elif defined(SWIGPYTHON)
 
-
-%extend illumina::interop::io::file_not_found_exception{
-    std::string __str__()const{return self->what();}
-}
-
-%extend illumina::interop::io::format_exception{
-    std::string __str__()const{return self->what();}
-}
-
-%extend illumina::interop::io::bad_format_exception{
-    std::string __str__()const{return self->what();}
-}
-
-%extend illumina::interop::io::incomplete_file_exception{
-    std::string __str__()const{return self->what();}
-}
-
-%extend  illumina::interop::model::index_out_of_bounds_exception {
-    std::string __str__()const{return self->what();}
-}
-
-%extend  illumina::interop::model::invalid_channel_exception {
-    std::string __str__()const{return self->what();}
-}
-%extend  illumina::interop::xml::xml_format_exception {
-    std::string __str__()const{return self->what();}
-}
-%extend  illumina::interop::xml::xml_file_not_found_exception {
-    std::string __str__()const{return self->what();}
-}
-%extend  illumina::interop::xml::xml_parse_exception {
-    std::string __str__()const{return self->what();}
-}
-%extend  illumina::interop::xml::bad_xml_format_exception {
-    std::string __str__()const{return self->what();}
-}
-%extend  illumina::interop::xml::empty_xml_format_exception {
-    std::string __str__()const{return self->what();}
-}
-%extend  illumina::interop::xml::missing_xml_element_exception {
-    std::string __str__()const{return self->what();}
-}
-
-
+    %define WRAP_EXCEPTION(NAMESPACE, EXCEPTION_CPLUS_PLUS, EXCEPTION_CSHARP)
+        %extend NAMESPACE EXCEPTION_CPLUS_PLUS {
+            std::string __str__()const{return self->what();}
+        }
+%enddef
 
 #endif
 
+WRAP_EXCEPTION(illumina::interop::io::, file_not_found_exception, FileNotFoundException)
+WRAP_EXCEPTION(illumina::interop::io::, bad_format_exception, BadFormatException)
+WRAP_EXCEPTION(illumina::interop::io::, incomplete_file_exception, IncompleteFileException)
+
+//WRAP_EXCEPTION(std::, invalid_argument, invalid_argument)
+
+WRAP_EXCEPTION(illumina::interop::model::, index_out_of_bounds_exception, IndexOutOfBoundsException)
+WRAP_EXCEPTION(illumina::interop::model::, invalid_channel_exception, InvalidChannelException)
+WRAP_EXCEPTION(illumina::interop::model::, invalid_read_exception, InvalidReadException)
+WRAP_EXCEPTION(illumina::interop::model::, invalid_metric_type, InvalidMetricType)
+// todo enable with imaging logic
+//WRAP_EXCEPTION(illumina::interop::model::, invalid_column_type, InvalidColumnTypeException)
+
+
+// TODO: support proper inheritance of exceptions for c#
+//WRAP_EXCEPTION(illumina::interop::xml::, xml_format_exception, XmlFormatException)
+WRAP_EXCEPTION(illumina::interop::xml::, xml_file_not_found_exception, XmlFileNotFoundException)
+WRAP_EXCEPTION(illumina::interop::xml::, xml_parse_exception, XmlParseException)
+WRAP_EXCEPTION(illumina::interop::xml::, bad_xml_format_exception, BadXmlFormatException)
+WRAP_EXCEPTION(illumina::interop::xml::, empty_xml_format_exception, EmptyXmlFormatException)
+WRAP_EXCEPTION(illumina::interop::xml::, missing_xml_element_exception, MissingXmlElementException)
 
 %include "interop/io/stream_exceptions.h"
 %include "interop/util/xml_exceptions.h"
