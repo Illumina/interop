@@ -466,7 +466,7 @@ namespace illumina {
                     uint_t median(const qscore_bin_vector_type& bins=qscore_bin_vector_type())const
                     {
                         uint_t total = sum_qscore();
-                        uint_t position = total % 2 == 0 ? total / 2 + 1 : (total + 1) / 2;
+                        uint_t position = (total % 2 == 0) ? total / 2 + 1 : (total + 1) / 2;
                         uint_t i=0;
                         uint_t sum = 0;
                         for(;i<m_qscore_hist.size();i++)
@@ -474,9 +474,17 @@ namespace illumina {
                             sum += m_qscore_hist[i];
                             if(sum >= position)break;
                         }
-                        if(bins.size()==0) return i+1;
+                        if(bins.size()==0 || !is_compressed()) return i+1;
                         if(i<bins.size()) return bins[i].value();
                         return std::numeric_limits<uint_t>::max();
+                    }
+                    /** Is the histogram compressed to the number of bins
+                     *
+                     * @return true if the size of the histogram is less than 50
+                     */
+                    bool is_compressed()const
+                    {
+                        return m_qscore_hist.size() < MAX_Q_BINS;
                     }
                     /** Check if the cumulative histogram has not been populated
                      *

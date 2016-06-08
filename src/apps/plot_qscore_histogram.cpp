@@ -69,14 +69,13 @@ int main(int argc, char** argv)
         if(ret != SUCCESS) return ret;
 
 
-        model::plot::filter_options options(run.run_info().flowcell().naming_method(), /* naming method */
-                                            model::plot::filter_options::ALL_IDS, /*lane */
-                                            model::plot::filter_options::ALL_CHANNELS, /* channels */
-                                            (constants::dna_bases)model::plot::filter_options::ALL_BASES, /* bases */
-        constants::Bottom, //model::plot::filter_options::ALL_IDS, /* surface */
-                                            model::plot::filter_options::ALL_IDS /* read */
-                                            ,1 /* cycle */
-                                            );
+        model::plot::filter_options options(run.run_info().flowcell().naming_method(),
+                                            model::plot::filter_options::ALL_IDS,
+                                            model::plot::filter_options::ALL_IDS,
+                                            (constants::dna_bases)model::plot::filter_options::ALL_BASES,
+                                            constants::Top,
+                                            model::plot::filter_options::ALL_IDS
+        );
         model::plot::plot_data<model::plot::bar_point> data;
         try
         {

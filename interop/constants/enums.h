@@ -7,6 +7,7 @@
  */
 
 #pragma once
+
 #include <climits>
 #include <limits>
 #include "interop/util/cstdint.h"
@@ -37,8 +38,8 @@
         INTEROP_TUPLE4(Q20Percent, "% >=Q20", Q, CycleFeature),\
         /*INTEROP_TUPLE4(PercentQ30, "% >=Q30", Q, CycleFeature),*/\
         INTEROP_TUPLE4(Q30Percent, "% >=Q30", Q, CycleFeature),\
-        INTEROP_TUPLE4(AccumPercentQ20, "% >=Q20 (Accum)", Q, CycleFeature),\
-        INTEROP_TUPLE4(AccumPercentQ30, "% >=Q30 (Accum)", Q, CycleFeature),\
+        INTEROP_TUPLE4(AccumPercentQ20, "% >=Q20 (Accumulated)", Q, CycleFeature),\
+        INTEROP_TUPLE4(AccumPercentQ30, "% >=Q30 (Accumulated)", Q, CycleFeature),\
         INTEROP_TUPLE4(QScore, "Median QScore", Q, CycleFeature),\
         INTEROP_TUPLE4(Clusters, "Density", Tile, TileFeature),\
         /*INTEROP_TUPLE4(Density, "Density (K/mm2)", Tile, TileFeature),*/ \
@@ -53,7 +54,7 @@
         INTEROP_TUPLE4(PercentAligned, "% Aligned", Tile, ReadFeature),\
         INTEROP_TUPLE4(CorrectedIntensity, "Corrected Int", CorrectedInt, CycleFeature|BaseFeature),\
         INTEROP_TUPLE4(CalledIntensity, "Called Int", CorrectedInt, CycleFeature|BaseFeature),\
-        INTEROP_TUPLE4(SignalToNoise, "Signal To Noise", CorrectedInt, CycleFeature),\
+        INTEROP_TUPLE4(SignalToNoise, "Signal to Noise", CorrectedInt, CycleFeature),\
         INTEROP_TUPLE4(MetricTypeCount, "!!!!BAD!!!!", UnknownMetricGroup, UnknownMetricFeature),\
         INTEROP_TUPLE4(UnknownMetricType, "!!!!BAD!!!!", UnknownMetricGroup, UnknownMetricFeature)
 
@@ -208,36 +209,70 @@
 #define INTEROP_TUPLE1(X) X
 /** This temp macro converts an enum/value pair to an enum */
 #define INTEROP_TUPLE2(X, V) X=V
-namespace illumina {
-    namespace interop {
-        namespace constants {
-            /** Common codes for all enums */
-            enum common { Unknown = INTEROP_UNKNOWN};
-            /** Codes for each metric type */
-            enum metric_type {INTEROP_ENUM_METRIC_TYPES = INTEROP_UNKNOWN};
-            /** Codes for each metric group */
-            enum metric_group {INTEROP_ENUM_METRIC_GROUPS = INTEROP_UNKNOWN };
-            /** Tile naming conventions used in various Illumina Platforms */
-            enum tile_naming_method {INTEROP_ENUM_TILE_NAMING_METHODS = INTEROP_UNKNOWN};
-            /** DNA base constants */
-            enum dna_bases {INTEROP_ENUM_DNA_BASE_TYPES = INTEROP_UNKNOWN};
-            /** Flow cell surface code */
-            enum surface_type {INTEROP_ENUM_SURFACE_TYPES = INTEROP_UNKNOWN};
-            /** Instrument type */
-            enum instrument_type {INTEROP_ENUM_INSTRUMENT_TYPES = INTEROP_UNKNOWN};
-            /** Base types for each metric */
-            enum metric_base_type {INTEROP_ENUM_METRIC_BASE_TYPES = INTEROP_UNKNOWN};
-            /** Color codes for plotting */
-            enum plot_colors {INTEROP_ENUM_PLOT_COLORS = INTEROP_UNKNOWN};
-            /** Options for a bar plot */
-            enum bar_plot_options{ INTEROP_ENUM_BAR_PLOT_OPTIONS  = INTEROP_UNKNOWN};
-            /** Options for a bar plot */
-            enum metric_data{ INTEROP_ENUM_METRIC_DATA_TYPES  = INTEROP_UNKNOWN};
-            /** Options describing metric features */
-            enum metric_feature_type {INTEROP_ENUM_METRIC_FEATURE_TYPE};
-        }
-    }
-}
+
+namespace illumina { namespace interop { namespace constants
+{
+    /** Common codes for all enums */
+    enum common
+    {
+        Unknown = INTEROP_UNKNOWN
+    };
+    /** Codes for each metric type */
+    enum metric_type
+    {
+        INTEROP_ENUM_METRIC_TYPES = INTEROP_UNKNOWN
+    };
+    /** Codes for each metric group */
+    enum metric_group
+    {
+        INTEROP_ENUM_METRIC_GROUPS = INTEROP_UNKNOWN
+    };
+    /** Tile naming conventions used in various Illumina Platforms */
+    enum tile_naming_method
+    {
+        INTEROP_ENUM_TILE_NAMING_METHODS = INTEROP_UNKNOWN
+    };
+    /** DNA base constants */
+    enum dna_bases
+    {
+        INTEROP_ENUM_DNA_BASE_TYPES = INTEROP_UNKNOWN
+    };
+    /** Flow cell surface code */
+    enum surface_type
+    {
+        INTEROP_ENUM_SURFACE_TYPES = INTEROP_UNKNOWN
+    };
+    /** Instrument type */
+    enum instrument_type
+    {
+        INTEROP_ENUM_INSTRUMENT_TYPES = INTEROP_UNKNOWN
+    };
+    /** Base types for each metric */
+    enum metric_base_type
+    {
+        INTEROP_ENUM_METRIC_BASE_TYPES = INTEROP_UNKNOWN
+    };
+    /** Color codes for plotting */
+    enum plot_colors
+    {
+        INTEROP_ENUM_PLOT_COLORS = INTEROP_UNKNOWN
+    };
+    /** Options for a bar plot */
+    enum bar_plot_options
+    {
+        INTEROP_ENUM_BAR_PLOT_OPTIONS = INTEROP_UNKNOWN
+    };
+    /** Options for a bar plot */
+    enum metric_data
+    {
+        INTEROP_ENUM_METRIC_DATA_TYPES = INTEROP_UNKNOWN
+    };
+    /** Options describing metric features */
+    enum metric_feature_type
+    {
+        INTEROP_ENUM_METRIC_FEATURE_TYPE
+    };
+}}}
 
 #undef INTEROP_TUPLE1
 #undef INTEROP_TUPLE2

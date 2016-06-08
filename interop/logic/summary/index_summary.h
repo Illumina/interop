@@ -54,7 +54,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
                     map_iterator found_index = index_count_map.find(ib->index_seq());
                     if(found_index == index_count_map.end())
                     {
-                        index_count_map[ib->index_seq()] = index_count_summary(index_count_map.size()+1,
+                        index_count_map[ib->index_seq()] = index_count_summary(index_count_map.size()+1,// TODO: get correspondance with plot
                                                                                ib->index1(),
                                                                                ib->index2(),
                                                                                ib->sample_id(),

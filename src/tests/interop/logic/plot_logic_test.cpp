@@ -233,6 +233,6 @@ TEST(plot_logic, sample_qc)
     EXPECT_EQ(data.y_axis().label(), "% Reads Identified (PF)");
     EXPECT_NEAR(data.x_axis().min(), 0.0f, tol);
     EXPECT_NEAR(data.y_axis().min(), 0.0f, tol);
-    EXPECT_NEAR(data.x_axis().max(), 0, tol);
+    EXPECT_NEAR(data.x_axis().max(), 1, tol);
     EXPECT_NEAR(data.y_axis().max(), 5, tol);
 }

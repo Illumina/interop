@@ -131,7 +131,11 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                 typedef model::metric_base::metric_set<metric_t> metric_set_t;
                 metric_set_t &metric_set = metrics.get_set<metric_t>();
                 if(0 == metric_set.size())
+                {
                     logic::metric::create_collapse_q_metrics(metrics.get_set<model::metrics::q_metric>(), metric_set);
+                    if(type == constants::AccumPercentQ20 || type == constants::AccumPercentQ30)
+                        logic::metric::populate_cumulative_distribution(metric_set);
+                }
                 metric::metric_value<metric_t> proxy;
                 populate_flowcell_map(metric_set.begin(), metric_set.end(), proxy, type, layout, options, data,
                                       values_for_scaling);
@@ -154,10 +158,14 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
         if(!values_for_scaling.empty())
         {
             std::sort(values_for_scaling.begin(), values_for_scaling.end());
+            // TODO: Put this back
+            /*
             const float lower = util::percentile_sorted<float>(values_for_scaling.begin(), values_for_scaling.end(),
                                                                25);
             const float upper = util::percentile_sorted<float>(values_for_scaling.begin(), values_for_scaling.end(),
-                                                               75);
+                                                               75);*/
+            const float lower = values_for_scaling[size_t(0.25*values_for_scaling.size())];
+            const float upper = values_for_scaling[size_t(0.75*values_for_scaling.size())];
             data.set_range(std::max(lower - 2 * (upper - lower), values_for_scaling[0]),
                            std::min(values_for_scaling.back(), upper + 2 * (upper - lower)));
         }

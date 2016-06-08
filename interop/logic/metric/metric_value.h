@@ -55,7 +55,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
                 case constants::FWHM:
                     return metric.focus_score(channel);
                 default:
-                    throw model::invalid_metric_type("Unknown metric type");
+                    throw model::invalid_metric_type("Unknown metric type "+constants::to_string(type));
             }
         }
     private:
@@ -99,7 +99,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
                 case constants::QScore:
                     return static_cast<float>(metric.median(bins));
                 default:
-                    throw model::invalid_metric_type("Unknown metric type");
+                    throw model::invalid_metric_type("Unknown metric type "+constants::to_string(type));
             }
         }
     private:
@@ -135,9 +135,14 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
                 case constants::AccumPercentQ30:
                     return metric.cumulative_percent_over_q30();
                 case constants::QScore:
-                    return static_cast<float>(metric.median_qscore());
+                {
+                    const uint_t median = metric.median_qscore();
+                    if (median == std::numeric_limits<uint_t>::max() || median == 0)
+                        return std::numeric_limits<float>::quiet_NaN();
+                    return static_cast<float>(median);
+                }
                 default:
-                    throw model::invalid_metric_type("Unknown metric type");
+                    throw model::invalid_metric_type("Unknown metric type "+constants::to_string(type));
             }
         }
     };
@@ -163,7 +168,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
                 case constants::ErrorRate:
                     return metric.error_rate();
                 default:
-                    throw model::invalid_metric_type("Unknown metric type");
+                    throw model::invalid_metric_type("Unknown metric type "+constants::to_string(type));
             }
         }
     };
@@ -200,7 +205,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
                 case constants::SignalToNoise:
                     return metric.signal_to_noise();
                 default:
-                    throw model::invalid_metric_type("Unknown metric type");
+                    throw model::invalid_metric_type("Unknown metric type "+constants::to_string(type));
             }
         }
     private:
@@ -285,7 +290,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
                     return NaN;
                 }
                 default:
-                    throw model::invalid_metric_type("Unknown metric type");
+                    throw model::invalid_metric_type("Unknown metric type "+constants::to_string(type));
             }
         }
     private:

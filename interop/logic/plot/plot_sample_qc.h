@@ -9,6 +9,7 @@
 #include <map>
 #include "interop/util/statistics.h"
 #include "interop/constants/enums.h"
+#include "interop/logic/utils/enums.h"
 #include "interop/model/model_exceptions.h"
 #include "interop/model/run_metrics.h"
 #include "interop/model/plot/bar_point.h"
@@ -56,9 +57,11 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
             catch(const model::index_out_of_bounds_exception&){continue;} // TODO: check better?
         }
         points.resize(index_count_map.size());
-        size_t i=0;
         float max_height=0;
-        for(const_map_iterator b = index_count_map.begin(), e = index_count_map.end();b != e;++b, ++i)
+        std::vector<float> heights;
+        heights.reserve(index_count_map.size());
+        size_t i=0;
+        for(const_map_iterator b = index_count_map.begin(), e = index_count_map.end();b != e;++b,++i)
         {
             const float height = (pf_cluster_count_total==0) ? 0 : b->second / pf_cluster_count_total * 100.0f;
             points[i].set(i+1.0f, height, 1.0f);
@@ -94,7 +97,10 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                                                            lane,
                                                            data[0]);
         auto_scale(data);
-        data.set_range(data.x_axis().min(), static_cast<float>(data[0].size()), data.y_axis().min(), max_height+5);
+        data.set_range(data.x_axis().min(),
+                       static_cast<float>(data[0].size()+1),
+                       data.y_axis().min(),
+                       std::floor(max_height+5));
     }
 
 

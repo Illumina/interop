@@ -101,21 +101,21 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
      *
      * @param q_metric_set q-metric set
      */
-    inline void populate_cumulative_distribution(model::metric_base::metric_set<model::metrics::q_collapsed_metric>& q_metric_set)
+    inline void populate_cumulative_distribution(model::metric_base::metric_set<model::metrics::q_by_lane_metric>& q_metric_set)
                                                                                 throw( model::index_out_of_bounds_exception )
     {
         if(q_metric_set.size()==0) return;
-        typedef model::metrics::q_collapsed_metric q_collapsed_metric;
-        typedef model::metric_base::metric_set<q_collapsed_metric> q_collapsed_metric_set;
-        typedef q_collapsed_metric_set::id_vector id_vector;
-        typedef q_collapsed_metric_set::uint_t uint_t;
+        typedef model::metrics::q_by_lane_metric q_by_lane_metric;
+        typedef model::metric_base::metric_set<q_by_lane_metric> q_by_lane_metric_set;
+        typedef q_by_lane_metric_set::id_vector id_vector;
+        typedef q_by_lane_metric_set::uint_t uint_t;
         id_vector lane_ids = q_metric_set.lanes();
         const size_t tile_id = 0;
         for(id_vector::const_iterator lane_beg = lane_ids.begin(), lane_end = lane_ids.end();lane_beg != lane_end;++lane_beg)
         {
             size_t prev_idx = q_metric_set.find(*lane_beg, tile_id, 1);
             if(prev_idx >= q_metric_set.size()) continue;
-            q_collapsed_metric& metric = q_metric_set.at(prev_idx);
+            q_by_lane_metric& metric = q_metric_set.at(prev_idx);
             metric.accumulate(metric);
             const uint_t second_cycle_start = 2; // We have to accumulate the first cycle with itself, and every
             // subsequent with the previous cycle.
@@ -145,7 +145,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
      * @note This can exist here or in SWIG. This is a swig interface function.
      * @param q_metric_set q-metric set
      */
-    inline void populate_cumulative_distribution(model::metric_base::metric_set<model::metrics::q_by_lane_metric>& q_metric_set)
+    inline void populate_cumulative_distribution(model::metric_base::metric_set<model::metrics::q_collapsed_metric>& q_metric_set)
     throw( model::index_out_of_bounds_exception )
     {
         populate_cumulative_distribution_t(q_metric_set);

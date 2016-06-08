@@ -230,6 +230,58 @@ public:
     {
         return m_base == static_cast<dna_base_t>(ALL_BASES) || m_base == base;
     }
+
+public:
+    /** Set channel to filter
+     *
+     * @param channel channel
+     */
+    void channel(const channel_t channel)
+    {
+        m_channel = channel;
+    }
+    /** Set base to filter
+     *
+     * @param base base
+     */
+    void dna_base(const dna_base_t base)
+    {
+        m_base = base;
+    }
+    /** Set read to filter
+     *
+     * @param r read index
+     */
+    void read(const id_t r)
+    {
+        m_read = r;
+    }
+    /** Set cycle to filter
+     *
+     * @param c cycle index
+     */
+    void cycle(const id_t c)
+    {
+        m_cycle = c;
+    }
+    /** Set surface to filter
+     *
+     * @param s cycle index
+     */
+    void surface(const id_t s)
+    {
+        m_surface = s;
+    }
+    /** Set lane to filter
+     *
+     * @param l lane index
+     */
+    void lane(const id_t l)
+    {
+        m_lane = l;
+    }
+
+public:
     /** Get channel to display
      *
      * @return channel
@@ -284,7 +336,7 @@ public:
      */
     std::string channel_description(const std::vector<std::string>& channels)const
     {
-        return (m_channel == static_cast<channel_t>(ALL_CHANNELS)) ? "All Channels" :  "Channel " + channels[m_channel];
+        return (m_channel == static_cast<channel_t>(ALL_CHANNELS)) ? "All Channels" :  channels[m_channel] + " Channel";
     }
     /** Get a description of the base filter options
      *

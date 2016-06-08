@@ -67,6 +67,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                                         const model::plot::filter_options& options,
                                         const constants::metric_type type,
                                         model::plot::data_point_collection<model::plot::candle_stick_point>& points)
+                                            throw(model::invalid_metric_type)
     {
         const size_t max_cycle = metrics.max_cycle();
         const size_t tile_count = static_cast<size_t>(std::ceil(static_cast<float>(metrics.size())/max_cycle));
@@ -136,9 +137,13 @@ namespace illumina { namespace interop { namespace logic { namespace plot
     void plot_by_cycle(model::metrics::run_metrics& metrics,
                        const constants::metric_type type,
                        const model::plot::filter_options& options,
-                       model::plot::plot_data<Point>& data)
+                       model::plot::plot_data<Point>& data) throw(model::invalid_metric_type)
     {
         data.clear();
+        if(!options.all_cycles())
+            throw model::invalid_metric_type("Filtering by cycle is not supported");
+        if(!options.all_reads())
+            throw model::invalid_metric_type("Filtering by read is not supported");
         if(!utils::is_cycle_metric(type))
             throw model::invalid_metric_type("Only cycle metrics are supported");
         switch(logic::utils::to_group(type))
@@ -300,6 +305,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                        const std::string& metric_name,
                        const model::plot::filter_options& options,
                        model::plot::plot_data<Point>& data)
+                        throw(model::invalid_metric_type, std::invalid_argument)
     {
         const constants::metric_type type = constants::parse<constants::metric_type>(metric_name);
         if(type == constants::UnknownMetricType)

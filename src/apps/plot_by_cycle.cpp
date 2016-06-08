@@ -42,6 +42,8 @@
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop;
 
+int test_all_filter_options(run_metrics& run);
+
 int main(int argc, char** argv)
 {
     if(argc == 0)
@@ -60,20 +62,20 @@ int main(int argc, char** argv)
         int ret = read_run_metrics(argv[i], run);
         if(ret != SUCCESS) return ret;
 
-        model::plot::filter_options options(run.run_info().flowcell().naming_method(),
-                                            model::plot::filter_options::ALL_IDS,
-                                            0,
-                //model::plot::filter_options::ALL_CHANNELS,
-        constants::G, //(constants::dna_bases)model::plot::filter_options::ALL_BASES,
-                                            model::plot::filter_options::ALL_IDS,
-                                            model::plot::filter_options::ALL_IDS
-                                            //,1
-                                            );
+        if(1 == 0)
+        {
+            ret = test_all_filter_options(run);
+            if(ret != SUCCESS) return ret;
+            continue;
+        }
+
+        model::plot::filter_options options(run.run_info().flowcell().naming_method());
+        options.surface(constants::Bottom);
 
         model::plot::plot_data<model::plot::candle_stick_point> data;
 
         try{
-            logic::plot::plot_by_cycle(run, constants::CorrectedIntensity, options, data);
+            logic::plot::plot_by_cycle(run, constants::ErrorRate, options, data);
         }
         catch(const std::exception& ex)
         {
@@ -90,3 +92,59 @@ int main(int argc, char** argv)
 }
 
 
+int test_all_filter_options(run_metrics& run)
+{
+    const char* metric_names[] = {"Intensity", "FWHM", "CorrectedIntensity", "CalledIntensity", "BasePercent", "SignalToNoise", "ErrorRate", "Q20Percent", "Q30Percent", "QScore"};
+    typedef model::plot::filter_options::id_t id_t;
+    const constants::tile_naming_method naming_method = run.run_info().flowcell().naming_method();
+    const size_t surface_count = run.run_info().flowcell().surface_count();
+    const id_t ALL_IDS = model::plot::filter_options::ALL_IDS;
+    const id_t lane=ALL_IDS;
+    const id_t cycle = ALL_IDS;
+    const id_t read = ALL_IDS;
+    size_t plot_count = 0;
+    for(size_t i=0;i<util::length_of(metric_names);++i)
+    {
+        const constants::metric_type metric_type = constants::parse<constants::metric_type>(metric_names[i]);
+        const size_t base_count = logic::utils::is_base_metric(metric_type) ? constants::NUM_OF_BASES : 1;
+        const size_t channel_count = logic::utils::is_channel_metric(metric_type) ? run.run_info().channels().size() : 1;
+        //const size_t cycle_count = logic::utils::is_cycle_metric(metric_type) ? run.run_info().total_cycles() : 1;
+        //const size_t read_count = logic::utils::is_read_metric(metric_type) ? run.run_info().reads().size() : 1;
+        for(size_t base=0;base < base_count;++base)
+        {
+            for(size_t channel=0;channel < channel_count;++channel)
+            {
+                //for(size_t cycle=1;cycle <= cycle_count;++cycle)
+                {
+                    //for(size_t read=1;read <= read_count;++read)
+                    {
+                        for(size_t surface=0;surface <= surface_count;++surface)
+                        {
+                            model::plot::filter_options options(naming_method,
+                                                                lane,
+                                                                logic::utils::is_channel_metric(metric_type) ? (id_t)channel : (id_t)model::plot::filter_options::ALL_CHANNELS,
+                                                                (constants::dna_bases) (logic::utils::is_base_metric(metric_type) ? base : (size_t)model::plot::filter_options::ALL_BASES),
+                                                                surface,
+                                                                logic::utils::is_read_metric(metric_type) ? read : ALL_IDS,
+                                                                logic::utils::is_cycle_metric(metric_type) ? cycle : ALL_IDS);
+
+                            model::plot::plot_data<model::plot::candle_stick_point> data;
+
+                            try{
+                                logic::plot::plot_by_cycle(run, metric_names[i], options, data);
+                            }
+                            catch(const std::exception& ex)
+                            {
+                                std::cerr << ex.what() << std::endl;
+                                return UNEXPECTED_EXCEPTION;
+                            }
+                            plot_count++;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    std::cout << "I just created " << plot_count << " plots" << std::endl;
+    return SUCCESS;
+}

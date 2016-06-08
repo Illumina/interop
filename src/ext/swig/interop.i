@@ -10,10 +10,12 @@
 %include "src/ext/swig/arrays/arrays_impl.i"
 
 %{
+#include "interop/interop.h"
 #include "interop/constants/enums.h"
 #include "interop/util/time.h"
 #include "interop/io/metric_file_stream.h"
 %}
+%include "interop/interop.h"
 
 %ignore metric_group_iuo;
 %ignore set_base(const io::layout::base_metric& base);

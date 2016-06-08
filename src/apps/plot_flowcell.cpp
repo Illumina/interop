@@ -76,23 +76,21 @@ int main(int argc, char** argv)
         std::cout << "# Run Folder: " << io::basename(argv[i]) << std::endl;
         int ret = read_run_metrics(argv[i], run);
         if(ret != SUCCESS) return ret;
-
-//        test_all_filter_options(run);
-//#ifdef _UNUSED
-        model::plot::filter_options options(run.run_info().flowcell().naming_method(),
-                                            model::plot::filter_options::ALL_IDS,
-                                            0,
-                                            (constants::dna_bases)model::plot::filter_options::ALL_BASES,
-                                            model::plot::filter_options::ALL_IDS,
-                                            model::plot::filter_options::ALL_IDS
-                                            ,
-                                            1
-                                            );
+        if( 1 == 0)
+        {
+            ret = test_all_filter_options(run);
+            if(ret != SUCCESS) return ret;
+            continue;
+        }
+        model::plot::filter_options options(run.run_info().flowcell().naming_method());
+        options.surface(constants::Top);
+        //options.dna_base(constants::G);
+        options.cycle(1);
 
         model::plot::flowcell_data data;
         try
         {
-            logic::plot::plot_flowcell_map(run, "Intensity", options, data);
+            logic::plot::plot_flowcell_map(run, "AccumPercentQ20", options, data);
         }
         catch(const std::invalid_argument& ex)
         {
@@ -105,7 +103,6 @@ int main(int argc, char** argv)
         io::plot::gnuplot_writer plot_writer;
         plot_writer.write_flowcell(out, data, "flowcell.png");
         //plot_writer.write_flowcell_tile_id(out, data, "flowcell.png");
-//#endif
     }
     return SUCCESS;
 }
