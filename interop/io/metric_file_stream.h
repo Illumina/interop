@@ -42,7 +42,10 @@ namespace illumina { namespace interop { namespace io {
      */
     template<class MetricSet>
     void read_interop_from_buffer(::uint8_t* buffer, size_t buffer_size, MetricSet& metrics)  throw
-    (interop::io::file_not_found_exception, interop::io::bad_format_exception, interop::io::incomplete_file_exception)
+                                                                            (interop::io::file_not_found_exception,
+                                                                            interop::io::bad_format_exception,
+                                                                            interop::io::incomplete_file_exception,
+                                                                            model::index_out_of_bounds_exception)
     {
         detail::membuf sbuf(reinterpret_cast<char*>(buffer), reinterpret_cast<char*>(buffer) + buffer_size);
         std::istream in(&sbuf);
@@ -64,7 +67,10 @@ namespace illumina { namespace interop { namespace io {
      */
     template<class MetricSet>
     void read_interop(const std::string& run_directory, MetricSet& metrics, const bool use_out=true)   throw
-    (interop::io::file_not_found_exception, interop::io::bad_format_exception, interop::io::incomplete_file_exception)
+                                                                        (interop::io::file_not_found_exception,
+                                                                        interop::io::bad_format_exception,
+                                                                        interop::io::incomplete_file_exception,
+                                                                        model::index_out_of_bounds_exception)
     {
         const std::string fileName = interop_filename<MetricSet>(run_directory, use_out);
         std::ifstream fin(fileName.c_str(), std::ios::binary);

@@ -101,7 +101,14 @@ int main(int argc, char** argv)
         if(data.length() == 0 ) continue;
         std::ostream& out = std::cout;
         io::plot::gnuplot_writer plot_writer;
-        plot_writer.write_flowcell(out, data, "flowcell.png");
+        try{
+            plot_writer.write_flowcell(out, data, "flowcell.png");
+        }
+        catch(const std::exception& ex)
+        {
+            std::cerr << ex.what() << std::endl;
+            return UNEXPECTED_EXCEPTION;
+        }
         //plot_writer.write_flowcell_tile_id(out, data, "flowcell.png");
     }
     return SUCCESS;

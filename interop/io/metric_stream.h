@@ -8,6 +8,7 @@
  */
 #include <string>
 #include <fstream>
+#include "interop/model/model_exceptions.h"
 #include "interop/io/format/metric_format_factory.h"
 #include "interop/util/filesystem.h"
 #include "interop/util/assert.h"

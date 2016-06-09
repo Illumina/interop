@@ -68,8 +68,9 @@ namespace illumina { namespace interop { namespace model { namespace plot {
          * @param index index of point
          * @return data point
          */
-        const series<Point>& at(const size_type index)const
+        const series<Point>& at(const size_type index)const throw(model::index_out_of_bounds_exception)
         {
+            if(index >= m_series.size()) throw model::index_out_of_bounds_exception("Row index out of bounds");
             return m_series.at(index);
         }
         /** Get point at index
@@ -77,9 +78,9 @@ namespace illumina { namespace interop { namespace model { namespace plot {
          * @param index index of point
          * @return data point
          */
-        const_reference operator[](const size_type index)const
+        const_reference operator[](const size_type index)const throw(model::index_out_of_bounds_exception)
         {
-            INTEROP_ASSERT(index < m_series.size());
+            if(index >= m_series.size()) throw model::index_out_of_bounds_exception("Row index out of bounds");
             return m_series[index];
         }
         /** Get point at index
@@ -87,9 +88,9 @@ namespace illumina { namespace interop { namespace model { namespace plot {
          * @param index index of point
          * @return data point
          */
-        reference operator[](const size_type index)
+        reference operator[](const size_type index) throw(model::index_out_of_bounds_exception)
         {
-            INTEROP_ASSERT(index < m_series.size());
+            if(index >= m_series.size()) throw model::index_out_of_bounds_exception("Row index out of bounds");
             return m_series[index];
         }
         /** Number of points in collection

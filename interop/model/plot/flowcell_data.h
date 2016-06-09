@@ -51,9 +51,10 @@ public:
      * @param value value of the metric
      */
     void set_data(const size_t lane_idx, const size_t loc, const ::uint32_t tile_id, const float value)
+    throw(model::index_out_of_bounds_exception)
     {
-        INTEROP_ASSERT(lane_idx < row_count());
-        INTEROP_ASSERTMSG((loc) < column_count(), loc << " < " << column_count() << " - rows: " << row_count());
+        if(lane_idx >= lane_count()) throw model::index_out_of_bounds_exception("Lane index out of bounds");
+        if(loc >= column_count()) throw model::index_out_of_bounds_exception("Location index out of bounds");
         //INTEROP_ASSERT(lane < m_data.size());
         heatmap_data::operator()(lane_idx, loc) = value;
         m_data[index_of(lane_idx, loc)] = tile_id;
@@ -64,8 +65,10 @@ public:
      * @param loc
      * @return tile id
      */
-    ::uint32_t tile_id(const size_t lane_idx, const size_t loc)const
+    ::uint32_t tile_id(const size_t lane_idx, const size_t loc)const throw(model::index_out_of_bounds_exception)
     {
+        if(lane_idx >= lane_count()) throw model::index_out_of_bounds_exception("Lane index out of bounds");
+        if(loc >= column_count()) throw model::index_out_of_bounds_exception("Location index out of bounds");
         INTEROP_ASSERT(index_of(lane_idx, loc) < m_data.size());
         return m_data[index_of(lane_idx, loc)];
     }

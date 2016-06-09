@@ -7,106 +7,99 @@
  */
 #pragma once
 
-namespace illumina
-{
-namespace interop
-{
-namespace model
-{
-namespace summary
+namespace illumina { namespace interop { namespace model { namespace summary
 {
 
-/** Simple statistics describing a set of metrics
- *
- */
-class metric_stat
-{
-public:
-    /** Constructor
+    /** Simple statistics describing a set of metrics
      *
-     * @param mean mean value over several metrics
-     * @param stddev standard deviation over several metrics
-     * @param median median over several metrics
      */
-    metric_stat(const float mean=0,
-                const float stddev=0,
-                const float median=0) :
-            m_mean(mean),
-            m_stddev(stddev),
-            m_median(median)
+    class metric_stat
     {
-    }
+    public:
+        /** Constructor
+         *
+         * @param mean mean value over several metrics
+         * @param stddev standard deviation over several metrics
+         * @param median median over several metrics
+         */
+        metric_stat(const float mean = 0,
+                    const float stddev = 0,
+                    const float median = 0) :
+                m_mean(mean),
+                m_stddev(stddev),
+                m_median(median)
+        {
+        }
 
-public:
-    /** Set the mean value
-     *
-     * @param val mean value
-     */
-    void mean(const float val)
-    {
-        m_mean = val;
-    }
-    /** Set the standard deviation value
-     *
-     * @param val standard deviation value
-     */
-    void stddev(const float val)
-    {
-        m_stddev = val;
-    }
-    /** Set the median value
-     *
-     * @param val median value
-     */
-    void median(const float val)
-    {
-        m_median = val;
-    }
+    public:
+        /** Set the mean value
+         *
+         * @param val mean value
+         */
+        void mean(const float val)
+        {
+            m_mean = val;
+        }
 
-public:
-    /** @defgroup metric_stat Metric statistics
-     *
-     * Simple statistics of a metric
-     *
-     * @ingroup lane_summary
-     * @ref illumina::interop::model::summary::metric_stat "See full class description"
-     * @{
-     */
-    /** Get the mean value over several metrics
-     *
-     * @return mean value over several metrics
-     */
-    float mean()const
-    {
-        return m_mean;
-    }
-    /** Get the standard deviation over several metrics
-     *
-     * @return standard deviation over several metrics
-     */
-    float stddev()const
-    {
-        return m_stddev;
-    }
-    /** Get the median over several metrics
-     *
-     * @return median over several metrics
-     */
-    float median()const
-    {
-        return m_median;
-    }
-    /** @} */
-protected:
-    /** Mean value */
-    float m_mean;
-    /** Standard deviation value */
-    float m_stddev;
-    /** Median value */
-    float m_median;
-};
+        /** Set the standard deviation value
+         *
+         * @param val standard deviation value
+         */
+        void stddev(const float val)
+        {
+            m_stddev = val;
+        }
 
-}
-}
-}
-}
+        /** Set the median value
+         *
+         * @param val median value
+         */
+        void median(const float val)
+        {
+            m_median = val;
+        }
+
+    public:
+        /** @defgroup metric_stat Metric statistics
+         *
+         * Simple statistics of a metric
+         *
+         * @ingroup lane_summary
+         * @ref illumina::interop::model::summary::metric_stat "See full class description"
+         * @{
+         */
+        /** Get the mean value over several metrics
+         *
+         * @return mean value over several metrics
+         */
+        float mean() const
+        {
+            return m_mean;
+        }
+        /** Get the standard deviation over several metrics
+         *
+         * @return standard deviation over several metrics
+         */
+        float stddev() const
+        {
+            return m_stddev;
+        }
+        /** Get the median over several metrics
+         *
+         * @return median over several metrics
+         */
+        float median() const
+        {
+            return m_median;
+        }
+        /** @} */
+    protected:
+        /** Mean value */
+        float m_mean;
+        /** Standard deviation value */
+        float m_stddev;
+        /** Median value */
+        float m_median;
+    };
+
+}}}}

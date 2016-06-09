@@ -65,7 +65,14 @@ int main(int argc, char** argv)
         if(data.size() == 0 ) continue;
         std::ostream& out = std::cout;
         io::plot::gnuplot_writer plot_writer;
-        plot_writer.write_chart(out, data, "plot_by_lane.png");
+        try{
+            plot_writer.write_chart(out, data, "plot_by_lane.png");
+        }
+        catch(const std::exception& ex)
+        {
+            std::cerr << ex.what() << std::endl;
+            return UNEXPECTED_EXCEPTION;
+        }
     }
     return SUCCESS;
 }

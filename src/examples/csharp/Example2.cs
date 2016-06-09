@@ -62,15 +62,15 @@ class Helper
 		{
 			c_csharp_interop.read_interop (filename, tile_metric_set);
 		}
-		catch(incomplete_file_exception){}
-		catch(file_not_found_exception ex)
+		catch(IncompleteFileException){}
+		catch(FileNotFoundException ex)
 		{
 
 			Console.WriteLine("File not found: "+filename);
 			Console.WriteLine (ex);
 			return 1;
 		}
-		catch(bad_format_exception ex)
+		catch(BadFormatException ex)
 		{
 			Console.WriteLine (ex);
 			return 1;

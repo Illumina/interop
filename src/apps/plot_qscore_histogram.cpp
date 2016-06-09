@@ -81,12 +81,7 @@ int main(int argc, char** argv)
         {
             logic::plot::plot_qscore_histogram(run, options, data);
         }
-        catch(const model::invalid_read_exception& ex)
-        {
-            std::cerr << ex.what() << std::endl;
-            return UNEXPECTED_EXCEPTION;
-        }
-        catch(const model::index_out_of_bounds_exception& ex)
+        catch(const std::exception& ex)
         {
             std::cerr << ex.what() << std::endl;
             return UNEXPECTED_EXCEPTION;
@@ -94,7 +89,15 @@ int main(int argc, char** argv)
         if(data.size() == 0 ) continue;
         std::ostream& out = std::cout;
         io::plot::gnuplot_writer plot_writer;
-        plot_writer.write_chart(out, data, "q-hist.png");
+        try
+        {
+            plot_writer.write_chart(out, data, "q-hist.png");
+        }
+        catch(const std::exception& ex)
+        {
+            std::cerr << ex.what() << std::endl;
+            return UNEXPECTED_EXCEPTION;
+        }
 
     }
     return SUCCESS;

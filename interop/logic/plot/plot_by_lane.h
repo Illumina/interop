@@ -34,7 +34,6 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                                        const model::plot::filter_options& options,
                                        const constants::metric_type type,
                                        model::plot::data_point_collection<Point>& points)
-                                        throw(model::index_out_of_bounds_exception, model::invalid_metric_type)
     {
         const size_t lane_count = metrics.max_lane();
         const size_t tile_count = static_cast<size_t>(std::ceil(static_cast<float>(metrics.size())/lane_count));
@@ -75,7 +74,9 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                       const constants::metric_type type,
                       const model::plot::filter_options& options,
                       model::plot::plot_data<Point>& data)
-                    throw(model::index_out_of_bounds_exception, model::invalid_metric_type)
+                    throw(model::index_out_of_bounds_exception,
+                    model::invalid_metric_type,
+                    std::invalid_argument)
     {
         data.assign(1, model::plot::series<Point>(utils::to_description(type), "Blue"));
         metric::metric_value<model::metrics::tile_metric> proxy3(options.read());
@@ -132,7 +133,9 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                        const std::string& metric_name,
                        const model::plot::filter_options& options,
                        model::plot::plot_data<Point>& data)
-    throw(model::index_out_of_bounds_exception, model::invalid_metric_type, std::invalid_argument)
+                        throw(model::index_out_of_bounds_exception,
+                        model::invalid_metric_type,
+                        std::invalid_argument)
     {
         const constants::metric_type type = constants::parse<constants::metric_type>(metric_name);
         if(type == constants::UnknownMetricType)

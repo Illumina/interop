@@ -37,7 +37,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                                const model::run::flowcell_layout& layout,
                                const model::plot::filter_options &options,
                                model::plot::flowcell_data& data,
-                               std::vector<float>& values_for_scaling) throw(model::index_out_of_bounds_exception)
+                               std::vector<float>& values_for_scaling)
     {
         if(beg == end) return;
         const bool all_surfaces = !options.is_specific_surface();

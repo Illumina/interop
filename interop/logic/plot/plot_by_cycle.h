@@ -39,7 +39,6 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                                           const model::plot::filter_options& options,
                                           const constants::metric_type type,
                                           model::plot::data_point_collection<Point>& points)
-    throw(model::index_out_of_bounds_exception)
     {
         const size_t max_cycle = metrics.max_cycle();
         points.assign(max_cycle, Point());
@@ -68,7 +67,6 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                                         const model::plot::filter_options& options,
                                         const constants::metric_type type,
                                         model::plot::data_point_collection<model::plot::candle_stick_point>& points)
-                                        throw(model::index_out_of_bounds_exception, model::invalid_metric_type)
     {
         const size_t max_cycle = metrics.max_cycle();
         const size_t tile_count = static_cast<size_t>(std::ceil(static_cast<float>(metrics.size())/max_cycle));
@@ -139,7 +137,9 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                        const constants::metric_type type,
                        const model::plot::filter_options& options,
                        model::plot::plot_data<Point>& data)
-                    throw(model::index_out_of_bounds_exception, model::invalid_metric_type)
+                    throw(model::index_out_of_bounds_exception,
+                    model::invalid_metric_type,
+                    model::invalid_read_exception)
     {
         data.clear();
         if(!options.all_cycles())
@@ -307,7 +307,9 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                        const std::string& metric_name,
                        const model::plot::filter_options& options,
                        model::plot::plot_data<Point>& data)
-                        throw(model::invalid_metric_type, std::invalid_argument)
+                        throw(model::index_out_of_bounds_exception,
+                        model::invalid_metric_type,
+                        std::invalid_argument)
     {
         const constants::metric_type type = constants::parse<constants::metric_type>(metric_name);
         if(type == constants::UnknownMetricType)

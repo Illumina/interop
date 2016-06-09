@@ -42,10 +42,10 @@ public:
      * @param col column index
      * @return value
      */
-    float at(const size_t row, const size_t col)const
+    float at(const size_t row, const size_t col)const throw(model::index_out_of_bounds_exception)
     {
-        INTEROP_ASSERT(row < m_num_rows);
-        INTEROP_ASSERT(col < m_num_columns);
+        if(row >= m_num_rows) throw model::index_out_of_bounds_exception("Row index out of bounds");
+        if(col >= m_num_columns) throw model::index_out_of_bounds_exception("Column index out of bounds");
         const size_t idx = index_of(row, col);
         INTEROP_ASSERT(idx < m_data.size());
         return m_data[idx];
@@ -58,10 +58,10 @@ public:
      * @param col column index
      * @return value
      */
-    float& operator()(const size_t row, const size_t col)
+    float& operator()(const size_t row, const size_t col) throw(model::index_out_of_bounds_exception)
     {
-        INTEROP_ASSERTMSG(row < row_count(), row << " < " << row_count());
-        INTEROP_ASSERTMSG(col < column_count(), col << " < " << column_count());
+        if(row >= m_num_rows) throw model::index_out_of_bounds_exception("Row index out of bounds");
+        if(col >= m_num_columns) throw model::index_out_of_bounds_exception("Column index out of bounds");
         const size_t idx = index_of(row, col);
         INTEROP_ASSERT(idx < m_data.size());
         return m_data[idx];
@@ -74,8 +74,10 @@ public:
      * @param col column index
      * @return value
      */
-    float operator()(const size_t row, const size_t col)const
+    float operator()(const size_t row, const size_t col)const throw(model::index_out_of_bounds_exception)
     {
+        if(row >= m_num_rows) throw model::index_out_of_bounds_exception("Row index out of bounds");
+        if(col >= m_num_columns) throw model::index_out_of_bounds_exception("Column index out of bounds");
         const size_t idx = index_of(row, col);
         INTEROP_ASSERT(idx < m_data.size());
         return m_data[idx];
