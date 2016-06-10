@@ -97,7 +97,12 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
                 case constants::AccumPercentQ30:
                     return metric.percent_over_qscore_cumulative(index_for_qvalue);
                 case constants::QScore:
-                    return static_cast<float>(metric.median(bins));
+                {
+                    const uint_t median = metric.median(bins);
+                    if (median == std::numeric_limits<uint_t>::max() || median == 0)
+                        return std::numeric_limits<float>::quiet_NaN();
+                    return static_cast<float>(median);
+                }
                 default:
                     throw model::invalid_metric_type("Unknown metric type "+constants::to_string(type));
             }

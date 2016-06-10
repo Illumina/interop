@@ -34,7 +34,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
      * @param points collection of points where x is cycle number and y is the mean metric value
      */
     template<typename MetricSet, typename MetricProxy, typename Point>
-    void populate_metric_average_by_cycle(const MetricSet& metrics,
+    size_t populate_metric_average_by_cycle(const MetricSet& metrics,
                                           MetricProxy& proxy,
                                           const model::plot::filter_options& options,
                                           const constants::metric_type type,
@@ -50,11 +50,18 @@ namespace illumina { namespace interop { namespace logic { namespace plot
             if(std::isnan(val)) continue;
             points[b->cycle()-1].add(dummy_x, val);
         }
+        size_t last_cycle = 0;
+        size_t index = 0;
         for(size_t cycle=0;cycle<max_cycle;++cycle)
         {
-            const float avg = (points[cycle].x()>0) ? points[cycle].y()/points[cycle].x() : 0;
-            points[cycle].set(static_cast<float>(cycle+1), avg);
+            if(static_cast<size_t>(points[cycle].x()) == 0) continue;
+            const float avg = points[cycle].y()/points[cycle].x();
+            points[index].set(static_cast<float>(cycle+1), avg);
+            last_cycle = std::max(last_cycle, cycle+1);
+            ++index;
         }
+        points.resize(index);
+        return last_cycle;
     }
     /** Plot the candle stick over all tiles of a specific metric by cycle
      *
@@ -63,9 +70,10 @@ namespace illumina { namespace interop { namespace logic { namespace plot
      * @param options filter for metric records
      * @param type type of metric to extract using the proxy functor
      * @param points collection of points where x is cycle number and y is the candle stick metric values
+     * @return last populated cycle
      */
     template<typename MetricSet, typename MetricProxy>
-    void populate_candle_stick_by_cycle(const MetricSet& metrics,
+    size_t populate_candle_stick_by_cycle(const MetricSet& metrics,
                                         MetricProxy& proxy,
                                         const model::plot::filter_options& options,
                                         const constants::metric_type type,
@@ -86,11 +94,21 @@ namespace illumina { namespace interop { namespace logic { namespace plot
             tile_by_cycle[b->cycle()-1].push_back(val);
         }
         points.resize(max_cycle);
-        for(size_t i=0;i<max_cycle;++i)
+        size_t j=0;
+        size_t last_cycle = 0;
+        for(size_t cycle=0;cycle<max_cycle;++cycle)
         {
-            if(tile_by_cycle[i].empty())continue;
-            plot_candle_stick(points[i], tile_by_cycle[i].begin(), tile_by_cycle[i].end(), static_cast<float>(i+1), outliers);
+            if(tile_by_cycle[cycle].empty())continue;
+            plot_candle_stick(points[j],
+                              tile_by_cycle[cycle].begin(),
+                              tile_by_cycle[cycle].end(),
+                              static_cast<float>(cycle+1),
+                              outliers);
+            last_cycle = std::max(last_cycle, cycle+1);
+            ++j;
         }
+        points.resize(j);
+        return last_cycle;
     }
     /** Generate meta data for multiple plot series that compare data by channel
      *
@@ -153,6 +171,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
             throw model::invalid_metric_type("Filtering by read is not supported");
         if(!utils::is_cycle_metric(type))
             throw model::invalid_metric_type("Only cycle metrics are supported");
+        size_t max_cycle;
         switch(logic::utils::to_group(type))
         {
             case constants::Extraction:
@@ -163,7 +182,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                     for(size_t i=0;i<data.size();++i) // TODO: Added to inner call?
                     {
                         metric::metric_value<model::metrics::extraction_metric> proxy(i);
-                        populate_metric_average_by_cycle(
+                        max_cycle = populate_metric_average_by_cycle(
                                 metrics.get_set<model::metrics::extraction_metric>(),
                                 proxy,
                                 options,
@@ -177,7 +196,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                     data.assign(1, model::plot::series<Point>());
                     const size_t channel = options.channel();
                     metric::metric_value<model::metrics::extraction_metric> proxy(channel);
-                    populate_candle_stick_by_cycle(
+                    max_cycle = populate_candle_stick_by_cycle(
                             metrics.get_set<model::metrics::extraction_metric>(),
                             proxy,
                             options,
@@ -195,7 +214,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                     {
                         metric::metric_value<model::metrics::corrected_intensity_metric> proxy(
                                 static_cast<constants::dna_bases>(i));
-                        populate_metric_average_by_cycle(
+                        max_cycle = populate_metric_average_by_cycle(
                                 metrics.get_set<model::metrics::corrected_intensity_metric>(),
                                 proxy,
                                 options,
@@ -209,7 +228,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                     data.assign(1, model::plot::series<Point>());
                     const constants::dna_bases base = options.dna_base();
                     metric::metric_value<model::metrics::corrected_intensity_metric> proxy(base);
-                    populate_candle_stick_by_cycle(
+                    max_cycle = populate_candle_stick_by_cycle(
                             metrics.get_set<model::metrics::corrected_intensity_metric>(),
                             proxy,
                             options,
@@ -221,44 +240,25 @@ namespace illumina { namespace interop { namespace logic { namespace plot
             case constants::Q:
             {
                 data.assign(1, model::plot::series<Point>());
-                if(options.is_specific_surface())
-                {
-                    typedef model::metrics::q_collapsed_metric metric_t;
-                    metric::metric_value<metric_t> proxy2;
-                    if(0 == metrics.get_set<metric_t>().size())
-                        logic::metric::create_collapse_q_metrics(metrics.get_set<model::metrics::q_metric>(),
-                                                                 metrics.get_set<metric_t>());
-                    populate_candle_stick_by_cycle(
-                            metrics.get_set<metric_t>(),
-                            proxy2,
-                            options,
-                            type,
-                            data[0]);
-                }
-                else
-                {
-                    typedef model::metrics::q_by_lane_metric metric_t;
-                    if(0 == metrics.get_set<metric_t>().size())
-                        logic::metric::create_q_metrics_by_lane(metrics.get_set<model::metrics::q_metric>(),
-                                                                 metrics.get_set<metric_t>());
-                    const size_t qbin = metric::index_for_q_value(metrics.get_set<metric_t>(),
-                                                               (type == constants::Q20Percent ||
-                                                                type == constants::AccumPercentQ20) ? 20 : 30);
-                    metric::metric_value<metric_t> proxy2(qbin,metrics.get_set<metric_t>().bins());
-                    populate_candle_stick_by_cycle(
-                            metrics.get_set<metric_t>(),
-                            proxy2,
-                            options,
-                            type,
-                            data[0]);
-                }
+
+                typedef model::metrics::q_collapsed_metric metric_t;
+                metric::metric_value<metric_t> proxy2;
+                if(0 == metrics.get_set<metric_t>().size())
+                    logic::metric::create_collapse_q_metrics(metrics.get_set<model::metrics::q_metric>(),
+                                                             metrics.get_set<metric_t>());
+                max_cycle = populate_candle_stick_by_cycle(
+                        metrics.get_set<metric_t>(),
+                        proxy2,
+                        options,
+                        type,
+                        data[0]);
                 break;
             }
             case constants::Error://TODO: skip last cycle of read for error metric
             {
                 data.assign(1, model::plot::series<Point>());
                 metric::metric_value<model::metrics::error_metric> proxy3;
-                populate_candle_stick_by_cycle(
+                max_cycle = populate_candle_stick_by_cycle(
                         metrics.get_set<model::metrics::error_metric>(),
                         proxy3,
                         options,
@@ -282,7 +282,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
             }
         }
         else data.set_yrange(0, 6);
-        data.set_xrange(0, static_cast<float>(data[0].size()+2));
+        data.set_xrange(0, static_cast<float>(max_cycle+2));
         data.set_xlabel("Cycle");
         data.set_ylabel(utils::to_description(type));
 

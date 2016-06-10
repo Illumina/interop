@@ -90,7 +90,7 @@ int main(int argc, char** argv)
         model::plot::flowcell_data data;
         try
         {
-            logic::plot::plot_flowcell_map(run, "Q20Percent", options, data);
+            logic::plot::plot_flowcell_map(run, constants::QScore, options, data);
         }
         catch(const std::exception& ex)
         {

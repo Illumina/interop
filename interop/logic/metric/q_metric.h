@@ -409,6 +409,19 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
         if(!is_compressed(q_metric_set)) return qval-1;
         return q_metric_set.index_for_q_value(qval);
     }
+    /** Get the index for the given q-value
+     *
+     * @param q_metric_set by lane q-metric set
+     * @param qval threshold
+     * @return index of q-val above given threshold
+     */
+    inline size_t index_for_q_value(
+            const model::metric_base::metric_set<model::metrics::q_by_lane_metric>& q_metric_set,
+            const size_t qval)
+    {
+        if(!is_compressed(q_metric_set)) return qval-1;
+        return q_metric_set.index_for_q_value(qval);
+    }
     /** Generate collapsed Q-metric data from Q-metrics
      *
      * @param metric_set q-metric set

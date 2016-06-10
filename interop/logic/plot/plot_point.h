@@ -26,6 +26,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
     void plot_candle_stick(model::plot::candle_stick_point& point, I beg, I end, const float x, std::vector<float>& outliers)
     {
         const float NaN = std::numeric_limits<float>::quiet_NaN();
+        INTEROP_ASSERT(beg != end);
         if( beg == end)
         {
             point = model::plot::candle_stick_point(x, NaN, NaN, NaN, NaN, NaN, 0, outliers);
