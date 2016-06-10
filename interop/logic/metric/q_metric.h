@@ -406,7 +406,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
             const model::metric_base::metric_set<model::metrics::q_metric>& q_metric_set,
             const size_t qval)
     {
-        if(!is_compressed(q_metric_set)) return qval;
+        if(!is_compressed(q_metric_set)) return qval-1;
         return q_metric_set.index_for_q_value(qval);
     }
     /** Generate collapsed Q-metric data from Q-metrics

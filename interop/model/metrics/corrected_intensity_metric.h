@@ -345,7 +345,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         float percent_base(const constants::dna_bases index) const throw(index_out_of_bounds_exception)
         {
             uint_t total = total_calls(index == constants::NC);
-            if (total == 0) return std::numeric_limits<float>::quiet_NaN();
+            if (total == 0)
+                return std::numeric_limits<float>::quiet_NaN();
             return called_counts(index) / static_cast<float>(total) * 100;
         }
 

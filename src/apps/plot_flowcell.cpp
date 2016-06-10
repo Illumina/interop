@@ -83,14 +83,14 @@ int main(int argc, char** argv)
             continue;
         }
         model::plot::filter_options options(run.run_info().flowcell().naming_method());
-        options.surface(constants::Top);
+        //options.surface(constants::Top);
         //options.dna_base(constants::G);
         options.cycle(1);
 
         model::plot::flowcell_data data;
         try
         {
-            logic::plot::plot_flowcell_map(run, "AccumPercentQ20", options, data);
+            logic::plot::plot_flowcell_map(run, "Q20Percent", options, data);
         }
         catch(const std::exception& ex)
         {

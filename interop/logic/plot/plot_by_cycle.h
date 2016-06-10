@@ -42,10 +42,13 @@ namespace illumina { namespace interop { namespace logic { namespace plot
     {
         const size_t max_cycle = metrics.max_cycle();
         points.assign(max_cycle, Point());
+        const float dummy_x = 1;
         for(typename MetricSet::const_iterator b = metrics.begin(), e = metrics.end();b != e;++b)
         {
             if(!options.valid_tile(*b)) continue;
-            points[b->cycle()-1].add(1, proxy(*b, type));
+            const float val = proxy(*b, type);
+            if(std::isnan(val)) continue;
+            points[b->cycle()-1].add(dummy_x, val);
         }
         for(size_t cycle=0;cycle<max_cycle;++cycle)
         {
@@ -78,7 +81,9 @@ namespace illumina { namespace interop { namespace logic { namespace plot
         for(typename MetricSet::const_iterator b = metrics.begin(), e = metrics.end();b != e;++b)
         {
             if(!options.valid_tile(*b)) continue;
-            tile_by_cycle[b->cycle()-1].push_back(proxy(*b, type));
+            const float val = proxy(*b, type);
+            if(std::isnan(val)) continue;
+            tile_by_cycle[b->cycle()-1].push_back(val);
         }
         points.resize(max_cycle);
         for(size_t i=0;i<max_cycle;++i)
@@ -288,7 +293,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
             title += " " + options.channel_description(metrics.run_info().channels());
         if(logic::utils::is_base_metric(type))
             title += " " + options.base_description();
-        if(metrics.run_info().flowcell().surface_count()>1)
+        if(metrics.run_info().flowcell().surface_count()>1 && options.is_specific_surface())
             title += " " + options.surface_description();
         data.set_title(title);
     }

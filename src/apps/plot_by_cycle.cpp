@@ -70,12 +70,12 @@ int main(int argc, char** argv)
         }
 
         model::plot::filter_options options(run.run_info().flowcell().naming_method());
-        options.surface(constants::Bottom);
+        //options.dna_base(constants::G);
 
         model::plot::plot_data<model::plot::candle_stick_point> data;
 
         try{
-            logic::plot::plot_by_cycle(run, constants::ErrorRate, options, data);
+            logic::plot::plot_by_cycle(run, constants::BasePercent, options, data);
         }
         catch(const std::exception& ex)
         {
