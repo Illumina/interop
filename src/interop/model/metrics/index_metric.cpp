@@ -85,11 +85,14 @@ struct generic_layout<index_metric, 1> : public default_layout<1>
         std::string project_name;
 
         read_binary(in, index_name);
-        if(in.fail()) throw incomplete_file_exception("No more data after index name");
+        if(in.fail())
+            INTEROP_THROW( incomplete_file_exception, "No more data after index name");
         read_binary(in, count);
-        if(in.fail()) throw incomplete_file_exception("No more data after count");
+        if(in.fail())
+            INTEROP_THROW(incomplete_file_exception, "No more data after count");
         read_binary(in, sample_name);
-        if(in.fail()) throw incomplete_file_exception("No more data after sample name");
+        if(in.fail())
+            INTEROP_THROW(incomplete_file_exception, "No more data after sample name");
         read_binary(in, project_name);
         index_metric::index_array_t::iterator beg = metric.m_indices.begin(), end = metric.m_indices.end();
         for(;beg != end;++beg) if(beg->index_seq() == sample_name) break;

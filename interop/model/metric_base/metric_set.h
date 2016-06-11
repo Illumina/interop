@@ -13,6 +13,7 @@
 #include <fstream>
 #include <iterator>
 #include <algorithm>
+#include "interop/util/exception.h"
 #include "interop/model/metric_base/base_cycle_metric.h"
 #include "interop/model/metric_base/base_read_metric.h"
 #include "interop/model/model_exceptions.h"
@@ -214,15 +215,15 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
             try
             {
                 return get_metric(metric_type::id(lane, tile, cycle));
-            } catch (const index_out_of_bounds_exception &)
+            }
+            catch (const index_out_of_bounds_exception &)
             {
-                throw index_out_of_bounds_exception("No tile available: key: " +
-                                                    util::lexical_cast<std::string>(
-                                                            metric_type::id(lane, tile, cycle)) +
-                                                    " map: " + util::lexical_cast<std::string>(m_id_map.size()) +
-                                                    "  lane: " + util::lexical_cast<std::string>(lane) +
-                                                    "  tile: " + util::lexical_cast<std::string>(tile) +
-                                                    "  cycle: " + util::lexical_cast<std::string>(cycle));
+                INTEROP_THROW( index_out_of_bounds_exception, "No tile available: key: " <<
+                                       metric_type::id(lane, tile, cycle) <<
+                                                    " map: " << (m_id_map.size()) <<
+                                                    "  lane: " << (lane) <<
+                                                    "  tile: " << (tile) <<
+                                                    "  cycle: " << (cycle));
 
             }
         }
@@ -238,10 +239,9 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         {
             typename std::map<id_t, size_t>::const_iterator it = m_id_map.find(key);
             if (it == m_id_map.end())
-                throw index_out_of_bounds_exception(
-                        "No tile available: key: " + util::lexical_cast<std::string>(key) + " map: " +
-                        util::lexical_cast<std::string>(m_id_map.size()) + " == data: " +
-                        util::lexical_cast<std::string>(m_data.size()));
+                INTEROP_THROW( index_out_of_bounds_exception, "No tile available: key: " <<  key << " map: " <<
+                        m_id_map.size() << " == data: " <<
+                        m_data.size());
             INTEROP_ASSERT(it->second < m_data.size());
             return m_data[it->second];
         }
@@ -251,9 +251,9 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          * @param n index
          * @return metric
          */
-        metric_type &at(size_t n)
+        metric_type &at(size_t n) throw(index_out_of_bounds_exception)
         {
-            if(n >= m_data.size())  throw index_out_of_bounds_exception("Index out of bounds");
+            if(n >= m_data.size()) INTEROP_THROW(index_out_of_bounds_exception, "Index out of bounds");
             return m_data.at(n);
         }
 
@@ -437,15 +437,15 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
             try
             {
                 return get_metric_ref(metric_type::id(lane, tile, cycle));
-            } catch (const index_out_of_bounds_exception &)
+            }
+            catch (const index_out_of_bounds_exception &)
             {
-                throw index_out_of_bounds_exception("No tile available: key: " +
-                                                    util::lexical_cast<std::string>(
-                                                            metric_type::id(lane, tile, cycle)) +
-                                                    " map: " + util::lexical_cast<std::string>(m_id_map.size()) +
-                                                    "  lane: " + util::lexical_cast<std::string>(lane) +
-                                                    "  tile: " + util::lexical_cast<std::string>(tile) +
-                                                    "  cycle: " + util::lexical_cast<std::string>(cycle));
+                INTEROP_THROW( index_out_of_bounds_exception,"No tile available: key: " <<
+                                                    metric_type::id(lane, tile, cycle) <<
+                                                    " map: " <<(m_id_map.size()) <<
+                                                    "  lane: " << (lane) <<
+                                                    "  tile: " << (tile) <<
+                                                    "  cycle: " << (cycle));
 
             }
         }
@@ -461,10 +461,10 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         {
             typename std::map<id_t, size_t>::const_iterator it = m_id_map.find(key);
             if (it == m_id_map.end())
-                throw index_out_of_bounds_exception(
-                        "No tile available: key: " + util::lexical_cast<std::string>(key) + " map: " +
-                        util::lexical_cast<std::string>(m_id_map.size()) + " == data: " +
-                        util::lexical_cast<std::string>(m_data.size()));
+                INTEROP_THROW( index_out_of_bounds_exception,
+                        "No tile available: key: " << (key) << " map: " <<
+                        (m_id_map.size()) << " == data: " <<
+                        (m_data.size()));
             INTEROP_ASSERT(it->second < m_data.size());
             return m_data[it->second];
         }

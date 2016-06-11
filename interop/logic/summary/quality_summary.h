@@ -8,6 +8,7 @@
 #pragma once
 #include <vector>
 #include <map>
+#include "interop/util/exception.h"
 #include "interop/model/model_exceptions.h"
 #include "interop/logic/summary/summary_statistics.h"
 #include "interop/logic/summary/map_cycle_to_read.h"
@@ -91,7 +92,8 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
             INTEROP_ASSERT(lane < cache[read_number].size());
             INTEROP_ASSERT(read_number < metrics_in_read.size());
             INTEROP_ASSERT(lane < metrics_in_read[read_number].size());
-            if(lane >= run.lane_count()) throw model::index_out_of_bounds_exception("Lane exceeds lane count in RunInfo.xml");
+            if(lane >= run.lane_count())
+                INTEROP_THROW( model::index_out_of_bounds_exception, "Lane exceeds lane count in RunInfo.xml");
             cache[read_number][lane].above_qval+=beg->q30();
             cache[read_number][lane].total += beg->total();
             tile_lookup.insert(beg->tile());

@@ -16,6 +16,7 @@
 #include <ctime>
 #include <cstring>
 #include <algorithm>
+#include "interop/util/exception.h"
 #include "interop/util/time.h"
 #include "interop/io/format/generic_layout.h"
 #include "interop/io/layout/base_metric.h"
@@ -215,7 +216,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         ushort_t max_intensity(const size_t channel) const throw(index_out_of_bounds_exception)
         {
-            if(channel >= m_max_intensity_values.size()) throw index_out_of_bounds_exception("Channel out of bounds");
+            if(channel >= m_max_intensity_values.size())
+                INTEROP_THROW( index_out_of_bounds_exception, "Channel out of bounds");
             INTEROP_ASSERT(m_max_intensity_values.size() == MAX_CHANNELS);
             return m_max_intensity_values[channel];
         }
@@ -227,7 +229,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         float focus_score(const size_t channel) const throw(index_out_of_bounds_exception)
         {
-            if(channel >= m_focus_scores.size()) throw index_out_of_bounds_exception("Channel out of bounds");
+            if(channel >= m_focus_scores.size())
+                INTEROP_THROW( index_out_of_bounds_exception, "Channel out of bounds");
             INTEROP_ASSERT(m_focus_scores.size() == MAX_CHANNELS);
             return m_focus_scores[channel];
         }

@@ -7,6 +7,7 @@
  */
 #pragma once
 #include <vector>
+#include "interop/util/exception.h"
 #include "interop/model/model_exceptions.h"
 #include "interop/logic/summary/summary_statistics.h"
 #include "interop/model/metrics/tile_metric.h"
@@ -62,13 +63,13 @@ namespace summary
         {
             const size_t lane = beg->lane()-1;
             if(lane >= tile_data_by_lane.size())
-                throw model::index_out_of_bounds_exception("Lane exceeds lane count in RunInfo.xml");
+                INTEROP_THROW( model::index_out_of_bounds_exception, "Lane exceeds lane count in RunInfo.xml");
             tile_data_by_lane[beg->lane()-1].push_back(*beg);// TODO: make more efficient by copying only tile data
             for(const_read_metric_iterator rb = beg->read_metrics().begin(), re=beg->read_metrics().end();rb != re;++rb)
             {
                 const size_t read = rb->read()-1;
                 if(read >= read_data_by_lane_read.read_count())
-                    throw model::index_out_of_bounds_exception("Read exceeds read count in RunInfo.xml");
+                    INTEROP_THROW( model::index_out_of_bounds_exception, "Read exceeds read count in RunInfo.xml");
                 read_data_by_lane_read(rb->read() - 1, beg->lane() - 1).push_back(*rb);
             }
         }

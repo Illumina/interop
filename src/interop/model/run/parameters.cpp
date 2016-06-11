@@ -48,13 +48,14 @@ void parameters::parse(char *data) throw(   xml::xml_file_not_found_exception,
     }
     catch(const rapidxml::parse_error& ex)
     {
-        throw xml_parse_exception(ex.what());
+        INTEROP_THROW( xml_parse_exception, ex.what());
     }
 
     m_version=0;
     xml_node_ptr p_root = doc.first_node();
-    if(p_root == 0) throw empty_xml_format_exception("Root not found");
-    if( p_root->name() != std::string("RunParameters")) throw bad_xml_format_exception("Invalid run parameters xml file");
+    if(p_root == 0) INTEROP_THROW( empty_xml_format_exception, "Root not found");
+    if( p_root->name() != std::string("RunParameters"))
+        INTEROP_THROW( bad_xml_format_exception, "Invalid run parameters xml file");
     set_data_with_default(p_root->first_node("Version"), "Version", m_version, 0u);
 
     // Parse run data
@@ -63,7 +64,7 @@ void parameters::parse(char *data) throw(   xml::xml_file_not_found_exception,
     m_instrument_type = constants::UnknownInstrument;
 
     xml_node_ptr p_setup = p_root->first_node("Setup");
-    if(p_setup == 0) throw bad_xml_format_exception("Setup not found");
+    if(p_setup == 0) INTEROP_THROW( bad_xml_format_exception, "Setup not found");
     for(xml_node_ptr p_node = p_setup->first_node();p_node;p_node = p_node->next_sibling())
     {
         set_data(p_node, "ApplicationName", application_name);
@@ -109,7 +110,7 @@ void parameters::read_file(const std::string &filename)   throw( xml::xml_file_n
         parse(xmlFile.data());
     }catch(const std::runtime_error& ex)
     {
-        throw xml_file_not_found_exception(ex.what());
+        INTEROP_THROW( xml_file_not_found_exception, ex.what());
     }
 }
 

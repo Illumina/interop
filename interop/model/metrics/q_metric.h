@@ -14,6 +14,7 @@
 
 #include <cstring>
 #include <numeric>
+#include "interop/util/exception.h"
 #include "interop/model/metric_base/base_cycle_metric.h"
 #include "interop/model/metric_base/metric_set.h"
 #include "interop/io/layout/base_metric.h"
@@ -138,7 +139,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         const q_score_bin &bin_at(const size_t n) const throw(index_out_of_bounds_exception)
         {
-            if(n >= m_qscore_bins.size()) throw index_out_of_bounds_exception("Index out of bounds");
+            if(n >= m_qscore_bins.size())
+                INTEROP_THROW( index_out_of_bounds_exception, "Index out of bounds");
             return m_qscore_bins[n];
         }
 
@@ -308,7 +310,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         uint_t qscore_hist(const size_t n) const throw(index_out_of_bounds_exception)
         {
-            if(n >= m_qscore_hist.size()) throw index_out_of_bounds_exception("Index out of bounds");
+            if(n >= m_qscore_hist.size())
+                INTEROP_THROW( index_out_of_bounds_exception, "Index out of bounds");
             return m_qscore_hist[n];
         }
 
@@ -498,10 +501,13 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             for (; i < m_qscore_hist.size(); i++)
             {
                 sum += m_qscore_hist[i];
-                if (sum >= position)break;
+                if (sum >= position)
+                {
+                    if (bins.size() == 0 || m_qscore_hist.size() == MAX_Q_BINS) return i + 1;
+                    if (i < bins.size()) return bins[i].value();
+                    break;
+                }
             }
-            if (bins.size() == 0 || m_qscore_hist.size() == MAX_Q_BINS) return i + 1;
-            if (i < bins.size()) return bins[i].value();
             return std::numeric_limits<uint_t>::max();
         }
 

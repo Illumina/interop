@@ -136,7 +136,7 @@ namespace illumina{ namespace interop{
                                 int codeOffset = rec.code % PercentAligned;
                                 get_read(metric, codeOffset+1)->percent_aligned(val);
                             }
-                            else throw bad_format_exception("Unexpected tile code");
+                            else INTEROP_THROW(bad_format_exception, "Unexpected tile code");
                     };
 
                     return count;

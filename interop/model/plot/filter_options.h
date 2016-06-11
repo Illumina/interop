@@ -11,6 +11,7 @@
 #include "interop/util/lexical_cast.h"
 #include "interop/constants/enums.h"
 #include "interop/logic/utils/metric_type_ext.h"
+#include "interop/logic/utils/channel.h"
 
 namespace illumina { namespace interop { namespace model { namespace plot
 {

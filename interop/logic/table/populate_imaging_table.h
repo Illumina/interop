@@ -8,6 +8,7 @@
 #pragma once
 #include <vector>
 #include <string>
+#include "interop/util/exception.h"
 #include "interop/util/constant_mapping.h"
 #include "interop/util/string.h"
 #include "interop/util/length_of.h"
@@ -131,7 +132,7 @@ namespace illumina { namespace interop { namespace logic { namespace table {
                 }
                 default:
                 {
-                    throw model::invalid_column_type("Column index does not have a type");
+                    INTEROP_THROW( model::invalid_column_type, "Column index does not have a type");
                 }
             }
         }

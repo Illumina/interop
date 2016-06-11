@@ -11,6 +11,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include "interop/util/exception.h"
 #include "interop/util/lexical_cast.h"
 #include "interop/model/run/flowcell_layout.h"
 #include "interop/model/run/image_dimensions.h"
@@ -146,7 +147,7 @@ public:
     {
         for(read_vector_t::const_iterator b = m_reads.begin(), e = m_reads.end();b != e;++b)
             if(b->number() == read_number) return *b;
-        throw invalid_read_exception("Read number not found: " + util::lexical_cast<std::string>(read_number));
+        INTEROP_THROW( invalid_read_exception, "Read number not found: " << read_number);
     }
     /** Set the channel labels
      *

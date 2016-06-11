@@ -9,6 +9,7 @@
  *  @copyright GNU Public License.
  */
 #pragma once
+#include "interop/util/exception.h"
 #include "interop/io/metric_stream.h"
 
 namespace illumina { namespace interop { namespace io {
@@ -74,8 +75,7 @@ namespace illumina { namespace interop { namespace io {
     {
         const std::string fileName = interop_filename<MetricSet>(run_directory, use_out);
         std::ifstream fin(fileName.c_str(), std::ios::binary);
-        if(!fin.good())
-            throw file_not_found_exception("File not found: "+fileName);
+        if(!fin.good()) INTEROP_THROW(file_not_found_exception, "File not found: " << fileName);
         read_metrics(fin, metrics);
     }
     /** Write the metric set to a binary InterOp file
@@ -96,8 +96,7 @@ namespace illumina { namespace interop { namespace io {
     {
         const std::string fileName = interop_filename<MetricSet>(run_directory, use_out);
         std::ofstream fout(fileName.c_str(), std::ios::binary);
-        if(!fout.good())
-            throw file_not_found_exception("File not found: "+fileName);
+        if(!fout.good())INTEROP_THROW(file_not_found_exception, "File not found: " << fileName);
         write_metrics(fout, metrics, version);
     }
     /** Write only the header to a binary InterOp file
@@ -118,8 +117,7 @@ namespace illumina { namespace interop { namespace io {
     {
         const std::string fileName = interop_filename<MetricType>(run_directory, use_out);
         std::ofstream fout(fileName.c_str(), std::ios::binary);
-        if(!fout.good())
-            throw file_not_found_exception("File not found: "+fileName);
+        if(!fout.good())INTEROP_THROW(file_not_found_exception, "File not found: " << fileName);
         write_metric_header(fout, header, version);
     }
     /** @} */

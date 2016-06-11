@@ -6,6 +6,7 @@
  *  @copyright GNU Public License.
  */
 #pragma once
+#include "interop/util/exception.h"
 #include "interop/model/plot/series.h"
 #include "interop/model/plot/axes.h"
 #include "interop/model/plot/chart_data.h"
@@ -70,7 +71,8 @@ namespace illumina { namespace interop { namespace model { namespace plot {
          */
         const series<Point>& at(const size_type index)const throw(model::index_out_of_bounds_exception)
         {
-            if(index >= m_series.size()) throw model::index_out_of_bounds_exception("Row index out of bounds");
+            if(index >= m_series.size())
+                INTEROP_THROW(model::index_out_of_bounds_exception, "Row index out of bounds");
             return m_series.at(index);
         }
         /** Get point at index
@@ -80,7 +82,8 @@ namespace illumina { namespace interop { namespace model { namespace plot {
          */
         const_reference operator[](const size_type index)const throw(model::index_out_of_bounds_exception)
         {
-            if(index >= m_series.size()) throw model::index_out_of_bounds_exception("Row index out of bounds");
+            if(index >= m_series.size())
+                INTEROP_THROW(model::index_out_of_bounds_exception, "Row index out of bounds");
             return m_series[index];
         }
         /** Get point at index
@@ -90,7 +93,8 @@ namespace illumina { namespace interop { namespace model { namespace plot {
          */
         reference operator[](const size_type index) throw(model::index_out_of_bounds_exception)
         {
-            if(index >= m_series.size()) throw model::index_out_of_bounds_exception("Row index out of bounds");
+            if(index >= m_series.size())
+                INTEROP_THROW(model::index_out_of_bounds_exception, "Row index out of bounds");
             return m_series[index];
         }
         /** Number of points in collection

@@ -74,9 +74,17 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
         float max_fraction_mapped = -std::numeric_limits<float>::max();
         float min_fraction_mapped = std::numeric_limits<float>::max();
         summary.reserve(index_count_map.size());
+
+
+        std::vector<std::string> keys;
+        keys.reserve(index_count_map.size());
         for(map_iterator b = index_count_map.begin(), e = index_count_map.end();b != e;++b)
+            keys.push_back(b->first);
+        std::stable_sort(keys.begin(), keys.end());
+
+        for(typename std::vector<std::string>::const_iterator b = keys.begin(), e = keys.end();b != e;++b)
         {
-            index_count_summary& count_summary = b->second;
+            index_count_summary& count_summary = index_count_map[*b];
             count_summary.update_fraction_mapped(static_cast<double>(pf_cluster_count_total));
             const float fraction_mapped = count_summary.fraction_mapped();
             summary.push_back(count_summary);

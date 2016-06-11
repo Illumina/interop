@@ -8,6 +8,7 @@
  */
 #include <string>
 #include <fstream>
+#include "interop/util/exception.h"
 #include "interop/model/model_exceptions.h"
 #include "interop/io/format/metric_format_factory.h"
 #include "interop/util/filesystem.h"
@@ -132,16 +133,12 @@ namespace illumina { namespace interop { namespace io
         typedef std::map<id_t, size_t> offset_map_t;
         metric_format_map &format_map = factory_t::metric_formats();
 
-        if (!in.good())
-            throw incomplete_file_exception("Empty file found");
-
+        if (!in.good()) INTEROP_THROW(incomplete_file_exception, "Empty file found");
         const int version = in.get();
-        if (version == -1)
-            throw incomplete_file_exception("Empty file found");
+        if (version == -1) INTEROP_THROW(incomplete_file_exception, "Empty file found");
         if (format_map.find(version) == format_map.end())
-            throw bad_format_exception("No format found to parse " + interop_basename<MetricSet>() + " with version: " +
-                                       util::lexical_cast<std::string>(version) + " of " +
-                                       util::lexical_cast<std::string>(format_map.size()));
+            INTEROP_THROW(bad_format_exception, "No format found to parse " <<
+                    interop_basename<MetricSet>() << " with version: " << version << " of " << format_map.size() );
         INTEROP_ASSERT(format_map[version]);
         metrics.set_version(static_cast< ::int16_t>(version));
         const std::streamsize record_size = format_map[version]->read_header(in, metrics);
@@ -154,9 +151,8 @@ namespace illumina { namespace interop { namespace io
             if (in.fail())
             {
                 if (icount == 0 && !metric_offset_map.empty()) break;
-                throw incomplete_file_exception(std::string("Insufficient data read from the file, got: ") +
-                                                util::lexical_cast<std::string>(icount) + " != expected: " +
-                                                util::lexical_cast<std::string>(record_size));
+                INTEROP_THROW(incomplete_file_exception, "Insufficient data read from the file, got: " << icount
+                                                         << " != expected: " << record_size);
             }
 
             if (metric_offset_map.find(metric.id()) == metric_offset_map.end())
@@ -165,13 +161,12 @@ namespace illumina { namespace interop { namespace io
                 if (in.fail())
                 {
                     if (count == 0 && !metric_offset_map.empty()) break;
-                    throw incomplete_file_exception(std::string("Insufficient data read from the file, got: ") +
-                                                    util::lexical_cast<std::string>(count) + " != expected: " +
-                                                    util::lexical_cast<std::string>(record_size));
+                    INTEROP_THROW(incomplete_file_exception, "Insufficient data read from the file, got: " << count
+                                                             << " != expected: " << record_size);
                 }
                 if (count != record_size)
                 {
-                    throw bad_format_exception("Record does not match expected size!");
+                    INTEROP_THROW(bad_format_exception, "Record does not match expected size!");
                 }
                 if (metric.lane() > 0 && metric.tile() > 0)
                 {
@@ -189,13 +184,12 @@ namespace illumina { namespace interop { namespace io
                 if (in.fail())
                 {
                     if (count == 0 && !metric_offset_map.empty()) break;
-                    throw incomplete_file_exception(std::string("Insufficient data read from the file, got: ") +
-                                                    util::lexical_cast<std::string>(count) + " != expected: " +
-                                                    util::lexical_cast<std::string>(record_size));
+                    INTEROP_THROW(incomplete_file_exception, "Insufficient data read from the file, got: " << count
+                                                             << " != expected: " << record_size);
                 }
                 if (count != record_size)
                 {
-                    throw bad_format_exception("Record does not match expected size!");
+                    INTEROP_THROW(bad_format_exception, "Record does not match expected size!");
                 }
                 metrics.metric_updated_at(offset);
             }
@@ -218,9 +212,8 @@ namespace illumina { namespace interop { namespace io
         metric_format_map &format_map = factory_type::metric_formats();
 
         if (format_map.find(version) == format_map.end())
-            throw bad_format_exception("No format found to write file with version: " +
-                                       util::lexical_cast<std::string>(version) + " of " +
-                                       util::lexical_cast<std::string>(format_map.size()));
+            INTEROP_THROW(bad_format_exception, "No format found to write file with version: " <<
+                                       version << " of " << format_map.size());
 
         INTEROP_ASSERT(format_map[version]);
         return format_map[version]->record_size(header);
@@ -242,9 +235,8 @@ namespace illumina { namespace interop { namespace io
         metric_format_map &format_map = factory_type::metric_formats();
 
         if (format_map.find(version) == format_map.end())
-            throw bad_format_exception("No format found to write file with version: " +
-                                       util::lexical_cast<std::string>(version) + " of " +
-                                       util::lexical_cast<std::string>(format_map.size()));
+            INTEROP_THROW(bad_format_exception, "No format found to write file with version: " <<
+                                       version <<  " of " << format_map.size());
 
         INTEROP_ASSERT(format_map[version]);
         return format_map[version]->header_size(header);
@@ -269,9 +261,8 @@ namespace illumina { namespace interop { namespace io
         metric_format_map &format_map = factory_type::metric_formats();
 
         if (format_map.find(version) == format_map.end())
-            throw bad_format_exception("No format found to write file with version: " +
-                                       util::lexical_cast<std::string>(version) + " of " +
-                                       util::lexical_cast<std::string>(format_map.size()));
+            INTEROP_THROW(bad_format_exception, "No format found to write file with version: " <<
+                                                version <<  " of " << format_map.size());
 
         INTEROP_ASSERT(format_map[version]);
         format_map[version]->write_metric(out, metric, header);
@@ -293,9 +284,8 @@ namespace illumina { namespace interop { namespace io
         typedef typename factory_type::metric_format_map metric_format_map;
         metric_format_map &format_map = factory_type::metric_formats();
         if (format_map.find(version) == format_map.end())
-            throw bad_format_exception("No format found to write file with version: " +
-                                       util::lexical_cast<std::string>(version) + " of " +
-                                       util::lexical_cast<std::string>(format_map.size()));
+            INTEROP_THROW(bad_format_exception, "No format found to write file with version: " <<
+                                                version <<  " of " << format_map.size());
 
         INTEROP_ASSERT(format_map[version]);
         format_map[version]->write_metric_header(out, header);
@@ -318,9 +308,8 @@ namespace illumina { namespace interop { namespace io
 
         if (version < 0) version = metrics.version();
         if (format_map.find(version) == format_map.end())
-            throw bad_format_exception("No format found to write file with version: " +
-                                       util::lexical_cast<std::string>(version) + " of " +
-                                       util::lexical_cast<std::string>(format_map.size()));
+            INTEROP_THROW(bad_format_exception, "No format found to write file with version: " <<
+                                                version <<  " of " << format_map.size());
 
         INTEROP_ASSERT(format_map[version]);
         format_map[version]->write_metric_header(out, metrics);

@@ -8,6 +8,7 @@
 #pragma once
 
 #include <vector>
+#include "interop/util/exception.h"
 #include "interop/util/assert.h"
 
 namespace illumina { namespace interop { namespace model { namespace plot
@@ -46,7 +47,8 @@ namespace illumina { namespace interop { namespace model { namespace plot
          */
         const Point &at(const size_type index) const throw(model::index_out_of_bounds_exception)
         {
-            if(index >= m_points.size()) throw model::index_out_of_bounds_exception("Index out of bounds");
+            if(index >= m_points.size())
+                INTEROP_THROW(model::index_out_of_bounds_exception, "Index out of bounds");
             return m_points[index];
         }
 
@@ -57,7 +59,8 @@ namespace illumina { namespace interop { namespace model { namespace plot
          */
         const_reference operator[](const size_type index) const throw(model::index_out_of_bounds_exception)
         {
-            if(index >= m_points.size()) throw model::index_out_of_bounds_exception("Index out of bounds");
+            if(index >= m_points.size())
+                INTEROP_THROW(model::index_out_of_bounds_exception, "Index out of bounds");
             return m_points[index];
         }
 
@@ -68,7 +71,8 @@ namespace illumina { namespace interop { namespace model { namespace plot
          */
         reference operator[](const size_type index) throw(model::index_out_of_bounds_exception)
         {
-            if(index >= m_points.size()) throw model::index_out_of_bounds_exception("Index out of bounds");
+            if(index >= m_points.size())
+                INTEROP_THROW( model::index_out_of_bounds_exception, "Index out of bounds");
             return m_points[index];
         }
 

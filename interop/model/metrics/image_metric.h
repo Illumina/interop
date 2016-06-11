@@ -14,6 +14,7 @@
 #pragma once
 
 #include <cstring>
+#include "interop/util/exception.h"
 #include "interop/io/format/generic_layout.h"
 #include "interop/io/layout/base_metric.h"
 #include "interop/model/metric_base/base_cycle_metric.h"
@@ -172,7 +173,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         ushort_t min_contrast(const size_t channel) const throw(index_out_of_bounds_exception)
         {
-            if(channel >= m_min_contrast.size()) throw index_out_of_bounds_exception("Channel out of bounds");
+            if(channel >= m_min_contrast.size())
+                INTEROP_THROW( index_out_of_bounds_exception, "Channel out of bounds");
             return m_min_contrast[channel];
         }
 
@@ -182,7 +184,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         ushort_t max_contrast(const size_t channel) const throw(index_out_of_bounds_exception)
         {
-            if(channel >= m_max_contrast.size()) throw index_out_of_bounds_exception("Channel out of bounds");
+            if(channel >= m_max_contrast.size())
+                INTEROP_THROW( index_out_of_bounds_exception, "Channel out of bounds");
             return m_max_contrast[channel];
         }
 

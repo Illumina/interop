@@ -7,6 +7,7 @@
  */
 #pragma once
 #include <vector>
+#include "interop/util/exception.h"
 #include "interop/util/assert.h"
 #include "interop/model/model_exceptions.h"
 #include "interop/model/summary/index_lane_summary.h"
@@ -56,7 +57,8 @@ namespace illumina { namespace interop { namespace model { namespace summary {
          */
         reference operator[](const size_type n) throw( model::index_out_of_bounds_exception )
         {
-            if(n >= m_lane_summaries.size()) throw index_out_of_bounds_exception("Lane index exceeds lane count");
+            if(n >= m_lane_summaries.size())
+                INTEROP_THROW(index_out_of_bounds_exception, "Lane index exceeds lane count");
             return m_lane_summaries[n];
         }
         /** Get constant reference to lane summary at given index
@@ -66,7 +68,8 @@ namespace illumina { namespace interop { namespace model { namespace summary {
          */
         const_reference operator[](const size_type n)const throw( model::index_out_of_bounds_exception )
         {
-            if(n >= m_lane_summaries.size()) throw index_out_of_bounds_exception("Lane index exceeds lane count");
+            if(n >= m_lane_summaries.size())
+                INTEROP_THROW(index_out_of_bounds_exception, "Lane index exceeds lane count");
             return m_lane_summaries[n];
         }
         /** Get reference to lane summary at given index
@@ -76,7 +79,8 @@ namespace illumina { namespace interop { namespace model { namespace summary {
          */
         index_lane_summary& at(const size_type n) throw( model::index_out_of_bounds_exception )
         {
-            if(n >= m_lane_summaries.size()) throw index_out_of_bounds_exception("Lane index exceeds lane count");
+            if(n >= m_lane_summaries.size())
+                INTEROP_THROW(index_out_of_bounds_exception, "Lane index exceeds lane count");
             return m_lane_summaries[n];
         }
         /** Get constant reference to lane summary at given index
@@ -86,7 +90,8 @@ namespace illumina { namespace interop { namespace model { namespace summary {
          */
         const_reference at(const size_type n)const throw( model::index_out_of_bounds_exception )
         {
-            if(n >= m_lane_summaries.size()) throw index_out_of_bounds_exception("Lane index exceeds lane count");
+            if(n >= m_lane_summaries.size())
+                INTEROP_THROW(index_out_of_bounds_exception, "Lane index exceeds lane count");
             return m_lane_summaries[n];
         }
         /** Get number of summaries by read

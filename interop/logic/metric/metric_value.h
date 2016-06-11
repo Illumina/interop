@@ -8,6 +8,7 @@
 #pragma once
 #include <vector>
 #include <set>
+#include "interop/util/exception.h"
 #include "interop/model/metrics/tile_metric.h"
 #include "interop/model/model_exceptions.h"
 #include "interop/constants/enums.h"
@@ -55,7 +56,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
                 case constants::FWHM:
                     return metric.focus_score(channel);
                 default:
-                    throw model::invalid_metric_type("Unknown metric type "+constants::to_string(type));
+                    INTEROP_THROW(model::invalid_metric_type, "Unknown metric type " << constants::to_string(type));
             }
         }
     private:
@@ -104,7 +105,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
                     return static_cast<float>(median);
                 }
                 default:
-                    throw model::invalid_metric_type("Unknown metric type "+constants::to_string(type));
+                    INTEROP_THROW(model::invalid_metric_type, "Unknown metric type " << constants::to_string(type));
             }
         }
     private:
@@ -147,7 +148,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
                     return static_cast<float>(median);
                 }
                 default:
-                    throw model::invalid_metric_type("Unknown metric type "+constants::to_string(type));
+                    INTEROP_THROW(model::invalid_metric_type, "Unknown metric type " << constants::to_string(type));
             }
         }
     };
@@ -173,7 +174,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
                 case constants::ErrorRate:
                     return metric.error_rate();
                 default:
-                    throw model::invalid_metric_type("Unknown metric type "+constants::to_string(type));
+                    INTEROP_THROW(model::invalid_metric_type, "Unknown metric type " << constants::to_string(type));
             }
         }
     };
@@ -211,7 +212,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
                 case constants::SignalToNoise:
                     return metric.signal_to_noise();
                 default:
-                    throw model::invalid_metric_type("Unknown metric type "+constants::to_string(type));
+                    INTEROP_THROW(model::invalid_metric_type, "Unknown metric type " << constants::to_string(type));
             }
         }
     private:
@@ -296,7 +297,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
                     return NaN;
                 }
                 default:
-                    throw model::invalid_metric_type("Unknown metric type "+constants::to_string(type));
+                    INTEROP_THROW(model::invalid_metric_type, "Unknown metric type " << constants::to_string(type));
             }
         }
     private:

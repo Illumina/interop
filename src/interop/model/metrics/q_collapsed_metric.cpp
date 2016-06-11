@@ -134,15 +134,15 @@ namespace illumina{ namespace interop{ namespace io {
             std::streamsize count = 0;
             count += stream_map< record_size_t >(stream, record_size);
             if(stream.fail())
-                throw incomplete_file_exception("Insufficient extended header data read from the file");
+                INTEROP_THROW(incomplete_file_exception, "Insufficient extended header data read from the file");
             if( (record_size != static_cast<record_size_t>(TOTAL_RECORD_SIZE )) &&
                     (record_size != static_cast<record_size_t>(ALT_RECORD_SIZE)) )
             {
-                throw bad_format_exception("QMetric2030 requires a record size of 3 or 4 uint32 values (" +
-                                           util::lexical_cast<std::string>(TOTAL_RECORD_SIZE) + ", " +
-                                           util::lexical_cast<std::string>(ALT_RECORD_SIZE) +
-                                           ") not " +
-                                           util::lexical_cast<std::string>(int(record_size)));
+                INTEROP_THROW( bad_format_exception, "QMetric2030 requires a record size of 3 or 4 uint32 values (" <<
+                                           (TOTAL_RECORD_SIZE) << ", " <<
+                                           (ALT_RECORD_SIZE) <<
+                                           ") not " <<
+                                           (int(record_size)));
             }
             set_record_size(stream, header, record_size);
             return count;
@@ -162,9 +162,8 @@ namespace illumina{ namespace interop{ namespace io {
         static void test_incomplete(std::istream&, const size_t extra)
         {
             if(extra != sizeof(median_t) )
-                throw incomplete_file_exception(std::string("Insufficient data read from the file, got: ")+
-                                                util::lexical_cast<std::string>(extra)+" != expected: "+
-                                                util::lexical_cast<std::string>(sizeof(median_t) ));
+                INTEROP_THROW( incomplete_file_exception, "Insufficient data read from the file, got: "<<
+                                                extra << " != expected: " << sizeof(median_t) );
         }
         static void test_incomplete(std::ostream&, const size_t ){}
         template<class Header>
@@ -397,14 +396,13 @@ namespace illumina{ namespace interop{ namespace io {
             std::streamsize count = 0;
             count += stream_map< record_size_t >(stream, record_size);
             if(stream.fail())
-                throw incomplete_file_exception("Insufficient extended header data read from the file");
+                INTEROP_THROW( incomplete_file_exception, "Insufficient extended header data read from the file");
             if( record_size != static_cast<record_size_t>(TOTAL_RECORD_SIZE) &&
                     record_size != static_cast<record_size_t>(ALT_RECORD_SIZE))
-                throw bad_format_exception("QMetric2030 requires a record size of 3 or 4 uint32 values ("+
-                                                   util::lexical_cast<std::string>(TOTAL_RECORD_SIZE) + ", " +
-                                                   util::lexical_cast<std::string>(ALT_RECORD_SIZE) +
-                                                   ") not " +
-                                           util::lexical_cast<std::string>(int(record_size)));
+                INTEROP_THROW( bad_format_exception, "QMetric2030 requires a record size of 3 or 4 uint32 values ("<<
+                                                   TOTAL_RECORD_SIZE <<  ", " <<
+                                                   ALT_RECORD_SIZE <<
+                                                   ") not " << int(record_size));
 
             set_record_size(stream, header, record_size);
             bool_t has_bins = false; // Never write the header
@@ -444,9 +442,9 @@ namespace illumina{ namespace interop{ namespace io {
         static void test_incomplete(std::istream&, const size_t extra)
         {
             if(extra != sizeof(median_t) )
-                throw incomplete_file_exception(std::string("Insufficient data read from the file, got: ")+
-                                                util::lexical_cast<std::string>(extra)+" != expected: "+
-                                                util::lexical_cast<std::string>(sizeof(median_t) ));
+                INTEROP_THROW( incomplete_file_exception, "Insufficient data read from the file, got: " <<
+                                                extra << " != expected: " <<
+                                                sizeof(median_t) );
         }
         static void test_incomplete(std::ostream&, const size_t ){}
         template<class Header>

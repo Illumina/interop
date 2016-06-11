@@ -7,6 +7,7 @@
  */
 #pragma once
 #include "interop/util/assert.h"
+#include "interop/util/exception.h"
 #include "interop/model/plot/series.h"
 #include "interop/model/plot/axes.h"
 #include "interop/model/plot/chart_data.h"
@@ -44,8 +45,10 @@ public:
      */
     float at(const size_t row, const size_t col)const throw(model::index_out_of_bounds_exception)
     {
-        if(row >= m_num_rows) throw model::index_out_of_bounds_exception("Row index out of bounds");
-        if(col >= m_num_columns) throw model::index_out_of_bounds_exception("Column index out of bounds");
+        if(row >= m_num_rows)
+            INTEROP_THROW(model::index_out_of_bounds_exception, "Row index out of bounds");
+        if(col >= m_num_columns)
+            INTEROP_THROW(model::index_out_of_bounds_exception, "Column index out of bounds");
         const size_t idx = index_of(row, col);
         INTEROP_ASSERT(idx < m_data.size());
         return m_data[idx];
@@ -60,8 +63,10 @@ public:
      */
     float& operator()(const size_t row, const size_t col) throw(model::index_out_of_bounds_exception)
     {
-        if(row >= m_num_rows) throw model::index_out_of_bounds_exception("Row index out of bounds");
-        if(col >= m_num_columns) throw model::index_out_of_bounds_exception("Column index out of bounds");
+        if(row >= m_num_rows)
+            INTEROP_THROW(model::index_out_of_bounds_exception, "Row index out of bounds");
+        if(col >= m_num_columns)
+            INTEROP_THROW(model::index_out_of_bounds_exception, "Column index out of bounds");
         const size_t idx = index_of(row, col);
         INTEROP_ASSERT(idx < m_data.size());
         return m_data[idx];
@@ -76,8 +81,10 @@ public:
      */
     float operator()(const size_t row, const size_t col)const throw(model::index_out_of_bounds_exception)
     {
-        if(row >= m_num_rows) throw model::index_out_of_bounds_exception("Row index out of bounds");
-        if(col >= m_num_columns) throw model::index_out_of_bounds_exception("Column index out of bounds");
+        if(row >= m_num_rows)
+            INTEROP_THROW(model::index_out_of_bounds_exception, "Row index out of bounds");
+        if(col >= m_num_columns)
+            INTEROP_THROW(model::index_out_of_bounds_exception, "Column index out of bounds");
         const size_t idx = index_of(row, col);
         INTEROP_ASSERT(idx < m_data.size());
         return m_data[idx];

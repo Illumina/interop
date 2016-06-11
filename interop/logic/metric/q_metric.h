@@ -435,6 +435,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
 
         const uint_t q20_idx = static_cast<uint_t>(index_for_q_value(metric_set, 20));
         const uint_t q30_idx = static_cast<uint_t>(index_for_q_value(metric_set, 30));
+
         for(const_iterator beg = metric_set.begin(), end = metric_set.end();beg != end;++beg)
         {
             const uint_t q20 = beg->total_over_qscore(q20_idx);

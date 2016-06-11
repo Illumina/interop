@@ -6,7 +6,7 @@
  *  @copyright GNU Public License.
  */
 #pragma once
-
+#include "interop/util/exception.h"
 #include "interop/util/statistics.h"
 #include "interop/constants/enums.h"
 #include "interop/model/metrics/extraction_metric.h"
@@ -50,18 +50,16 @@ namespace illumina { namespace interop { namespace logic { namespace plot
             if(std::isnan(val)) continue;
             points[b->cycle()-1].add(dummy_x, val);
         }
-        size_t last_cycle = 0;
         size_t index = 0;
         for(size_t cycle=0;cycle<max_cycle;++cycle)
         {
             if(static_cast<size_t>(points[cycle].x()) == 0) continue;
             const float avg = points[cycle].y()/points[cycle].x();
             points[index].set(static_cast<float>(cycle+1), avg);
-            last_cycle = std::max(last_cycle, cycle+1);
             ++index;
         }
         points.resize(index);
-        return last_cycle;
+        return max_cycle;
     }
     /** Plot the candle stick over all tiles of a specific metric by cycle
      *
@@ -95,7 +93,6 @@ namespace illumina { namespace interop { namespace logic { namespace plot
         }
         points.resize(max_cycle);
         size_t j=0;
-        size_t last_cycle = 0;
         for(size_t cycle=0;cycle<max_cycle;++cycle)
         {
             if(tile_by_cycle[cycle].empty())continue;
@@ -104,11 +101,10 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                               tile_by_cycle[cycle].end(),
                               static_cast<float>(cycle+1),
                               outliers);
-            last_cycle = std::max(last_cycle, cycle+1);
             ++j;
         }
         points.resize(j);
-        return last_cycle;
+        return max_cycle;
     }
     /** Generate meta data for multiple plot series that compare data by channel
      *
@@ -166,11 +162,11 @@ namespace illumina { namespace interop { namespace logic { namespace plot
     {
         data.clear();
         if(!options.all_cycles())
-            throw model::invalid_metric_type("Filtering by cycle is not supported");
+            INTEROP_THROW(model::invalid_metric_type, "Filtering by cycle is not supported");
         if(!options.all_reads())
-            throw model::invalid_metric_type("Filtering by read is not supported");
+            INTEROP_THROW(model::invalid_metric_type, "Filtering by read is not supported");
         if(!utils::is_cycle_metric(type))
-            throw model::invalid_metric_type("Only cycle metrics are supported");
+            INTEROP_THROW(model::invalid_metric_type, "Only cycle metrics are supported");
         size_t max_cycle=0;
         switch(logic::utils::to_group(type))
         {
@@ -179,7 +175,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                 if(options.all_channels(type))
                 {
                     setup_series_by_channel(metrics.run_info().channels(), data);
-                    for(size_t i=0;i<data.size();++i) // TODO: Added to inner call?
+                    for(size_t i=0;i<data.size();++i)
                     {
                         metric::metric_value<model::metrics::extraction_metric> proxy(i);
                         max_cycle = populate_metric_average_by_cycle(
@@ -210,7 +206,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                 if(options.all_bases(type))
                 {
                     setup_series_by_base(data);
-                    for(size_t i=0;i<data.size();++i) // TODO: Added to inner call?
+                    for(size_t i=0;i<data.size();++i)
                     {
                         metric::metric_value<model::metrics::corrected_intensity_metric> proxy(
                                 static_cast<constants::dna_bases>(i));
@@ -267,7 +263,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                 break;
             }
             default:
-                throw model::invalid_metric_type("Invalid metric group");
+                INTEROP_THROW(model::invalid_metric_type, "Invalid metric group");
         }
         if(type != constants::FWHM)
         {
@@ -318,7 +314,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
     {
         const constants::metric_type type = constants::parse<constants::metric_type>(metric_name);
         if(type == constants::UnknownMetricType)
-            throw std::invalid_argument("Unsupported metric type: "+metric_name);
+            INTEROP_THROW(std::invalid_argument, "Unsupported metric type: " << metric_name);
         plot_by_cycle(metrics, type, options, data);
     }
     /** List metric type names available for by cycle plots

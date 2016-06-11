@@ -27,7 +27,8 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
     {
         const float NaN = std::numeric_limits<float>::quiet_NaN();
         INTEROP_ASSERT(beg != end);
-        std::sort(beg, end);
+        //std::sort(beg, end);
+        std::stable_sort(beg, end);
         const float p25 = util::percentile_sorted<float>(beg, end, 25);
         const float p50 = util::percentile_sorted<float>(beg, end, 50);
         const float p75 = util::percentile_sorted<float>(beg, end, 75);
@@ -47,8 +48,10 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
         I upper_it = std::lower_bound(beg, end, upper);// Not less
         I lower_it = std::lower_bound(beg, end, lower);
 
+
+
         const float max_val = (upper_it != beg) ?
-                              ((upper_it == end || *upper_it > upper) ? *(upper_it-1) : *upper_it) :
+                              ((upper_it == end || *upper_it >= upper) ? *(upper_it-1) : *upper_it) : // TODO: should be > not >=
                               ((upper_it != end) ? *upper_it : NaN);
         const float min_val = (lower_it != end) ? *lower_it : NaN;
         point = model::plot::candle_stick_point(x, p25, p50, p75, min_val, max_val, count, outliers);

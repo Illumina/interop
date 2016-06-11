@@ -10,6 +10,8 @@
 #include <cctype>
 #include <algorithm>
 #include <vector>
+#include "interop/util/assert.h"
+#include "interop/util/exception.h"
 #include "interop/constants/enums.h"
 #include "interop/model/model_exceptions.h"
 
@@ -87,7 +89,7 @@ namespace illumina { namespace interop { namespace logic { namespace utils
             std::swap(expected[0], expected[1]);
             return expected;
         }
-        throw model::invalid_channel_exception("Invalid channel names");
+        INTEROP_THROW( model::invalid_channel_exception, "Invalid channel names");
     }
 
     /** Expected channel order

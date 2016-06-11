@@ -6,6 +6,7 @@
  *  @copyright GNU Public License.
  */
 #pragma once
+#include "interop/util/exception.h"
 #include "interop/util/object_list.h"
 #include "interop/model/metric_base/metric_set.h"
 #include "interop/model/metrics/corrected_intensity_metric.h"
@@ -185,9 +186,9 @@ public:
             catch (const xml::xml_file_not_found_exception &)
             {
                 if(m_run_info.channels().empty())
-                    throw io::file_not_found_exception("RunParameters.xml required for legacy run folders with missing channel names");
+                    INTEROP_THROW(io::file_not_found_exception, "RunParameters.xml required for legacy run folders with missing channel names");
                 else
-                    throw io::file_not_found_exception("RunParameters.xml required for legacy run folders and is missing");
+                    INTEROP_THROW( io::file_not_found_exception, "RunParameters.xml required for legacy run folders and is missing");
             }
         }
         return count;
@@ -224,10 +225,10 @@ public:
         {
             legacy_channel_update(m_run_parameters.instrument_type());
             if(m_run_info.channels().empty())
-                throw io::format_exception("Channel names are missing from the RunInfo.xml, and RunParameters.xml does not contain sufficient information on the instrument run.");
+                INTEROP_THROW( io::format_exception, "Channel names are missing from the RunInfo.xml, and RunParameters.xml does not contain sufficient information on the instrument run.");
         }
         if(run_info().flowcell().naming_method() == constants::UnknownTileNamingMethod)
-            throw std::invalid_argument("Unknown tile naming method - update your RunInfo.xml");
+            INTEROP_THROW( std::invalid_argument, "Unknown tile naming method - update your RunInfo.xml");
     }
     /** Test if all metrics are empty
      *
@@ -510,7 +511,7 @@ public:
         {
             m_run_info.channels(logic::utils::update_channel_from_instrument_type(m_run_parameters.instrument_type()));
             if(m_run_info.channels().empty())
-                throw io::format_exception("Channel names are missing from the RunInfo.xml, and RunParameters.xml does not contain sufficient information on the instrument run.");
+                INTEROP_THROW( io::format_exception, "Channel names are missing from the RunInfo.xml, and RunParameters.xml does not contain sufficient information on the instrument run.");
 
         }
         logic::metric::populate_legacy_q_score_bins(get_set<q_metric>().bins(), m_run_parameters.instrument_type(), count);

@@ -61,9 +61,14 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
         std::vector<float> heights;
         heights.reserve(index_count_map.size());
         size_t i=0;
-        for(const_map_iterator b = index_count_map.begin(), e = index_count_map.end();b != e;++b,++i)
+        std::vector<std::string> keys;
+        keys.reserve(index_count_map.size());
+        for(const_map_iterator b = index_count_map.begin(), e = index_count_map.end();b != e;++b)
+            keys.push_back(b->first);
+        std::stable_sort(keys.begin(), keys.end());
+        for(typename std::vector<std::string>::const_iterator b = keys.begin(), e = keys.end();b != e;++b,++i)
         {
-            const float height = (pf_cluster_count_total==0) ? 0 : b->second / pf_cluster_count_total * 100.0f;
+            const float height = (pf_cluster_count_total==0) ? 0 : index_count_map[*b] / pf_cluster_count_total * 100.0f;
             points[i].set(i+1.0f, height, 1.0f);
             max_height = std::max(max_height, height);
         }

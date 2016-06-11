@@ -8,7 +8,8 @@
  */
 #pragma once
 
-#include "abstract_metric_format.h"
+#include "interop/util/exception.h"
+#include "interop/io/format/abstract_metric_format.h"
 #include "interop/io/format/generic_layout.h"
 #include "interop/io/format/stream_util.h"
 
@@ -69,20 +70,21 @@ namespace illumina { namespace interop { namespace io
          */
         std::streamsize read_header(std::istream &in, header_t &header)
         {
-            if (in.fail()) throw incomplete_file_exception("Insufficient header data read from the file");
+            if (in.fail())
+                INTEROP_THROW(incomplete_file_exception, "Insufficient header data read from the file");
             const std::streamsize record_size = Layout::map_stream_record_size(in,
                                                                                static_cast<record_size_t>(0));
             Layout::map_stream_for_header(in, header);
 
             if (in.fail())
-                throw incomplete_file_exception("Insufficient extended header data read from the file");
+                INTEROP_THROW(incomplete_file_exception, "Insufficient extended header data read from the file");
             const std::streamsize layout_size = Layout::compute_size(header);
             if (record_size != layout_size)
-                throw bad_format_exception(std::string("Record size does not match layout size, record size: ")
-                                           + util::lexical_cast<std::string>(record_size) + " != layout size: "
-                                           + util::lexical_cast<std::string>(layout_size) + " for " +
-                                           Metric::prefix() + " " + Metric::suffix() + " v" +
-                                           util::lexical_cast<std::string>(Layout::VERSION));
+                INTEROP_THROW(bad_format_exception, "Record size does not match layout size, record size: " <<
+                                           record_size << " != layout size: " <<
+                                           layout_size << " for "  <<
+                                           Metric::prefix() <<  " "  << Metric::suffix()  <<  " v"  <<
+                                           Layout::VERSION);
             return record_size;
         }
 

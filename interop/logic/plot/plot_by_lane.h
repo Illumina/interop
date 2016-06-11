@@ -7,6 +7,7 @@
  */
 #pragma once
 
+#include "interop/util/exception.h"
 #include "interop/util/statistics.h"
 #include "interop/constants/enums.h"
 #include "interop/model/model_exceptions.h"
@@ -85,7 +86,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
 
         const size_t read_count = metrics.run_info().reads().size();
         if(utils::is_read_metric(type) && options.all_reads() && read_count > 1)
-            throw std::invalid_argument("All reads is unsupported for run with "+util::lexical_cast<std::string>(read_count));
+            INTEROP_THROW(std::invalid_argument, "All reads is unsupported for run with " << read_count);
 
         if(type == constants::ClusterCount || type == constants::Clusters )//constants::Density )
         {
@@ -139,7 +140,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
     {
         const constants::metric_type type = constants::parse<constants::metric_type>(metric_name);
         if(type == constants::UnknownMetricType)
-            throw std::invalid_argument("Unsupported metric type: "+metric_name);
+            INTEROP_THROW(std::invalid_argument, "Unsupported metric type: " << metric_name);
         plot_by_lane(metrics, type, options, data);
     }
 

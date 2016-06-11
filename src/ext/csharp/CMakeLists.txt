@@ -24,6 +24,8 @@ if(MINGW)
 endif()
 if(MSVC)
     set_target_properties(${SWIG_MODULE_c_csharp_interop_REAL_NAME} PROPERTIES COMPILE_FLAGS "/bigobj")
+elseif(MINGW)
+    set_target_properties(${SWIG_MODULE_c_csharp_interop_REAL_NAME} PROPERTIES COMPILE_FLAGS "-Wa,-mbig-obj")
 endif()
 swig_link_libraries(${SWIG_MODULE_c_csharp_interop_REAL_NAME} ${INTEROP_DL_LIB})
 

@@ -7,6 +7,7 @@
  */
 #pragma once
 #include <vector>
+#include "interop/util/exception.h"
 #include "interop/model/model_exceptions.h"
 #include "interop/logic/summary/summary_statistics.h"
 #include "interop/model/metrics/extraction_metric.h"
@@ -54,7 +55,8 @@ namespace summary
             if(cycle_to_read[beg->cycle()-1].cycle_within_read > 1) continue;
             INTEROP_ASSERT(read < temp.read_count());
             const size_t lane = beg->lane()-1;
-            if(lane >= temp.lane_count()) throw model::index_out_of_bounds_exception("Lane exceeds lane count in RunInfo.xml");
+            if(lane >= temp.lane_count())
+                INTEROP_THROW( model::index_out_of_bounds_exception, "Lane exceeds lane count in RunInfo.xml");
             temp(read, lane).push_back(beg->max_intensity(channel));
         }
 
