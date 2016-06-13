@@ -106,6 +106,7 @@
 %template(ushort_vector) std::vector< uint16_t >;
 %template(uint_vector) std::vector< uint32_t >;
 %template(float_vector) std::vector< float >;
+%template(bool_vector) std::vector< bool >;
 %template(read_metric_vector) std::vector< illumina::interop::model::metrics::read_metric >;
 %template(q_score_bin_vector) std::vector< illumina::interop::model::metrics::q_score_bin >;
 
@@ -311,9 +312,10 @@ WRAP_VECTOR(illumina::interop::model::plot::plot_data<illumina::interop::model::
 %template(plot_qscore_histogram) illumina::interop::logic::plot::plot_qscore_histogram<illumina::interop::model::plot::bar_point>;
 
 // Imaging Logic
-/*%{
+%{
 #include "interop/model/table/imaging_table.h"
 #include "interop/logic/table/populate_imaging_table.h"
 %}
 %include "interop/model/table/imaging_table.h"
-%include "interop/logic/table/populate_imaging_table.h"*/
+%include "interop/logic/table/populate_imaging_table.h"
+%template(imaging_table_entry_vector) std::vector<illumina::interop::model::table::table_entry>;

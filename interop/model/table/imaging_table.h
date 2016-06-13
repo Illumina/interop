@@ -10,6 +10,7 @@
 #include "interop/model/metrics/extraction_metric.h"
 #include "interop/model/metrics/corrected_intensity_metric.h"
 #include "interop/model/metrics/tile_metric.h"
+#include "interop/model/table/table_util.h"
 
 /** Mapping of data for the imaging table
  *
@@ -137,7 +138,7 @@ namespace illumina { namespace interop { namespace model { namespace table {
         typedef constants::tile_naming_method naming_method;
         /** Defines unsigned int */
         typedef metrics::q_metric::uint_t uint_t;
-        enum{
+        enum void_type {
             /** Place holder for functions that take no parameters */
             Void
         };
@@ -332,35 +333,7 @@ namespace illumina { namespace interop { namespace model { namespace table {
                 void set_filled_metric_##Method##Param(const model::metric_base::empty_metric&, std::vector<bool>&)const{}
         INTEROP_IMAGING_COLUMN_TYPES
 #       undef INTEROP_TUPLE6 // Reuse this for another conversion
-
     private:
-        /** Function interface for method call with single parameter
-         *
-         * @note This is necessary because you cannot pass anything into an function that expects no arguments, not even void
-         *
-         * @param obj object corresponding to the method
-         * @param param1 first value to function
-         * @param func pointer to member function
-         * @return functor wrapper
-         */
-        template<class T, typename R, typename P1, typename P2>
-        static R call_adapter(const T& obj, P2 param1, R (T::*func )(P1)const)
-        {
-            return (obj.*func)(param1);
-        }
-        /** Function interface for method call with single dummy parameter
-         *
-         * @note This is necessary because you cannot pass anything into an function that expects no arguments, not even void
-         *
-         * @param obj object corresponding to the method
-         * @param func pointer to member function
-         * @return functor wrapper
-         */
-        template<class T, typename R, typename P1>
-        static R call_adapter(const T& obj, P1, R (T::*func )()const)
-        {
-            return (obj.*func)();
-        }
         /** Test if a metric type is valid
          *
          * @param val floating point value
