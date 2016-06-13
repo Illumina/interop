@@ -12,17 +12,27 @@
     public bool HasData { get { return size() > 0; } }
     public metric_t GetMetric(long key)
     {
-        return get_metric((ulong)key);
+        try{
+            return get_metric((ulong)key);
+        }
+        catch(global::System.IndexOutOfRangeException){return null;}
+        catch(IndexOutOfBoundsException){return null;}
     }
     public metric_t GetMetric(int lane, int tile)
     {
         try{
             return get_metric((uint)lane, (uint)tile);
-        }catch(global::System.IndexOutOfRangeException){return null;}
+        }
+        catch(global::System.IndexOutOfRangeException){return null;}
+        catch(IndexOutOfBoundsException){return null;}
     }
     public metric_t GetMetric(ulong key)
     {
-        return get_metric(key);
+        try{
+            return get_metric(key);
+        }
+        catch(global::System.IndexOutOfRangeException){return null;}
+        catch(IndexOutOfBoundsException){return null;}
     }
      public global::System.Collections.Generic.IEnumerable< metric_t > GetMetricsInLane(int lane)
         {
@@ -93,7 +103,9 @@
         {
             try{
                 return get_metric((uint)lane, (uint)tile, (uint)cycle);
-            }catch(global::System.IndexOutOfRangeException){return null;}
+            }
+            catch(global::System.IndexOutOfRangeException){return null;}
+            catch(IndexOutOfBoundsException){return null;}
         }
         public global::System.Collections.Generic.IEnumerable< metric_t > GetMetricsByCycle(global::System.Collections.Generic.IEnumerable<int> cycles)
         {
