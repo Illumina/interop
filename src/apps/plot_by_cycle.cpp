@@ -75,7 +75,7 @@ int main(int argc, char** argv)
         model::plot::plot_data<model::plot::candle_stick_point> data;
 
         try{
-            logic::plot::plot_by_cycle(run, constants::FWHM, options, data);
+            logic::plot::plot_by_cycle(run, constants::QScore, options, data);
         }
         catch(const std::exception& ex)
         {
