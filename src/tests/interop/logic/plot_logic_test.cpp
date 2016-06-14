@@ -156,13 +156,13 @@ TEST(plot_logic, q_score_heatmap)
 
     model::plot::heatmap_data data;
     logic::plot::plot_qscore_heatmap(metrics, options, data);
-    ASSERT_EQ(data.row_count(), 4u);
+    ASSERT_EQ(data.row_count(), 3u);
     EXPECT_EQ(data.title(), "All Lanes");
     EXPECT_EQ(data.x_axis().label(), "Cycle");
     EXPECT_EQ(data.y_axis().label(), "Q Score");
     EXPECT_NEAR(data.x_axis().min(), 0.0f, tol);
     EXPECT_NEAR(data.y_axis().min(), 0.0f, tol);
-    EXPECT_NEAR(data.x_axis().max(), 4.0f, tol);
+    EXPECT_NEAR(data.x_axis().max(), 3.0f, tol);
     EXPECT_NEAR(data.y_axis().max(), 40.0f, tol);
 }
 

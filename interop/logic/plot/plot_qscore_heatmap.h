@@ -112,7 +112,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
     {
         const size_t max_q_val = logic::metric::max_qval(metric_set);
         const size_t max_cycle = metric_set.max_cycle();
-        data.resize(max_cycle + 1, max_q_val);
+        data.resize(max_cycle, max_q_val);
         INTEROP_ASSERT(data.row_count() > 0);
         INTEROP_ASSERTMSG(data.column_count() > 0, max_q_val << ", " << metric_set.size() << ", " << metric_set.bin_count() << ", " << metric::is_compressed(metric_set) << ", " << metric_set.bins().back().upper());
         const bool is_compressed = logic::metric::is_compressed(metric_set);
