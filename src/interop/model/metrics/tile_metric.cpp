@@ -99,7 +99,7 @@ namespace illumina{ namespace interop{
                     std::streamsize count = stream_map< record_t >(stream, rec);
                     if(stream.fail()) return count;
                     float val = rec.value;
-                    if( val != val ) val = 0;
+                    if( val != val ) val = 0; // TODO: Remove this after baseline
                     switch(rec.code)
                     {
                         case ControlLane:

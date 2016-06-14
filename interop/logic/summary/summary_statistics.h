@@ -132,7 +132,7 @@ namespace summary
         if(beg == end) return;
         stat.mean(util::mean<float>(beg, end));
         stat.stddev(std::sqrt(util::variance_with_mean<float>(beg, end, stat.mean())));
-        stat.median(*util::median(beg, end));
+        stat.median(util::median_interpolated<float>(beg, end));
     }
     /** Calculate the mean, standard deviation (stddev) and median over a collection of values
      *
@@ -149,7 +149,7 @@ namespace summary
         stat.mean(util::mean<float>(beg, end, op));
         INTEROP_ASSERT(!std::isnan(stat.mean()));
         stat.stddev(std::sqrt(util::variance_with_mean<float>(beg, end, stat.mean(), op)));
-        stat.median(op(*util::median(beg, end, comp)));
+        stat.median(util::median_interpolated<float>(beg, end, comp, op));
     }
     /** Calculate the mean, standard deviation (stddev) and median over a collection of values, ignoring NaNs
      *
@@ -169,7 +169,7 @@ namespace summary
         stat.mean(util::mean<float>(beg, end, op));
         INTEROP_ASSERT(!std::isnan(stat.mean()));
         stat.stddev(std::sqrt(util::variance_with_mean<float>(beg, end, stat.mean(), op)));
-        stat.median(op(*util::median(beg, end, comp)));
+        stat.median(util::median_interpolated<float>(beg, end, comp, op));
         return size_t(std::distance(beg, end));
     }
     /** Safe divide

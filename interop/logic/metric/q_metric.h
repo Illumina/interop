@@ -436,6 +436,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
         const uint_t q20_idx = static_cast<uint_t>(index_for_q_value(metric_set, 20));
         const uint_t q30_idx = static_cast<uint_t>(index_for_q_value(metric_set, 30));
 
+        collapsed.set_version(metric_set.version());
         for(const_iterator beg = metric_set.begin(), end = metric_set.end();beg != end;++beg)
         {
             const uint_t q20 = beg->total_over_qscore(q20_idx);
@@ -453,10 +454,10 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
     }
     /** Generate by lane Q-metric data from Q-metrics
      *
-     * @param metrics Q-metrics
+     * @param metric_set Q-metrics
      * @param collapsed collapsed Q-metrics
      */
-    inline void create_q_metrics_by_lane(const model::metric_base::metric_set<model::metrics::q_metric>& metrics,
+    inline void create_q_metrics_by_lane(const model::metric_base::metric_set<model::metrics::q_metric>& metric_set,
                                          model::metric_base::metric_set<model::metrics::q_by_lane_metric>& bylane)
                                         throw(model::index_out_of_bounds_exception)
     {
@@ -464,8 +465,9 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
         typedef model::metric_base::metric_set<model::metrics::q_metric>::header_type header_type;
         typedef model::metric_base::base_cycle_metric::id_t id_t;
 
-        bylane = static_cast<const header_type&>(metrics);
-        for(const_iterator beg = metrics.begin(), end = metrics.end();beg != end;++beg)
+        bylane = static_cast<const header_type&>(metric_set);
+        bylane.set_version(metric_set.version());
+        for(const_iterator beg = metric_set.begin(), end = metric_set.end();beg != end;++beg)
         {
             const id_t id = model::metric_base::base_cycle_metric::id(beg->lane(), 0, beg->cycle());
             if(bylane.has_metric(id))
