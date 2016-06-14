@@ -15,6 +15,9 @@ namespace illumina { namespace interop { namespace model { namespace plot {
     class axis
     {
     public:
+        /** Constructor */
+        axis() : m_min(0), m_max(0){}
+    public:
         /** Set the limits of the axis
          *
          * @param vmin minimum value

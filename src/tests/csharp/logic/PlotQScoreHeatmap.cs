@@ -45,7 +45,7 @@ namespace illumina.interop.csharp.unittest
 
             heatmap_data data = new heatmap_data();
             c_csharp_interop.plot_qscore_heatmap(run, options, data);
-            Assert.AreEqual(data.row_count(), 4);
+            Assert.AreEqual(data.row_count(), 3);
 
 		}
 	}

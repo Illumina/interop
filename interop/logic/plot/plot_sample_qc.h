@@ -88,6 +88,8 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                                 throw(model::index_out_of_bounds_exception)
     {
         typedef model::plot::series<model::plot::bar_point> bar_series_t;
+        data.set_xlabel("Index Number");
+        data.set_ylabel("% Reads Identified (PF)");
         if(metrics.get_set<model::metrics::index_metric>().size() == 0)
         {
             data.clear();
@@ -95,8 +97,6 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
         }
         data.assign(1, bar_series_t("% reads", "Green", bar_series_t::Bar));
         data[0].add_option(constants::to_string(constants::Centered));
-        data.set_xlabel("Index Number");
-        data.set_ylabel("% Reads Identified (PF)");
 
         const float max_height = populate_reads_identified(metrics.get_set<model::metrics::index_metric>(),
                                                            metrics.get_set<model::metrics::tile_metric>(),

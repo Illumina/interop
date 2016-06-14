@@ -311,11 +311,15 @@ WRAP_VECTOR(illumina::interop::model::plot::plot_data<illumina::interop::model::
 %template(plot_candle_stick_by_lane) illumina::interop::logic::plot::plot_by_lane<illumina::interop::model::plot::candle_stick_point>;
 %template(plot_qscore_histogram) illumina::interop::logic::plot::plot_qscore_histogram<illumina::interop::model::plot::bar_point>;
 
-// Imaging Logic
+// Imaging Model
 %{
 #include "interop/model/table/imaging_table.h"
 #include "interop/logic/table/populate_imaging_table.h"
 %}
 %include "interop/model/table/imaging_table.h"
-%include "interop/logic/table/populate_imaging_table.h"
 %template(imaging_table_entry_vector) std::vector<illumina::interop::model::table::table_entry>;
+%template(column_header_vector) std::vector<illumina::interop::model::table::column_header>;
+
+
+// Imaging Logic
+%include "interop/logic/table/populate_imaging_table.h"
