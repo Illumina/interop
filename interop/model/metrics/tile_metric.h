@@ -231,12 +231,26 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         float cluster_density() const
         { return m_cluster_density; }
 
+        /** Density of clusters for each tile (in kilo-clusters per mm2)
+         *
+         * @return cluster density in kilo-clusters per mm2
+         */
+        float cluster_density_k() const
+        { return m_cluster_density/1000.0f; }
+
         /** Density of clusters passing filter for each tile (in clusters per mm2)
          *
          * @return cluster density passing filter
          */
         float cluster_density_pf() const
         { return m_cluster_density_pf; }
+
+        /** Density of clusters passing filter for each tile (in kilo-clusters per mm2)
+         *
+         * @return cluster density passing filter (in kilo-clusters per mm2)
+         */
+        float cluster_density_pf_k() const
+        { return m_cluster_density_pf/1000.0f; }
 
         /** Number of clusters for each tile
          *
@@ -245,12 +259,26 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         float cluster_count() const
         { return m_cluster_count; }
 
+        /** Number of kilo-clusters for each tile
+         *
+         * @return number of kilo-clusters
+         */
+        float cluster_count_k() const
+        { return m_cluster_count/1000.0f; }
+
         /** Number of clusters passing filter for each tile
          *
          * @return number of clusters passing filter
          */
         float cluster_count_pf() const
         { return m_cluster_count_pf; }
+
+        /** Number of kilo-clusters passing filter for each tile
+         *
+         * @return number of kilo-clusters passing filter
+         */
+        float cluster_count_pf_k() const
+        { return m_cluster_count_pf/1000.0f; }
 
         /** Percent of clusters passing filter
          *

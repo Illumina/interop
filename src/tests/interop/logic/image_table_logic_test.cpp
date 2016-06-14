@@ -11,7 +11,7 @@ using namespace illumina::interop;
 TEST(imaging_table, test_header_names)
 {
     EXPECT_EQ(logic::table::imaging_table_column_names()[0], "Lane");
-    EXPECT_EQ(logic::table::imaging_table_column_names()[14], "P90");
+    EXPECT_EQ(logic::table::imaging_table_column_names()[16], "P90");
 }
 TEST(imaging_table, test_column_headers)
 {
@@ -22,11 +22,11 @@ TEST(imaging_table, test_column_headers)
     EXPECT_EQ(headers[0].title(), "");
     EXPECT_EQ(headers[0].subtitle(), "Lane");
     EXPECT_EQ(headers[5].subtitle(), "Density(k/mm2)");
-    EXPECT_EQ(headers[6].subtitle(), "Cluster Count Pf (k)");
-    EXPECT_EQ(headers[14].title(), "P90");
-    EXPECT_EQ(headers[14].subtitle(), "Red");
-    EXPECT_EQ(headers[15].title(), "P90");
-    EXPECT_EQ(headers[15].subtitle(), "Green");
+    EXPECT_EQ(headers[8].subtitle(), "Cluster Count Pf (k)");
+    EXPECT_EQ(headers[16].title(), "P90");
+    EXPECT_EQ(headers[16].subtitle(), "Red");
+    EXPECT_EQ(headers[16].title(), "P90");
+    EXPECT_EQ(headers[17].subtitle(), "Green");
 }
 
 TEST(imaging_table, test_row0)
@@ -59,5 +59,5 @@ TEST(imaging_table, test_row0)
     EXPECT_TRUE(filled_columns[1]);
     EXPECT_TRUE(filled_columns[model::table::ErrorRate]);
     EXPECT_FALSE(filled_columns[model::table::PercentPhasing]);
-    EXPECT_NEAR(table[0].ErrorRate, 0.450100899f, tol);
+    EXPECT_NEAR(table[0].ErrorRate, 0.450f, tol);
 }

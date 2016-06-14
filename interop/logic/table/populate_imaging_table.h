@@ -33,9 +33,9 @@ namespace illumina { namespace interop { namespace logic { namespace table {
     inline constants::metric_data to_data_type(const model::table::column_type type)
     {
         typedef std::pair<model::table::column_type, constants::metric_data > mapped_t;
-#       define INTEROP_TUPLE6(Name, Ignored2, Ignored3, Ignored4, Ignored5, Data) mapped_t(model::table::Name, constants::Data),
+#       define INTEROP_TUPLE7(Name, Ignored2, Ignored3, Ignored4, Ignored5, Data, Ignored6) mapped_t(model::table::Name, constants::Data),
         static const mapped_t name_types[] = {INTEROP_IMAGING_COLUMN_TYPES};// mapped_t(model::table::ImagingColumnCount, constants::MetricDataCount)};
-#       undef INTEROP_TUPLE6
+#       undef INTEROP_TUPLE7
         return util::constant_mapping_get(name_types, type, constants::UnknownMetricData);
     }
     /** Convert a column index to the data type
@@ -69,11 +69,11 @@ namespace illumina { namespace interop { namespace logic { namespace table {
          *
          * @see INTEROP_IMAGING_COLUMN_TYPES
          */
-#       define INTEROP_TUPLE6(Id, Ignored1, Ignored2, Ignored3, Ignored4, Ignored5) #Id,
+#       define INTEROP_TUPLE7(Id, Ignored1, Ignored2, Ignored3, Ignored4, Ignored5, Ignored6) #Id,
         // The list of strings below ends with a ',', e.g. "Lane", "Tile", "Cycle",
         // This is not allowed in C++, so I added a dummy string to the end.
         static const std::string name_types[] = {INTEROP_IMAGING_COLUMN_TYPES "Dummy"};// Added dummy as a work around
-#       undef INTEROP_TUPLE6
+#       undef INTEROP_TUPLE7
 
         static const std::vector<std::string> tmp(name_types, name_types+util::length_of(name_types)-1);// remove dummy
         return tmp;

@@ -70,12 +70,12 @@ int main(int argc, char** argv)
         }
 
         model::plot::filter_options options(run.run_info().flowcell().naming_method());
-        options.surface(constants::Top);
+        options.surface(constants::Bottom);
 
         model::plot::plot_data<model::plot::candle_stick_point> data;
 
         try{
-            logic::plot::plot_by_cycle(run, constants::QScore, options, data);
+            logic::plot::plot_by_cycle(run, constants::SignalToNoise, options, data);
         }
         catch(const std::exception& ex)
         {
