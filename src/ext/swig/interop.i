@@ -56,6 +56,7 @@
 
     %template(base_ ## metric_t ## s) metric_base::metric_set<metric_t>;
     %template(vector_ ## metric_t ## s) std::vector<metric_t>;
+    %template(compute_buffer_size ) illumina::interop::io::compute_buffer_size< metric_base::metric_set<metric_t> >;
     %template(write_interop_to_buffer ) illumina::interop::io::write_interop_to_buffer< metric_base::metric_set<metric_t> >;
     %template(read_interop_from_buffer )  illumina::interop::io::read_interop_from_buffer< metric_base::metric_set<metric_t> >;
     %template(read_interop )  illumina::interop::io::read_interop< metric_base::metric_set<metric_t> >;

@@ -73,7 +73,7 @@ TEST(q_collapsed_metrics_test, test_convert_write_read)
     EXPECT_EQ(actual_metric_set.version(), expected_metric_set.version());
     EXPECT_EQ(actual_metric_set.max_cycle(), expected_metric_set.max_cycle());
     ASSERT_EQ(actual_metric_set.size(), expected_metric_set.size());
-    for(typename metric_set<q_collapsed_metric>::const_iterator itExpected=expected_metric_set.begin(),
+    for(metric_set<q_collapsed_metric>::const_iterator itExpected=expected_metric_set.begin(),
                 itActual = actual_metric_set.begin();
         itExpected != expected_metric_set.end();
         itExpected++,itActual++)

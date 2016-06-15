@@ -36,9 +36,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         enum
         {
             /** Unique type code for metric */
-            TYPE = constants::Index,
-            /** Latest version of the InterOp format */
-            LATEST_VERSION = 1
+            TYPE = constants::Index
         };
     public:
         /** Constructor
@@ -167,6 +165,11 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     class index_metric : public metric_base::base_read_metric
     {
     public:
+        enum
+        {
+            /** Latest version of the InterOp format */
+            LATEST_VERSION = 1
+        };
         /** Define a index array using an underlying vector */
         typedef std::vector<index_info> index_array_t;
         /** Define index info type */

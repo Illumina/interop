@@ -90,13 +90,19 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
         typedef model::plot::series<model::plot::bar_point> bar_series_t;
         data.set_xlabel("Index Number");
         data.set_ylabel("% Reads Identified (PF)");
-        if(metrics.get_set<model::metrics::index_metric>().size() == 0)
-        {
-            data.clear();
-            return;
-        }
         data.assign(1, bar_series_t("% reads", "Green", bar_series_t::Bar));
         data[0].add_option(constants::to_string(constants::Centered));
+
+        if(metrics.get_set<model::metrics::index_metric>().size() == 0)
+        {
+            data.set_range(data.x_axis().min(),
+                           1,
+                           data.y_axis().min(),
+                           5);
+            //data.clear(); // TODO: Remove below and uncomment this line
+
+            return;
+        }
 
         const float max_height = populate_reads_identified(metrics.get_set<model::metrics::index_metric>(),
                                                            metrics.get_set<model::metrics::tile_metric>(),

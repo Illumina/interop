@@ -3,7 +3,6 @@
  * This also includes an interface for reading an InterOp from a binary byte buffer.
  *
  *  @file
- *
  *  @date 10/9/15
  *  @version 1.0
  *  @copyright GNU Public License.
@@ -20,18 +19,34 @@ namespace illumina { namespace interop { namespace io {
      *
      * @{
      */
-    /** Write the metric to a binary string buffer
+    /** Compute the number of bytes to write
      *
      * @param metrics metric set
-     * @return string containing binary data
+     * @return number of bytes required
      */
-
     template<class MetricSet>
-    std::string write_interop_to_buffer(const MetricSet& metrics)
+    size_t compute_buffer_size(const MetricSet& metrics)
+    {
+        typedef typename MetricSet::metric_type metric_t;
+        return header_size<metric_t>(metrics) + record_size<metric_t>(metrics) * metrics.size();
+    }
+    /** Write the metric to a binary byte buffer
+     *
+     * @param metrics metric set
+     * @return number of bytes written
+     */
+    template<class MetricSet>
+    size_t write_interop_to_buffer(const MetricSet& metrics, ::uint8_t* buffer, size_t buffer_size)
+                        throw(std::invalid_argument, bad_format_exception, incomplete_file_exception)
     {
         std::ostringstream fout;
         write_metrics(fout, metrics, metrics.version());
-        return fout.str();
+        std::string str = fout.str();
+        if(buffer_size < str.length()) throw std::invalid_argument("Buffer size too small");
+        size_t i=0;
+        for(;i<str.length();++i)
+            buffer[i] = static_cast< ::uint8_t >(str[i]);
+        return i;
     }
     /** Read the binary InterOp file into the given metric set
      *
@@ -92,7 +107,7 @@ namespace illumina { namespace interop { namespace io {
     void write_interop(const std::string& run_directory,
                        const MetricSet& metrics,
                        const bool use_out=true,
-                       const ::int16_t version=-1)
+                       const ::int16_t version=-1) throw(file_not_found_exception, bad_format_exception, incomplete_file_exception)
     {
         const std::string fileName = interop_filename<MetricSet>(run_directory, use_out);
         std::ofstream fout(fileName.c_str(), std::ios::binary);
@@ -113,7 +128,8 @@ namespace illumina { namespace interop { namespace io {
     void write_interop_header(const std::string& run_directory,
                               const ::int16_t version=-1,
                               const typename MetricType::header_type& header = typename MetricType::header_type(),
-                              const bool use_out=true)
+                              const bool use_out=true) throw(file_not_found_exception,
+                                                                bad_format_exception, incomplete_file_exception)
     {
         const std::string fileName = interop_filename<MetricType>(run_directory, use_out);
         std::ofstream fout(fileName.c_str(), std::ios::binary);
