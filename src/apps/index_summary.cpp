@@ -268,7 +268,7 @@ void print_summary(std::ostream& out, const index_lane_summary& summary)
     values[0] = format(summary.total_reads(), 0, 0);
     values[1] = format(summary.total_pf_reads(), 0, 0);
     values[2] = format(summary.total_fraction_mapped_reads(), 0, 4);
-    values[3] = format(summary.mapped_reads_cv(), 0, 3);
+    values[3] = format(summary.mapped_reads_cv(), 0, 4);
     values[4] = format(summary.min_mapped_reads(), 0, 4);
     values[5] = format(summary.max_mapped_reads(), 0, 4);
     print_array(out, values, width);

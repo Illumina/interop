@@ -74,12 +74,12 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
         typedef std::vector< size_vector_t > size_vector2d_t;
         typedef std::vector< qval_total > qval_total_vector_t;
         typedef std::vector < qval_total_vector_t > qval_total_vector2d_t;
-        typedef std::set<size_t> tile_lookup_t;
+        typedef std::vector< std::set<size_t> > tile_lookup_t;
         if( beg == end ) return;
         if( run.size()==0 )return;
         qval_total_vector2d_t cache(run.size(), qval_total_vector_t(run.lane_count()));
         size_vector2d_t metrics_in_read(run.size(), size_vector_t(run.lane_count()));
-        tile_lookup_t tile_lookup;
+        tile_lookup_t tile_lookup(run.lane_count());
 
         for(;beg != end;++beg)
         {
@@ -96,7 +96,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
                 INTEROP_THROW( model::index_out_of_bounds_exception, "Lane exceeds lane count in RunInfo.xml");
             cache[read_number][lane].above_qval+=beg->q30();
             cache[read_number][lane].total += beg->total();
-            tile_lookup.insert(beg->tile());
+            tile_lookup[lane].insert(beg->tile());
             metrics_in_read[read_number][lane] += 1;
         }
 
@@ -120,7 +120,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
             {
                 INTEROP_ASSERT(lane < run[read].size());
                 INTEROP_ASSERT(lane < cache[read].size());
-                const float prediction_factor = divide(float(useable_cycles*tile_lookup.size()),float(metrics_in_read[read][lane]));
+                const float prediction_factor = divide(float(useable_cycles*tile_lookup[lane].size()),float(metrics_in_read[read][lane]));
                 if( metrics_in_read[read][lane] > 0)
                 {
                     total_useable_calls_by_read += cache[read][lane].total;

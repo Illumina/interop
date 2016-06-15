@@ -40,7 +40,7 @@ void auto_scale(model::plot::plot_data<Point>& data, const bool zero_min=true, c
     }
     if(ymin == std::numeric_limits<float>::max()) ymin = 0;
     if(xmin == std::numeric_limits<float>::max()) xmin = 0;
-    ymax = (ymax == -std::numeric_limits<float>::max()) ? 0 : scale_y_max * ymax + 0.0001f;
+    ymax = (ymax == 0 ||ymax == -std::numeric_limits<float>::max()) ? 0 : scale_y_max * ymax + 0.0001f;
     if(xmax == -std::numeric_limits<float>::max()) xmax = 0;
     data.set_range(xmin, xmax, ymin, ymax);
 }
@@ -94,8 +94,7 @@ void auto_scale_y(model::plot::plot_data<Point>& data, const bool zero_min=true,
         }
     }
     if(ymin == std::numeric_limits<float>::max()) ymin = 0;
-    if(ymax != 0)
-        ymax = (ymax == -std::numeric_limits<float>::max()) ? 0 : scale_y_max * ymax + 0.0001f;
+    ymax = (ymax == 0 || ymax == -std::numeric_limits<float>::max()) ? 0 : scale_y_max * ymax + 0.0001f;
     data.set_yrange(ymin, ymax);
 }
 

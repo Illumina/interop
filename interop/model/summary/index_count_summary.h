@@ -7,6 +7,7 @@
  */
 #pragma once
 #include <string>
+#include <math.h>
 
 namespace illumina { namespace interop { namespace model { namespace summary {
 
@@ -48,6 +49,14 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         size_t id()const
         {
             return m_id;
+        }
+        /** Set the index unique identifier (based on a counter)
+         *
+         * @param n index identifier
+         */
+        void id(const size_t n)
+        {
+            m_id = n;
         }
         /** Index sequence 1
          *
@@ -116,7 +125,7 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         void update_fraction_mapped(const double total_pf_cluster_count)
         {
             if(total_pf_cluster_count != 0.0f)
-                m_fraction_mapped = static_cast<float>(m_count / total_pf_cluster_count * 100.0);
+                m_fraction_mapped = roundf(static_cast<float>(m_count / total_pf_cluster_count * 100.0)*10000)/10000;
         }
         /** Compare two index count summaries by their ids
          *

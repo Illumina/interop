@@ -22,7 +22,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics {
     public:
         enum {
             /** Unique type code for metric */
-            TYPE = constants::QByLane
+            TYPE = constants::QByLane,
+            /** Tells the reader to include any records that have 0 for tile */
+            CHECK_TILE_ID = 0,
         };
     public:
         /** Constructor

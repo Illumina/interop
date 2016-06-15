@@ -168,7 +168,7 @@ namespace illumina { namespace interop { namespace io
                 {
                     INTEROP_THROW(bad_format_exception, "Record does not match expected size!");
                 }
-                if (metric.lane() > 0 && metric.tile() > 0)
+                if (metric.lane() > 0 && (metric_t::CHECK_TILE_ID == 0 || metric.tile() > 0))
                 {
                     metric_offset_map[metric.id()] = metrics.size();
                     metrics.insert(metric.id(), metric);

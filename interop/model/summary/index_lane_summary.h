@@ -6,6 +6,9 @@
  *  @copyright GNU Public License.
  */
 #pragma once
+
+#include <iostream>
+
 #include <algorithm>
 #include "interop/util/exception.h"
 #include "interop/model/summary/index_count_summary.h"
@@ -236,10 +239,10 @@ namespace illumina { namespace interop { namespace model { namespace summary {
             m_total_reads = cluster_count_total;
             m_total_pf_reads = pf_cluster_count_total;
             m_total_fraction_mapped_reads = (pf_cluster_count_total == 0) ? 0 :
-                                            static_cast<float>(100.0*total_mapped_reads/pf_cluster_count_total);
-            m_mapped_reads_cv = cv_fraction_mapped;
-            m_min_mapped_reads = (m_total_reads==0) ? 0 : min_fraction_mapped;
-            m_max_mapped_reads = (m_total_reads==0) ? 0 : max_fraction_mapped;
+                                            roundf(static_cast<float>(100.0*total_mapped_reads/pf_cluster_count_total)*10000)/10000;
+            m_mapped_reads_cv = roundf(cv_fraction_mapped*10000)/10000;
+            m_min_mapped_reads = (m_total_reads==0) ? 0 : roundf(min_fraction_mapped*10000)/10000;
+            m_max_mapped_reads = (m_total_reads==0) ? 0 : roundf(max_fraction_mapped*10000)/10000;
         }
 
     private:
