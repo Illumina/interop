@@ -65,12 +65,22 @@ void summarize_cycle_state(const model::metric_base::metric_set<model::metrics::
     // Tile exists, but nothing was written out for that metric on any cycle
     for(const_tile_iterator tile_it = tile_metrics.begin(), tile_end=tile_metrics.end();tile_it != tile_end;++tile_it)
     {
-        if (tmp_by_tile.find(tile_it->id()) == tmp_by_tile.end())
+        size_t cycle_for_tile = 0;
+        const size_t id = static_cast<size_t>(model::metric_base::base_metric::id(tile_it->lane(),
+                                                                                  tile_it->tile()));
+        for(size_t read_index = 0; read_index < tmp.size(); ++read_index)
         {
-            const size_t id = static_cast<size_t>(model::metric_base::base_metric::id(tile_it->lane(), tile_it->tile()));
-            tmp[0][id].update(0);
-            tmp_by_tile[id] = 0;
+            if (tmp[read_index].find(tile_it->id()) == tmp[read_index].end())
+            {
+                tmp[read_index][id].update(run[read_index].read().first_cycle()-1);
+                tmp_by_tile[id] = 0;
+            }
+            else
+            {
+                cycle_for_tile = tmp[read_index][id].last_cycle();
+            }
         }
+        tmp_by_tile[id] = cycle_for_tile;
     }
     for(size_t read=0;read<tmp.size();++read)
     {

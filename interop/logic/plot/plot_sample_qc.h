@@ -93,12 +93,13 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
         data.assign(1, bar_series_t("% reads", "Green", bar_series_t::Bar));
         data[0].add_option(constants::to_string(constants::Centered));
 
+        std::cout << metrics.get_set<model::metrics::index_metric>().size() << "\n";
         if(metrics.get_set<model::metrics::index_metric>().size() == 0)
         {
             data.set_range(data.x_axis().min(),
-                           1,
+                           data.x_axis().min(),
                            data.y_axis().min(),
-                           5);
+                           data.y_axis().min());
             //data.clear(); // TODO: Remove below and uncomment this line
 
             return;
