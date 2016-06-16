@@ -28,6 +28,7 @@ namespace illumina { namespace interop { namespace io {
     size_t compute_buffer_size(const MetricSet& metrics)
     {
         typedef typename MetricSet::metric_type metric_t;
+        std::cout << header_size<metric_t>(metrics) << "\t" << record_size<metric_t>(metrics) << "\t" << metrics.size() << "\n";
         return header_size<metric_t>(metrics) + record_size<metric_t>(metrics) * metrics.size();
     }
     /** Write the metric to a binary byte buffer
