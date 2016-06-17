@@ -113,7 +113,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
         data.set_range(data.x_axis().min(),
                        static_cast<float>(data[0].size()+1),
                        data.y_axis().min(),
-                       std::floor(max_height+5));
+                       std::round(max_height+5));
     }
 
 
