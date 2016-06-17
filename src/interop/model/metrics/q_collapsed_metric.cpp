@@ -96,6 +96,7 @@ namespace illumina{ namespace interop{ namespace io {
             {
                 std::streamsize extra = stream_map<median_t>(stream, metric.m_median_qscore);
                 test_incomplete(stream, extra);
+                count += extra;
             }
             return count;
         }
@@ -108,7 +109,7 @@ namespace illumina{ namespace interop{ namespace io {
          */
         static record_size_t compute_size(const q_collapsed_metric::header_type&)
         {
-            return static_cast<record_size_t>(TOTAL_RECORD_SIZE);
+            return static_cast<record_size_t>(ALT_RECORD_SIZE);
         }
 
         /** Compute header size
@@ -154,7 +155,7 @@ namespace illumina{ namespace interop{ namespace io {
         template<class Stream>
         static record_size_t map_stream_record_size(Stream&, record_size_t)
         {
-            return static_cast<record_size_t>(TOTAL_RECORD_SIZE);
+            return static_cast<record_size_t>(ALT_RECORD_SIZE);
         }
     private:
         static bool is_output(std::istream&){return false;}
@@ -369,6 +370,7 @@ namespace illumina{ namespace interop{ namespace io {
             {
                 std::streamsize extra = stream_map<median_t>(stream, metric.m_median_qscore);
                 test_incomplete(stream, extra);
+                count += extra;
             }
             return count;
         }
@@ -379,7 +381,7 @@ namespace illumina{ namespace interop{ namespace io {
          */
         static record_size_t compute_size(const q_collapsed_metric::header_type &)
         {
-            return static_cast<record_size_t>(TOTAL_RECORD_SIZE);
+            return static_cast<record_size_t>(ALT_RECORD_SIZE);
         }
         /** Map reading/writing a header to a stream
          *
@@ -434,7 +436,7 @@ namespace illumina{ namespace interop{ namespace io {
         template<class Stream>
         static record_size_t map_stream_record_size(Stream&, record_size_t)
         {
-            return static_cast<record_size_t>(TOTAL_RECORD_SIZE);
+            return static_cast<record_size_t>(ALT_RECORD_SIZE);
         }
     private:
         static bool is_output(std::istream&){return false;}

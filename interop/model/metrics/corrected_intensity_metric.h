@@ -82,7 +82,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                 m_corrected_int_all(constants::NUM_OF_BASES, 0),
                 m_corrected_int_called(constants::NUM_OF_BASES, 0),
                 m_called_counts(constants::NUM_OF_BASES_AND_NC, 0),
-                m_signal_to_noise(0)
+                m_signal_to_noise(std::numeric_limits<float>::quiet_NaN())
         { }
 
         /** Constructor
