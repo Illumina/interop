@@ -57,7 +57,7 @@ TEST(imaging_table, test_row0)
     ASSERT_EQ(filled_columns.size(), model::table::ImagingColumnCount);
     EXPECT_TRUE(filled_columns[0]);
     EXPECT_TRUE(filled_columns[1]);
-    EXPECT_TRUE(filled_columns[model::table::ErrorRate]);
-    EXPECT_FALSE(filled_columns[model::table::PercentPhasing]);
+    EXPECT_TRUE(filled_columns[model::table::ErrorRateColumn]);
+    EXPECT_FALSE(filled_columns[model::table::PercentPhasingColumn]);
     EXPECT_NEAR(table[0].ErrorRate, 0.450f, tol);
 }

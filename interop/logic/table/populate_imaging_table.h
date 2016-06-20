@@ -33,7 +33,7 @@ namespace illumina { namespace interop { namespace logic { namespace table {
     inline constants::metric_data to_data_type(const model::table::column_type type)
     {
         typedef std::pair<model::table::column_type, constants::metric_data > mapped_t;
-#       define INTEROP_TUPLE7(Name, Ignored2, Ignored3, Ignored4, Ignored5, Data, Ignored6) mapped_t(model::table::Name, constants::Data),
+#       define INTEROP_TUPLE7(Name, Ignored2, Ignored3, Ignored4, Ignored5, Data, Ignored6) mapped_t(model::table::Name##Column, constants::Data),
         static const mapped_t name_types[] = {INTEROP_IMAGING_COLUMN_TYPES};// mapped_t(model::table::ImagingColumnCount, constants::MetricDataCount)};
 #       undef INTEROP_TUPLE7
         return util::constant_mapping_get(name_types, type, constants::UnknownMetricData);

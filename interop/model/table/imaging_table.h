@@ -18,6 +18,7 @@
  * Column 1:
  *  - Name of the field in the table_entry class
  *  - Converted to column header in imaging table
+ *  - Suffixed with 'Column' when used as an enum, e.g. Lane -> LaneColumn
  * Column 2:
  *  - metric that holds the column data
  * Column 3:
@@ -73,8 +74,8 @@
         INTEROP_TUPLE7(TileNumber,            metric_base::base_metric,           number,                     NamingConvention, UInt, IdType, 0)
 
 namespace illumina { namespace interop { namespace model { namespace table {
-#   define INTEROP_TUPLE7(Id, Ignored1, Ignored2, Ignored3, Ignored4, Ignored5, Ignored6) Id,
-    /** Map column index to name */
+#   define INTEROP_TUPLE7(Id, Ignored1, Ignored2, Ignored3, Ignored4, Ignored5, Ignored6) Id##Column,
+    /** Map column index to name. Note, the enum has a 'Column' suffix added to the name above*/
     enum column_type{ INTEROP_IMAGING_COLUMN_TYPES ImagingColumnCount};
 #   undef INTEROP_TUPLE7
 
@@ -317,7 +318,7 @@ namespace illumina { namespace interop { namespace model { namespace table {
 #       define INTEROP_TUPLE7(Id, Metric, Method, Param, Ignored1, Ignored2, Ignored3) \
                 static void set_filled_##Method##Param(const metric_base::metric_set<Metric>& metrics, std::vector<bool>& filled, const bool force_true)\
                 {\
-                    filled[table::Id] = (force_true) ? true : metrics.size()>0;\
+                    filled[table::Id##Column] = (force_true) ? true : metrics.size()>0;\
                 }\
                 static void set_filled_##Method##Param(const model::metric_base::empty_header&, std::vector<bool>&, const bool){}
         INTEROP_IMAGING_COLUMN_TYPES
@@ -334,7 +335,7 @@ namespace illumina { namespace interop { namespace model { namespace table {
 #       define INTEROP_TUPLE7(Id, Metric, Method, Param, Ignored1, Ignored2, Ignored3) \
                 void set_filled_metric_##Method##Param(const Metric& metric, std::vector<bool>& filled)const\
                 {\
-                    filled[table::Id] = is_valid(call_adapter(metric, Param, &Metric::Method));\
+                    filled[table::Id##Column] = is_valid(call_adapter(metric, Param, &Metric::Method));\
                 }\
                 void set_filled_metric_##Method##Param(const model::metric_base::empty_metric&, std::vector<bool>&)const{}
         INTEROP_IMAGING_COLUMN_TYPES
