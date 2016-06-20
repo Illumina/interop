@@ -98,6 +98,13 @@ namespace illumina{ namespace interop{ namespace io {
                 test_incomplete(stream, extra);
                 count += extra;
             }
+            else
+            {
+                if(count != TOTAL_RECORD_SIZE )
+                    INTEROP_THROW( incomplete_file_exception, "Insufficient data read from the file, got: "<<
+                            count << " != expected: " << TOTAL_RECORD_SIZE );
+                return ALT_RECORD_SIZE;
+            }
             return count;
         }
 
@@ -360,17 +367,21 @@ namespace illumina{ namespace interop{ namespace io {
          * @return number of bytes read or total number of bytes written
          */
         template<class Stream, class Metric, class Header>
-        static std::streamsize map_stream(Stream &stream, Metric &metric, Header & header, const bool)
-        {
+        static std::streamsize map_stream(Stream &stream, Metric &metric, Header & header, const bool) {
             std::streamsize count = 0;
-            count += stream_map< count_t >(stream, metric.m_q20);
-            count += stream_map< count_t >(stream, metric.m_q30);
-            count += stream_map< count_t >(stream, metric.m_total);
-            if(header.m_record_size == ALT_RECORD_SIZE || is_output(stream))
-            {
+            count += stream_map<count_t>(stream, metric.m_q20);
+            count += stream_map<count_t>(stream, metric.m_q30);
+            count += stream_map<count_t>(stream, metric.m_total);
+            if (header.m_record_size == ALT_RECORD_SIZE || is_output(stream)) {
                 std::streamsize extra = stream_map<median_t>(stream, metric.m_median_qscore);
                 test_incomplete(stream, extra);
                 count += extra;
+            }
+            else {
+                if (count != TOTAL_RECORD_SIZE)
+                    INTEROP_THROW(incomplete_file_exception, "Insufficient data read from the file, got: " <<
+                                                             count << " != expected: " << TOTAL_RECORD_SIZE);
+                return ALT_RECORD_SIZE;
             }
             return count;
         }
