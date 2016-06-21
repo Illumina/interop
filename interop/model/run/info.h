@@ -138,6 +138,16 @@ public:
      * @return reads
      */
     const read_vector_t & reads()const{return m_reads;}
+    /** Check if there is an index read
+     *
+     * @return true if there is an index read
+     */
+    bool is_indexed()const
+    {
+        for(read_vector_t::const_iterator b = m_reads.begin(), e = m_reads.end();b != e;++b)
+            if(b->is_index()) return true;
+        return false;
+    }
     /** Get read with given number
      *
      * @param read_number number of the read

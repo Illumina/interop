@@ -131,7 +131,7 @@
 
     %typemap(cscode) illumina::interop::model::metric_base::metric_set<metric_t> %{
         SHARED_METRIC_SET_METHODS(metric_t)
-        SHARED_CYCLE_METRIC_SET_METHODS(metric_t)
+        //SHARED_CYCLE_METRIC_SET_METHODS(metric_t)
     %}
 %enddef
 
@@ -191,8 +191,7 @@
          SHARED_METRIC_SET_METHODS(metric_t)
          private int _controlLane;
          public int ControlLane { get{return _controlLane;} set{_controlLane=value;} }
-         private global::System.Collections.Generic.List<int> _tiles;
-         public global::System.Collections.Generic.List<int> Tiles { get{return _tiles;} set{_tiles=value;} }
+         public global::System.Collections.Generic.List<uint> Tiles { get{return global::System.Linq.Enumerable.ToList(tile_numbers());} }
     %}
 %enddef
 

@@ -116,6 +116,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
             const size_t useable_cycles = run[read].read().useable_cycles();
             ::uint64_t total_useable_calls_by_read=0;
             ::uint64_t useable_calls_gt_q30_by_read = 0;
+            float read_projected_yield_g = 0;
             for (size_t lane = 0; lane < run[read].size(); ++lane)
             {
                 INTEROP_ASSERT(lane < run[read].size());
@@ -127,18 +128,30 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
                     useable_calls_gt_q30_by_read += cache[read][lane].above_qval;
                     run[read][lane].percent_gt_q30(cache[read][lane].percent_above_qval());
                     run[read][lane].yield_g(cache[read][lane].total / 1e9f);
+                    const float projected_yield_g = cache[read][lane].total * prediction_factor;
+                    read_projected_yield_g += projected_yield_g/ 1e9f;
                     run[read][lane].projected_yield_g(
-                            ::uint64_t(cache[read][lane].total * prediction_factor + 0.5f) / 1e9f);
+                            ::uint64_t(projected_yield_g + 0.5f) / 1e9f);
                 }
                 else
                 {
-                    run[read][lane].projected_yield_g(::uint64_t(cache[read][lane].average()*useable_cycles)/1e9f);
+                    float total = 0;
+                    float metric_count = 0;
+                    for(size_t r=0, n=read+1;r<n;++r)
+                    {
+                        if(cache[r][lane].total > 0)
+                        {
+                            total += run[r][lane].projected_yield_g();
+                            metric_count += static_cast<float>(run[r].read().useable_cycles());
+                        }
+                    }
+                    if(metric_count > 0) total /= metric_count;
+                    const float projected_yield_g = total*useable_cycles;
+                    run[read][lane].projected_yield_g(::uint64_t(projected_yield_g+0.5f));
+                    read_projected_yield_g += projected_yield_g;
                 }
             }
-            run[read].summary().projected_yield_g(std::accumulate(run[read].begin(),
-                                                                  run[read].end(),
-                                                                  float(0),
-                                                                  util::op::const_member_function(&lane_summary::projected_yield_g)));
+            run[read].summary().projected_yield_g(read_projected_yield_g);
             run[read].summary().yield_g(std::accumulate(run[read].begin(),
                                                         run[read].end(),
                                                         float(0),
@@ -146,7 +159,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
             run[read].summary().percent_gt_q30(100 * divide(float(useable_calls_gt_q30_by_read), float(total_useable_calls_by_read)));
             total_useable_calls += total_useable_calls_by_read;
             useable_calls_gt_q30 += useable_calls_gt_q30_by_read;
-            projected_yield_g += run[read].summary().projected_yield_g();
+            projected_yield_g += read_projected_yield_g;
             yield_g += run[read].summary().yield_g();
             // Certain metrics can be biased by the index read, e.g. C1 intensity, total yield
             // So, we include totals that skip the index reads
@@ -154,11 +167,11 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
             {
                 total_useable_calls_nonindex += total_useable_calls_by_read;
                 useable_calls_gt_q30_nonindex += useable_calls_gt_q30_by_read;
-                projected_yield_g_nonindex += run[read].summary().projected_yield_g();
+                projected_yield_g_nonindex += read_projected_yield_g;
                 yield_g_nonindex += run[read].summary().yield_g();
             }
         }
-        run.nonindex_summary().projected_yield_g(projected_yield_g_nonindex);
+        run.nonindex_summary().projected_yield_g(::uint64_t(projected_yield_g_nonindex)/1e9f);
         run.nonindex_summary().yield_g(yield_g_nonindex);
         run.nonindex_summary().percent_gt_q30(100 * divide(float(useable_calls_gt_q30_nonindex), float(total_useable_calls_nonindex)));
 

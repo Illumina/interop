@@ -8,6 +8,7 @@
 #pragma once
 
 #include <cstddef>
+#include <climits>
 #include "interop/model/summary/metric_stat.h"
 #include "interop/model/summary/cycle_state_summary.h"
 
@@ -33,7 +34,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
         lane_summary(const size_t lane = 0) :
                 m_lane(lane),
                 m_tile_count(0),
-                m_percent_gt_q30(0),
+                m_percent_gt_q30(std::numeric_limits<float>::quiet_NaN()),
                 m_yield_g(0),
                 m_projected_yield_g(0),
                 m_reads(0),

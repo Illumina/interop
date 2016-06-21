@@ -71,11 +71,12 @@ int main(int argc, char** argv)
 
         model::plot::filter_options options(run.run_info().flowcell().naming_method());
         options.surface(constants::Bottom);
+        options.lane(2);
 
         model::plot::plot_data<model::plot::candle_stick_point> data;
 
         try{
-            logic::plot::plot_by_cycle(run, constants::SignalToNoise, options, data);
+            logic::plot::plot_by_cycle(run, constants::AccumPercentQ20, options, data);
         }
         catch(const std::exception& ex)
         {
@@ -84,13 +85,52 @@ int main(int argc, char** argv)
         }
 
         if(data.size() == 0 ) continue;
+
+
         std::ostream& out = std::cout;
         io::plot::gnuplot_writer plot_writer;
         plot_writer.write_chart(out, data, "plot_by_cycle.png");
+
     }
     return SUCCESS;
 }
 
+void regression_test(const model::plot::plot_data<model::plot::candle_stick_point>& data)
+{
+    std::ifstream fin("baseline.plot");
+    if(!fin.good())
+    {
+        std::cout << "Writing baseline" << std::endl;
+        fin.close();
+        std::ofstream fout("baseline.plot");
+        io::plot::gnuplot_writer plot_writer;
+        plot_writer.write_chart(fout, data, "plot_by_cycle.png");
+    }
+    else
+    {
+        std::cout << "Comparing to baseline" << std::endl;
+        std::stringstream baseline_stream;
+        baseline_stream << fin.rdbuf();
+
+        std::ostringstream current_stream;
+        io::plot::gnuplot_writer plot_writer;
+        plot_writer.write_chart(current_stream, data, "plot_by_cycle.png");
+
+        if(baseline_stream.str() != current_stream.str())
+        {
+            std::cout << "Baseline changed" << std::endl;
+            std::istringstream baseline(baseline_stream.str());
+            std::istringstream current(current_stream.str());
+            for(std::string baseline_str, current_str;std::getline(baseline, baseline_str) && std::getline(current, current_str);)
+            {
+                if(baseline_str != current_str)
+                {
+                    std::cout << "Mismatch: " << baseline_str << " != " << current_str << std::endl;
+                }
+            }
+        }
+    }
+}
 
 int test_all_filter_options(run_metrics& run)
 {

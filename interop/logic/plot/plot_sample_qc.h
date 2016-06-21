@@ -96,10 +96,13 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
 
         if(metrics.get_set<model::metrics::index_metric>().size() == 0)
         {
+            if(metrics.run_info().is_indexed())
+            {
             data.set_range(data.x_axis().min(),
-                           data.x_axis().min(),
+                           1,
                            data.y_axis().min(),
-                           data.y_axis().min());
+                           5);
+            }
             //data.clear(); // TODO: Remove below and uncomment this line
 
             return;

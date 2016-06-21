@@ -331,6 +331,22 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
             return tile_numbers;
         }
 
+        /** Get a list of all available tile numbers
+         *
+         * @param lane lane number
+         * @return vector of tile numbers
+         */
+        id_vector tile_numbers() const
+        {
+            std::set<uint_t> tile_number_set;
+            transform(m_data.begin(),
+                         m_data.end(),
+                         std::inserter(tile_number_set, tile_number_set.begin()),
+                         to_tile);
+            id_vector tile_numbers(tile_number_set.begin(), tile_number_set.end());
+            return tile_numbers;
+        }
+
         /** Get a list of all available metrics for the specified lane
          *
          * @param lane lane number
@@ -507,6 +523,16 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         static uint_t to_tile(const metric_type &metric)
         {
             return metric.tile();
+        }
+        template<class I, class OIterator, class Operation>
+        static OIterator transform(I beg, I end, OIterator it, Operation op)
+        {
+            while (beg != end)
+            {
+                *it++ = op(*beg);
+                ++beg;
+            }
+            return it;
         }
 
         template<class I, class OIterator, class Predicate, class Operation>

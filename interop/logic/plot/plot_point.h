@@ -25,6 +25,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
     template<typename I>
     void plot_candle_stick(model::plot::candle_stick_point& point, I beg, I end, const float x, std::vector<float>& outliers)
     {
+        const float eps = 1e-5;
         const float NaN = std::numeric_limits<float>::quiet_NaN();
         INTEROP_ASSERT(beg != end);
         //std::sort(beg, end);
@@ -46,13 +47,15 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
         size_t count = static_cast<size_t>(std::distance(beg,end));
 
         I upper_it = std::lower_bound(beg, end, upper);// Not less
-        I lower_it = std::lower_bound(beg, end, lower);
+        I lower_it = std::lower_bound(beg, end, lower-eps);
 
 
 
         const float max_val = (upper_it != beg) ?
-                              ((upper_it == end || *upper_it > upper) ? *(upper_it-1) : *upper_it) : // TODO: should be > not >=
+                              ((upper_it == end || *upper_it > upper) ? *(upper_it-1) : *upper_it)
+                                                : // TODO: should be > not >=
                               ((upper_it != end) ? *upper_it : NaN);
+
         const float min_val = (lower_it != end) ? *lower_it : NaN;
         point = model::plot::candle_stick_point(x, p25, p50, p75, min_val, max_val, count, outliers);
         outliers.clear();

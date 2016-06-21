@@ -115,7 +115,7 @@ namespace illumina{ namespace interop { namespace unittest {
             summary.total_summary().projected_yield_g(0.0098816361278295517);
             summary.total_summary().yield_g(0.0074112270958721638f);
             summary.nonindex_summary().percent_gt_q30(95.733200073242188f);
-            summary.nonindex_summary().projected_yield_g(0.0098816361278295517);
+            summary.nonindex_summary().projected_yield_g(0);
             summary.nonindex_summary().yield_g(0.0074112270958721638f);
             summary.cycle_state().qscored_cycle_range(model::run::cycle_range(1, 2));
             return summary;
@@ -231,7 +231,7 @@ namespace illumina{ namespace interop { namespace unittest {
             summary.total_summary().projected_yield_g(0.0056276721879839897f);
             summary.total_summary().yield_g(0.0056276721879839897);
             summary.nonindex_summary().percent_gt_q30(95.650672912597656f);
-            summary.nonindex_summary().projected_yield_g(0.0056276721879839897f);
+            summary.nonindex_summary().projected_yield_g(0);
             summary.nonindex_summary().yield_g(0.0056276721879839897);
             summary.cycle_state().qscored_cycle_range(model::run::cycle_range(1, 1));
             return summary;
@@ -334,7 +334,7 @@ namespace illumina{ namespace interop { namespace unittest {
             summary.total_summary().projected_yield_g(0.0095612816512584686f);
             summary.total_summary().yield_g(0.0095612816512584686f);
             summary.nonindex_summary().percent_gt_q30(90.1163330078125f);
-            summary.nonindex_summary().projected_yield_g(0.0095612816512584686f);
+            summary.nonindex_summary().projected_yield_g(0);
             summary.nonindex_summary().yield_g(0.0095612816512584686f);
             summary.cycle_state().qscored_cycle_range(model::run::cycle_range(3, 3));
             return summary;
