@@ -25,7 +25,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
     template<typename I>
     void plot_candle_stick(model::plot::candle_stick_point& point, I beg, I end, const float x, std::vector<float>& outliers)
     {
-        const float eps = 1e-5;
+        const float eps = 1e-5f;
         const float NaN = std::numeric_limits<float>::quiet_NaN();
         INTEROP_ASSERT(beg != end);
         //std::sort(beg, end);

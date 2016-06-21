@@ -147,7 +147,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
                     }
                     if(metric_count > 0) total /= metric_count;
                     const float projected_yield_g = total*useable_cycles;
-                    run[read][lane].projected_yield_g(::uint64_t(projected_yield_g+0.5f));
+                    run[read][lane].projected_yield_g(static_cast<float>(::uint64_t(projected_yield_g+0.5f)));
                     read_projected_yield_g += projected_yield_g;
                 }
             }
