@@ -78,6 +78,26 @@ namespace illumina { namespace interop { namespace logic { namespace table {
         static const std::vector<std::string> tmp(name_types, name_types+util::length_of(name_types)-1);// remove dummy
         return tmp;
     }
+    /** Get the internal names of each column
+     *
+     * @param filled boolean array indicating filled columns
+     * @return collection of strings representing a column identifier
+     */
+    inline std::vector<std::string> imaging_table_column_names(const std::vector<bool>& filled)
+    {
+        std::vector<std::string> tmp = imaging_table_column_names();
+        size_t k=0;
+        for(size_t i=0;i<tmp.size();++i)
+        {
+            if(filled[i])
+            {
+                tmp[k] = tmp[i];
+                ++k;
+            }
+        }
+        tmp.resize(k);
+        return tmp;
+    }
     /** Convert name to header
      *
      * @param name column name
@@ -158,22 +178,24 @@ namespace illumina { namespace interop { namespace logic { namespace table {
                                          const size_t q30_idx,
                                          const constants::tile_naming_method naming_method,
                                          const read_cycle_vector_t& cycle_to_read,
-                                         table_entry_map_t& table)
+                                         table_entry_map_t& table) throw(model::index_out_of_bounds_exception)
     {
-        for(;beg != end;++beg)
+        for(I cur=beg;cur != end;++cur)
         {
-            table_entry_map_t::iterator it = table.find(beg->id());
+            table_entry_map_t::iterator it = table.find(cur->id());
             if(it == table.end())
             {
-                const summary::read_cycle& read = cycle_to_read[beg->cycle()];
-                table[beg->id()] = model::table::table_entry(*beg,
+                if((cur->cycle()-1) >= cycle_to_read.size())
+                    throw model::index_out_of_bounds_exception("Cycle exceeds total cycles from Reads in the RunInfo.xml");
+                const summary::read_cycle& read = cycle_to_read[cur->cycle()-1];
+                table[cur->id()] = model::table::table_entry(*cur,
                                                              read.number,
                                                              read.cycle_within_read,
                                                              q20_idx,
                                                              q30_idx,
                                                              naming_method);
             } // TODO populate tile here?
-            else it->second.update(*beg);
+            else it->second.update(*cur);
         }
     }
 
@@ -186,7 +208,7 @@ namespace illumina { namespace interop { namespace logic { namespace table {
      */
     inline void populate_imaging_table(const model::metrics::run_metrics& metrics,
                                        std::vector< model::table::table_entry >& table,
-                                       std::vector< bool >& filled_columns)
+                                       std::vector< bool >& filled_columns) throw(model::index_out_of_bounds_exception)
     {
         table_entry_map_t entry_map;
         const constants::tile_naming_method naming_method = metrics.run_info().flowcell().naming_method();

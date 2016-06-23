@@ -14,6 +14,7 @@
 #include "interop/model/summary/metric_summary.h"
 #include "interop/model/run/read_info.h"
 #include "interop/model/model_exceptions.h"
+#include "interop/io/format/generic_layout.h"
 
 namespace illumina { namespace interop { namespace model { namespace summary
 {
@@ -221,6 +222,8 @@ namespace illumina { namespace interop { namespace model { namespace summary
 
     private:
         lane_summary_vector_t m_summary_by_lane;
+        template<class MetricType, int Version>
+        friend struct io::generic_layout;
     };
 
 }}}}

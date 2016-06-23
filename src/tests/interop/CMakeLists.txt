@@ -31,9 +31,9 @@ add_executable(interop_gtests
         logic/metric_type_ext_test.cpp
         logic/plot_logic_test.cpp
         logic/image_table_logic_test.cpp
-        )
+        inc/regression_fixture.h unit_tests.cpp inc/failure_listener.h inc/persistent_parameter_generator.h)
 
-target_link_libraries(interop_gtests ${INTEROP_LIB} ${GTEST_LIBRARY} ${GTEST_MAIN_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(interop_gtests ${INTEROP_LIB} ${GTEST_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
 add_test(NAME interop_gtests WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/testBin
               COMMAND ${CMAKE_BINARY_DIR}/testBin/${INTEROP_TESTS} )
 

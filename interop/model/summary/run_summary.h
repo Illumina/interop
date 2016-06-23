@@ -12,6 +12,7 @@
 #include "interop/util/assert.h"
 #include "interop/model/summary/read_summary.h"
 #include "interop/model/model_exceptions.h"
+#include "interop/io/stream_exceptions.h"
 
 namespace illumina { namespace interop { namespace model { namespace summary
 {
@@ -37,7 +38,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
     public:
         /** Constructor
          */
-        run_summary() : m_lane_count(0)
+        run_summary() : m_lane_count(0), m_read_count(0)
         {
         }
 
@@ -51,6 +52,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
         run_summary(I beg, I end, const size_t lane_count) : m_lane_count(lane_count),
                                                              m_summary_by_read(beg, end)
         {
+            m_read_count = m_summary_by_read.size();
             for (iterator b = m_summary_by_read.begin(), e = m_summary_by_read.end(); b != e; ++b)
             {
                 b->resize(lane_count);
@@ -69,6 +71,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
                                                                                                  reads.begin(),
                                                                                                  reads.end())
         {
+            m_read_count = reads.size();
             for (iterator b = m_summary_by_read.begin(), e = m_summary_by_read.end(); b != e; ++b)
             {
                 b->resize(lane_count);
@@ -85,6 +88,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
          */
         void initialize(const std::vector<run::read_info> &reads, const size_t lane_count)
         {
+            m_read_count = reads.size();
             m_summary_by_read.clear();
             m_summary_by_read.reserve(reads.size());
             for (size_t read = 0; read < reads.size(); ++read)
@@ -295,7 +299,27 @@ namespace illumina { namespace interop { namespace model { namespace summary
         /** @} */
 
     private:
+        /** Resize the run summary with the number of reads and lanes
+         *
+         * @param read_count number of reads
+         * @param lane_count number of lanes
+         */
+        void resize()
+        {
+            m_summary_by_read.clear();
+            m_summary_by_read.resize(m_read_count);
+            for (iterator b = m_summary_by_read.begin(), e = m_summary_by_read.end(); b != e; ++b)
+            {
+                b->resize(m_lane_count);
+            }
+        }
+
+        friend std::ostream& operator<<(std::ostream& out, const run_summary& summary);
+        friend std::istream& operator>>(std::istream& in, run_summary& summary);
+
+    private:
         size_t m_lane_count;
+        size_t m_read_count;
     private:
         metric_summary m_total_summary;
         metric_summary m_nonindex_summary;
@@ -303,6 +327,8 @@ namespace illumina { namespace interop { namespace model { namespace summary
 
     private:
         read_summary_vector_t m_summary_by_read;
+        template<class MetricType, int Version>
+        friend struct io::generic_layout;
     };
 
 }}}}

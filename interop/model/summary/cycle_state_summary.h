@@ -8,6 +8,7 @@
 #pragma once
 
 #include "interop/model/run/cycle_range.h"
+#include "interop/io/format/generic_layout.h"
 
 namespace illumina { namespace interop { namespace model { namespace summary
 {
@@ -112,6 +113,9 @@ namespace illumina { namespace interop { namespace model { namespace summary
         run::cycle_range m_called_cycle_range;
         run::cycle_range m_qscored_cycle_range;
         run::cycle_range m_error_cycle_range;
+
+        template<class MetricType, int Version>
+        friend struct io::generic_layout;
     };
 
 }}}}

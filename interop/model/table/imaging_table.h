@@ -279,8 +279,50 @@ namespace illumina { namespace interop { namespace model { namespace table {
             set_filled(metric_base::metric_set<metric_base::base_cycle_metric>(), filled, true);
             set_filled(metric_base::metric_set<metric_base::base_read_metric>(), filled, true);
         }
+        /** Copy all fields to a vector
+         *
+         * @param vec vector of values
+         * @param filled boolean vector indicating which columns to copy
+         */
+        template<typename T>
+        void copy_to_vector(std::vector<T>& vec, const std::vector<bool>& filled)const
+        {
+            vec.clear();
+#           define INTEROP_TUPLE7(Id, Ignore2, Ignore3, Ignore4, Ignore5, Ignore6, Ignored7) copy_to_vector_##Id(vec, filled);
+            INTEROP_IMAGING_COLUMN_TYPES
+#           undef INTEROP_TUPLE7 // Reuse this for another conversion
+        }
 
     private:
+        template<typename U, typename T>
+        static void copy_to_vector_impl(std::vector<U>& vec, const T val)
+        {
+            vec.push_back(static_cast<U>(val));
+        }
+        template<typename U, typename T>
+        static void copy_to_vector_impl(std::vector<U>& vec, const std::vector<T>& val)
+        {
+            for(typename std::vector<T>::const_iterator it = val.begin();it != val.end();++it)
+                vec.push_back(static_cast<U>(*it));
+        }
+        /* For every entry in INTEROP_IMAGING_COLUMN_TYPES
+         * This macro creates a single function that copies the field to a vector
+         *
+         * Example:
+         * INTEROP_TUPLE7(Lane, metric_base::base_metric, lane, Void, UInt, IdType) ->
+         *
+         * void copy_to_vector_Lane(std::vector<T>& vec)
+         *
+         */
+#       define INTEROP_TUPLE7(Id, Metric, Method, Param, Type, Kind, Round) \
+                template<typename T>\
+                void copy_to_vector_##Id(std::vector<T>& vec, const std::vector<bool>& filled)const\
+                {\
+                    if(filled[table::Id##Column]) copy_to_vector_impl(vec, Id);\
+                }
+        INTEROP_IMAGING_COLUMN_TYPES
+#       undef INTEROP_TUPLE7 // Reuse this for another conversion
+
         /* For every entry in INTEROP_IMAGING_COLUMN_TYPES
          * This macro creates two functions, one to populate a field/column with the data from the correspond metric
          * and an empty method to ignore a group

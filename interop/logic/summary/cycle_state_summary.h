@@ -51,6 +51,9 @@ void summarize_cycle_state(const model::metric_base::metric_set<model::metrics::
     {
         INTEROP_ASSERT(cycle_metric_it->cycle() > 0);
         INTEROP_ASSERT((cycle_metric_it->cycle()-1) < cycle_to_read.size());
+
+        if((cycle_metric_it->cycle()-1) >= cycle_to_read.size())
+            throw model::index_out_of_bounds_exception("Cycle exceeds total cycles from Reads in the RunInfo.xml");
         const read_cycle& read = cycle_to_read[cycle_metric_it->cycle()-1];
         if(read.number == 0) continue;
         INTEROP_ASSERT((read.number-1) < tmp.size());

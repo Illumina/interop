@@ -9,7 +9,7 @@ set(SRCS
         model/metrics/image_metric.cpp
         model/metrics/q_metric.cpp
         model/metrics/index_metric.cpp
-        model/metrics/q_collapsed_metric.cpp)
+        model/metrics/q_collapsed_metric.cpp model/summary/run_summary.cpp)
 
 set(HEADERS
         ../../interop/model/summary/cycle_state_summary.h
@@ -122,6 +122,7 @@ set(HEADERS
         ../../interop/model/table/table_util.h
         ../../interop/interop.h
         ../../interop/util/exception.h
+        ../../interop/io/table/csv_format.h
         )
 
 set(INTEROP_HEADERS ${HEADERS} PARENT_SCOPE)

@@ -11,6 +11,7 @@
 #include <climits>
 #include "interop/model/summary/metric_stat.h"
 #include "interop/model/summary/cycle_state_summary.h"
+#include "interop/io/format/generic_layout.h"
 
 namespace illumina { namespace interop { namespace model { namespace summary
 {
@@ -456,6 +457,8 @@ namespace illumina { namespace interop { namespace model { namespace summary
         metric_stat_t m_error_rate_100;
         metric_stat_t m_first_cycle_intensity;
         cycle_state_summary m_cycle_state;
+        template<class MetricType, int Version>
+        friend struct io::generic_layout;
     };
 
 }}}}

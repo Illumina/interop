@@ -14,6 +14,8 @@
 #pragma once
 #include <sstream>
 #include <iomanip>
+#include <limits>
+#include "interop/util/type_traits.h"
 
 namespace illumina {
     namespace interop {
@@ -40,9 +42,44 @@ namespace illumina {
                 static Destination cast(const std::string& str)
                 {
                     Destination val;
+                    if(handle_special_float(str, val)) return val;
                     std::istringstream iss(str);
                     iss >> val;
                     return val;
+                }
+            private:
+                static bool handle_special_float(const std::string& str, float& val)
+                {
+                    if(str == "nan")
+                    {
+                        val = std::numeric_limits<float>::quiet_NaN();
+                        return true;
+                    }
+                    if(str == "-nan")
+                    {
+                        val = -std::numeric_limits<float>::quiet_NaN();
+                        return true;
+                    }
+                    return false;
+                }
+                static bool handle_special_float(const std::string& str, double& val)
+                {
+                    if(str == "nan")
+                    {
+                        val = std::numeric_limits<double>::quiet_NaN();
+                        return true;
+                    }
+                    if(str == "-nan")
+                    {
+                        val = -std::numeric_limits<double>::quiet_NaN();
+                        return true;
+                    }
+                    return false;
+                }
+                template<typename T>
+                static bool handle_special_float(const std::string&, T& )
+                {
+                    return false;
                 }
             };
             /** Specialization that casts a string to an arbitrary type
@@ -59,10 +96,7 @@ namespace illumina {
                  */
                 static Destination cast(const char* str)
                 {
-                    Destination val;
-                    std::istringstream iss(str);
-                    iss >> val;
-                    return val;
+                    return lexical_cast_helper<std::string, Destination>::cast(str);
                 }
             };
             /** Specialization that casts a string to an arbitrary type
@@ -79,10 +113,7 @@ namespace illumina {
                  */
                 static Destination cast(const char* str)
                 {
-                    Destination val;
-                    std::istringstream iss(str);
-                    iss >> val;
-                    return val;
+                    return lexical_cast_helper<std::string, Destination>::cast(str);
                 }
             };
             /** Specialization that casts an arbitrary type to a string

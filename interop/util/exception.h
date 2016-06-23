@@ -10,6 +10,10 @@
 #pragma once
 #include "interop/util/lexical_cast.h"
 
+/** Create a formatted message for the given exception
+ *
+ * @note The .flush() is a workaround for clang
+ */
 #define INTEROP_THROW(EXCEPTION, MESSAGE) \
-        throw EXCEPTION ( static_cast<std::ostringstream&>(std::ostringstream() << MESSAGE << "\n" << __FILE__<< "::" \
+        throw EXCEPTION ( static_cast<std::ostringstream&>(std::ostringstream().flush() << MESSAGE << "\n" << __FILE__<< "::" \
             << __FUNCTION__<< " (" << __LINE__ << ")" ).str())

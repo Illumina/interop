@@ -16,6 +16,7 @@
 #include "inc/q_metrics_test.h"
 #include "inc/index_metrics_test.h"
 #include "inc/summary_fixture.h"
+#include "../inc/regression_fixture.h"
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::io;
 using namespace illumina::interop;
@@ -51,47 +52,41 @@ TYPED_TEST_CASE(summary_metrics_test, Formats);
     EXPECT_EQ(ACTUAL.number(), EXPECTED.number()); \
     EXPECT_EQ(ACTUAL.is_index(), EXPECTED.is_index())
 
-/** Test if calculated run summary matches actual run summary
- *
- * @todo Add more robust testing (e.g. non-index)
- */
-TYPED_TEST(summary_metrics_test, run_summary)
+void test_run_summary(const model::summary::run_summary& expected, const model::summary::run_summary& actual)
 {
     const float tol = 1e-7f;
-    ASSERT_EQ(TypeParam::actual.size(), TypeParam::expected.size());
-    ASSERT_EQ(TypeParam::actual.lane_count(), TypeParam::expected.lane_count());
-    EXPECT_NEAR(TypeParam::actual.total_summary().error_rate(), TypeParam::expected.total_summary().error_rate(), tol);
-    EXPECT_NEAR(TypeParam::actual.total_summary().percent_aligned(), TypeParam::expected.total_summary().percent_aligned(), tol);
-    EXPECT_NEAR(TypeParam::actual.total_summary().first_cycle_intensity(), TypeParam::expected.total_summary().first_cycle_intensity(), tol);
-    EXPECT_NEAR(TypeParam::actual.total_summary().percent_gt_q30(), TypeParam::expected.total_summary().percent_gt_q30(), tol);
-    EXPECT_NEAR(TypeParam::actual.total_summary().yield_g(), TypeParam::expected.total_summary().yield_g(), tol);
-    EXPECT_NEAR(TypeParam::actual.total_summary().projected_yield_g(), TypeParam::expected.total_summary().projected_yield_g(), tol);
+    ASSERT_EQ(actual.size(), expected.size());
+    ASSERT_EQ(actual.lane_count(), expected.lane_count());
+    EXPECT_NEAR(actual.total_summary().error_rate(), expected.total_summary().error_rate(), tol);
+    EXPECT_NEAR(actual.total_summary().percent_aligned(), expected.total_summary().percent_aligned(), tol);
+    EXPECT_NEAR(actual.total_summary().first_cycle_intensity(), expected.total_summary().first_cycle_intensity(), tol);
+    EXPECT_NEAR(actual.total_summary().percent_gt_q30(), expected.total_summary().percent_gt_q30(), tol);
+    EXPECT_NEAR(actual.total_summary().yield_g(), expected.total_summary().yield_g(), tol);
+    EXPECT_NEAR(actual.total_summary().projected_yield_g(), expected.total_summary().projected_yield_g(), tol);
 
 
-    EXPECT_NEAR(TypeParam::actual.nonindex_summary().error_rate(), TypeParam::expected.nonindex_summary().error_rate(), tol);
-    EXPECT_NEAR(TypeParam::actual.nonindex_summary().percent_aligned(), TypeParam::expected.nonindex_summary().percent_aligned(), tol);
-    EXPECT_NEAR(TypeParam::actual.nonindex_summary().first_cycle_intensity(), TypeParam::expected.nonindex_summary().first_cycle_intensity(), tol);
-    EXPECT_NEAR(TypeParam::actual.nonindex_summary().percent_gt_q30(), TypeParam::expected.nonindex_summary().percent_gt_q30(), tol);
-    EXPECT_NEAR(TypeParam::actual.nonindex_summary().yield_g(), TypeParam::expected.nonindex_summary().yield_g(), tol);
-    EXPECT_NEAR(TypeParam::actual.nonindex_summary().projected_yield_g(), TypeParam::expected.nonindex_summary().projected_yield_g(), tol);
+    EXPECT_NEAR(actual.nonindex_summary().error_rate(), expected.nonindex_summary().error_rate(), tol);
+    EXPECT_NEAR(actual.nonindex_summary().percent_aligned(), expected.nonindex_summary().percent_aligned(), tol);
+    EXPECT_NEAR(actual.nonindex_summary().first_cycle_intensity(), expected.nonindex_summary().first_cycle_intensity(), tol);
+    EXPECT_NEAR(actual.nonindex_summary().percent_gt_q30(), expected.nonindex_summary().percent_gt_q30(), tol);
+    EXPECT_NEAR(actual.nonindex_summary().yield_g(), expected.nonindex_summary().yield_g(), tol);
+    EXPECT_NEAR(actual.nonindex_summary().projected_yield_g(), expected.nonindex_summary().projected_yield_g(), tol);
 
-    const model::summary::cycle_state_summary& actual_cycle_summary = TypeParam::actual.cycle_state();
-    const model::summary::cycle_state_summary& expected_cycle_summary = TypeParam::expected.cycle_state();
+    const model::summary::cycle_state_summary& actual_cycle_summary = actual.cycle_state();
+    const model::summary::cycle_state_summary& expected_cycle_summary = expected.cycle_state();
     EXPECT_CYCLE_EQ(actual_cycle_summary.extracted_cycle_range(), expected_cycle_summary.extracted_cycle_range());
     EXPECT_CYCLE_EQ(actual_cycle_summary.called_cycle_range(), expected_cycle_summary.called_cycle_range());
     EXPECT_CYCLE_EQ(actual_cycle_summary.qscored_cycle_range(), expected_cycle_summary.qscored_cycle_range());
     EXPECT_CYCLE_EQ(actual_cycle_summary.error_cycle_range(), expected_cycle_summary.error_cycle_range());
 }
-/** Test if calculated read summary matches actual read summary
- */
-TYPED_TEST(summary_metrics_test, read_summary)
+void test_read_summary(const model::summary::run_summary& expected, const model::summary::run_summary& actual)
 {
-    ASSERT_EQ(TypeParam::actual.size(), TypeParam::expected.size());
+    ASSERT_EQ(actual.size(), expected.size());
     const float tol = 1e-7f;
-    for(size_t read=0;read<TypeParam::expected.size();++read)
+    for(size_t read=0;read<expected.size();++read)
     {
-        const model::summary::read_summary &actual_read_summary = TypeParam::actual[read];
-        const model::summary::read_summary &expected_read_summary = TypeParam::expected[read];
+        const model::summary::read_summary &actual_read_summary = actual[read];
+        const model::summary::read_summary &expected_read_summary = expected[read];
         EXPECT_EQ(actual_read_summary.size(), expected_read_summary.size());
         EXPECT_EQ(actual_read_summary.lane_count(), expected_read_summary.lane_count());
         EXPECT_NEAR(actual_read_summary.summary().error_rate(), expected_read_summary.summary().error_rate(), tol);
@@ -103,9 +98,7 @@ TYPED_TEST(summary_metrics_test, read_summary)
         EXPECT_READ_EQ(actual_read_summary.read(), expected_read_summary.read());
     }
 }
-/** Test if calculated lane summary matches actual lane summary
- */
-TYPED_TEST(summary_metrics_test, lane_summary)
+void test_lane_summary(const model::summary::run_summary& expected, const model::summary::run_summary& actual)
 {
 #ifdef _INTEROP_WIN32
     const float density_tol = 0.5f;
@@ -114,14 +107,14 @@ TYPED_TEST(summary_metrics_test, lane_summary)
     const float density_tol = 1e-7f;
     const float tol = 1e-7f;
 #endif
-    ASSERT_EQ(TypeParam::actual.size(), TypeParam::expected.size());
-    for(size_t read=0;read<TypeParam::expected.size();++read)
+    ASSERT_EQ(actual.size(), expected.size());
+    for(size_t read=0;read<expected.size();++read)
     {
-        ASSERT_EQ(TypeParam::actual[read].size(), TypeParam::expected[read].size());
-        for(size_t lane=0;lane<TypeParam::expected[read].size();++lane)
+        ASSERT_EQ(actual[read].size(), expected[read].size());
+        for(size_t lane=0;lane<expected[read].size();++lane)
         {
-            const model::summary::lane_summary& actual_lane_summary = TypeParam::actual[read][lane];
-            const model::summary::lane_summary& expected_lane_summary = TypeParam::expected[read][lane];
+            const model::summary::lane_summary& actual_lane_summary = actual[read][lane];
+            const model::summary::lane_summary& expected_lane_summary = expected[read][lane];
             EXPECT_EQ(actual_lane_summary.lane(), expected_lane_summary.lane());
             EXPECT_GT(actual_lane_summary.lane(), 0u);
             EXPECT_EQ(actual_lane_summary.tile_count(), expected_lane_summary.tile_count()) << "Failed read: " << read << ", lane: " << lane;
@@ -155,6 +148,27 @@ TYPED_TEST(summary_metrics_test, lane_summary)
             EXPECT_CYCLE_EQ(actual_cycle_summary.error_cycle_range(), expected_cycle_summary.error_cycle_range()) << "Failed read: " << read << ", lane: " << lane;
         }
     }
+}
+
+/** Test if calculated run summary matches actual run summary
+ *
+ * @todo Add more robust testing (e.g. non-index)
+ */
+TYPED_TEST(summary_metrics_test, run_summary)
+{
+    test_run_summary(TypeParam::expected, TypeParam::actual);
+}
+/** Test if calculated read summary matches actual read summary
+ */
+TYPED_TEST(summary_metrics_test, read_summary)
+{
+    test_read_summary(TypeParam::expected, TypeParam::actual);
+}
+/** Test if calculated lane summary matches actual lane summary
+ */
+TYPED_TEST(summary_metrics_test, lane_summary)
+{
+    test_lane_summary(TypeParam::expected, TypeParam::actual);
 }
 
 TEST(summary_metrics_test, empty_run_metrics)
@@ -209,4 +223,65 @@ TEST(index_summary_test, lane_summary)
     }
 };
 
+//---------------------------------------------------------------------------------------------------------------------
+// Regression test section
+//---------------------------------------------------------------------------------------------------------------------
 
+extern std::string baseline;
+extern bool rebaseline;
+
+class summary_regression_test : public ::testing::TestWithParam< std::string >
+{
+public:
+    summary_regression_test() : test(false)
+    {
+        run_folder = GetParam();
+        const std::string summary_folder = "summary";
+        const std::string baseline_file = io::combine(io::combine(baseline, summary_folder), io::basename(run_folder));
+
+        run_metrics actual_metrics;
+        EXPECT_NO_THROW(actual_metrics.read(run_folder)) << "Failed to find run folder: " << run_folder;
+        logic::summary::summarize_run_metrics(actual_metrics, actual);
+        if(!rebaseline)
+        {
+            std::ifstream fin(baseline_file.c_str());
+            try
+            {
+                fin >> expected;
+            }
+            catch(const std::exception&){}
+            EXPECT_TRUE(fin.good()) << "Failed to read baseline: " << baseline_file;
+            test = fin.good();
+        }
+        else
+        {
+            std::cout << "[          ] Rebaseline: " << io::basename(run_folder) << std::endl;
+            std::ofstream fout(baseline_file.c_str());
+            try
+            {
+                fout << actual;
+            }
+            catch(const std::exception&){}
+            EXPECT_TRUE(fout.good()) << "Failed to write baseline: " << baseline_file;
+        }
+
+    }
+    std::string run_folder;
+    model::summary::run_summary expected;
+    model::summary::run_summary actual;
+    bool test;
+};
+
+
+TEST_P(summary_regression_test, compare_to_baseline)
+{
+    if(!test) return;
+    test_run_summary(expected, actual);
+    test_read_summary(expected, actual);
+    test_lane_summary(expected, actual);
+}
+
+extern std::vector<std::string> files;
+INSTANTIATE_TEST_CASE_P(regression_input,
+                        summary_regression_test,
+                        PersistentValuesIn(files));

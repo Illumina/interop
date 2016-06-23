@@ -50,6 +50,8 @@ void cache_error_by_lane_read(I beg,
     {
         INTEROP_ASSERT(beg->cycle() > 0);
         INTEROP_ASSERT((beg->cycle()-1) < cycle_to_read.size());
+        if((beg->cycle()-1) >=cycle_to_read.size())
+            throw model::index_out_of_bounds_exception("Cycle exceeds total cycles from Reads in the RunInfo.xml");
         const read_cycle& read = cycle_to_read[beg->cycle()-1];
         if(read.cycle_within_read > max_cycle || read.is_last_cycle_in_read) continue;
         key_t key = std::make_pair(beg->lane(), beg->tile());

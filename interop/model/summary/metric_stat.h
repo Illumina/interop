@@ -6,6 +6,7 @@
  *  @copyright GNU Public License.
  */
 #pragma once
+#include "interop/io/format/generic_layout.h"
 
 namespace illumina { namespace interop { namespace model { namespace summary
 {
@@ -100,6 +101,8 @@ namespace illumina { namespace interop { namespace model { namespace summary
         float m_stddev;
         /** Median value */
         float m_median;
+        template<class MetricType, int Version>
+        friend struct io::generic_layout;
     };
 
 }}}}

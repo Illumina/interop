@@ -85,6 +85,8 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
         {
             INTEROP_ASSERT(beg->cycle() > 0);
             INTEROP_ASSERT((beg->cycle()-1) < cycle_to_read.size());
+            if((beg->cycle()-1) >= cycle_to_read.size())
+                throw model::index_out_of_bounds_exception("Cycle exceeds total cycles from Reads in the RunInfo.xml");
             const size_t read_number = cycle_to_read[beg->cycle()-1].number-1;
             if(cycle_to_read[beg->cycle()-1].is_last_cycle_in_read) continue;
             const size_t lane = beg->lane()-1;
@@ -107,7 +109,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
 
         ::uint64_t total_useable_calls_nonindex = 0;
         ::uint64_t useable_calls_gt_q30_nonindex = 0;
-        float projected_yield_g_nonindex = 0;
+        float projected_yield_nonindex = 0;
         float yield_g_nonindex = 0;
         for(size_t read=0;read<run.size();++read)
         {
@@ -167,11 +169,11 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
             {
                 total_useable_calls_nonindex += total_useable_calls_by_read;
                 useable_calls_gt_q30_nonindex += useable_calls_gt_q30_by_read;
-                projected_yield_g_nonindex += read_projected_yield;
+                projected_yield_nonindex += read_projected_yield;
                 yield_g_nonindex += run[read].summary().yield_g();
             }
         }
-        run.nonindex_summary().projected_yield_g(::uint64_t(projected_yield_g_nonindex+0.5f)/1e9f);
+        run.nonindex_summary().projected_yield_g(::uint64_t(projected_yield_nonindex+0.5f)/1e9f);
         run.nonindex_summary().yield_g(yield_g_nonindex);
         run.nonindex_summary().percent_gt_q30(100 * divide(float(useable_calls_gt_q30_nonindex), float(total_useable_calls_nonindex)));
 
