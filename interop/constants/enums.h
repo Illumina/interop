@@ -85,6 +85,7 @@
 #define INTEROP_ENUM_METRIC_DATA_TYPES \
         INTEROP_TUPLE1(IdType),\
         INTEROP_TUPLE1(ValueType),\
+        INTEROP_TUPLE1(StructType),\
         INTEROP_TUPLE1(ChannelArray),\
         INTEROP_TUPLE1(BaseArray),\
         INTEROP_TUPLE1(MetricDataCount),\

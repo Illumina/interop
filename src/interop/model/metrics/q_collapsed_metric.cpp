@@ -167,13 +167,14 @@ namespace illumina{ namespace interop{ namespace io {
     private:
         static bool is_output(std::istream&){return false;}
         static bool is_output(std::ostream&){return true;}
-        static void test_incomplete(std::istream&, const size_t extra)
+        static void test_incomplete(std::istream&, const std::streamsize extra)
         {
-            if(extra != sizeof(median_t) )
-                INTEROP_THROW( incomplete_file_exception, "Insufficient data read from the file, got: "<<
-                                                extra << " != expected: " << sizeof(median_t) );
+            if(static_cast<size_t>(extra) != sizeof(median_t) )
+                INTEROP_THROW( incomplete_file_exception, "Insufficient data read from the file, got: " <<
+                                                          extra << " != expected: " <<
+                                                          sizeof(median_t) );
         }
-        static void test_incomplete(std::ostream&, const size_t ){}
+        static void test_incomplete(std::ostream&, const std::streamsize ){}
         template<class Header>
         static void set_record_size(std::istream&, Header& header, const record_size_t record_size)
         {
@@ -452,14 +453,14 @@ namespace illumina{ namespace interop{ namespace io {
     private:
         static bool is_output(std::istream&){return false;}
         static bool is_output(std::ostream&){return true;}
-        static void test_incomplete(std::istream&, const size_t extra)
+        static void test_incomplete(std::istream&, const std::streamsize extra)
         {
-            if(extra != sizeof(median_t) )
+            if(static_cast<size_t>(extra) != sizeof(median_t) )
                 INTEROP_THROW( incomplete_file_exception, "Insufficient data read from the file, got: " <<
                                                 extra << " != expected: " <<
                                                 sizeof(median_t) );
         }
-        static void test_incomplete(std::ostream&, const size_t ){}
+        static void test_incomplete(std::ostream&, const std::streamsize ){}
         template<class Header>
         static void set_record_size(std::istream&, Header& header, const record_size_t record_size)
         {

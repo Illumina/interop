@@ -5,7 +5,7 @@ enable_testing()
 include(${PROJECT_SOURCE_DIR}/cmake/Modules/UseGitVersion.cmake)
 include(${PROJECT_SOURCE_DIR}/cmake/InternalUtils.cmake)
 
-config_compiler_and_linker()
+interop_config_compiler_and_linker()
 # TODO: https://help.github.com/articles/creating-project-pages-manually/
 
 # TODO: Handle Windows Shared libs: https://cmake.org/Wiki/BuildingWinDLL

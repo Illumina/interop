@@ -86,7 +86,8 @@ namespace illumina{ namespace interop{ namespace io {
                 {
                     std::streamsize count = 0;
                     count += stream_map< focus_t >(stream, metric.m_focus_scores, extraction_metric::MAX_CHANNELS);
-                    set_nan_to_zero(stream, metric.m_focus_scores);// TODO: Remove and rebaseline regression tests
+                    if(stream.good())
+                        set_nan_to_zero(stream, metric.m_focus_scores);// TODO: Remove and rebaseline regression tests
                     count += stream_map< intensity_t >(stream, metric.m_max_intensity_values, extraction_metric::MAX_CHANNELS);
                     count += stream_map< datetime_t >(stream, metric.m_date_time_csharp.value);
                     convert_datetime(stream, metric);

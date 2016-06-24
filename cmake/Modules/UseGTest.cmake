@@ -26,7 +26,7 @@ else()
 endif()
 
 if(NOT GTEST_LIBRARY)
-    set(GTEST_LIBRARY gtest)
+    set(GTEST_LIBRARY libgtest)
     add_library(${GTEST_LIBRARY} STATIC IMPORTED)
     set_property(TARGET ${GTEST_LIBRARY} PROPERTY IMPORTED_LOCATION ${GTEST_LIBRARY_FILE})
     if(GTEST_TARGET)

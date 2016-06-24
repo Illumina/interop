@@ -123,7 +123,7 @@ set(HEADERS
         ../../interop/interop.h
         ../../interop/util/exception.h
         ../../interop/io/table/csv_format.h
-        )
+        ../../interop/model/table/column_header.h)
 
 set(INTEROP_HEADERS ${HEADERS} PARENT_SCOPE)
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR CMAKE_COMPILER_IS_GNUCC)

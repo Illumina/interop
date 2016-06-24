@@ -35,27 +35,27 @@ namespace std
 
 #endif
 
-WRAP_EXCEPTION(illumina::interop::io::, file_not_found_exception, FileNotFoundException)
-WRAP_EXCEPTION(illumina::interop::io::, bad_format_exception, BadFormatException)
-WRAP_EXCEPTION(illumina::interop::io::, incomplete_file_exception, IncompleteFileException)
+WRAP_EXCEPTION(illumina::interop::io::, file_not_found_exception, file_not_found_exception)
+WRAP_EXCEPTION(illumina::interop::io::, bad_format_exception, bad_format_exception)
+WRAP_EXCEPTION(illumina::interop::io::, incomplete_file_exception, incomplete_file_exception)
 
 //WRAP_EXCEPTION(std::, invalid_argument, invalid_argument)
 
-WRAP_EXCEPTION(illumina::interop::model::, index_out_of_bounds_exception, IndexOutOfBoundsException)
-WRAP_EXCEPTION(illumina::interop::model::, invalid_channel_exception, InvalidChannelException)
-WRAP_EXCEPTION(illumina::interop::model::, invalid_read_exception, InvalidReadException)
-WRAP_EXCEPTION(illumina::interop::model::, invalid_metric_type, InvalidMetricType)
+WRAP_EXCEPTION(illumina::interop::model::, index_out_of_bounds_exception, index_out_of_bounds_exception)
+WRAP_EXCEPTION(illumina::interop::model::, invalid_channel_exception, invalid_channel_exception)
+WRAP_EXCEPTION(illumina::interop::model::, invalid_read_exception, invalid_read_exception)
+WRAP_EXCEPTION(illumina::interop::model::, invalid_metric_type, invalid_metric_type)
 // todo enable with imaging logic
-//WRAP_EXCEPTION(illumina::interop::model::, invalid_column_type, InvalidColumnTypeException)
+//WRAP_EXCEPTION(illumina::interop::model::, invalid_column_type, invalid_column_type)
 
 
 // TODO: support proper inheritance of exceptions for c#
-//WRAP_EXCEPTION(illumina::interop::xml::, xml_format_exception, XmlFormatException)
-WRAP_EXCEPTION(illumina::interop::xml::, xml_file_not_found_exception, XmlFileNotFoundException)
-WRAP_EXCEPTION(illumina::interop::xml::, xml_parse_exception, XmlParseException)
-WRAP_EXCEPTION(illumina::interop::xml::, bad_xml_format_exception, BadXmlFormatException)
-WRAP_EXCEPTION(illumina::interop::xml::, empty_xml_format_exception, EmptyXmlFormatException)
-WRAP_EXCEPTION(illumina::interop::xml::, missing_xml_element_exception, MissingXmlElementException)
+//WRAP_EXCEPTION(illumina::interop::xml::, xml_format_exception, xml_format_exception)
+WRAP_EXCEPTION(illumina::interop::xml::, xml_file_not_found_exception, xml_file_not_found_exception)
+WRAP_EXCEPTION(illumina::interop::xml::, xml_parse_exception, xml_parse_exception)
+WRAP_EXCEPTION(illumina::interop::xml::, bad_xml_format_exception, bad_xml_format_exception)
+WRAP_EXCEPTION(illumina::interop::xml::, empty_xml_format_exception, empty_xml_format_exception)
+WRAP_EXCEPTION(illumina::interop::xml::, missing_xml_element_exception, missing_xml_element_exception)
 
 %include "interop/io/stream_exceptions.h"
 %include "interop/util/xml_exceptions.h"

@@ -41,15 +41,15 @@ class Helper
 		{
 			c_csharp_interop.read_interop (filename, extraction_metric_set);
 		}
-		catch(IncompleteFileException){}
-		catch(FileNotFoundException ex)
+		catch(incomplete_file_exception){}
+		catch(file_not_found_exception ex)
 		{
 
 			Console.WriteLine("File not found: "+filename);
 			Console.WriteLine (ex);
 			return 1;
 		}
-		catch(BadFormatException ex)
+		catch(bad_format_exception ex)
 		{
 			Console.WriteLine (ex);
 			return 1;

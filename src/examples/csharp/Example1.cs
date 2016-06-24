@@ -22,15 +22,15 @@ class Example1
 		{
 			c_csharp_interop.read_interop (args [0], tile_metric_set);
 		}
-		catch(IncompleteFileException){}
-		catch(FileNotFoundException ex)
+		catch(incomplete_file_exception){}
+		catch(file_not_found_exception ex)
 		{
 
-		    Console.WriteLine("File not found: "+args[0]);
+			Console.WriteLine("File not found: "+args [0]);
 			Console.WriteLine (ex);
 			return 1;
 		}
-		catch(BadFormatException ex)
+		catch(bad_format_exception ex)
 		{
 			Console.WriteLine (ex);
 			return 1;

@@ -10,6 +10,7 @@
 #include <cctype>
 #include <algorithm>
 #include <vector>
+#include <iterator>
 #include "interop/util/assert.h"
 #include "interop/util/exception.h"
 #include "interop/constants/enums.h"

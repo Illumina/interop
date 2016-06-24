@@ -45,10 +45,9 @@ namespace illumina.interop.csharp.unittest
             ));
             run.legacy_channel_update(instrument_type.HiSeq);
 
-            imaging_table_entry_vector table = new imaging_table_entry_vector();
-            bool_vector filled = new bool_vector();
-            c_csharp_interop.populate_imaging_table(run, table, filled);
-            Assert.AreEqual(table.Count, 3);
+            imaging_table table = new imaging_table();
+            c_csharp_interop.populate_imaging_table(run, table);
+            Assert.AreEqual(table.row_count(), 3);
 
 		}
 	}

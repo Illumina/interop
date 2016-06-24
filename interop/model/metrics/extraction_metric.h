@@ -74,21 +74,21 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @param lane lane number
          * @param tile tile number
          * @param cycle cycle number
-         * @param dateTime time extraction was completed
+         * @param date_time time extraction was completed
          * @param intensities_p90 90th percentile of intensities for the given channel
-         * @param focusScores focus score for the given channel
+         * @param focus_scores focus score for the given channel
          */
         extraction_metric(const uint_t lane,
                           const uint_t tile,
                           const uint_t cycle,
-                          const ulong_t dateTime,
+                          const ulong_t date_time,
                           const ushort_array_t &intensities_p90,
-                          const float_array_t &focusScores) :
+                          const float_array_t &focus_scores) :
                 metric_base::base_cycle_metric(lane, tile, cycle),
-                m_date_time_csharp(util::csharp_date_time::to_csharp(dateTime)),
-                m_date_time(dateTime),
+                m_date_time_csharp(util::csharp_date_time::to_csharp(date_time)),
+                m_date_time(date_time),
                 m_max_intensity_values(intensities_p90),
-                m_focus_scores(focusScores)
+                m_focus_scores(focus_scores)
         {
             INTEROP_ASSERT(intensities_p90.size() <= MAX_CHANNELS);
             INTEROP_ASSERT(m_focus_scores.size() <= MAX_CHANNELS);
@@ -102,23 +102,23 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @param lane lane number
          * @param tile tile number
          * @param cycle cycle number
-         * @param dateTime time extraction was completed
+         * @param date_time time extraction was completed
          * @param intensities_p90 90th percentile of intensities for the given channel
-         * @param focusScores focus score for the given channel
+         * @param focus_scores focus score for the given channel
          * @param channel_count number of channels
          */
         extraction_metric(const uint_t lane,
                           const uint_t tile,
                           const uint_t cycle,
-                          const ulong_t dateTime,
+                          const ulong_t date_time,
                           const ushort_pointer_t intensities_p90,
-                          const float_pointer_t focusScores,
+                          const float_pointer_t focus_scores,
                           const uint_t channel_count = MAX_CHANNELS) :
                 metric_base::base_cycle_metric(lane, tile, cycle),
-                m_date_time_csharp(util::csharp_date_time::to_csharp(dateTime)),
-                m_date_time(dateTime),
+                m_date_time_csharp(util::csharp_date_time::to_csharp(date_time)),
+                m_date_time(date_time),
                 m_max_intensity_values(intensities_p90, intensities_p90 + channel_count),
-                m_focus_scores(focusScores, focusScores + channel_count)
+                m_focus_scores(focus_scores, focus_scores + channel_count)
         {
         }
 
@@ -128,21 +128,21 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @param lane lane number
          * @param tile tile number
          * @param cycle cycle number
-         * @param dateTime time extraction was completed
+         * @param date_time time extraction was completed
          * @param intensities_p90 90th percentile of intensities for the given channel
-         * @param focusScores focus score for the given channel
+         * @param focus_scores focus score for the given channel
          */
         extraction_metric(const uint_t lane,
                           const uint_t tile,
                           const uint_t cycle,
-                          const util::csharp_date_time dateTime,
+                          const util::csharp_date_time date_time,
                           const ushort_array_t &intensities_p90,
-                          const float_array_t &focusScores) :
+                          const float_array_t &focus_scores) :
                 metric_base::base_cycle_metric(lane, tile, cycle),
-                m_date_time_csharp(dateTime),
-                m_date_time(dateTime.to_unix()),
+                m_date_time_csharp(date_time),
+                m_date_time(date_time.to_unix()),
                 m_max_intensity_values(intensities_p90),
-                m_focus_scores(focusScores)
+                m_focus_scores(focus_scores)
         {
             INTEROP_ASSERT(intensities_p90.size() <= MAX_CHANNELS);
             INTEROP_ASSERT(m_focus_scores.size() <= MAX_CHANNELS);
@@ -156,23 +156,23 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @param lane lane number
          * @param tile tile number
          * @param cycle cycle number
-         * @param dateTime time extraction was completed
+         * @param date_time time extraction was completed
          * @param intensities_p90 90th percentile of intensities for the given channel
-         * @param focusScores focus score for the given channel
+         * @param focus_scores focus score for the given channel
          * @param channel_count number of channels
          */
         extraction_metric(const uint_t lane,
                           const uint_t tile,
                           const uint_t cycle,
-                          const util::csharp_date_time dateTime,
+                          const util::csharp_date_time date_time,
                           const ushort_pointer_t intensities_p90,
-                          const float_pointer_t focusScores,
+                          const float_pointer_t focus_scores,
                           const uint_t channel_count = MAX_CHANNELS) :
                 metric_base::base_cycle_metric(lane, tile, cycle),
-                m_date_time_csharp(dateTime),
-                m_date_time(dateTime.to_unix()),
+                m_date_time_csharp(date_time),
+                m_date_time(date_time.to_unix()),
                 m_max_intensity_values(intensities_p90, intensities_p90 + channel_count),
-                m_focus_scores(focusScores, focusScores + channel_count)
+                m_focus_scores(focus_scores, focus_scores + channel_count)
         {
         }
 
@@ -208,6 +208,16 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         {
             return m_date_time_csharp;
         }
+        /** Date time extraction completed
+         *
+         * @note C# DataTime.ToBinary int64 format
+         *
+         * @return date time code
+         */
+        ulong_t date_time_csharp_raw() const
+        {
+            return m_date_time_csharp.value;
+        }
 
         /** Median P90 (P99) intensity over all non-overlapping subregion bins
          *
@@ -218,7 +228,6 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         {
             if(channel >= m_max_intensity_values.size())
                 INTEROP_THROW( index_out_of_bounds_exception, "Channel out of bounds");
-            INTEROP_ASSERT(m_max_intensity_values.size() == MAX_CHANNELS);
             return m_max_intensity_values[channel];
         }
 
@@ -231,7 +240,6 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         {
             if(channel >= m_focus_scores.size())
                 INTEROP_THROW( index_out_of_bounds_exception, "Channel out of bounds");
-            INTEROP_ASSERT(m_focus_scores.size() == MAX_CHANNELS);
             return m_focus_scores[channel];
         }
 
@@ -261,9 +269,18 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         size_t channel_count() const
         {
-            return MAX_CHANNELS;
+            return m_focus_scores.size();
         }
         /** @} */
+        /** Trim unused channel values
+         *
+         * @param channel_count actual number of channels
+         */
+        void trim(const size_t channel_count)
+        {
+            m_focus_scores.resize(channel_count);
+            m_max_intensity_values.resize(channel_count);
+        }
         /** Median Full Width Half Max (FWHM) Focus Metric
          *
          * @deprecated Will be removed in 1.1.x (use focus_score instead)

@@ -14,7 +14,7 @@ namespace Illumina.InterOp.UnitTest
 		/// Test FileNotFoundException
 		/// </summary>
 		[Test]
-	    [ExpectedException("FileNotFoundException")]
+	    [ExpectedException("file_not_found_exception")]
 		public void TestFileNotFoundException()
 		{
             corrected_intensity_metrics metrics = new corrected_intensity_metrics();
@@ -24,7 +24,7 @@ namespace Illumina.InterOp.UnitTest
 		/// Test XmlFileNotFoundException
 		/// </summary>
 		[Test]
-	    [ExpectedException("XmlFileNotFoundException")]
+	    [ExpectedException("xml_file_not_found_exception")]
 		public void TestXMLFileNotFoundException()
 		{
             run_metrics metrics = new run_metrics();
@@ -34,7 +34,7 @@ namespace Illumina.InterOp.UnitTest
 		/// Test IndexOutOfBoundsException
 		/// </summary>
 		[Test]
-	    [ExpectedException("IndexOutOfBoundsException")]
+	    [ExpectedException("index_out_of_bounds_exception")]
 		public void TestIndexOutOfBoundsException()
 		{
             corrected_intensity_metrics metrics = new corrected_intensity_metrics();

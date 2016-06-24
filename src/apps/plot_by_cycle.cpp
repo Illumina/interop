@@ -2,7 +2,7 @@
  *
  * @brief Write metric by cycle plot to the console as at TSV (tab separated values) with a GNUPlot header
  *
- * This application writes out of file that is compatible with both TSV (tab separated values) and GNUPlot, a
+ * This application writes out a file that is compatible with both TSV (tab separated values) and GNUPlot, a
  * command line plotting tool available on Linux, Mac OSX and Windows.
  *
  * Running the Program

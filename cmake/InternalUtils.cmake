@@ -37,7 +37,7 @@ macro(fix_default_compiler_settings_)
 endmacro()
 
 # Configure the compiler and linker with more appropirate default values
-macro(config_compiler_and_linker)
+macro(interop_config_compiler_and_linker)
     fix_default_compiler_settings_()
 
     include(CheckIsNaN)

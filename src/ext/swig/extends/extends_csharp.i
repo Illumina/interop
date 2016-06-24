@@ -16,7 +16,7 @@
             return get_metric((ulong)key);
         }
         catch(global::System.IndexOutOfRangeException){return null;}
-        catch(IndexOutOfBoundsException){return null;}
+        catch(index_out_of_bounds_exception){return null;}
     }
     public metric_t GetMetric(int lane, int tile)
     {
@@ -24,7 +24,7 @@
             return get_metric((uint)lane, (uint)tile);
         }
         catch(global::System.IndexOutOfRangeException){return null;}
-        catch(IndexOutOfBoundsException){return null;}
+        catch(index_out_of_bounds_exception){return null;}
     }
     public metric_t GetMetric(ulong key)
     {
@@ -32,7 +32,7 @@
             return get_metric(key);
         }
         catch(global::System.IndexOutOfRangeException){return null;}
-        catch(IndexOutOfBoundsException){return null;}
+        catch(index_out_of_bounds_exception){return null;}
     }
      public global::System.Collections.Generic.IEnumerable< metric_t > GetMetricsInLane(int lane)
         {
@@ -105,7 +105,7 @@
                 return get_metric((uint)lane, (uint)tile, (uint)cycle);
             }
             catch(global::System.IndexOutOfRangeException){return null;}
-            catch(IndexOutOfBoundsException){return null;}
+            catch(index_out_of_bounds_exception){return null;}
         }
         public global::System.Collections.Generic.IEnumerable< metric_t > GetMetricsByCycle(global::System.Collections.Generic.IEnumerable<int> cycles)
         {

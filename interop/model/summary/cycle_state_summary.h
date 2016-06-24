@@ -13,8 +13,8 @@
 namespace illumina { namespace interop { namespace model { namespace summary
 {
 
-/** Defines a range over cycles
- */
+    /** Defines a range over cycles
+     */
     class cycle_state_summary
     {
     public:

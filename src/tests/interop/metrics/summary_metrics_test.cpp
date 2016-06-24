@@ -227,49 +227,14 @@ TEST(index_summary_test, lane_summary)
 // Regression test section
 //---------------------------------------------------------------------------------------------------------------------
 
-extern std::string baseline;
-extern bool rebaseline;
 
-class summary_regression_test : public ::testing::TestWithParam< std::string >
+struct summary_regression_test : public regression_test_fixture< summary_regression_test, model::summary::run_summary>
 {
-public:
-    summary_regression_test() : test(false)
+    summary_regression_test() : regression_test_fixture< summary_regression_test, model::summary::run_summary>("summary"){}
+    static void populate_actual(model::metrics::run_metrics& actual_metrics, model::summary::run_summary& actual)
     {
-        run_folder = GetParam();
-        const std::string summary_folder = "summary";
-        const std::string baseline_file = io::combine(io::combine(baseline, summary_folder), io::basename(run_folder));
-
-        run_metrics actual_metrics;
-        EXPECT_NO_THROW(actual_metrics.read(run_folder)) << "Failed to find run folder: " << run_folder;
         logic::summary::summarize_run_metrics(actual_metrics, actual);
-        if(!rebaseline)
-        {
-            std::ifstream fin(baseline_file.c_str());
-            try
-            {
-                fin >> expected;
-            }
-            catch(const std::exception&){}
-            EXPECT_TRUE(fin.good()) << "Failed to read baseline: " << baseline_file;
-            test = fin.good();
-        }
-        else
-        {
-            std::cout << "[          ] Rebaseline: " << io::basename(run_folder) << std::endl;
-            std::ofstream fout(baseline_file.c_str());
-            try
-            {
-                fout << actual;
-            }
-            catch(const std::exception&){}
-            EXPECT_TRUE(fout.good()) << "Failed to write baseline: " << baseline_file;
-        }
-
     }
-    std::string run_folder;
-    model::summary::run_summary expected;
-    model::summary::run_summary actual;
-    bool test;
 };
 
 
@@ -281,7 +246,6 @@ TEST_P(summary_regression_test, compare_to_baseline)
     test_lane_summary(expected, actual);
 }
 
-extern std::vector<std::string> files;
 INSTANTIATE_TEST_CASE_P(regression_input,
                         summary_regression_test,
-                        PersistentValuesIn(files));
+                        PersistentValuesIn(regression_test_data::instance().files()));

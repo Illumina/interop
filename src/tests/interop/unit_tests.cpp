@@ -12,30 +12,27 @@
 #include "src/tests/interop/inc/regression_fixture.h"
 using namespace illumina::interop::unittest;
 
-std::string baseline;
-std::vector<std::string> files;
-bool rebaseline = false;
-
 int main(int argc, char **argv)
 {
     // set baseline
     // set regression data
+    regression_test_data& data = regression_test_data::instance();
 
     for(int i=1;i<argc;++i)
     {
         const std::string arg = argv[i];
         if(arg == "--rebaseline")
         {
-            rebaseline = true;
+            data.rebaseline(true);
             continue;
         }
         if(arg.length() >= 2 && arg.substr(0, 2) == "--") continue;
-        if(baseline == "")
+        if(data.baseline() == "")
         {
-            baseline = arg;
+            data.baseline(arg);
             continue;
         }
-        files.push_back(arg);
+        data.add_file(arg);
     }
 
 

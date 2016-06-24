@@ -28,11 +28,10 @@ namespace illumina { namespace interop { namespace util {
         return true;
     }
 
-    /** Split string based on upper case characters and seperator with separator string
+    /** Split string based on upper case characters and separate with separator string
      *
      * E.g. "SignalToNoise" -> "Signal To Noise"
      *
-     * Signal T
      *
      * @param str source/destination string
      * @param sep seperator string
@@ -46,6 +45,26 @@ namespace illumina { namespace interop { namespace util {
                 str.insert(i, sep);
                 ++i;
             }
+        }
+    }
+    /** Split string based on space characters and delineate with camel case
+     *
+     * E.g. "Signal To Noise" -> "SignalToNoise"
+     *
+     *
+     * @param str source/destination string
+     * @param sep separator string
+     */
+    inline void camel_from(std::string& str, const char sep=' ')
+    {
+        for(size_t i=1;i<str.length()-1;)
+        {
+            if(str[i] == sep)
+            {
+                str.erase(str.begin() + i);
+                str[i] = static_cast<char>(::toupper(str[i]));
+            }
+            else ++i;
         }
     }
 

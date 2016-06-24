@@ -25,7 +25,8 @@ namespace illumina { namespace interop { namespace io {  namespace  table {
         std::string cell;
         while(std::getline(sin, cell, ','))
         {
-            values.push_back(util::lexical_cast<T>(cell));
+            if(cell=="") values.push_back(std::numeric_limits<T>::min());
+            else values.push_back(util::lexical_cast<T>(cell));
         }
     }
     /** Write a vector of values as a single in a CSV file

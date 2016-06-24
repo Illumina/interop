@@ -82,10 +82,10 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
             keys.push_back(b->first);
         std::stable_sort(keys.begin(), keys.end());
 
-        for(typename std::vector<std::string>::const_iterator curr = keys.begin(), end = keys.end(), beg=curr;curr != end;++curr)
+        for(typename std::vector<std::string>::const_iterator kcurr = keys.begin(), kbeg=kcurr;kcurr != keys.end();++kcurr)
         {
-            index_count_summary& count_summary = index_count_map[*curr];
-            count_summary.id(static_cast<size_t>(std::distance(beg, curr)+1));
+            index_count_summary& count_summary = index_count_map[*kcurr];
+            count_summary.id(static_cast<size_t>(std::distance(kbeg, kcurr)+1));
             count_summary.update_fraction_mapped(static_cast<double>(pf_cluster_count_total));
             const float fraction_mapped = count_summary.fraction_mapped();
             summary.push_back(count_summary);
