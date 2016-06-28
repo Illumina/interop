@@ -13,7 +13,7 @@
 
 
 namespace illumina { namespace interop { namespace model { namespace table {
-
+    /** Describes an imaging table, row data, column headers and boolean filled */
     class imaging_table
     {
     public:

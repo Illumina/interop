@@ -40,7 +40,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics {
         q_by_lane_metric(const uint_t lane,
                  const uint_t tile,
                  const uint_t cycle,
-                 const uint_vector& qscore_hist) : q_metric(lane, tile, cycle, qscore_hist){}
+                 const uint32_vector& qscore_hist) : q_metric(lane, tile, cycle, qscore_hist){}
 
         /** @defgroup q_metric_by_lane Quality Metrics By Lane
          *
@@ -60,8 +60,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics {
          */
         void accumulate_by_lane(const q_metric& metric)
         {
-            typedef uint_vector::const_iterator const_iterator;
-            typedef uint_vector::iterator iterator;
+            typedef uint32_vector::const_iterator const_iterator;
+            typedef uint32_vector::iterator iterator;
             iterator it = m_qscore_hist.begin();
             for (const_iterator beg = metric.qscore_hist().begin(), end = metric.qscore_hist().end();
                  beg != end; ++beg, ++it)

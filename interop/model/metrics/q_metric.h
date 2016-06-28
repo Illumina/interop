@@ -244,9 +244,12 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         typedef q_score_header header_type;
         /** Vector of q-scores type */
         typedef header_type::qscore_bin_vector_type qscore_bin_vector_type;
-        /** Defines a vector of unsigned ints
+        /** Defines a vector of unsigned 32-bit ints
          */
-        typedef std::vector<uint_t> uint_vector;
+        typedef std::vector< ::uint32_t > uint32_vector;
+        /** Defines a vector of unsigned 64-bit ints
+        */
+        typedef std::vector< ::uint64_t > uint64_vector;
         /** Define a uint pointer to a uint array
          */
         typedef ::uint32_t *uint_pointer_t;
@@ -267,7 +270,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         q_metric(const uint_t lane,
                  const uint_t tile,
                  const uint_t cycle,
-                 const uint_vector &qscore_hist) :
+                 const uint32_vector &qscore_hist) :
                 metric_base::base_cycle_metric(lane, tile, cycle),
                 m_qscore_hist(qscore_hist),
                 m_qscore_hist_cumulative(qscore_hist.size(), 0)
@@ -319,7 +322,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          *
          * @return q-score histogram
          */
-        const uint_vector &qscore_hist() const
+        const uint32_vector &qscore_hist() const
         {
             return m_qscore_hist;
         }
@@ -346,9 +349,11 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          *
          * @return cumulative q-score histogram sum
          */
-        uint_t sum_qscore_cumulative() const
+        ::uint64_t sum_qscore_cumulative() const
         {
-            return std::accumulate(m_qscore_hist_cumulative.begin(), m_qscore_hist_cumulative.end(), 0);
+            return std::accumulate(m_qscore_hist_cumulative.begin(),
+                                   m_qscore_hist_cumulative.end(),
+                                   static_cast< ::uint64_t >(0));
         }
 
         /** Number of clusters over the given q-score
@@ -395,17 +400,17 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @param bins q-score histogram bins
          * @return total of clusters over the given q-score
          */
-        uint_t total_over_qscore_cumulative(const uint_t qscore,
+        ::uint64_t total_over_qscore_cumulative(const uint_t qscore,
                                             const qscore_bin_vector_type &bins = qscore_bin_vector_type()) const
         {
             INTEROP_ASSERT(m_qscore_hist_cumulative.size() > 0);
-            uint_t totalCount = 0;
+            ::uint64_t totalCount = 0;
             if (bins.size() == 0)
             {
                 INTEROP_ASSERT(qscore > 0);
                 if(qscore <= m_qscore_hist_cumulative.size())
                 totalCount = std::accumulate(m_qscore_hist_cumulative.begin() + qscore, m_qscore_hist_cumulative.end(),
-                                             0);
+                                             static_cast< ::uint64_t >(0));
             }
             else
             {
@@ -476,10 +481,10 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                                              qscore_bin_vector_type()) const
         {
             INTEROP_ASSERT(m_qscore_hist_cumulative.size() > 0);
-            const float total = static_cast<float>(sum_qscore_cumulative());
-            if (total == 0.0f) return std::numeric_limits<float>::quiet_NaN();
-            const uint_t total_count = total_over_qscore_cumulative(qscore, bins);
-            return 100 * total_count / total;
+            const ::uint64_t total = sum_qscore_cumulative();
+            if (total == 0) return std::numeric_limits<float>::quiet_NaN();
+            const ::uint64_t total_count = total_over_qscore_cumulative(qscore, bins);
+            return 100.0f * total_count / total;
         }
 
         /** Get the median q-score
@@ -528,12 +533,12 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         void accumulate(const q_metric &metric)
         {
-            uint_vector::const_iterator beg = metric.m_qscore_hist_cumulative.begin(),
+            uint64_vector::const_iterator beg = metric.m_qscore_hist_cumulative.begin(),
                     end = metric.m_qscore_hist_cumulative.end();
-            m_qscore_hist_cumulative = m_qscore_hist;
+            m_qscore_hist_cumulative.assign(m_qscore_hist.begin(), m_qscore_hist.end());
             if (&metric != this)
             {
-                for (uint_vector::iterator cur = m_qscore_hist_cumulative.begin(); beg != end; ++beg, ++cur)
+                for (uint64_vector::iterator cur = m_qscore_hist_cumulative.begin(); beg != end; ++beg, ++cur)
                     *cur += *beg;
             }
         }
@@ -548,7 +553,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             INTEROP_ASSERT(distribution.size() == m_qscore_hist.size());
             if (distribution.size() != m_qscore_hist.size()) return;
             typename std::vector<T>::iterator it = distribution.begin();
-            for (typename uint_vector::const_iterator cur = m_qscore_hist.begin(), end = m_qscore_hist.end();
+            for (typename uint32_vector::const_iterator cur = m_qscore_hist.begin(), end = m_qscore_hist.end();
                  cur != end; ++it, ++cur)
             {
                 (*it) += (*cur);
@@ -571,7 +576,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @deprecated Will be removed in 1.1.x (use qscore_hist instead)
          * @return q-score histogram
          */
-        const uint_vector &qscoreHist() const
+        const uint32_vector &qscoreHist() const
         {
             return m_qscore_hist;
         }
@@ -586,9 +591,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
 
     protected:
         /** Unsigned int vector for q-score histogram */
-        uint_vector m_qscore_hist;
+        uint32_vector m_qscore_hist;
     private:
-        uint_vector m_qscore_hist_cumulative;
+        uint64_vector m_qscore_hist_cumulative;
 
         template<class MetricType, int Version>
         friend
