@@ -202,6 +202,14 @@ namespace illumina { namespace interop { namespace model { namespace summary
         {
             return m_summary_by_read.end();
         }
+        /** Clear the contents of the summary
+         */
+        void clear()
+        {
+            m_summary_by_read.clear();
+            m_lane_count = 0;
+            m_read_count = 0;
+        }
 
     public:
         /** Get number of lanes

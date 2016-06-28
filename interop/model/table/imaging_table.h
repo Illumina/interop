@@ -138,6 +138,14 @@ namespace illumina { namespace interop { namespace model { namespace table {
         {
             m_rows.resize(n);
         }
+        /** Clear the contents of the table
+         */
+        void clear()
+        {
+            m_rows.clear();
+            m_columns_filled.clear();
+            m_columns_header.clear();
+        }
 
     public:
         /** Number of columns in the table

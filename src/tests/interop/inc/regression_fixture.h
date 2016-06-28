@@ -124,12 +124,14 @@ namespace illumina{ namespace interop { namespace unittest {
 
             model::metrics::run_metrics actual_metrics;
             EXPECT_NO_THROW(actual_metrics.read(run_folder)) << "Failed to find run folder: " << run_folder;
+            actual.clear();
             Fixture::populate_actual(actual_metrics, actual);
 
             if(!data.rebaseline())
             {
                 if(io::is_file_readable(baseline_file))
                 {
+                    expected.clear();
                     std::ifstream fin(baseline_file.c_str());
                     try
                     {

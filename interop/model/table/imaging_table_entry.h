@@ -286,6 +286,7 @@ namespace illumina { namespace interop { namespace model { namespace table {
                                           const std::vector<size_t> offsets)
         {
             INTEROP_ASSERT(offsets.size()>0);
+            val.clear();
             val.reserve(offsets.size());
             for(size_t i=0;i<offsets.size();++i)
             {
