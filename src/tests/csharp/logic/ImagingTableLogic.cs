@@ -1,8 +1,9 @@
 using System;
 using NUnit.Framework;
 using System.IO;
+using Illumina.InterOp.Imaging;
 
-namespace illumina.interop.csharp.unittest
+namespace Illumina.InterOp.Interop.UnitTest
 {
 	/// <summary>
 	/// Test plotting data by cycle
@@ -46,7 +47,7 @@ namespace illumina.interop.csharp.unittest
             run.legacy_channel_update(instrument_type.HiSeq);
 
             imaging_table table = new imaging_table();
-            c_csharp_interop.populate_imaging_table(run, table);
+            c_csharp_imaging.populate_imaging_table(run, table);
             Assert.AreEqual(table.row_count(), 3);
 
 		}

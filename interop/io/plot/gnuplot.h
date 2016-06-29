@@ -360,8 +360,8 @@ namespace illumina { namespace interop { namespace io {  namespace  plot {
             {
                 if(std::isupper(color[i]))
                 {
-                    if(i > 0) color_normalized += "-";
-                    color_normalized += ::tolower(color[i]);
+                    if(i > 0) color_normalized += '-';
+                    color_normalized += static_cast<char>(::tolower(color[i]));
                 }
                 else color_normalized += color[i];
             }

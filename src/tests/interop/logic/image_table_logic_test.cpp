@@ -15,74 +15,33 @@
 #include "interop/model/table/imaging_table.h"
 #include "interop/util/length_of.h"
 
-#define INTEROP_EXPECT_EQ_UIntIdType(EXPECTED, ACTUAL, TOL) ASSERT_EQ(EXPECTED, ACTUAL)
-#define INTEROP_EXPECT_EQ_FloatValueType(EXPECTED, ACTUAL, TOL) if(!std::isnan(EXPECTED) && !std::isnan(ACTUAL)) \
-    EXPECT_NEAR(EXPECTED, ACTUAL, TOL)
-#define INTEROP_EXPECT_EQ_DateTimeStructType(EXPECTED, ACTUAL, TOL) EXPECT_TRUE(true)
-#define INTEROP_EXPECT_EQ_UShortChannelArray(EXPECTED, ACTUAL, TOL) EXPECT_THAT(EXPECTED, ::testing::ElementsAreArray(ACTUAL))
-#define INTEROP_EXPECT_EQ_UShortBaseArray(EXPECTED, ACTUAL, TOL) EXPECT_THAT(EXPECTED, ::testing::ElementsAreArray(ACTUAL))
-#define INTEROP_EXPECT_EQ_FloatChannelArray(EXPECTED, ACTUAL, TOL) \
-    ASSERT_EQ(EXPECTED.size(), ACTUAL.size()) << to_string(EXPECTED);\
+#define INTEROP_EXPECT_EQ_UIntIdType(EXPECTED, ACTUAL, TOL, MSG) ASSERT_EQ(EXPECTED, ACTUAL) << MSG
+#define INTEROP_EXPECT_EQ_FloatValueType(EXPECTED, ACTUAL, TOL, MSG) if(!std::isnan(EXPECTED) && !std::isnan(ACTUAL)) \
+    EXPECT_NEAR(EXPECTED, ACTUAL, TOL) << MSG
+#define INTEROP_EXPECT_EQ_DateTimeStructType(EXPECTED, ACTUAL, TOL, MSG) EXPECT_TRUE(true)
+#define INTEROP_EXPECT_EQ_UShortChannelArray(EXPECTED, ACTUAL, TOL, MSG) EXPECT_THAT(EXPECTED, ::testing::ElementsAreArray(ACTUAL)) << MSG
+#define INTEROP_EXPECT_EQ_UShortBaseArray(EXPECTED, ACTUAL, TOL, MSG) EXPECT_THAT(EXPECTED, ::testing::ElementsAreArray(ACTUAL)) << MSG
+#define INTEROP_EXPECT_EQ_FloatChannelArray(EXPECTED, ACTUAL, TOL, MSG) \
+    ASSERT_EQ(EXPECTED.size(), ACTUAL.size()) << to_string(EXPECTED) << " - " << MSG;\
     for(size_t k=0;k<EXPECTED.size();++k) \
-        if(!std::isnan(EXPECTED[k]) && !std::isnan(ACTUAL[k])) EXPECT_NEAR(EXPECTED[k], ACTUAL[k], TOL);\
-    EXPECT_TRUE(true)
-#define INTEROP_EXPECT_EQ_FloatBaseArray(EXPECTED, ACTUAL, TOL) \
-    ASSERT_EQ(EXPECTED.size(), ACTUAL.size()) << to_string(EXPECTED);\
+        if(!std::isnan(EXPECTED[k]) && !std::isnan(ACTUAL[k])) EXPECT_NEAR(EXPECTED[k], ACTUAL[k], TOL) << MSG
+#define INTEROP_EXPECT_EQ_FloatBaseArray(EXPECTED, ACTUAL, TOL, MSG) \
+    ASSERT_EQ(EXPECTED.size(), ACTUAL.size()) << to_string(EXPECTED) << " - " << MSG;\
     for(size_t k=0;k<EXPECTED.size();++k) \
-        if(!std::isnan(EXPECTED[k]) && !std::isnan(ACTUAL[k])) EXPECT_NEAR(EXPECTED[k], ACTUAL[k], TOL);\
-    EXPECT_TRUE(true)
+        if(!std::isnan(EXPECTED[k]) && !std::isnan(ACTUAL[k])) EXPECT_NEAR(EXPECTED[k], ACTUAL[k], TOL) << MSG
 
 using namespace illumina::interop;
 using namespace illumina::interop::unittest;
 
 typedef std::vector< model::table::column_header > column_header_vector_t;
 
-
 template<typename T>
-void expect_near(const T expected, const T actual, const float, const char* field_name)
+std::string to_string(const std::vector<T>& values)
 {
-    ASSERT_EQ(expected, actual) << field_name;
-}
-
-void expect_near(const float expected, const float actual, const float tol, const char* field_name)
-{
-    if(std::isnan(expected) && std::isnan(actual)) return;
-    ASSERT_NEAR(expected, actual, tol) << field_name;
-}
-template<typename T>
-void expect_near(const std::vector<T>& expected, const std::vector<T>& actual, const float tol, const char* field_name)
-{
-    ASSERT_EQ(expected.size(), actual.size());
-    for(size_t i=0;i<expected.size();++i)
-        expect_near(expected[i], actual[i], tol, field_name);
-}
-
-void test_image_table_header(const column_header_vector_t& expected, const column_header_vector_t& actual)
-{
-    ASSERT_EQ(expected.size(), actual.size());
-    for(column_header_vector_t::const_iterator expected_it = expected.begin(), actual_it = actual.begin();
-            expected_it != expected.end();++expected_it, ++actual_it)
-    {
-        ASSERT_EQ(*expected_it, *actual_it);
-    }
-}
-void test_table_entry(const model::table::table_entry& expected, const model::table::table_entry& actual)
-{
-    const float tol = 1e-7f;
-#   define INTEROP_TUPLE7(Id, Ignored1, Ignored2, Ignored3, Ignored4, Ignored5, Ignored6) \
-    expect_near(expected. Id, actual. Id, tol, #Id);
-    INTEROP_IMAGING_COLUMN_TYPES
-#   undef INTEROP_TUPLE7
-}
-void test_image_table_rows(const std::vector<model::table::table_entry>& expected,
-                           const std::vector<model::table::table_entry>& actual)
-{
-    ASSERT_EQ(expected.size(), actual.size());
-    for(std::vector<model::table::table_entry>::const_iterator expected_it = expected.begin(), actual_it = actual.begin();
-        expected_it != expected.end();++expected_it, ++actual_it)
-    {
-        test_table_entry(*expected_it, *actual_it);
-    }
+    std::ostringstream out;
+    for(size_t i=0;i<values.size();++i)
+        out << values[i] << ",";
+    return out.str();
 }
 
 // This test is disabled because it was designed to fail, in order to show the framework works.
@@ -93,8 +52,12 @@ TEST(imaging_table, DISABLED_table_entry)
 
     model::table::table_entry actual;
     actual.Lane = 2;
+    const float tol = 1e-6f;
 
-    test_table_entry(expected, actual);
+#   define INTEROP_TUPLE7(Id, Ignored1, Ignored2, Ignored3, Data, Type, Ignored5) \
+        INTEROP_EXPECT_EQ_##Data##Type(expected.Id, actual.Id, tol, "");
+    INTEROP_IMAGING_COLUMN_TYPES
+#   undef INTEROP_TUPLE7
 
 
 }
@@ -138,7 +101,7 @@ TEST(imaging_table, test_column_headers)
                 column_header("", "Density(k/mm2)"),
                 column_header("P90", "Red"),
                 column_header("P90", "Green")};
-    test_image_table_header(to_vector(expected_headers), headers);
+    EXPECT_THAT(to_vector(expected_headers), ::testing::ElementsAreArray(headers));
 }
 
 TEST(imaging_table, test_row0)
@@ -310,14 +273,6 @@ bool compare_rows(const model::table::table_entry& lhs, const model::table::tabl
     }
     return lhs.Lane < rhs.Lane;
 }
-template<typename T>
-std::string to_string(const std::vector<T>& values)
-{
-    std::ostringstream out;
-    for(size_t i=0;i<values.size();++i)
-        out << values[i] << ",";
-    return out.str();
-}
 
 TEST_P(image_table_regression_test, compare_to_baseline)
 {
@@ -329,26 +284,20 @@ TEST_P(image_table_regression_test, compare_to_baseline)
     std::stable_sort(expected.begin(), expected.end(), compare_rows);
     std::stable_sort(actual.begin(), actual.end(), compare_rows);
 
-    std::vector<float> tolerances(model::table::ImagingColumnCount, 1e-7f);
-    tolerances[model::table::PercentBaseColumn] = 0.2f;
-    tolerances[model::table::SignalToNoiseColumn] = 0.4f;
-    tolerances[model::table::PercentGreaterThanQ20Column] = 0.02f;
-    tolerances[model::table::PercentGreaterThanQ30Column] = 0.02f;
-    tolerances[model::table::ClusterCountKColumn] = 0.101f;
-    tolerances[model::table::ClusterCountPfKColumn] = 0.101f;
-    tolerances[model::table::PercentNoCallsColumn] = 0.101f;
-    tolerances[model::table::PercentPassFilterColumn] = 0.101f;
-    tolerances[model::table::ErrorRateColumn] = 0.01f;
-    tolerances[model::table::DensityKPermm2Column] = 0.101f;
-    tolerances[model::table::DensityPfKPermm2Column] = 0.101f;
-    tolerances[model::table::FwhmColumn] = 0.05f;
+    // Account for differences in rounding due to writing floating-point numbers as text (and double/float issues)
+    // C# rounds to nearest even
+    // InterOp rounds using std::floor(val+0.5)
+    const float round_tol = 0.101f;
+    const float round_tols[] = {1e-5f, round_tol, round_tol/10, round_tol/100};
 
     for(size_t i=0;i<expected.row_count();++i)
     {
-#       define INTEROP_TUPLE7(Id, Ignored1, Ignored2, Ignored3, Data, Type, Ignored5) \
-        INTEROP_EXPECT_EQ_##Data##Type(expected[i].Id, actual[i].Id, tolerances[model::table::Id##Column]) << i \
+#       define INTEROP_TUPLE7(Id, Ignored1, Ignored2, Ignored3, Data, Type, NUM_DECIMALS) \
+        INTEROP_ASSERT(NUM_DECIMALS < util::length_of(round_tols));\
+        INTEROP_EXPECT_EQ_##Data##Type(expected[i].Id, actual[i].Id, round_tols[NUM_DECIMALS], i \
                 << " - " << expected[i].Lane << "_" << expected[i].Tile << "(" << expected[i].Cycle\
-                << ") == " << actual[i].Lane << "_" << actual[i].Tile << "(" << actual[i].Cycle << ")";
+                << ") == " << actual[i].Lane << "_" << actual[i].Tile << "(" << actual[i].Cycle << ") "\
+                << io::basename(run_folder));
         INTEROP_IMAGING_COLUMN_TYPES
 #       undef INTEROP_TUPLE7
     }

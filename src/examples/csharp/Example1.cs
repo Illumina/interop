@@ -1,7 +1,7 @@
 
 // @ [Reading a binary InterOp file in CSharp]
 using System;
-
+using Illumina.InterOp.Interop;
 
 class Example1
 {

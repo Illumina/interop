@@ -1,8 +1,9 @@
 using System;
 using NUnit.Framework;
 using System.IO;
+using Illumina.InterOp.Plot;
 
-namespace illumina.interop.csharp.unittest
+namespace Illumina.InterOp.Interop.UnitTest
 {
 	/// <summary>
 	/// Test plotting data by lane
@@ -60,7 +61,7 @@ namespace illumina.interop.csharp.unittest
             run.legacy_channel_update(instrument_type.HiSeq);
 
             candle_stick_plot_data data = new candle_stick_plot_data();
-            c_csharp_interop.plot_candle_stick_by_lane(run, metric_type.ClusterCountPF, options, data);
+            c_csharp_plot.plot_candle_stick_by_lane(run, metric_type.ClusterCountPF, options, data);
             Assert.AreEqual(data.size(), 1);
 
 		}

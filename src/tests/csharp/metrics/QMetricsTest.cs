@@ -4,7 +4,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using QVal = System.Collections.Generic.KeyValuePair<uint, uint>;
-namespace illumina.interop.csharp.unittest
+namespace Illumina.InterOp.Interop.UnitTest
 {
 	/// <summary>
 	/// Confirm that the q-metrics InterOp works properly in C#

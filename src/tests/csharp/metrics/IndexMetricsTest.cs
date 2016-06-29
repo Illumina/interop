@@ -2,7 +2,7 @@ using System;
 using NUnit.Framework;
 using System.IO;
 
-namespace illumina.interop.csharp.unittest
+namespace Illumina.InterOp.Interop.UnitTest
 {
 	/// <summary>
 	/// Confirm that the index metrics InterOp works properly in C#

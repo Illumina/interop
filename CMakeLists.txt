@@ -46,3 +46,12 @@ if(ENABLE_DOCS)
     add_subdirectory("docs")
 endif()
 install(DIRECTORY interop DESTINATION include)
+
+find_package(Git)
+if(GIT_FOUND)
+    string(REGEX REPLACE "[^v]*(v[0-9]+.[0-9]+.[0-9])-.*" "\\1" TAG ${INTEROP_VERSION})
+    add_custom_target(history
+        COMMAND ${GIT_EXECUTABLE};log;${TAG}..HEAD;-m;--first-parent;--format='%h | %b'
+        COMMENT "List all commits from last tag - ${TAG}"
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+endif()

@@ -3,7 +3,8 @@ using NUnit.Framework;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
-namespace illumina.interop.csharp.unittest
+
+namespace Illumina.InterOp.Interop.UnitTest
 {
 	/// <summary>
 	/// Confirm that the corrected intensity metrics InterOp works properly in C#

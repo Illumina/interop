@@ -1,8 +1,9 @@
 using System;
 using NUnit.Framework;
 using System.IO;
+using Illumina.InterOp.Plot;
 
-namespace illumina.interop.csharp.unittest
+namespace Illumina.InterOp.Interop.UnitTest
 {
 	/// <summary>
 	/// Test plotting % reads identified
@@ -74,7 +75,7 @@ namespace illumina.interop.csharp.unittest
             run.legacy_channel_update(instrument_type.HiSeq);
 
             bar_plot_data data = new bar_plot_data();
-            c_csharp_interop.plot_sample_qc(run, 1, data);
+            c_csharp_plot.plot_sample_qc(run, 1, data);
             Assert.AreEqual(data.size(), 1);
 
 		}

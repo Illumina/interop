@@ -1,8 +1,9 @@
 using System;
 using NUnit.Framework;
 using System.IO;
+using Illumina.InterOp.Plot;
 
-namespace illumina.interop.csharp.unittest
+namespace Illumina.InterOp.Interop.UnitTest
 {
 	/// <summary>
 	/// Test plotting q-score histogram
@@ -45,7 +46,7 @@ namespace illumina.interop.csharp.unittest
             run.finalize_after_load();
 
             bar_plot_data data = new bar_plot_data();
-            c_csharp_interop.plot_qscore_histogram(run, options, data);
+            c_csharp_plot.plot_qscore_histogram(run, options, data);
             Assert.AreEqual(data.size(), 1);
 
 		}

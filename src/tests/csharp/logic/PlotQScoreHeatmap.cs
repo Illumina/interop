@@ -1,8 +1,9 @@
 using System;
 using NUnit.Framework;
 using System.IO;
+using Illumina.InterOp.Plot;
 
-namespace illumina.interop.csharp.unittest
+namespace Illumina.InterOp.Interop.UnitTest
 {
 	/// <summary>
 	/// Test plotting q-score heat map
@@ -44,7 +45,7 @@ namespace illumina.interop.csharp.unittest
             run.finalize_after_load();
 
             heatmap_data data = new heatmap_data();
-            c_csharp_interop.plot_qscore_heatmap(run, options, data);
+            c_csharp_plot.plot_qscore_heatmap(run, options, data);
             Assert.AreEqual(data.row_count(), 3);
 
 		}

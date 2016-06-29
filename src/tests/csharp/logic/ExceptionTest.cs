@@ -2,7 +2,7 @@ using System;
 using NUnit.Framework;
 using System.IO;
 
-namespace Illumina.InterOp.UnitTest
+namespace Illumina.InterOp.Interop.UnitTest
 {
 	/// <summary>
 	/// Test C# Swig Exception Mapping
@@ -14,7 +14,7 @@ namespace Illumina.InterOp.UnitTest
 		/// Test FileNotFoundException
 		/// </summary>
 		[Test]
-	    [ExpectedException("file_not_found_exception")]
+	    [ExpectedException("Illumina.InterOp.Interop.file_not_found_exception")]
 		public void TestFileNotFoundException()
 		{
             corrected_intensity_metrics metrics = new corrected_intensity_metrics();
@@ -24,7 +24,7 @@ namespace Illumina.InterOp.UnitTest
 		/// Test XmlFileNotFoundException
 		/// </summary>
 		[Test]
-	    [ExpectedException("xml_file_not_found_exception")]
+	    [ExpectedException("Illumina.InterOp.Interop.xml_file_not_found_exception")]
 		public void TestXMLFileNotFoundException()
 		{
             run_metrics metrics = new run_metrics();
@@ -34,7 +34,7 @@ namespace Illumina.InterOp.UnitTest
 		/// Test IndexOutOfBoundsException
 		/// </summary>
 		[Test]
-	    [ExpectedException("index_out_of_bounds_exception")]
+	    [ExpectedException("Illumina.InterOp.Interop.index_out_of_bounds_exception")]
 		public void TestIndexOutOfBoundsException()
 		{
             corrected_intensity_metrics metrics = new corrected_intensity_metrics();

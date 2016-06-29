@@ -251,7 +251,7 @@ std::string format_read(const run::read_info& read)
 
 void populate_index(const index_count_summary& summary, std::vector<std::string>& values)
 {
-    values[0] = format(summary.id(), 0, 0);
+    values[0] = format(static_cast<float>(summary.id()), 0, 0);
     values[1] = summary.sample_id();
     values[2] = summary.project_name();
     values[3] = summary.index1();
@@ -265,8 +265,8 @@ void print_summary(std::ostream& out, const index_lane_summary& summary)
     const char* flowcell_header[] = {"Total Reads", "PF Reads", "% Read Identified (PF)", "CV", "Min", "Max"};
     print_array(out, flowcell_header, width);
     std::vector<std::string> values(size_of(flowcell_header));
-    values[0] = format(summary.total_reads(), 0, 0);
-    values[1] = format(summary.total_pf_reads(), 0, 0);
+    values[0] = format(static_cast<float>(summary.total_reads()), 0, 0);
+    values[1] = format(static_cast<float>(summary.total_pf_reads()), 0, 0);
     values[2] = format(summary.total_fraction_mapped_reads(), 0, 4);
     values[3] = format(summary.mapped_reads_cv(), 0, 4);
     values[4] = format(summary.min_mapped_reads(), 0, 4);

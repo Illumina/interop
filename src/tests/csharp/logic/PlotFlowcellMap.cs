@@ -1,8 +1,9 @@
 using System;
 using NUnit.Framework;
 using System.IO;
+using Illumina.InterOp.Plot;
 
-namespace illumina.interop.csharp.unittest
+namespace Illumina.InterOp.Interop.UnitTest
 {
 	/// <summary>
 	/// Test plotting q-score flowcell map
@@ -44,7 +45,7 @@ namespace illumina.interop.csharp.unittest
             run.finalize_after_load();
 
             flowcell_data data = new flowcell_data();
-            c_csharp_interop.plot_flowcell_map(run,  metric_type.QScore, options, data);
+            c_csharp_plot.plot_flowcell_map(run,  metric_type.QScore, options, data);
             Assert.AreEqual(data.row_count(), 8);
 
 		}
@@ -83,7 +84,7 @@ namespace illumina.interop.csharp.unittest
             run.finalize_after_load();
 
             flowcell_data data = new flowcell_data();
-            c_csharp_interop.plot_flowcell_map(run, "NoMetric", options, data);
+            c_csharp_plot.plot_flowcell_map(run, "NoMetric", options, data);
 		}
 	}
 

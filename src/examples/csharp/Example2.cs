@@ -1,6 +1,7 @@
 /// @ [Reporting Tile Metrics in CSharp]
 using System;
 using System.Collections.Generic;
+using Illumina.InterOp.Interop;
 
 
 class TileSummary

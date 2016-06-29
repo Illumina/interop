@@ -1,13 +1,52 @@
 # Changes                                               {#changes}
 
 
-## Trunk
+## v1.0.7
 
 Commit  | Description
 ------- | -----------
-??????? | Add filter options to support plot logic
-??????? | Add enum reflection-like interface
-49643cd | Enhance robustness to missing isnan functions
+5e01ff3 | Update tolerances to properly handle floating-point differences due to rounding
+5e85cf0 | IPA-4608: Ensure cumulative q-metrics does not overflow
+c60caa9 | IPA-4598: Regression test for imaging table
+616e6e8 | IPA-4695: Setup framework to reuse unit test code for regression testing
+839191c | Quick floor -> round bug fix for indexing plot y-max value
+8fa8cfe | Test for larger CollapsedQ size
+cbe3540 | IPA-4505: Fixed writing to buffer
+76521e3 | IPA-4505: Fix summary tab, index tab and bs q-metrics
+03867f0 | IPA-4598: Added imaging metrics and precision of numbers reported
+8f5cf70 | IPA-4505: Fix empty PlotQC
+fd5e265 | IPA-4505: Replace median, fixed missing percent aligned and fixed collapsed q-metrics
+e2d1c80 | IPA-4505: Tile convention checking
+e841107 | IPA-4598: Bind imaging logic to C# and test
+37e6e21 | IPA-4505: Fix channel order in by cycle
+23f1dca | IPA-4505: Fixed by cycle and q-bin index
+987d02c | IPA-4595: Add index out of bounds checking to metrics
+18e0ef7 | IPA-4505: Fix q-score median
+d815021 | IPA-4595: Map plot metric types to input types
+01f08c6 | IPA-4497: Fix camel case in metric_format
+9cce9b9 | IPA-4486: Refactor code to use INTEROP_TUPLEX
+37899c9 | IPA-4493: Replace q-metrics with collapsed q-metrics in logic
+cb999ae | IPA-4485: Simplify mapping between constant types
+333909f | IPA-4419: Add collapsed q-score logic
+68d1b6a | IPA-4286: Add collapsed qscore metrics
+2c82c4a | IPA-4292: Add imaging model and logic
+c5aad38 | IPA-4292: Refactor to prepare code for imaging model and logic
+d9e5a83 | IPA-4290: Add index summary logic
+050a9ee | IPA-4447: Add index summary model
+fc5d190 | IPA-4408: Plot sample QC for indexing tab
+f05a2a3 | IPA-4406: Plot Logic - flowcell map
+4eb6568 | IPA-4407: Plot Logic - plot q-score histogram
+9706b24 | IPA-4404: Add plot logic - plot by lane
+56bb897 | IPA-4384: Prototype PlotDataByCycle to build initial framework
+9c8e8d8 | IPA-4384: Model for plot by cycle prototype (Part 1)
+6c1fbc5 | IPA-4382: Refactor code to make naming more consistent
+9a45340 | IPA-4383: Add filter options to support plot logic
+b11e736 | IPA-4382: Create reflection-like interface for enums to support plot logic
+d9deeea | IPA-4246: Add search for non Out interop files
+3f2f2bf | Reorganize modules in doxygen
+202d6ef | IPA-4146: Add summary logic and application
+6c5a30d | IPA-4146: Added metric and channel logic and more statistics
+735cda2 | IPA-4146: Refactor of the metric set
          
 ## v1.0.6
 

@@ -76,12 +76,12 @@ int main(int argc, char** argv)
         std::cout << "# Run Folder: " << io::basename(argv[i]) << std::endl;
         int ret = read_run_metrics(argv[i], run);
         if(ret != SUCCESS) return ret;
-        if( 1 == 0)
+        /*if( 1 == 0)
         {
             ret = test_all_filter_options(run);
             if(ret != SUCCESS) return ret;
             continue;
-        }
+        }*/
         model::plot::filter_options options(run.run_info().flowcell().naming_method());
         //options.surface(constants::Top);
         //options.dna_base(constants::G);
@@ -122,6 +122,8 @@ int test_all_filter_options(run_metrics& run)
                                   "ClustersPF", "ClusterCount",
                                   "ClusterCountPF", "PercentPhasing", "PercentPrephasing", "PercentAligned"};
     typedef model::plot::filter_options::id_t id_t;
+    typedef model::plot::filter_options::channel_t channel_t;
+    typedef model::plot::filter_options::dna_base_t dna_base_t;
     const constants::tile_naming_method naming_method = run.run_info().flowcell().naming_method();
     const size_t surface_count = run.run_info().flowcell().surface_count();
     const id_t ALL_IDS = model::plot::filter_options::ALL_IDS;
@@ -146,11 +148,11 @@ int test_all_filter_options(run_metrics& run)
                         {
                             model::plot::filter_options options(naming_method,
                                                                 lane,
-                                                                logic::utils::is_channel_metric(metric_type) ? (id_t)channel : (id_t)model::plot::filter_options::ALL_CHANNELS,
-                                                                (constants::dna_bases) (logic::utils::is_base_metric(metric_type) ? base : (size_t)model::plot::filter_options::ALL_BASES),
-                                                                surface,
-                                                                logic::utils::is_read_metric(metric_type) ? read : ALL_IDS,
-                                                                logic::utils::is_cycle_metric(metric_type) ? cycle : ALL_IDS);
+                                                                logic::utils::is_channel_metric(metric_type) ? static_cast<channel_t>(channel) : static_cast<channel_t>(model::plot::filter_options::ALL_CHANNELS),
+                                                                logic::utils::is_base_metric(metric_type) ? static_cast<dna_base_t>(base) : static_cast<dna_base_t>(model::plot::filter_options::ALL_BASES),
+                                                                static_cast<id_t>(surface),
+                                                                logic::utils::is_read_metric(metric_type) ? static_cast<id_t>(read) : ALL_IDS,
+                                                                logic::utils::is_cycle_metric(metric_type) ? static_cast<id_t>(cycle) : ALL_IDS);
                             model::plot::flowcell_data data;
                             try
                             {

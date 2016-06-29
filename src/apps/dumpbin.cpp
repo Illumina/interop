@@ -94,8 +94,6 @@ private:
         return 1;
     }
 private:
-    metric_writer& operator=(const metric_writer&){return *this;}
-private:
     std::ostream& m_out;
     size_t m_max_line;
 
@@ -123,8 +121,6 @@ struct subset_copier
         for(size_t i=0;i<total;++i)
             m_run.get<MetricSet>().insert(metrics.metrics()[i]);
     }
-private:
-    subset_copier& operator=(const subset_copier&){return *this;}
 private:
     run_metrics& m_run;
     size_t m_total;
