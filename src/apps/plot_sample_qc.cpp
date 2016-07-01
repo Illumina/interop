@@ -27,6 +27,7 @@
 #include "interop/io/plot/gnuplot.h"
 #include "interop/version.h"
 #include "inc/application.h"
+#include "inc/plot_options.h"
 
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop;
@@ -46,7 +47,8 @@ int main(int argc, char** argv)
     {
         run_metrics run;
 
-        std::cout << "# Run Folder: " << io::basename(argv[i]) << std::endl;
+        const std::string run_name = io::basename(argv[i]);
+        std::cout << "# Run Folder: " << run_name << std::endl;
         int ret = read_run_metrics(argv[i], run);
         if(ret != SUCCESS) return ret;
 
@@ -66,7 +68,7 @@ int main(int argc, char** argv)
         std::ostream& out = std::cout;
         io::plot::gnuplot_writer plot_writer;
         try{
-            plot_writer.write_chart(out, data, "plot_by_lane.png");
+            plot_writer.write_chart(out, data, plot_image_name("sample-qc", run_name));
         }
         catch(const std::exception& ex)
         {

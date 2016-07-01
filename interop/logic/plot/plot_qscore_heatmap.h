@@ -108,7 +108,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
     template<class Metric>
     void populate_heatmap(const model::metric_base::metric_set<Metric>& metric_set,
                           const model::plot::filter_options& options,
-                          model::plot::heatmap_data& data) throw(model::index_out_of_bounds_exception)
+                          model::plot::heatmap_data& data)
     {
         const size_t max_q_val = logic::metric::max_qval(metric_set);
         const size_t max_cycle = metric_set.max_cycle();
@@ -143,7 +143,9 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
     inline void plot_qscore_heatmap(model::metrics::run_metrics& metrics,
                                     const model::plot::filter_options& options,
                                     model::plot::heatmap_data& data)
+                                throw(model::index_out_of_bounds_exception, model::invalid_filter_option)
     {
+        options.validate(constants::QScore, metrics.run_info());
         data.clear();
         if(options.is_specific_surface())
         {

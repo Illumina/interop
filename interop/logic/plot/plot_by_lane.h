@@ -79,6 +79,9 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                     model::invalid_metric_type,
                     model::invalid_filter_option)
     {
+        if(utils::is_cycle_metric(type))
+            INTEROP_THROW(model::invalid_metric_type, "Cycle metrics are unsupported");
+        options.validate(type, metrics.run_info());
         data.assign(1, model::plot::series<Point>(utils::to_description(type), "Blue"));
         metric::metric_value<model::metrics::tile_metric> proxy3(options.read());
         populate_candle_stick_by_lane(metrics.get_set<model::metrics::tile_metric>(), proxy3, options, type,

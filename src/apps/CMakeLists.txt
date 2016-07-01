@@ -1,6 +1,6 @@
 
 function(add_application _target _source_files)
-    add_executable(${_target} ${_source_files} inc/application.h)
+    add_executable(${_target} ${_source_files} inc/application.h inc/plot_options.h)
     target_link_libraries(${_target} ${INTEROP_LIB})
 
     if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR CMAKE_COMPILER_IS_GNUCC)

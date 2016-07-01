@@ -47,6 +47,7 @@ namespace Illumina.InterOp.Interop.UnitTest
                     new image_dimensions(),
                     reads
             ));
+            run.set_naming_method(tile_naming_method.FourDigit);
             run.legacy_channel_update(instrument_type.HiSeq);
 
             candle_stick_plot_data data = new candle_stick_plot_data();

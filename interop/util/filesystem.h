@@ -78,6 +78,11 @@ namespace illumina {
              */
             inline std::string basename(std::string const& source)
             {
+                if(source.empty()) return "";
+                if( detail::match_path_sep()(source[source.length()-1] ) )
+                {
+                    return std::string(std::find_if(source.rbegin()+1, source.rend(), detail::match_path_sep()).base(), source.end()-1);
+                }
                 return std::string(std::find_if(source.rbegin(), source.rend(), detail::match_path_sep()).base(), source.end());
             }
             /** Get the directory name from a file path

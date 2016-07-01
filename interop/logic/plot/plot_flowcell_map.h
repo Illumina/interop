@@ -82,8 +82,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
         std::vector<float> values_for_scaling;
         values_for_scaling.reserve(data.length());
 
-        if(metrics.run_info().flowcell().naming_method() == constants::UnknownTileNamingMethod)
-            INTEROP_THROW(model::invalid_filter_option, "Unknown tile naming method - update your RunInfo.xml");
+        options.validate(type, metrics.run_info());
 
         if(utils::is_cycle_metric(type) && options.all_cycles())
             INTEROP_THROW( model::invalid_filter_option, "All cycles is unsupported");

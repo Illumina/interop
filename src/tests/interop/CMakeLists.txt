@@ -33,6 +33,7 @@ add_executable(interop_gtests
         logic/metric_type_ext_test.cpp
         logic/plot_logic_test.cpp
         logic/image_table_logic_test.cpp
+        util/option_parser_test.cpp
         inc/regression_fixture.h
         unit_tests.cpp
         inc/failure_listener.h

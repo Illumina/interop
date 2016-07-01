@@ -12,6 +12,7 @@
 #include "interop/constants/enums.h"
 #include "interop/logic/utils/metric_type_ext.h"
 #include "interop/logic/utils/channel.h"
+#include "interop/model/run/info.h"
 
 namespace illumina { namespace interop { namespace model { namespace plot
 {
@@ -77,6 +78,58 @@ namespace illumina { namespace interop { namespace model { namespace plot
         { }
 
     public:
+        /** Test if the filter options are valid, if not throw an exception
+         */
+        void validate(const constants::metric_type type, const run::info& run_info, const bool check_ignored=false)const throw(model::invalid_filter_option)
+        {
+            if(m_naming_method == constants::UnknownTileNamingMethod)
+                INTEROP_THROW(model::invalid_filter_option, "Invalid tile naming method: Unknown");
+            if(m_naming_method > constants::TileNamingMethodCount)
+                INTEROP_THROW(model::invalid_filter_option, "Invalid tile naming method: exceeds total number");
+            if(m_naming_method != run_info.flowcell().naming_method())
+                INTEROP_THROW(model::invalid_filter_option, "Invalid tile naming method: does not match RunInfo.xml");
+
+            if(!all_lanes() && m_lane >= run_info.flowcell().lane_count())
+                INTEROP_THROW(model::invalid_filter_option, "Lane number exceeds total number of lanes" << m_lane << " > " << run_info.flowcell().lane_count());
+            if(is_specific_surface() && m_surface >= run_info.flowcell().surface_count())
+                INTEROP_THROW(model::invalid_filter_option, "Surface number exceeds total number of surfaces" << m_surface << " > " << run_info.flowcell().surface_count());
+            if(all_tile_numbers() && m_tile_number >= run_info.flowcell().tile_count())
+                INTEROP_THROW(model::invalid_filter_option, "Tile number exceeds total number of tile numbers" << m_tile_number << " > " << run_info.flowcell().tile_count());
+            if(all_swaths() && m_swath >= run_info.flowcell().swath_count())
+                INTEROP_THROW(model::invalid_filter_option, "Swath number exceeds total number of swaths" << m_swath << " > " << run_info.flowcell().swath_count());
+            if(all_sections() && m_section >= run_info.flowcell().sections_per_lane())
+                INTEROP_THROW(model::invalid_filter_option, "Section number exceeds total number of sections" << m_section << " > " << run_info.flowcell().sections_per_lane());
+            if(logic::utils::is_base_metric(type))
+            {
+                if(!all_bases() && (m_base >= static_cast<dna_base_t>(constants::NUM_OF_BASES) || m_base < 0))
+                    INTEROP_THROW(model::invalid_filter_option, "Base to filter is invalid: " << to_string(m_base));
+            }
+            if(logic::utils::is_cycle_metric(type))
+            {
+                if(!all_cycles() && m_cycle > run_info.total_cycles())
+                    INTEROP_THROW(model::invalid_filter_option, "Cycle number exceeds total number of cycles" << m_cycle << " > " << run_info.total_cycles());
+            }
+            if(logic::utils::is_read_metric(type))
+            {
+                if(!all_reads() && m_read > run_info.reads().size())
+                    INTEROP_THROW(model::invalid_filter_option, "Read number exceeds total number of reads" << m_read << " > " << run_info.reads().size());
+            }
+            if(logic::utils::is_channel_metric(type))
+            {
+                if(!all_channels() && static_cast<size_t>(m_channel) >= run_info.channels().size())
+                    INTEROP_THROW(model::invalid_filter_option, "Channel number exceeds total number of channels" << m_channel << " > " << run_info.channels().size());
+            }
+            if(!check_ignored) return;
+            if(!logic::utils::is_base_metric(type) && !all_bases())
+                INTEROP_THROW(model::invalid_filter_option, "Invalid filter option base for metric " << constants::to_string(type));
+            if(!logic::utils::is_cycle_metric(type) && !all_cycles())
+                INTEROP_THROW(model::invalid_filter_option, "Invalid filter option cycle for metric " << constants::to_string(type));
+            if(!logic::utils::is_read_metric(type) && !all_reads())
+                INTEROP_THROW(model::invalid_filter_option, "Invalid filter option read for metric " << constants::to_string(type));
+            if(!logic::utils::is_channel_metric(type) && !all_channels())
+                INTEROP_THROW(model::invalid_filter_option, "Invalid filter option channel for metric " << constants::to_string(type));
+            //all_cycles
+        }
         /** Test if metric is a valid tile
          *
          * @param metric any metric type
@@ -110,7 +163,16 @@ namespace illumina { namespace interop { namespace model { namespace plot
          */
         bool all_channels(const constants::metric_type type) const
         {
-            return m_channel == static_cast<channel_t>(ALL_CHANNELS) && logic::utils::is_channel_metric(type);
+            return all_channels() && logic::utils::is_channel_metric(type);
+        }
+
+        /** Test if all channels were requested
+         *
+         * @return true if metric supports channels and all channels requested
+         */
+        bool all_channels() const
+        {
+            return m_channel == static_cast<channel_t>(ALL_CHANNELS);
         }
 
         /** Test if all bases were requested
@@ -120,7 +182,15 @@ namespace illumina { namespace interop { namespace model { namespace plot
          */
         bool all_bases(const constants::metric_type type) const
         {
-            return m_base == static_cast<dna_base_t>(ALL_BASES) && logic::utils::is_base_metric(type);
+            return all_bases() && logic::utils::is_base_metric(type);
+        }
+        /** Test if all bases were requested
+         *
+         * @return true if metric supports bases and all bases requested
+         */
+        bool all_bases() const
+        {
+            return m_base == static_cast<dna_base_t>(ALL_BASES);
         }
 
         /** Test if all reads were requested
@@ -140,7 +210,38 @@ namespace illumina { namespace interop { namespace model { namespace plot
         {
             return m_cycle == static_cast<id_t>(ALL_IDS);
         }
-
+        /** Test if all lanes were requested
+         *
+         * @return true if all lanes were requested
+         */
+        bool all_lanes() const
+        {
+            return m_lane == static_cast<id_t>(ALL_IDS);
+        }
+        /** Test if all tile numbers were requested
+         *
+         * @return true if all tile numbers were requested
+         */
+        bool all_tile_numbers() const
+        {
+            return m_tile_number == static_cast<id_t>(ALL_IDS);
+        }
+        /** Test if all swaths were requested
+         *
+         * @return true if all swaths were requested
+         */
+        bool all_swaths() const
+        {
+            return m_swath == static_cast<id_t>(ALL_IDS);
+        }
+        /** Test if all sections were requested
+         *
+         * @return true if all sections were requested
+         */
+        bool all_sections() const
+        {
+            return m_section == static_cast<id_t>(ALL_IDS);
+        }
         /** Test if metric is read metric and specific read is chosen
          *
          * @param type metric type
@@ -251,6 +352,14 @@ namespace illumina { namespace interop { namespace model { namespace plot
         }
 
     public:
+        /** Set the tile naming method
+         *
+         * @param naming_method tile naming method enum
+         */
+        void tile_naming_method(const constants::tile_naming_method naming_method)
+        {
+            m_naming_method = naming_method;
+        }
         /** Set channel to filter
          *
          * @param channel channel
@@ -289,11 +398,35 @@ namespace illumina { namespace interop { namespace model { namespace plot
 
         /** Set surface to filter
          *
-         * @param s cycle index
+         * @param s surface index
          */
         void surface(const id_t s)
         {
             m_surface = s;
+        }
+        /** Set swath to filter
+         *
+         * @param s swath index
+         */
+        void swath(const id_t s)
+        {
+            m_swath = s;
+        }
+        /** Set section to filter
+         *
+         * @param s section index
+         */
+        void section(const id_t s)
+        {
+            m_section = s;
+        }
+        /** Set tile number to filter
+         *
+         * @param s tile number
+         */
+        void tile_number(const id_t s)
+        {
+            m_tile_number = s;
         }
 
         /** Set lane to filter
@@ -306,6 +439,14 @@ namespace illumina { namespace interop { namespace model { namespace plot
         }
 
     public:
+        /** Get the lane to display
+         *
+         * @return lane
+         */
+        id_t lane()const
+        {
+            return m_lane;
+        }
         /** Get channel to display
          *
          * @return channel
@@ -348,7 +489,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          */
         std::string cycle_description() const
         {
-            return (m_cycle == ALL_IDS) ? "All Cycles" : "Cycle " + util::lexical_cast<std::string>(m_cycle);
+            return all_cycles() ? "All Cycles" : "Cycle " + util::lexical_cast<std::string>(m_cycle);
         }
 
         /** Get a description of the lane filter options
@@ -357,7 +498,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          */
         std::string lane_description() const
         {
-            return (m_lane == ALL_IDS) ? "All Lanes" : "Lane " + util::lexical_cast<std::string>(m_lane);
+            return all_lanes() ? "All Lanes" : "Lane " + util::lexical_cast<std::string>(m_lane);
         }
 
         /** Get a description of the channel filter options
@@ -366,7 +507,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          */
         std::string channel_description(const std::vector<std::string> &channels) const
         {
-            return (m_channel == static_cast<channel_t>(ALL_CHANNELS)) ? "All Channels" : channels[m_channel] +
+            return all_channels() ? "All Channels" : channels[m_channel] +
                                                                                           " Channel";
         }
 
@@ -376,7 +517,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          */
         std::string base_description() const
         {
-            return (m_base == static_cast<dna_base_t>(ALL_BASES)) ? "All Bases" : "Base " +
+            return all_bases() ? "All Bases" : "Base " +
                                                                                   constants::to_string(m_base);
         }
 
@@ -386,7 +527,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          */
         std::string surface_description() const
         {
-            return (m_surface == ALL_IDS) ? "All Surfaces" :
+            return !is_specific_surface() ? "All Surfaces" :
                    constants::to_string(static_cast<constants::surface_type >(m_surface)) + " Surface";
         }
 
@@ -396,7 +537,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          */
         std::string read_description() const
         {
-            return (m_read == ALL_IDS) ? "All Reads" : "Read " + util::lexical_cast<std::string>(m_read);
+            return all_reads() ? "All Reads" : "Read " + util::lexical_cast<std::string>(m_read);
         }
 
     private:

@@ -9,7 +9,8 @@ set(SRCS
         model/metrics/image_metric.cpp
         model/metrics/q_metric.cpp
         model/metrics/index_metric.cpp
-        model/metrics/q_collapsed_metric.cpp model/summary/run_summary.cpp)
+        model/metrics/q_collapsed_metric.cpp
+        model/summary/run_summary.cpp)
 
 set(HEADERS
         ../../interop/model/summary/cycle_state_summary.h
@@ -124,7 +125,8 @@ set(HEADERS
         ../../interop/util/exception.h
         ../../interop/io/table/csv_format.h
         ../../interop/model/table/column_header.h
-        ../../interop/model/table/imaging_table_entry.h)
+        ../../interop/model/table/imaging_table_entry.h
+        ../../interop/util/option_parser.h)
 
 set(INTEROP_HEADERS ${HEADERS} PARENT_SCOPE)
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR CMAKE_COMPILER_IS_GNUCC)

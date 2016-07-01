@@ -149,19 +149,32 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
      * @param metrics run metrics
      * @param options options to filter the data
      * @param data output plot data
+     * @param with_q30_boundary create a multi series plot showing the Q30 boundary
      */
     template<class Point>
     void plot_qscore_histogram(model::metrics::run_metrics& metrics,
                                const model::plot::filter_options& options,
-                               model::plot::plot_data<Point>& data) throw(model::invalid_read_exception,
-                                                                        model::index_out_of_bounds_exception)
+                               model::plot::plot_data<Point>& data,
+                               const size_t boundary=0)
+                                throw( model::invalid_read_exception,
+                                model::index_out_of_bounds_exception,
+                                model::invalid_filter_option)
     {
+        options.validate(constants::QScore, metrics.run_info());
         data.clear();
         const size_t first_cycle = options.all_reads() ? 1 : metrics.run_info().read(options.read()).first_cycle();
 
-        data.assign(1, model::plot::series<Point>("Q Score", "", model::plot::series<Point>::Bar));
+        data.push_back(model::plot::series<Point>("Q Score", "Blue", model::plot::series<Point>::Bar));
+        if(boundary>0)
+        {
+            data.push_back(model::plot::series<Point>("Q Score", "DarkGreen", model::plot::series<Point>::Bar));
+            data.push_back(model::plot::series<Point>("Threshold(>=Q30)", "Green", model::plot::series<Point>::Line));
+        }
 
-        data[0].add_option(constants::to_string(constants::Shifted));
+        //"DarkGreen"
+
+        for(size_t i=0;i<data.size();++i)
+            data[i].add_option(constants::to_string(constants::Shifted));
 
         std::string axis_scale;
         std::vector<float> histogram;
@@ -224,8 +237,32 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
             else max_x_value=plot_unbinned_histogram(histogram, data[0]);
         }
 
+        // split into two series, < Q30 and Q30 <=
+        if(data.size() > 1)
+        {
+            size_t gt_eq_boundary_count = 0;
+            data[1].resize(data[0].size());
+            for (size_t i = 0; i < data[0].size(); ++i)
+            {
+                if (data[0][i].x() >= boundary)
+                {
+                    data[1][gt_eq_boundary_count] = data[0][i];
+                    ++gt_eq_boundary_count;
+                }
+            }
+            data[0].resize(data[0].size() - gt_eq_boundary_count);
+            data[1].resize(gt_eq_boundary_count);
+        }
+
+
         auto_scale_y(data, false);
         data.set_xrange(1, std::max(1.0f, max_x_value)*1.1f);
+        if(data.size() > 2)
+        {
+            data[2].resize(2);
+            data[2][0].set(boundary, data.y_axis().min());
+            data[2][1].set(boundary, data.y_axis().max());
+        }
 
         data.set_xlabel("Q Score");
         data.set_ylabel("Total ("+axis_scale+")");

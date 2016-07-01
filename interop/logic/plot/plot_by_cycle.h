@@ -168,6 +168,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
             INTEROP_THROW(model::invalid_filter_option, "Filtering by read is not supported");
         if(!utils::is_cycle_metric(type))
             INTEROP_THROW(model::invalid_filter_option, "Only cycle metrics are supported");
+        options.validate(type, metrics.run_info());
         size_t max_cycle=0;
         switch(logic::utils::to_group(type))
         {

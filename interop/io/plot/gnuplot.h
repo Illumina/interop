@@ -37,7 +37,9 @@ namespace illumina { namespace interop { namespace io {  namespace  plot {
             out << "unset tics\n";
             out << "unset border\n";
             out << "set cbrange [" << data.saxis().min() << ":" << data.saxis().max() << "]\n";
-            out << "set palette defined (0 \"blue\", 0.33 \"green\", 0.66 \"yellow\", 1 \"orange\")\n";
+            out << "set palette defined (0 \"blueviolet\", 0.143 \"blue\", 0.286 \"aqua\", 0.429 \"lightgreen\", 0.572 \"limegreen\", 0.715 \"lime\", 0.858 \"yellow\", 1 \"orange\")\n";
+            out << "set autoscale fix\n";
+            out << "set size ratio 2\n";
             out << "plot \"-\" matrix with image" << "\n";
             const size_t swath_count = data.column_count()/data.tile_count();
             for(size_t y=0;y<data.tile_count();++y)
@@ -52,6 +54,7 @@ namespace illumina { namespace interop { namespace io {  namespace  plot {
                 out << "\n";
             }
         }
+
         /** Write the flowcell heat map to the output stream using the GNUPlot format
          *
          * @param out output stream
@@ -95,6 +98,7 @@ namespace illumina { namespace interop { namespace io {  namespace  plot {
             write_title(out, data);
             write_axes(out, data.xyaxes());
             out << "set view map\n";
+            out << "set palette defined (0 \"white\", 0.333 \"green\", 0.667 \"yellow\", 1 \"red\")\n";
             out << "plot \"-\" matrix with image" << "\n";
             for(size_t y=0;y<data.column_count();++y)
             {
@@ -149,6 +153,20 @@ namespace illumina { namespace interop { namespace io {  namespace  plot {
         void write_plot_description(std::ostream& out, const model::plot::plot_data<Point>& data)
         {
             if(data.size() == 0) return;
+
+            switch(data[0].series_type())
+            {
+                case model::plot::series<Point>::Bar:
+                    out << "set style fill solid border -1\n";
+                    out << "unset key\n";
+                    break;
+                case model::plot::series<Point>::Candlestick:
+                    out << "set boxwidth 0.3\n";
+                    break;
+                default:
+                    break;
+            };
+
             out << "plot ";
             for(size_t series=0;series < data.size();++series)
             {
@@ -202,7 +220,7 @@ namespace illumina { namespace interop { namespace io {  namespace  plot {
         void write_output_format(std::ostream& out, const std::string& output_image_path)
         {
             if(output_image_path == "") return;
-            out << "set terminal png nocrop" << std::endl;
+            out << "set terminal png crop" << std::endl;
             out << "set output \'" << output_image_path << "\'" << std::endl;
             //out << "set style fill solid noborder" << std::endl;
         }
@@ -281,15 +299,17 @@ namespace illumina { namespace interop { namespace io {  namespace  plot {
          *
          * @param out output stream
          * @param series series data for a line, candlestick or bar plot
-         * @param sep seperator between features
+         * @param sep separator between features
          */
         template<typename P>
-        void write_type(std::ostream& out, const model::plot::series<P>& series, const char sep=' ')
+        void write_type(std::ostream& out,
+                        const model::plot::series<P>& series,
+                        const char sep=' ')
         {
             switch(series.series_type())
             {
                 case model::plot::series<P>::Bar:
-                    out << "using 1:2:3:xtic(1) with boxes" << sep;
+                    out << "using 1:2:3 with boxes" << sep;
                     break;
                 case model::plot::series<P>::Candlestick:
                     out << "using 1:3:2:6:5 with candlesticks" << sep;

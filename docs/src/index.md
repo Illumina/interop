@@ -68,8 +68,26 @@ There are several known limitations to the current library:
   1. You cannot build a shared library on Windows. Our CMake build script disallows it for good reason, it currently
      does not work. You can still use a static library on Windows. There is one caveat, you can build a shared
      library for the SWIG bindings, e.g. C#.
-  2. The full logic of SAV including certain metrics and plots are not yet implemented.
-  3. Microsoft .Net less than v4.0.30319 is currently not supported (Same for Mono)
-  4. MinGW cannot compile the code when ENABLE_BACKWARDS_COMPATIBILITY=ON
-  5. We do not support Mono on Windows
-  6. If both Visual Studio and Mono are installed, the build script will only use Visual Studio for C#
+  2. Microsoft .Net less than v4.0.30319 is currently not supported (Same for Mono)
+  3. MinGW cannot compile the code when ENABLE_BACKWARDS_COMPATIBILITY=ON
+  4. We do not support Mono on Windows
+  5. If both Visual Studio and Mono are installed, the build script will only use Visual Studio for C#
+
+SAV Analysis Tab
+----------------
+
+The following images were generated using the applications provided by
+the InterOp package. See [Examples](@ref example_sav_analysis_example)
+for more information.
+
+<table class="tg">
+  <tr>
+    <th class="tg-yw4l" rowspan="2"><img src="MiSeqDemo_flowcell-intensity.png" alt="MiSeqDemo_flowcell-intensity.png" width=250 /></th>
+    <th class="tg-yw4l"><img src="MiSeqDemo_Intensity-by-cycle_Intensity.png" alt="MiSeqDemo_Intensity-by-cycle_Intensity.png" width=320/></th>
+    <th class="tg-yw4l"><img src="MiSeqDemo_q-histogram.png" alt="MiSeqDemo_q-histogram.png" width=320 /></th>
+  </tr>
+  <tr>
+    <td class="tg-yw4l"><img src="MiSeqDemo_ClusterCount-by-lane.png" alt="MiSeqDemo_ClusterCount-by-lane.png" width=320/></td>
+    <td class="tg-yw4l"><img src="MiSeqDemo_q-heat-map.png" alt="MiSeqDemo_q-heat-map.png" width=320 /></td>
+  </tr>
+</table>

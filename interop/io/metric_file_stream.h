@@ -33,6 +33,8 @@ namespace illumina { namespace interop { namespace io {
     /** Write the metric to a binary byte buffer
      *
      * @param metrics metric set
+     * @param buffer destination binary buffer
+     * @param buffer_size maximum size of binary buffer
      * @return number of bytes written
      */
     template<class MetricSet>
