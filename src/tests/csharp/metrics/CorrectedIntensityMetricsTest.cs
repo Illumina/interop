@@ -3,7 +3,8 @@ using NUnit.Framework;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
-namespace illumina.interop.csharp.unittest
+
+namespace Illumina.InterOp.Interop.UnitTest
 {
 	/// <summary>
 	/// Confirm that the corrected intensity metrics InterOp works properly in C#
@@ -62,11 +63,11 @@ namespace illumina.interop.csharp.unittest
 	                Assert.AreEqual(expected_metrics[i].averageCycleIntensity(), actual_metrics[i].averageCycleIntensity());
 	            if(Version == 2)
 	                Assert.AreEqual(expected_metrics[i].signalToNoise(), actual_metrics[i].signalToNoise(), 1e-7);
-	            for(int j=-1;j<(int)dna_base.NUM_OF_BASES;j++)
+	            for(int j=-1;j<(int)dna_bases.NUM_OF_BASES;j++)
 	            {
 	                Assert.AreEqual(expected_metrics[i].calledCounts(j), actual_metrics[i].calledCounts(j));
 	            }
-	            for(uint j=0;j<(uint)dna_base.NUM_OF_BASES;j++)
+	            for(uint j=0;j<(uint)dna_bases.NUM_OF_BASES;j++)
 	            {
 	                Assert.AreEqual(expected_metrics[i].correctedIntCalled(j), actual_metrics[i].correctedIntCalled(j));
 	                if(Version<3)

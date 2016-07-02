@@ -111,5 +111,40 @@ namespace interop {
     /** Test if two types are the same */
     template<typename T>
     struct is_same<T,T>: true_type {};
+
+    /** Define a constant of an arbitray type
+     */
+    template<typename T, T v>
+    struct constant_type
+    {
+        /** Define the value type */
+        typedef T value_t;
+        /** Define the pointer type */
+        typedef T* pointer_t;
+        /** Get the value of the constant type
+         *
+         * @return value
+         */
+        static value_t value(){ return v; }
+        /** Get the value of the constant type
+         *
+         * @return value
+         */
+        operator value_t()const { return v; }/*noexcept*/
+        /** Get the value of the constant type
+         *
+         * @return value
+         */
+        value_t operator()()const { return v; }/*noexcept*/
+        /** Null pointer type
+         *
+         * @return null pointer
+         */
+        static pointer_t null(){return 0;}
+    };
+    /** Define a constant of an int type
+     */
+    template<int v>
+    struct int_constant_type : public constant_type<int, v>{};
 }
 }

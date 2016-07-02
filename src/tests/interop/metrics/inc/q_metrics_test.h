@@ -85,7 +85,7 @@ namespace illumina{ namespace interop { namespace unittest {
          *
          * @return 8 lanes
          */
-        static size_t lane_count(){return 8;}
+        static model::metric_base::base_metric::uint_t lane_count(){return 8;}
         /** Get reads describing data
          *
          * @return reads vector
@@ -102,7 +102,7 @@ namespace illumina{ namespace interop { namespace unittest {
         static model::summary::run_summary summary()
         {
             std::vector<model::run::read_info> read_infos = reads();
-            model::summary::run_summary summary(read_infos.begin(), read_infos.end(), lane_count());
+            model::summary::run_summary summary(read_infos.begin(), read_infos.end(), 1);
             summary[0][0].tile_count(2);
             summary[0][0].projected_yield_g(0.0098816361278295517);
             summary[0][0].yield_g(0.0074112270958721638f);
@@ -201,7 +201,7 @@ namespace illumina{ namespace interop { namespace unittest {
          *
          * @return 8 lanes
          */
-        static size_t lane_count(){return 8;}
+        static model::metric_base::base_metric::uint_t lane_count(){return 8;}
         /** Get reads describing data
          *
          * @return reads vector
@@ -218,7 +218,7 @@ namespace illumina{ namespace interop { namespace unittest {
         static model::summary::run_summary summary()
         {
             std::vector<model::run::read_info> read_infos = reads();
-            model::summary::run_summary summary(read_infos.begin(), read_infos.end(), lane_count());
+            model::summary::run_summary summary(read_infos.begin(), read_infos.end(), 1);
             summary[0][0].tile_count(3);
             summary[0][0].projected_yield_g(0.0056276721879839897f);
             summary[0][0].yield_g(0.0056276721879839897f);
@@ -303,7 +303,7 @@ namespace illumina{ namespace interop { namespace unittest {
          *
          * @return 8 lanes
          */
-        static size_t lane_count(){return 8;}
+        static model::metric_base::base_metric::uint_t lane_count(){return 8;}
         /** Get reads describing data
          *
          * @return reads vector
@@ -320,12 +320,13 @@ namespace illumina{ namespace interop { namespace unittest {
         static model::summary::run_summary summary()
         {
             std::vector<model::run::read_info> read_infos = reads();
-            model::summary::run_summary summary(read_infos.begin(), read_infos.end(), lane_count());
-            summary[0][6].tile_count(1);
-            summary[0][6].projected_yield_g(0.0095612816512584686f);
-            summary[0][6].yield_g(0.009561280719935894f);
-            summary[0][6].percent_gt_q30(90.1163330078125f);
-            summary[0][6].cycle_state().qscored_cycle_range(model::run::cycle_range(3, 3));
+            model::summary::run_summary summary(read_infos.begin(), read_infos.end(), 1);
+            summary[0][0].lane(7);
+            summary[0][0].tile_count(1);
+            summary[0][0].projected_yield_g(0.0095612816512584686f);
+            summary[0][0].yield_g(0.009561280719935894f);
+            summary[0][0].percent_gt_q30(90.1163330078125f);
+            summary[0][0].cycle_state().qscored_cycle_range(model::run::cycle_range(3, 3));
             summary[0].summary().projected_yield_g(0.0095612816512584686f);
             summary[0].summary().yield_g(0.0095612816512584686f);
             summary[0].summary().percent_gt_q30(90.1163330078125f);

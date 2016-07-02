@@ -10,10 +10,12 @@
 %include "src/ext/swig/arrays/arrays_impl.i"
 
 %{
+#include "interop/interop.h"
 #include "interop/constants/enums.h"
 #include "interop/util/time.h"
 #include "interop/io/metric_file_stream.h"
 %}
+%include "interop/interop.h"
 
 %ignore metric_group_iuo;
 %ignore set_base(const io::layout::base_metric& base);
@@ -42,11 +44,9 @@
     namespace metric_base = illumina::interop::model::metric_base;
 
     %apply size_t { std::map< std::size_t, metric_t >::size_type };
-    %apply size_t { metric_base::metric_set<metric_t>::size_type };
     %apply uint64_t { metric_base::metric_set<metric_t>::id_t };
     %apply uint64_t { io::layout::base_metric::id_t };
-    %ignore illumina::interop::model::metric_base::metric_set<illumina::interop::model::metrics::metric_t>::begin;
-    %ignore illumina::interop::model::metric_base::metric_set<illumina::interop::model::metrics::metric_t>::end;
+    WRAP_VECTOR(illumina::interop::model::metric_base::metric_set<metric_t>);
 
 %enddef
 
@@ -56,6 +56,7 @@
 
     %template(base_ ## metric_t ## s) metric_base::metric_set<metric_t>;
     %template(vector_ ## metric_t ## s) std::vector<metric_t>;
+    %template(compute_buffer_size ) illumina::interop::io::compute_buffer_size< metric_base::metric_set<metric_t> >;
     %template(write_interop_to_buffer ) illumina::interop::io::write_interop_to_buffer< metric_base::metric_set<metric_t> >;
     %template(read_interop_from_buffer )  illumina::interop::io::read_interop_from_buffer< metric_base::metric_set<metric_t> >;
     %template(read_interop )  illumina::interop::io::read_interop< metric_base::metric_set<metric_t> >;
@@ -96,6 +97,8 @@
 #include "interop/model/metrics/q_metric.h"
 #include "interop/model/metrics/tile_metric.h"
 #include "interop/model/metrics/index_metric.h"
+#include "interop/model/metrics/q_collapsed_metric.h"
+#include "interop/model/metrics/q_by_lane_metric.h"
 %}
 
 %template(index_info_vector) std::vector< illumina::interop::model::metrics::index_info  >;
@@ -104,6 +107,7 @@
 %template(ushort_vector) std::vector< uint16_t >;
 %template(uint_vector) std::vector< uint32_t >;
 %template(float_vector) std::vector< float >;
+%template(bool_vector) std::vector< bool >;
 %template(read_metric_vector) std::vector< illumina::interop::model::metrics::read_metric >;
 %template(q_score_bin_vector) std::vector< illumina::interop::model::metrics::q_score_bin >;
 
@@ -114,6 +118,8 @@
 %include "interop/model/metrics/q_metric.h"
 %include "interop/model/metrics/tile_metric.h"
 %include "interop/model/metrics/index_metric.h"
+%include "interop/model/metrics/q_collapsed_metric.h"
+%include "interop/model/metrics/q_by_lane_metric.h"
 
 WRAP_TEMPLATE_CYCLE_BASE(corrected_intensity_metric)
 WRAP_TEMPLATE_CYCLE_BASE(error_metric)
@@ -122,6 +128,9 @@ WRAP_TEMPLATE_CYCLE_BASE(image_metric)
 WRAP_Q_METRIC(q_metric)
 WRAP_TILE_METRIC(tile_metric)
 WRAP_TEMPLATE_BASE(index_metric)
+WRAP_Q_METRIC(q_collapsed_metric)
+WRAP_Q_METRIC(q_by_lane_metric)
+
 
 %{
 #include "interop/model/metric_sets/corrected_intensity_metric_set.h"
@@ -141,14 +150,10 @@ WRAP_TEMPLATE_BASE(index_metric)
 %include "interop/model/metric_sets/tile_metric_set.h"
 %include "interop/model/metric_sets/index_metric_set.h"
 
-%ignore illumina::interop::model::summary::read_summary::begin;
-%ignore illumina::interop::model::summary::read_summary::end;
-%ignore illumina::interop::model::summary::read_summary::operator[];
+WRAP_VECTOR(illumina::interop::model::summary::read_summary);
 %ignore illumina::interop::model::summary::read_summary::read()const;
 
-%ignore illumina::interop::model::summary::run_summary::begin;
-%ignore illumina::interop::model::summary::run_summary::end;
-%ignore illumina::interop::model::summary::run_summary::operator[];
+WRAP_VECTOR(illumina::interop::model::summary::run_summary);
 
 
 %{
@@ -165,6 +170,9 @@ WRAP_TEMPLATE_BASE(index_metric)
 #include "interop/model/summary/metric_stat.h"
 #include "interop/model/summary/read_summary.h"
 #include "interop/model/summary/run_summary.h"
+#include "interop/model/summary/index_count_summary.h"
+#include "interop/model/summary/index_lane_summary.h"
+#include "interop/model/summary/index_flowcell_summary.h"
 
 
 #include "interop/model/run/flowcell_layout.h"
@@ -190,16 +198,48 @@ WRAP_TEMPLATE_BASE(index_metric)
 %include "interop/model/run/info.h"
 %include "interop/model/run/parameters.h"
 
+
+%include "interop/model/summary/index_count_summary.h"
+
+WRAP_AS_VECTOR(illumina::interop::model::summary::index_count_summary);
+WRAP_VECTOR(illumina::interop::model::summary::index_lane_summary);
+%include "interop/model/summary/index_lane_summary.h"
+
+WRAP_VECTOR(illumina::interop::model::summary::index_flowcell_summary);
+WRAP_AS_VECTOR(illumina::interop::model::summary::index_lane_summary);
+%include "interop/model/summary/index_flowcell_summary.h"
+
 //
 // Setup typemaps for summary metrics
 //
-%apply size_t { std::vector<illumina::interop::model::summary::lane_summary>::size_type };
-%apply size_t { std::vector<illumina::interop::model::summary::read_summary>::size_type };
+WRAP_AS_VECTOR(illumina::interop::model::summary::lane_summary);
+WRAP_AS_VECTOR(illumina::interop::model::summary::read_summary);
+
 %template(lane_summary_vector) std::vector<illumina::interop::model::summary::lane_summary>;
 %template(read_summary_vector) std::vector<illumina::interop::model::summary::read_summary>;
+%template(index_count_summary_vector) std::vector<illumina::interop::model::summary::index_count_summary>;
+%template(index_lane_summary_vector) std::vector<illumina::interop::model::summary::index_lane_summary>;
 %template(read_info_vector) std::vector<illumina::interop::model::run::read_info>;
 
 %include "interop/model/run_metrics.h"
 %include "interop/logic/summary/run_summary.h"
 %include "interop/logic/metric/q_metric.h"
+
+
+
+// Metric Logic
+%{
+#include "interop/logic/metric/q_metric.h"
+%}
+
+%include "interop/logic/metric/q_metric.h"
+
+// Summary Logic
+%{
+#include "interop/logic/summary/index_summary.h"
+%}
+
+%include "interop/logic/summary/index_summary.h"
+
+
 

@@ -49,27 +49,11 @@
 #include "interop/model/metric_sets/image_metric_set.h"
 #include "interop/model/metric_sets/q_metric_set.h"
 #include "interop/version.h"
+#include "inc/application.h"
 
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop;
 
-/** Exit codes that can be produced by the application
- */
-enum exit_codes
-{
-    /** The program exited cleanly, 0 */
-    SUCCESS,
-    /** Invalid arguments were given to the application*/
-    INVALID_ARGUMENTS,
-    /** Empty InterOp directory*/
-    NO_INTEROPS_FOUND,
-    /** InterOp file has a bad format */
-    BAD_FORMAT,
-    /** Unknown error has occurred*/
-    UNEXPECTED_EXCEPTION,
-    /** InterOp file has not records */
-    EMPTY_INTEROP
-};
 /** Write a help message to the output stream
  *
  * @param out output stream
@@ -182,7 +166,8 @@ int read_metrics_from_file(const std::string& filename, MetricSet& metrics)
     }
     if(metrics.size()==0)
     {
-        if(kPrintError) std::cerr << "Empty metric file: " << metrics.name() << std::endl;
+
+        if(kPrintError) std::cerr << "Empty metric file: " << io::interop_basename<MetricSet>() << std::endl;
         return EMPTY_INTEROP;
     }
     return 0;
@@ -205,7 +190,7 @@ int copy_tile_metrics(const std::string& input, const std::string& output, unsig
     int res;
     if((res=read_metrics_from_file(input, metrics)) != 0) return res;
 
-    std::cout << metrics.name() << ": " << metrics.version() << std::endl;
+    std::cout << io::interop_basename<tile_metrics>() << ": " << metrics.version() << std::endl;
     try {
         io::write_interop(output, metrics);
     }
@@ -268,7 +253,7 @@ int copy_cycle_metrics(const std::string& input, const std::string& output, unsi
     int res;
     if((res=read_metrics_from_file(input, metrics)) != 0) return res;
 
-    std::cout << metrics.name() << ": " << metrics.version() << std::endl;
+    std::cout << io::interop_basename<MetricSet>() << ": " << metrics.version() << std::endl;
 
     metric_array_t subset;
 
@@ -343,7 +328,7 @@ int write_interops(const std::string& filename, const std::string& output, unsig
     if(valid_count == 0)
     {
         if(kPrintError) std::cerr << "No files found" << std::endl;
-        return NO_INTEROPS_FOUND;
+        return EMPTY_INTEROP;
     }
     return 0;
 }

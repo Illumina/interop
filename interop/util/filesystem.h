@@ -19,6 +19,7 @@
 
 #include <string>
 #include <algorithm>
+#include <fstream>
 
 #pragma once
 namespace illumina {
@@ -98,6 +99,16 @@ namespace illumina {
                 }
                 source.erase(std::find_if(source.rbegin(), source.rend(), is_sep).base(), source.end());
                 return source;
+            }
+            /** Check if a file exists
+             *
+             * @param filename name of the file
+             * @return true if the file exists and is readable
+             */
+            inline bool is_file_readable(const std::string& filename)
+            {
+                std::ifstream fin(filename.c_str());
+                return fin.good();
             }
         }
     }

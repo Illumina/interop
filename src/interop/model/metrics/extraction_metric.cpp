@@ -85,7 +85,9 @@ namespace illumina{ namespace interop{ namespace io {
                 static std::streamsize map_stream(Stream& stream, Metric& metric, Header&, const bool)
                 {
                     std::streamsize count = 0;
-                    count += stream_map< focus_t >(stream, metric.m_focusScores, extraction_metric::MAX_CHANNELS);
+                    count += stream_map< focus_t >(stream, metric.m_focus_scores, extraction_metric::MAX_CHANNELS);
+                    if(stream.good())
+                        set_nan_to_zero(stream, metric.m_focus_scores);// TODO: Remove and rebaseline regression tests
                     count += stream_map< intensity_t >(stream, metric.m_max_intensity_values, extraction_metric::MAX_CHANNELS);
                     count += stream_map< datetime_t >(stream, metric.m_date_time_csharp.value);
                     convert_datetime(stream, metric);
@@ -95,11 +97,11 @@ namespace illumina{ namespace interop{ namespace io {
                  *
                  * @return size of the record
                  */
-                static record_size_t computeSize(const extraction_metric::header_type&)
+                static record_size_t compute_size(const extraction_metric::header_type&)
                 {
                     return static_cast<record_size_t>(
                             sizeof(metric_id_t)+
-                            sizeof(focus_t)*extraction_metric::MAX_CHANNELS +     // m_focusScores
+                            sizeof(focus_t)*extraction_metric::MAX_CHANNELS +     // m_focus_scores
                             sizeof(intensity_t)*extraction_metric::MAX_CHANNELS+ // m_max_intensity_values
                             sizeof(datetime_t)                                  // m_dateTime
                     );
@@ -108,7 +110,7 @@ namespace illumina{ namespace interop{ namespace io {
                  *
                  * @return header size
                  */
-                static record_size_t computeHeaderSize(const extraction_metric::header_type&)
+                static record_size_t compute_header_size(const extraction_metric::header_type&)
                 {
                     return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t));
                 }
@@ -116,9 +118,19 @@ namespace illumina{ namespace interop{ namespace io {
                 static void convert_datetime(std::ostream&, const extraction_metric&)
                 {
                 }
-                static void convert_datetime(std::istream&, extraction_metric& metric)
+                static void convert_datetime(std::istream& in, extraction_metric& metric)
                 {
+                    if(in.fail()) return;
                     metric.m_date_time = metric.m_date_time_csharp.to_unix();
+                }
+                static void set_nan_to_zero(std::ostream&, const std::vector<float>&) // TODO: Remove and rebaseline
+                {
+
+                }
+                static void set_nan_to_zero(std::istream&, std::vector<float>& vals)
+                {
+                    for(size_t i=0;i<vals.size();++i)
+                        if(std::isnan(vals[i])) vals[i] = 0;
                 }
             };
 

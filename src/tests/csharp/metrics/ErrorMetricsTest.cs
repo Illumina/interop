@@ -2,7 +2,7 @@ using System;
 using NUnit.Framework;
 using System.IO;
 
-namespace illumina.interop.csharp.unittest
+namespace Illumina.InterOp.Interop.UnitTest
 {
 	/// <summary>
 	/// Confirm that the Error metrics InterOp works properly in C#
@@ -32,10 +32,15 @@ namespace illumina.interop.csharp.unittest
 				,7,0,90,4,3,0,-12,101,-18,62,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 			};
 			expected_binary_data = new byte[tmp.Length];
-			for(int i=0;i<expected_binary_data.Length;i++) expected_binary_data[i] = (byte)tmp[i];
+			for(int i=0;i<expected_binary_data.Length;i++)
+			{
+			    expected_binary_data[i] = (byte)tmp[i];
+			}
 			expected_metric_set = new error_metrics(expected_metrics, Version);
 			c_csharp_interop.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, actual_metric_set);
 			actual_metrics = actual_metric_set.metrics();
+
+
 		}
 
 		/// <summary>
@@ -58,6 +63,9 @@ namespace illumina.interop.csharp.unittest
 				for(uint j=0;j<expected_metrics[i].mismatch_count();j++)
 					Assert.AreEqual(expected_metrics[i].mismatch_cluster_count(j), actual_metrics[i].mismatch_cluster_count(j));
 			}
+            byte[] newBuffer = new byte[c_csharp_interop.compute_buffer_size(expected_metric_set)];
+			c_csharp_interop.write_interop_to_buffer(expected_metric_set, newBuffer, (uint)newBuffer.Length);
+			Assert.AreEqual(newBuffer, expected_binary_data);
 		}
 	}
 }

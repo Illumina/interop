@@ -8,15 +8,9 @@
 #pragma once
 #include <algorithm>
 #include "interop/model/run/cycle_range.h"
+#include "interop/io/format/generic_layout.h"
 
-namespace illumina
-{
-namespace interop
-{
-namespace model
-{
-namespace run
-{
+namespace illumina { namespace interop { namespace model { namespace run {
 
 /** Defines a range over cycles
  *
@@ -90,6 +84,8 @@ private:
     size_t m_number;
     bool m_is_index;
     friend class info;
+    template<class MetricType, int Version>
+    friend struct io::generic_layout;
 };
 
 }

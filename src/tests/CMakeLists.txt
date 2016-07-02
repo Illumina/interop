@@ -8,7 +8,6 @@ set_target_properties(check performance PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FR
 
 add_subdirectory("interop")
 
-
 add_custom_command(TARGET check POST_BUILD COMMAND $<TARGET_FILE:interop_gtests>)
 add_dependencies(check interop_gtests)
 

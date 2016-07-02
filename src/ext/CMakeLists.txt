@@ -24,7 +24,7 @@ endif()
 include(${SWIG_USE_FILE})
 set(CMAKE_SWIG_FLAGS "")
 
-set(SWIG_SRCS_TEMP swig/interop.i)
+set(SWIG_SRCS_TEMP swig/interop.i swig/imaging.i swig/plot.i)
 set(SWIG_DEPS_TEMP
         swig/exceptions/exceptions_impl.i
         swig/exceptions/exceptions_csharp.i
@@ -37,12 +37,21 @@ set(SWIG_DEPS_TEMP
 foreach(SRC ${SWIG_SRCS_TEMP})
     get_filename_component(SRC ${SRC} ABSOLUTE)
     list(APPEND SWIG_SRCS ${SRC})
-    set_source_files_properties(${SRC} PROPERTIES CPLUSPLUS ON)
+    #set_source_files_properties(${SRC} PROPERTIES CPLUSPLUS ON)
 endforeach()
+
+# Collect all the *.i files
 foreach(SRC ${SWIG_DEPS_TEMP})
     get_filename_component(SRC ${SRC} ABSOLUTE)
     list(APPEND SWIG_DEPS ${SRC})
 endforeach()
+
+# Collect all the *.h files in interop (these can change, but the library will not change)
+foreach(HEADER ${INTEROP_HEADERS})
+    get_filename_component(HEADER ${HEADER} ABSOLUTE)
+    list(APPEND SWIG_DEPS ${HEADER})
+endforeach()
+
 # Language options
 # https://github.com/SimpleITK/SimpleITK/blob/master/CMake/sitkLanguageOptions.cmake
 add_subdirectory("csharp")

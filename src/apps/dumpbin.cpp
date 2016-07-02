@@ -36,27 +36,10 @@
 #include "interop/io/metric_file_stream.h"
 #include "interop/model/run_metrics.h"
 #include "interop/version.h"
+#include "inc/application.h"
 
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop;
-
-/** Exit codes that can be produced by the application
- */
-enum exit_codes
-{
-    /** The program exited cleanly, 0 */
-    SUCCESS,
-    /** Invalid arguments were given to the application*/
-    INVALID_ARGUMENTS,
-    /** Empty InterOp directory*/
-    NO_INTEROPS_FOUND,
-    /** InterOp file has a bad format */
-    BAD_FORMAT,
-    /** Unknown error has occurred*/
-    UNEXPECTED_EXCEPTION,
-    /** InterOp file has not records */
-    EMPTY_INTEROP
-};
 
 /** Call back functor for writing binary metric data as a string
  */
@@ -78,7 +61,7 @@ struct metric_writer
         if(metrics.size()==0) return;
         std::ostringstream fout;
         io::write_metrics(fout, metrics, metrics.version());
-        m_out << metrics.prefix() << std::endl;
+        m_out << io::interop_basename<MetricSet>() << std::endl;
         write_bytes_as_string(m_out, fout.str(), m_max_line);
     }
 private:
@@ -111,8 +94,6 @@ private:
         return 1;
     }
 private:
-    metric_writer& operator=(const metric_writer&){return *this;}
-private:
     std::ostream& m_out;
     size_t m_max_line;
 
@@ -141,8 +122,6 @@ struct subset_copier
             m_run.get<MetricSet>().insert(metrics.metrics()[i]);
     }
 private:
-    subset_copier& operator=(const subset_copier&){return *this;}
-private:
     run_metrics& m_run;
     size_t m_total;
 };
@@ -164,30 +143,18 @@ int main(int argc, char** argv)
     {
         run_metrics run;
         run_metrics subset;
-        try
-        {
-            std::cout << "# Run Folder: " << io::basename(argv[i]) << std::endl;
-            run.read_metrics(argv[i]);
+        int ret = read_run_metrics(argv[i], run);
+        if(ret != SUCCESS) return ret;
+        subset_copier copy_subset(subset, subset_count);
+        run.metrics_callback(copy_subset);
+        try {
+            subset.metrics_callback(write_metrics);
         }
         catch(const io::bad_format_exception& ex)
         {
             std::cerr << ex.what() << std::endl;
             return BAD_FORMAT;
         }
-        catch(const std::exception& ex)
-        {
-            std::cerr << ex.what() << std::endl;
-            return UNEXPECTED_EXCEPTION;
-        }
-        if(run.empty())
-        {
-            std::cerr << "No InterOp files found" << std::endl;
-            return EMPTY_INTEROP;
-        }
-
-        subset_copier copy_subset(subset, subset_count);
-        run.metrics_callback(copy_subset);
-        subset.metrics_callback(write_metrics);
         std::cout << "\n" << std::endl;
 
     }

@@ -2,8 +2,8 @@
 %define SHARED_METRIC_SET_METHODS(metric_t)
     private long _dataSourceLength;
     private bool _dataSourceExists;
-    public long DataSourceLength { get{return _dataSourceLength;} set{_dataSourceLength=value;} }
-    public bool DataSourceExists { get{return _dataSourceExists;} set{_dataSourceExists=value;} }
+    public long DataSourceLength { get{return size();} set{} }
+    public bool DataSourceExists { get{return size() > 0;} set{} }
     public byte Version { get{ return (byte)version(); } }
     public global::System.Int64 GetKey(int lane, int tile)
     {
@@ -12,17 +12,27 @@
     public bool HasData { get { return size() > 0; } }
     public metric_t GetMetric(long key)
     {
-        return get_metric((ulong)key);
+        try{
+            return get_metric((ulong)key);
+        }
+        catch(global::System.IndexOutOfRangeException){return null;}
+        catch(index_out_of_bounds_exception){return null;}
     }
     public metric_t GetMetric(int lane, int tile)
     {
         try{
             return get_metric((uint)lane, (uint)tile);
-        }catch(global::System.IndexOutOfRangeException){return null;}
+        }
+        catch(global::System.IndexOutOfRangeException){return null;}
+        catch(index_out_of_bounds_exception){return null;}
     }
     public metric_t GetMetric(ulong key)
     {
-        return get_metric(key);
+        try{
+            return get_metric(key);
+        }
+        catch(global::System.IndexOutOfRangeException){return null;}
+        catch(index_out_of_bounds_exception){return null;}
     }
      public global::System.Collections.Generic.IEnumerable< metric_t > GetMetricsInLane(int lane)
         {
@@ -93,7 +103,9 @@
         {
             try{
                 return get_metric((uint)lane, (uint)tile, (uint)cycle);
-            }catch(global::System.IndexOutOfRangeException){return null;}
+            }
+            catch(global::System.IndexOutOfRangeException){return null;}
+            catch(index_out_of_bounds_exception){return null;}
         }
         public global::System.Collections.Generic.IEnumerable< metric_t > GetMetricsByCycle(global::System.Collections.Generic.IEnumerable<int> cycles)
         {
@@ -119,7 +131,7 @@
 
     %typemap(cscode) illumina::interop::model::metric_base::metric_set<metric_t> %{
         SHARED_METRIC_SET_METHODS(metric_t)
-        SHARED_CYCLE_METRIC_SET_METHODS(metric_t)
+        //SHARED_CYCLE_METRIC_SET_METHODS(metric_t)
     %}
 %enddef
 
@@ -161,7 +173,7 @@
         public bool IsBinned { get { return binCount() > 0; }}
         public int NumQVals(){ return (int)c_csharp_interop.count_q_metric_bins(this); }
         public bool IsCompressed { get { return NumQVals() > 0 && NumQVals() != 50; } }
-        public int MaxQVal(){ return (int)max_q_value(); }
+        public int MaxQVal(){ return (int)c_csharp_interop.max_qval(this); }
 
         public void build_bins(instrument_type instrument)
         {
@@ -179,8 +191,7 @@
          SHARED_METRIC_SET_METHODS(metric_t)
          private int _controlLane;
          public int ControlLane { get{return _controlLane;} set{_controlLane=value;} }
-         private global::System.Collections.Generic.List<int> _tiles;
-         public global::System.Collections.Generic.List<int> Tiles { get{return _tiles;} set{_tiles=value;} }
+         public global::System.Collections.Generic.List<uint> Tiles { get{return global::System.Linq.Enumerable.ToList(tile_numbers());} }
     %}
 %enddef
 
@@ -209,6 +220,10 @@
 
 
 %typemap(cscode) illumina::interop::model::metric_base::base_metric_header %{
+   public int max_cycle(){return 0;} // Hack for bad interface above
+%}
+
+%typemap(cscode) illumina::interop::model::metric_base::base_read_metric_header %{
    public int max_cycle(){return 0;} // Hack for bad interface above
 %}
 

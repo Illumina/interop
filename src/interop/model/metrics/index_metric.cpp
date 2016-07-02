@@ -67,13 +67,14 @@ struct generic_layout<index_metric, 1> : public default_layout<1>
     /** Defines an empty header */
     typedef void* header_t;
     /** No record size is required for this stream */
-    typedef no_value record_size_t;
+    //typedef fixed_record_size<sizeof(metric_id_t)> record_size_t;
+    enum{BYTE_COUNT=1, RECORD_SIZE=sizeof(metric_id_t)+BYTE_COUNT};
 
     /** Read metric from the input stream
      *
      * @param in input stream
      * @param metric destination metric
-     * @return number of bytes read or total number of bytes written
+     * @return sentinel
      */
     template<class Metric, class Header>
     static std::streamsize map_stream(std::istream& in, Metric& metric, Header&, const bool)
@@ -84,11 +85,14 @@ struct generic_layout<index_metric, 1> : public default_layout<1>
         std::string project_name;
 
         read_binary(in, index_name);
-        if(in.fail()) throw incomplete_file_exception("No more data after index name");
+        if(in.fail())
+            INTEROP_THROW( incomplete_file_exception, "No more data after index name");
         read_binary(in, count);
-        if(in.fail()) throw incomplete_file_exception("No more data after count");
+        if(in.fail())
+            INTEROP_THROW(incomplete_file_exception, "No more data after count");
         read_binary(in, sample_name);
-        if(in.fail()) throw incomplete_file_exception("No more data after sample name");
+        if(in.fail())
+            INTEROP_THROW(incomplete_file_exception, "No more data after sample name");
         read_binary(in, project_name);
         index_metric::index_array_t::iterator beg = metric.m_indices.begin(), end = metric.m_indices.end();
         for(;beg != end;++beg) if(beg->index_seq() == sample_name) break;
@@ -98,13 +102,13 @@ struct generic_layout<index_metric, 1> : public default_layout<1>
         }
         else beg->m_count += count;
 
-        return 1;
+        return BYTE_COUNT;
     }
     /** Write metric to the output stream
      *
      * @param out output stream
      * @param metric source metric
-     * @return number of bytes read or total number of bytes written
+     * @return sentinel
      */
     template<class Metric, class Header>
     static std::streamsize map_stream(std::ostream& out, Metric& metric, Header&, const bool)
@@ -120,25 +124,34 @@ struct generic_layout<index_metric, 1> : public default_layout<1>
             write_binary(out, beg->sample_id());
             write_binary(out, beg->sample_proj());
         }
-        return 1;
+        return BYTE_COUNT;
     }
     /** Compute the layout size
      *
      * @note The size of the record is not known ahead of time, so we just return 1.
      *
-     * @return 1
+     * @return sentinel
      */
-    static record_size_t computeSize(const index_metric::header_type&)
+    static record_size_t compute_size(const index_metric::header_type&)
     {
-        return record_size_t();
+        return static_cast<record_size_t>(RECORD_SIZE);
     }
     /** Compute header size
      *
      * @return header size
      */
-    static size_t computeHeaderSize(const index_metric::header_type&)
+    static size_t compute_header_size(const index_metric::header_type&)
     {
         return sizeof(version_t);
+    }
+    /** Skip reading/writing record size to this file
+     *
+     * @return sentinel
+     */
+    template<class Stream>
+    static record_size_t map_stream_record_size(Stream&, record_size_t)
+    {
+        return static_cast<record_size_t>(RECORD_SIZE);
     }
 };
 

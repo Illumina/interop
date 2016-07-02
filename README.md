@@ -16,6 +16,8 @@ The InterOp files supported by this library include:
   - QMetricsOut.bin
   - TileMetricsOut.bin
   - IndexMetricsOut.bin
+  - QMetrics2030Out.bin
+  - QMetricsByLaneOut.bin
 
 This library is written in C++98 and provides bindings for C# using the SWIG interface. This
 support includes examples and unit tests for both languages.

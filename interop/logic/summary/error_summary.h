@@ -8,6 +8,7 @@
 #pragma once
 
 #include <vector>
+#include "interop/util/exception.h"
 #include "interop/util/length_of.h"
 #include "interop/model/model_exceptions.h"
 #include "interop/logic/summary/summary_statistics.h"
@@ -35,7 +36,8 @@ void cache_error_by_lane_read(I beg,
                               I end,
                               const size_t max_cycle,
                               const std::vector<read_cycle>& cycle_to_read,
-                              summary_by_lane_read<float>& summary_by_lane_read) throw( model::index_out_of_bounds_exception )
+                              summary_by_lane_read<float>& summary_by_lane_read)
+                                throw( model::index_out_of_bounds_exception )
 {
     typedef std::vector<size_t> cycle_vector_t;
     typedef std::pair<size_t, size_t> key_t;
@@ -48,11 +50,13 @@ void cache_error_by_lane_read(I beg,
     {
         INTEROP_ASSERT(beg->cycle() > 0);
         INTEROP_ASSERT((beg->cycle()-1) < cycle_to_read.size());
+        if((beg->cycle()-1) >=cycle_to_read.size())
+            throw model::index_out_of_bounds_exception("Cycle exceeds total cycles from Reads in the RunInfo.xml");
         const read_cycle& read = cycle_to_read[beg->cycle()-1];
         if(read.cycle_within_read > max_cycle || read.is_last_cycle_in_read) continue;
         key_t key = std::make_pair(beg->lane(), beg->tile());
         const size_t read_number = read.number-1;
-        max_error_cycle[read_number] = std::max(max_error_cycle[read_number], static_cast<size_t>(beg->cycle()));
+        max_error_cycle[read_number] = std::max(max_error_cycle[read_number], static_cast<size_t>(read.cycle_within_read));
         INTEROP_ASSERTMSG(read_number < tmp.size(), read.number << " " << read.cycle_within_read << ", " << beg->cycle());
         if(tmp[read_number].find(key) == tmp[read.number-1].end())
             tmp[read_number][key] = std::make_pair(0.0f, 0.0f);
@@ -65,8 +69,10 @@ void cache_error_by_lane_read(I beg,
         {
             INTEROP_ASSERT(read < summary_by_lane_read.read_count());
             const size_t lane = ebeg->first.first-1;
-            if(lane >= summary_by_lane_read.lane_count()) throw model::index_out_of_bounds_exception("Lane exceeds number of lanes in RunInfo.xml");
-            if(max_cycle < std::numeric_limits<size_t>::max() && max_error_cycle[read] < max_cycle) summary_by_lane_read(read, lane).push_back(0);
+            if(lane >= summary_by_lane_read.lane_count())
+                INTEROP_THROW(model::index_out_of_bounds_exception, "Lane exceeds number of lanes in RunInfo.xml");
+            if(max_cycle < std::numeric_limits<size_t>::max() && max_error_cycle[read] < max_cycle)
+                summary_by_lane_read(read, lane).push_back(0);
             else summary_by_lane_read(read, lane).push_back(divide(ebeg->second.first,ebeg->second.second));
         }
     }

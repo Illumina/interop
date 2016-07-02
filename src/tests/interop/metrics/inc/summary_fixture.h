@@ -8,7 +8,9 @@
 
 #pragma once
 #include <sstream>
+#include "interop/model/summary/index_flowcell_summary.h"
 #include "interop/logic/summary/run_summary.h"
+#include "interop/logic/summary/index_summary.h"
 
 namespace illumina{ namespace interop { namespace unittest {
     /** Fixture for the run summary*/
@@ -30,6 +32,7 @@ namespace illumina{ namespace interop { namespace unittest {
                                       channels,
                                       model::run::image_dimensions(),
                                       reads);
+            run_info.set_naming_method(constants::FourDigit);
             model::metrics::run_metrics metrics(run_info);
             try
             {
@@ -37,6 +40,7 @@ namespace illumina{ namespace interop { namespace unittest {
                 illumina::interop::io::read_metrics(fin, metrics.get_set<typename Gen::metric_t>());
             }
             catch (const std::exception &) { }
+            metrics.finalize_after_load();
             logic::summary::summarize_run_metrics(metrics, actual);
         }
         /** Expected run summary */

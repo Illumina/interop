@@ -53,7 +53,7 @@ if(NOT GTEST_INCLUDE_DIR OR NOT GTEST_LIBRARY OR NOT GTEST_MAIN_LIBRARY)
     set(GTEST_PREFIX ${CMAKE_BINARY_DIR}/external/gtest)
     include(ExternalProject)
     ExternalProject_Add(
-            googletest
+            gtest
             PREFIX ${GTEST_PREFIX}
             GIT_REPOSITORY https://github.com/google/googletest.git
             GIT_TAG release-1.7.0
@@ -66,19 +66,20 @@ if(NOT GTEST_INCLUDE_DIR OR NOT GTEST_LIBRARY OR NOT GTEST_MAIN_LIBRARY)
                 -DCMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG=${GTEST_PREFIX}/lib64
                 -DCMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE=${GTEST_PREFIX}/lib64
             INSTALL_COMMAND ""
+            #SOURCE_DIR ${GTEST_PREFIX}/src/gtest
             LOG_DOWNLOAD ON
             LOG_CONFIGURE ON
             LOG_BUILD ON)
-    ExternalProject_Get_Property(googletest source_dir)
+    ExternalProject_Get_Property(gtest source_dir)
     set(GTEST_INCLUDE_DIR ${source_dir}/include)
     set(GTEST_LIBRARY OFF)
     set(GTEST_MAIN_LIBRARY OFF)
 
-    ExternalProject_Get_Property(googletest binary_dir)
+    ExternalProject_Get_Property(gtest binary_dir)
     set(GTEST_LIBRARY_PATH ${GTEST_PREFIX}/lib64 CACHE INTERNAL "Path to Google Test Library")
     set(GTEST_LIBRARY_FILE ${GTEST_LIBRARY_PATH}/${CMAKE_STATIC_LIBRARY_PREFIX}gtest${CMAKE_STATIC_LIBRARY_SUFFIX})
     set(GTEST_MAIN_LIBRARY_FILE ${GTEST_LIBRARY_PATH}/${CMAKE_STATIC_LIBRARY_PREFIX}gtest_main${CMAKE_STATIC_LIBRARY_SUFFIX})
-    set(GTEST_TARGET googletest)
+    set(GTEST_TARGET gtest)
 endif()
 
 

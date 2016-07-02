@@ -61,7 +61,7 @@ struct error_v3 : metric_test<model::metrics::error_metric, 3>
      *
      * @return 8 lanes
      */
-    static size_t lane_count(){return 8;}
+    static model::metric_base::base_metric::uint_t lane_count(){return 8;}
     /** Get reads describing data
      *
      * @return reads vector
@@ -78,17 +78,18 @@ struct error_v3 : metric_test<model::metrics::error_metric, 3>
     static model::summary::run_summary summary()
     {
         std::vector<model::run::read_info> read_infos = reads();
-        model::summary::run_summary summary(read_infos.begin(), read_infos.end(), lane_count());
-        summary[0][6].error_rate()=model::summary::metric_stat(0.67515134811401367f, 0, 0.67515134811401367f);
-        summary[0][6].error_rate_35()=model::summary::metric_stat(0.0f, 0, 0.0f);
-        summary[0][6].error_rate_50()=model::summary::metric_stat(00.0f, 0, 0.0f);
-        summary[0][6].error_rate_75()=model::summary::metric_stat(0.0f, 0, 0.0f);
-        summary[0][6].error_rate_100()=model::summary::metric_stat(0.0f, 0, 0.0f);
-        summary[0][6].cycle_state().error_cycle_range(model::run::cycle_range(3, 3));
+        model::summary::run_summary summary(read_infos.begin(), read_infos.end(), 1);
+        summary[0][0].lane(7);
+        summary[0][0].error_rate()=model::summary::metric_stat(0.67515134811401367f, 0, 0.67515134811401367f);
+        summary[0][0].error_rate_35()=model::summary::metric_stat(0.0f, 0, 0.0f);
+        summary[0][0].error_rate_50()=model::summary::metric_stat(00.0f, 0, 0.0f);
+        summary[0][0].error_rate_75()=model::summary::metric_stat(0.0f, 0, 0.0f);
+        summary[0][0].error_rate_100()=model::summary::metric_stat(0.0f, 0, 0.0f);
+        summary[0][0].cycle_state().error_cycle_range(model::run::cycle_range(3, 3));
         summary[0].summary().error_rate(0.67515134811401367f);
         summary.total_summary().error_rate(0.67515134811401367f);
         summary.nonindex_summary().error_rate(0.67515134811401367f);
-        summary[0][6].tile_count(1);
+        summary[0][0].tile_count(1);
         summary.cycle_state().error_cycle_range(model::run::cycle_range(3, 3));
         return summary;
     }

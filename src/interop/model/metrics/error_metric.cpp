@@ -80,7 +80,7 @@ namespace illumina{ namespace interop{ namespace io {
                 static std::streamsize map_stream(Stream& stream, Metric& metric, Header&, const bool)
                 {
                     std::streamsize count = 0;
-                    count += stream_map< error_t >(stream, metric.m_errorRate);
+                    count += stream_map< error_t >(stream, metric.m_error_rate);
                     count += stream_map< count_t >(stream, metric.m_mismatch_cluster_count, error_metric::MAX_MISMATCH);
                     return count;
                 }
@@ -88,10 +88,10 @@ namespace illumina{ namespace interop{ namespace io {
                  *
                  * @return size of the record
                  */
-                static record_size_t computeSize(const error_metric::header_type&)
+                static record_size_t compute_size(const error_metric::header_type&)
                 {
                     return static_cast<record_size_t>(sizeof(metric_id_t)+
-                            sizeof(error_t)+                                  // m_errorRate
+                            sizeof(error_t)+                                  // m_error_rate
                             sizeof(count_t)*error_metric::MAX_MISMATCH   // m_mismatch_cluster_count
                     );
                 }
@@ -99,7 +99,7 @@ namespace illumina{ namespace interop{ namespace io {
                  *
                  * @return header size
                  */
-                static record_size_t computeHeaderSize(const error_metric::header_type&)
+                static record_size_t compute_header_size(const error_metric::header_type&)
                 {
                     return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t));
                 }

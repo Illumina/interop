@@ -10,6 +10,9 @@
 #include <cctype>
 #include <algorithm>
 #include <vector>
+#include <iterator>
+#include "interop/util/assert.h"
+#include "interop/util/exception.h"
 #include "interop/constants/enums.h"
 #include "interop/model/model_exceptions.h"
 
@@ -87,7 +90,7 @@ namespace illumina { namespace interop { namespace logic { namespace utils
             std::swap(expected[0], expected[1]);
             return expected;
         }
-        throw model::invalid_channel_exception("Invalid channel names");
+        INTEROP_THROW( model::invalid_channel_exception, "Invalid channel names");
     }
 
     /** Expected channel order
@@ -161,7 +164,7 @@ namespace illumina { namespace interop { namespace logic { namespace utils
     /** Update channels from instrument type
      *
      */
-    std::vector<std::string> update_channel_from_instrument_type(const constants::instrument_type instrument)
+    inline std::vector<std::string> update_channel_from_instrument_type(const constants::instrument_type instrument)
     {
         std::vector<std::string> channels;
         switch(instrument)
@@ -179,7 +182,7 @@ namespace illumina { namespace interop { namespace logic { namespace utils
                 channels.push_back("G");
                 channels.push_back("T");
                 break;
-            case constants::UnknownInstrument:
+            default:
                 break;
         };
         return channels;

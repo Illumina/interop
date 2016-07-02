@@ -37,7 +37,7 @@ macro(fix_default_compiler_settings_)
 endmacro()
 
 # Configure the compiler and linker with more appropirate default values
-macro(config_compiler_and_linker)
+macro(interop_config_compiler_and_linker)
     fix_default_compiler_settings_()
 
     include(CheckIsNaN)
@@ -104,7 +104,9 @@ macro(config_compiler_and_linker)
     if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR CMAKE_COMPILER_IS_GNUCC)
         SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wno-c++0x-compat -Wno-error=c++0x-compat -Wextra")
     elseif(MSVC)
-        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /WX")
+        # Visual Studio Complains about not being able to create an assignment operator and copy constructor
+        # -wd4511 and -wd4512 disable these pointless warnings
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /WX -wd4511 -wd4512")
     elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
         if(WIN32)
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /WX")

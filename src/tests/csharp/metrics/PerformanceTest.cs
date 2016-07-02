@@ -1,8 +1,9 @@
 using System;
 using NUnit.Framework;
 using System.IO;
+using Illumina.InterOp.Interop;
 
-namespace illumina.interop.csharp.unittest
+namespace Illumina.InterOp.UnitTest
 {
 	/// <summary>
 	/// Test the performance of tabulating a large number of extraction metrics

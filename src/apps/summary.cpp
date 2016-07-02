@@ -27,7 +27,7 @@
  * Error Handling
  * --------------
  *
- *  The `cyclesim` program will print an error to the error stream and return an error code (any number except 0)
+ *  The `summary` program will print an error to the error stream and return an error code (any number except 0)
  *  when an error occurs. There are two likely errors that may arise:
  *
  *      1. The InterOp path was incorrect
@@ -42,6 +42,7 @@
 #include "interop/io/metric_file_stream.h"
 #include "interop/logic/summary/run_summary.h"
 #include "interop/version.h"
+#include "inc/application.h"
 
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::model::metric_base;
@@ -49,30 +50,6 @@ using namespace illumina::interop::model;
 using namespace illumina::interop::model::summary;
 using namespace illumina::interop::logic::summary;
 using namespace illumina::interop;
-
-/** Exit codes that can be produced by the application
- */
-enum exit_codes
-{
-    /** The program exited cleanly, 0 */
-    SUCCESS,
-    /** Invalid arguments were given to the application*/
-    INVALID_ARGUMENTS,
-    /** Empty InterOp directory*/
-    NO_INTEROPS_FOUND,
-    /** InterOp file has a bad format */
-    BAD_FORMAT,
-    /** Unknown error has occurred*/
-    UNEXPECTED_EXCEPTION,
-    /** InterOp file has not records */
-    EMPTY_INTEROP,
-    /** RunInfo is missing */
-    MISSING_RUNINFO_XML,
-    /** RunInfo is missing */
-    IMPROPER_RUNINFO_XML,
-    /** XML is malformed */
-    MALFORMED_XML
-};
 
 /** Print the summary metrics to the given output stream
  *
@@ -94,35 +71,9 @@ int main(int argc, char** argv)
     for(int i=1;i<argc;i++)
     {
         run_metrics run;
-        try
-        {
-            run.read(argv[i]);
-        }
-        catch(const xml::xml_file_not_found_exception& ex)
-        {
-            std::cerr << ex.what() << std::endl;
-            return MISSING_RUNINFO_XML;
-        }
-        catch(const xml::xml_parse_exception& ex)
-        {
-            std::cerr << ex.what() << std::endl;
-            return MALFORMED_XML;
-        }
-        catch(const io::bad_format_exception& ex)
-        {
-            std::cerr << ex.what() << std::endl;
-            return BAD_FORMAT;
-        }
-        catch(const std::exception& ex)
-        {
-            std::cerr << ex.what() << std::endl;
-            return UNEXPECTED_EXCEPTION;
-        }
-        if(run.empty())
-        {
-            std::cerr << "No InterOp files found" << std::endl;
-            return EMPTY_INTEROP;
-        }
+
+        int ret = read_run_metrics(argv[i], run);
+        if(ret != SUCCESS) return ret;
         run_summary summary;
         try
         {
@@ -131,14 +82,22 @@ int main(int argc, char** argv)
         catch(const model::index_out_of_bounds_exception& ex)
         {
             std::cerr << ex.what() << std::endl;
-            return IMPROPER_RUNINFO_XML;
+            return UNEXPECTED_EXCEPTION;
         }
         catch(const std::exception& ex)
         {
             std::cerr << ex.what() << std::endl;
             return UNEXPECTED_EXCEPTION;
         }
-        print_summary(std::cout, summary);
+        try
+        {
+            print_summary(std::cout, summary);
+        }
+        catch(const model::index_out_of_bounds_exception& ex)
+        {
+            std::cerr << ex.what() << std::endl;
+            return UNEXPECTED_EXCEPTION;
+        }
     }
     return SUCCESS;
 }
@@ -154,6 +113,7 @@ int main(int argc, char** argv)
 template<typename I>
 void print_array(std::ostream& out, I beg, I end, const size_t width, const char fillch=' ')
 {
+    std::ios::fmtflags f( out.flags() );
     for(;beg != end;++beg)
     {
         out << " ";
@@ -161,6 +121,7 @@ void print_array(std::ostream& out, I beg, I end, const size_t width, const char
         out.fill(fillch);
         out << std::left << *beg;
     }
+    out.flags(f);
     out << std::endl;
 }
 /** Get number of elements in stack array
@@ -229,6 +190,9 @@ std::string format(const float val, const int width, const int precision, const 
  */
 std::string format(const metric_stat& stat, const int width, const int precision, const float scale=1)
 {
+    // TODO replace +/- with unicode: \u00B1
+    // Probably requires replace std::string with a wide character string
+    // Also need to check if you are on a ancient terminal
     return util::format(stat.mean()/scale, width, precision) + " +/- " + util::format(stat.stddev()/scale, width, precision);
 }
 /** Format cycle range as a string
@@ -307,7 +271,7 @@ void print_summary(std::ostream& out, const run_summary& summary)
         print_array(out, lane_header, width);
         for(size_t lane=0;lane<summary.lane_count();++lane)
         {
-            if(summary[read][lane].tile_count()==0) continue;
+            INTEROP_ASSERT(summary[read][lane].tile_count() > 0);
             summarize(summary[read][lane], values);
             print_array(out, values, width);
         }

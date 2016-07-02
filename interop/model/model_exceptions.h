@@ -44,6 +44,36 @@ namespace model {
         invalid_channel_exception(const std::string &mesg) : std::runtime_error(mesg) { }
     };
 
+    /** Exception raised if the read was not found
+     */
+    struct invalid_read_exception : public std::runtime_error {
+        /** Constructor
+         *
+         *  @param mesg error message
+         */
+        invalid_read_exception(const std::string &mesg) : std::runtime_error(mesg) { }
+    };
+
+    /** Exception raised if the channel names are invalid
+     */
+    struct invalid_metric_type : public std::runtime_error {
+        /** Constructor
+         *
+         *  @param mesg error message
+         */
+        invalid_metric_type(const std::string &mesg) : std::runtime_error(mesg) { }
+    };
+
+    /** Exception raised if the channel names are invalid
+     */
+    struct invalid_column_type : public std::runtime_error {
+        /** Constructor
+         *
+         *  @param mesg error message
+         */
+        invalid_column_type(const std::string &mesg) : std::runtime_error(mesg) { }
+    };
+
     /** @} */
 }
 }

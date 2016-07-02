@@ -11,24 +11,20 @@
 #pragma once
 #include <string>
 #include <vector>
+#include "interop/util/exception.h"
+#include "interop/util/lexical_cast.h"
 #include "interop/model/run/flowcell_layout.h"
 #include "interop/model/run/image_dimensions.h"
 #include "interop/model/run/read_info.h"
 #include "interop/util/xml_exceptions.h"
+#include "interop/model/model_exceptions.h"
 
 #ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable:4290) // MSVC warns that it ignores the exception specification.
 #endif
 
-namespace illumina
-{
-namespace interop
-{
-namespace model
-{
-namespace run
-{
+namespace illumina { namespace interop { namespace model { namespace run {
 
 /** Metadata describing parameters that can change between runs
  *
@@ -141,12 +137,63 @@ public:
      *
      * @return reads
      */
-    const read_vector_t & reads()const{ return m_reads;}
+    const read_vector_t & reads()const{return m_reads;}
+    /** Check if there is an index read
+     *
+     * @return true if there is an index read
+     */
+    bool is_indexed()const
+    {
+        for(read_vector_t::const_iterator b = m_reads.begin(), e = m_reads.end();b != e;++b)
+            if(b->is_index()) return true;
+        return false;
+    }
+    /** Get read with given number
+     *
+     * @param read_number number of the read
+     * @return read
+     */
+    const read_info& read(const size_t read_number)const
+    {
+        for(read_vector_t::const_iterator b = m_reads.begin(), e = m_reads.end();b != e;++b)
+            if(b->number() == read_number) return *b;
+        INTEROP_THROW( invalid_read_exception, "Read number not found: " << read_number);
+    }
     /** Set the channel labels
      *
      * @param channels channel labels
      */
     void channels(const str_vector_t& channels){ m_channels = channels;}
+    /** Set the tile naming method
+     *
+     * @param naming_method tile naming method
+     */
+    void set_naming_method(const constants::tile_naming_method naming_method)
+    {
+        m_flowcell.set_naming_method(naming_method);
+    }
+    /** Get total number of cycles
+     *
+     * @return total number of cycles
+     */
+    size_t total_cycles()const
+    {
+        size_t total = 0;
+        for(read_vector_t::const_iterator b = m_reads.begin(), e = m_reads.end();b != e;++b)
+            total += b->total_cycles();
+        return total;
+    }
+    /** Get usable number of cycles
+     *
+     * @return usable number of cycles
+     */
+    size_t useable_cycles()const
+    {
+        size_t total = 0;
+        for(read_vector_t::const_iterator b = m_reads.begin(), e = m_reads.end();b != e;++b)
+            total += b->useable_cycles();
+        return total;
+    }
     /** @} */
 
 public:

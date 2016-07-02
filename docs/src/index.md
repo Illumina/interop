@@ -46,6 +46,8 @@ List of InterOp Metric Files
 | [QMetricsOut.bin]             | Per tile per cycle subsampled basecall quality score histogram, also contains QScore Binning information in header as of version 5                            |
 | [TileMetricsOut.bin]          | Per tile information about raw density, cluster count, cluster density passed filter, cluster count passed filter, percent aligned, phasing and prephasing    |
 | [IndexMetricsOut.bin]         | Per tile per lane index sequence information                                                                                                                  |
+| [QMetrics2030Out.bin]         | Per tile per cycle Q20/Q30 scores                                                                                                                             |
+| [QMetricsByLaneOut.bin]       | Per tile per cycle Q-score histogram per lane                                                                                                                 |
 
 [CorrectedIntMetricsOut.bin]: @ref corrected_intensity "CorrectedIntMetricsOut.bin"
 [ErrorMetricsOut.bin]: @ref error_metric "ErrorMetricsOut.bin"
@@ -54,6 +56,8 @@ List of InterOp Metric Files
 [QMetricsOut.bin]: @ref q_metric "QMetricsOut.bin"
 [TileMetricsOut.bin]: @ref tile_metric "TileMetricsOut.bin"
 [IndexMetricsOut.bin]: @ref index_metric "IndexMetricsOut.bin"
+[QMetrics2030Out.bin]: @ref q_collapsed_metric "QMetrics2030Out.bin"
+[QMetricsByLaneOut.bin]: @ref q_metric_by_lane "QMetricsByLaneOut.bin"
 
 
 Known Limitations

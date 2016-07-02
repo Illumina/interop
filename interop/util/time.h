@@ -34,7 +34,8 @@ namespace util {
             /** Wrapper to ensure proper conversion of C# DateTime value
              *
              */
-            struct csharp_date_time {
+            struct csharp_date_time
+            {
                 /** Constructor */
                 csharp_date_time(uint64_t v = 0) : value(v) { }
                 /** Convert to time_t unix format
@@ -110,6 +111,30 @@ namespace util {
 
                 /** Date time in csharp DateTime.ToBinary format */
                 uint64_t value;
+
+                operator uint64_t()const
+                {
+                    return value;
+                }
+
+                bool operator==(const csharp_date_time& other)const
+                {
+                    return std::abs(static_cast<int64_t>(value-other.value)) < 5e14;
+                }
+
+                friend std::ostream& operator<<(std::ostream& out, const csharp_date_time& date_time )
+                {
+                    //2015-02-25 20:04:00
+                    out << date_time.value;
+                    return out;
+                }
+                friend std::istream& operator>>(std::istream& in, csharp_date_time& date_time)
+                {
+                    uint64_t val;
+                    in >> val;
+                    date_time = csharp_date_time(val);
+                    return in;
+                }
 
             private:
                 inline static ::uint64_t ticks_per_second()

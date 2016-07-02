@@ -6,6 +6,7 @@
  *  @copyright GNU Public License.
  */
 #pragma once
+#include "interop/io/format/generic_layout.h"
 
 
 
@@ -144,6 +145,8 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         float m_percent_gt_q30;
         float m_yield_g;
         float m_projected_yield_g;
+        template<class MetricType, int Version>
+        friend struct io::generic_layout;
     };
 
 

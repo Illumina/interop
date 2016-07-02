@@ -8,7 +8,8 @@ set(SRCS
         model/metrics/extraction_metric.cpp
         model/metrics/image_metric.cpp
         model/metrics/q_metric.cpp
-        model/metrics/index_metric.cpp)
+        model/metrics/index_metric.cpp
+        model/metrics/q_collapsed_metric.cpp model/summary/run_summary.cpp)
 
 set(HEADERS
         ../../interop/model/summary/cycle_state_summary.h
@@ -81,9 +82,51 @@ set(HEADERS
         ../../interop/logic/summary/map_cycle_to_read.h
         ../../interop/logic/summary/cycle_state_summary.h
         ../../interop/util/math.h
+        ../../interop/model/plot/filter_options.h
+        ../../interop/logic/utils/enums.h
+        ../../interop/logic/utils/metric_type_ext.h
+        ../../interop/logic/plot/plot_by_cycle.h
+        ../../interop/logic/metric/metric_value.h
+        ../../interop/logic/plot/plot_by_lane.h
+        ../../interop/logic/plot/plot_point.h
+        ../../interop/model/plot/data_point.h
+        ../../interop/model/plot/series.h
+        ../../interop/model/plot/data_point_collection.h
+        ../../interop/model/plot/candle_stick_point.h
+        ../../interop/model/plot/plot_data.h
+        ../../interop/logic/plot/plot_data.h
+        ../../interop/model/plot/axes.h
+        ../../interop/logic/plot/plot_qscore_histogram.h
+        ../../interop/logic/plot/plot_qscore_heatmap.h
+        ../../interop/logic/plot/plot_flowcell_map.h
+        ../../interop/model/plot/bar_point.h
+        ../../interop/model/plot/heatmap_data.h
+        ../../interop/model/plot/chart_data.h
+        ../../interop/model/plot/flowcell_data.h
+        ../../interop/constants/typedefs.h
+        ../../interop/logic/plot/plot_sample_qc.h
+        ../../interop/model/summary/index_lane_summary.h
+        ../../interop/model/summary/index_flowcell_summary.h
+        ../../interop/model/summary/index_count_summary.h
+        ../../interop/logic/summary/index_summary.h
+        ../../interop/logic/table/populate_imaging_table.h
+        ../../interop/model/table/imaging_table.h
+        ../../interop/util/string.h
+        ../../interop/model/metrics/q_collapsed_metric.h
+        ../../interop/model/metrics/q_by_lane_metric.h
+        ../../interop/util/constant_mapping.h
+        ../../interop/io/plot/gnuplot.h
+        ../../interop/logic/metric/tile_metric.h
+        ../../interop/logic/logic.h
+        ../../interop/interop.h
+        ../../interop/model/table/table_util.h
+        ../../interop/interop.h
+        ../../interop/util/exception.h
+        ../../interop/io/table/csv_format.h
+        ../../interop/model/table/column_header.h
+        ../../interop/model/table/imaging_table_entry.h)
 
-        )
-
+set(INTEROP_HEADERS ${HEADERS} PARENT_SCOPE)
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR CMAKE_COMPILER_IS_GNUCC)
     foreach(SRC ${SRCS})
         set_source_files_properties(${SRC} PROPERTIES COMPILE_FLAGS "${CXX_PEDANTIC_FLAG}" )

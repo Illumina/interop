@@ -1,12 +1,12 @@
 /** Factory for generating metric formats
  *
  *  @file
- *
  *  @date 8/15/15
  *  @version 1.0
  *  @copyright GNU Public License.
  */
 #pragma once
+
 #include <map>
 #include <vector>
 #include "interop/util/assert.h"
@@ -39,52 +39,63 @@
 #define INTEROP_FORCE_LINK_DEF(X) namespace illumina{namespace interop{namespace io{ void force_link_metric_format(X*){} }}} \
     void force_link_metric_format(X*){} // For Microsoft Visual C++
 
-namespace illumina {
-    namespace interop {
-        namespace io {
-            /** Factory for generating metric formats
-             *
-             * This class defines static methods to register a metric format. The registered metric formats can
-             * be accessed through the `metric_formats()` static function.
-             *
-             * @note this is not thread safe
-             */
-            template<class Metric>
-            struct metric_format_factory
-            {
-                /** Define the metric type */
-                typedef Metric metric_type;
-                /** Define the header type */
-                typedef typename Metric::header_type header_type;
-                /** Define a unique pointer to a metric format
-                 */
-                typedef stdbp::unique_ptr< abstract_metric_format<Metric> > metric_format_pointer;
-                /** Define a map between format version and the format
-                 */
-                typedef std::map<int, metric_format_pointer> metric_format_map;
-                /** Constructor
-                 *
-                 * This constructor is used to statically register a matric format in a source file.
-                 */
-                metric_format_factory(abstract_metric_format<Metric>* pformat)
-                {
-                   INTEROP_ASSERT(pformat!=0);
-                    metric_formats()[pformat->version()]=metric_format_pointer(pformat);
-                }
-                /** Static initialization workaround for member variables
-                 *
-                 * @note this is not thread safe
-                 * @return map between version and format
-                 */
-                static metric_format_map &metric_formats()
-                {
-                    INTEROP_FORCE_LINK_USE(metric_type);
-                    static metric_format_map vec;
-                    return vec;
-                }
-            };
+namespace illumina { namespace interop { namespace io
+{
+    /** Metric type adapter
+     *
+     * This class allows a metric derived from another metric to use it's format
+     * For example, q_by_lane_metric uses the q_metric format
+     */
+    template<typename Metric>
+    struct metric_format_adapter
+    {
+        /** Define the template parameter as the target type */
+        typedef Metric metric_t;
+    };
 
+    /** Factory for generating metric formats
+     *
+     * This class defines static methods to register a metric format. The registered metric formats can
+     * be accessed through the `metric_formats()` static function.
+     *
+     * @note this is not thread safe
+     */
+    template<class Metric>
+    struct metric_format_factory
+    {
+        /** Define the metric type */
+        typedef Metric metric_type;
+        /** Define the abstract format type */
+        typedef abstract_metric_format<metric_type> abstract_metric_format_t;
+        /** Define the header type */
+        typedef typename Metric::header_type header_type;
+        /** Define a unique pointer to a metric format */
+        typedef stdbp::unique_ptr<abstract_metric_format_t> metric_format_pointer;
+        /** Define a map between format version and the format */
+        typedef std::map<int, metric_format_pointer> metric_format_map;
+
+        /** Constructor
+         *
+         * This constructor is used to statically register a matric format in a source file.
+         */
+        metric_format_factory(abstract_metric_format_t *pformat)
+        {
+            INTEROP_ASSERT(pformat != 0);
+            metric_formats()[pformat->version()] = metric_format_pointer(pformat);
         }
-    }
-}
+
+        /** Static initialization workaround for member variables
+         *
+         * @note this is not thread safe
+         * @return map between version and format
+         */
+        static metric_format_map &metric_formats()
+        {
+            INTEROP_FORCE_LINK_USE(metric_type);
+            static metric_format_map vec;
+            return vec;
+        }
+    };
+
+}}}
 

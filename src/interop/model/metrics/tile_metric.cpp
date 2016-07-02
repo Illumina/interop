@@ -99,23 +99,23 @@ namespace illumina{ namespace interop{
                     std::streamsize count = stream_map< record_t >(stream, rec);
                     if(stream.fail()) return count;
                     float val = rec.value;
-                    if( val != val ) val = 0;
+                    if( val != val ) val = 0; // TODO: Remove this after baseline
                     switch(rec.code)
                     {
                         case ControlLane:
                             if(is_new) metric.set_base(metric_id_t());
                             break;
                         case ClusterDensity:
-                            metric.m_clusterDensity = val;
+                            metric.m_cluster_density = val;
                             break;
                         case ClusterDensityPf:
-                            metric.m_clusterDensityPf = val;
+                            metric.m_cluster_density_pf = val;
                             break;
                         case ClusterCount:
-                            metric.m_clusterCount = val;
+                            metric.m_cluster_count = val;
                             break;
                         case ClusterCountPf:
-                            metric.m_clusterCountPf = val;
+                            metric.m_cluster_count_pf = val;
                             break;
                         default:
                             if( rec.code % Phasing < 100 )
@@ -136,7 +136,7 @@ namespace illumina{ namespace interop{
                                 int codeOffset = rec.code % PercentAligned;
                                 get_read(metric, codeOffset+1)->percent_aligned(val);
                             }
-                            else throw bad_format_exception("Unexpected tile code");
+                            else INTEROP_THROW(bad_format_exception, "Unexpected tile code");
                     };
 
                     return count;
@@ -157,33 +157,33 @@ namespace illumina{ namespace interop{
 
                     // We always write this out, even if it is NaN
                     // We always write out ID for the first record
-                    if(metric.m_clusterDensity == metric.m_clusterDensity)
+                    if(!std::isnan(metric.m_cluster_density))
                     {
-                        rec.value = metric.m_clusterDensity;
+                        rec.value = metric.m_cluster_density;
                         rec.code = ClusterDensity;
                         if(write_id) write_binary(out, metric_id);
                         write_id=true;
                         write_binary(out, rec);
                     }
-                    if(metric.m_clusterDensityPf == metric.m_clusterDensityPf)
+                    if(!std::isnan(metric.m_cluster_density_pf))
                     {
-                        rec.value = metric.m_clusterDensityPf;
+                        rec.value = metric.m_cluster_density_pf;
                         rec.code = ClusterDensityPf;
                         if(write_id) write_binary(out, metric_id);
                         write_id=true;
                         write_binary(out, rec);
                     }
-                    if(metric.m_clusterCount == metric.m_clusterCount)
+                    if(!std::isnan(metric.m_cluster_count))
                     {
-                        rec.value = metric.m_clusterCount;
+                        rec.value = metric.m_cluster_count;
                         rec.code = ClusterCount;
                         if(write_id) write_binary(out, metric_id);
                         write_id=true;
                         write_binary(out, rec);
                     }
-                    if(metric.m_clusterCountPf == metric.m_clusterCountPf)
+                    if(!std::isnan(metric.m_cluster_count_pf))
                     {
-                        rec.value = metric.m_clusterCountPf;
+                        rec.value = metric.m_cluster_count_pf;
                         rec.code = ClusterCountPf;
                         if(write_id) write_binary(out, metric_id);
                         write_id=true;
@@ -213,7 +213,7 @@ namespace illumina{ namespace interop{
                  *
                  * @return record size
                  */
-                static record_size_t computeSize(const tile_metric::header_type&)
+                static record_size_t compute_size(const tile_metric::header_type&)
                 {
                     return static_cast< record_size_t >(sizeof(metric_id_t)+sizeof(record_t));
                 }
@@ -221,7 +221,7 @@ namespace illumina{ namespace interop{
                  *
                  * @return header size
                  */
-                static record_size_t computeHeaderSize(const tile_metric::header_type&)
+                static record_size_t compute_header_size(const tile_metric::header_type&)
                 {
                     return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t));
                 }

@@ -21,6 +21,7 @@
 #include "interop/util/lexical_cast.h"
 #include "interop/util/xml_parser.h"
 #include "interop/io/metric_stream.h"
+#include "interop/logic/utils/enums.h"
 
 
 
@@ -47,13 +48,14 @@ void parameters::parse(char *data) throw(   xml::xml_file_not_found_exception,
     }
     catch(const rapidxml::parse_error& ex)
     {
-        throw xml_parse_exception(ex.what());
+        INTEROP_THROW( xml_parse_exception, ex.what());
     }
 
     m_version=0;
     xml_node_ptr p_root = doc.first_node();
-    if(p_root == 0) throw empty_xml_format_exception("Root not found");
-    if( p_root->name() != std::string("RunParameters")) throw bad_xml_format_exception("Invalid run parameters xml file");
+    if(p_root == 0) INTEROP_THROW( empty_xml_format_exception, "Root not found");
+    if( p_root->name() != std::string("RunParameters"))
+        INTEROP_THROW( bad_xml_format_exception, "Invalid run parameters xml file");
     set_data_with_default(p_root->first_node("Version"), "Version", m_version, 0u);
 
     // Parse run data
@@ -62,7 +64,7 @@ void parameters::parse(char *data) throw(   xml::xml_file_not_found_exception,
     m_instrument_type = constants::UnknownInstrument;
 
     xml_node_ptr p_setup = p_root->first_node("Setup");
-    if(p_setup == 0) throw bad_xml_format_exception("Setup not found");
+    if(p_setup == 0) INTEROP_THROW( bad_xml_format_exception, "Setup not found");
     for(xml_node_ptr p_node = p_setup->first_node();p_node;p_node = p_node->next_sibling())
     {
         set_data(p_node, "ApplicationName", application_name);
@@ -77,25 +79,16 @@ void parameters::set_instrument_id(std::string& application_name, std::string& m
 {
     std::transform(application_name.begin(), application_name.end(), application_name.begin(), ::tolower);
     std::transform(multi_surface.begin(), multi_surface.end(), multi_surface.begin(), ::tolower);
-    if(application_name.find("hiseq") != std::string::npos)
+
+    for(size_t i=0;i<constants::InstrumentCount;++i)
     {
-        m_instrument_type = constants::HiSeq;
-    }
-    else if(application_name.find("miseq") != std::string::npos)
-    {
-        m_instrument_type = constants::MiSeq;
-    }
-    else if(application_name.find("nextseq") != std::string::npos)
-    {
-        m_instrument_type = constants::NextSeq;
-    }
-    else if(application_name.find("miniseq") != std::string::npos)
-    {
-        m_instrument_type = constants::MiniSeq;
-    }
-    else
-    {
-        m_instrument_type = constants::UnknownInstrument;
+        std::string instrument_name = constants::to_string(static_cast<constants::instrument_type>(i));
+        std::transform(instrument_name.begin(), instrument_name.end(), instrument_name.begin(), ::tolower);
+        if(application_name.find(instrument_name) != std::string::npos)
+        {
+            m_instrument_type = static_cast<constants::instrument_type>(i);
+            break;
+        }
     }
     if(multi_surface != "" && m_instrument_type == constants::HiSeq)
     {
@@ -117,7 +110,7 @@ void parameters::read_file(const std::string &filename)   throw( xml::xml_file_n
         parse(xmlFile.data());
     }catch(const std::runtime_error& ex)
     {
-        throw xml_file_not_found_exception(ex.what());
+        INTEROP_THROW( xml_file_not_found_exception, ex.what());
     }
 }
 
@@ -127,6 +120,13 @@ void parameters::read(const std::string& run_folder) throw( xml::xml_file_not_fo
                                                             xml::missing_xml_element_exception,
                                                             xml::xml_parse_exception)
 {
+
+    if(run_folder.find("RunParameters.xml") != std::string::npos ||
+            run_folder.find("runParameters.xml") != std::string::npos)
+    {
+        read_file(run_folder);
+        return;
+    }
     try
     {
         read_file(io::combine(run_folder, "runParameters.xml"));

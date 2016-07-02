@@ -82,6 +82,14 @@ TYPED_TEST(corrected_intensity_metrics_test, test_metric_io_fidelity)
     compare_metrics(TypeParam::actual_metric_set, TypeParam::expected_metric_set);
 }
 
+TEST(corrected_intensity_metrics_test, test_percent_base_nan)
+{
+    typedef corrected_intensity_metric::ushort_array_t ushort_array_t;
+    typedef corrected_intensity_metric::uint_array_t uint_array_t;
+    corrected_intensity_metric metric(1, 1112, 1, ushort_array_t(4,0), uint_array_t(5,0));
+    EXPECT_TRUE(std::isnan(metric.percent_bases()[0]));
+}
+
 #define FIXTURE corrected_intensity_metrics_test
 /**
  * @class illumina::interop::model::metrics::corrected_intensity_metric

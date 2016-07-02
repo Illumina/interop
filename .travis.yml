@@ -20,7 +20,7 @@ matrix:
         sources:
         - george-edison55-precise-backports
         - ubuntu-toolchain-r-test
-        - teward
+        - sourceline: 'ppa:teward/swig3.0'
         packages:
         - cmake
         - cmake-data
@@ -29,6 +29,8 @@ matrix:
         - swig3.0
         - doxygen
         - graphviz
+        - mono-complete
+        - libgtest-dev
     env: INTEROP_C89=OFF COMPILER_VERSION=-4.9 BUILD_TYPE=Debug BUILD_NAME=linux_gcc49_debug
     os: linux
   - compiler: gcc
@@ -42,7 +44,7 @@ matrix:
         - george-edison55-precise-backports
         - ubuntu-toolchain-r-test
         - llvm-toolchain-precise-3.7
-        - teward
+        - sourceline: 'ppa:teward/swig3.0'
         packages:
         - cmake
         - cmake-data
@@ -52,6 +54,8 @@ matrix:
         - swig3.0
         - doxygen
         - graphviz
+        - mono-complete
+        - libgtest-dev
     env: INTEROP_C89=OFF COMPILER_VERSION=-3.7 BUILD_TYPE=Debug BUILD_NAME=linux_clang37_debug
     os: linux
   - compiler: clang
@@ -71,7 +75,7 @@ addons:
   apt:
     sources:
     - george-edison55-precise-backports
-    - teward-swig3.0
+    - sourceline: 'ppa:teward/swig3.0'
     packages:
     - cmake
     - cmake-data
@@ -79,6 +83,8 @@ addons:
     - swig3.0
     - doxygen
     - graphviz
+    - mono-complete
+    - libgtest-dev
 cache:
   directories:
     - $HOME/NUnit-2.6.4
@@ -89,13 +95,14 @@ install:
 - if test "$TRAVIS_OS_NAME" = "osx"; then source tools/travis-osx-install.sh; fi
 - ls -la $(which $CC)
 - ls -la $(which $CXX)
+- ls $HOME/NUnit-2.6.4
 
 script:
 - export CC="${CC}${COMPILER_VERSION}"
 - export CXX="${CXX}${COMPILER_VERSION}"
 - export BUILD_PATH=${PWD}/${BUILD_NAME}
 - echo 'Configuring...' && echo -en 'travis_fold:start:script.1\\r'
-- rm -fr build && mkdir -p build && cd build && cmake ../ -DNUNIT_ROOT=$HOME/NUnit-2.6.4 -DENABLE_BACKWARDS_COMPATIBILITY=$INTEROP_C89 -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_INSTALL_PREFIX=${BUILD_PATH}
+- rm -fr build && mkdir -p build && cd build && cmake -DNUNIT_ROOT=$HOME/NUnit-2.6.4 ../ -DENABLE_BACKWARDS_COMPATIBILITY=$INTEROP_C89 -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_INSTALL_PREFIX=${BUILD_PATH}
 - echo -en 'travis_fold:end:script.1\\r'
 - cmake --build .
 - echo 'Installing...' && echo -en 'travis_fold:start:script.2\\r'

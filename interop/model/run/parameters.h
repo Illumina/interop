@@ -11,6 +11,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include "interop/util/exception.h"
 #include "interop/constants/enums.h"
 #include "interop/util/xml_exceptions.h"
 
