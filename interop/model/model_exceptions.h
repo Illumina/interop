@@ -56,12 +56,30 @@ namespace model {
 
     /** Exception raised if the channel names are invalid
      */
-    struct invalid_metric_type : public std::runtime_error {
+    struct invalid_metric_type : public std::invalid_argument {
         /** Constructor
          *
          *  @param mesg error message
          */
-        invalid_metric_type(const std::string &mesg) : std::runtime_error(mesg) { }
+        invalid_metric_type(const std::string &mesg) : std::invalid_argument(mesg) { }
+    };
+    /** Exception raised if the channel names are invalid
+     */
+    struct invalid_filter_option : public std::invalid_argument {
+        /** Constructor
+         *
+         *  @param mesg error message
+         */
+        invalid_filter_option(const std::string &mesg) : std::invalid_argument(mesg) { }
+    };
+    /** Exception raised if the channel names are invalid
+     */
+    struct invalid_tile_naming_method : public std::invalid_argument {
+        /** Constructor
+         *
+         *  @param mesg error message
+         */
+        invalid_tile_naming_method(const std::string &mesg) : std::invalid_argument(mesg) { }
     };
 
     /** Exception raised if the channel names are invalid

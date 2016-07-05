@@ -3,6 +3,7 @@
 
 set(CMAKE_SWIG_OUTDIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(SWIG_MODULE_c_csharp_interop_EXTRA_DEPS ${SWIG_DEPS} )
+
 foreach(SRC ${SWIG_SRCS})
     get_filename_component(MODULE ${SRC} NAME_WE)
     string(SUBSTRING ${MODULE} 0 1 FIRST_LETTER)
@@ -25,7 +26,7 @@ foreach(SRC ${SWIG_SRCS})
         set_target_properties(${SWIG_MODULE} PROPERTIES COMPILE_FLAGS "/bigobj")
     elseif(MINGW)
         set_target_properties(${SWIG_MODULE} PROPERTIES COMPILE_FLAGS "-Wa,-mbig-obj -Wno-unused-function")
-    elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR CMAKE_COMPILER_IS_GNUCC)
+    elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR CMAKE_COMPILER_IS_GNUCC)
         set_target_properties(${SWIG_MODULE} PROPERTIES COMPILE_FLAGS "-Wno-unused-function")
     endif()
     swig_link_libraries(${SWIG_MODULE} ${INTEROP_DL_LIB})
@@ -41,9 +42,6 @@ foreach(SRC ${SWIG_SRCS})
     endif()
     list(APPEND SWIG_MODULE_LIST ${SWIG_MODULE})
 endforeach()
-
-
-
 
 
 find_package(CSharp)

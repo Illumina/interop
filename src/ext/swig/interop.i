@@ -9,20 +9,31 @@
 %include "src/ext/swig/extends/extends_impl.i"
 %include "src/ext/swig/arrays/arrays_impl.i"
 
+#if defined(SWIGCSHARP)
+%ignore operator==;
+%ignore operator<<;
+%ignore operator>>;
+%ignore operator-;
+%ignore operator uint64_t;
+%ignore operator +=;
+%ignore operator <;
+#endif
+
+%ignore BASE_TYPE;
+%ignore TYPE;
+%ignore CHECK_TILE_ID;
+%ignore illumina::interop::model::metrics::q_score_header::bins();
 %{
-#include "interop/interop.h"
-#include "interop/constants/enums.h"
 #include "interop/util/time.h"
 #include "interop/io/metric_file_stream.h"
 %}
-%include "interop/interop.h"
+
 
 %ignore metric_group_iuo;
 %ignore set_base(const io::layout::base_metric& base);
 %ignore set_base(const io::layout::base_cycle_metric& base);
 %ignore set_base(const io::layout::base_read_metric& base);
 
-%include "interop/constants/enums.h"
 %include "interop/util/time.h"
 %include "interop/model/metric_base/base_metric.h"
 %include "interop/model/metric_base/base_cycle_metric.h"
@@ -88,6 +99,7 @@
     WRAP_METRIC_SET(metric_t)
 %enddef
 
+%ignore metric_format_adapter;
 
 %{
 #include "interop/model/metrics/corrected_intensity_metric.h"
@@ -150,96 +162,11 @@ WRAP_Q_METRIC(q_by_lane_metric)
 %include "interop/model/metric_sets/tile_metric_set.h"
 %include "interop/model/metric_sets/index_metric_set.h"
 
-WRAP_VECTOR(illumina::interop::model::summary::read_summary);
-%ignore illumina::interop::model::summary::read_summary::read()const;
-
-WRAP_VECTOR(illumina::interop::model::summary::run_summary);
-
-
-%{
-#include "interop/model/run/cycle_range.h"
-#include "interop/model/run/read_info.h"
-%}
-%include "interop/model/run/cycle_range.h"
-%include "interop/model/run/read_info.h"
-
-%{
-#include "interop/model/summary/cycle_state_summary.h"
-#include "interop/model/summary/metric_summary.h"
-#include "interop/model/summary/lane_summary.h"
-#include "interop/model/summary/metric_stat.h"
-#include "interop/model/summary/read_summary.h"
-#include "interop/model/summary/run_summary.h"
-#include "interop/model/summary/index_count_summary.h"
-#include "interop/model/summary/index_lane_summary.h"
-#include "interop/model/summary/index_flowcell_summary.h"
-
-
-#include "interop/model/run/flowcell_layout.h"
-#include "interop/model/run/image_dimensions.h"
-#include "interop/model/run/info.h"
-#include "interop/model/run/parameters.h"
-
-#include "interop/model/run_metrics.h"
-#include "interop/logic/metric/q_metric.h"
-#include "interop/logic/summary/run_summary.h"
-%}
-
-
-%include "interop/model/summary/cycle_state_summary.h"
-%include "interop/model/summary/metric_summary.h"
-%include "interop/model/summary/lane_summary.h"
-%include "interop/model/summary/metric_stat.h"
-%include "interop/model/summary/read_summary.h"
-%include "interop/model/summary/run_summary.h"
-
-%include "interop/model/run/flowcell_layout.h"
-%include "interop/model/run/image_dimensions.h"
-%include "interop/model/run/info.h"
-%include "interop/model/run/parameters.h"
-
-
-%include "interop/model/summary/index_count_summary.h"
-
-WRAP_AS_VECTOR(illumina::interop::model::summary::index_count_summary);
-WRAP_VECTOR(illumina::interop::model::summary::index_lane_summary);
-%include "interop/model/summary/index_lane_summary.h"
-
-WRAP_VECTOR(illumina::interop::model::summary::index_flowcell_summary);
-WRAP_AS_VECTOR(illumina::interop::model::summary::index_lane_summary);
-%include "interop/model/summary/index_flowcell_summary.h"
-
-//
-// Setup typemaps for summary metrics
-//
-WRAP_AS_VECTOR(illumina::interop::model::summary::lane_summary);
-WRAP_AS_VECTOR(illumina::interop::model::summary::read_summary);
-
-%template(lane_summary_vector) std::vector<illumina::interop::model::summary::lane_summary>;
-%template(read_summary_vector) std::vector<illumina::interop::model::summary::read_summary>;
-%template(index_count_summary_vector) std::vector<illumina::interop::model::summary::index_count_summary>;
-%template(index_lane_summary_vector) std::vector<illumina::interop::model::summary::index_lane_summary>;
-%template(read_info_vector) std::vector<illumina::interop::model::run::read_info>;
-
-%include "interop/model/run_metrics.h"
-%include "interop/logic/summary/run_summary.h"
-%include "interop/logic/metric/q_metric.h"
-
-
-
 // Metric Logic
 %{
 #include "interop/logic/metric/q_metric.h"
+#include "interop/model/run_metrics.h"
 %}
 
 %include "interop/logic/metric/q_metric.h"
-
-// Summary Logic
-%{
-#include "interop/logic/summary/index_summary.h"
-%}
-
-%include "interop/logic/summary/index_summary.h"
-
-
-
+%include "interop/model/run_metrics.h"

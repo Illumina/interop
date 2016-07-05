@@ -126,7 +126,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         io::incomplete_file_exception,
         io::format_exception,
         model::index_out_of_bounds_exception,
-        std::invalid_argument)
+        model::invalid_tile_naming_method)
         {
             read_metrics(run_folder);
             const size_t count = read_xml(run_folder);
@@ -198,7 +198,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @param count number of bins for legacy q-metrics
          */
         void finalize_after_load(size_t count = std::numeric_limits<size_t>::max()) throw(io::format_exception,
-        std::invalid_argument,
+        model::invalid_tile_naming_method,
         model::index_out_of_bounds_exception)
         {
             if (m_run_info.flowcell().naming_method() == constants::UnknownTileNamingMethod)
@@ -237,7 +237,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                                   "Channel names are missing from the RunInfo.xml, and RunParameters.xml does not contain sufficient information on the instrument run.");
             }
             if (!empty() && run_info().flowcell().naming_method() == constants::UnknownTileNamingMethod)
-                INTEROP_THROW(std::invalid_argument, "Unknown tile naming method - update your RunInfo.xml");
+                INTEROP_THROW(model::invalid_tile_naming_method, "Unknown tile naming method - update your RunInfo.xml");
             extraction_metric_set_t& extraction_metrics = get_set<extraction_metric>();
             // Trim excess channel data for imaging table
             for(extraction_metric_set_t::iterator it = extraction_metrics.begin(); it != extraction_metrics.end();++it)

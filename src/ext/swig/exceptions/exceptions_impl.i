@@ -6,6 +6,8 @@ namespace std
   struct runtime_error {};
   %ignore out_of_range;
   struct out_of_range {};
+  %ignore invalid_argument;
+  struct invalid_argument {};
 }
 #endif
 %{
@@ -18,11 +20,6 @@ namespace std
 #if defined(SWIGCSHARP)
 
     %include "src/ext/swig/exceptions/exceptions_csharp.i"
-
-    %typemap(throws, canthrow=1) std::invalid_argument {
-        SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, $1.what());
-        return $null;
-    }
 
 #elif defined(SWIGPYTHON)
 
@@ -49,9 +46,9 @@ WRAPPER(illumina::interop::model::, index_out_of_bounds_exception, index_out_of_
 WRAPPER(illumina::interop::model::, invalid_channel_exception, invalid_channel_exception)
 WRAPPER(illumina::interop::model::, invalid_read_exception, invalid_read_exception)
 WRAPPER(illumina::interop::model::, invalid_metric_type, invalid_metric_type)
+WRAPPER(illumina::interop::model::, invalid_filter_option, invalid_filter_option)
 
 // XML
-
 WRAPPER(illumina::interop::xml::, xml_file_not_found_exception, xml_file_not_found_exception)
 WRAPPER(illumina::interop::xml::, xml_parse_exception, xml_parse_exception)
 WRAPPER(illumina::interop::xml::, bad_xml_format_exception, bad_xml_format_exception)

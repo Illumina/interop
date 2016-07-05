@@ -37,12 +37,13 @@ namespace illumina { namespace interop { namespace io {
      */
     template<class MetricSet>
     size_t write_interop_to_buffer(const MetricSet& metrics, ::uint8_t* buffer, size_t buffer_size)
-                        throw(std::invalid_argument, bad_format_exception, incomplete_file_exception)
+                        throw(invalid_argument, bad_format_exception, incomplete_file_exception)
     {
         std::ostringstream fout;
         write_metrics(fout, metrics, metrics.version());
         std::string str = fout.str();
-        if(buffer_size < str.length()) throw std::invalid_argument("Buffer size too small");
+        if(buffer_size < str.length())
+            INTEROP_THROW(invalid_argument, "Buffer size too small");
         size_t i=0;
         for(;i<str.length();++i)
             buffer[i] = static_cast< ::uint8_t >(str[i]);

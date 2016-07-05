@@ -158,15 +158,16 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                        model::plot::plot_data<Point>& data)
                     throw(model::index_out_of_bounds_exception,
                     model::invalid_metric_type,
+                    model::invalid_filter_option,
                     model::invalid_read_exception)
     {
         data.clear();
         if(!options.all_cycles())
-            INTEROP_THROW(model::invalid_metric_type, "Filtering by cycle is not supported");
+            INTEROP_THROW(model::invalid_filter_option, "Filtering by cycle is not supported");
         if(!options.all_reads())
-            INTEROP_THROW(model::invalid_metric_type, "Filtering by read is not supported");
+            INTEROP_THROW(model::invalid_filter_option, "Filtering by read is not supported");
         if(!utils::is_cycle_metric(type))
-            INTEROP_THROW(model::invalid_metric_type, "Only cycle metrics are supported");
+            INTEROP_THROW(model::invalid_filter_option, "Only cycle metrics are supported");
         size_t max_cycle=0;
         switch(logic::utils::to_group(type))
         {
@@ -309,12 +310,12 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                        const model::plot::filter_options& options,
                        model::plot::plot_data<Point>& data)
                         throw(model::index_out_of_bounds_exception,
-                        model::invalid_metric_type,
-                        std::invalid_argument)
+                        model::invalid_filter_option,
+                        model::invalid_metric_type)
     {
         const constants::metric_type type = constants::parse<constants::metric_type>(metric_name);
         if(type == constants::UnknownMetricType)
-            INTEROP_THROW(std::invalid_argument, "Unsupported metric type: " << metric_name);
+            INTEROP_THROW(model::invalid_metric_type, "Unsupported metric type: " << metric_name);
         plot_by_cycle(metrics, type, options, data);
     }
     /** List metric type names available for by cycle plots

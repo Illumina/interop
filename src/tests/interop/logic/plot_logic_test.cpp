@@ -16,6 +16,14 @@
 
 using namespace illumina::interop;
 
+TEST(plot_logic, failure_mode_bad_metric_plot_by_cycle)
+{
+    model::metrics::run_metrics metrics;
+    model::plot::filter_options options(constants::FourDigit);
+    model::plot::plot_data<model::plot::candle_stick_point> data;
+    EXPECT_THROW(logic::plot::plot_by_cycle(metrics, "NoSuchMetric", options, data), model::invalid_metric_type);
+}
+
 TEST(plot_logic, intensity_by_cycle)
 {
     const float tol = 1e-3f;

@@ -24,7 +24,7 @@ endif()
 include(${SWIG_USE_FILE})
 set(CMAKE_SWIG_FLAGS "")
 
-set(SWIG_SRCS_TEMP swig/interop.i swig/imaging.i swig/plot.i)
+set(SWIG_SRCS_TEMP swig/run.i swig/metrics.i swig/imaging.i swig/plot.i swig/summary.i) #swig/interop.i
 set(SWIG_DEPS_TEMP
         swig/exceptions/exceptions_impl.i
         swig/exceptions/exceptions_csharp.i

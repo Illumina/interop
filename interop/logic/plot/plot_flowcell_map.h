@@ -72,7 +72,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                                   const constants::metric_type type,
                                   const model::plot::filter_options& options,
                                   model::plot::flowcell_data& data)
-                                  throw(std::invalid_argument,
+                                  throw(model::invalid_filter_option,
                                   model::invalid_metric_type,
                                   model::index_out_of_bounds_exception)
     {
@@ -83,12 +83,12 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
         values_for_scaling.reserve(data.length());
 
         if(metrics.run_info().flowcell().naming_method() == constants::UnknownTileNamingMethod)
-            INTEROP_THROW(std::invalid_argument, "Unknown tile naming method - update your RunInfo.xml");
+            INTEROP_THROW(model::invalid_filter_option, "Unknown tile naming method - update your RunInfo.xml");
 
         if(utils::is_cycle_metric(type) && options.all_cycles())
-            INTEROP_THROW( std::invalid_argument, "All cycles is unsupported");
+            INTEROP_THROW( model::invalid_filter_option, "All cycles is unsupported");
         if(utils::is_read_metric(type) && options.all_reads() && metrics.run_info().reads().size() > 1)
-            INTEROP_THROW( std::invalid_argument, "All reads is unsupported");
+            INTEROP_THROW( model::invalid_filter_option, "All reads is unsupported");
         switch(logic::utils::to_group(type))
         {
             case constants::Tile:
@@ -108,7 +108,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                 const metric_set_t& metric_set = metrics.get_set<metric_t>();
                 const size_t channel = options.channel();
                 if(options.all_channels(type))
-                    INTEROP_THROW(std::invalid_argument, "All channels is unsupported");
+                    INTEROP_THROW(model::invalid_filter_option, "All channels is unsupported");
                 metric::metric_value<metric_t> proxy(channel);
                 populate_flowcell_map(metric_set.begin(), metric_set.end(), proxy, type, layout, options, data,
                                       values_for_scaling);
@@ -121,7 +121,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                 const metric_set_t& metric_set = metrics.get_set<metric_t>();
                 const constants::dna_bases base = options.dna_base();
                 if(options.all_bases(type))
-                    INTEROP_THROW( std::invalid_argument, "All bases is unsupported");
+                    INTEROP_THROW( model::invalid_filter_option, "All bases is unsupported");
                 metric::metric_value<metric_t> proxy(base);
                 populate_flowcell_map(metric_set.begin(), metric_set.end(), proxy, type, layout, options, data,
                         values_for_scaling);
@@ -154,7 +154,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                 break;
             }
             default:
-                INTEROP_THROW( std::invalid_argument, "Unsupported metric type: " << constants::to_string(type));
+                INTEROP_THROW( model::invalid_metric_type, "Unsupported metric type: " << constants::to_string(type));
         };
 
         if(!values_for_scaling.empty())
@@ -204,11 +204,11 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                                   const std::string& metric_name,
                                   const model::plot::filter_options& options,
                                   model::plot::flowcell_data& data)
-                                  throw(std::invalid_argument, std::logic_error, model::invalid_metric_type)
+                                  throw(model::invalid_filter_option, model::invalid_metric_type)
     {
         const constants::metric_type type = constants::parse<constants::metric_type>(metric_name);
         if(type == constants::UnknownMetricType)
-            INTEROP_THROW(std::invalid_argument, "Unsupported metric type: " << metric_name);
+            INTEROP_THROW(model::invalid_metric_type, "Unsupported metric type: " << metric_name);
         plot_flowcell_map(metrics, type, options, data);
     }
     /** List metric type names available for flowcell

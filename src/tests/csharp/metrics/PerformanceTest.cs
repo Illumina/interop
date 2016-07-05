@@ -1,7 +1,7 @@
 using System;
 using NUnit.Framework;
 using System.IO;
-using Illumina.InterOp.Interop;
+using Illumina.InterOp.Metrics;
 
 namespace Illumina.InterOp.UnitTest
 {

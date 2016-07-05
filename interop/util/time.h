@@ -8,6 +8,8 @@
  */
 
 #pragma once
+#include <cmath>
+#include <iostream>
 #include "interop/util/cstdint.h"
 #include "interop/util/static_assert.h"
 
@@ -27,9 +29,8 @@
 #define INTEROP_UTIL_TICKS_1970 621355968000000000ull
 #endif
 
-namespace illumina {
-namespace interop {
-namespace util {
+namespace illumina { namespace interop { namespace util
+{
 #pragma pack(1)
             /** Wrapper to ensure proper conversion of C# DateTime value
              *
@@ -119,7 +120,8 @@ namespace util {
 
                 bool operator==(const csharp_date_time& other)const
                 {
-                    return std::abs(static_cast<int64_t>(value-other.value)) < 5e14;
+                    const int64_t val = static_cast<int64_t>(value-other.value);
+                    return ((val > 0) ? val : -val) < 5e14;
                 }
 
                 friend std::ostream& operator<<(std::ostream& out, const csharp_date_time& date_time )
@@ -147,7 +149,4 @@ namespace util {
                 }
             };
 #pragma pack()
-}
-}
-}
-
+}}}

@@ -2,6 +2,8 @@ using System;
 using NUnit.Framework;
 using System.IO;
 using Illumina.InterOp.Plot;
+using Illumina.InterOp.Metrics;
+using Illumina.InterOp.Run;
 
 namespace Illumina.InterOp.Interop.UnitTest
 {
@@ -26,7 +28,7 @@ namespace Illumina.InterOp.Interop.UnitTest
             byte[] expected_binary_data = new byte[tmp.Length];
             for(int i=0;i<expected_binary_data.Length;i++) expected_binary_data[i] = (byte)tmp[i];
             run_metrics run = new run_metrics();
-            c_csharp_interop.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, run.extraction_metric_set());
+            c_csharp_metrics.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, run.extraction_metric_set());
 
             var run_param = new parameters();
             Assert.AreEqual(run_param.version(), 0);

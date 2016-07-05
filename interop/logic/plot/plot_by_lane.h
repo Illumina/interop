@@ -77,7 +77,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                       model::plot::plot_data<Point>& data)
                     throw(model::index_out_of_bounds_exception,
                     model::invalid_metric_type,
-                    std::invalid_argument)
+                    model::invalid_filter_option)
     {
         data.assign(1, model::plot::series<Point>(utils::to_description(type), "Blue"));
         metric::metric_value<model::metrics::tile_metric> proxy3(options.read());
@@ -86,7 +86,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
 
         const size_t read_count = metrics.run_info().reads().size();
         if(utils::is_read_metric(type) && options.all_reads() && read_count > 1)
-            INTEROP_THROW(std::invalid_argument, "All reads is unsupported for run with " << read_count);
+            INTEROP_THROW(model::invalid_filter_option, "All reads is unsupported for run with " << read_count);
 
         if(type == constants::ClusterCount || type == constants::Clusters )//constants::Density )
         {
@@ -136,11 +136,11 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                        model::plot::plot_data<Point>& data)
                         throw(model::index_out_of_bounds_exception,
                         model::invalid_metric_type,
-                        std::invalid_argument)
+                        model::invalid_filter_option)
     {
         const constants::metric_type type = constants::parse<constants::metric_type>(metric_name);
         if(type == constants::UnknownMetricType)
-            INTEROP_THROW(std::invalid_argument, "Unsupported metric type: " << metric_name);
+            INTEROP_THROW(model::invalid_metric_type, "Unsupported metric type: " << metric_name);
         plot_by_lane(metrics, type, options, data);
     }
 
