@@ -14,8 +14,8 @@ namespace illumina{ namespace interop { namespace unittest
     /** Event listener that only handles test failures */
     class failure_listener : public ::testing::TestEventListener
     {
-
     protected:
+        /** Pointer to default event listener */
         ::testing::TestEventListener *m_event_listener;
 
     public:
@@ -99,7 +99,7 @@ namespace illumina{ namespace interop { namespace unittest
         virtual void OnEnvironmentsTearDownStart(const ::testing::UnitTest &/*unit_test*/)
         {
         }
-
+        /** Does nothing */
         virtual void OnEnvironmentsTearDownEnd(const ::testing::UnitTest &/*unit_test*/)
         {
 

@@ -1,7 +1,8 @@
 
 // @ [Reading a binary InterOp file in CSharp]
 using System;
-using Illumina.InterOp.Interop;
+using Illumina.InterOp.Run;
+using Illumina.InterOp.Metrics;
 
 class Example1
 {
@@ -20,7 +21,7 @@ class Example1
 		tile_metrics tile_metric_set = new tile_metrics ();
 		try
 		{
-			c_csharp_interop.read_interop (args [0], tile_metric_set);
+			c_csharp_metrics.read_interop (args [0], tile_metric_set);
 		}
 		catch(incomplete_file_exception){}
 		catch(file_not_found_exception ex)

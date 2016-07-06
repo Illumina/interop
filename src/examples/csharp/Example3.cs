@@ -2,7 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Illumina.InterOp.Interop;
+using Illumina.InterOp.Run;
+using Illumina.InterOp.Metrics;
 
 
 class Example3
@@ -40,7 +41,7 @@ class Helper
 	{
 		try
 		{
-			c_csharp_interop.read_interop (filename, extraction_metric_set);
+			c_csharp_metrics.read_interop (filename, extraction_metric_set);
 		}
 		catch(incomplete_file_exception){}
 		catch(file_not_found_exception ex)

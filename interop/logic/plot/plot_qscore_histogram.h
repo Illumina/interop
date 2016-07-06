@@ -149,7 +149,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
      * @param metrics run metrics
      * @param options options to filter the data
      * @param data output plot data
-     * @param with_q30_boundary create a multi series plot showing the Q30 boundary
+     * @param boundary index of bin to create the boundary sub plots (0 means do nothing)
      */
     template<class Point>
     void plot_qscore_histogram(model::metrics::run_metrics& metrics,
@@ -260,8 +260,8 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
         if(data.size() > 2)
         {
             data[2].resize(2);
-            data[2][0].set(boundary, data.y_axis().min());
-            data[2][1].set(boundary, data.y_axis().max());
+            data[2][0].set(static_cast<float>(boundary), data.y_axis().min());
+            data[2][1].set(static_cast<float>(boundary), data.y_axis().max());
         }
 
         data.set_xlabel("Q Score");

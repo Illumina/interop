@@ -106,6 +106,7 @@ namespace illumina { namespace interop { namespace model { namespace table {
         typedef metrics::q_metric::uint_t uint_t;
         /** Define an offset vector for filling a table */
         typedef std::vector< std::vector< size_t > > table_fill_vector_t;
+        /** Place holder enum type */
         enum void_type {
             /** Place holder for functions that take no parameters */
             Void

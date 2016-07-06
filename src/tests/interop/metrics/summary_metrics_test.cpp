@@ -227,10 +227,21 @@ TEST(index_summary_test, lane_summary)
 // Regression test section
 //---------------------------------------------------------------------------------------------------------------------
 
-
+/** Summary regression test fixture.
+ *
+ * This provides the test group name, provides the tested type as run_summary, ensures the output file is prefixed with
+ * summary and finally properly sets up the expected summary object.
+ *
+ */
 struct summary_regression_test : public regression_test_fixture< summary_regression_test, model::summary::run_summary>
 {
+    /** Constructor */
     summary_regression_test() : regression_test_fixture< summary_regression_test, model::summary::run_summary>("summary"){}
+    /** Populate the actual summary metrics using the given run_metrics
+     *
+     * @param actual_metrics run_metrics read in from a run_folder
+     * @param actual run_summary constructed from the run_metrics
+     */
     static void populate_actual(model::metrics::run_metrics& actual_metrics, model::summary::run_summary& actual)
     {
         logic::summary::summarize_run_metrics(actual_metrics, actual);

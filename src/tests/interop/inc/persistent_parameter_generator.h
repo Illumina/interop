@@ -29,12 +29,12 @@ namespace illumina{ namespace interop { namespace unittest {
         argument_generator(const std::vector<T>& vec) : m_vec(vec){}
         /** Iterator to start of parameter collection
          *
-         * @Return iterator to start of parameter collection
+         * @return iterator to start of parameter collection
          */
         ::testing::internal::ParamIteratorInterface<T>* Begin() const;
         /** Iterator to end of parameter collection
          *
-         * @Return iterator to end of parameter collection
+         * @return iterator to end of parameter collection
          */
         ::testing::internal::ParamIteratorInterface<T>* End() const;
 

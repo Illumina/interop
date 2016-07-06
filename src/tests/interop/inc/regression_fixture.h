@@ -112,6 +112,11 @@ namespace illumina{ namespace interop { namespace unittest {
         return std::vector<T>(vals, vals + N);
     }
 
+    /** Regression test fixture
+     *
+     * This parameter based fixture takes a set of run folders and populates the baseline for later testing.
+     * Rebaseling the test is also supported through a command line argument.
+     */
     template<class Fixture, class T>
     struct regression_test_fixture : public ::testing::TestWithParam< std::string >
     {
