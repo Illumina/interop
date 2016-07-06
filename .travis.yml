@@ -1,3 +1,17 @@
+# Configuration for Travis CI Continuous Integration Service
+#
+# Build status: https://travis-ci.org/Illumina/interop
+#
+# Tested configurations:
+#
+#   Linux Clang 3.7
+#     - Release/Debug
+#   Linux GCC
+#     - Release/Debug
+#     - 4.6/4.9
+#   OSX Clang
+#     - Release/Debug
+
 language: cpp
 sudo: required
 matrix:

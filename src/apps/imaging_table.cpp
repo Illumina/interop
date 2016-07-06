@@ -51,7 +51,7 @@ int main(int argc, char** argv)
         model::table::imaging_table table;
         logic::table::populate_imaging_table(run, table);
         logic::table::populate_column_headers(run.run_info().channels(), table);
-        table.resize(3);
+        //table.resize(3);
         std::cout << table << std::endl;
     }
     return SUCCESS;

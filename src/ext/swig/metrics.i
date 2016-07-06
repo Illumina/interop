@@ -6,6 +6,7 @@
 %import "src/ext/swig/exceptions/exceptions_impl.i"
 %include "src/ext/swig/extends/extends_impl.i"
 %include "src/ext/swig/arrays/arrays_impl.i"
+%include "util/operator_overload.i"
 
 //////////////////////////////////////////////
 // Don't wrap it, just use it with %import

@@ -5,6 +5,7 @@
 %include <std_vector.i>
 %include <stdint.i>
 %include "src/ext/swig/exceptions/exceptions_impl.i"
+%include "util/operator_overload.i"
 
 %{
 #include "interop/interop.h"
