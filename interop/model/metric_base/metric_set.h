@@ -333,7 +333,6 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
 
         /** Get a list of all available tile numbers
          *
-         * @param lane lane number
          * @return vector of tile numbers
          */
         id_vector tile_numbers() const

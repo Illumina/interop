@@ -3,6 +3,7 @@
 
 set(CMAKE_SWIG_OUTDIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(SWIG_MODULE_c_csharp_interop_EXTRA_DEPS ${SWIG_DEPS} )
+
 foreach(SRC ${SWIG_SRCS})
     get_filename_component(MODULE ${SRC} NAME_WE)
     string(SUBSTRING ${MODULE} 0 1 FIRST_LETTER)
@@ -41,9 +42,6 @@ foreach(SRC ${SWIG_SRCS})
     endif()
     list(APPEND SWIG_MODULE_LIST ${SWIG_MODULE})
 endforeach()
-
-
-
 
 
 find_package(CSharp)

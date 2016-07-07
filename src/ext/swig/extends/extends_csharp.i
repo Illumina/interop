@@ -171,17 +171,17 @@
         public global::System.Collections.Generic.List<QScoreBin> QScoreBins { get{return _qScoreBins;} set{_qScoreBins=value;} }
 
         public bool IsBinned { get { return binCount() > 0; }}
-        public int NumQVals(){ return (int)c_csharp_interop.count_q_metric_bins(this); }
+        public int NumQVals(){ return (int)c_csharp_metrics.count_q_metric_bins(this); }
         public bool IsCompressed { get { return NumQVals() > 0 && NumQVals() != 50; } }
-        public int MaxQVal(){ return (int)c_csharp_interop.max_qval(this); }
+        public int MaxQVal(){ return (int)c_csharp_metrics.max_qval(this); }
 
         public void build_bins(instrument_type instrument)
         {
-            c_csharp_interop.populate_legacy_q_score_bins(this, bins(), instrument);
+            c_csharp_metrics.populate_legacy_q_score_bins(this, bins(), instrument);
         }
         public void populateCumulativeDistributions()
         {
-            c_csharp_interop.populate_cumulative_distribution(this);
+            c_csharp_metrics.populate_cumulative_distribution(this);
         }
     %}
 %enddef
@@ -195,7 +195,7 @@
     %}
 %enddef
 
-
+/*
 %typemap(csout, excode=SWIGEXCODE) illumina::interop::model::metric_base::metric_set<illumina::interop::model::metrics::tile_metric>& tile_metric_set()
 {
     System.IntPtr cPtr = $imcall;$excode
@@ -206,6 +206,7 @@
     }
     return ret;
 }
+*/
 
 %typemap(cscode) illumina::interop::model::metrics::tile_metric %{
     public int LatestExtractedCycle;

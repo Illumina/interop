@@ -141,7 +141,8 @@ namespace illumina { namespace interop { namespace logic { namespace table {
      * @param headers column headers
      */
     inline void populate_column_offsets(table_fill_vector_t& offsets,
-                                        const std::vector<model::table::column_header>& headers) throw(std::runtime_error)
+                                        const std::vector<model::table::column_header>& headers)
+                                        throw(model::invalid_column_type)
     {
         const std::vector<std::string>& names(imaging_table_column_names());
         offsets.assign(model::table::ImagingColumnCount, std::vector<size_t>());
@@ -149,7 +150,7 @@ namespace illumina { namespace interop { namespace logic { namespace table {
         {
             std::vector<std::string>::const_iterator it = std::find(names.begin(), names.end(), to_name(headers[i].id()));
             if(it == names.end())
-                INTEROP_THROW(std::runtime_error, "Column name not found: " << headers[i].id() << " - " << to_name(headers[i].id()));
+                INTEROP_THROW(model::invalid_column_type, "Column name not found: " << headers[i].id() << " - " << to_name(headers[i].id()));
             const size_t metric_column = static_cast<size_t>(std::distance(names.begin(), it));
             offsets[metric_column].push_back(i);
         }
@@ -163,13 +164,13 @@ namespace illumina { namespace interop { namespace logic { namespace table {
     inline void populate_column_headers(std::vector<model::table::column_header>& headers,
                                         const std::vector<std::string>& channels,
                                         const std::vector<bool>& filled)
-    throw(model::invalid_column_type, std::invalid_argument)
+                                        throw(model::invalid_column_type)
     {
         const std::vector<std::string>& names(imaging_table_column_names());
         headers.clear();
         headers.reserve(names.size()+channels.size()+constants::NUM_OF_BASES);
         if(filled.size() != names.size())
-            INTEROP_THROW(std::invalid_argument, "Filled vector does not match number of column names");
+            INTEROP_THROW(model::invalid_column_type, "Filled vector does not match number of column names");
         for(size_t i=0;i<names.size();++i)
         {
             if(!filled[i]) continue;
@@ -212,7 +213,7 @@ namespace illumina { namespace interop { namespace logic { namespace table {
      */
     inline void populate_column_headers(std::vector<model::table::column_header>& headers,
                                         const std::vector<std::string>& channels)
-    throw(model::invalid_column_type, std::invalid_argument)
+                                        throw(model::invalid_column_type)
     {
         const std::vector<bool> filled(imaging_table_column_names().size(), true);
         populate_column_headers(headers, channels, filled);
@@ -348,7 +349,8 @@ namespace illumina { namespace interop { namespace logic { namespace table {
      * @param table imaging table
      */
     inline void populate_imaging_table(const model::metrics::run_metrics& metrics,
-                                       model::table::imaging_table& table) throw(model::index_out_of_bounds_exception)
+                                       model::table::imaging_table& table)
+                                        throw(model::index_out_of_bounds_exception)
     {
         std::vector< bool > filled_columns;
         populate_imaging_table(metrics, table, filled_columns);
@@ -361,7 +363,7 @@ namespace illumina { namespace interop { namespace logic { namespace table {
      */
     inline void populate_column_headers(const std::vector<std::string>& channels,
                                         model::table::imaging_table& table)
-            throw(model::invalid_column_type, std::invalid_argument)
+                                        throw(model::invalid_column_type)
     {
         std::vector<model::table::column_header> headers;
         populate_column_headers(headers, channels, table.filled_columns());
@@ -373,7 +375,12 @@ namespace illumina { namespace interop { namespace logic { namespace table {
 
 namespace illumina { namespace interop { namespace model { namespace table {
 
-
+    /** Read an imaging table from an input stream in the CSV format
+     *
+     * @param in input stream
+     * @param table imaging table
+     * @return input stream
+     */
     std::istream &operator>>(std::istream &in, model::table::imaging_table &table)
     {
         io::table::read_csv_line(in, table.m_columns_header);
@@ -393,7 +400,12 @@ namespace illumina { namespace interop { namespace model { namespace table {
         }
         return in;
     }
-
+    /** Write the imaging table to the output stream in the CSV format
+     *
+     * @param out output stream
+     * @param table imaging table
+     * @return output stream
+     */
     std::ostream &operator<<(std::ostream &out, const model::table::imaging_table &table)
     {
         std::vector<float> values;

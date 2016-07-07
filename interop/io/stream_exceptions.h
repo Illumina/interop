@@ -82,6 +82,19 @@ namespace illumina { namespace interop { namespace io
         incomplete_file_exception(const std::string &mesg) : std::runtime_error(mesg)
         { }
     };
+    /** Exception raised if the InterOp file record is incomplete
+     *
+     * This is only raised if the record is read from the stream incomplete
+     */
+    struct invalid_argument : public std::invalid_argument
+    {
+        /** Constructor
+         *
+         *  @param mesg error message
+         */
+        invalid_argument(const std::string &mesg) : std::invalid_argument(mesg)
+        { }
+    };
     /** @} */
 }}}
 

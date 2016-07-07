@@ -1,31 +1,40 @@
+/** Plotting model and logic
+ */
+
 %include <std_string.i>
 %include <stdint.i>
 %include <std_vector.i>
-%import "src/ext/swig/metrics.i"
 
 //////////////////////////////////////////////
 // Don't wrap it, just use it with %import
 //////////////////////////////////////////////
 %import "src/ext/swig/exceptions/exceptions_impl.i"
-%import "src/ext/swig/interop.i"
+%import "src/ext/swig/run.i"
+%import "src/ext/swig/metrics.i"
 
+// Ensure all the modules import the shared namespace
 %pragma(csharp) moduleimports=%{
-using Illumina.InterOp.Interop;
+using Illumina.InterOp.Metrics;
+using Illumina.InterOp.Run;
 %}
 
+// Ensure each of the generated C# class import the shared code
 %typemap(csimports) SWIGTYPE %{
 using System;
 using System.Runtime.InteropServices;
-using Illumina.InterOp.Interop;
+using Illumina.InterOp.Metrics;
+using Illumina.InterOp.Run;
 %}
 
 
-// This allows exceptions to be imported, but not belong to the module
+// This imports the metrics
 WRAP_METRICS(IMPORT_METRIC_WRAPPER)
+// This allows exceptions to be imported, but not belong to the module
 EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Plotting
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 %{
 #include "interop/model/plot/axes.h"
 #include "interop/model/plot/candle_stick_point.h"
@@ -77,7 +86,9 @@ WRAP_VECTOR(illumina::interop::model::plot::plot_data<illumina::interop::model::
 %template(bar_plot_data) illumina::interop::model::plot::plot_data<illumina::interop::model::plot::bar_point>;
 
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Plotting logic
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 %{
 #include "interop/logic/plot/plot_by_cycle.h"

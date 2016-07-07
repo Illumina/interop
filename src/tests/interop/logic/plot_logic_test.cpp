@@ -16,6 +16,14 @@
 
 using namespace illumina::interop;
 
+TEST(plot_logic, failure_mode_bad_metric_plot_by_cycle)
+{
+    model::metrics::run_metrics metrics;
+    model::plot::filter_options options(constants::FourDigit);
+    model::plot::plot_data<model::plot::candle_stick_point> data;
+    EXPECT_THROW(logic::plot::plot_by_cycle(metrics, "NoSuchMetric", options, data), model::invalid_metric_type);
+}
+
 TEST(plot_logic, intensity_by_cycle)
 {
     const float tol = 1e-3f;
@@ -33,6 +41,7 @@ TEST(plot_logic, intensity_by_cycle)
             model::run::image_dimensions(),
             reads
     ));
+    metrics.set_naming_method(constants::FourDigit);
     metrics.legacy_channel_update(constants::HiSeq);
 
     std::istringstream iss(unittest::extraction_v2::binary_data());
@@ -76,6 +85,7 @@ TEST(plot_logic, pf_clusters_by_lane)
             model::run::image_dimensions(),
             reads
     ));
+    metrics.set_naming_method(constants::FourDigit);
     metrics.legacy_channel_update(constants::HiSeq);
 
     std::istringstream iss(unittest::tile_v2::binary_data());

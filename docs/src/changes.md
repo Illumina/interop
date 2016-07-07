@@ -5,6 +5,8 @@
 
 Commit  | Description
 ------- | -----------
+36ca197 | Add command line parser and update plotting apps
+6cc52c2 | Continue refactoring SWIG C# binding and fix exceptions
 5e01ff3 | Update tolerances to properly handle floating-point differences due to rounding
 5e85cf0 | IPA-4608: Ensure cumulative q-metrics does not overflow
 c60caa9 | IPA-4598: Regression test for imaging table

@@ -8,6 +8,8 @@
  */
 
 #pragma once
+#include <cmath>
+#include <iostream>
 #include "interop/util/cstdint.h"
 #include "interop/util/static_assert.h"
 
@@ -27,9 +29,8 @@
 #define INTEROP_UTIL_TICKS_1970 621355968000000000ull
 #endif
 
-namespace illumina {
-namespace interop {
-namespace util {
+namespace illumina { namespace interop { namespace util
+{
 #pragma pack(1)
             /** Wrapper to ensure proper conversion of C# DateTime value
              *
@@ -112,24 +113,46 @@ namespace util {
                 /** Date time in csharp DateTime.ToBinary format */
                 uint64_t value;
 
+                /** Implicit convertion to an unsigned 64-bit integer
+                 *
+                 * @return integer representation
+                 */
                 operator uint64_t()const
                 {
                     return value;
                 }
-
+                /** Test if the object is equal to another of the same type
+                 *
+                 * @param other other object being compared
+                 * @return true if they are equal
+                 */
                 bool operator==(const csharp_date_time& other)const
                 {
-                    return std::abs(static_cast<int64_t>(value-other.value)) < 5e14;
+                    const int64_t val = static_cast<int64_t>(value-other.value);
+                    return ((val > 0) ? val : -val) < 5e14;
                 }
-
+                /** Write date type as integer to an output stream
+                 *
+                 * @param out output stream
+                 * @param date_time data time object
+                 * @return output stream
+                 */
                 friend std::ostream& operator<<(std::ostream& out, const csharp_date_time& date_time )
                 {
+                    // TODO: write out nice string representation
                     //2015-02-25 20:04:00
                     out << date_time.value;
                     return out;
                 }
+                /** Read a date type from the input stream
+                 *
+                 * @param in input stream
+                 * @param date_time data time object
+                 * @return input stream
+                 */
                 friend std::istream& operator>>(std::istream& in, csharp_date_time& date_time)
                 {
+                    // TODO: read in nice string representation
                     uint64_t val;
                     in >> val;
                     date_time = csharp_date_time(val);
@@ -147,7 +170,4 @@ namespace util {
                 }
             };
 #pragma pack()
-}
-}
-}
-
+}}}

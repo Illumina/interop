@@ -252,10 +252,20 @@ TEST(imaging_table, read_csv_line )
 //---------------------------------------------------------------------------------------------------------------------
 // Regression test section
 //---------------------------------------------------------------------------------------------------------------------
-
+/** Imaging regression test fixture.
+ *
+ * This provides the test group name, provides the tested type as imaging_table, ensures the output file is prefixed with
+ * image_table and finally properly sets up the expected imaging_table object.
+ *
+ */
 struct image_table_regression_test : public regression_test_fixture< image_table_regression_test, model::table::imaging_table>
 {
     image_table_regression_test() : regression_test_fixture< image_table_regression_test, model::table::imaging_table>("image_table"){}
+    /** Populate the actual imaging table using the given run_metrics
+     *
+     * @param actual_metrics run_metrics read in from a run_folder
+     * @param actual imaging table constructed from the run_metrics
+     */
     static void populate_actual(model::metrics::run_metrics& actual_metrics, model::table::imaging_table& actual)
     {
         logic::table::populate_imaging_table(actual_metrics, actual);

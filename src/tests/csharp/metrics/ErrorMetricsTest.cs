@@ -1,6 +1,7 @@
 using System;
 using NUnit.Framework;
 using System.IO;
+using Illumina.InterOp.Metrics;
 
 namespace Illumina.InterOp.Interop.UnitTest
 {
@@ -37,7 +38,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 			    expected_binary_data[i] = (byte)tmp[i];
 			}
 			expected_metric_set = new error_metrics(expected_metrics, Version);
-			c_csharp_interop.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, actual_metric_set);
+			c_csharp_metrics.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, actual_metric_set);
 			actual_metrics = actual_metric_set.metrics();
 
 
@@ -63,8 +64,8 @@ namespace Illumina.InterOp.Interop.UnitTest
 				for(uint j=0;j<expected_metrics[i].mismatch_count();j++)
 					Assert.AreEqual(expected_metrics[i].mismatch_cluster_count(j), actual_metrics[i].mismatch_cluster_count(j));
 			}
-            byte[] newBuffer = new byte[c_csharp_interop.compute_buffer_size(expected_metric_set)];
-			c_csharp_interop.write_interop_to_buffer(expected_metric_set, newBuffer, (uint)newBuffer.Length);
+            byte[] newBuffer = new byte[c_csharp_metrics.compute_buffer_size(expected_metric_set)];
+			c_csharp_metrics.write_interop_to_buffer(expected_metric_set, newBuffer, (uint)newBuffer.Length);
 			Assert.AreEqual(newBuffer, expected_binary_data);
 		}
 	}

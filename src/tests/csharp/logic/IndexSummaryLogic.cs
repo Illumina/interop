@@ -1,6 +1,9 @@
 using System;
 using NUnit.Framework;
 using System.IO;
+using Illumina.InterOp.Summary;
+using Illumina.InterOp.Metrics;
+using Illumina.InterOp.Run;
 
 namespace Illumina.InterOp.Interop.UnitTest
 {
@@ -56,8 +59,8 @@ namespace Illumina.InterOp.Interop.UnitTest
             byte[] expected_binary_data2 = new byte[tmp2.Length];
             for(int i=0;i<expected_binary_data2.Length;i++) expected_binary_data2[i] = (byte)tmp2[i];
             run_metrics run = new run_metrics();
-            c_csharp_interop.read_interop_from_buffer(expected_binary_data1, (uint)expected_binary_data1.Length, run.index_metric_set());
-            c_csharp_interop.read_interop_from_buffer(expected_binary_data2, (uint)expected_binary_data2.Length, run.tile_metric_set());
+            c_csharp_metrics.read_interop_from_buffer(expected_binary_data1, (uint)expected_binary_data1.Length, run.index_metric_set());
+            c_csharp_metrics.read_interop_from_buffer(expected_binary_data2, (uint)expected_binary_data2.Length, run.tile_metric_set());
 
             read_info_vector reads = new read_info_vector();
             reads.Add(new read_info(1, 1, 26));
@@ -75,7 +78,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 
             index_flowcell_summary summary = new index_flowcell_summary();
 
-            c_csharp_interop.summarize_index_metrics(run, summary);
+            c_csharp_summary.summarize_index_metrics(run, summary);
             Assert.AreEqual(summary.size(), 2);
 
 		}

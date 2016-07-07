@@ -2,6 +2,8 @@ using System;
 using NUnit.Framework;
 using System.IO;
 using Illumina.InterOp.Plot;
+using Illumina.InterOp.Metrics;
+using Illumina.InterOp.Run;
 
 namespace Illumina.InterOp.Interop.UnitTest
 {
@@ -26,7 +28,7 @@ namespace Illumina.InterOp.Interop.UnitTest
             byte[] expected_binary_data = new byte[tmp.Length];
             for(int i=0;i<expected_binary_data.Length;i++) expected_binary_data[i] = (byte)tmp[i];
             run_metrics run = new run_metrics();
-            c_csharp_interop.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, run.q_metric_set());
+            c_csharp_metrics.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, run.q_metric_set());
             uint ALL_IDS = (uint)filter_options.UseAll.ALL_IDS;
             filter_options options = new filter_options(tile_naming_method.FourDigit, ALL_IDS, 0, dna_bases.A, ALL_IDS, 1, 1);
             read_info_vector reads = new read_info_vector();
@@ -47,13 +49,12 @@ namespace Illumina.InterOp.Interop.UnitTest
             flowcell_data data = new flowcell_data();
             c_csharp_plot.plot_flowcell_map(run,  metric_type.QScore, options, data);
             Assert.AreEqual(data.row_count(), 8);
-
 		}
 		/// <summary>
 		/// Test bad metric name exception
 		/// </summary>
 		[Test]
-	    [ExpectedException("System.ApplicationException")]
+	    [ExpectedException("Illumina.InterOp.Run.invalid_metric_type")]
 		public void TestBadMetricException()
 		{
 			int[] tmp = new int[]{
@@ -65,7 +66,7 @@ namespace Illumina.InterOp.Interop.UnitTest
             byte[] expected_binary_data = new byte[tmp.Length];
             for(int i=0;i<expected_binary_data.Length;i++) expected_binary_data[i] = (byte)tmp[i];
             run_metrics run = new run_metrics();
-            c_csharp_interop.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, run.q_metric_set());
+            c_csharp_metrics.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, run.q_metric_set());
             uint ALL_IDS = (uint)filter_options.UseAll.ALL_IDS;
             filter_options options = new filter_options(tile_naming_method.FourDigit, ALL_IDS, 0, dna_bases.A, ALL_IDS, 1, 1);
             read_info_vector reads = new read_info_vector();
@@ -87,5 +88,5 @@ namespace Illumina.InterOp.Interop.UnitTest
             c_csharp_plot.plot_flowcell_map(run, "NoMetric", options, data);
 		}
 	}
-
 }
+
