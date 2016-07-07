@@ -18,7 +18,7 @@ class Example1
 		}
 
 
-		tile_metrics tile_metric_set = new tile_metrics ();
+		base_tile_metrics tile_metric_set = new base_tile_metrics ();
 		try
 		{
 			c_csharp_metrics.read_interop (args [0], tile_metric_set);

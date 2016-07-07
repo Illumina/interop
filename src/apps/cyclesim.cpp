@@ -42,17 +42,19 @@
 #include "interop/util/lexical_cast.h"
 #include "interop/util/filesystem.h"
 #include "interop/io/metric_file_stream.h"
-#include "interop/model/metric_sets/tile_metric_set.h"
-#include "interop/model/metric_sets/error_metric_set.h"
-#include "interop/model/metric_sets/corrected_intensity_metric_set.h"
-#include "interop/model/metric_sets/extraction_metric_set.h"
-#include "interop/model/metric_sets/image_metric_set.h"
-#include "interop/model/metric_sets/q_metric_set.h"
+#include "interop/model/run_metrics.h"
 #include "interop/version.h"
 #include "inc/application.h"
 
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop;
+
+typedef model::metrics::run_metrics::corrected_intensity_metric_set_t corrected_intensity_metric_set_t;
+typedef model::metrics::run_metrics::tile_metric_set_t tile_metric_set_t;
+typedef model::metrics::run_metrics::error_metric_set_t error_metric_set_t;
+typedef model::metrics::run_metrics::extraction_metric_set_t extraction_metric_set_t;
+typedef model::metrics::run_metrics::q_metric_set_t q_metric_set_t;
+typedef model::metrics::run_metrics::image_metric_set_t image_metric_set_t;
 
 /** Write a help message to the output stream
  *
@@ -180,17 +182,17 @@ int read_metrics_from_file(const std::string& filename, MetricSet& metrics)
  * @param max_read maximum number of reads
  * @return 0 if success, or an error code
  */
-int copy_tile_metrics(const std::string& input, const std::string& output, unsigned int max_read)
+int copy_tile_metrics(const std::string& input, const std::string& output, const unsigned int max_read)
 {
-    typedef tile_metrics::metric_array_t metric_array_t;
+    typedef tile_metric_set_t::metric_array_t metric_array_t;
     typedef metric_array_t::const_iterator const_iterator;
     typedef tile_metric::read_metric_vector read_metric_vector;
     typedef read_metric_vector::const_iterator const_read_iterator;
-    tile_metrics metrics;
+    tile_metric_set_t metrics;
     int res;
     if((res=read_metrics_from_file(input, metrics)) != 0) return res;
 
-    std::cout << io::interop_basename<tile_metrics>() << ": " << metrics.version() << std::endl;
+    std::cout << io::interop_basename<tile_metric_set_t>() << ": " << metrics.version() << std::endl;
     try {
         io::write_interop(output, metrics);
     }
@@ -219,7 +221,7 @@ int copy_tile_metrics(const std::string& input, const std::string& output, unsig
         subset.push_back(tile_metric(*beg, reads));
     }
 
-    tile_metrics metricsOut(subset, metrics.version(), metrics);
+    tile_metric_set_t metricsOut(subset, metrics.version(), metrics);
     try {
         io::write_interop(output, metricsOut);
     }
@@ -245,7 +247,7 @@ int copy_tile_metrics(const std::string& input, const std::string& output, unsig
  * @return 0 if success, or an error code
  */
 template<class MetricSet>
-int copy_cycle_metrics(const std::string& input, const std::string& output, unsigned int max_cycle)
+int copy_cycle_metrics(const std::string& input, const std::string& output, const unsigned int max_cycle)
 {
     typedef typename MetricSet::metric_array_t metric_array_t;
     typedef typename metric_array_t::const_iterator const_iterator;
@@ -294,7 +296,7 @@ int copy_cycle_metrics(const std::string& input, const std::string& output, unsi
  * @param type type of the metric
  * @return combined code
  */
-int encode_error(int res, int type)
+int encode_error(const int res, const int type)
 {
     return res*100 + type;
 }
@@ -306,7 +308,11 @@ int encode_error(int res, int type)
  * @param max_read maximum number of reads
  * @return 0 if success, or an error code
  */
-int write_interops(const std::string& filename, const std::string& output, unsigned int max_cycle, unsigned int max_read, unsigned int cycle_to_align)
+int write_interops(const std::string& filename,
+                   const std::string& output,
+                   const unsigned int max_cycle,
+                   const unsigned int max_read,
+                   const unsigned int cycle_to_align)
 {
     int res;
     int valid_count = 0;
@@ -314,16 +320,16 @@ int write_interops(const std::string& filename, const std::string& output, unsig
     if(res == 0) valid_count++;
     if(max_cycle > cycle_to_align)
     {
-        if ((res = copy_cycle_metrics<error_metrics>(filename, output, max_cycle)) > 1) return encode_error(res, 2);
+        if ((res = copy_cycle_metrics<error_metric_set_t>(filename, output, max_cycle)) > 1) return encode_error(res, 2);
         if (res == 0) valid_count++;
     }
-    if((res=copy_cycle_metrics<corrected_intensity_metrics>(filename, output, max_cycle)) > 1) return encode_error(res, 2);
+    if((res=copy_cycle_metrics<corrected_intensity_metric_set_t>(filename, output, max_cycle)) > 1) return encode_error(res, 2);
     if(res == 0) valid_count++;
-    if((res=copy_cycle_metrics<extraction_metrics>(filename, output, max_cycle)) > 1) return encode_error(res, 2);
+    if((res=copy_cycle_metrics<extraction_metric_set_t>(filename, output, max_cycle)) > 1) return encode_error(res, 2);
     if(res == 0) valid_count++;
-    if((res=copy_cycle_metrics<q_metrics>(filename, output, max_cycle)) > 1) return encode_error(res, 2);
+    if((res=copy_cycle_metrics<q_metric_set_t>(filename, output, max_cycle)) > 1) return encode_error(res, 2);
     if(res == 0) valid_count++;
-    if((res=copy_cycle_metrics<image_metrics>(filename, output, max_cycle)) > 1) return encode_error(res, 2);
+    if((res=copy_cycle_metrics<image_metric_set_t>(filename, output, max_cycle)) > 1) return encode_error(res, 2);
     if(res == 0) valid_count++;
     if(valid_count == 0)
     {

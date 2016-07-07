@@ -13,12 +13,15 @@
 #include <iomanip>
 #include <map>
 #include <ctime>
-#include "interop/model/metric_sets/extraction_metric_set.h"
+#include "interop/model/metric_base/metric_set.h"
+#include "interop/model/metrics/extraction_metric.h"
 #include "interop/io/metric_file_stream.h"
 
+using namespace illumina::interop::model::metric_base;
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::io;
-int read_interop_file(const char* filename, extraction_metrics& extraction_metric_set);
+typedef metric_set<extraction_metric> extraction_metric_set_t;
+int read_interop_file(const char* filename, extraction_metric_set_t& extraction_metric_set);
 int check_args(int argc);
 
 
@@ -26,7 +29,7 @@ int main(int argc, char** argv)
 {
     int ret;
     if((ret = check_args(argc)) != 0) return ret;
-    extraction_metrics extraction_metric_set;
+    extraction_metric_set_t extraction_metric_set;
 
     if((ret = read_interop_file(argv[1], extraction_metric_set)) != 0) return ret;
 
@@ -55,7 +58,7 @@ int check_args(int argc)
     return 0;
 }
 
-int read_interop_file(const char* filename, extraction_metrics& extraction_metric_set)
+int read_interop_file(const char* filename, extraction_metric_set_t& extraction_metric_set)
 {
     try {
         read_interop(filename,

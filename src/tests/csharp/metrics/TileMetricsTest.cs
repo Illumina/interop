@@ -12,8 +12,8 @@ namespace Illumina.InterOp.Interop.UnitTest
 	public class TileMetricsTestV2
 	{
 		const int Version = 2;
-		tile_metrics expected_metric_set;
-		tile_metrics actual_metric_set = new tile_metrics();
+		base_tile_metrics expected_metric_set;
+		base_tile_metrics actual_metric_set = new base_tile_metrics();
 		vector_tile_metrics expected_metrics = new vector_tile_metrics();
 		vector_tile_metrics actual_metrics;
 		byte[] expected_binary_data;
@@ -60,7 +60,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 			};
 			expected_binary_data = new byte[tmp.Length];
 			for(int i=0;i<expected_binary_data.Length;i++) expected_binary_data[i] = (byte)tmp[i];
-			expected_metric_set = new tile_metrics(expected_metrics, Version);
+			expected_metric_set = new base_tile_metrics(expected_metrics, Version, new base_metric_header());
 			c_csharp_metrics.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, actual_metric_set);
 			actual_metrics = actual_metric_set.metrics();
 		}

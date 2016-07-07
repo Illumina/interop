@@ -160,34 +160,13 @@ WRAP_METRICS(WRAP_METRIC_SET)
 // Metric Logic
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 %{
+#include "interop/logic/metric/extraction_metric.h"
 #include "interop/logic/metric/q_metric.h"
 #include "interop/model/run_metrics.h"
 %}
 
+%include "interop/logic/metric/extraction_metric.h"
 %include "interop/logic/metric/q_metric.h"
 %include "interop/model/run_metrics.h"
 
 
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Deprecated
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-%{
-#include "interop/model/metric_sets/corrected_intensity_metric_set.h"
-#include "interop/model/metric_sets/error_metric_set.h"
-#include "interop/model/metric_sets/extraction_metric_set.h"
-#include "interop/model/metric_sets/image_metric_set.h"
-#include "interop/model/metric_sets/q_metric_set.h"
-#include "interop/model/metric_sets/tile_metric_set.h"
-#include "interop/model/metric_sets/index_metric_set.h"
-%}
-
-%include "interop/model/metric_sets/corrected_intensity_metric_set.h"
-%include "interop/model/metric_sets/error_metric_set.h"
-%include "interop/model/metric_sets/extraction_metric_set.h"
-%include "interop/model/metric_sets/image_metric_set.h"
-%include "interop/model/metric_sets/q_metric_set.h"
-%include "interop/model/metric_sets/tile_metric_set.h"
-%include "interop/model/metric_sets/index_metric_set.h"

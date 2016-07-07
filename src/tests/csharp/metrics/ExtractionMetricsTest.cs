@@ -12,8 +12,8 @@ namespace Illumina.InterOp.Interop.UnitTest
 	public class ExtractionMetricsTestV2
 	{
 		const int Version = 2;
-		extraction_metrics expected_metric_set;
-		extraction_metrics actual_metric_set = new extraction_metrics();
+		base_extraction_metrics expected_metric_set;
+		base_extraction_metrics actual_metric_set = new base_extraction_metrics();
 		vector_extraction_metrics expected_metrics = new vector_extraction_metrics();
 		vector_extraction_metrics actual_metrics;
 		byte[] expected_binary_data;
@@ -24,6 +24,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		[SetUp]
 		protected void SetUp()
 		{
+	        base_cycle_metric_header header = new base_cycle_metric_header();
             float[] focus1 = new float[]{2.24664021f, 2.1896739f, 0, 0};
             ushort[] p90_1  = new ushort[]{302, 273, 0, 0};
 			expected_metrics.Add(new extraction_metric(7, 1114, 1, new csharp_date_time(9859129975844165472ul), (p90_1), (focus1), 4));
@@ -42,7 +43,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 			};
 			expected_binary_data = new byte[tmp.Length];
 			for(int i=0;i<expected_binary_data.Length;i++) expected_binary_data[i] = (byte)tmp[i];
-			expected_metric_set = new extraction_metrics(expected_metrics, Version);
+			expected_metric_set = new base_extraction_metrics(expected_metrics, Version, header);
 			c_csharp_metrics.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, actual_metric_set);
 			actual_metrics = actual_metric_set.metrics();
 		}
