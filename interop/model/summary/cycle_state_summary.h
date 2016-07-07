@@ -69,6 +69,17 @@ namespace illumina { namespace interop { namespace model { namespace summary
         {
             return m_error_cycle_range;
         }
+        /** Test if the cycle state is empty
+         *
+         * @return true if all cycle ranges are empty
+         */
+        bool empty()const
+        {
+            return m_extracted_cycle_range.empty() &&
+                    m_called_cycle_range.empty() &&
+                    m_qscored_cycle_range.empty() &&
+                    m_error_cycle_range.empty();
+        }
         /** @} */
 
     public:

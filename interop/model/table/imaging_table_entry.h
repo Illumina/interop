@@ -89,7 +89,7 @@ namespace illumina { namespace interop { namespace model { namespace table {
         /** Defines the type for the metric value columns */
         typedef float FloatValueType;
         /** Defines the type for the ushort array columns */
-        typedef metrics::extraction_metric::ushort_array_t ShortChannelArray;
+        //typedef metrics::extraction_metric::ushort_array_t ShortChannelArray;
         /** Defines the type for the float array columns */
         typedef metrics::extraction_metric::float_array_t FloatChannelArray;
         /** Defines the type for the ushort array columns */

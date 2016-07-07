@@ -56,7 +56,7 @@ namespace illumina { namespace interop { namespace util
                 val = std::numeric_limits<float>::quiet_NaN();
                 return true;
             }
-            if (str.length() == 4 && ::tolower(str[0]) =='-' && ::tolower(str[1]) =='n' && ::tolower(str[2]) == 'a' &&
+            if (str.length() == 4 && str[0] =='-' && ::tolower(str[1]) =='n' && ::tolower(str[2]) == 'a' &&
                     ::tolower(str[3]) == 'n')
             {
                 val = -std::numeric_limits<float>::quiet_NaN();
@@ -72,7 +72,7 @@ namespace illumina { namespace interop { namespace util
                 val = std::numeric_limits<double>::quiet_NaN();
                 return true;
             }
-            if (str.length() == 4 && ::tolower(str[0]) =='-' && ::tolower(str[1]) =='n' && ::tolower(str[2]) == 'a' &&
+            if (str.length() == 4 && str[0] =='-' && ::tolower(str[1]) =='n' && ::tolower(str[2]) == 'a' &&
                 ::tolower(str[3]) == 'n')
             {
                 val = -std::numeric_limits<double>::quiet_NaN();
