@@ -45,7 +45,17 @@ namespace illumina { namespace interop { namespace model { namespace table {
          * @param n index of the row
          * @return row
          */
-        const_reference operator[](const size_t n)
+        const_reference operator[](const size_t n)const
+        {
+            if(n >=m_rows.size()) throw model::index_out_of_bounds_exception("Row out of bounds");
+            return m_rows[n];
+        }
+        /** Get a reference to a row
+         *
+         * @param n index of the row
+         * @return row
+         */
+        const table_entry& at(const size_t n)const
         {
             if(n >=m_rows.size()) throw model::index_out_of_bounds_exception("Row out of bounds");
             return m_rows[n];

@@ -14,12 +14,14 @@
 // @ [Reporting Tile Metrics]
 #include <iostream>
 #include <map>
-#include "interop/model/metric_sets/tile_metric_set.h"
+#include "interop/model/metric_base/metric_set.h"
+#include "interop/model/metrics/tile_metric.h"
 #include "interop/io/metric_file_stream.h"
 
+using namespace illumina::interop::model::metric_base;
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::io;
-int read_interop_file(const char* filename, tile_metrics& tile_metric_set);
+int read_interop_file(const char* filename, metric_set<tile_metric>& tile_metric_set);
 int check_args(int argc);
 
 struct tile_summary
@@ -35,13 +37,13 @@ int main(int argc, char** argv)
 {
     int ret;
     if((ret = check_args(argc)) != 0) return ret;
-    tile_metrics tile_metric_set;
+    metric_set<tile_metric> tile_metric_set;
 
     if((ret = read_interop_file(argv[1], tile_metric_set)) != 0) return ret;
 
 
     lane_summary_map_t lane_summary_map;
-    for(tile_metrics::metric_array_t::const_iterator beg = tile_metric_set.metrics().begin(), end = tile_metric_set.metrics().end();beg != end;++beg)
+    for(metric_set<tile_metric>::metric_array_t::const_iterator beg = tile_metric_set.metrics().begin(), end = tile_metric_set.metrics().end();beg != end;++beg)
     {
         lane_summary_map[beg->lane()].cluster_count += beg->clusterCount();
         lane_summary_map[beg->lane()].cluster_count_pf += beg->clusterCountPf();
@@ -70,7 +72,7 @@ int check_args(int argc)
     return 0;
 }
 
-int read_interop_file(const char* filename, tile_metrics& tile_metric_set)
+int read_interop_file(const char* filename, metric_set<tile_metric>& tile_metric_set)
 {
     try {
         read_interop(filename,

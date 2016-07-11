@@ -12,8 +12,8 @@ namespace Illumina.InterOp.Interop.UnitTest
 	public class IndexMetricsTestV3
 	{
 		const int Version = 1;
-		index_metrics expected_metric_set;
-		index_metrics actual_metric_set = new index_metrics();
+		base_index_metrics expected_metric_set;
+		base_index_metrics actual_metric_set = new base_index_metrics();
 		vector_index_metrics expected_metrics = new vector_index_metrics();
 		vector_index_metrics actual_metrics;
 		byte[] expected_binary_data;
@@ -25,6 +25,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		protected void SetUp()
 		{
 
+	        base_read_metric_header header = new base_read_metric_header();
 		    index_info_vector indices1 = new index_info_vector();
 		    indices1.Add(new index_info("ATCACGAC-AAGGTTCA", "1", "TSCAIndexes", 4570));
 			expected_metrics.Add(new index_metric(1, 12106, 3, indices1));
@@ -48,7 +49,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 			};
 			expected_binary_data = new byte[tmp.Length];
 			for(int i=0;i<expected_binary_data.Length;i++) expected_binary_data[i] = (byte)tmp[i];
-			expected_metric_set = new index_metrics(expected_metrics, Version);
+			expected_metric_set = new base_index_metrics(expected_metrics, Version, header);
 			c_csharp_metrics.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, actual_metric_set);
 			actual_metrics = actual_metric_set.metrics();
 		}

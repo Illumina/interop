@@ -17,12 +17,12 @@ namespace Illumina.InterOp.Interop.UnitTest
 		/// <summary>
 		/// The expected metric set.
 		/// </summary>
-		protected image_metrics expected_metric_set;
+		protected base_image_metrics expected_metric_set;
 		/// <summary>
 		/// Vector of the expected metrics
 		/// </summary>
 		protected vector_image_metrics expected_metrics = new vector_image_metrics();
-	    image_metrics actual_metric_set = new image_metrics();
+	    base_image_metrics actual_metric_set = new base_image_metrics();
 	    vector_image_metrics actual_metrics;
 	    byte[] expected_binary_data;
 		/// <summary>
@@ -41,7 +41,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 	    {
 	        expected_binary_data = new byte[tmp.Length];
 	        for(int i=0;i<expected_binary_data.Length;i++) expected_binary_data[i] = (byte)tmp[i];
-			expected_metric_set = new image_metrics(expected_metrics, version, new image_metric_header(channelCount));
+			expected_metric_set = new base_image_metrics(expected_metrics, version, new image_metric_header(channelCount));
 	        c_csharp_metrics.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, actual_metric_set);
 	        actual_metrics = actual_metric_set.metrics();
 	        //actual_binary_data = write_metrics(actual_metric_set);

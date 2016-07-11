@@ -18,12 +18,12 @@ namespace Illumina.InterOp.Interop.UnitTest
 		/// <summary>
 		/// The expected metric set.
 		/// </summary>
-		protected q_metrics expected_metric_set;
+		protected base_q_metrics expected_metric_set;
 		/// <summary>
 		/// Vector of the expected metrics
 		/// </summary>
 		protected vector_q_metrics expected_metrics = new vector_q_metrics();
-	    q_metrics actual_metric_set = new q_metrics();
+	    base_q_metrics actual_metric_set = new base_q_metrics();
 	    vector_q_metrics actual_metrics;
 	    byte[] expected_binary_data;
 		/// <summary>
@@ -42,7 +42,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 	    {
 	        expected_binary_data = new byte[tmp.Length];
 	        for(int i=0;i<expected_binary_data.Length;i++) expected_binary_data[i] = (byte)tmp[i];
-			expected_metric_set = new q_metrics(expected_metrics, version, header);
+			expected_metric_set = new base_q_metrics(expected_metrics, version, header);
 	        c_csharp_metrics.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, actual_metric_set);
 	        actual_metrics = actual_metric_set.metrics();
 	        //actual_binary_data = write_metrics(actual_metric_set);
@@ -55,7 +55,8 @@ namespace Illumina.InterOp.Interop.UnitTest
 	    {
 	        Assert.AreEqual(expected_metric_set.version(),  actual_metric_set.version());
 	        Assert.AreEqual(expected_metric_set.size(),  actual_metric_set.size());
-	        Assert.AreEqual(expected_metric_set.histBinCount(),  actual_metric_set.histBinCount());
+
+	        Assert.AreEqual(c_csharp_metrics.count_q_metric_bins(expected_metric_set),  c_csharp_metrics.count_q_metric_bins(actual_metric_set));
 	        Assert.AreEqual(expected_metric_set.binCount(),  actual_metric_set.binCount());
 
 	        for(int i=0;i<Math.Min(expected_metrics.Count, actual_metrics.Count);i++)

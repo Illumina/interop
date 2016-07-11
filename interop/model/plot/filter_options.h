@@ -89,15 +89,15 @@ namespace illumina { namespace interop { namespace model { namespace plot
             if(m_naming_method != run_info.flowcell().naming_method())
                 INTEROP_THROW(model::invalid_filter_option, "Invalid tile naming method: does not match RunInfo.xml");
 
-            if(!all_lanes() && m_lane >= run_info.flowcell().lane_count())
+            if(!all_lanes() && m_lane > run_info.flowcell().lane_count())
                 INTEROP_THROW(model::invalid_filter_option, "Lane number exceeds total number of lanes" << m_lane << " > " << run_info.flowcell().lane_count());
-            if(is_specific_surface() && m_surface >= run_info.flowcell().surface_count())
+            if(is_specific_surface() && m_surface > run_info.flowcell().surface_count())
                 INTEROP_THROW(model::invalid_filter_option, "Surface number exceeds total number of surfaces" << m_surface << " > " << run_info.flowcell().surface_count());
-            if(all_tile_numbers() && m_tile_number >= run_info.flowcell().tile_count())
+            if(!all_tile_numbers() && m_tile_number > run_info.flowcell().tile_count())
                 INTEROP_THROW(model::invalid_filter_option, "Tile number exceeds total number of tile numbers" << m_tile_number << " > " << run_info.flowcell().tile_count());
-            if(all_swaths() && m_swath >= run_info.flowcell().swath_count())
+            if(!all_swaths() && m_swath > run_info.flowcell().swath_count())
                 INTEROP_THROW(model::invalid_filter_option, "Swath number exceeds total number of swaths" << m_swath << " > " << run_info.flowcell().swath_count());
-            if(all_sections() && m_section >= run_info.flowcell().sections_per_lane())
+            if(!all_sections() && m_section > run_info.flowcell().sections_per_lane())
                 INTEROP_THROW(model::invalid_filter_option, "Section number exceeds total number of sections" << m_section << " > " << run_info.flowcell().sections_per_lane());
             if(logic::utils::is_base_metric(type))
             {
@@ -178,7 +178,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
         /** Test if all bases were requested
          *
          * @param type metric type
-         * @return true if metric supports bases and all bases requested
+         * @return true if metric type supports bases and all bases requested
          */
         bool all_bases(const constants::metric_type type) const
         {
@@ -186,7 +186,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
         }
         /** Test if all bases were requested
          *
-         * @return true if metric supports bases and all bases requested
+         * @return true if all bases requested
          */
         bool all_bases() const
         {
@@ -245,7 +245,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
         /** Test if metric is read metric and specific read is chosen
          *
          * @param type metric type
-         * @return true if metric supports reads and a specific read is requested
+         * @return true if metric type supports reads and a specific read is requested
          */
         bool is_specific_read(const constants::metric_type type) const
         {

@@ -5,6 +5,8 @@
 
 Commit  | Description
 ------- | -----------
+2d8480c | Fixed C# binding and filter_option validation
+32daedd | Added package target to CMake build script
 36ca197 | Add command line parser and update plotting apps
 6cc52c2 | Continue refactoring SWIG C# binding and fix exceptions
 5e01ff3 | Update tolerances to properly handle floating-point differences due to rounding

@@ -14,7 +14,7 @@ class Example3
         int ret;
         if((ret = Helper.CheckArguments(args)) != 0) return ret;
 
-		extraction_metrics extraction_metric_set = new extraction_metrics ();
+		base_extraction_metrics extraction_metric_set = new base_extraction_metrics ();
 		if ((ret = Helper.ReadInterop (args [0], extraction_metric_set)) != 0)
 			return ret;
 
@@ -37,7 +37,7 @@ class Helper
 		}
 		return 0;
 	}
-	public static int ReadInterop(string filename, extraction_metrics extraction_metric_set)
+	public static int ReadInterop(string filename, base_extraction_metrics extraction_metric_set)
 	{
 		try
 		{

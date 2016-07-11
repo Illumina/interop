@@ -50,7 +50,7 @@ namespace illumina { namespace interop { namespace model { namespace run
          */
         cycle_t first_cycle() const
         {
-            if (m_first_cycle == std::numeric_limits<cycle_t>::max()) return 0;
+            if (empty()) return 0;
             return m_first_cycle;
         }
 
@@ -79,6 +79,14 @@ namespace illumina { namespace interop { namespace model { namespace run
         void last_cycle(const cycle_t val)
         {
             m_last_cycle = val;
+        }
+        /** Test if the cycle range is empty
+         *
+         * @return true if first cycle is sentinel
+         */
+        bool empty()const
+        {
+            return m_first_cycle == std::numeric_limits<cycle_t>::max();
         }
         /** @} */
 

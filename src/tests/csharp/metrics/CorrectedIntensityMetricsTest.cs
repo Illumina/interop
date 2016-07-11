@@ -18,12 +18,12 @@ namespace Illumina.InterOp.Interop.UnitTest
 		/// <summary>
 		/// The expected metric set.
 		/// </summary>
-		protected corrected_intensity_metrics expected_metric_set;
+		protected base_corrected_intensity_metrics expected_metric_set;
 		/// <summary>
 		/// Vector of the expected metrics
 		/// </summary>
 		protected vector_corrected_intensity_metrics expected_metrics = new vector_corrected_intensity_metrics();
-	    corrected_intensity_metrics actual_metric_set = new corrected_intensity_metrics();
+	    base_corrected_intensity_metrics actual_metric_set = new base_corrected_intensity_metrics();
 	    vector_corrected_intensity_metrics actual_metrics;
 	    byte[] expected_binary_data;
 		/// <summary>
@@ -39,9 +39,10 @@ namespace Illumina.InterOp.Interop.UnitTest
 		/// <param name="version">Version of the format</param>
 	    protected void SetupBuffers(int[] tmp, short version)
 	    {
+	        base_cycle_metric_header header = new base_cycle_metric_header();
 	        expected_binary_data = new byte[tmp.Length];
 	        for(int i=0;i<expected_binary_data.Length;i++) expected_binary_data[i] = (byte)tmp[i];
-			expected_metric_set = new corrected_intensity_metrics(expected_metrics, version);
+			expected_metric_set = new base_corrected_intensity_metrics(expected_metrics, version, header);
 	        c_csharp_metrics.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, actual_metric_set);
 	        actual_metrics = actual_metric_set.metrics();
 	        //actual_binary_data = write_metrics(actual_metric_set);

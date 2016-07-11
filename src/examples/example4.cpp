@@ -9,11 +9,13 @@
 
 // @ [Calculating simple statistics]
 #include <iostream>
-#include "interop/model/metric_sets/corrected_intensity_metric_set.h"
+#include "interop/model/metric_base/metric_set.h"
+#include "interop/model/metrics/corrected_intensity_metric.h"
 #include "interop/io/metric_file_stream.h"
 #include "interop/util/statistics.h"
 #include "interop/constants/enums.h"
 
+using namespace illumina::interop::model::metric_base;
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::io;
 using namespace illumina::interop::util;
@@ -25,7 +27,7 @@ int main(int argc, char** argv)
 {
     int ret;
     if((ret = check_args(argc)) != 0) return ret;
-    corrected_intensity_metrics corrected_intensity_metric_set;
+    metric_set<corrected_intensity_metric> corrected_intensity_metric_set;
 
     try {
         read_interop(argv[1], corrected_intensity_metric_set);

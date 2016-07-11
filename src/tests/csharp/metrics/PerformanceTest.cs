@@ -12,7 +12,7 @@ namespace Illumina.InterOp.UnitTest
 	public class ExtractionMetricsPerformanceTestV2
 	{
 		const int Version = 2;
-		extraction_metrics extraction_metric_set;
+		base_extraction_metrics extraction_metric_set;
 		vector_extraction_metrics metrics = new vector_extraction_metrics();
 		const int TileCount=500;
 		/// <summary>
@@ -21,7 +21,7 @@ namespace Illumina.InterOp.UnitTest
 		[SetUp]
 		protected void SetUp()
 		{
-
+	        base_cycle_metric_header header = new base_cycle_metric_header();
 		    if(metrics.Count == 0)
 		    {
                 System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
@@ -38,7 +38,7 @@ namespace Illumina.InterOp.UnitTest
                         }
                     }
                 }
-                extraction_metric_set = new extraction_metrics(metrics, Version);
+                extraction_metric_set = new base_extraction_metrics(metrics, Version, header);
                 timer.Stop();
                 System.Console.WriteLine("Setup: " + timer.Elapsed.Hours +" : " + timer.Elapsed.Minutes +" : " + timer.Elapsed.Seconds);
                 System.Console.WriteLine("Size: " + metrics.Count + " - " + extraction_metric_set.size());
@@ -73,7 +73,6 @@ namespace Illumina.InterOp.UnitTest
 		        {
 		            for(int cycle = 1;cycle <=318;cycle++)
 		            {
-
 		                extraction_metric metric = extraction_metric_set.GetMetric(lane, tile, cycle);
 		                sum += metric.focusScore(0);
 		            }
@@ -91,7 +90,7 @@ namespace Illumina.InterOp.UnitTest
 		    System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
 		    timer.Start();
 		    float[] focusVals = new float[extraction_metric_set.size()];
-            extraction_metric_set.copy_focus(focusVals, 0, (uint)focusVals.Length);
+            c_csharp_metrics.copy_focus(extraction_metric_set, focusVals, 0, (uint)focusVals.Length);
 		    double sum = 0.0;
 		    for(int i=0;i<focusVals.Length;i++) sum+=focusVals[i];
 		    timer.Stop();

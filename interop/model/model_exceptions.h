@@ -54,7 +54,7 @@ namespace model {
         invalid_read_exception(const std::string &mesg) : std::runtime_error(mesg) { }
     };
 
-    /** Exception raised if the channel names are invalid
+    /** Exception raised if the metric type is invalid
      */
     struct invalid_metric_type : public std::invalid_argument {
         /** Constructor
@@ -63,7 +63,7 @@ namespace model {
          */
         invalid_metric_type(const std::string &mesg) : std::invalid_argument(mesg) { }
     };
-    /** Exception raised if the channel names are invalid
+    /** Exception raised if the filter options are invalid
      */
     struct invalid_filter_option : public std::invalid_argument {
         /** Constructor
@@ -72,7 +72,7 @@ namespace model {
          */
         invalid_filter_option(const std::string &mesg) : std::invalid_argument(mesg) { }
     };
-    /** Exception raised if the channel names are invalid
+    /** Exception raised if the tile naming convention is invalid
      */
     struct invalid_tile_naming_method : public std::invalid_argument {
         /** Constructor
@@ -81,8 +81,17 @@ namespace model {
          */
         invalid_tile_naming_method(const std::string &mesg) : std::invalid_argument(mesg) { }
     };
+    /** Exception raised if a function is given an invalid parameter
+     */
+    struct invalid_parameter : public std::invalid_argument {
+        /** Constructor
+         *
+         *  @param mesg error message
+         */
+        invalid_parameter(const std::string &mesg) : std::invalid_argument(mesg) { }
+    };
 
-    /** Exception raised if the channel names are invalid
+    /** Exception raised if the column type is invalid
      */
     struct invalid_column_type : public std::runtime_error {
         /** Constructor

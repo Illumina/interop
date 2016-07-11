@@ -31,8 +31,6 @@ set(HEADERS
         ../../interop/model/run/info.h
         ../../interop/model/run/parameters.h
         ../../interop/model/run/read_info.h
-        ../../interop/model/metric_sets/error_metric_set.h
-        ../../interop/model/metric_sets/corrected_intensity_metric_set.h
         ../../interop/model/metrics/tile_metric.h
         ../../interop/model/metrics/corrected_intensity_metric.h
         ../../interop/io/layout/base_metric.h
@@ -58,17 +56,12 @@ set(HEADERS
         ../../interop/util/cstdint.h
         ../../interop/util/pstdint.h
         ../../interop/constants/enums.h
-        ../../interop/model/metric_sets/extraction_metric_set.h
-        ../../interop/model/metric_sets/image_metric_set.h
-        ../../interop/model/metric_sets/q_metric_set.h
-        ../../interop/model/metric_sets/tile_metric_set.h
         ../../interop/io/metric_file_stream.h
         ../../interop/model/model_exceptions.h
         ../../interop/util/assert.h
         ../../interop/io/format/map_io.h
         ../../interop/util/length_of.h
         ../../interop/model/metrics/index_metric.h
-        ../../interop/model/metric_sets/index_metric_set.h
         ../../interop/util/xml_parser.h
         ../../interop/util/xml_exceptions.h
         ../../interop/util/time.h
@@ -126,7 +119,7 @@ set(HEADERS
         ../../interop/io/table/csv_format.h
         ../../interop/model/table/column_header.h
         ../../interop/model/table/imaging_table_entry.h
-        ../../interop/util/option_parser.h)
+        ../../interop/util/option_parser.h ../../interop/logic/metric/extraction_metric.h)
 
 set(INTEROP_HEADERS ${HEADERS} PARENT_SCOPE)
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR CMAKE_COMPILER_IS_GNUCC)

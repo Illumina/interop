@@ -47,11 +47,6 @@ inline int read_run_metrics(const char* filename, illumina::interop::model::metr
     {
         metrics.read(filename);
     }
-    catch(const model::index_out_of_bounds_exception& ex)
-    {
-        std::cerr << ex.what() << std::endl;
-        return UNEXPECTED_EXCEPTION;
-    }
     catch(const xml::xml_file_not_found_exception& ex)
     {
         std::cerr << ex.what() << std::endl;

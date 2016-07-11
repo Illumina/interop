@@ -51,6 +51,7 @@ namespace Illumina.InterOp.Interop.UnitTest
             imaging_table table = new imaging_table();
             c_csharp_imaging.populate_imaging_table(run, table);
             Assert.AreEqual(table.row_count(), 3);
+            Assert.AreEqual(table.at(0).Lane, 7);
 
 		}
 	}

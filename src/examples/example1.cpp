@@ -10,9 +10,11 @@
 
 // @ [Reading a binary InterOp file]
 #include <iostream>
-#include "interop/model/metric_sets/tile_metric_set.h"
+#include "interop/model/metric_base/metric_set.h"
+#include "interop/model/metrics/tile_metric.h"
 #include "interop/io/metric_file_stream.h"
 
+using namespace illumina::interop::model::metric_base;
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::io;
 
@@ -22,7 +24,7 @@ int main(int argc, char** argv)
 {
     int ret;
     if((ret = check_args(argc)) != 0) return ret;
-    tile_metrics tile_metric_set;
+    metric_set<tile_metric> tile_metric_set;
 
     try {
         read_interop(argv[1], tile_metric_set);

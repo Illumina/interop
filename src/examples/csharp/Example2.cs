@@ -20,7 +20,7 @@ class Example2
         int ret;
         if((ret = Helper.CheckArguments(args)) != 0) return ret;
 
-		tile_metrics tile_metric_set = new tile_metrics ();
+		base_tile_metrics tile_metric_set = new base_tile_metrics ();
 		if ((ret = Helper.ReadInterop (args [0], tile_metric_set)) != 0)
 			return ret;
 
@@ -58,7 +58,7 @@ class Helper
 		}
 		return 0;
 	}
-	public static int ReadInterop(string filename, tile_metrics tile_metric_set)
+	public static int ReadInterop(string filename, base_tile_metrics tile_metric_set)
 	{
 		try
 		{

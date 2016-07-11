@@ -4,6 +4,7 @@
 %include <std_string.i>
 %include <stdint.i>
 %include <std_vector.i>
+%include "util/operator_overload.i"
 
 //////////////////////////////////////////////
 // Don't wrap it, just use it with %import

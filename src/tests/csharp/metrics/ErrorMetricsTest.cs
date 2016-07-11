@@ -12,8 +12,8 @@ namespace Illumina.InterOp.Interop.UnitTest
 	public class ErrorMetricsTestV3
 	{
 		const int Version = 3;
-		error_metrics expected_metric_set;
-		error_metrics actual_metric_set = new error_metrics();
+		base_error_metrics expected_metric_set;
+		base_error_metrics actual_metric_set = new base_error_metrics();
 		vector_error_metrics expected_metrics = new vector_error_metrics();
 		vector_error_metrics actual_metrics;
 		byte[] expected_binary_data;
@@ -24,6 +24,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		[SetUp]
 		protected void SetUp()
 		{
+	        base_cycle_metric_header header = new base_cycle_metric_header();
 			expected_metrics.Add(new error_metric(7, 1114, 1, 0.450100899f));
 			expected_metrics.Add(new error_metric(7, 1114, 2, 0.900201797f));
 			expected_metrics.Add(new error_metric(7, 1114, 3, 0.465621591f));
@@ -37,7 +38,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 			{
 			    expected_binary_data[i] = (byte)tmp[i];
 			}
-			expected_metric_set = new error_metrics(expected_metrics, Version);
+			expected_metric_set = new base_error_metrics(expected_metrics, Version, header);
 			c_csharp_metrics.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, actual_metric_set);
 			actual_metrics = actual_metric_set.metrics();
 

@@ -109,7 +109,7 @@ int main(int argc, const char** argv)
         int ret = read_run_metrics(argv[i], run);
         if(ret != SUCCESS) return ret;
 
-        /*if(1 == 0)
+        /*if(1 == 1)
         {
             ret = test_all_filter_options(run);
             if(ret != SUCCESS) return ret;

@@ -121,6 +121,16 @@ namespace illumina { namespace interop { namespace util
                 {
                     return value;
                 }
+                /** Implicit convertion to an unsigned 64-bit integer
+                 *
+                 * @todo Wrap  operator uint64_t in SWIG
+                 *
+                 * @return integer representation
+                 */
+                uint64_t to_binary()const
+                {
+                    return value;
+                }
                 /** Test if the object is equal to another of the same type
                  *
                  * @param other other object being compared
