@@ -1,11 +1,8 @@
-/** @page apps Applications
- *
- * @brief Write out summary of metrics
+/** @page summary_table Generate the SAV Summary Table
  *
  * This application writes out summary metrics similar to the SAV summary tab.
  *
- * Running the Program
- * -------------------
+ * ### Running the Program
  *
  * The program runs as follows:
  *
@@ -24,8 +21,7 @@
  *  - RunInfo.xml
  *  - RunParameters.xml (This is optional for later platforms)
  *
- * Error Handling
- * --------------
+ * ### Error Handling
  *
  *  The `summary` program will print an error to the error stream and return an error code (any number except 0)
  *  when an error occurs. There are two likely errors that may arise:

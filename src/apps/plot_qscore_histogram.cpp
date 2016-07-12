@@ -1,12 +1,9 @@
-/** @page apps Applications
- *
- * @brief Write a Q-score histogram to the console as at TSV (tab separated values) with a GNUPlot header
+/** @page q_hist Plot the Q-score histogram
  *
  * This application writes out of file that is compatible with both TSV (tab separated values) and GNUPlot, a
  * command line plotting tool available on Linux, Mac OSX and Windows.
  *
- * Running the Program
- * -------------------
+ * ### Running the Program
  *
  * The program runs as follows:
  *
@@ -14,34 +11,33 @@
  *
  * In this sample, 140131_1287_0851_A01n401drr is a run folder and the summary is written to the standard output.
  *
- * # Version: v1.0.4-117-g05ea745-dirty
- * # Run Folder: 1Read0Index_120423_117213Bin1R0I
- * set terminal png nocrop
- * set output 'q-hist.png'
- * set style fill solid noborder
- * set title "D0TM0ACXX All Lanes"
- * set style data histograms
- * set yrange [0 : 2.148 ]
- * set xrange [1 : 38.5 ]
- * set ylabel "Total (million)"
- * set xlabel "Q Score"
- * plot "-" using 1:2:3:xtic(1) with boxes notitle
- * 0       0       0
- * 10      0.0119  10
- * 20      0.003569        5
- * 25      0.036075        5
- * 30      1.95263 5
- * 0       0       0
- * 0       0       0
+ *      # Version: v1.0.4-117-g05ea745-dirty
+ *      # Run Folder: 1Read0Index_120423_117213Bin1R0I
+ *      set terminal png nocrop
+ *      set output 'q-hist.png'
+ *      set style fill solid noborder
+ *      set title "D0TM0ACXX All Lanes"
+ *      set style data histograms
+ *      set yrange [0 : 2.148 ]
+ *      set xrange [1 : 38.5 ]
+ *      set ylabel "Total (million)"
+ *      set xlabel "Q Score"
+ *      plot "-" using 1:2:3:xtic(1) with boxes notitle
+ *      0       0       0
+ *      10      0.0119  10
+ *      20      0.003569        5
+ *      25      0.036075        5
+ *      30      1.95263 5
+ *      0       0       0
+ *      0       0       0
  *
  *
- * Available Options
- * -----------------
+ * ### Available Options
  *
  * The following options are supported in addition to the `run folder`. They must be given in the form:
  *  `--filter-by-lane=1` with no additional space between the option name and value.
  *
- * ## Filter Options
+ * #### Filter Options
  *
  *   - `--filter-by-lane=<lane number>`: Only the data for the selected lane will be displayed
  *   - `--filter-by-channel=<channel number>`: Only the data for the selected channel will be displayed

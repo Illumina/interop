@@ -1,12 +1,9 @@
-/** @page apps Applications
- *
- * @brief Write metric by lane plot to the console as at TSV (tab separated values) with a GNUPlot header
+/** @page plot_by_lane Plot by lane
  *
  * This application writes out of file that is compatible with both TSV (tab separated values) and GNUPlot, a
  * command line plotting tool available on Linux, Mac OSX and Windows.
  *
- * Running the Program
- * -------------------
+ * ### Running the Program
  *
  * The program runs as follows:
  *
@@ -14,32 +11,31 @@
  *
  * In this sample, 140131_1287_0851_A01n401drr is a run folder and the summary is written to the standard output.
  *
- * # Version: v1.0.4-147-gb6d5c19-dirty
- * # Run Folder: 11115124_11854Unbin2R2I
- * set terminal png nocrop
- * set output 'plot_by_lane.png'
- * set title "000000000-ABWLV"
- * set yrange [0 : 1528.36 ]
- * set ylabel "Density (K/mm2)"
- * set xrange [0 : 2 ]
- * set xlabel "Lane"
- * plot "-" using 1:3:2:6:5 with candlesticks title "Density (K/mm2)" lt rgb "blue" whiskerbars ,"-" using 1:3:2:6:5 with candlesticks title "PF" lt rgb "dark-green" whiskerbars
- * 1	1164.6	1205.49	1218.97	1232.75	1273.63
- * e
- * 1	955.386	1015.23	1036.47	1055.12	1114.97
- * e
+ *      # Version: v1.0.4-147-gb6d5c19-dirty
+ *      # Run Folder: 11115124_11854Unbin2R2I
+ *      set terminal png nocrop
+ *      set output 'plot_by_lane.png'
+ *      set title "000000000-ABWLV"
+ *      set yrange [0 : 1528.36 ]
+ *      set ylabel "Density (K/mm2)"
+ *      set xrange [0 : 2 ]
+ *      set xlabel "Lane"
+ *      plot "-" using 1:3:2:6:5 with candlesticks title "Density (K/mm2)" lt rgb "blue" whiskerbars ,"-" using 1:3:2:6:5 with candlesticks title "PF" lt rgb "dark-green" whiskerbars
+ *      1	1164.6	1205.49	1218.97	1232.75	1273.63
+ *      e
+ *      1	955.386	1015.23	1036.47	1055.12	1114.97
+ *      e
  *
- * Available Options
- * -----------------
+ * ### Available Options
  *
  * The following options are supported in addition to the `run folder`. They must be given in the form:
  *  `--filter-by-lane=1` with no additional space between the option name and value.
  *
- * ## Metric Options
+ * #### Metric Options
  *
  *   - `--metric-name=<name>`: Metric to plot
  *
- * ## Filter Options
+ * #### Filter Options
  *
  *   - `--filter-by-lane=<lane number>`: Only the data for the selected lane will be displayed
  *   - `--filter-by-channel=<channel number>`: Only the data for the selected channel will be displayed

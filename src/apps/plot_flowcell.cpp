@@ -1,12 +1,9 @@
-/** @page apps Applications
- *
- * @brief Write flowcell heatmap of a metric to the console as at TSV (tab separated values) with a GNUPlot header
+/** @page plot_flowcell Plot a flowcell heatmap
  *
  * This application writes out of file that is compatible with both TSV (tab separated values) and GNUPlot, a
  * command line plotting tool available on Linux, Mac OSX and Windows.
  *
- * Running the Program
- * -------------------
+ * ### Running the Program
  *
  * The program runs as follows:
  *
@@ -14,44 +11,43 @@
  *
  * In this sample, 140131_1287_0851_A01n401drr is a run folder and the summary is written to the standard output.
  *
- * # Version: v1.0.4-147-gb6d5c19-dirty
- * # Run Folder: 1177190_11618Unbin2R1I
- * set terminal png nocrop
- * set output 'flowcell.png'
- * set title "000000000-A1W6M Intensity"
- * set view map
- * unset key
- * unset tics
- * unset border
- * set cbrange [103:116]
- * set palette defined (0 "blue", 0.33 "green", 0.66 "yellow", 1 "orange")
- * plot "-" matrix with image
- * 104 110
- * 106 105
- * 105 104
- * 108 103
- * 111 106
- * 115 108
- * 109 106
- * 113 108
- * 116 108
- * 116 107
- * 114 109
- * 111 110
- * 116 109
- * 116 111
+ *      # Version: v1.0.4-147-gb6d5c19-dirty
+ *      # Run Folder: 1177190_11618Unbin2R1I
+ *      set terminal png nocrop
+ *      set output 'flowcell.png'
+ *      set title "000000000-A1W6M Intensity"
+ *      set view map
+ *      unset key
+ *      unset tics
+ *      unset border
+ *      set cbrange [103:116]
+ *      set palette defined (0 "blue", 0.33 "green", 0.66 "yellow", 1 "orange")
+ *      plot "-" matrix with image
+ *      104 110
+ *      106 105
+ *      105 104
+ *      108 103
+ *      111 106
+ *      115 108
+ *      109 106
+ *      113 108
+ *      116 108
+ *      116 107
+ *      114 109
+ *      111 110
+ *      116 109
+ *      116 111
  *
- * Available Options
- * -----------------
+ * ### Available Options
  *
  * The following options are supported in addition to the `run folder`. They must be given in the form:
  *  `--filter-by-lane=1` with no additional space between the option name and value.
  *
- * ## Metric Options
+ * #### Metric Options
  *
  *   - `--metric-name=<name>`: Metric to plot
  *
- * ## Filter Options
+ * #### Filter Options
  *
  *   - `--filter-by-lane=<lane number>`: Only the data for the selected lane will be displayed
  *   - `--filter-by-channel=<channel number>`: Only the data for the selected channel will be displayed

@@ -1,12 +1,9 @@
-/** @page apps Applications
- *
- * @brief Write sample QC plot to the console as at TSV (tab separated values) with a GNUPlot header
+/** @page plot_sampleqc Plot the Indexing Graph
  *
  * This application writes out of file that is compatible with both TSV (tab separated values) and GNUPlot, a
  * command line plotting tool available on Linux, Mac OSX and Windows.
  *
- * Running the Program
- * -------------------
+ * ### Running the Program
  *
  * The program runs as follows:
  *
@@ -14,8 +11,8 @@
  *
  * In this sample, 140131_1287_0851_A01n401drr is a run folder and the summary is written to the standard output.
  *
- * # Version: v1.0.4-147-gb6d5c19-dirty
- * # Run Folder: 11115124_11854Unbin2R2I
+ *      # Version: v1.0.4-147-gb6d5c19-dirty
+ *      # Run Folder: 11115124_11854Unbin2R2I
  *
  */
 

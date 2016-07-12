@@ -1,19 +1,16 @@
-/** @page apps Applications
- *
- * @brief Convert binary InterOp to plain text comma separated values
+/** @page interop2csv Dump InterOp to a CSV text file
  *
  * The Illumina InterOp library also includes an application, which reads Illumina binary InterOp files and writes
  * the data as a special type of CSV (common separated format) file. The program takes the run folder as an input
  * and then writes the data as plain text to the console. This data can then be redirected to a file.
  *
- * Running the Program
- * -------------------
+ * ### Running the Program
  *
  * The program runs as follows:
  *
  *      $ interop2csv 140131_1287_0851_A01n401drr
  *      $ interop2csv 140131_1287_0851_A01n401drr/InterOp
- *      $ interop2csv 140131_1287_0851_A01n401drr/InterOp/TileMetricsOut.csv
+ *      $ interop2csv 140131_1287_0851_A01n401drr/InterOp/TileMetricsOut.bin
  *
  * In this sample, 140131_1287_0851_A01n401drr is a run folder than contains a sub directory called InterOp, which in
  * turn may contain any of the following files:
@@ -84,8 +81,7 @@
  *      1,12106,3,ACAGTGGT-AAGGTTCA,2,TSCAIndexes,4477
  *      # Version: v3.0.6-120-ga99fd3b
  *
- * Description of the Output
- * -------------------------
+ * ### Description of the Output
  *
  * As you can see in the example above, a metric follows the following format:
  *  1. A header prefixed with a `#` describing: the version followed by the name of an InterOp file
@@ -106,8 +102,7 @@
  *
  *          # Version: v3.0.6-120-ga99fd3b
  *
- * Error Handling
- * --------------
+ * ### Error Handling
  *
  *  The `interop2csv` program will print an error to the error stream and return an error code (any number except 0)
  *  when an error occurs. There are two likely errors that may arise:
