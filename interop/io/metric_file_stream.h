@@ -51,6 +51,7 @@ namespace illumina { namespace interop { namespace io {
             buffer[i] = static_cast< ::uint8_t >(str[i]);
         return i;
     }
+
     /** Read the binary InterOp file into the given metric set
      *
      * @param buffer byte buffer

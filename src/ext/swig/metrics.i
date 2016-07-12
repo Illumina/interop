@@ -163,10 +163,13 @@ WRAP_METRICS(WRAP_METRIC_SET)
 #include "interop/logic/metric/extraction_metric.h"
 #include "interop/logic/metric/q_metric.h"
 #include "interop/model/run_metrics.h"
+#include "interop/logic/utils/metric_type_ext.h"
 %}
 
 %include "interop/logic/metric/extraction_metric.h"
 %include "interop/logic/metric/q_metric.h"
 %include "interop/model/run_metrics.h"
+%include "interop/logic/utils/metric_type_ext.h"
+
 
 

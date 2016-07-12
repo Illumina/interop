@@ -51,6 +51,14 @@ namespace Illumina.InterOp.Interop.UnitTest
             Assert.AreEqual(data.row_count(), 3);
 
 		}
+		[Test]
+		public void CopyFloats()
+		{
+            heatmap_data data = new heatmap_data();
+            data.resize(10,10);
+            float[] tmp = new float[100];
+            data.copy_to_buffer(tmp, (uint)tmp.Length);
+		}
 	}
 
 }

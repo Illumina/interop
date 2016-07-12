@@ -21,6 +21,10 @@ function(add_application _target _source_files)
     endif()
 endfunction()
 
+if(MSVC)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS)
+endif()
+
 add_application(interop2csv interop2csv.cpp)
 add_application(cyclesim cyclesim.cpp)
 add_application(summary summary.cpp)

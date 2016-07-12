@@ -35,6 +35,14 @@ public:
         m_num_columns = cols;
         m_num_rows = rows;
     }
+
+    //Fill buffer
+    void copy_to_buffer(float* heatmap, const uint32_t size) throw(index_out_of_bounds_exception)
+    {
+        if(size != m_data.size()) throw index_out_of_bounds_exception("Size != number of elements in heat map");
+        std::copy(m_data.begin(), m_data.end(), heatmap);
+    }
+
     /** Get value at given row and column
      *
      * TODO: This should thrown an exception if wrong

@@ -133,7 +133,7 @@ check_function_exists("strptime" HAVE_STRPTIME)
 if(HAVE_STRPTIME)
     add_definitions(-DHAVE_STRPTIME)
 elseif(MSVC)
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS  -D_SCL_SECURE_NO_WARNINGS)
 endif()
 
 add_library(${INTEROP_LIB} ${LIBRARY_TYPE} ${SRCS} ${HEADERS})

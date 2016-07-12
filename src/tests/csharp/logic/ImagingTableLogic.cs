@@ -54,6 +54,12 @@ namespace Illumina.InterOp.Interop.UnitTest
             Assert.AreEqual(table.at(0).Lane, 7);
 
 		}
+		[Test]
+		public void IsBaseMetric()
+		{
+		    var metricType = metric_type.BasePercent;
+		    Assert.IsTrue(c_csharp_metrics.is_base_metric(metricType));
+		}
 	}
 
 }

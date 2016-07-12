@@ -44,7 +44,7 @@ add_test(NAME interop_gtests WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/testB
               COMMAND ${CMAKE_BINARY_DIR}/testBin/${INTEROP_TESTS} )
 
 if(MSVC)
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS)
 endif()
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set_target_properties(interop_gtests PROPERTIES COMPILE_FLAGS "-Wno-unnamed-type-template-args")
