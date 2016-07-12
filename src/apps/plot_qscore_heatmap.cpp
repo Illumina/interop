@@ -1,12 +1,9 @@
-/** @page apps Applications
- *
- * @brief Write a Q-score heat map to the console as at TSV (tab separated values) with a GNUPlot header
+/** @page q_hmap Plot the Q-score Heat map
  *
  * This application writes out of file that is compatible with both TSV (tab separated values) and GNUPlot, a
  * command line plotting tool available on Linux, Mac OSX and Windows.
  *
- * Running the Program
- * -------------------
+ * ### Running the Program
  *
  * The program runs as follows:
  *
@@ -14,28 +11,27 @@
  *
  * In this sample, 140131_1287_0851_A01n401drr is a run folder and the summary is written to the standard output.
  *
- * # Version: v1.0.4-147-gc04a08b
- * # Run Folder: 131212_221Bin1R0I
- * set terminal png nocrop
- * set output 'q_heatmap.png'
- * set title "02D224DRR All Lanes"
- * set yrange [0 : 45 ]
- * set ylabel "Q Score"
- * set xrange [0 : 31 ]
- * set xlabel "Cycle"
- * set view map
- * plot "-" matrix with image
- * 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
- * 0 0 0 0 0 0 0.017353 0.017634 0.0162293 0.019017 0.0131606 0.0134416 0.0162293 0.024895 0.0209836 0.0229501 0.0137009 0.019017 0.0162293 0.00922758 0.0243331 0 0.0380556 0.042248 0.0551277 0.0355272 0.0433718 0.437348 0.261354 1.08708 0
+ *      # Version: v1.0.4-147-gc04a08b
+ *      # Run Folder: 131212_221Bin1R0I
+ *      set terminal png nocrop
+ *      set output 'q_heatmap.png'
+ *      set title "02D224DRR All Lanes"
+ *      set yrange [0 : 45 ]
+ *      set ylabel "Q Score"
+ *      set xrange [0 : 31 ]
+ *      set xlabel "Cycle"
+ *      set view map
+ *      plot "-" matrix with image
+ *      0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ *      0 0 0 0 0 0 0.017353 0.017634 0.0162293 0.019017 0.0131606 0.0134416 0.0162293 0.024895 0.0209836 0.0229501 0.0137009 0.019017 0.0162293 0.00922758 0.0243331 0 0.0380556 0.042248 0.0551277 0.0355272 0.0433718 0.437348 0.261354 1.08708 0
  *
  *
- * Available Options
- * -----------------
+ * ### Available Options
  *
  * The following options are supported in addition to the `run folder`. They must be given in the form:
  *  `--filter-by-lane=1` with no additional space between the option name and value.
  *
- * ## Filter Options
+ * #### Filter Options
  *
  *   - `--filter-by-lane=<lane number>`: Only the data for the selected lane will be displayed
  *   - `--filter-by-channel=<channel number>`: Only the data for the selected channel will be displayed

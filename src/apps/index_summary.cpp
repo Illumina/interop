@@ -1,17 +1,25 @@
-/** @page apps Applications
+/** @page index_summary Generate the SAV Indexing Table
  *
- * @brief Write out summary of index metrics
  *
  * This application writes out index summary metrics similar to the SAV indexing tab.
  *
- * Running the Program
- * -------------------
+ * ### Running the Program
  *
  * The program runs as follows:
  *
- *      $ index-summary 140131_1287_0851_A01n401drr
+ *      $ index-summary 11115124_11854Unbin2R2I
  *
- * In this sample, 140131_1287_0851_A01n401drr is a run folder and the summary is written to the standard output.
+ * In this sample, 11115124_11854Unbin2R2I is a run folder and the summary is written to the standard output
+ * as follows
+ *
+ *      # Version: v1.0.4-224-gacc6c8e
+ *      Lane 1
+ *      Total Reads     PF Reads        % Read Identified (PF) CV              Min             Max
+ *      22855008        19391826        96.7232         0.5136          0.0001          2.9831
+ *      Index Number    Sample Id       Project         Index 1 (I7)    Index 2 (I5)    % Read Identified (PF)
+ *      1               AF_1-5_spike    NA              AAGAGGCA        AAGGAGTA        1.2232
+ *      2               WU_1_spike      NA              AAGAGGCA        ACTGCATA        1.5316
+ *      ...
  *
  * The InterOp sub folder may contain any of the following files:
  *
@@ -22,8 +30,7 @@
  *  - RunInfo.xml
  *  - RunParameters.xml (This is optional for later platforms)
  *
- * Error Handling
- * --------------
+ * ### Error Handling
  *
  *  The `index-summary` program will print an error to the error stream and return an error code (any number except 0)
  *  when an error occurs. There are two likely errors that may arise:

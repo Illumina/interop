@@ -39,7 +39,7 @@ each tile on a MiSeq flowcell.
 
 ![Flowcell Intensity Heatmap]
 
-[Flowcell Intensity Heatmap]: images/MiSeqDemo_flowcell-intensity.png
+[Flowcell Intensity Heatmap]: images/MiSeqDemo_flowcell-Intensity.png
 
 Alternatively, the user can have the data printed to the console as
 follows:

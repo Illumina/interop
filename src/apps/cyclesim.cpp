@@ -1,11 +1,11 @@
-/** @page apps Applications
+/** @page cyclesim Cycle Simulator
  *
- * @brief Write out InterOps for all entries up to a certain cycle
+ *
+ * ## Cycle Simulator ##                         {#cycle_sim}
  *
  * This application writes out a new set of binary InterOp files for all records up to a specific cycle.
  *
- * Running the Program
- * -------------------
+ * ### Running the Program
  *
  * The program runs as follows:
  *
@@ -25,8 +25,7 @@
  *  - QMetricsOut.bin
  *  - TileMetricsOut.bin
  *
- * Error Handling
- * --------------
+ * ### Error Handling
  *
  *  The `cyclesim` program will print an error to the error stream and return an error code (any number except 0)
  *  when an error occurs. There are two likely errors that may arise:

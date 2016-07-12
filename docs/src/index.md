@@ -82,7 +82,7 @@ for more information.
 
 <table class="tg">
   <tr>
-    <th class="tg-yw4l" rowspan="2"><img src="MiSeqDemo_flowcell-intensity.png" alt="MiSeqDemo_flowcell-intensity.png" width=250 /></th>
+    <th class="tg-yw4l" rowspan="2"><img src="MiSeqDemo_flowcell-Intensity.png" alt="MiSeqDemo_flowcell-Intensity.png" width=250 /></th>
     <th class="tg-yw4l"><img src="MiSeqDemo_Intensity-by-cycle_Intensity.png" alt="MiSeqDemo_Intensity-by-cycle_Intensity.png" width=320/></th>
     <th class="tg-yw4l"><img src="MiSeqDemo_q-histogram.png" alt="MiSeqDemo_q-histogram.png" width=320 /></th>
   </tr>
