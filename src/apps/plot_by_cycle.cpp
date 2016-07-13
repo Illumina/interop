@@ -130,7 +130,15 @@ int main(int argc, const char** argv)
 
         std::ostream& out = std::cout;
         io::plot::gnuplot_writer plot_writer;
-        plot_writer.write_chart(out, data, plot_image_name(metric_name+"-by-cycle", run_name, metric_name));
+        try
+        {
+            plot_writer.write_chart(out, data, plot_image_name(metric_name+"-by-cycle", run_name, metric_name));
+        }
+        catch(const std::exception& ex)
+        {
+            std::cerr << ex.what() << std::endl;
+            return UNEXPECTED_EXCEPTION;
+        }
 
     }
     return SUCCESS;

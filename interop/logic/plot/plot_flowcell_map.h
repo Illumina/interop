@@ -203,7 +203,9 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                                   const std::string& metric_name,
                                   const model::plot::filter_options& options,
                                   model::plot::flowcell_data& data)
-                                  throw(model::invalid_filter_option, model::invalid_metric_type)
+                                  throw(model::invalid_filter_option,
+                                  model::invalid_metric_type,
+                                  model::index_out_of_bounds_exception)
     {
         const constants::metric_type type = constants::parse<constants::metric_type>(metric_name);
         if(type == constants::UnknownMetricType)

@@ -47,8 +47,16 @@ int main(int argc, char** argv)
         int ret = read_run_metrics(argv[i], run);
         if (ret != SUCCESS) return ret;
         model::table::imaging_table table;
-        logic::table::populate_imaging_table(run, table);
-        logic::table::populate_column_headers(run.run_info().channels(), table);
+        try
+        {
+            logic::table::populate_imaging_table(run, table);
+            logic::table::populate_column_headers(run.run_info().channels(), table);
+        }
+        catch(const std::exception& ex)
+        {
+            std::cerr << ex.what() << std::endl;
+            return UNEXPECTED_EXCEPTION;
+        }
         //table.resize(3);
         std::cout << table << std::endl;
     }
