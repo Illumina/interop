@@ -112,7 +112,15 @@ int main(int argc, const char** argv)
         if(data.length() == 0 ) continue;
         std::ostream& out = std::cout;
         io::plot::gnuplot_writer plot_writer;
-        plot_writer.write_heatmap(out, data, plot_image_name("q-heat-map", run_name));
+        try
+        {
+            plot_writer.write_heatmap(out, data, plot_image_name("q-heat-map", run_name));
+        }
+        catch(const std::exception& ex)
+        {
+            std::cerr << ex.what() << std::endl;
+            return UNEXPECTED_EXCEPTION;
+        }
 
     }
     return SUCCESS;

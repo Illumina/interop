@@ -37,7 +37,15 @@ int main(int argc, char **argv)
 
 
     // initialize
-    ::testing::InitGoogleTest(&argc, argv);
+    try
+    {
+        ::testing::InitGoogleTest(&argc, argv);
+    }
+    catch(const std::exception& ex)
+    {
+        std::cerr << ex.what() << std::endl;
+        return 1;
+    }
 
     // remove the default listener
     ::testing::TestEventListeners& listeners = ::testing::UnitTest::GetInstance()->listeners();
@@ -48,6 +56,14 @@ int main(int argc, char **argv)
 
 
     // run
-    return RUN_ALL_TESTS();
+    try
+    {
+        return RUN_ALL_TESTS();
+    }
+    catch(const std::exception& ex)
+    {
+        std::cerr << ex.what() << std::endl;
+        return 1;
+    }
 }
 
