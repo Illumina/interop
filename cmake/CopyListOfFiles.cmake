@@ -8,7 +8,7 @@
 #   - DESTINATION_DIR - the destination directory path
 #
 #
-string (REPLACE " " ";" FILES_TO_COPY "${FILES_TO_COPY}")
+string (REPLACE "," ";" FILES_TO_COPY "${FILES_TO_COPY}")
 set(FILES_TO_COPY_EX)
 foreach(filename ${FILES_TO_COPY})
     file(GLOB GLOB_FILES ${filename})

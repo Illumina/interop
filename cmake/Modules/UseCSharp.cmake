@@ -95,6 +95,7 @@ macro( CSHARP_ADD_PROJECT type name )
   set(CSHARP_OUTPUT_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
   set(CSHARP_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR})
 
+  string (REPLACE ";" "," source_list "${sources}")
   set(CSHARP_${name}_BINARY ${CSHARP_OUTPUT_DIR}/${name}.${output})
   set(CSHARP_${name}_BINARY_NAME ${name}.${output})
   # Add custom target and command
@@ -102,7 +103,7 @@ macro( CSHARP_ADD_PROJECT type name )
   add_custom_command(
     COMMENT "Compiling C# ${type} ${name}: '${CSHARP_COMPILER} /unsafe /t:${type} /out:${CSHARP_OUTPUT_DIR}/${name}.${output} /platform:${CSHARP_PLATFORM} ${CSHARP_SDK} ${refs} ${sources}'"
     OUTPUT ${CMAKE_BINARY_DIR}/${name}.${output}
-    COMMAND ${CMAKE_COMMAND} -DFILES_TO_COPY="${sources}" -DDESTINATION_DIR=${CMAKE_BINARY_DIR} -P ${CMAKE_SOURCE_DIR}/cmake/CopyListOfFiles.cmake
+    COMMAND ${CMAKE_COMMAND} -DFILES_TO_COPY="${source_list}" -DDESTINATION_DIR="${CMAKE_BINARY_DIR}" -P "${CMAKE_SOURCE_DIR}/cmake/CopyListOfFiles.cmake"
     COMMAND ${CSHARP_COMPILER}
     ARGS /t:${type} /out:${CSHARP_OUTPUT_DIR}/${name}.${output} /unsafe /platform:${CSHARP_PLATFORM} ${CSHARP_SDK} ${refs} ${sources}
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
