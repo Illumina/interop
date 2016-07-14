@@ -157,7 +157,6 @@ There are several configuration options that you may wish to consider:
 | ENABLE_TEST                     | Build unit tests (depends on Boost)                                                 |
 | ENABLE_APPS                     | Build command line programs                                                         |
 | ENABLE_STATIC                   | Build static libraries instead of dynamic                                           |
-| FORCE_X86                       | Force 32-bit libraries instead of platform default (Does nothing for Visual Studio) |
 | GTEST_ROOT                      | Optional. Location of GTest installation. If not set, then it will auto download    |
 
 CMake also has several built-in options that you may use:

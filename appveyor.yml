@@ -12,7 +12,9 @@
 #     - 32-bit/64-bit
 #   MinGW
 #     - Release/Debug
-#     - 32-bit/64-bit
+#     - 64-bit
+#
+# Removed support for 32-bit MinGW
 #
 # C# Compiler is always .NET v4.0.30319
 
@@ -42,10 +44,10 @@ environment:
     - generator: "Visual Studio 12 2013"
       BUILD: msvc12_win32
       config_type: win32
-    - generator: "MinGW Makefiles"
-      COMPILER_PATH: C:\MinGW\bin
-      BUILD: mingw_win32
-      config_type: win32
+#    - generator: "MinGW Makefiles"
+#      COMPILER_PATH: C:\MinGW\bin
+#      BUILD: mingw_win32
+#      config_type: win32
     - generator: "MinGW Makefiles"
       COMPILER_PATH: C:\mingw64\bin
       BUILD: mingw_win64

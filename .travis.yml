@@ -11,6 +11,9 @@
 #     - 4.6/4.9
 #   OSX Clang
 #     - Release/Debug
+#
+# No support for 32-bit Linux
+#
 
 language: cpp
 sudo: required
