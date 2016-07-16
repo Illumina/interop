@@ -17,7 +17,7 @@ function(add_version_target _target _version_file _macro_name)
     file(WRITE ${CMAKE_BINARY_DIR}/version.cmake
     "execute_process(
         COMMAND ${GIT_EXECUTABLE} describe --tags --dirty=-dirty
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        WORKING_DIRECTORY \"${CMAKE_SOURCE_DIR}\"
         RESULT_VARIABLE
         res
         OUTPUT_VARIABLE

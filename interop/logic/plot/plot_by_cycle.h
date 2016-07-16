@@ -313,6 +313,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                        model::plot::plot_data<Point>& data)
                         throw(model::index_out_of_bounds_exception,
                         model::invalid_filter_option,
+                        model::invalid_channel_exception,
                         model::invalid_metric_type)
     {
         const constants::metric_type type = constants::parse<constants::metric_type>(metric_name);

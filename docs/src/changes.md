@@ -1,5 +1,13 @@
 # Changes                                               {#changes}
 
+## v1.0.8
+
+Commit  | Description
+------- | -----------
+b74024d | Added support for paths with spaces in the build system
+d76117a | Remove support for 32-bit builds
+27c1942 | IPA-4778: Fixed issues found by coverity
+ad8cac0 | Updated the documentation
 
 ## v1.0.7
 
