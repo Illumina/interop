@@ -1,8 +1,6 @@
 /** @page cyclesim Cycle Simulator
  *
  *
- * ## Cycle Simulator ##                         {#cycle_sim}
- *
  * This application writes out a new set of binary InterOp files for all records up to a specific cycle.
  *
  * ### Running the Program
