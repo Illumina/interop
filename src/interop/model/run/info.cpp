@@ -51,7 +51,7 @@ namespace illumina { namespace interop { namespace model { namespace run
         for (xml_attr_ptr attr = p_root->first_attribute();
              attr; attr = attr->next_attribute())
         {
-            set_data(attr, "Version", m_version);
+            if(set_data(attr, "Version", m_version))break;
         }
 
 
@@ -64,7 +64,7 @@ namespace illumina { namespace interop { namespace model { namespace run
         for (xml_attr_ptr attr = p_run_node->first_attribute();
              attr; attr = attr->next_attribute())
         {
-            set_data(attr, "Id", m_name);
+            if(set_data(attr, "Id", m_name)) break;
         }
 
         // Parse run data

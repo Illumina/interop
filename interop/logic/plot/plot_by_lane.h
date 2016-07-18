@@ -36,6 +36,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                                        const constants::metric_type type,
                                        model::plot::data_point_collection<Point>& points)
     {
+        if(metrics.max_lane() == 0) return;
         const size_t lane_count = metrics.max_lane();
         const size_t tile_count = static_cast<size_t>(std::ceil(static_cast<float>(metrics.size())/lane_count));
         std::vector< std::vector<float> > tile_by_lane(metrics.max_lane());

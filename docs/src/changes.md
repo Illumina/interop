@@ -1,5 +1,12 @@
 # Changes                                               {#changes}
 
+
+## Trunk
+
+Commit     | Description
+-------    | -----------
+2016-07-17 | Added coverity online scan and fixed some issues found
+
 ## v1.0.8
 
 Commit  | Description

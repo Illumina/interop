@@ -58,7 +58,7 @@ void cache_error_by_lane_read(I beg,
         const size_t read_number = read.number-1;
         max_error_cycle[read_number] = std::max(max_error_cycle[read_number], static_cast<size_t>(read.cycle_within_read));
         INTEROP_ASSERTMSG(read_number < tmp.size(), read.number << " " << read.cycle_within_read << ", " << beg->cycle());
-        if(tmp[read_number].find(key) == tmp[read.number-1].end())
+        if(tmp[read_number].find(key) == tmp[read_number].end())
             tmp[read_number][key] = std::make_pair(0.0f, 0.0f);
         tmp[read_number][key].first+=beg->errorRate();
         tmp[read_number][key].second+=1;
