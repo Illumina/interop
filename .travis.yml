@@ -17,6 +17,11 @@
 
 language: cpp
 sudo: required
+
+env:
+  global:
+    - secure: "oALD7yjwurT4h4x/iATz8zP+q9y1bOG8l9wFucmM8HTIdThN+37YZDmLnhlRWKDZNt6NwBRom1vHmTZAmLGO0RohPxRV8RrceQGq5Jjq0gmXQafxjhbZetKxFbXKJ5/4RdUM0yxPCmYCscHEJG/1gk+F6y7hFiRPO8A5z8AhNabCZ8BMwaLaWpko7mHO1HqEs/MWExj32IF0DVQtzWyJeyO4RYkYKtBGfsGZMHfhsis3Nhfql5shN64AmlAxJewxApJg0wbnf5fbXyLYqZS92MW0GbPph+grdpEGEgGVgyGRV0Ys9EAj0CQs5ukmi+JP6TL2BbBnmreAOwiWMQDGzAKgwipOH3Phmcor4bFo5TU0vTBhP1RCxnPa/zyTrwI94KH96b+j2WT/6wDkXrixhVAeJntuWEhbJvklN/lC8/nlGnbRfyEB5Ists5yFzERxqIWd3x+qtknJO8/wcetbavBFUPcgEZdTXVv1zTquzLeUNlavseT9egFFQ7cDnGwg8b9LWb+sQeqiTjT3p6WQ/4+tw/EVn+xCfqkw746Gy8aXFdviJU3mcYeR7gvgYO84HXaoS0Mv7mxmJeWfoNopkv0U7cPNS3eXU3XZ2bg0WZl90i2LLXcQgtm8nz3NVEhGfpgjlQ+WBQcVOYG93vBcOa4powoCHojgzZn55T/J3nQ="
+
 matrix:
   include:
   - compiler: clang
@@ -102,6 +107,13 @@ addons:
     - graphviz
     - mono-complete
     - libgtest-dev
+  coverity_scan:
+    project:
+      name: "Illumina/interop"
+      description: "InterOp Libraries for Illumina Sequencers"
+    build_command_prepend: "mkdir build && pushd build && cmake .. -DENABLE_SWIG=OFF -DENABLE_DOCS=OFF && popd"
+    build_command: "make -j4"
+    branch_pattern: .*
 cache:
   directories:
     - $HOME/NUnit-2.6.4
@@ -115,20 +127,20 @@ install:
 - ls $HOME/NUnit-2.6.4
 
 script:
-- export CC="${CC}${COMPILER_VERSION}"
-- export CXX="${CXX}${COMPILER_VERSION}"
-- export BUILD_PATH=${PWD}/${BUILD_NAME}
-- echo 'Configuring...' && echo -en 'travis_fold:start:script.1\\r'
-- rm -fr build && mkdir -p build && cd build && cmake -DNUNIT_ROOT=$HOME/NUnit-2.6.4 ../ -DENABLE_BACKWARDS_COMPATIBILITY=$INTEROP_C89 -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_INSTALL_PREFIX=${BUILD_PATH}
-- echo -en 'travis_fold:end:script.1\\r'
-- cmake --build .
-- echo 'Installing...' && echo -en 'travis_fold:start:script.2\\r'
-- make install
-- echo -en 'travis_fold:end:script.2\\r'
-- cmake --build . --target check
-- echo 'Cleaning...' && echo -en 'travis_fold:start:script.3\\r'
-- make clean
-- echo -en 'travis_fold:end:script.3\\r'
+- if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then export CC="${CC}${COMPILER_VERSION}"; fi
+- if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then export CXX="${CXX}${COMPILER_VERSION}"; fi
+- if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then export BUILD_PATH=${PWD}/${BUILD_NAME}; fi
+- if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then echo 'Configuring...' && echo -en 'travis_fold:start:script.1\\r'; fi
+- if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then rm -fr build && mkdir -p build && cd build && cmake -DNUNIT_ROOT=$HOME/NUnit-2.6.4 ../ -DENABLE_BACKWARDS_COMPATIBILITY=$INTEROP_C89 -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_INSTALL_PREFIX=${BUILD_PATH}; fi
+- if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then echo -en 'travis_fold:end:script.1\\r'; fi
+- if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then cmake --build .; fi
+- if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then echo 'Installing...' && echo -en 'travis_fold:start:script.2\\r'; fi
+- if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then make install; fi
+- if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then echo -en 'travis_fold:end:script.2\\r'; fi
+- if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then cmake --build . --target check; fi
+- if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then echo 'Cleaning...' && echo -en 'travis_fold:start:script.3\\r'; fi
+- if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then make clean; fi
+- if [ "$COVERITY_SCAN_BRANCH" != 1 ]; then echo -en 'travis_fold:end:script.3\\r'; fi
 
 #white list broke the tag push deployment
 
