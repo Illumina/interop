@@ -230,7 +230,7 @@ namespace illumina{ namespace interop{
                 static tile_metric::read_metric_vector::iterator get_read(tile_metric& metric, tile_metric::read_metric_type::uint_t read)
                 {
                     tile_metric::read_metric_vector::iterator it = metric.m_read_metrics.begin();
-                    for(;it != metric.read_metrics().end();it++)
+                    for(;it != metric.m_read_metrics.end();it++)
                         if(it->read() == read) return it;
                     metric.m_read_metrics.push_back(model::metrics::read_metric(read));
                     return metric.m_read_metrics.begin()+metric.m_read_metrics.size()-1;

@@ -46,6 +46,11 @@ int main(int argc, char **argv)
         std::cerr << ex.what() << std::endl;
         return 1;
     }
+    catch(...)
+    {
+        std::cerr << "Unknown error" << std::endl;
+        return 1;
+    }
 
     // remove the default listener
     ::testing::TestEventListeners& listeners = ::testing::UnitTest::GetInstance()->listeners();
