@@ -39,6 +39,8 @@ public:
     typedef std::vector <std::string> str_vector_t;
     /** Read vector type */
     typedef std::vector< read_info> read_vector_t;
+    /** Constant read iterator type */
+    typedef read_vector_t::const_iterator const_read_iterator;
 public:
     /** Constructor
      *

@@ -1,6 +1,6 @@
 /** Back port of C++11 math functions
  *
- * @TODO include this everywhere isnan is used
+ * @todo include this everywhere isnan is used
  *
  *  @file
  *  @date 4/20/16

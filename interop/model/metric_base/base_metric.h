@@ -106,7 +106,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          * @param lane lane number
          * @param tile tile number
          */
-        base_metric(const uint_t lane, const uint_t tile) :
+        base_metric(const uint_t lane=0, const uint_t tile=0) :
                 m_lane(lane), m_tile(tile)
         { }
 
@@ -133,6 +133,15 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          * @return unique identifier
          */
         id_t id() const
+        {
+            return id(m_lane, m_tile);
+        }
+
+        /** Unique id created from both the lane and tile
+         *
+         * @return unique identifier
+         */
+        id_t tile_hash() const
         {
             return id(m_lane, m_tile);
         }

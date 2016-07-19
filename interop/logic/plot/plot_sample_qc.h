@@ -22,9 +22,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
     *
     * @param index_metrics set of metric records
     * @param tile_metrics source collection of tile metrics
-    * @param proxy functor that takes a metric record and returns a metric value
-    * @param options filter for metric records
-    * @param type type of metric to extract using the proxy functor
+    * @param lane lane index
     * @param points collection of points where x is lane number and y is the candle stick metric values
     */
     template<typename Point>

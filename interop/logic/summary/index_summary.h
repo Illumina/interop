@@ -110,8 +110,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
     }
     /** Summarize a collection index metrics for a specific lane
      *
-     * @param index_metrics source collection of index metrics
-     * @param tile_metrics source collection of tile metrics
+     * @param metrics source run metrics
      * @param lane lane number
      * @param summary destination index lane summary
      */

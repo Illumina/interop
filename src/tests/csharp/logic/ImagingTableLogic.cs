@@ -17,7 +17,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		/// Test plotting intensity by cycle
 		/// </summary>
 		[Test]
-		public void IntensityTest()
+		public void PopulateTableTest()
 		{
             int[] tmp = new int[]{
                  2,38
@@ -49,9 +49,9 @@ namespace Illumina.InterOp.Interop.UnitTest
             run.legacy_channel_update(instrument_type.HiSeq);
 
             imaging_table table = new imaging_table();
-            c_csharp_imaging.populate_imaging_table(run, table);
+            c_csharp_imaging.create_imaging_table(run, table);
             Assert.AreEqual(table.row_count(), 3);
-            Assert.AreEqual(table.at(0).Lane, 7);
+            Assert.AreEqual(table.at(0, 0), 7);
 
 		}
 		[Test]

@@ -120,7 +120,7 @@ namespace interop {
         /** Define the value type */
         typedef T value_t;
         /** Define the pointer type */
-        typedef T* pointer_t;
+        typedef constant_type<T, v>* pointer_t;
         /** Get the value of the constant type
          *
          * @return value

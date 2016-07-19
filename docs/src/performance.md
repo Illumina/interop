@@ -63,6 +63,6 @@ Direct Call 1 | 38
 Direct Call 2 | 45
 Indirect Call | < 1
 
-The results show that everytime we make a call from the native language to C++, we pay a hefty price. In many applications
-this is a price we are willing to pay. However, for those applications were performance is a concern, it pays to add
+The results show that everytime we make a call from the native language to C++, we pay a hefty price. In many applications,
+this is a price we are willing to pay. However, for those applications where performance is a concern, it pays to add
 methods like `copy_focus`, which limit the number of times we have to jump between C# (or another language) and C++.

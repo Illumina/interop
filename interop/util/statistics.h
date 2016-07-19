@@ -293,7 +293,7 @@ namespace illumina { namespace interop { namespace util
      * @note this will change the underlying array!
      *
      * @param beg iterator to start of collection
-     * @param end iterator to start of collection
+     * @param end iterator to end of collection
      * @param percentile integer in percent
      * @return iterator to requested percentile
      */
@@ -316,9 +316,9 @@ namespace illumina { namespace interop { namespace util
      * @note this will change the underlying array!
      *
      * @param beg iterator to start of collection
-     * @param end iterator to start of collection
+     * @param end iterator to end of collection
      * @param percentile integer in percent
-     * @comp comparator between two types
+     * @param comp comparator between two types
      * @return iterator to requested percentile
      */
     template<typename I, typename Compare>
@@ -379,6 +379,7 @@ namespace illumina { namespace interop { namespace util
      * @param beg iterator to start of sorted array
      * @param end iterator to end of sorted array
      * @param percentile target percentile [0-100]
+     * @param op function that takes one value and returns another value
      * @return interpolated value of array corresponding to given percentile
      */
     template<typename F, typename I, typename Op>
@@ -407,6 +408,7 @@ namespace illumina { namespace interop { namespace util
      *
      * @param beg iterator to start of collection
      * @param end iterator to end of collection
+     * @param op function that takes one value and returns another value
      * @return iterator to last non-NaN element
      */
     template<typename I, typename UnaryOp>
@@ -420,7 +422,7 @@ namespace illumina { namespace interop { namespace util
      * @note this will change the underlying array!
      *
      * @param beg iterator to start of collection
-     * @param end iterator to start of collection
+     * @param end iterator to end of collection
      * @return iterator to requested percentile
      */
     template<typename I>
@@ -434,8 +436,8 @@ namespace illumina { namespace interop { namespace util
      * @note this will change the underlying array!
      *
      * @param beg iterator to start of collection
-     * @param end iterator to start of collection
-     * @comp comparator between two types
+     * @param end iterator to end of collection
+     * @param comp comparator between two types
      * @return iterator to requested percentile
      */
     template<typename I, typename Compare>
@@ -448,8 +450,7 @@ namespace illumina { namespace interop { namespace util
      * @note this will change the underlying array!
      *
      * @param beg iterator to start of collection
-     * @param end iterator to start of collection
-     * @comp comparator between two types
+     * @param end iterator to end of collection
      * @return iterator to requested percentile
      */
     template<typename F, typename I>
@@ -463,8 +464,8 @@ namespace illumina { namespace interop { namespace util
      * @note this will change the underlying array!
      *
      * @param beg iterator to start of collection
-     * @param end iterator to start of collection
-     * @comp comparator between two types
+     * @param end iterator to end of collection
+     * @param comp comparator between two types
      * @return iterator to requested percentile
      */
     template<typename F, typename I, typename Compare>
@@ -478,8 +479,9 @@ namespace illumina { namespace interop { namespace util
      * @note this will change the underlying array!
      *
      * @param beg iterator to start of collection
-     * @param end iterator to start of collection
-     * @comp comparator between two types
+     * @param end iterator to end of collection
+     * @param comp comparator between two types
+     * @param op function that takes one value and returns another value
      * @return iterator to requested percentile
      */
     template<typename F, typename I, typename Compare, typename Op>
@@ -679,6 +681,7 @@ namespace illumina { namespace interop { namespace util
      *
      * @param beg iterator to start of collection
      * @param end iterator to end of collection
+     * @param mean mean of the data in the collection
      * @return variance of the input collection
      */
     template<typename R, typename I>

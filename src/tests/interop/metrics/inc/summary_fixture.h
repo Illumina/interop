@@ -17,7 +17,10 @@ namespace illumina{ namespace interop { namespace unittest {
     template<class Gen>
     struct summary_fixture
     {
-        /** Constructor */
+        /** Constructor
+         *
+         * @param reads list of reads
+         */
         summary_fixture(std::vector<model::run::read_info> reads = Gen::reads()) :
                 expected(Gen::summary()),
                 actual(reads.begin(), reads.end(), Gen::lane_count())

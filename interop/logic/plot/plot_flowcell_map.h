@@ -26,9 +26,11 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
      * @param beg iterator to start of q-metric collection
      * @param end iterator to end of q-metric collection
      * @param proxy functor that takes a metric record and returns a metric value
+     * @param type metric type
      * @param layout layout of the flowcell
      * @param options filter for metric records
      * @param data flowcell map
+     * @param values_for_scaling destination value used for later scaling
      */
     template<typename I, typename MetricProxy>
     void populate_flowcell_map(I beg,

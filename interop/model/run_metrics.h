@@ -65,6 +65,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         typedef object_list<metric_set_list_t> metric_list_t;
 
     public:
+        /** Define an id type */
+        typedef metric_base::base_metric::id_t id_t;
         /** Define corrected intensity metric set */
         typedef metric_base::metric_set<corrected_intensity_metric> corrected_intensity_metric_set_t;
         /** Define error metric set */
@@ -83,6 +85,10 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         typedef metric_base::metric_set<q_collapsed_metric> q_collapsed_metric_set_t;
         /** Define by lane q-metric set */
         typedef metric_base::metric_set<q_by_lane_metric> q_by_lane_metric_set_t;
+        /** Define a map of ids to a base metric */
+        typedef std::map<id_t, metric_base::base_metric> tile_metric_map_t;
+        /** Define a map of ids to a base cycle metric */
+        typedef std::map<id_t, metric_base::base_cycle_metric> cycle_metric_map_t;
 
 
     public:
@@ -568,6 +574,22 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         {
             m_metrics.apply(func);
         }
+        /** Populate a map of valid tiles
+         *
+         * @param map mapping between tile has and base_metric
+         */
+        void populate_id_map(tile_metric_map_t& map)const
+        {
+            m_metrics.apply(populate_tile_list(map));
+        }
+        /** Populate a map of valid tiles and cycles
+         *
+         * @param map mapping between tile has and base_metric
+         */
+        void populate_id_map(cycle_metric_map_t& map)const
+        {
+            m_metrics.apply(populate_tile_cycle_list(map));
+        }
 
     private:
         metric_list_t m_metrics;
@@ -575,6 +597,56 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         run::parameters m_run_parameters;
 
     private:
+        struct populate_tile_list
+        {
+            populate_tile_list(tile_metric_map_t& map) : m_map(map){}
+
+            template<class MetricSet>
+            void operator()(const MetricSet &metrics)const
+            {
+                typedef typename MetricSet::base_t base_t;
+                populate_id(metrics, base_t::null());
+            }
+        private:
+            template<class MetricSet>
+            void populate_id(const MetricSet &metrics, const void*)const
+            {
+                for(typename MetricSet::const_iterator it = metrics.begin();it != metrics.end();++it)
+                {
+                    INTEROP_ASSERTMSG(it->tile()>0, it->lane() << "_" << it->tile());
+                    m_map[it->tile_hash()] = *it;
+                }
+            }
+            template<class MetricSet>
+            void populate_id(const MetricSet &, const constants::base_lane_t*)const{}
+
+            tile_metric_map_t& m_map;
+        };
+        struct populate_tile_cycle_list
+        {
+            populate_tile_cycle_list(cycle_metric_map_t& map) : m_map(map){}
+
+            template<class MetricSet>
+            void operator()(const MetricSet &metrics)const
+            {
+                typedef typename MetricSet::base_t base_t;
+                populate_id(metrics, base_t::null());
+            }
+
+        private:
+            template<class MetricSet>
+            void populate_id(const MetricSet &metrics, const constants::base_cycle_t*)const
+            {
+                for(typename MetricSet::const_iterator it = metrics.begin();it != metrics.end();++it)
+                {
+                    INTEROP_ASSERTMSG(it->tile()>0, it->lane() << "_" << it->tile() << " @ " << it->cycle());
+                    m_map[it->id()] = *it;
+                }
+            }
+            template<class MetricSet>
+            void populate_id(const MetricSet &, const void*)const{}
+            cycle_metric_map_t& m_map;
+        };
         struct is_metric_empty
         {
             is_metric_empty() : m_empty(true)

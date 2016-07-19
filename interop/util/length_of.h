@@ -58,7 +58,6 @@ namespace illumina { namespace interop { namespace util
 
     /** Get the number of elements in a stack array
      *
-     * @param val stack array
      * @return size of array
      */
     template<typename T, size_t N>

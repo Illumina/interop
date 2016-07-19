@@ -10,8 +10,8 @@ add_executable(interop_gtests
         metrics/corrected_intensity_metrics_test.cpp
         metrics/error_metrics_test.cpp
         metrics/extraction_metrics_test.cpp
-        metrics/image_metrics_test.cpp
         metrics/index_metrics_test.cpp
+        metrics/image_metrics_test.cpp
         metrics/q_metrics_test.cpp
         metrics/tile_metrics_test.cpp
         metrics/q_by_lane_metric_test.cpp
@@ -32,12 +32,12 @@ add_executable(interop_gtests
         logic/enum_parsing_test.cpp
         logic/metric_type_ext_test.cpp
         logic/plot_logic_test.cpp
-        logic/image_table_logic_test.cpp
         util/option_parser_test.cpp
         inc/regression_fixture.h
         unit_tests.cpp
         inc/failure_listener.h
-        inc/persistent_parameter_generator.h)
+        inc/persistent_parameter_generator.h
+        logic/imaging_table_logic_test.cpp logic/imaging_table_regression_test.cpp)
 
 target_link_libraries(interop_gtests ${INTEROP_LIB}  ${GTEST_LIBRARY} ${GMOCK_LIBRARY}  ${CMAKE_THREAD_LIBS_INIT})
 add_test(NAME interop_gtests WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/testBin

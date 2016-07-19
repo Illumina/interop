@@ -40,23 +40,21 @@ EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 // Imaging model
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 %{
-#include "interop/model/table/imaging_table.h"
-#include "interop/logic/table/populate_imaging_table.h"
+#include "interop/logic/table/create_imaging_table.h"
 %}
 
 %template(size_vector) std::vector< size_t >;
 %template(size_vector_2d) std::vector< std::vector< size_t > >;
-WRAP_VECTOR(illumina::interop::model::table::imaging_table);
 
-%include "interop/model/table/column_header.h"
-%include "interop/model/table/imaging_table_entry.h"
+%include "interop/model/table/imaging_column.h"
 %include "interop/model/table/imaging_table.h"
-
-%template(imaging_table_entry_vector) std::vector<illumina::interop::model::table::table_entry>;
-%template(column_header_vector) std::vector<illumina::interop::model::table::column_header>;
+%template(imaging_column_vector) std::vector< illumina::interop::model::table::imaging_column >;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Imaging Logic
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-%include "interop/logic/table/populate_imaging_table.h"
+%include "interop/logic/table/create_imaging_table.h"
+%include "interop/logic/table/create_imaging_table_columns.h"
+
+%template(populate_imaging_table_float_data) illumina::interop::logic::table::populate_imaging_table_data<float*>;

@@ -145,6 +145,7 @@ void set_data(xml_attr_ptr p_attr, T &val)
  *
  * @param p_node current node
  * @param target target string
+ * @param child child node name
  * @param val destination vector
  * @return true if the target was found
  */

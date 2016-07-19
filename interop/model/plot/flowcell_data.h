@@ -52,7 +52,7 @@ public:
      * @param value value of the metric
      */
     void set_data(const size_t lane_idx, const size_t loc, const ::uint32_t tile_id, const float value)
-    throw(model::index_out_of_bounds_exception)
+                                                            throw(model::index_out_of_bounds_exception)
     {
         if(lane_idx >= lane_count())
             INTEROP_THROW( model::index_out_of_bounds_exception, "Lane index out of bounds");

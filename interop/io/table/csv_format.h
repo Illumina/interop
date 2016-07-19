@@ -14,9 +14,10 @@ namespace illumina { namespace interop { namespace io {  namespace  table {
      *
      * @param in input stream
      * @param values destination vector
+     * @param missing sentinel for missing values
      */
     template<typename T>
-    void read_csv_line(std::istream& in, std::vector<T>& values)
+    void read_csv_line(std::istream& in, std::vector<T>& values, const T missing=T())
     {
         values.clear();
         std::string line;
@@ -25,7 +26,7 @@ namespace illumina { namespace interop { namespace io {  namespace  table {
         std::string cell;
         while(std::getline(sin, cell, ','))
         {
-            if(cell=="") values.push_back(std::numeric_limits<T>::min());
+            if(cell=="") values.push_back(missing);
             else values.push_back(util::lexical_cast<T>(cell));
         }
     }
@@ -35,13 +36,15 @@ namespace illumina { namespace interop { namespace io {  namespace  table {
      * @param values source vector of values
      */
     template<typename T>
-    void write_csv_line(std::ostream& out, const std::vector<T>& values)
+    void write_csv_line(std::ostream& out, const std::vector<T>& values, const size_t beg=0, size_t last=0)
     {
         if(values.empty())return;
-        out << values[0];
-        for(typename std::vector<T>::const_iterator it=values.begin()+1, end=values.end();it != end;++it)
+        if(last == 0) last = values.size();
+        INTEROP_ASSERT(beg < values.size());
+        out << values[beg];
+        INTEROP_ASSERT(last <= values.size());
+        for(typename std::vector<T>::const_iterator it=values.begin()+beg+1, end=values.begin()+last;it != end;++it)
         {
-
             out << "," << *it;
         }
         out << "\n";

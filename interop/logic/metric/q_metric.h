@@ -31,7 +31,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
     }
     /** Count the number of bins in the q metric
      *
-     * @param q_metric_set q-metric set
+     * @param metric_set q-metric set
      * @return number of bins
      */
     inline size_t count_q_metric_bins(const model::metric_base::metric_set<model::metrics::q_metric>& metric_set)
@@ -40,7 +40,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
     }
     /** Count the number of bins in the q metric
      *
-     * @param q_metric_set q-metric set
+     * @param metric_set q-metric set
      * @return number of bins
      */
     inline size_t count_q_metric_bins(const model::metric_base::metric_set<model::metrics::q_by_lane_metric>& metric_set)
@@ -50,7 +50,6 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
     /** Count the number of bins in the q metric
      *
      * @note Always returns 0
-     * @param q_metric_set q-metric set
      * @return 0
      */
     inline size_t count_q_metric_bins(const model::metric_base::metric_set<model::metrics::q_collapsed_metric>&)
@@ -153,7 +152,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
     /** Count number of unique counts to determine number
      * of unique bins for legacy binning
      *
-     * @Note, if the number of bins is greater than 7, than this function stops counting!
+     * @note, if the number of bins is greater than 7, than this function stops counting!
      *
      * @param q_metric_set q-metric set
      * @return number of unique bins
@@ -455,7 +454,8 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
     /** Generate by lane Q-metric data from Q-metrics
      *
      * @param metric_set Q-metrics
-     * @param collapsed collapsed Q-metrics
+     * @param bylane bylane Q-metrics
+     * @throws index_out_of_bounds_exception
      */
     inline void create_q_metrics_by_lane(const model::metric_base::metric_set<model::metrics::q_metric>& metric_set,
                                          model::metric_base::metric_set<model::metrics::q_by_lane_metric>& bylane)

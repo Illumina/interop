@@ -58,7 +58,7 @@ namespace illumina { namespace interop { namespace model { namespace run
         xml_node_ptr p_run_node = p_root->first_node();
         if (p_run_node == 0) INTEROP_THROW(bad_xml_format_exception, "Run not found");
         if (p_run_node->name() != std::string("Run"))
-            INTEROP_THROW(bad_xml_format_exception, "Invalid run info xml file");
+            INTEROP_THROW(bad_xml_format_exception, "Invalid run info xml file: expected Run, got: " << p_run_node->name());
 
         // Parse run attributes
         for (xml_attr_ptr attr = p_run_node->first_attribute();

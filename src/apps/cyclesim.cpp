@@ -1,6 +1,5 @@
 /** @page cyclesim Cycle Simulator
  *
- *
  * This application writes out a new set of binary InterOp files for all records up to a specific cycle.
  *
  * ### Running the Program
@@ -299,10 +298,11 @@ int encode_error(const int res, const int type)
 }
 /** Encode error type and metric type into a single code
  *
- * @param input path to run folder
+ * @param filename path to run folder
  * @param output path to output run folder
  * @param max_cycle maximum number of cycles
  * @param max_read maximum number of reads
+ * @param cycle_to_align cycle to align
  * @return 0 if success, or an error code
  */
 int write_interops(const std::string& filename,

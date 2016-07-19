@@ -28,6 +28,11 @@ namespace illumina { namespace interop {  namespace constants {
     template<typename Enum>
     class enumeration_string_mapping;
 
+    /** Convert an enum value to its string representation
+     *
+     * @param value enum value
+     * @return string representation of the enum value
+     */
     template<typename Enum>
     std::string to_string(Enum value)
     {
@@ -36,6 +41,11 @@ namespace illumina { namespace interop {  namespace constants {
         return enum_map_t::template setup<const mapping_t&>(mapping_t::rmapping).get(value, std::string("Unknown"));
     }
 
+    /** Convert a string representation of a enum value to an enum value
+     *
+     * @param name  string representation of a enum value
+     * @return enum value
+     */
     template<typename Enum>
     Enum parse(const std::string& name)
     {
@@ -52,8 +62,9 @@ namespace illumina { namespace interop {  namespace constants {
             /** Constructor
              *
              * @param vec1 vector to fill
+             * @param start number of start elements to skip
              */
-            fill_enum_vector(std::vector<Enum> &vec1) : m_vec(vec1) { }
+            fill_enum_vector(std::vector<Enum> &vec1, const size_t start=0) : m_vec(vec1), m_start(start) { }
             /** Fill the vector
              *
              * @param vals string/enum pair array
@@ -61,23 +72,61 @@ namespace illumina { namespace interop {  namespace constants {
              */
             void operator()(const std::pair<std::string, Enum> *vals, const size_t n) const
             {
-                m_vec.resize(n);
-                for (size_t i = 0; i < n; ++i)
-                    m_vec[i] = vals[i].second;
+                m_vec.resize(n-m_start);
+                for (size_t i = m_start; i < n; ++i)
+                    m_vec[i-m_start] = vals[i].second;
             }
         private:
             std::vector<Enum> &m_vec;
+            const size_t m_start;
+        };
+        /** Helper functor to fill an enum vector */
+        template<typename Enum>
+        struct fill_enum_name_vector
+        {
+            /** Constructor
+             *
+             * @param vec1 vector to fill
+             * @param start number of start elements to skip
+             */
+            fill_enum_name_vector(std::vector<std::string> &vec1, const size_t start=0) : m_vec(vec1), m_start(start) { }
+            /** Fill the vector
+             *
+             * @param vals string/enum pair array
+             * @param n number of elements in array
+             */
+            void operator()(const std::pair<std::string, Enum> *vals, const size_t n) const
+            {
+                m_vec.resize(n-m_start);
+                for (size_t i = m_start; i < n; ++i)
+                    m_vec[i-m_start] = vals[i].first;
+            }
+        private:
+            std::vector<std::string> &m_vec;
+            const size_t m_start;
         };
     }
     /** Fill given enum vector with all available enums
      *
      * @param vec enum vector
+     * @param skip number of start elements to skip
      */
     template<typename Enum>
-    void list_enums(std::vector<Enum>& vec)
+    void list_enums(std::vector<Enum>& vec, const size_t skip=0)
     {
         typedef enumeration_string_mapping<Enum> enum_map_t;
-        enum_map_t::template setup<void>(detail::fill_enum_vector<Enum>(vec));
+        enum_map_t::template setup<void>(detail::fill_enum_vector<Enum>(vec, skip));
+    }
+    /** Fill given enum vector with all available enums
+     *
+     * @param vec enum vector
+     * @param skip number of start elements to skip
+     */
+    template<typename Enum>
+    void list_enum_names(std::vector<std::string>& vec, const size_t skip=0)
+    {
+        typedef enumeration_string_mapping<Enum> enum_map_t;
+        enum_map_t::template setup<void>(detail::fill_enum_name_vector<Enum>(vec, skip));
     }
 
     /** Specialization that maps metric_type to a string */

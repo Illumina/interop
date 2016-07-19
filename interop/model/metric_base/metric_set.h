@@ -41,6 +41,8 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         typedef std::vector<T> metric_array_t;
         /** Define a write header */
         typedef typename T::header_type header_type;
+        /** Define the base type for the metric */
+        typedef typename T::base_t base_t;
         /** Define a metric type */
         typedef T metric_type;
         /** Define a metric set type */

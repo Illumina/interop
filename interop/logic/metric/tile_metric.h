@@ -27,7 +27,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
     }
     /** Determine the tile naming method from a metric set
      *
-     * @param metric tile metric set
+     * @param metric_set metric set
      * @return tile_naming_method
      */
     template<class Metric>

@@ -60,7 +60,6 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         /** Maximum cycle read **/
         base_metric::uint_t m_max_cycle;
     };
-
     /** Base class for InterOp classes that contain per cycle tile specific metrics
      *
      * These classes define both a lane, tile and cycle identifier.
@@ -71,7 +70,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         enum
         {
             /** Base for records written out once for each tile/cycle */
-                    BASE_TYPE = constants::BaseCycleType
+            BASE_TYPE = constants::BaseCycleType
         };
     public:
         /** A cycle metric_set header
@@ -86,7 +85,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          * @param tile tile number
          * @param cycle cycle number
          */
-        base_cycle_metric(const uint_t lane, const uint_t tile, const uint_t cycle) :
+        base_cycle_metric(const uint_t lane=0, const uint_t tile=0, const uint_t cycle=0) :
                 base_metric(lane, tile), m_cycle(cycle)
         { }
 
@@ -115,6 +114,26 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         id_t id() const
         {
             return id(lane(), tile(), m_cycle);
+        }
+
+
+        /** Get the cycyle from the unique lane/tile/cycle id
+         *
+         * @param id unique lane/tile/cycle id
+         * @return cycle number
+         */
+        static id_t cycle_from_id(const id_t id)
+        {
+            return id >> TILE_BIT_SHIFT;
+        }
+        /** Get the tile hash from the unique lane/tile/cycle id
+         *
+         * @param id unique lane/tile/cycle id
+         * @return tile hash number
+         */
+        static id_t tile_hash_from_id(const id_t id)
+        {
+            return id & ~((~static_cast<id_t>(0)) << TILE_BIT_SHIFT);
         }
 
         /** Create unique id from the lane, tile and cycle

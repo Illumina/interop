@@ -21,11 +21,11 @@ typedef std::vector<std::vector< model::run::cycle_range> > cycle_range_vector2d
 
 /** Summarize the cycle state for a particular metric
  *
- * @param beg iterator to start of a collection of error metrics
- * @param end iterator to end of a collection of error metrics
- * @param cycle_to_read map cycle to the read number and cycle within read number
- * @param pointer to function that sets a cycle state
- * @param run destination run summary
+ * @param tile_metrics tile metric set
+ * @param cycle_metrics a cycle based metric set
+ * @param cycle_to_read map between the current cycle and read information
+ * @param set_cycle_state_fun callback to set the cycle state
+ * @param run run summary
  */
 template<typename Metric>
 void summarize_cycle_state(const model::metric_base::metric_set<model::metrics::tile_metric>& tile_metrics,

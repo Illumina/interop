@@ -8,8 +8,7 @@
 #pragma once
 #include <math.h>
 #include <iostream>
-#include "interop/model/table/column_header.h"
-#include "interop/model/table/imaging_table_entry.h"
+#include "interop/model/table/imaging_column.h"
 
 
 namespace illumina { namespace interop { namespace model { namespace table {
@@ -17,120 +16,92 @@ namespace illumina { namespace interop { namespace model { namespace table {
     class imaging_table
     {
     public:
-        /** Define a row vector */
-        typedef std::vector< table_entry> row_vector_t;
-        /** Define a flag vector */
-        typedef std::vector< bool > filled_vector_t;
-        /** Define a header vector */
-        typedef std::vector< column_header > header_vector_t;
+        /** Define a column vector */
+        typedef std::vector< imaging_column> column_vector_t;
+        /** Define a data vector */
+        typedef std::vector< float > data_vector_t;
+
+    private:
+        /** Define a data vector */
+        typedef std::vector< size_t > offset_vector_t;
+
     public:
-        /** Define a constant iterator to a row */
-        typedef row_vector_t::const_iterator const_iterator;
-        /** Define an iterator to a row */
-        typedef row_vector_t::iterator iterator;
-        /** Define a constant reference to a row */
-        typedef row_vector_t::const_reference const_reference;
+        /** Constructor */
+        imaging_table() : m_row_count(0), m_col_count(0){}
 
     public:
         /** Reserve space for the rows
          *
-         * @param n number of rows
+         * @param rows number of rows
+         * @param cols column vector
+         * @param data table cell data
          */
-        void reserve(const size_t n)
+        void set_data(const size_t rows, column_vector_t& cols, data_vector_t& data)
         {
-            m_rows.reserve(n);
+            if(cols.empty())
+            {
+                clear();
+                return;
+            }
+            m_columns.swap(cols);
+            m_data.swap(data);
+            m_row_count = rows;
+            m_col_count = m_columns.back().column_count();
+            m_enum_to_index.assign(ImagingColumnCount, static_cast<size_t>(ImagingColumnCount));
+            for(size_t i=0;i<m_columns.size();++i)
+                m_enum_to_index[m_columns[i].id()] = i;
         }
         /** Get a reference to a row
          *
-         * @param n index of the row
-         * @return row
+         * @param r row row index
+         * @param c col column index
+         * @param subcol sub column offset
+         * @return cell value
          */
-        const_reference operator[](const size_t n)const
+        float operator()(const size_t r, const column_id c, const size_t subcol=0)const
         {
-            if(n >=m_rows.size()) throw model::index_out_of_bounds_exception("Row out of bounds");
-            return m_rows[n];
+            if(c >= m_enum_to_index.size())
+                INTEROP_THROW(model::index_out_of_bounds_exception, "Invalid enum id for column");
+            const size_t col = m_enum_to_index[static_cast<size_t>(c)];
+            if(col >= m_enum_to_index.size())
+                INTEROP_THROW(model::index_out_of_bounds_exception, "Invalid enum - column not filled");
+            return at(r, col, subcol);
         }
         /** Get a reference to a row
          *
-         * @param n index of the row
-         * @return row
+         * @param r row row index
+         * @param c col column index
+         * @param subcol sub column offset
+         * @return cell value
          */
-        const table_entry& at(const size_t n)const
+        float operator()(const size_t r, const size_t c, const size_t subcol=0)const
         {
-            if(n >=m_rows.size()) throw model::index_out_of_bounds_exception("Row out of bounds");
-            return m_rows[n];
+            return at(r, c, subcol);
         }
-        /** Add a row to the table
+        /** Get a reference to a row
          *
-         * @param val table row
+         * @param r row row index
+         * @param c col column index
+         * @param subcol sub column offset
+         * @return cell value
          */
-        void push_back(const table_entry& val)
+        float at(const size_t r, const size_t c, const size_t subcol=0)const throw(model::index_out_of_bounds_exception)
         {
-            m_rows.push_back(val);
+            if(r >=m_row_count) INTEROP_THROW(model::index_out_of_bounds_exception, "Row out of bounds");
+            if(c >=m_columns.size()) INTEROP_THROW(model::index_out_of_bounds_exception, "Column out of bounds");
+            const size_t col = m_columns[c].offset()+subcol;
+            if(col >=m_col_count) INTEROP_THROW(model::index_out_of_bounds_exception, "Column data offset out of bounds");
+            const size_t index = r*m_col_count+col;
+            INTEROP_ASSERT(index < m_data.size());
+            return m_data[index];
         }
         /** Get a vector of column headers
          *
          * @return column headers
          */
-        const header_vector_t& headers()const
+        const column_vector_t& columns()const
         {
-            return m_columns_header;
-        }
-        /** Set a vector of column headers
-         *
-         * @param headers column headers
-         */
-        void headers(const header_vector_t& headers)
-        {
-            m_columns_header = headers;
-        }
-        /** Get a vector of filled entries
-         *
-         * @return bool vector
-         */
-        const filled_vector_t& filled_columns()const
-        {
-            return m_columns_filled;
-        }
-        /** Set a vector of filled entries
-         *
-         * @param vec filled vector
-         */
-        void filled_columns(const filled_vector_t& vec)
-        {
-            m_columns_filled = vec;
-        }
-        /** Get iterator to first row
-         *
-         * @return iterator to first row
-         */
-        const_iterator begin()const
-        {
-            return m_rows.begin();
-        }
-        /** Get iterator to end of row collection
-         *
-         * @return iterator
-         */
-        const_iterator end()const
-        {
-            return m_rows.end();
-        }
-        /** Get iterator to first row
-         *
-         * @return iterator to first row
-         */
-        iterator begin()
-        {
-            return m_rows.begin();
-        }
-        /** Get iterator to end of row collection
-         *
-         * @return iterator
-         */
-        iterator end()
-        {
-            return m_rows.end();
+            return m_columns;
         }
         /** Test if the table is empty
          *
@@ -138,33 +109,44 @@ namespace illumina { namespace interop { namespace model { namespace table {
          */
         bool empty()const
         {
-            return m_rows.empty();
-        }
-        /** Resize the number of rows
-         *
-         * @param n number of rows
-         */
-        void resize(const size_t n)
-        {
-            m_rows.resize(n);
+            return m_data.empty();
         }
         /** Clear the contents of the table
          */
         void clear()
         {
-            m_rows.clear();
-            m_columns_filled.clear();
-            m_columns_header.clear();
+            m_data.clear();
+            m_columns.clear();
+            m_col_count = 0;
+            m_row_count = 0;
+        }
+        /** Get the current column description (which may have subcolumns)
+         *
+         * @param col_index index of column description
+         * @return column description
+         */
+        const imaging_column& column_at(const size_t col_index)throw(model::index_out_of_bounds_exception)
+        {
+            if( col_index >= m_columns.size()) INTEROP_THROW(model::index_out_of_bounds_exception, "Column index of out bounds");
+            return m_columns[col_index];
         }
 
     public:
-        /** Number of columns in the table
+        /** Number of columns
          *
          * @return column count
          */
         size_t column_count()const
         {
-            return m_columns_header.size();
+            return m_columns.size();
+        }
+        /** Number of columns including subcolumns in the table
+         *
+         * @return column count
+         */
+        size_t total_column_count()const
+        {
+            return m_col_count;
         }
         /** Number of rows in the table
          *
@@ -172,15 +154,56 @@ namespace illumina { namespace interop { namespace model { namespace table {
          */
         size_t row_count()const
         {
-            return m_rows.size();
+            return m_row_count;
         }
 
+    private:
         friend std::istream& operator>>(std::istream& in, imaging_table& table);
         friend std::ostream& operator<<(std::ostream& out, const imaging_table& table);
     private:
-        row_vector_t m_rows;
-        filled_vector_t m_columns_filled;
-        header_vector_t m_columns_header;
+        data_vector_t m_data;
+        column_vector_t m_columns;
+        offset_vector_t m_enum_to_index;
+        size_t m_row_count;
+        size_t m_col_count;
+    };
+    /** Compare two row indicies to determine which id in the table is less than another row
+     */
+    struct imaging_table_id_less
+    {
+        /** Constructor
+         *
+         * @param table reference to an imaging table
+         */
+        imaging_table_id_less(const imaging_table& table) : m_table(table){}
+
+        /** Test if one row is less than another in terms of the tile id/cycle ordering
+         *
+         * @param lhs_row index to one row
+         * @param rhs_row index to another row
+         * @return true if the id in the first row is less than the second
+         */
+        bool operator()(const size_t lhs_row, const size_t rhs_row)const
+        {
+            const size_t lhs_lane = static_cast<size_t>(m_table(lhs_row, LaneColumn));
+            const size_t rhs_lane = static_cast<size_t>(m_table(rhs_row, LaneColumn));
+            if(lhs_lane == rhs_lane)
+            {
+                const size_t lhs_tile = static_cast<size_t>(m_table(lhs_row, TileColumn));
+                const size_t rhs_tile = static_cast<size_t>(m_table(rhs_row, TileColumn));
+                if(lhs_tile == rhs_tile)
+                {
+                    const size_t lhs_cycle = static_cast<size_t>(m_table(lhs_row, CycleColumn));
+                    const size_t rhs_cycle = static_cast<size_t>(m_table(rhs_row, CycleColumn));
+                    return lhs_cycle < rhs_cycle;
+                }
+                return lhs_tile < rhs_tile;
+            }
+            return lhs_lane < rhs_lane;
+        }
+
+    private:
+        const imaging_table& m_table;
     };
 
 }}}}

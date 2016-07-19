@@ -26,6 +26,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics {
             /** Tells the reader to include any records that have 0 for tile */
             CHECK_TILE_ID = 0
         };
+        /** Define the base type */
+        typedef constants::base_lane_t base_t;
     public:
         /** Constructor
          */

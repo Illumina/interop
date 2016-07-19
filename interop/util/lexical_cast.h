@@ -8,7 +8,7 @@
  *
  *  @date 8/9/15
  *  @version 1.0
- *  @opyright GNU Public License.
+ *  @copyright GNU Public License.
  */
 
 #pragma once
