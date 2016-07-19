@@ -53,7 +53,7 @@ matrix:
         build_command_prepend: "cmake .. -DENABLE_SWIG=OFF -DENABLE_DOCS=OFF"
         build_command: "cmake --build ."
         notification_email: ezralanglois+coverity@gmail.com
-        branch_pattern: .*
+        branch_pattern: master
   - compiler: gcc
     addons: &1
       apt:
