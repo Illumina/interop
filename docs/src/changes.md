@@ -5,6 +5,7 @@
 
 Commit     | Description
 -------    | -----------
+2016-07-21 | Bug fixes for flowcell chart and more recent versions of GCC
 2016-07-17 | Added coverity online scan and fixed some issues found
 
 ## v1.0.8

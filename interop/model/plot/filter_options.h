@@ -156,6 +156,17 @@ namespace illumina { namespace interop { namespace model { namespace plot
             return valid_tile(metric) && valid_cycle(metric, typename Metric::base_t());
         }
 
+        /** Test if metric is a valid read
+         *
+         * @param metric any metric type
+         * @return true if the tile should not be filtered
+         */
+        template<class Metric>
+        bool valid_read(const Metric &metric) const
+        {
+            return valid_read(metric, typename Metric::base_t());
+        }
+
         /** Test if all channels were requested
          *
          * @param type metric type
@@ -554,6 +565,19 @@ namespace illumina { namespace interop { namespace model { namespace plot
         template<class Metric>
         bool valid_cycle(const Metric &, constants::base_read_t) const
         { return true; }
+
+        template<class Metric>
+        bool valid_read(const Metric &metric, constants::base_read_t) const
+        { return metric.read() == m_read; }
+
+        template<class Metric>
+        bool valid_read(const Metric &, constants::base_cycle_t) const
+        { return true; }
+
+        template<class Metric>
+        bool valid_read(const Metric &, constants::base_tile_t) const
+        { return true; }
+
 
     private:
         id_t m_lane;
