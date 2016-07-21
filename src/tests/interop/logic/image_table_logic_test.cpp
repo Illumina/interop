@@ -129,7 +129,7 @@ TEST(imaging_table, test_row0)
     std::vector< bool > filled_columns;
     logic::table::populate_imaging_table(metrics, table, filled_columns);
     ASSERT_EQ(table.size(), 3u);
-    ASSERT_EQ(filled_columns.size(), model::table::ImagingColumnCount);
+    ASSERT_EQ(filled_columns.size(), static_cast<size_t>(model::table::ImagingColumnCount));
     EXPECT_TRUE(filled_columns[0]);
     EXPECT_TRUE(filled_columns[1]);
     EXPECT_TRUE(filled_columns[model::table::ErrorRateColumn]);
