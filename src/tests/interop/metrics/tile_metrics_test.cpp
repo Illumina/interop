@@ -40,27 +40,27 @@ TYPED_TEST(tile_metrics_test, test_read_write)
     EXPECT_EQ(TypeParam::actual_metric_set.size(), TypeParam::expected_metric_set.size());
 
     const float tol = 1e-7f / 0.01f;
-    for(typename TypeParam::const_iterator itExpected=TypeParam::expected_metric_set.begin(), itActual = TypeParam::actual_metric_set.begin();
-        itExpected != TypeParam::expected_metric_set.end() && itActual != TypeParam::actual_metric_set.end();
-        itExpected++,itActual++)
+    for(typename TypeParam::const_iterator it_expected=TypeParam::expected_metric_set.begin(), it_actual = TypeParam::actual_metric_set.begin();
+        it_expected != TypeParam::expected_metric_set.end() && it_actual != TypeParam::actual_metric_set.end();
+        it_expected++,it_actual++)
     {
-        EXPECT_EQ(itExpected->lane(), itActual->lane());
-        EXPECT_EQ(itExpected->tile(), itActual->tile());
+        EXPECT_EQ(it_expected->lane(), it_actual->lane());
+        EXPECT_EQ(it_expected->tile(), it_actual->tile());
 
-        EXPECT_NEAR(itExpected->clusterDensity(), itActual->clusterDensity(), tol);
-        EXPECT_NEAR(itExpected->clusterDensityPf(), itActual->clusterDensityPf(), tol);
-        EXPECT_NEAR(itExpected->clusterCount(), itActual->clusterCount(), tol);
-        EXPECT_NEAR(itExpected->clusterCountPf(), itActual->clusterCountPf(), tol);
-        EXPECT_EQ(itExpected->read_metrics().size(), itActual->read_metrics().size());
-        for(typename TypeParam::metric_t::read_metric_vector::const_iterator itReadExpected = itExpected->read_metrics().begin(),
-                        itReadActual = itActual->read_metrics().begin();
-                        itReadExpected != itExpected->read_metrics().end() &&
-                        itReadActual != itActual->read_metrics().end(); itReadExpected++, itReadActual++)
+        EXPECT_NEAR(it_expected->cluster_density(), it_actual->cluster_density(), tol);
+        EXPECT_NEAR(it_expected->cluster_density_pf(), it_actual->cluster_density_pf(), tol);
+        EXPECT_NEAR(it_expected->cluster_count(), it_actual->cluster_count(), tol);
+        EXPECT_NEAR(it_expected->cluster_count_pf(), it_actual->cluster_count_pf(), tol);
+        EXPECT_EQ(it_expected->read_metrics().size(), it_actual->read_metrics().size());
+        for(typename TypeParam::metric_t::read_metric_vector::const_iterator it_read_expected = it_expected->read_metrics().begin(),
+                        it_read_actual = it_actual->read_metrics().begin();
+                        it_read_expected != it_expected->read_metrics().end() &&
+                        it_read_actual != it_actual->read_metrics().end(); it_read_expected++, it_read_actual++)
         {
-            EXPECT_EQ(itReadExpected->read(), itReadActual->read());
-            EXPECT_NEAR(itReadExpected->percent_aligned(), itReadActual->percent_aligned(), tol);
-            EXPECT_NEAR(itReadExpected->percent_phasing()*scale, itReadActual->percent_phasing(), tol);
-            EXPECT_NEAR(itReadExpected->percent_prephasing()*scale, itReadActual->percent_prephasing(), tol);
+            EXPECT_EQ(it_read_expected->read(), it_read_actual->read());
+            EXPECT_NEAR(it_read_expected->percent_aligned(), it_read_actual->percent_aligned(), tol);
+            EXPECT_NEAR(it_read_expected->percent_phasing()*scale, it_read_actual->percent_phasing(), tol);
+            EXPECT_NEAR(it_read_expected->percent_prephasing()*scale, it_read_actual->percent_prephasing(), tol);
         }
     }
 }
@@ -190,10 +190,10 @@ TEST(tile_metrics_test, test_tile_metric_for_lane)
     EXPECT_EQ(expected_metric.tile(), actual_metric.tile());
 
     const float tol = 1e-7f / 0.01f;
-    EXPECT_NEAR(expected_metric.clusterDensity(), actual_metric.clusterDensity(), tol);
-    EXPECT_NEAR(expected_metric.clusterDensityPf(), actual_metric.clusterDensityPf(), tol);
-    EXPECT_NEAR(expected_metric.clusterCount(), actual_metric.clusterCount(), tol);
-    EXPECT_NEAR(expected_metric.clusterCountPf(), actual_metric.clusterCountPf(), tol);
+    EXPECT_NEAR(expected_metric.cluster_density(), actual_metric.cluster_density(), tol);
+    EXPECT_NEAR(expected_metric.cluster_density_pf(), actual_metric.cluster_density_pf(), tol);
+    EXPECT_NEAR(expected_metric.cluster_count(), actual_metric.cluster_count(), tol);
+    EXPECT_NEAR(expected_metric.cluster_count_pf(), actual_metric.cluster_count_pf(), tol);
     EXPECT_EQ(expected_metric.read_metrics().size(), actual_metric.read_metrics().size());
 
 

@@ -172,8 +172,8 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
         std::set<uint_t> bins_found;
         for(;beg != end;++beg)
         {
-            for(uint_t i=0;i<static_cast<uint_t>(beg->qscoreHist().size());++i)
-                if(beg->qscoreHist()[i] > 0) bins_found.insert(i);
+            for(uint_t i=0;i<static_cast<uint_t>(beg->qscore_hist().size());++i)
+                if(beg->qscore_hist()[i] > 0) bins_found.insert(i);
             if(bins_found.size() > max_bin_count) break; // Number of bins greater than 7 indicates this is unbinned
         }
         return bins_found.size();

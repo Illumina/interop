@@ -218,9 +218,9 @@ int copy_tile_metrics(const std::string& input, const std::string& output, const
         subset.push_back(tile_metric(*beg, reads));
     }
 
-    tile_metric_set_t metricsOut(subset, metrics.version(), metrics);
+    tile_metric_set_t metrics_out(subset, metrics.version(), metrics);
     try {
-        io::write_interop(output, metricsOut);
+        io::write_interop(output, metrics_out);
     }
     catch(const io::file_not_found_exception& ex)
     {
@@ -269,9 +269,9 @@ int copy_cycle_metrics(const std::string& input, const std::string& output, cons
         subset.push_back(*beg);
     }
 
-    MetricSet metricsOut(subset, metrics.version(), metrics);
+    MetricSet metrics_out(subset, metrics.version(), metrics);
     try {
-        io::write_interop(output, metricsOut);
+        io::write_interop(output, metrics_out);
     }
     catch(const io::file_not_found_exception& ex)
     {

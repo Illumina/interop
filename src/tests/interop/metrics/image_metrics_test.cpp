@@ -39,18 +39,18 @@ TYPED_TEST(image_metrics_test, test_read_write)
     EXPECT_EQ(TypeParam::actual_metric_set.channelCount(), TypeParam::expected_metric_set.channelCount());
     EXPECT_EQ(TypeParam::actual_metric_set.max_cycle(), TypeParam::expected_metric_set.max_cycle());
 
-    for(typename TypeParam::const_iterator itExpected=TypeParam::expected_metric_set.begin(), itActual = TypeParam::actual_metric_set.begin();
-        itExpected != TypeParam::expected_metric_set.end() && itActual != TypeParam::actual_metric_set.end();
-        itExpected++,itActual++)
+    for(typename TypeParam::const_iterator it_expected=TypeParam::expected_metric_set.begin(), it_actual = TypeParam::actual_metric_set.begin();
+        it_expected != TypeParam::expected_metric_set.end() && it_actual != TypeParam::actual_metric_set.end();
+        it_expected++,it_actual++)
     {
-        EXPECT_EQ(itExpected->lane(), itActual->lane());
-        EXPECT_EQ(itExpected->tile(), itActual->tile());
-        EXPECT_EQ(itExpected->cycle(), itActual->cycle());
-        EXPECT_EQ(itExpected->channelCount(), itActual->channelCount());
-        for(size_t i=0;i<std::min(itExpected->channelCount(), itActual->channelCount());i++)
+        EXPECT_EQ(it_expected->lane(), it_actual->lane());
+        EXPECT_EQ(it_expected->tile(), it_actual->tile());
+        EXPECT_EQ(it_expected->cycle(), it_actual->cycle());
+        EXPECT_EQ(it_expected->channel_count(), it_actual->channel_count());
+        for(size_t i=0;i<std::min(it_expected->channel_count(), it_actual->channel_count());i++)
         {
-            EXPECT_EQ(itExpected->minContrast(i), itActual->minContrast(i));
-            EXPECT_EQ(itExpected->maxContrast(i), itActual->maxContrast(i));
+            EXPECT_EQ(it_expected->min_contrast(i), it_actual->min_contrast(i));
+            EXPECT_EQ(it_expected->max_contrast(i), it_actual->max_contrast(i));
         }
     }
 }

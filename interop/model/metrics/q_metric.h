@@ -372,21 +372,21 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         uint_t total_over_qscore(const uint_t qscore,
                                  const qscore_bin_vector_type &bins = qscore_bin_vector_type()) const
         {
-            uint_t totalCount = 0;
+            uint_t total_count = 0;
             if (bins.size() == 0)
             {
                 if(qscore <= m_qscore_hist.size())
-                    totalCount = std::accumulate(m_qscore_hist.begin() + qscore, m_qscore_hist.end(), 0);
+                    total_count = std::accumulate(m_qscore_hist.begin() + qscore, m_qscore_hist.end(), 0);
             }
             else
             {
                 for (size_t i = 0; i < bins.size(); i++)
                 {
                     if (bins[i].value() >= qscore)
-                        totalCount += m_qscore_hist[i];
+                        total_count += m_qscore_hist[i];
                 }
             }
-            return totalCount;
+            return total_count;
         }
 
         /** Number of clusters over the given q-score
@@ -404,12 +404,12 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                                             const qscore_bin_vector_type &bins = qscore_bin_vector_type()) const
         {
             INTEROP_ASSERT(m_qscore_hist_cumulative.size() > 0);
-            ::uint64_t totalCount = 0;
+            ::uint64_t total_count = 0;
             if (bins.size() == 0)
             {
                 INTEROP_ASSERT(qscore > 0);
                 if(qscore <= m_qscore_hist_cumulative.size())
-                totalCount = std::accumulate(m_qscore_hist_cumulative.begin() + qscore, m_qscore_hist_cumulative.end(),
+                total_count = std::accumulate(m_qscore_hist_cumulative.begin() + qscore, m_qscore_hist_cumulative.end(),
                                              static_cast< ::uint64_t >(0));
             }
             else
@@ -417,10 +417,10 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                 for (size_t i = 0; i < bins.size(); i++)
                 {
                     if (bins[i].value() >= qscore)
-                        totalCount += m_qscore_hist_cumulative[i];
+                        total_count += m_qscore_hist_cumulative[i];
                 }
             }
-            return totalCount;
+            return total_count;
         }
 
         /** Percent of clusters over the given q-score

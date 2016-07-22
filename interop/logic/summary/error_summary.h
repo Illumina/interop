@@ -60,7 +60,7 @@ void cache_error_by_lane_read(I beg,
         INTEROP_ASSERTMSG(read_number < tmp.size(), read.number << " " << read.cycle_within_read << ", " << beg->cycle());
         if(tmp[read_number].find(key) == tmp[read_number].end())
             tmp[read_number][key] = std::make_pair(0.0f, 0.0f);
-        tmp[read_number][key].first+=beg->errorRate();
+        tmp[read_number][key].first+=beg->error_rate();
         tmp[read_number][key].second+=1;
     }
     for(size_t read=0;read<tmp.size();++read)

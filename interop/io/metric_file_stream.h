@@ -92,9 +92,9 @@ namespace illumina { namespace interop { namespace io {
                                                                         interop::io::incomplete_file_exception,
                                                                         model::index_out_of_bounds_exception)
     {
-        const std::string fileName = interop_filename<MetricSet>(run_directory, use_out);
-        std::ifstream fin(fileName.c_str(), std::ios::binary);
-        if(!fin.good()) INTEROP_THROW(file_not_found_exception, "File not found: " << fileName);
+        const std::string file_name = interop_filename<MetricSet>(run_directory, use_out);
+        std::ifstream fin(file_name.c_str(), std::ios::binary);
+        if(!fin.good()) INTEROP_THROW(file_not_found_exception, "File not found: " << file_name);
         read_metrics(fin, metrics);
     }
     /** Write the metric set to a binary InterOp file
@@ -113,9 +113,9 @@ namespace illumina { namespace interop { namespace io {
                        const bool use_out=true,
                        const ::int16_t version=-1) throw(file_not_found_exception, bad_format_exception, incomplete_file_exception)
     {
-        const std::string fileName = interop_filename<MetricSet>(run_directory, use_out);
-        std::ofstream fout(fileName.c_str(), std::ios::binary);
-        if(!fout.good())INTEROP_THROW(file_not_found_exception, "File not found: " << fileName);
+        const std::string file_name = interop_filename<MetricSet>(run_directory, use_out);
+        std::ofstream fout(file_name.c_str(), std::ios::binary);
+        if(!fout.good())INTEROP_THROW(file_not_found_exception, "File not found: " << file_name);
         write_metrics(fout, metrics, version);
     }
     /** Write only the header to a binary InterOp file
@@ -135,9 +135,9 @@ namespace illumina { namespace interop { namespace io {
                               const bool use_out=true) throw(file_not_found_exception,
                                                                 bad_format_exception, incomplete_file_exception)
     {
-        const std::string fileName = interop_filename<MetricType>(run_directory, use_out);
-        std::ofstream fout(fileName.c_str(), std::ios::binary);
-        if(!fout.good())INTEROP_THROW(file_not_found_exception, "File not found: " << fileName);
+        const std::string file_name = interop_filename<MetricType>(run_directory, use_out);
+        std::ofstream fout(file_name.c_str(), std::ios::binary);
+        if(!fout.good())INTEROP_THROW(file_not_found_exception, "File not found: " << file_name);
         write_metric_header(fout, header, version);
     }
     /** @} */

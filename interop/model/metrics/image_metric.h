@@ -38,9 +38,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     public:
         /** Constructor
          *
-         * @param channelCount number of channels
+         * @param channel_count number of channels
          */
-        image_metric_header(ushort_t channelCount) : m_channel_count(channelCount)
+        image_metric_header(ushort_t channel_count) : m_channel_count(channel_count)
         { }
 
         /** Number of channels
@@ -117,18 +117,18 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @param tile tile number
          * @param cycle cycle number
          * @param channel_count number of channels
-         * @param minContrast minimum contrast for each channel
-         * @param maxContrast maximum contrast for each channel
+         * @param min_contrast minimum contrast for each channel
+         * @param max_contrast maximum contrast for each channel
          */
         image_metric(const uint_t lane,
                      const uint_t tile,
                      const uint_t cycle,
                      const ushort_t channel_count,
-                     const ushort_array_t &minContrast,
-                     const ushort_array_t &maxContrast) :
+                     const ushort_array_t &min_contrast,
+                     const ushort_array_t &max_contrast) :
                 metric_base::base_cycle_metric(lane, tile, cycle),
-                m_min_contrast(minContrast),
-                m_max_contrast(maxContrast),
+                m_min_contrast(min_contrast),
+                m_max_contrast(max_contrast),
                 m_channel_count(channel_count)
         {
         }
@@ -140,18 +140,18 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @param tile tile number
          * @param cycle cycle number
          * @param channel_count number of channels
-         * @param minContrast minimum contrast for each channel
-         * @param maxContrast maximum contrast for each channel
+         * @param min_contrast minimum contrast for each channel
+         * @param max_contrast maximum contrast for each channel
          */
         image_metric(const uint_t lane,
                      const uint_t tile,
                      const uint_t cycle,
                      const ushort_t channel_count,
-                     const ushort_pointer_t minContrast,
-                     const ushort_pointer_t maxContrast) :
+                     const ushort_pointer_t min_contrast,
+                     const ushort_pointer_t max_contrast) :
                 metric_base::base_cycle_metric(lane, tile, cycle),
-                m_min_contrast(minContrast, minContrast + channel_count),
-                m_max_contrast(maxContrast, maxContrast + channel_count),
+                m_min_contrast(min_contrast, min_contrast + channel_count),
+                m_max_contrast(max_contrast, max_contrast + channel_count),
                 m_channel_count(channel_count)
         {
         }

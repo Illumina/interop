@@ -22,12 +22,12 @@ namespace illumina { namespace interop { namespace io
     {
         /** Append the InterOp directory to the run directory file path
          *
-         * @param runDirectory file path to the run directory
+         * @param run_directory file path to the run directory
          * @return file path to the InterOp directory
          */
-        inline std::string interop_directory_name(const std::string &runDirectory)
+        inline std::string interop_directory_name(const std::string &run_directory)
         {
-            return io::combine(runDirectory, "InterOp");
+            return io::combine(run_directory, "InterOp");
         }
 
         /** Generate a file name from a run directory and the InterOp name
@@ -37,14 +37,14 @@ namespace illumina { namespace interop { namespace io
          *
          * @param prefix prefix name of the interop file
          * @param suffix suffix name of the interop file
-         * @param useOut if true, append "Out" to the end of the filename
+         * @param use_out if true, append "Out" to the end of the filename
          * @return file path to the InterOp directory
          */
         inline std::string interop_basename(const std::string &prefix,
                                             const std::string &suffix,
-                                            const bool useOut = true)
+                                            const bool use_out = true)
         {
-            return prefix + "Metrics" + suffix + ((useOut) ? ("Out.bin") : (".bin"));
+            return prefix + "Metrics" + suffix + ((use_out) ? ("Out.bin") : (".bin"));
         }
 
         /** Generate a file name from a run directory and the InterOp name
@@ -52,22 +52,22 @@ namespace illumina { namespace interop { namespace io
          * @note The 'Out' suffix is appended when we read the file. We excluded the Out in certain conditions
          * when writing the file.
          *
-         * @param runDirectory file path to the run directory
+         * @param run_directory file path to the run directory
          * @param prefix prefix name of the interop file
          * @param suffix suffix name of the interop file
-         * @param useOut if true, append "Out" to the end of the filename
+         * @param use_out if true, append "Out" to the end of the filename
          * @return file path to the InterOp directory
          */
-        inline std::string interop_filename(const std::string &runDirectory,
+        inline std::string interop_filename(const std::string &run_directory,
                                             const std::string &prefix,
                                             const std::string &suffix,
-                                            const bool useOut = true)
+                                            const bool use_out = true)
         {
-            if (io::basename(runDirectory) == interop_basename(prefix, suffix, useOut))
-                return runDirectory;
-            if (io::basename(runDirectory) == "InterOp")
-                return io::combine(runDirectory, interop_basename(prefix, suffix, useOut));
-            return io::combine(interop_directory_name(runDirectory), interop_basename(prefix, suffix, useOut));
+            if (io::basename(run_directory) == interop_basename(prefix, suffix, use_out))
+                return run_directory;
+            if (io::basename(run_directory) == "InterOp")
+                return io::combine(run_directory, interop_basename(prefix, suffix, use_out));
+            return io::combine(interop_directory_name(run_directory), interop_basename(prefix, suffix, use_out));
         }
 
         /** Memory buffer for a stream
@@ -93,14 +93,14 @@ namespace illumina { namespace interop { namespace io
      * @note The 'Out' suffix is appended when we read the file. We excluded the Out in certain conditions
      * when writing the file.
      *
-     * @param runDirectory file path to the run directory
-     * @param useOut if true, append "Out" to the end of the filename
+     * @param run_directory file path to the run directory
+     * @param use_out if true, append "Out" to the end of the filename
      * @return file path to the InterOp directory
      */
     template<class MetricType>
-    std::string interop_filename(const std::string &runDirectory, bool useOut = true)
+    std::string interop_filename(const std::string &run_directory, bool use_out = true)
     {
-        return detail::interop_filename(runDirectory, MetricType::prefix(), MetricType::suffix(), useOut);
+        return detail::interop_filename(run_directory, MetricType::prefix(), MetricType::suffix(), use_out);
     }
 
     /** Generate a file name from a run directory and the metric type
@@ -108,13 +108,13 @@ namespace illumina { namespace interop { namespace io
      * @note The 'Out' suffix is appended when we read the file. We excluded the Out in certain conditions
      * when writing the file.
      *
-     * @param useOut if true, append "Out" to the end of the filename
+     * @param use_out if true, append "Out" to the end of the filename
      * @return file path to the InterOp directory
      */
     template<class MetricType>
-    std::string interop_basename(bool useOut = true)
+    std::string interop_basename(bool use_out = true)
     {
-        return detail::interop_basename(MetricType::prefix(), MetricType::suffix(), useOut);
+        return detail::interop_basename(MetricType::prefix(), MetricType::suffix(), use_out);
     }
 
     /** Read the binary InterOp file into the given metric set

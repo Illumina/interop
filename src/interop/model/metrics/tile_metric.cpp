@@ -121,20 +121,20 @@ namespace illumina{ namespace interop{
                             if( rec.code % Phasing < 100 )
                             {
                                 //code = Prephasing+read*2;
-                                int codeOffset = rec.code % Phasing;
-                                if(codeOffset%2 == 0)
+                                int code_offset = rec.code % Phasing;
+                                if(code_offset%2 == 0)
                                 {
-                                    get_read(metric, (codeOffset/2)+1)->percent_phasing(val*100);
+                                    get_read(metric, (code_offset/2)+1)->percent_phasing(val*100);
                                 }
                                 else
                                 {
-                                    get_read(metric, (codeOffset+1)/2)->percent_prephasing(val*100);
+                                    get_read(metric, (code_offset+1)/2)->percent_prephasing(val*100);
                                 }
                             }
                             else if(rec.code % PercentAligned < 100)
                             {
-                                int codeOffset = rec.code % PercentAligned;
-                                get_read(metric, codeOffset+1)->percent_aligned(val);
+                                int code_offset = rec.code % PercentAligned;
+                                get_read(metric, code_offset+1)->percent_aligned(val);
                             }
                             else INTEROP_THROW(bad_format_exception, "Unexpected tile code");
                     };

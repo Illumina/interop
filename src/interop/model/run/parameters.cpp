@@ -106,8 +106,8 @@ void parameters::read_file(const std::string &filename)   throw( xml::xml_file_n
 {
     try
     {
-        rapidxml::file<> xmlFile(filename.c_str());
-        parse(xmlFile.data());
+        rapidxml::file<> xml_file(filename.c_str());
+        parse(xml_file.data());
     }catch(const std::runtime_error& ex)
     {
         INTEROP_THROW( xml_file_not_found_exception, ex.what());

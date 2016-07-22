@@ -99,7 +99,7 @@ namespace illumina{ namespace interop { namespace unittest {
 
 
             typedef metric_t::ushort_t ushort_t;
-            const ushort_t channel_count = header().channelCount();
+            const ushort_t channel_count = header().channel_count();
             const ushort_t min_contrast1[]  = {231, 207};
             const ushort_t min_contrast2[]  = {229, 205};
             const ushort_t min_contrast3[]  = {231, 222};

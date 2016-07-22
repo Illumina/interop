@@ -81,23 +81,23 @@ namespace illumina { namespace interop { namespace logic { namespace summary
             summarize(tile_data_by_lane[lane].begin(),
                       tile_data_by_lane[lane].end(),
                       run[0][lane].density(),
-                      util::op::const_member_function(&model::metrics::tile_metric::clusterDensity),
-                      util::op::const_member_function_less(&model::metrics::tile_metric::clusterDensity));
+                      util::op::const_member_function(&model::metrics::tile_metric::cluster_density),
+                      util::op::const_member_function_less(&model::metrics::tile_metric::cluster_density));
             summarize(tile_data_by_lane[lane].begin(),
                       tile_data_by_lane[lane].end(),
                       run[0][lane].density_pf(),
-                      util::op::const_member_function(&model::metrics::tile_metric::clusterDensityPf),
-                      util::op::const_member_function_less(&model::metrics::tile_metric::clusterDensityPf));
+                      util::op::const_member_function(&model::metrics::tile_metric::cluster_density_pf),
+                      util::op::const_member_function_less(&model::metrics::tile_metric::cluster_density_pf));
             summarize(tile_data_by_lane[lane].begin(),
                       tile_data_by_lane[lane].end(),
                       run[0][lane].cluster_count(),
-                      util::op::const_member_function(&model::metrics::tile_metric::clusterCount),
-                      util::op::const_member_function_less(&model::metrics::tile_metric::clusterCount));
+                      util::op::const_member_function(&model::metrics::tile_metric::cluster_count),
+                      util::op::const_member_function_less(&model::metrics::tile_metric::cluster_count));
             summarize(tile_data_by_lane[lane].begin(),
                       tile_data_by_lane[lane].end(),
                       run[0][lane].cluster_count_pf(),
-                      util::op::const_member_function(&model::metrics::tile_metric::clusterCountPf),
-                      util::op::const_member_function_less(&model::metrics::tile_metric::clusterCountPf));
+                      util::op::const_member_function(&model::metrics::tile_metric::cluster_count_pf),
+                      util::op::const_member_function_less(&model::metrics::tile_metric::cluster_count_pf));
             summarize(tile_data_by_lane[lane].begin(),
                       tile_data_by_lane[lane].end(),
                       run[0][lane].percent_pf(),
@@ -107,12 +107,12 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                                                tile_data_by_lane[lane].end(),
                                                float(0),
                                                util::op::const_member_function(
-                                                       &model::metrics::tile_metric::clusterCount)));
+                                                       &model::metrics::tile_metric::cluster_count)));
             run[0][lane].reads_pf(std::accumulate(tile_data_by_lane[lane].begin(),
                                                   tile_data_by_lane[lane].end(),
                                                   float(0),
                                                   util::op::const_member_function(
-                                                          &model::metrics::tile_metric::clusterCountPf)));
+                                                          &model::metrics::tile_metric::cluster_count_pf)));
 
             for (size_t read = 1; read < run.size(); ++read)
             {

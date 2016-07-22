@@ -46,18 +46,18 @@ TEST(q_by_lane_metrics_test, test_convert_write_read)
     EXPECT_EQ(actual_metric_set.version(), expected_metric_set.version());
     EXPECT_EQ(actual_metric_set.max_cycle(), expected_metric_set.max_cycle());
     ASSERT_EQ(actual_metric_set.size(), expected_metric_set.size());
-    for(metric_set<q_by_lane_metric>::const_iterator itExpected=expected_metric_set.begin(),
-                itActual = actual_metric_set.begin();
-        itExpected != expected_metric_set.end();
-        itExpected++,itActual++)
+    for(metric_set<q_by_lane_metric>::const_iterator it_expected=expected_metric_set.begin(),
+                it_actual = actual_metric_set.begin();
+        it_expected != expected_metric_set.end();
+        it_expected++,it_actual++)
     {
-        EXPECT_EQ(itExpected->lane(), itActual->lane());
-        EXPECT_EQ(itExpected->tile(), itActual->tile());
-        EXPECT_EQ(itExpected->cycle(), itActual->cycle());
-        EXPECT_EQ(itExpected->size(), itActual->size());
-        for(size_t i=0;i<std::min(itExpected->size(), itActual->size());i++)
+        EXPECT_EQ(it_expected->lane(), it_actual->lane());
+        EXPECT_EQ(it_expected->tile(), it_actual->tile());
+        EXPECT_EQ(it_expected->cycle(), it_actual->cycle());
+        EXPECT_EQ(it_expected->size(), it_actual->size());
+        for(size_t i=0;i<std::min(it_expected->size(), it_actual->size());i++)
         {
-            EXPECT_EQ(itExpected->qscoreHist(i), itActual->qscoreHist(i));
+            EXPECT_EQ(it_expected->qscore_hist(i), it_actual->qscore_hist(i));
         }
     }
 }
