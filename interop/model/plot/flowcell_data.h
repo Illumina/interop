@@ -151,10 +151,14 @@ public:
         return m_tile_count;
     }
 
-private:
+protected:
+    /** Array of tile numbers for each tile */
     std::vector< ::uint32_t > m_data;
+    /** Sub title */
     std::string m_subtitle;
+    /** Number of swaths per lane */
     size_t m_swath_count;
+    /** Number of tiles per swath */
     size_t m_tile_count;
 };
 

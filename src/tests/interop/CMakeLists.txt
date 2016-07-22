@@ -59,3 +59,11 @@ add_custom_command(TARGET interop_gtests POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE_DIR:${INTEROP_LIB}> ${CMAKE_CURRENT_BINARY_DIR})
 endif()
 
+if(MSVC)
+    set_target_properties(interop_gtests PROPERTIES COMPILE_FLAGS "/bigobj")
+elseif(MINGW)
+    set_target_properties(interop_gtests PROPERTIES COMPILE_FLAGS "-Wa,-mbig-obj -Wno-unused-function")
+elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR CMAKE_COMPILER_IS_GNUCC)
+    set_target_properties(interop_gtests PROPERTIES COMPILE_FLAGS "-Wno-unused-function")
+endif()
+

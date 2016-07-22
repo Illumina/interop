@@ -55,7 +55,7 @@ Documentation
 [ModulesPage]: http://illumina.github.io/interop/modules.html
 [ChangesPage]: http://illumina.github.io/interop/changes.html
 [Issues]: https://github.com/Illumina/interop/issues
-[PerfPage]: http://illumina.github.io/interop/performance.html
+[PerfPage]: http://illumina.github.io/interop/perf.html
 
 Install
 -------
