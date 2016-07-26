@@ -46,7 +46,13 @@ namespace Illumina.InterOp.Interop.UnitTest
             run.legacy_channel_update(instrument_type.HiSeq);
             run.finalize_after_load();
 
-            flowcell_data data = new flowcell_data();
+            var layout = run.run_info().flowcell();
+            uint lane_count = layout.lane_count();
+            uint swath_count = layout.total_swaths(layout.surface_count() > 1 && !options.is_specific_surface());
+            uint tile_count = layout.tiles_per_lane();
+            float[] data_buffer = new float[lane_count*swath_count*tile_count];
+            uint[] tile_buffer  = new uint[lane_count*swath_count*tile_count];
+            flowcell_data data = new flowcell_data(data_buffer, tile_buffer, lane_count, swath_count, tile_count);
             c_csharp_plot.plot_flowcell_map(run,  metric_type.QScore, options, data);
             Assert.AreEqual(data.row_count(), 8);
 		}

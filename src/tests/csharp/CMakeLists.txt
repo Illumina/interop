@@ -32,6 +32,7 @@ set(CSHARP_TEST_ENABLED ON PARENT_SCOPE)
 include(${CSHARP_USE_FILE})
 
 set(TEST_SRCS
+        logic/MemoryManagementTest.cs
         logic/ImagingTableLogic.cs
         logic/ExceptionTest.cs
         logic/IndexSummaryLogic.cs

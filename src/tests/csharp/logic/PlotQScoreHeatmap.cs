@@ -46,18 +46,13 @@ namespace Illumina.InterOp.Interop.UnitTest
             run.legacy_channel_update(instrument_type.HiSeq);
             run.finalize_after_load();
 
-            heatmap_data data = new heatmap_data();
+            uint row_count = c_csharp_plot.count_rows_for_heatmap(run);
+            uint col_count = c_csharp_plot.count_columns_for_heatmap(run);
+            var buffer = new float[row_count*col_count];
+            heatmap_data data = new heatmap_data(buffer, row_count, col_count);
             c_csharp_plot.plot_qscore_heatmap(run, options, data);
             Assert.AreEqual(data.row_count(), 3);
 
-		}
-		[Test]
-		public void CopyFloats()
-		{
-            heatmap_data data = new heatmap_data();
-            data.resize(10,10);
-            float[] tmp = new float[100];
-            data.copy_to_buffer(tmp, (uint)tmp.Length);
 		}
 	}
 

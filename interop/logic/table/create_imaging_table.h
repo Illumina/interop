@@ -61,7 +61,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
             if(it == index_map.end())
             {
                 if((beg->cycle()-1) >= cycle_to_read.size())
-                    throw model::index_out_of_bounds_exception("Cycle exceeds total cycles from Reads in the RunInfo.xml");
+                    INTEROP_THROW(model::index_out_of_bounds_exception, "Cycle exceeds total cycles from Reads in the RunInfo.xml");
 
                 row = index_map.size();
                 index_map[id]=row;

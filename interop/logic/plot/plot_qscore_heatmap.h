@@ -143,7 +143,8 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
     inline void plot_qscore_heatmap(model::metrics::run_metrics& metrics,
                                     const model::plot::filter_options& options,
                                     model::plot::heatmap_data& data)
-                                throw(model::index_out_of_bounds_exception, model::invalid_filter_option)
+                                    throw(model::index_out_of_bounds_exception,
+                                    model::invalid_filter_option)
     {
         options.validate(constants::QScore, metrics.run_info());
         data.clear();
@@ -175,6 +176,24 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
         if(metrics.run_info().flowcell().surface_count()>1 && options.is_specific_surface())
             title += " " + options.surface_description();
         data.set_title(title);
+    }
+    /** Count number of rows for the heat map
+     *
+     * @param metrics run metrics
+     * @return number of rows
+     */
+    size_t count_rows_for_heatmap(const model::metrics::run_metrics& metrics)
+    {
+        return metrics.get_set< model::metrics::q_metric >().max_cycle();
+    }
+    /** Count number of columns for the heat map
+     *
+     * @param metrics run metrics
+     * @return number of columns
+     */
+    size_t count_columns_for_heatmap(const model::metrics::run_metrics& metrics)
+    {
+        return logic::metric::max_qval(metrics.get_set< model::metrics::q_metric >());
     }
 
 

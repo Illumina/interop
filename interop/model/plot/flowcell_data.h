@@ -22,8 +22,50 @@ class flowcell_data : public heatmap_data
 {
 public:
     /** Constructor */
-    flowcell_data() : m_swath_count(0), m_tile_count(0){}
+    flowcell_data() : m_data(0), m_swath_count(0), m_tile_count(0), m_free(false){}
+    /** Constructor
+     *
+     * @param data_buffer data value buffer
+     * @param id_buffer data tile id buffer
+     * @param lanes lane count
+     * @param swaths swath count
+     * @param tiles tile count
+     */
+    flowcell_data(float* data_buffer,
+                  ::uint32_t* id_buffer,
+                  const size_t lanes,
+                  const size_t swaths,
+                  const size_t tiles) : m_data(0), m_swath_count(0), m_tile_count(0), m_free(false)
+    {
+        set_buffer(data_buffer, id_buffer, lanes, swaths, tiles);
+    }
+    /** Destructor */
+    virtual ~flowcell_data()
+    {
+        clear();
+    }
 public:
+    /** Resize the heat map to the given number of rows and columns
+     *
+     * @param data_buffer buffer to hold the flow cell values
+     * @param id_buffer buffer to hold the tile ids
+     * @param lanes number of lanes
+     * @param swaths number of swaths
+     * @param tiles number of tiles
+     */
+    void set_buffer(float* data_buffer,
+                    ::uint32_t* id_buffer,
+                    const size_t lanes,
+                    const size_t swaths,
+                    const size_t tiles)
+    {
+        heatmap_data::set_buffer(data_buffer, lanes, swaths * tiles);
+        if(m_free) delete[] m_data;
+        m_data = id_buffer;
+        m_swath_count = swaths;
+        m_tile_count = tiles;
+        m_free=false;
+    }
     /** Resize the flowcell heat map to the given number of rows and columns
      *
      * @param lanes number of lanes
@@ -32,17 +74,29 @@ public:
      */
     void resize(const size_t lanes, const size_t swaths, const size_t tiles)
     {
-        m_swath_count = swaths;
-        m_tile_count = tiles;
-        heatmap_data::resize(lanes, swaths*tiles);
-        m_data.resize(heatmap_data::length());
+        if( lanes != row_count() && swaths != m_swath_count &&  tiles != m_tile_count)
+        {
+            if (m_free) delete[] m_data;
+            m_swath_count = swaths;
+            m_tile_count = tiles;
+            heatmap_data::resize(lanes, swaths * tiles);
+            m_data = new ::uint32_t[heatmap_data::length()];
+            m_free = true;
+        }
     }
     /** Clear the data
      */
     void clear()
     {
         heatmap_data::clear();
-        m_data.clear();
+        if(m_free)
+        {
+            delete[] m_data;
+            m_data=0;
+            m_free = false;
+        }
+        m_swath_count = 0;
+        m_tile_count = 0;
     }
     /** Set data at given location in the flowcell
      *
@@ -58,8 +112,8 @@ public:
             INTEROP_THROW( model::index_out_of_bounds_exception, "Lane index out of bounds");
         if(loc >= column_count())
             INTEROP_THROW(model::index_out_of_bounds_exception, "Location index out of bounds");
-        //INTEROP_ASSERT(lane < m_data.size());
         heatmap_data::operator()(lane_idx, loc) = value;
+        INTEROP_ASSERT(m_data != 0);
         m_data[index_of(lane_idx, loc)] = tile_id;
     }
     /** Get the tile id associated with the location
@@ -74,7 +128,8 @@ public:
             INTEROP_THROW(model::index_out_of_bounds_exception, "Lane index out of bounds");
         if(loc >= column_count())
             INTEROP_THROW(model::index_out_of_bounds_exception, "Location index out of bounds");
-        INTEROP_ASSERT(index_of(lane_idx, loc) < m_data.size());
+        INTEROP_ASSERT(index_of(lane_idx, loc) < length());
+        INTEROP_ASSERT(m_data != 0);
         return m_data[index_of(lane_idx, loc)];
     }
     /** Set the axis
@@ -153,13 +208,14 @@ public:
 
 protected:
     /** Array of tile numbers for each tile */
-    std::vector< ::uint32_t > m_data;
+    ::uint32_t* m_data;
     /** Sub title */
     std::string m_subtitle;
     /** Number of swaths per lane */
     size_t m_swath_count;
     /** Number of tiles per swath */
     size_t m_tile_count;
+    bool m_free;
 };
 
 }}}}
