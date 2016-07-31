@@ -64,18 +64,18 @@ matrix:
         packages:
         - cmake
         - cmake-data
-        - g++-4.9
+        - g++-5
         - libicu-dev
         - swig3.0
         - doxygen
         - graphviz
         - mono-complete
         - libgtest-dev
-    env: INTEROP_C89=OFF COMPILER_VERSION=-4.9 BUILD_TYPE=Debug BUILD_NAME=linux_gcc49_debug
+    env: INTEROP_C89=OFF COMPILER_VERSION=-5 BUILD_TYPE=Debug BUILD_NAME=linux_gcc52_debug
     os: linux
   - compiler: gcc
     addons: *1
-    env: INTEROP_C89=OFF COMPILER_VERSION=-4.9 BUILD_TYPE=Release BUILD_NAME=linux_gcc49_release
+    env: INTEROP_C89=OFF COMPILER_VERSION=-5 BUILD_TYPE=Release BUILD_NAME=linux_gcc52_release
     os: linux
   - compiler: clang
     addons: &2
