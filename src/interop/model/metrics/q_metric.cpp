@@ -531,7 +531,7 @@ namespace illumina{ namespace interop{ namespace io {
             };
 
 #pragma pack()// DO NOT MOVE
-        }}}
+ }}}
 
 INTEROP_FORCE_LINK_DEF(q_metric)
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(q_metric, 4 )

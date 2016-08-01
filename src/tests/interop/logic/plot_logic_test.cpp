@@ -16,6 +16,7 @@
 
 using namespace illumina::interop;
 
+/** @test Confirm invalid metric thrown */
 TEST(plot_logic, failure_mode_bad_metric_plot_by_cycle)
 {
     model::metrics::run_metrics metrics;

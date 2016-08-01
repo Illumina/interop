@@ -145,7 +145,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
      * @param q_metric_set q-metric set
      */
     inline void populate_cumulative_distribution(model::metric_base::metric_set<model::metrics::q_collapsed_metric>& q_metric_set)
-    throw( model::index_out_of_bounds_exception )
+                    throw( model::index_out_of_bounds_exception )
     {
         populate_cumulative_distribution_t(q_metric_set);
     }

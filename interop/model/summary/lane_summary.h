@@ -16,12 +16,12 @@
 namespace illumina { namespace interop { namespace model { namespace summary
 {
 
-/**  Summary statistics compiled by lane
- *
- * @note The reported standard deviation is always between tiles, not cycles. For metrics like error metrics,
- * the mean over all cycles is used for each tile, before calculating the standard deviation.
- *
- */
+    /**  Summary statistics compiled by lane
+     *
+     * @note The reported standard deviation is always between tiles, not cycles. For metrics like error metrics,
+     * the mean over all cycles is used for each tile, before calculating the standard deviation.
+     *
+     */
     class lane_summary
     {
     public:

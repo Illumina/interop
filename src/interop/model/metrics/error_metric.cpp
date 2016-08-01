@@ -108,7 +108,7 @@ namespace illumina{ namespace interop{ namespace io {
 
 
 #pragma pack()
-        }}}
+}}}
 
 INTEROP_FORCE_LINK_DEF(error_metric)
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(error_metric, 3 )

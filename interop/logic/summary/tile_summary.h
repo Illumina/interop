@@ -38,7 +38,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
     */
     template<typename I>
     void summarize_tile_metrics(I beg, I end, model::summary::run_summary &run)
-    throw(model::index_out_of_bounds_exception)
+                                    throw(model::index_out_of_bounds_exception)
     {
         typedef typename model::metrics::tile_metric::read_metric_vector read_metric_vector_t;
         typedef typename read_metric_vector_t::const_iterator const_read_metric_iterator;

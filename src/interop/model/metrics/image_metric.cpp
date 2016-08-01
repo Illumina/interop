@@ -237,7 +237,7 @@ namespace illumina{ namespace interop{ namespace io {
                 }
             };
 #pragma pack() // DO NOT MOVE
-        }}}
+ }}}
 
 INTEROP_FORCE_LINK_DEF(image_metric)
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(image_metric, 1 )

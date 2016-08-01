@@ -14,9 +14,7 @@
 
 using namespace illumina::interop::model::metrics;
 
-namespace illumina{ namespace interop{
-
-        namespace io {
+namespace illumina{ namespace interop{ namespace io {
 #pragma pack(1)
             /** Tile Metric Record Layout Version 2
              *

@@ -7,7 +7,6 @@
  */
 #pragma once
 #include <stdexcept>
-#include "interop/util/exception_specification.h"
 
 #ifdef _MSC_VER
 #pragma warning(disable:4290) // MSVC warns that it ignores the exception specification.

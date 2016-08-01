@@ -9,8 +9,7 @@
  */
 #pragma once
 
-namespace illumina {
-namespace interop {
+namespace illumina { namespace interop {
 
     /** Place holder for */
     struct null_type{};
@@ -146,5 +145,4 @@ namespace interop {
      */
     template<int v>
     struct int_constant_type : public constant_type<int, v>{};
-}
-}
+}}

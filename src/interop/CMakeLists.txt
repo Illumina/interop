@@ -72,7 +72,6 @@ set(HEADERS
         ../../interop/util/type_traits.h
         ../../interop/util/linear_hierarchy.h
         ../../interop/util/object_list.h
-        ../../interop/util/exception_specification.h
         ../../interop/logic/summary/map_cycle_to_read.h
         ../../interop/logic/summary/cycle_state_summary.h
         ../../interop/util/math.h

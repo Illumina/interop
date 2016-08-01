@@ -24,7 +24,6 @@ namespace illumina { namespace interop { namespace model { namespace metrics {
      */
     class q_collapsed_header : public q_score_header
     {
-
     public:
         /** Constructor
          */

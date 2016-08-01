@@ -17,13 +17,7 @@
 #include "interop/logic/utils/channel.h"
 
 
-namespace illumina
-{
-namespace interop
-{
-namespace logic
-{
-namespace summary
+namespace illumina { namespace interop { namespace logic { namespace summary
 {
     /** Determine maximum number of tiles among all metrics for each lane
      *
@@ -146,7 +140,4 @@ namespace summary
         summary.lane_count(max_lane_count);
     }
 
-}
-}
-}
-}
+}}}}
