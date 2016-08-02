@@ -60,11 +60,7 @@ public:
                     const size_t tiles)
     {
         heatmap_data::set_buffer(data_buffer, lanes, swaths * tiles);
-        if(m_free) delete[] m_data;
-        m_data = id_buffer;
-        m_swath_count = swaths;
-        m_tile_count = tiles;
-        m_free=false;
+        set_buffer(id_buffer, swaths, tiles);
     }
     /** Resize the flowcell heat map to the given number of rows and columns
      *
@@ -76,12 +72,8 @@ public:
     {
         if( lanes != row_count() && swaths != m_swath_count &&  tiles != m_tile_count)
         {
-            if (m_free) delete[] m_data;
-            m_swath_count = swaths;
-            m_tile_count = tiles;
             heatmap_data::resize(lanes, swaths * tiles);
-            m_data = new ::uint32_t[heatmap_data::length()];
-            m_free = true;
+            resize(swaths, tiles);
         }
     }
     /** Clear the data
@@ -204,6 +196,39 @@ public:
     size_t tile_count()const
     {
         return m_tile_count;
+    }
+
+protected:
+    /** Resize the heat map to the given number of rows and columns
+     *
+     * @param id_buffer buffer to hold the tile ids
+     * @param swaths number of swaths
+     * @param tiles number of tiles
+     */
+    void set_buffer(::uint32_t* id_buffer,
+                    const size_t swaths,
+                    const size_t tiles)
+    {
+        if(m_free) delete[] m_data;
+        m_data = id_buffer;
+        m_swath_count = swaths;
+        m_tile_count = tiles;
+        m_free=false;
+    }
+    /** Resize the tile ID map to the given number of rows and columns
+     *
+     * @param swaths number of swaths
+     * @param tiles number of tiles
+     */
+    void resize(const size_t swaths,
+                const size_t tiles)
+    {
+        if (m_free) delete[] m_data;
+        m_swath_count = swaths;
+        m_tile_count = tiles;
+        m_data = new ::uint32_t[heatmap_data::length()];
+        std::memset(reinterpret_cast<char*>(m_data), 0, sizeof(::uint32_t)*heatmap_data::length());
+        m_free = true;
     }
 
 protected:

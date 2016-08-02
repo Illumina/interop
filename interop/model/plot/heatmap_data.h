@@ -66,6 +66,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
             {
                 if (m_free) delete[] m_data;
                 m_data = new float[cols * rows];
+                std::memset(reinterpret_cast<char*>(m_data), 0, sizeof(float)*rows*cols);
                 m_num_columns = cols;
                 m_num_rows = rows;
                 m_free = true;
