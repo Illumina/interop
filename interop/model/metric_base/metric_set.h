@@ -143,7 +143,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         size_t find(const uint_t lane, const uint_t tile, const uint_t cycle = 0) const
         {
-            return find(metric_type::id(lane, tile, cycle));
+            return find(metric_type::create_id(lane, tile, cycle));
         }
 
         /** Find index of metric given the id. If not found, return number of metrics
@@ -166,7 +166,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         bool has_metric(const uint_t lane, const uint_t tile, const uint_t cycle = 0) const
         {
-            return has_metric(metric_type::id(lane, tile, cycle));
+            return has_metric(metric_type::create_id(lane, tile, cycle));
         }
 
         /** Test if set has metric
@@ -216,12 +216,12 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         {
             try
             {
-                return get_metric(metric_type::id(lane, tile, cycle));
+                return get_metric(metric_type::create_id(lane, tile, cycle));
             }
             catch (const index_out_of_bounds_exception &)
             {
                 INTEROP_THROW( index_out_of_bounds_exception, "No tile available: key: " <<
-                                       metric_type::id(lane, tile, cycle) <<
+                                       metric_type::create_id(lane, tile, cycle) <<
                                                     " map: " << (m_id_map.size()) <<
                                                     "  lane: " << (lane) <<
                                                     "  tile: " << (tile) <<
@@ -453,12 +453,12 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         {
             try
             {
-                return get_metric_ref(metric_type::id(lane, tile, cycle));
+                return get_metric_ref(metric_type::create_id(lane, tile, cycle));
             }
             catch (const index_out_of_bounds_exception &)
             {
                 INTEROP_THROW( index_out_of_bounds_exception,"No tile available: key: " <<
-                                                    metric_type::id(lane, tile, cycle) <<
+                                                    metric_type::create_id(lane, tile, cycle) <<
                                                     " map: " <<(m_id_map.size()) <<
                                                     "  lane: " << (lane) <<
                                                     "  tile: " << (tile) <<

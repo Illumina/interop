@@ -52,8 +52,8 @@ namespace Illumina.InterOp.Interop.UnitTest
             uint tile_count = layout.tiles_per_lane();
             float[] data_buffer = new float[lane_count*swath_count*tile_count];
             uint[] tile_buffer  = new uint[lane_count*swath_count*tile_count];
-            flowcell_data data = new flowcell_data(data_buffer, tile_buffer, lane_count, swath_count, tile_count);
-            c_csharp_plot.plot_flowcell_map(run,  metric_type.QScore, options, data);
+            flowcell_data data = new flowcell_data();
+            c_csharp_plot.plot_flowcell_map(run,  metric_type.QScore, options, data, data_buffer, tile_buffer);
             Assert.AreEqual(data.row_count(), 8);
 		}
 		/// <summary>

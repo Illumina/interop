@@ -111,6 +111,16 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         { }
 
     public:
+        /** Set id
+         *
+         * @param lane lane number
+         * @param tile tile number
+         */
+        void set_base(const uint_t lane, const uint_t tile)
+        {
+            m_lane = lane;
+            m_tile = tile;
+        }
         /** Get the metric name suffix
          *
          * @return empty string
@@ -122,7 +132,8 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          *
          * @param base layout base
          */
-        void set_base(const io::layout::base_metric &base)
+        template<class BaseMetric>
+        void set_base(const BaseMetric &base)
         {
             m_lane = base.lane;
             m_tile = base.tile;
@@ -134,7 +145,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         id_t id() const
         {
-            return id(m_lane, m_tile);
+            return create_id(m_lane, m_tile);
         }
 
         /** Unique id created from both the lane and tile
@@ -143,7 +154,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         id_t tile_hash() const
         {
-            return id(m_lane, m_tile);
+            return create_id(m_lane, m_tile);
         }
 
         /** Unique id created from both the lane and tile
@@ -152,7 +163,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          * @param tile tile number
          * @return unique id
          */
-        static id_t id(const id_t lane, const id_t tile, const id_t= 0)// TODO: remove hack (const id_t=0)
+        static id_t create_id(const id_t lane, const id_t tile, const id_t= 0)// TODO: remove hack (const id_t=0)
         {
             return lane | (tile << LANE_BIT_SHIFT);
         }

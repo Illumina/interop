@@ -23,22 +23,6 @@ class flowcell_data : public heatmap_data
 public:
     /** Constructor */
     flowcell_data() : m_data(0), m_swath_count(0), m_tile_count(0), m_free(false){}
-    /** Constructor
-     *
-     * @param data_buffer data value buffer
-     * @param id_buffer data tile id buffer
-     * @param lanes lane count
-     * @param swaths swath count
-     * @param tiles tile count
-     */
-    flowcell_data(float* data_buffer,
-                  ::uint32_t* id_buffer,
-                  const size_t lanes,
-                  const size_t swaths,
-                  const size_t tiles) : m_data(0), m_swath_count(0), m_tile_count(0), m_free(false)
-    {
-        set_buffer(data_buffer, id_buffer, lanes, swaths, tiles);
-    }
     /** Destructor */
     virtual ~flowcell_data()
     {

@@ -469,7 +469,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
         bylane.set_version(metric_set.version());
         for(const_iterator beg = metric_set.begin(), end = metric_set.end();beg != end;++beg)
         {
-            const id_t id = model::metric_base::base_cycle_metric::id(beg->lane(), 0, beg->cycle());
+            const id_t id = model::metric_base::base_cycle_metric::create_id(beg->lane(), 0, beg->cycle());
             if(bylane.has_metric(id))
                 bylane.get_metric_ref(id).accumulate_by_lane(*beg);
             else

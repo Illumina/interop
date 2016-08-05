@@ -10,7 +10,7 @@
 #
 #   sh tools/build_test.sh Debug /var/external_libs
 #
-# Note, you must already have CMake, MinGW and Visual Studio installed and on your path.
+# Note, you must already have CMake and GCC installed and on your path.
 #
 ########################################################################################################################
 
@@ -26,7 +26,7 @@ if [ ! -z $1 ] ; then
     build_type=$1
 fi
 if [ ! -z $2 ] ; then
-    build_param=-DGTEST_ROOT=$2 -DGMOCK_ROOT=$2 -DNUNIT_ROOT=$2/NUnit-2.6.4
+    build_param="-DGTEST_ROOT=$2 -DGMOCK_ROOT=$2 -DNUNIT_ROOT=$2/NUnit-2.6.4"
 fi
 
 echo "##teamcity[blockOpened name='Configure $build_type']"

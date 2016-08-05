@@ -153,7 +153,8 @@ namespace illumina { namespace interop { namespace model { namespace plot
         template<class Metric>
         bool valid_tile_cycle(const Metric &metric) const
         {
-            return valid_tile(metric) && valid_cycle(metric, typename Metric::base_t());
+            typedef typename Metric::base_t base_t;
+            return valid_tile(metric) && valid_cycle(metric, base_t::null());
         }
 
         /** Test if metric is a valid read
@@ -164,7 +165,8 @@ namespace illumina { namespace interop { namespace model { namespace plot
         template<class Metric>
         bool valid_read(const Metric &metric) const
         {
-            return valid_read(metric, typename Metric::base_t());
+            typedef typename Metric::base_t base_t;
+            return valid_read(metric, base_t::null());
         }
 
         /** Test if all channels were requested
@@ -553,29 +555,21 @@ namespace illumina { namespace interop { namespace model { namespace plot
 
     private:
         template<class Metric>
-        bool valid_cycle(const Metric &metric, constants::base_cycle_t) const
+        bool valid_cycle(const Metric &metric, const constants::base_cycle_t*) const
         {
-            return metric.cycle() == m_cycle;
+            return m_cycle == static_cast<id_t>(ALL_IDS) || metric.cycle() == m_cycle;
         }
 
         template<class Metric>
-        bool valid_cycle(const Metric &, constants::base_tile_t) const
+        bool valid_cycle(const Metric &, const void*) const
         { return true; }
 
         template<class Metric>
-        bool valid_cycle(const Metric &, constants::base_read_t) const
-        { return true; }
+        bool valid_read(const Metric &metric, const constants::base_read_t*) const
+        { return m_read == static_cast<id_t>(ALL_IDS) || metric.read() == m_read; }
 
         template<class Metric>
-        bool valid_read(const Metric &metric, constants::base_read_t) const
-        { return metric.read() == m_read; }
-
-        template<class Metric>
-        bool valid_read(const Metric &, constants::base_cycle_t) const
-        { return true; }
-
-        template<class Metric>
-        bool valid_read(const Metric &, constants::base_tile_t) const
+        bool valid_read(const Metric &, const void*) const
         { return true; }
 
 

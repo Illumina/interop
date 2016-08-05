@@ -25,15 +25,6 @@ namespace illumina { namespace interop { namespace model { namespace plot
         /** Constructor */
         heatmap_data() : m_data(0), m_num_columns(0), m_num_rows(0), m_free(false)
         { }
-        /** Constructor
-         *
-         * @param data use the given buffer to back the heat map
-         * @param rows number of rows in the heat map
-         * @param cols number of columns in the heat map
-         */
-        heatmap_data(float* data, const size_t rows, const size_t cols) :
-                m_data(data), m_num_columns(cols), m_num_rows(rows), m_free(false)
-        { }
         /** Destructor */
         virtual ~heatmap_data()
         {

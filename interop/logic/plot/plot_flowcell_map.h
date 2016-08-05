@@ -69,20 +69,29 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
      * @param type specific metric value to plot by cycle
      * @param options options to filter the data
      * @param data output flowcell map
+     * @param buffer preallocated memory for data
+     * @param tile_buffer preallocated memory for tile ids
      */
     inline void plot_flowcell_map(model::metrics::run_metrics& metrics,
                                   const constants::metric_type type,
                                   const model::plot::filter_options& options,
-                                  model::plot::flowcell_data& data)
+                                  model::plot::flowcell_data& data,
+                                  float* buffer=0,
+                                  ::uint32_t* tile_buffer=0)
                                   throw(model::invalid_filter_option,
                                   model::invalid_metric_type,
                                   model::index_out_of_bounds_exception)
     {
         const model::run::flowcell_layout& layout = metrics.run_info().flowcell();
         data.clear();
-        data.resize(layout.lane_count(),
+        if(buffer == 0 || tile_buffer==0)
+            data.resize(layout.lane_count(),
                     layout.total_swaths(layout.surface_count() > 1 && !options.is_specific_surface()),
                     layout.tiles_per_lane());
+        else
+            data.set_buffer(buffer, tile_buffer, layout.lane_count(),
+                            layout.total_swaths(layout.surface_count() > 1 && !options.is_specific_surface()),
+                            layout.tiles_per_lane());
         std::vector<float> values_for_scaling;
         values_for_scaling.reserve(data.length());
 
@@ -202,11 +211,15 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
      * @param metric_name specific metric value to plot by cycle
      * @param options options to filter the data
      * @param data output flowcell map
+     * @param buffer preallocated memory for data
+     * @param tile_buffer preallocated memory for tile ids
      */
     inline void plot_flowcell_map(model::metrics::run_metrics& metrics,
                                   const std::string& metric_name,
                                   const model::plot::filter_options& options,
-                                  model::plot::flowcell_data& data)
+                                  model::plot::flowcell_data& data,
+                                  float* buffer=0,
+                                  ::uint32_t* tile_buffer=0)
                                   throw(model::invalid_filter_option,
                                   model::invalid_metric_type,
                                   model::index_out_of_bounds_exception)
@@ -214,7 +227,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
         const constants::metric_type type = constants::parse<constants::metric_type>(metric_name);
         if(type == constants::UnknownMetricType)
             INTEROP_THROW(model::invalid_metric_type, "Unsupported metric type: " << metric_name);
-        plot_flowcell_map(metrics, type, options, data);
+        plot_flowcell_map(metrics, type, options, data, buffer, tile_buffer);
     }
     /** List metric type names available for flowcell
      *

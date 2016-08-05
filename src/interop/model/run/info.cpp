@@ -44,7 +44,7 @@ namespace illumina { namespace interop { namespace model { namespace run
         }
 
         xml_node_ptr p_root = doc.first_node();
-        if (p_root == 0) INTEROP_THROW(empty_xml_format_exception, "Root not found");
+        if (p_root == 0) INTEROP_THROW(empty_xml_format_exception, "Root node not found");
         if (p_root->name() != std::string("RunInfo"))
             INTEROP_THROW(bad_xml_format_exception, "Invalid run info xml file");
 
@@ -56,7 +56,12 @@ namespace illumina { namespace interop { namespace model { namespace run
 
 
         xml_node_ptr p_run_node = p_root->first_node();
-        if (p_run_node == 0) INTEROP_THROW(bad_xml_format_exception, "Run not found");
+
+        for (; p_run_node; p_run_node = p_run_node->next_sibling())
+        {
+            if(p_run_node->name() == std::string("Run"))break;
+        }
+        if (p_run_node == 0) INTEROP_THROW(bad_xml_format_exception, "Run node not found");
         if (p_run_node->name() != std::string("Run"))
             INTEROP_THROW(bad_xml_format_exception, "Invalid run info xml file: expected Run, got: " << p_run_node->name());
 

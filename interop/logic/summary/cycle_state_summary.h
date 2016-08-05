@@ -61,7 +61,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
             const read_cycle &read = cycle_to_read[cycle_metric_it->cycle() - 1];
             if (read.number == 0) continue;
             INTEROP_ASSERT((read.number - 1) < tmp.size());
-            const id_t id = model::metric_base::base_metric::id(cycle_metric_it->lane(), cycle_metric_it->tile());
+            const id_t id = model::metric_base::base_metric::create_id(cycle_metric_it->lane(), cycle_metric_it->tile());
             tmp[read.number - 1][id].update(cycle_metric_it->cycle());
             typename max_tile_map_t::iterator it = tmp_by_tile.find(id);
             if (it == tmp_by_tile.end()) tmp_by_tile[id] = cycle_metric_it->cycle();
@@ -73,7 +73,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
              tile_it != tile_end; ++tile_it)
         {
             size_t cycle_for_tile = 0;
-            const id_t id = model::metric_base::base_metric::id(tile_it->lane(), tile_it->tile());
+            const id_t id = model::metric_base::base_metric::create_id(tile_it->lane(), tile_it->tile());
             for (size_t read_index = 0; read_index < tmp.size(); ++read_index)
             {
                 if (tmp[read_index].find(tile_it->id()) == tmp[read_index].end())

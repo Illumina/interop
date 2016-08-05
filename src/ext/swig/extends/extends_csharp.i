@@ -7,7 +7,7 @@
     public byte Version { get{ return (byte)version(); } }
     public global::System.Int64 GetKey(int lane, int tile)
     {
-        return (global::System.Int64)metric_t.id((ulong)lane, (ulong)tile);
+        return (global::System.Int64)metric_t.create_id((ulong)lane, (ulong)tile);
     }
     public bool HasData { get { return size() > 0; } }
     public metric_t GetMetric(long key)
@@ -97,7 +97,7 @@
         public int MaxCycle { get{ return (int)max_cycle(); } }
         public global::System.Int64 GetKey(int lane, int tile, int cycle)
         {
-            return (global::System.Int64)metric_t.id((ulong)lane, (ulong)tile, (ulong)cycle);
+            return (global::System.Int64)metric_t.create_id((ulong)lane, (ulong)tile, (ulong)cycle);
         }
         public metric_t GetMetric(int lane, int tile, int cycle)
         {

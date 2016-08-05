@@ -43,8 +43,6 @@ EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 #include "interop/logic/table/create_imaging_table.h"
 %}
 
-%template(size_vector) std::vector< size_t >;
-%template(size_vector_2d) std::vector< std::vector< size_t > >;
 
 %include "interop/model/table/imaging_column.h"
 %include "interop/model/table/imaging_table.h"

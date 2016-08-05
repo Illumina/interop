@@ -49,8 +49,8 @@ namespace Illumina.InterOp.Interop.UnitTest
             uint row_count = c_csharp_plot.count_rows_for_heatmap(run);
             uint col_count = c_csharp_plot.count_columns_for_heatmap(run);
             var buffer = new float[row_count*col_count];
-            heatmap_data data = new heatmap_data(buffer, row_count, col_count);
-            c_csharp_plot.plot_qscore_heatmap(run, options, data);
+            heatmap_data data = new heatmap_data();
+            c_csharp_plot.plot_qscore_heatmap(run, options, data, buffer);
             Assert.AreEqual(data.row_count(), 3);
 
 		}

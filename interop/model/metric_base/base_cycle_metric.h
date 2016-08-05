@@ -90,11 +90,23 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         { }
 
     public:
+        /** Set id
+         *
+         * @param lane lane number
+         * @param tile tile number
+         * @param cycle cycle number
+         */
+        void set_base(const uint_t lane, const uint_t tile, const uint_t cycle)
+        {
+            base_metric::set_base(lane, tile);
+            m_cycle = cycle;
+        }
         /** Set the base metric identifiers
          *
          * @param base layout base
          */
-        void set_base(const io::layout::base_cycle_metric &base)
+        template<class BaseCycleMetric>
+        void set_base(const BaseCycleMetric &base)
         {
             base_metric::set_base(base);
             m_cycle = base.cycle;
@@ -113,7 +125,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         id_t id() const
         {
-            return id(lane(), tile(), m_cycle);
+            return create_id(lane(), tile(), m_cycle);
         }
         /** Get the cycyle from the unique lane/tile/cycle id
          *
@@ -141,9 +153,9 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          * @param cycle cycle number
          * @return unique id
          */
-        static id_t id(const id_t lane, const id_t tile, const id_t cycle)
+        static id_t create_id(const id_t lane, const id_t tile, const id_t cycle)
         {
-            return base_metric::id(lane, tile) | (cycle << TILE_BIT_SHIFT);
+            return base_metric::create_id(lane, tile) | (cycle << TILE_BIT_SHIFT);
         }
 
     private:

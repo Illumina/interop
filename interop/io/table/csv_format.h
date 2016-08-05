@@ -34,6 +34,8 @@ namespace illumina { namespace interop { namespace io {  namespace  table {
      *
      * @param out output stream
      * @param values source vector of values
+     * @param beg start column offset
+     * @param last last column offset
      */
     template<typename T>
     void write_csv_line(std::ostream& out, const std::vector<T>& values, const size_t beg=0, size_t last=0)

@@ -3,6 +3,10 @@
 
 set(CMAKE_SWIG_OUTDIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
+
+add_custom_target(csharp_lib)
+set_target_properties(csharp_lib PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
+
 foreach(SRC ${SWIG_SRCS})
     get_filename_component(MODULE ${SRC} NAME_WE)
     string(SUBSTRING ${MODULE} 0 1 FIRST_LETTER)
@@ -41,7 +45,9 @@ foreach(SRC ${SWIG_SRCS})
                 COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE_DIR:${INTEROP_LIB}> ${CMAKE_CURRENT_BINARY_DIR})
     endif()
     list(APPEND SWIG_MODULE_LIST ${SWIG_MODULE})
+    add_dependencies(csharp_lib ${SWIG_MODULE})
 endforeach()
+
 
 
 find_package(CSharp)

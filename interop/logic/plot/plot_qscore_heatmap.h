@@ -103,18 +103,24 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
      *
      * @param metric_set q-metrics (full or by lane)
      * @param options options to filter the data
-     * @param data output heat map datall
+     * @param data output heat map data
+     * @param buffer preallocated memory
      */
     template<class Metric>
     void populate_heatmap(const model::metric_base::metric_set<Metric>& metric_set,
                           const model::plot::filter_options& options,
-                          model::plot::heatmap_data& data)
+                          model::plot::heatmap_data& data,
+                          float* buffer)
     {
         const size_t max_q_val = logic::metric::max_qval(metric_set);
         const size_t max_cycle = metric_set.max_cycle();
-        data.resize(max_cycle, max_q_val);
+        if(buffer != 0) data.set_buffer(buffer, max_cycle, max_q_val);
+        else data.resize(max_cycle, max_q_val);
         INTEROP_ASSERT(data.row_count() > 0);
-        INTEROP_ASSERTMSG(data.column_count() > 0, max_q_val << ", " << metric_set.size() << ", " << metric_set.bin_count() << ", " << metric::is_compressed(metric_set) << ", " << metric_set.bins().back().upper());
+        INTEROP_ASSERTMSG(data.column_count() > 0, data.column_count() << ", " << metric_set.size() << ", "
+                                                                       << metric_set.bin_count() << ", "
+                                                                       << metric::is_compressed(metric_set) << ", "
+                                                                       << metric_set.bins().back().upper());
         const bool is_compressed = logic::metric::is_compressed(metric_set);
         if(is_compressed)
             populate_heatmap_from_compressed(metric_set.begin(),
@@ -130,7 +136,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
         normalize_heatmap(data);
         remap_to_bins(metric_set.bins().begin(),
                       metric_set.bins().end(),
-                      max_cycle,
+                      data.row_count(),
                       data);
     }
     /** Plot a heat map of q-scores
@@ -139,10 +145,12 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
      * @param metrics run metrics
      * @param options options to filter the data
      * @param data output heat map data
+     * @param buffer preallocated memory
      */
     inline void plot_qscore_heatmap(model::metrics::run_metrics& metrics,
                                     const model::plot::filter_options& options,
-                                    model::plot::heatmap_data& data)
+                                    model::plot::heatmap_data& data,
+                                    float* buffer=0)
                                     throw(model::index_out_of_bounds_exception,
                                     model::invalid_filter_option)
     {
@@ -152,7 +160,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
         {
             typedef model::metrics::q_metric metric_t;
             if (metrics.get_set<metric_t>().size() == 0)return;
-            populate_heatmap(metrics.get_set<metric_t>(), options, data);
+            populate_heatmap(metrics.get_set<metric_t>(), options, data, buffer);
         }
         else
         {
@@ -161,7 +169,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                 logic::metric::create_q_metrics_by_lane(metrics.get_set<model::metrics::q_metric>(),
                                                         metrics.get_set<metric_t>());
             if (metrics.get_set<metric_t>().size() == 0)return;
-            populate_heatmap(metrics.get_set<metric_t>(), options, data);
+            populate_heatmap(metrics.get_set<metric_t>(), options, data, buffer);
         }
 
         data.set_xrange(0, static_cast<float>(data.row_count()));
