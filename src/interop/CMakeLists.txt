@@ -14,8 +14,8 @@ set(SRCS
         model/metrics/q_collapsed_metric.cpp
         model/summary/run_summary.cpp
         logic/plot/plot_by_cycle.cpp
-
-        logic/plot/plot_by_lane.cpp)
+        logic/plot/plot_by_lane.cpp
+        logic/plot/plot_flowcell_map.cpp logic/plot/plot_qscore_heatmap.cpp)
 
 set(HEADERS
         ../../interop/model/summary/cycle_state_summary.h
