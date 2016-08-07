@@ -15,7 +15,7 @@ set(SRCS
         model/summary/run_summary.cpp
         logic/plot/plot_by_cycle.cpp
 
-        )
+        logic/plot/plot_by_lane.cpp)
 
 set(HEADERS
         ../../interop/model/summary/cycle_state_summary.h

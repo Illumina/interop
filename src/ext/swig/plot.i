@@ -106,6 +106,4 @@ WRAP_VECTOR(illumina::interop::model::plot::plot_data<illumina::interop::model::
 %include "interop/logic/plot/plot_flowcell_map.h"
 %include "interop/logic/plot/plot_sample_qc.h"
 
-//%template(plot_candle_stick_by_cycle) illumina::interop::logic::plot::plot_by_cycle<illumina::interop::model::plot::candle_stick_point>;
-%template(plot_candle_stick_by_lane) illumina::interop::logic::plot::plot_by_lane<illumina::interop::model::plot::candle_stick_point>;
 %template(plot_qscore_histogram) illumina::interop::logic::plot::plot_qscore_histogram<illumina::interop::model::plot::bar_point>;

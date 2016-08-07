@@ -8,18 +8,6 @@
 #include "interop/logic/plot/plot_by_cycle.h"
 
 
-#include "interop/util/exception.h"
-#include "interop/util/statistics.h"
-#include "interop/constants/enums.h"
-#include "interop/model/metrics/extraction_metric.h"
-#include "interop/model/metrics/corrected_intensity_metric.h"
-#include "interop/model/model_exceptions.h"
-#include "interop/model/plot/filter_options.h"
-#include "interop/model/plot/series.h"
-#include "interop/model/plot/plot_data.h"
-#include "interop/model/run_metrics.h"
-#include "interop/logic/utils/metric_type_ext.h"
-#include "interop/logic/utils/channel.h"
 #include "interop/logic/metric/metric_value.h"
 #include "interop/logic/plot/plot_point.h"
 #include "interop/logic/plot/plot_data.h"
