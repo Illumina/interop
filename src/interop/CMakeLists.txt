@@ -1,5 +1,7 @@
 
 set(SRCS
+        logic/metric/q_metric.cpp
+        logic/metric/extraction_metric.cpp
         model/run/info.cpp
         model/run/parameters.cpp
         model/metrics/corrected_intensity_metric.cpp
@@ -119,7 +121,9 @@ set(HEADERS
         ../../interop/model/table/imaging_column.h
         ../../interop/logic/table/create_imaging_table_columns.h
         ../../interop/logic/table/table_util.h
-        ../../interop/io/table/imaging_table_csv.h ../../interop/logic/table/check_imaging_table_column.h ../../interop/logic/table/table_populator.h)
+        ../../interop/io/table/imaging_table_csv.h
+        ../../interop/logic/table/check_imaging_table_column.h
+        ../../interop/logic/table/table_populator.h)
 
 set(INTEROP_HEADERS ${HEADERS} PARENT_SCOPE)
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR CMAKE_COMPILER_IS_GNUCC)
@@ -137,7 +141,7 @@ elseif(MSVC)
 endif()
 
 add_library(${INTEROP_LIB} ${LIBRARY_TYPE} ${SRCS} ${HEADERS})
-add_library(${INTEROP_DL_LIB} ${LIBRARY_TYPE} ${SRCS} ${HEADERS})
+add_library(${INTEROP_DL_LIB} ${LIBRARY_TYPE} ${SRCS} ${HEADERS} )
 add_dependencies(${INTEROP_LIB} version)
 add_dependencies(${INTEROP_DL_LIB} version)
 
