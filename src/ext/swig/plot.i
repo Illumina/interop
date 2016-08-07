@@ -105,5 +105,3 @@ WRAP_VECTOR(illumina::interop::model::plot::plot_data<illumina::interop::model::
 %include "interop/logic/plot/plot_qscore_heatmap.h"
 %include "interop/logic/plot/plot_flowcell_map.h"
 %include "interop/logic/plot/plot_sample_qc.h"
-
-%template(plot_qscore_histogram) illumina::interop::logic::plot::plot_qscore_histogram<illumina::interop::model::plot::bar_point>;

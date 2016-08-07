@@ -5,16 +5,9 @@
  *  @version 1.0
  *  @copyright GNU Public License.
  */
-#pragma once
-#include <map>
-#include <math.h>
-#include "interop/util/statistics.h"
-#include "interop/constants/enums.h"
+#include "interop/logic/plot/plot_sample_qc.h"
+
 #include "interop/logic/utils/enums.h"
-#include "interop/model/model_exceptions.h"
-#include "interop/model/run_metrics.h"
-#include "interop/model/plot/bar_point.h"
-#include "interop/logic/plot/plot_data.h"
 
 namespace illumina { namespace interop { namespace logic { namespace plot {
 
