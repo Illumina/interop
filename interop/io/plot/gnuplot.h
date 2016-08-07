@@ -7,7 +7,7 @@
  */
 
 #pragma once
-
+#include <cctype>
 #include "interop/model/plot/flowcell_data.h"
 #include "interop/model/plot/bar_point.h"
 #include "interop/model/plot/candle_stick_point.h"

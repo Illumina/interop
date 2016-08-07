@@ -20,8 +20,10 @@ set(SRCS
         logic/plot/plot_sample_qc.cpp
         logic/plot/plot_qscore_histogram.cpp
         model/run_metrics.cpp
-        summary/run_summary.cpp
-        summary/index_summary.cpp)
+        logic/summary/run_summary.cpp
+        logic/summary/index_summary.cpp
+        logic/table/create_imaging_table_columns.cpp
+        logic/table/create_imaging_table.cpp)
 
 set(HEADERS
         ../../interop/model/summary/cycle_state_summary.h

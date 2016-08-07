@@ -40,6 +40,7 @@ EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 // Imaging model
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 %{
+#include "interop/logic/table/create_imaging_table_columns.h"
 #include "interop/logic/table/create_imaging_table.h"
 %}
 
@@ -55,4 +56,3 @@ EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 %include "interop/logic/table/create_imaging_table.h"
 %include "interop/logic/table/create_imaging_table_columns.h"
 
-%template(populate_imaging_table_float_data) illumina::interop::logic::table::populate_imaging_table_data<float*>;

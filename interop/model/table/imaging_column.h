@@ -11,6 +11,7 @@
 #include <vector>
 #include "interop/util/assert.h"
 #include "interop/util/length_of.h"
+#include "interop/util/string.h"
 #include "interop/constants/enums.h"
 #include "interop/logic/utils/enums.h"
 

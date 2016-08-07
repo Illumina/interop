@@ -5,7 +5,9 @@
  *  @version 1.0
  *  @copyright GNU Public License.
  */
+#include "interop/io/table/csv_format.h"
 #include "interop/model/table/imaging_table.h"
+#include "interop/logic/table/create_imaging_table_columns.h"
 #include "interop/logic/table/create_imaging_table.h"
 
 namespace illumina { namespace interop { namespace model { namespace table {

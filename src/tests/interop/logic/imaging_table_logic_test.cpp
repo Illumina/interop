@@ -190,7 +190,7 @@ TEST(imaging_table, create_imaging_table_error_metrics)
     const size_t cell_count = logic::table::count_table_cells(metrics, columns);
     std::vector<float> data(cell_count);
     ASSERT_TRUE(data.size() > 0);
-    logic::table::create_imaging_table_data(metrics, columns, data.begin(), data.end());
+    logic::table::populate_imaging_table_data(metrics, columns, &data[0], data.size());
     EXPECT_EQ(data[0], 7u);
 }
 TEST(imaging_table, create_imaging_table_error_metrics_tile_test)
