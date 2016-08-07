@@ -5,7 +5,7 @@
  *  @version 1.0
  *  @copyright GNU Public License.
  */
-#pragma once
+#include "interop/logic/plot/plot_sample_qc.h"
 
 #include "interop/util/statistics.h"
 #include "interop/constants/enums.h"

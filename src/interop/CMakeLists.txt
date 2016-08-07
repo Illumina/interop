@@ -15,7 +15,9 @@ set(SRCS
         model/summary/run_summary.cpp
         logic/plot/plot_by_cycle.cpp
         logic/plot/plot_by_lane.cpp
-        logic/plot/plot_flowcell_map.cpp logic/plot/plot_qscore_heatmap.cpp)
+        logic/plot/plot_flowcell_map.cpp
+        logic/plot/plot_qscore_heatmap.cpp
+        logic/plot/plot_sample_qc.cpp)
 
 set(HEADERS
         ../../interop/model/summary/cycle_state_summary.h
