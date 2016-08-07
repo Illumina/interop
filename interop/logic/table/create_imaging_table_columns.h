@@ -21,6 +21,7 @@
 #include "interop/logic/summary/map_cycle_to_read.h"
 #include "interop/io/table/csv_format.h"
 #include "interop/logic/table/check_imaging_table_column.h"
+#include "interop/logic/metric/q_metric.h"
 
 namespace illumina { namespace interop { namespace logic { namespace table
 {

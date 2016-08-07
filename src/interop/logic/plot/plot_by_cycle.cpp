@@ -11,6 +11,7 @@
 #include "interop/logic/metric/metric_value.h"
 #include "interop/logic/plot/plot_point.h"
 #include "interop/logic/plot/plot_data.h"
+#include "interop/logic/metric/q_metric.h"
 
 namespace illumina { namespace interop { namespace logic { namespace plot
 {

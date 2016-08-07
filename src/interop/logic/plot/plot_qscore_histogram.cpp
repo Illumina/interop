@@ -6,6 +6,7 @@
  *  @copyright GNU Public License.
  */
 #include "interop/logic/plot/plot_qscore_histogram.h"
+#include "interop/logic/metric/q_metric.h"
 
 namespace illumina { namespace interop { namespace logic { namespace plot {
 

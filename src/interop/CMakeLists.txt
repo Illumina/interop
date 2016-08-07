@@ -18,7 +18,7 @@ set(SRCS
         logic/plot/plot_flowcell_map.cpp
         logic/plot/plot_qscore_heatmap.cpp
         logic/plot/plot_sample_qc.cpp
-        logic/plot/plot_qscore_histogram.cpp)
+        logic/plot/plot_qscore_histogram.cpp model/run_metrics.cpp)
 
 set(HEADERS
         ../../interop/model/summary/cycle_state_summary.h

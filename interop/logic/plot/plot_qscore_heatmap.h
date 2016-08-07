@@ -32,19 +32,13 @@ namespace illumina { namespace interop { namespace logic { namespace plot
      * @param metrics run metrics
      * @return number of rows
      */
-    inline size_t count_rows_for_heatmap(const model::metrics::run_metrics& metrics)
-    {
-        return metrics.get_set< model::metrics::q_metric >().max_cycle();
-    }
+    size_t count_rows_for_heatmap(const model::metrics::run_metrics& metrics);
     /** Count number of columns for the heat map
      *
      * @param metrics run metrics
      * @return number of columns
      */
-    inline size_t count_columns_for_heatmap(const model::metrics::run_metrics& metrics)
-    {
-        return logic::metric::max_qval(metrics.get_set< model::metrics::q_metric >());
-    }
+    size_t count_columns_for_heatmap(const model::metrics::run_metrics& metrics);
 
 
 }}}}

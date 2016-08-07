@@ -43,6 +43,7 @@ EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 #include "interop/model/summary/metric_stat.h"
 #include "interop/model/summary/read_summary.h"
 #include "interop/model/summary/run_summary.h"
+#include "interop/logic/metric/q_metric.h"
 %}
 
 WRAP_VECTOR(illumina::interop::model::summary::read_summary);

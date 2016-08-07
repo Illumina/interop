@@ -15,6 +15,7 @@
 #include "interop/model/summary/run_summary.h"
 #include "interop/model/run_metrics.h"
 #include "interop/logic/utils/channel.h"
+#include "interop/logic/metric/q_metric.h"
 
 
 namespace illumina { namespace interop { namespace logic { namespace summary
