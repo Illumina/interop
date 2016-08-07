@@ -51,7 +51,7 @@ namespace Illumina.InterOp.Interop.UnitTest
             run.legacy_channel_update(instrument_type.HiSeq);
 
             candle_stick_plot_data data = new candle_stick_plot_data();
-            c_csharp_plot.plot_candle_stick_by_cycle(run, metric_type.Intensity, options, data);
+            c_csharp_plot.plot_by_cycle(run, metric_type.Intensity, options, data);
             Assert.AreEqual(data.size(), 4);
 
 		}

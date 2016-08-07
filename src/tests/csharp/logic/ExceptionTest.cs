@@ -55,7 +55,7 @@ namespace Illumina.InterOp.Interop.UnitTest
             filter_options options = new filter_options(tile_naming_method.FourDigit);
             candle_stick_plot_data data = new candle_stick_plot_data();
             options.cycle(1);
-            c_csharp_plot.plot_candle_stick_by_cycle(metrics, metric_type.Intensity, options, data);
+            c_csharp_plot.plot_by_cycle(metrics, metric_type.Intensity, options, data);
 		}
 		/// <summary>
 		/// Test invalid_metric_type
@@ -67,7 +67,7 @@ namespace Illumina.InterOp.Interop.UnitTest
             run_metrics metrics = new run_metrics();
             filter_options options = new filter_options(tile_naming_method.FourDigit);
             candle_stick_plot_data data = new candle_stick_plot_data();
-            c_csharp_plot.plot_candle_stick_by_cycle(metrics, "NoMetric", options, data);
+            c_csharp_plot.plot_by_cycle(metrics, "NoMetric", options, data);
 		}
 		/// <summary>
 		/// Test invalid_metric_type

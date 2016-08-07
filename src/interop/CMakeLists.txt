@@ -12,7 +12,10 @@ set(SRCS
         model/metrics/q_metric.cpp
         model/metrics/index_metric.cpp
         model/metrics/q_collapsed_metric.cpp
-        model/summary/run_summary.cpp)
+        model/summary/run_summary.cpp
+        logic/plot/plot_by_cycle.cpp
+
+        )
 
 set(HEADERS
         ../../interop/model/summary/cycle_state_summary.h
