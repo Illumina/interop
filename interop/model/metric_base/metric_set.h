@@ -69,6 +69,13 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
     public:
         /** Constructor
          *
+         * @param version version of the file format
+         */
+        metric_set(const ::int16_t version )
+                : header_type(header_type::default_header()), m_version(version)
+        { }
+        /** Constructor
+         *
          * @param header header information for the metric set
          * @param version version of the file format
          */

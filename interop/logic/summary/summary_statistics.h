@@ -151,7 +151,6 @@ namespace illumina { namespace interop { namespace logic { namespace summary
     {
         if (beg == end) return;
         stat.mean(util::mean<float>(beg, end, op));
-        INTEROP_ASSERT(!std::isnan(stat.mean()));
         stat.stddev(std::sqrt(util::variance_with_mean<float>(beg, end, stat.mean(), op)));
         stat.median(util::median_interpolated<float>(beg, end, comp, op));
     }
