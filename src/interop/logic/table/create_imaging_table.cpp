@@ -267,6 +267,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
      * @param table destination imaging table
      */
     void create_imaging_table(const model::metrics::run_metrics& metrics, model::table::imaging_table& table)
+                                        throw(model::invalid_column_type, model::index_out_of_bounds_exception)
     {
         typedef model::table::imaging_table::column_vector_t column_vector_t;
         typedef model::table::imaging_table::data_vector_t data_vector_t;

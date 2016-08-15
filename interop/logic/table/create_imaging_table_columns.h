@@ -29,7 +29,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
     void create_imaging_table_columns(const std::vector<std::string>& channels,
                                       const std::vector<bool>& filled,
                                       std::vector< model::table::imaging_column >& columns)
-                                      throw(model::invalid_column_type);
+                                      throw(model::invalid_column_type, model::index_out_of_bounds_exception);
     /** Populate the value offsets from the column headers
      *
      * @param columns column headers
@@ -43,7 +43,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
      */
     void create_imaging_table_columns(const model::metrics::run_metrics& metrics,
                                       std::vector< model::table::imaging_column >& columns)
-            throw(model::invalid_column_type);
+            throw(model::invalid_column_type, model::index_out_of_bounds_exception);
 
 
 }}}}

@@ -94,7 +94,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
     void create_imaging_table_columns(const std::vector<std::string>& channels,
                                              const std::vector<bool>& filled,
                                              std::vector< model::table::imaging_column >& columns)
-    throw(model::invalid_column_type)
+    throw(model::invalid_column_type, model::index_out_of_bounds_exception)
     {
         columns.clear();
         columns.reserve(model::table::ImagingColumnCount+channels.size()+constants::NUM_OF_BASES);
@@ -158,7 +158,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
      */
     void create_imaging_table_columns(const model::metrics::run_metrics& metrics,
                                              std::vector< model::table::imaging_column >& columns)
-                                                throw(model::invalid_column_type)
+                                                throw(model::invalid_column_type, model::index_out_of_bounds_exception)
     {
         typedef model::metrics::run_metrics::tile_metric_map_t tile_metric_map_t;
         std::vector< bool > filled;
