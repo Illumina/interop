@@ -477,6 +477,10 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         void populate_id_map(cycle_metric_map_t& map)const;
 
+        /** Clear all the metrics
+         */
+         void clear();
+
     private:
         metric_list_t m_metrics;
         run::info m_run_info;

@@ -82,6 +82,14 @@ namespace illumina { namespace interop { namespace model { namespace metrics
 
         bool m_empty;
     };
+    struct clear_metric
+    {
+        template<class MetricSet>
+        void operator()(MetricSet &metrics)const
+        {
+            metrics.clear();
+        }
+    };
 
     struct read_func
     {
@@ -259,6 +267,14 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         is_metric_empty func;
         m_metrics.apply(func);
         return func.empty();
+    }
+    /** Clear all the metrics
+     */
+    void run_metrics::clear()
+    {
+        m_run_info = run::info();
+        m_run_parameters = run::parameters();
+        m_metrics.apply(clear_metric());
     }
 
     /** Update channels for legacy runs

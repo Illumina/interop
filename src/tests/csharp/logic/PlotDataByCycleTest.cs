@@ -55,6 +55,28 @@ namespace Illumina.InterOp.Interop.UnitTest
             Assert.AreEqual(data.size(), 4);
 
 		}
+
+		public void ClearTest()
+        {
+            int[] tmp = new int[]{
+                 2,38
+                 ,7,0,90,4,1,0,-12,-56,15,64,-98,35,12,64,0,0,0,0,0,0,0,0,46,1,17,1,0,0,0,0,96,-41,-104,36,122,-86,-46,-120
+                 ,7,0,-66,4,1,0,96,-43,14,64,-63,49,13,64,0,0,0,0,0,0,0,0,56,1,17,1,0,0,0,0,112,125,77,38,122,-86,-46,-120
+                 ,7,0,66,8,1,0,74,-68,6,64,-118,-7,8,64,0,0,0,0,0,0,0,0,93,1,46,1,0,0,0,0,-47,-104,2,40,122,-86,-46,-120
+            };
+            byte[] expected_binary_data = new byte[tmp.Length];
+            for(int i=0;i<expected_binary_data.Length;i++) expected_binary_data[i] = (byte)tmp[i];
+            run_metrics run = new run_metrics();
+            c_csharp_metrics.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, run.extraction_metric_set());
+
+
+            run.set_naming_method(tile_naming_method.FourDigit);
+            run.legacy_channel_update(instrument_type.HiSeq);
+            run.clear();
+
+            Assert.IsTrue(run.empty());
+
+        }
 	}
 
 }
