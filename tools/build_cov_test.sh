@@ -45,7 +45,7 @@ $cov_path/cov-build --dir cov make
 echo "##teamcity[blockClosed name='Coverity Build $build_type']"
 
 echo "##teamcity[blockOpened name='Coverity Analyze $build_type']"
-$cov_path/cov-analyze --dir cov --strip-path `pwd ..` --security --concurrency --enable-constraint-fpp --enable-fnptr --enable-virtual
+$cov_path/cov-analyze --dir cov --strip-path $(dirname `pwd`) --security --concurrency --enable-constraint-fpp --enable-fnptr --enable-virtual
 echo "##teamcity[blockClosed name='Coverity Analyze $build_type']"
 
 echo "##teamcity[blockOpened name='Coverity Upload $build_type']"

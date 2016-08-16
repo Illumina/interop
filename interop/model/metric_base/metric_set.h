@@ -390,6 +390,12 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         size_t size() const
         { return m_data.size(); }
+        /** Test if metric set is empty
+         *
+         * @return true if metric set is empty
+         */
+        bool empty() const
+        { return m_data.empty(); }
 
         /** Version of the InterOp file parsed
          *

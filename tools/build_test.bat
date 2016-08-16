@@ -19,7 +19,7 @@ rem MinGW Build Test Script
 rem --------------------------------------------------------------------------------------------------------------------
 
 set SOURCE_DIR=..\
-set BUILD_PARAM=""
+set BUILD_PARAM=
 set BUILD_TYPE=Debug
 if NOT "%1" == "" (
 set BUILD_TYPE=%1
@@ -35,38 +35,38 @@ cd build_mingw_%BUILD_TYPE%
 echo cmake %SOURCE_DIR% -G"MinGW Makefiles" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% %BUILD_PARAM%
 cmake %SOURCE_DIR% -G"MinGW Makefiles" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% %BUILD_PARAM%
 if %errorlevel% neq 0 exit /b %errorlevel%
-echo ##teamcity[blockClosed name='Configure %BUILD_TYPE%  MinGW']
+echo ##teamcity[blockClosed name='Configure %BUILD_TYPE% MinGW']
 
-echo ##teamcity[blockOpened name='Build %BUILD_TYPE%  MinGW']
+echo ##teamcity[blockOpened name='Build %BUILD_TYPE% MinGW']
 cmake --build . -- -j8
 if %errorlevel% neq 0 exit /b %errorlevel%
-echo ##teamcity[blockClosed name='Build %BUILD_TYPE%  MinGW']
+echo ##teamcity[blockClosed name='Build %BUILD_TYPE% MinGW']
 
-echo ##teamcity[blockOpened name='Test %BUILD_TYPE%  MinGW']
+echo ##teamcity[blockOpened name='Test %BUILD_TYPE% MinGW']
 cmake --build . --target check -- -j8
 if %errorlevel% neq 0 exit /b %errorlevel%
-echo ##teamcity[blockClosed name='Test %BUILD_TYPE%  MinGW']
+echo ##teamcity[blockClosed name='Test %BUILD_TYPE% MinGW']
 cd ..
 
 rem --------------------------------------------------------------------------------------------------------------------
 rem Visual Studio 14 2015 Build Test Script
 rem --------------------------------------------------------------------------------------------------------------------
 
-echo ##teamcity[blockOpened name='Configure %BUILD_TYPE%  Visual Studio 2015 Win64']
+echo ##teamcity[blockOpened name='Configure %BUILD_TYPE% Visual Studio 2015 Win64']
 mkdir build_vs2015_x64_%BUILD_TYPE%
 cd build_vs2015_x64_%BUILD_TYPE%
 echo cmake %SOURCE_DIR% -G"Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=%BUILD_TYPE%  %BUILD_PARAM%
 cmake %SOURCE_DIR% -G"Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=%BUILD_TYPE%  %BUILD_PARAM%
 if %errorlevel% neq 0 exit /b %errorlevel%
-echo ##teamcity[blockOpened name='Configure %BUILD_TYPE%  Visual Studio 2015 Win64']
+echo ##teamcity[blockOpened name='Configure %BUILD_TYPE% Visual Studio 2015 Win64']
 
-echo ##teamcity[blockOpened name='Build %BUILD_TYPE%  Visual Studio 2015 Win64']
+echo ##teamcity[blockOpened name='Build %BUILD_TYPE% Visual Studio 2015 Win64']
 cmake --build . --config Debug -- /M
 if %errorlevel% neq 0 exit /b %errorlevel%
-echo ##teamcity[blockClosed name='Build %BUILD_TYPE%  Visual Studio 2015 Win64']
+echo ##teamcity[blockClosed name='Build %BUILD_TYPE% Visual Studio 2015 Win64']
 
-echo ##teamcity[blockOpened name='Test %BUILD_TYPE%  Visual Studio 2015 Win64']
+echo ##teamcity[blockOpened name='Test %BUILD_TYPE% Visual Studio 2015 Win64']
 cmake --build . --target check --config %BUILD_TYPE% -- /M
 if %errorlevel% neq 0 exit /b %errorlevel%
-echo ##teamcity[blockClosed name='Test %BUILD_TYPE%  Visual Studio 2015 Win64']
+echo ##teamcity[blockClosed name='Test %BUILD_TYPE% Visual Studio 2015 Win64']
 

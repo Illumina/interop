@@ -45,7 +45,7 @@ TEST_P(error_metrics_tests, compare_expected_actual)
     EXPECT_EQ(actual.size(), expected.size());
     EXPECT_EQ(actual.max_cycle(), expected.max_cycle());
 
-    for(typename value_type::const_iterator it_expected=expected.begin(), it_actual = actual.begin();
+    for(value_type::const_iterator it_expected=expected.begin(), it_actual = actual.begin();
         it_expected != expected.end() && it_actual != actual.end();
         it_expected++,it_actual++)
     {
