@@ -134,15 +134,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         static id_t cycle_from_id(const id_t id)
         {
-            return id >> TILE_BIT_SHIFT;
-        }
-        /** Get the tile hash from the unique lane/tile/cycle id
-         *
-         * @param id unique lane/tile/cycle id
-         * @return tile hash number
-         */
-        static id_t tile_hash_from_id(const id_t id)
-        {
+            // Mask tile hash (lane + tile)
             return id & ~((~static_cast<id_t>(0)) << TILE_BIT_SHIFT);
         }
 
@@ -155,7 +147,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         static id_t create_id(const id_t lane, const id_t tile, const id_t cycle)
         {
-            return base_metric::create_id(lane, tile) | (cycle << TILE_BIT_SHIFT);
+            return base_metric::create_id(lane, tile) | cycle;
         }
 
     private:

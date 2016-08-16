@@ -17,32 +17,27 @@ namespace illumina { namespace interop { namespace logic { namespace table
      *
      * @param metrics collection of all run metrics
      * @param columns vector of table columns
+     * @param row_offset ordering for the rows
      * @param data_beg iterator to start of table data
      * @param n number of cells in the data table
      */
     void populate_imaging_table_data(const model::metrics::run_metrics& metrics,
-                                   const std::vector<model::table::imaging_column>& columns,
-                                   float* data_beg, const size_t n);
-    /** Count the number of rows in the imaging table
+                                     const std::vector<model::table::imaging_column>& columns,
+                                     const std::map<model::metric_base::base_metric::id_t, size_t>& row_offset,
+                                     float* data_beg, const size_t n);
+    /** Count the number of rows in the imaging table and setup an ordering
      *
      * @param metrics collections of InterOp metric sets
-     * @return number of tile/cycles
+     * @param row_offset ordering for the rows
      */
-    size_t count_table_rows(const model::metrics::run_metrics& metrics);
+    void count_table_rows(const model::metrics::run_metrics& metrics,
+                            std::map<model::metric_base::base_metric::id_t, size_t>& row_offset);
     /** Count the total number of columns for the data table
      *
      * @param columns vector of table column descriptions
      * @return total number of columns including sub columns
      */
     size_t count_table_columns(const std::vector<model::table::imaging_column>& columns);
-    /** Count the number of cells in the data table
-     *
-     * @param metrics  collections of InterOp metric sets
-     * @param columns vector of table column descriptions
-     * @return number of cells in the data table
-     */
-    size_t count_table_cells(const model::metrics::run_metrics& metrics,
-                                    const std::vector<model::table::imaging_column>& columns);
     /** Create an imaging table from run metrics
      *
      * @param metrics source run metrics

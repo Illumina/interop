@@ -91,10 +91,15 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         typedef constants::base_tile_t base_t;
         enum
         {
+            //Compress Lane, Tile and cycle into a 64-bit Integer
+            // Cycle: Bits 0-32
+            // Tile: Bits 32-58
+            // Lane: Bits 58-64
             LANE_BIT_COUNT = 6, // Supports up to 63 lanes
-            TILE_BIT_COUNT = 32,
-            LANE_BIT_SHIFT = LANE_BIT_COUNT, // Supports up to 63 lanes
-            TILE_BIT_SHIFT =/*LANE_BIT_COUNT+*/TILE_BIT_COUNT, // TODO change back
+            TILE_BIT_COUNT = 26, // Support 7 digit tile (up to 67108864)
+            CYCLE_BIT_COUNT = 32, // Support up to 4294967296 cycles
+            LANE_BIT_SHIFT = CYCLE_BIT_COUNT+TILE_BIT_COUNT, // Supports up to 63 lanes
+            TILE_BIT_SHIFT =CYCLE_BIT_COUNT,
             /** Base for records written out once for each tile */
             BASE_TYPE = constants::BaseTileType,
             /** Tells the reader to exclude any records that have 0 for tile */
@@ -165,7 +170,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         static id_t create_id(const id_t lane, const id_t tile, const id_t= 0)// TODO: remove hack (const id_t=0)
         {
-            return lane | (tile << LANE_BIT_SHIFT);
+            return (lane << LANE_BIT_SHIFT) | (tile << TILE_BIT_SHIFT);
         }
 
         /** Get the lane from the unique lane/tile id
@@ -175,7 +180,28 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         static id_t lane_from_id(const id_t id)
         {
-            return id & ~((~0u) << LANE_BIT_SHIFT);
+            return id >> LANE_BIT_SHIFT;
+        }
+        /** Get the tile hash from the unique lane/tile/cycle id
+         *
+         * @param id unique lane/tile/cycle id
+         * @return tile hash number
+         */
+        static id_t tile_hash_from_id(const id_t id)
+        {
+            // 1. Remove cycle information
+            return (id >> TILE_BIT_SHIFT) << TILE_BIT_SHIFT;
+        }
+        /** Get the tile hash from the unique lane/tile/cycle id
+         *
+         * @param id unique lane/tile/cycle id
+         * @return tile hash number
+         */
+        static id_t tile_from_id(const id_t id)
+        {
+            // 1. Mask out lane
+            // 2. Shift tile id
+            return (id & ~((~static_cast<id_t>(0)) << LANE_BIT_SHIFT)) >> TILE_BIT_SHIFT;
         }
 
         /** Lane number

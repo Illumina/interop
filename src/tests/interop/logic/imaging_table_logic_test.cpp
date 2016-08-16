@@ -186,11 +186,13 @@ TEST(imaging_table, create_imaging_table_error_metrics)
     simulate_read_error_metrics(metrics);
 
     std::vector<model::table::imaging_column> columns;
+    std::map<model::metric_base::base_metric::id_t, size_t> row_offsets;
     logic::table::create_imaging_table_columns(metrics, columns);
-    const size_t cell_count = logic::table::count_table_cells(metrics, columns);
-    std::vector<float> data(cell_count);
+    const size_t column_count = logic::table::count_table_columns(columns);
+    logic::table::count_table_rows(metrics, row_offsets);
+    std::vector<float> data(row_offsets.size()*column_count);
     ASSERT_TRUE(data.size() > 0);
-    logic::table::populate_imaging_table_data(metrics, columns, &data[0], data.size());
+    logic::table::populate_imaging_table_data(metrics, columns, row_offsets, &data[0], data.size());
     EXPECT_EQ(data[0], 7u);
 }
 TEST(imaging_table, create_imaging_table_error_metrics_tile_test)
