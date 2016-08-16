@@ -42,11 +42,11 @@
         INTEROP_TUPLE4(AccumPercentQ20, "% >=Q20 (Accumulated)", Q, CycleFeature),\
         INTEROP_TUPLE4(AccumPercentQ30, "% >=Q30 (Accumulated)", Q, CycleFeature),\
         INTEROP_TUPLE4(QScore, "Median QScore", Q, CycleFeature),\
-        INTEROP_TUPLE4(Clusters, "Density", Tile, TileFeature),\
+        INTEROP_TUPLE4(Clusters, "Density (K/mm2)", Tile, TileFeature),\
         /*INTEROP_TUPLE4(Density, "Density (K/mm2)", Tile, TileFeature),*/ \
         INTEROP_TUPLE4(ClustersPF, "Density PF", Tile, TileFeature),\
         /*INTEROP_TUPLE4(DensityPF, "Density PF", Tile, TileFeature),*/\
-        INTEROP_TUPLE4(ClusterCount, "Clusters", Tile, TileFeature),\
+        INTEROP_TUPLE4(ClusterCount, "Cluster Count", Tile, TileFeature),\
         /*INTEROP_TUPLE4(ClusterCount, "Cluster Count", Tile, TileFeature),*/\
         INTEROP_TUPLE4(ClusterCountPF, "Clusters PF", Tile, TileFeature),\
         INTEROP_TUPLE4(ErrorRate, "Error Rate", Error, CycleFeature),\

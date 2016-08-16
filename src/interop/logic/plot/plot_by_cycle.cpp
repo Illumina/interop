@@ -368,7 +368,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
         for(size_t i=0;i<types.size();++i)
         {
             if(!utils::is_cycle_metric(types[i])) continue;
-            names.push_back(constants::to_string(types[i]));
+            names.push_back(utils::to_description(types[i]));
         }
     }
 }}}}
