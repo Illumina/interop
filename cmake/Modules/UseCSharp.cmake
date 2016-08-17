@@ -102,6 +102,7 @@ macro( CSHARP_ADD_PROJECT type name )
   add_custom_command(
     COMMENT "Compiling C# ${type} ${name}: '${CSHARP_COMPILER} /unsafe /t:${type} /out:${CMAKE_CURRENT_BINARY_DIR}/${name}.${output} /platform:${CSHARP_PLATFORM} ${CSHARP_SDK} ${refs} ${sources}'"
     OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${name}.${output}
+    COMMAND ${CMAKE_COMMAND} -DFILES_TO_COPY="${source_list}" -DDESTINATION_DIR="${CMAKE_CURRENT_BINARY_DIR}" -P "${CMAKE_SOURCE_DIR}/cmake/CopyListOfFiles.cmake"
     COMMAND ${CSHARP_COMPILER}
     ARGS /t:${type} /out:${CSHARP_OUTPUT_DIR}/${name}.${output} /unsafe /platform:${CSHARP_PLATFORM} ${CSHARP_SDK} ${refs} ${sources}
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
