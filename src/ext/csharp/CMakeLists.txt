@@ -1,7 +1,7 @@
 # Build a C# Shared library using SWIG
 
 
-set(CMAKE_SWIG_OUTDIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+set(CMAKE_SWIG_OUTDIR ${CMAKE_CURRENT_BINARY_DIR})
 
 
 add_custom_target(csharp_lib)
