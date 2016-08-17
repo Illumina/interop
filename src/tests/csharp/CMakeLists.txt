@@ -49,13 +49,12 @@ set(TEST_SRCS
         metrics/QMetricsTest.cs
         metrics/TileMetricsTest.cs
         )
-set(csharp_files ${SWIG_GEN_CSHARP_SOURCE_FILES})
+set(csharp_files)
 foreach(SRC ${TEST_SRCS})
-    get_filename_component(CSHARP_TEST_SRCS ${SRC} ABSOLUTE)
-    list(APPEND csharp_files ${CSHARP_TEST_SRCS})
+    list(APPEND csharp_files "${CMAKE_CURRENT_SOURCE_DIR}/${SRC}")
 endforeach()
 
-csharp_add_library(csharp_unittest ${NUNIT_LIBRARIES} ${csharp_files})
+csharp_add_library(csharp_unittest ${NUNIT_LIBRARIES} ${csharp_files} ${SWIG_CSHARP_LIBRARY})
 add_dependencies(csharp_unittest csharp_interop ${NUNIT_TARGET})
 
 add_custom_command(TARGET csharp_unittest POST_BUILD
@@ -75,13 +74,12 @@ endif()
 set(PERF_TEST_SRCS
         metrics/PerformanceTest.cs
         )
-set(csharp_perf_files ${SWIG_GEN_CSHARP_SOURCE_FILES})
+set(csharp_perf_files)
 foreach(SRC ${PERF_TEST_SRCS})
-    get_filename_component(CSHARP_TEST_SRCS ${SRC} ABSOLUTE)
-    list(APPEND csharp_perf_files ${CSHARP_TEST_SRCS})
+    list(APPEND csharp_perf_files "${CMAKE_CURRENT_SOURCE_DIR}/${SRC}")
 endforeach()
 
-csharp_add_library(csharp_perftest ${NUNIT_LIBRARIES} ${csharp_perf_files})
+csharp_add_library(csharp_perftest ${NUNIT_LIBRARIES} ${csharp_perf_files} ${SWIG_CSHARP_LIBRARY})
 add_dependencies(csharp_perftest csharp_interop ${NUNIT_TARGET})
 
 add_custom_command(TARGET csharp_perftest POST_BUILD

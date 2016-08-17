@@ -33,8 +33,8 @@ WRAP_METRICS(IMPORT_METRIC_WRAPPER)
 // This allows exceptions to be imported, but not belong to the module
 EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 
-
-%template(ushort_vector) std::vector< uint16_t >;
+%template(map_id_offset) std::map<uint64_t, size_t>;
+//%template(ushort_vector) std::vector< uint16_t >;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Imaging model

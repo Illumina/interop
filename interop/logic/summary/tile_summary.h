@@ -74,35 +74,41 @@ namespace illumina { namespace interop { namespace logic { namespace summary
         //reads and reads pf
         // percent pf
         INTEROP_ASSERT(run.size() > 0);
+        model::summary::metric_stat stat;
         for (size_t lane = 0; lane < run[0].size(); ++lane)
         {
             INTEROP_ASSERT(lane < tile_data_by_lane.size());
             INTEROP_ASSERT(lane < run[0].size());
             summarize(tile_data_by_lane[lane].begin(),
                       tile_data_by_lane[lane].end(),
-                      run[0][lane].density(),
+                      stat,
                       util::op::const_member_function(&model::metrics::tile_metric::cluster_density),
                       util::op::const_member_function_less(&model::metrics::tile_metric::cluster_density));
+            run[0][lane].density(stat);
             summarize(tile_data_by_lane[lane].begin(),
                       tile_data_by_lane[lane].end(),
-                      run[0][lane].density_pf(),
+                      stat,
                       util::op::const_member_function(&model::metrics::tile_metric::cluster_density_pf),
                       util::op::const_member_function_less(&model::metrics::tile_metric::cluster_density_pf));
+            run[0][lane].density_pf(stat);
             summarize(tile_data_by_lane[lane].begin(),
                       tile_data_by_lane[lane].end(),
-                      run[0][lane].cluster_count(),
+                      stat,
                       util::op::const_member_function(&model::metrics::tile_metric::cluster_count),
                       util::op::const_member_function_less(&model::metrics::tile_metric::cluster_count));
+            run[0][lane].cluster_count(stat);
             summarize(tile_data_by_lane[lane].begin(),
                       tile_data_by_lane[lane].end(),
-                      run[0][lane].cluster_count_pf(),
+                      stat,
                       util::op::const_member_function(&model::metrics::tile_metric::cluster_count_pf),
                       util::op::const_member_function_less(&model::metrics::tile_metric::cluster_count_pf));
+            run[0][lane].cluster_count_pf(stat);
             summarize(tile_data_by_lane[lane].begin(),
                       tile_data_by_lane[lane].end(),
-                      run[0][lane].percent_pf(),
+                      stat,
                       util::op::const_member_function(&model::metrics::tile_metric::percent_pf),
                       util::op::const_member_function_less(&model::metrics::tile_metric::percent_pf));
+            run[0][lane].percent_pf(stat);
             run[0][lane].reads(std::accumulate(tile_data_by_lane[lane].begin(),
                                                tile_data_by_lane[lane].end(),
                                                float(0),
@@ -117,11 +123,11 @@ namespace illumina { namespace interop { namespace logic { namespace summary
             for (size_t read = 1; read < run.size(); ++read)
             {
                 INTEROP_ASSERT(read < run.size());
-                run[read][lane].density() = run[0][lane].density();
-                run[read][lane].density_pf() = run[0][lane].density_pf();
-                run[read][lane].cluster_count() = run[0][lane].cluster_count();
-                run[read][lane].cluster_count_pf() = run[0][lane].cluster_count_pf();
-                run[read][lane].percent_pf() = run[0][lane].percent_pf();
+                run[read][lane].density(run[0][lane].density());
+                run[read][lane].density_pf(run[0][lane].density_pf());
+                run[read][lane].cluster_count(run[0][lane].cluster_count());
+                run[read][lane].cluster_count_pf(run[0][lane].cluster_count_pf());
+                run[read][lane].percent_pf(run[0][lane].percent_pf());
                 run[read][lane].reads(run[0][lane].reads());
                 run[read][lane].reads_pf(run[0][lane].reads_pf());
             }
@@ -138,23 +144,27 @@ namespace illumina { namespace interop { namespace logic { namespace summary
             for (size_t lane = 0; lane < run[read].size(); ++lane)
             {
                 INTEROP_ASSERT(lane < run[0].size());
+
                 const size_t non_nan = nan_summarize(read_data_by_lane_read(read, lane).begin(),
                                                      read_data_by_lane_read(read, lane).end(),
-                                                     run[read][lane].percent_aligned(),
+                                                     stat,
                                                      util::op::const_member_function(
                                                              &model::metrics::read_metric::percent_aligned),
                                                      util::op::const_member_function_less(
                                                              &model::metrics::read_metric::percent_aligned));
+                run[read][lane].percent_aligned(stat);
                 nan_summarize(read_data_by_lane_read(read, lane).begin(),
                               read_data_by_lane_read(read, lane).end(),
-                              run[read][lane].prephasing(),
+                              stat,
                               util::op::const_member_function(&model::metrics::read_metric::percent_prephasing),
                               util::op::const_member_function_less(&model::metrics::read_metric::percent_prephasing));
+                run[read][lane].prephasing(stat);
                 nan_summarize(read_data_by_lane_read(read, lane).begin(),
                               read_data_by_lane_read(read, lane).end(),
-                              run[read][lane].phasing(),
+                              stat,
                               util::op::const_member_function(&model::metrics::read_metric::percent_phasing),
                               util::op::const_member_function_less(&model::metrics::read_metric::percent_phasing));
+                run[read][lane].phasing(stat);
                 INTEROP_ASSERT(!std::isnan(run[read][lane].percent_aligned().mean()));
                 percent_aligned_by_read += run[read][lane].percent_aligned().mean() * non_nan;
                 total_by_read += non_nan;

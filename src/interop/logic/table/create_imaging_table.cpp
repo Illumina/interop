@@ -256,9 +256,12 @@ namespace illumina { namespace interop { namespace logic { namespace table
         cycle_metric_map_t hash_set;
         metrics.populate_id_map(hash_set);
         row_offset.clear();
+        std::vector<model::metric_base::base_metric::id_t> ids(hash_set.size());
         size_t row = 0;
         for(cycle_metric_map_t::const_iterator it = hash_set.begin();it != hash_set.end();++it,++row)
-            row_offset[it->first] = row;
+            ids[row]=it->first;
+        std::sort(ids.begin(), ids.end());
+        for(size_t i=0;i<ids.size();++i) row_offset[ids[i]]=i;
     }
     /** Count the total number of columns for the data table
      *
