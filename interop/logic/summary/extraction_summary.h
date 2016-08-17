@@ -67,11 +67,13 @@ namespace illumina { namespace interop { namespace logic { namespace summary
             INTEROP_ASSERT(read < run.size());
             float first_cycle_intensity_by_read = 0;
             size_t total_by_read = 0;
+            model::summary::metric_stat first_cycle_intensity_stat;
             for (size_t lane = 0; lane < run[read].size(); ++lane)
             {
                 INTEROP_ASSERT(lane < temp.lane_count());
                 INTEROP_ASSERT(lane < run[read].size());
-                summarize(temp(read, lane).begin(), temp(read, lane).end(), run[read][lane].first_cycle_intensity());
+                summarize(temp(read, lane).begin(), temp(read, lane).end(), first_cycle_intensity_stat);
+                run[read][lane].first_cycle_intensity(first_cycle_intensity_stat);
                 first_cycle_intensity_by_read += std::accumulate(temp(read, lane).begin(),
                                                                  temp(read, lane).end(),
                                                                  size_t(0));

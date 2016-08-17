@@ -89,7 +89,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
      */
     inline void error_summary_from_cache(summary_by_lane_read<float> &summary_by_lane_read,
                                          model::summary::run_summary &run,
-                                         model::summary::metric_stat &(model::summary::lane_summary::*func )())
+                                         void (model::summary::lane_summary::*func )(const model::summary::metric_stat&))
     {
         for (size_t read = 0; read < run.size(); ++read)
         {
@@ -99,9 +99,11 @@ namespace illumina { namespace interop { namespace logic { namespace summary
             {
                 INTEROP_ASSERT(lane < run[read].size());
                 INTEROP_ASSERT(lane < summary_by_lane_read.lane_count());
+                model::summary::metric_stat stat;
                 summarize(summary_by_lane_read(read, lane).begin(),
                           summary_by_lane_read(read, lane).end(),
-                          (run[read][lane].*func)());
+                          stat);
+                (run[read][lane].*func)(stat);
             }
         }
     }
@@ -132,7 +134,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                                  model::summary::run_summary &run) throw(model::index_out_of_bounds_exception)
     {
         typedef summary_by_lane_read<float> summary_by_lane_read_t;
-        typedef model::summary::metric_stat &(model::summary::lane_summary::*error_functor_t )();
+        typedef void (model::summary::lane_summary::*error_functor_t )(const model::summary::metric_stat&);
         typedef std::pair<size_t, error_functor_t> cycle_functor_pair_t;
 
         if (beg == end) return;
@@ -167,9 +169,11 @@ namespace illumina { namespace interop { namespace logic { namespace summary
             for (size_t lane = 0; lane < run[read].size(); ++lane)
             {
                 INTEROP_ASSERT(lane < run[read].size());
+                model::summary::metric_stat stat;
                 summarize(temp(read, lane).begin(),
                           temp(read, lane).end(),
-                          run[read][lane].error_rate());
+                          stat);
+                run[read][lane].error_rate(stat);
                 error_rate_by_read += std::accumulate(temp(read, lane).begin(),
                                                       temp(read, lane).end(),
                                                       float(0));

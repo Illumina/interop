@@ -61,7 +61,7 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 echo ##teamcity[blockOpened name='Configure %BUILD_TYPE% Visual Studio 2015 Win64']
 
 echo ##teamcity[blockOpened name='Build %BUILD_TYPE% Visual Studio 2015 Win64']
-cmake --build . --config Debug -- /M
+cmake --build . --config %BUILD_TYPE% -- /M
 if %errorlevel% neq 0 exit /b %errorlevel%
 echo ##teamcity[blockClosed name='Build %BUILD_TYPE% Visual Studio 2015 Win64']
 

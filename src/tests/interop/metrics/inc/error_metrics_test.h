@@ -123,11 +123,11 @@ namespace illumina { namespace interop { namespace unittest
             std::vector<model::run::read_info> read_infos = reads();
             model::summary::run_summary summary(read_infos.begin(), read_infos.end(), 1);
             summary[0][0].lane(7);
-            summary[0][0].error_rate() = model::summary::metric_stat(0.67515134811401367f, 0, 0.67515134811401367f);
-            summary[0][0].error_rate_35() = model::summary::metric_stat(0.0f, 0, 0.0f);
-            summary[0][0].error_rate_50() = model::summary::metric_stat(00.0f, 0, 0.0f);
-            summary[0][0].error_rate_75() = model::summary::metric_stat(0.0f, 0, 0.0f);
-            summary[0][0].error_rate_100() = model::summary::metric_stat(0.0f, 0, 0.0f);
+            summary[0][0].error_rate(model::summary::metric_stat(0.67515134811401367f, 0, 0.67515134811401367f));
+            summary[0][0].error_rate_35(model::summary::metric_stat(0.0f, 0, 0.0f));
+            summary[0][0].error_rate_50(model::summary::metric_stat(00.0f, 0, 0.0f));
+            summary[0][0].error_rate_75(model::summary::metric_stat(0.0f, 0, 0.0f));
+            summary[0][0].error_rate_100(model::summary::metric_stat(0.0f, 0, 0.0f));
             summary[0][0].cycle_state().error_cycle_range(model::run::cycle_range(3, 3));
             summary[0].summary().error_rate(0.67515134811401367f);
             summary.total_summary().error_rate(0.67515134811401367f);
