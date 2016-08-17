@@ -127,7 +127,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         {
             return create_id(lane(), tile(), m_cycle);
         }
-        /** Get the cycyle from the unique lane/tile/cycle id
+        /** Get the cycle from the unique lane/tile/cycle id
          *
          * @param id unique lane/tile/cycle id
          * @return cycle number

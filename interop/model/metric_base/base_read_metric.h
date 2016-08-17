@@ -58,7 +58,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         enum
         {
             /** Base for records written out once for each tile/read */
-                    BASE_TYPE = constants::BaseReadType
+            BASE_TYPE = constants::BaseReadType
         };
         /** A read metric_set header
          */
@@ -125,7 +125,17 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         static id_t create_id(const id_t lane, const id_t tile, const id_t read)
         {
-            return base_metric::create_id(lane, tile) | (read << TILE_BIT_SHIFT);
+            return base_metric::create_id(lane, tile) | read;
+        }
+        /** Get the read from the unique lane/tile/read id
+         *
+         * @param id unique lane/tile/read id
+         * @return read number
+         */
+        static id_t read_from_id(const id_t id)
+        {
+            // Mask tile hash (lane + tile)
+            return id & ~((~static_cast<id_t>(0)) << TILE_BIT_SHIFT);
         }
 
     private:
