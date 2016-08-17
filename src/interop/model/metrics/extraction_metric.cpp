@@ -11,6 +11,7 @@
 #include <limits>
 #include "interop/model/metrics/extraction_metric.h"
 #include "interop/io/format/metric_format_factory.h"
+#include "interop/util/math.h"
 
 using namespace illumina::interop::model::metrics;
 

@@ -10,9 +10,8 @@
 
 #pragma once
 
-#if defined(HAVE_STD_ISNAN)
 #include <cmath>
-#else
+#if !defined(HAVE_STD_ISNAN)
 #   if defined(HAVE_ISNAN)
 #       include <math.h>
     #elif defined(HAVE___ISNAN)

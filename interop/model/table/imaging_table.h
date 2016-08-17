@@ -6,8 +6,8 @@
  *  @copyright GNU Public License.
  */
 #pragma once
-#include <math.h>
-#include <iostream>
+#include <iosfwd>
+#include "interop/util/math.h"
 #include "interop/model/table/imaging_column.h"
 
 

@@ -7,7 +7,7 @@
  */
 #pragma once
 #include <string>
-#include <iostream>
+#include <iosfwd>
 #include <vector>
 #include "interop/util/assert.h"
 #include "interop/util/length_of.h"

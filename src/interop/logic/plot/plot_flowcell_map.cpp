@@ -7,6 +7,7 @@
  */
 #include "interop/logic/plot/plot_flowcell_map.h"
 
+#include "interop/util/math.h"
 #include "interop/logic/metric/metric_value.h"
 #include "interop/logic/metric/q_metric.h"
 

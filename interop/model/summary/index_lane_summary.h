@@ -7,7 +7,6 @@
  */
 #pragma once
 
-#include <iostream>
 #include <algorithm>
 #include "interop/util/cstdint.h"
 #include "interop/util/exception.h"

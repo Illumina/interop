@@ -23,7 +23,10 @@ set(SRCS
         logic/summary/run_summary.cpp
         logic/summary/index_summary.cpp
         logic/table/create_imaging_table_columns.cpp
-        logic/table/create_imaging_table.cpp)
+        logic/table/create_imaging_table.cpp
+        util/time.cpp
+        util/filesystem.cpp
+        )
 
 set(HEADERS
         ../../interop/model/summary/cycle_state_summary.h

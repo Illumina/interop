@@ -7,7 +7,7 @@
  */
 #pragma once
 #include <string>
-#include <math.h>
+#include "interop/util/math.h"
 
 namespace illumina { namespace interop { namespace model { namespace summary {
 

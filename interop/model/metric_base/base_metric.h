@@ -9,12 +9,8 @@
  */
 #pragma once
 
-#include <ostream>
-#include <stdexcept>
 #include <limits>
-#include <cmath>
 #include "interop/util/assert.h"
-#include "interop/util/type_traits.h"
 #include "interop/io/layout/base_metric.h"
 #include "interop/constants/enums.h"
 #include "interop/constants/typedefs.h"

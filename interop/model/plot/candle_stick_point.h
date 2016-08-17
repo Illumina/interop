@@ -8,6 +8,7 @@
 #pragma once
 
 #include <vector>
+#include "interop/util/math.h"
 #include "interop/model/plot/data_point.h"
 
 namespace illumina { namespace interop { namespace model { namespace plot

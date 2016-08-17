@@ -15,7 +15,6 @@
 #include <limits>
 #include <numeric>
 #include <algorithm>
-#include <cmath>
 #include "interop/util/assert.h"
 #include "interop/util/math.h"
 

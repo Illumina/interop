@@ -7,7 +7,6 @@
  */
 #pragma once
 
-#include <cmath>
 #include <limits>
 #include "interop/util/assert.h"
 #include "interop/io/format/generic_layout.h"

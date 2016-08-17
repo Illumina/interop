@@ -9,6 +9,7 @@
 
 #include <fstream>
 #include <gtest/gtest.h>
+#include "interop/util/math.h"
 #include "interop/logic/summary/run_summary.h"
 #include "inc/error_metrics_test.h"
 #include "inc/extraction_metrics_test.h"
@@ -16,7 +17,7 @@
 #include "inc/q_metrics_test.h"
 #include "inc/index_metrics_test.h"
 #include "inc/summary_fixture.h"
-#include "../inc/regression_fixture.h"
+#include "src/tests/interop/inc/regression_fixture.h"
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::io;
 using namespace illumina::interop;

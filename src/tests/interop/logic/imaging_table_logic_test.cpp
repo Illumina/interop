@@ -8,7 +8,6 @@
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
-#include <math.h>
 #include "interop/util/length_of.h"
 #include "interop/logic/table/create_imaging_table.h"
 #include "src/tests/interop/metrics/inc/error_metrics_test.h"
