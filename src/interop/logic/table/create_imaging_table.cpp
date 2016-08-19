@@ -24,7 +24,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
      * @param naming_method tile naming method enum
      * @param cycle_to_read map cycle to read/cycle within read
      * @param columns vector of table columns
-     * @param index_map metric id to the row
+     * @param row_offset offset for each metric into the sorted table
      * @param column_count number of data columns including sub columns
      * @param data_beg iterator to start of table data
      * @param data_end iterator to end of table data
@@ -37,7 +37,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
                                               const constants::tile_naming_method naming_method,
                                               const summary::read_cycle_vector_t& cycle_to_read,
                                               const std::vector<size_t>& columns,
-                                              std::map<Id_t, size_t>& index_map,
+                                              const std::map<Id_t, size_t>& row_offset,
                                               const size_t column_count,
                                               OutputIterator data_beg,
                                               OutputIterator data_end)
@@ -45,19 +45,22 @@ namespace illumina { namespace interop { namespace logic { namespace table
         for(;beg != end;++beg)
         {
             const Id_t id = beg->id();
-            typename std::map<Id_t, size_t>::iterator it = index_map.find(id);
-            size_t row;
+            typename std::map<Id_t, size_t>::const_iterator row_it = row_offset.find(id);
+            const size_t row = row_it->second;
             const summary::read_cycle& read = cycle_to_read[beg->cycle()-1];
-            if(it == index_map.end())
+            if(data_beg[row*column_count]==0)
             {
                 if((beg->cycle()-1) >= cycle_to_read.size())
                     INTEROP_THROW(model::index_out_of_bounds_exception, "Cycle exceeds total cycles from Reads in the RunInfo.xml");
 
-                row = index_map.size();
-                index_map[id]=row;
+
+                INTEROP_ASSERTMSG(row_it != row_offset.end(), "Bug with row offset");
+                INTEROP_ASSERT(row<row_offset.size())
                 INTEROP_ASSERTMSG(columns[model::table::ReadColumn] < static_cast<size_t>(model::table::ImagingColumnCount), columns[model::table::ReadColumn] );
                 INTEROP_ASSERTMSG(columns[model::table::CycleWithinReadColumn] < static_cast<size_t>(model::table::ImagingColumnCount), columns[model::table::CycleWithinReadColumn] );
-                INTEROP_ASSERTMSG(data_beg+row*column_count+columns[model::table::ReadColumn] < data_end, columns[model::table::ReadColumn] << " - " <<  row*column_count+columns[model::table::ReadColumn] << " < " << std::distance(data_beg, data_end));
+                INTEROP_ASSERTMSG(data_beg+row*column_count+columns[model::table::ReadColumn] < data_end, columns[model::table::ReadColumn]
+                        << " - " <<  row*column_count+columns[model::table::ReadColumn] << " < " << std::distance(data_beg, data_end) << " "
+                        << "row: " << row << " < " << row_offset.size());
                 // TODO: Only populate Id once!
                 table_populator::populate_id(*beg,
                                              read,
@@ -68,7 +71,6 @@ namespace illumina { namespace interop { namespace logic { namespace table
                                              data_beg+row*column_count,
                                              data_end);
             }
-            else row = it->second;
             table_populator::populate(*beg,
                                       read.number,
                                       q20_idx,
@@ -86,7 +88,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
      * @param naming_method tile naming method enum
      * @param cycle_to_read map cycle to read/cycle within read
      * @param columns vector of table columns
-     * @param index_map metric id to the row
+     * @param row_offset offset for each metric into the sorted table
      * @param column_count number of data columns including sub columns
      * @param data_beg iterator to start of table data
      * @param data_end iterator to end of table data
@@ -98,7 +100,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
                                               const constants::tile_naming_method naming_method,
                                               const summary::read_cycle_vector_t& cycle_to_read,
                                               const std::vector<size_t>& columns,
-                                              std::map<Id_t, size_t>& index_map,
+                                              const std::map<Id_t, size_t>& row_offset,
                                               const size_t column_count,
                                               OutputIterator data_beg, OutputIterator data_end)
     {
@@ -109,7 +111,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
                                              naming_method,
                                              cycle_to_read,
                                              columns,
-                                             index_map,
+                                             row_offset,
                                              column_count,
                                              data_beg, data_end);
     }
@@ -126,6 +128,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
      *
      * @param metrics collection of all run metrics
      * @param columns vector of table columns
+     * @param row_offset offset for each metric into the sorted table
      * @param data_beg iterator to start of table data
      * @param data_end iterator to end of table data
      */
@@ -141,14 +144,14 @@ namespace illumina { namespace interop { namespace logic { namespace table
         const constants::tile_naming_method naming_method = metrics.run_info().flowcell().naming_method();
         const size_t q20_idx = metric::index_for_q_value(metrics.get_set<model::metrics::q_metric>(), 20);
         const size_t q30_idx = metric::index_for_q_value(metrics.get_set<model::metrics::q_metric>(), 30);
-        std::map<id_t, size_t> index_map;
         std::vector<size_t> cmap(model::table::ImagingColumnCount, std::numeric_limits<size_t>::max());
         for(size_t i=0;i<columns.size();++i) cmap[columns[i].id()] = columns[i].offset();
         summary::read_cycle_vector_t cycle_to_read;
         summary::map_read_to_cycle_number(metrics.run_info().reads().begin(),
                                           metrics.run_info().reads().end(),
                                           cycle_to_read);
-
+        if(data_beg+column_count*row_offset.size() > data_end)
+            throw model::index_out_of_bounds_exception("Table is larger than buffer");
         zero_first_column(data_beg, data_beg+column_count*row_offset.size(), column_count);
         populate_imaging_table_data_by_cycle(metrics.get_set<model::metrics::extraction_metric>(),
                                              q20_idx,
@@ -156,7 +159,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
                                              naming_method,
                                              cycle_to_read,
                                              cmap,
-                                             index_map,
+                                             row_offset,
                                              column_count,
                                              data_beg, data_end);
         populate_imaging_table_data_by_cycle(metrics.get_set<model::metrics::error_metric>(),
@@ -165,7 +168,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
                                              naming_method,
                                              cycle_to_read,
                                              cmap,
-                                             index_map,
+                                             row_offset,
                                              column_count,
                                              data_beg, data_end);
         populate_imaging_table_data_by_cycle(metrics.get_set<model::metrics::image_metric>(),
@@ -174,7 +177,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
                                              naming_method,
                                              cycle_to_read,
                                              cmap,
-                                             index_map,
+                                             row_offset,
                                              column_count,
                                              data_beg, data_end);
         populate_imaging_table_data_by_cycle(metrics.get_set<model::metrics::corrected_intensity_metric>(),
@@ -183,7 +186,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
                                              naming_method,
                                              cycle_to_read,
                                              cmap,
-                                             index_map,
+                                             row_offset,
                                              column_count,
                                              data_beg, data_end);
         populate_imaging_table_data_by_cycle(metrics.get_set<model::metrics::q_metric>(),
@@ -192,12 +195,12 @@ namespace illumina { namespace interop { namespace logic { namespace table
                                              naming_method,
                                              cycle_to_read,
                                              cmap,
-                                             index_map,
+                                             row_offset,
                                              column_count,
                                              data_beg, data_end);
         const typename model::metrics::run_metrics::tile_metric_set_t& tile_metrics =
                 metrics.get_set<model::metrics::tile_metric>();
-        for(typename std::map<id_t, size_t>::const_iterator it = index_map.begin();it != index_map.end();++it)
+        for(typename std::map<id_t, size_t>::const_iterator it = row_offset.begin();it != row_offset.end();++it)
         {
             const id_t tid = model::metric_base::base_cycle_metric::tile_hash_from_id(it->first);
             if (!tile_metrics.has_metric(tid)) continue;
@@ -256,12 +259,9 @@ namespace illumina { namespace interop { namespace logic { namespace table
         cycle_metric_map_t hash_set;
         metrics.populate_id_map(hash_set);
         row_offset.clear();
-        std::vector<model::metric_base::base_metric::id_t> ids(hash_set.size());
         size_t row = 0;
         for(cycle_metric_map_t::const_iterator it = hash_set.begin();it != hash_set.end();++it,++row)
-            ids[row]=it->first;
-        std::sort(ids.begin(), ids.end());
-        for(size_t i=0;i<ids.size();++i) row_offset[ids[i]]=i;
+            row_offset[it->first]=row;
     }
     /** Count the total number of columns for the data table
      *
