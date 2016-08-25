@@ -31,7 +31,7 @@ namespace illumina{ namespace interop { namespace unittest {
             model::run::info run_info("XX",
                                       "",
                                       1,
-                                      model::run::flowcell_layout(Gen::lane_count()),
+                                      model::run::flowcell_layout(Gen::lane_count(), 2, 4, 99, 6, 6),
                                       channels,
                                       model::run::image_dimensions(),
                                       reads);

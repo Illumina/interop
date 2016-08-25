@@ -14,6 +14,31 @@
 
 namespace illumina { namespace interop { namespace logic { namespace metric {
 
+    /** Convert string lane/tile identifier (1_1111) to lane number
+     *
+     * @param tile_name lane/tile identifier (1_1111)
+     * @return lane number (1)
+     */
+    inline ::uint32_t lane_from_name(const std::string& tile_name)
+    {
+        if(tile_name=="") return 0;
+        const size_t n = tile_name.find('_');
+        if(n == std::string::npos) return 0;
+        return util::lexical_cast< ::uint32_t >(tile_name.substr(0, n));
+    }
+    /** Convert string lane/tile identifier (1_1111) to tile hash
+     *
+     * @param tile_name lane/tile identifier (1_1111)
+     * @return tile hash (1111)
+     */
+    inline ::uint32_t tile_from_name(const std::string& tile_name)
+    {
+        if(tile_name=="") return 0;
+        const size_t n = tile_name.find('_');
+        if(n == std::string::npos) return 0;
+        return util::lexical_cast< ::uint32_t >(tile_name.substr(n+1));
+    }
+
     /** Determine the tile naming method from a metric tile ID
      *
      * @param metric tile metric

@@ -100,6 +100,18 @@ namespace model {
         invalid_column_type(const std::string &mesg) : std::runtime_error(mesg) { }
     };
 
+    /** Exception raised if the RunInfo does not match the InterOps
+     */
+    struct invalid_run_info_exception : public std::runtime_error
+    {
+        /** Constructor
+         *
+         *  @param mesg error message
+         */
+        invalid_run_info_exception(const std::string &mesg) : std::runtime_error(mesg)
+        { }
+    };
+
     /** @} */
 }
 }

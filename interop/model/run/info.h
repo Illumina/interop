@@ -67,8 +67,10 @@ namespace illumina { namespace interop { namespace model { namespace run
                 m_flowcell(flowcell),
                 m_channels(channels),
                 m_image_dim(image_dim),
-                m_reads(reads)
+                m_reads(reads),
+                m_total_cycle_count(0)
         {
+            m_total_cycle_count = total_cycles();
         }
 
         /** Constructor
@@ -83,8 +85,10 @@ namespace illumina { namespace interop { namespace model { namespace run
                 m_version(0),
                 m_flowcell(flowcell),
                 m_channels(channels),
-                m_reads(reads)
+                m_reads(reads),
+                m_total_cycle_count(0)
         {
+            m_total_cycle_count = total_cycles();
         }
 
     public:
@@ -106,6 +110,37 @@ namespace illumina { namespace interop { namespace model { namespace run
         xml::empty_xml_format_exception,
         xml::missing_xml_element_exception,
         xml::xml_parse_exception);
+
+        /** Test if tile list matches flowcell layout
+         *
+         * @throws invalid_run_info_exception
+         */
+        void validate()const throw(invalid_run_info_exception);
+        /** Test if tile list matches flowcell layout
+         *
+         * @param lane lane number
+         * @param tile tile number
+         * @throws invalid_run_info_exception
+         */
+        void validate(const ::uint32_t lane, const ::uint32_t tile)const throw(invalid_run_info_exception);
+        /** Test if tile list matches flowcell layout
+         *
+         * @param lane lane number
+         * @param tile tile number
+         * @param cycle cycle number
+         * @throws invalid_run_info_exception
+         */
+        void validate_cycle(const ::uint32_t lane, const ::uint32_t tile, const size_t cycle)const
+        throw(invalid_run_info_exception);
+        /** Test if tile list matches flowcell layout
+         *
+         * @param lane lane number
+         * @param tile tile number
+         * @param read read number
+         * @throws invalid_run_info_exception
+         */
+        void validate_read(const ::uint32_t lane, const ::uint32_t tile, const size_t read)const
+        throw(invalid_run_info_exception);
 
     public:
         /** Get the name of the run
@@ -250,6 +285,7 @@ namespace illumina { namespace interop { namespace model { namespace run
         str_vector_t m_channels;
         image_dimensions m_image_dim;
         read_vector_t m_reads;
+        size_t m_total_cycle_count;
     };
 
 }}}}

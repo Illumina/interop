@@ -47,6 +47,7 @@ WRAPPER(illumina::interop::model::, invalid_channel_exception, invalid_channel_e
 WRAPPER(illumina::interop::model::, invalid_read_exception, invalid_read_exception)
 WRAPPER(illumina::interop::model::, invalid_metric_type, invalid_metric_type)
 WRAPPER(illumina::interop::model::, invalid_filter_option, invalid_filter_option)
+WRAPPER(illumina::interop::model::, invalid_run_info_exception, invalid_run_info_exception)
 
 // XML
 WRAPPER(illumina::interop::xml::, xml_file_not_found_exception, xml_file_not_found_exception)

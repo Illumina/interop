@@ -117,7 +117,7 @@ TEST(plot_logic, q_score_histogram)
             "",
             "",
             1,
-            model::run::flowcell_layout(2, 2, 2, 16),
+            model::run::flowcell_layout(8, 2, 2, 16),
             std::vector<std::string>(),
             model::run::image_dimensions(),
             reads
@@ -153,7 +153,7 @@ TEST(plot_logic, q_score_heatmap)
             "",
             "",
             1,
-            model::run::flowcell_layout(2, 2, 2, 16),
+            model::run::flowcell_layout(8, 2, 2, 16),
             std::vector<std::string>(),
             model::run::image_dimensions(),
             reads

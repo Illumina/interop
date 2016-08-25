@@ -122,6 +122,48 @@ namespace illumina { namespace interop { namespace model { namespace metrics
 
         std::string m_run_folder;
     };
+
+    struct validate_run_info
+    {
+        validate_run_info(const run::info& info) : m_info(info){}
+
+        template<class MetricSet>
+        void operator()(const MetricSet &metrics)const
+        {
+            typedef typename MetricSet::base_t base_t;
+            populate_id(metrics, base_t::null());
+        }
+    private:
+        template<class MetricSet>
+        void populate_id(const MetricSet &metrics, const constants::base_tile_t*)const
+        {
+            for(typename MetricSet::const_iterator it = metrics.begin();it != metrics.end();++it)
+            {
+                m_info.validate(it->lane(), it->tile());
+            }
+        }
+        template<class MetricSet>
+        void populate_id(const MetricSet &metrics, const constants::base_cycle_t*)const
+        {
+            for(typename MetricSet::const_iterator it = metrics.begin();it != metrics.end();++it)
+            {
+                m_info.validate_cycle(it->lane(), it->tile(), it->cycle());
+            }
+        }
+        template<class MetricSet>
+        void populate_id(const MetricSet &metrics, const constants::base_read_t*)const
+        {
+            for(typename MetricSet::const_iterator it = metrics.begin();it != metrics.end();++it)
+            {
+                m_info.validate_read(it->lane(), it->tile(), it->read());
+            }
+        }
+        template<class MetricSet>
+        void populate_id(const MetricSet &, const void*)const{}
+
+        const run::info& m_info;
+    };
+
     /** Read binary metrics and XML files from the run folder
      *
      * @param run_folder run folder path
@@ -137,7 +179,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                                             io::incomplete_file_exception,
                                             io::format_exception,
                                             model::index_out_of_bounds_exception,
-                                            model::invalid_tile_naming_method)
+                                            model::invalid_tile_naming_method,
+                                            model::invalid_run_info_exception)
     {
         read_metrics(run_folder);
         const size_t count = read_xml(run_folder);
@@ -213,7 +256,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     void run_metrics::finalize_after_load(size_t count)
                                         throw(io::format_exception,
                                         model::invalid_tile_naming_method,
-                                        model::index_out_of_bounds_exception)
+                                        model::index_out_of_bounds_exception, model::invalid_run_info_exception)
     {
         if (m_run_info.flowcell().naming_method() == constants::UnknownTileNamingMethod)
         {
@@ -250,8 +293,14 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                 INTEROP_THROW(io::format_exception,
                               "Channel names are missing from the RunInfo.xml, and RunParameters.xml does not contain sufficient information on the instrument run.");
         }
-        if (!empty() && run_info().flowcell().naming_method() == constants::UnknownTileNamingMethod)
-            INTEROP_THROW(model::invalid_tile_naming_method, "Unknown tile naming method - update your RunInfo.xml");
+        if (!empty())
+        {
+            if (run_info().flowcell().naming_method() == constants::UnknownTileNamingMethod)
+                INTEROP_THROW(model::invalid_tile_naming_method,
+                              "Unknown tile naming method - update your RunInfo.xml");
+            m_run_info.validate();
+            validate();
+        }
         extraction_metric_set_t& extraction_metrics = get_set<extraction_metric>();
         // Trim excess channel data for imaging table
         for(extraction_metric_set_t::iterator it = extraction_metrics.begin(); it != extraction_metrics.end();++it)
@@ -327,6 +376,14 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     void run_metrics::populate_id_map(cycle_metric_map_t& map)const
     {
         m_metrics.apply(populate_tile_cycle_list(map));
+    }
+    /** Validate whether the RunInfo.xml matches the InterOp files
+     *
+     * @throws invalid_run_info_exception
+     */
+    void run_metrics::validate() throw(invalid_run_info_exception)
+    {
+        m_metrics.apply(validate_run_info(m_run_info));
     }
 
 }}}}

@@ -129,7 +129,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         io::incomplete_file_exception,
         io::format_exception,
         model::index_out_of_bounds_exception,
-        model::invalid_tile_naming_method);
+        model::invalid_tile_naming_method,
+        model::invalid_run_info_exception);
 
         /** Read XML files: RunInfo.xml and possibly RunParameters.xml
          *
@@ -169,7 +170,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         void finalize_after_load(size_t count = std::numeric_limits<size_t>::max()) throw(io::format_exception,
         model::invalid_tile_naming_method,
-        model::index_out_of_bounds_exception);
+        model::index_out_of_bounds_exception,
+        model::invalid_run_info_exception);
 
         /** Test if all metrics are empty
          *
@@ -444,6 +446,12 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         io::file_not_found_exception,
         io::bad_format_exception,
         io::incomplete_file_exception);
+
+        /** Validate whether the RunInfo.xml matches the InterOp files
+         *
+         * @throws invalid_run_info_exception
+         */
+        void validate() throw(invalid_run_info_exception);
 
         /** Read binary metrics and XML files from the run folder
          *
