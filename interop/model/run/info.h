@@ -115,7 +115,7 @@ namespace illumina { namespace interop { namespace model { namespace run
          *
          * @throws invalid_run_info_exception
          */
-        void validate()const throw(invalid_run_info_exception);
+        void validate()const throw(invalid_run_info_exception,invalid_tile_naming_method);
         /** Test if tile list matches flowcell layout
          *
          * @param lane lane number

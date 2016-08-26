@@ -234,7 +234,7 @@ namespace illumina { namespace interop { namespace model { namespace run
      *
      * @throws invalid_run_info_exception
      */
-    void info::validate()const throw(invalid_run_info_exception)
+    void info::validate()const throw(invalid_run_info_exception, invalid_tile_naming_method)
     {
         typedef flowcell_layout::str_vector_t str_vector_t;
         if(m_flowcell.naming_method()==constants::UnknownTileNamingMethod)
