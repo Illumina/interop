@@ -117,7 +117,9 @@ namespace illumina { namespace interop { namespace logic { namespace table
     }
     /** Zero out first column of every row
      *
-     * @param
+     * @param beg start of collection
+     * @param end end of collection
+     * @param column_count number of columns in of collection
      */
     template<typename I>
     void zero_first_column(I beg, I end, size_t column_count)
@@ -220,6 +222,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
      *
      * @param metrics collection of all run metrics
      * @param columns vector of table columns
+     * @param row_offset map between metric id and row offset in table
      * @param data_beg iterator to start of table data
      * @param n number of cells in the data table
      */

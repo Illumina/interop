@@ -44,6 +44,7 @@ namespace illumina { namespace interop { namespace io
     /** Create a directory
      *
      * @param path path to new directory
+     * @param mode linux permissions
      * @return true if directory was created
      */
     bool mkdir(const std::string& path, const int mode=0733);

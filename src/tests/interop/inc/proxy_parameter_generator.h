@@ -24,6 +24,7 @@ namespace illumina{ namespace interop { namespace unittest {
     public:
         /** Constructor
          *
+         * @param obj object that acts like a functor
          * @param vec reference to persistent vector of values
          */
         proxy_argument_generator(T& obj, const std::vector<Proxy>& vec) : m_vec(vec), m_object(obj){}
@@ -53,6 +54,7 @@ namespace illumina{ namespace interop { namespace unittest {
     public:
         /** Constructor
          *
+         * @param obj object-like functor
          * @param base generator base
          * @param it iterator to std::vector
          */
@@ -142,6 +144,7 @@ namespace illumina{ namespace interop { namespace unittest {
     /** Generate parameters from a persistent vector (cannot be on the stack!)
      *
      * @note This code may only work with gtest 1.7.0
+     * @param object object that acts like a functor
      * @param values list of values
      * @return parameter generator
      */

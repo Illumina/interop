@@ -495,7 +495,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     }
     /** Check if the metric group is empty
      *
-     * @param group_name prefix of interop group metric
+     * @param group_id prefix of interop group metric id
      * @return true if metric is empty
      */
     bool run_metrics::is_group_empty(const constants::metric_group group_id) const
