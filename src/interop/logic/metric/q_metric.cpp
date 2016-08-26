@@ -143,8 +143,8 @@ namespace illumina { namespace interop { namespace logic { namespace metric
      * @param count number of bins
      */
     void populate_legacy_q_score_bins(std::vector<model::metrics::q_score_bin>& q_score_bins,
-                                             const constants::instrument_type instrument,
-                                             const size_t count)
+                                      const constants::instrument_type instrument,
+                                      const size_t count)
     {
         typedef model::metrics::q_score_bin q_score_bin;
         if(!requires_legacy_bins(count)) return;
@@ -214,7 +214,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
      * @param collapsed collapsed Q-metrics
      */
     void create_collapse_q_metrics(const model::metric_base::metric_set<model::metrics::q_metric>& metric_set,
-                                          model::metric_base::metric_set<model::metrics::q_collapsed_metric>& collapsed)
+                                   model::metric_base::metric_set<model::metrics::q_collapsed_metric>& collapsed)
     {
         typedef model::metric_base::metric_set<model::metrics::q_metric>::const_iterator const_iterator;
         typedef model::metric_base::metric_set<model::metrics::q_metric>::uint_t uint_t;
@@ -246,7 +246,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
      * @throws index_out_of_bounds_exception
      */
     void create_q_metrics_by_lane(const model::metric_base::metric_set<model::metrics::q_metric>& metric_set,
-                                         model::metric_base::metric_set<model::metrics::q_by_lane_metric>& bylane)
+                                  model::metric_base::metric_set<model::metrics::q_by_lane_metric>& bylane)
     throw(model::index_out_of_bounds_exception)
     {
         typedef model::metric_base::metric_set<model::metrics::q_metric>::const_iterator const_iterator;

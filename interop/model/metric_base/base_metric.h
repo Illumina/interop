@@ -87,6 +87,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         typedef constants::base_tile_t base_t;
         enum
         {
+            TYPE=constants::UnknownMetricType,
             //Compress Lane, Tile and cycle into a 64-bit Integer
             // Cycle: Bits 0-32
             // Tile: Bits 32-58
@@ -358,8 +359,8 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
                                        const bool all_surfaces) const
         {
 
-            INTEROP_ASSERT(swath(method) <= swath_count);
-            INTEROP_ASSERT(number(method) <= tile_count);
+            INTEROP_ASSERTMSG(swath(method) <= swath_count, swath(method) << " <= " << swath_count);
+            INTEROP_ASSERTMSG(number(method) <= tile_count, number(method) << " <= " << tile_count);
             const uint_t column = physical_location_column(method, swath_count, all_surfaces);
             const uint_t row = physical_location_row(method, section_per_lane, tile_count);
             const uint_t row_count = section_per_lane * tile_count;
@@ -420,4 +421,6 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         uint_t m_lane;
         uint_t m_tile;
     };
+
+
 }}}}

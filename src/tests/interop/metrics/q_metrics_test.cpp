@@ -2,7 +2,6 @@
  *
  *
  *  @file
- *
  *  @date 8/25/2015
  *  @version 1.0
  *  @copyright GNU Public License.
@@ -13,6 +12,7 @@
 #include <gtest/gtest.h>
 #include "interop/logic/metric/q_metric.h"
 #include "inc/q_metrics_test.h"
+#include "interop/model/run_metrics.h"
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::model::metric_base;
 using namespace illumina::interop::io;
@@ -109,6 +109,16 @@ TEST(q_metrics_test, test_cumulative)
     }
 
     EXPECT_EQ(q_metric_set.get_metric(7, 1114, 3).sum_qscore_cumulative(), qsum);
+}
+
+
+TEST(run_metrics_q_test, test_is_group_empty)
+{
+    run_metrics metrics;
+    EXPECT_TRUE(metrics.is_group_empty(constants::Q));
+    std::istringstream fin(q_v4::binary_data());
+    io::read_metrics(fin, metrics.get_set<q_metric>());
+    EXPECT_FALSE(metrics.is_group_empty(constants::Q));
 }
 
 #define FIXTURE q_metrics_test

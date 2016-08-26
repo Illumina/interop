@@ -10,9 +10,8 @@
 #pragma once
 #include "interop/util/type_traits.h"
 
-namespace illumina {
-namespace interop {
-namespace hierarchy {
+namespace illumina { namespace interop { namespace hierarchy
+{
     /** Generate a linear hierarchy of classes */
     template<
             class TypeList,
@@ -125,6 +124,4 @@ namespace hierarchy {
     };
 
 
-}
-}
-}
+}}}

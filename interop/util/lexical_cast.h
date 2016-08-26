@@ -5,7 +5,6 @@
  * the Boost.Lexical_cast.
  *
  *  @file
- *
  *  @date 8/9/15
  *  @version 1.0
  *  @copyright GNU Public License.

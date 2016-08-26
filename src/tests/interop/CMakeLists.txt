@@ -57,10 +57,6 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set_target_properties(interop_gtests PROPERTIES COMPILE_FLAGS "-Wno-unnamed-type-template-args")
 endif()
 
-if(NOT ENABLE_TEST)
-    set_target_properties(interop_gtests PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
-endif()
-
 if(NOT ENABLE_STATIC)
 add_custom_command(TARGET interop_gtests POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE_DIR:${INTEROP_LIB}> ${CMAKE_CURRENT_BINARY_DIR})

@@ -3,7 +3,6 @@
  * Each version of the index metrics file has a layout defined below.
  *
  *  @file
- *
  *  @date 11/2/15.
  *  @version 1.0
  *  @copyright GNU Public License.

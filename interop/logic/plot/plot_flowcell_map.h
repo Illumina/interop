@@ -55,11 +55,23 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                                   throw(model::invalid_filter_option,
                                   model::invalid_metric_type,
                                   model::index_out_of_bounds_exception);
+    /** List metric types available for flowcell
+     *
+     * @param types destination vector to fill with metric types
+     */
+    void list_flowcell_metrics(std::vector<constants::metric_type>& types);
     /** List metric type names available for flowcell
      *
      * @param names destination vector to fill with metric type names
      */
     void list_flowcell_metrics(std::vector<std::string>& names);
+    /** Calculate the required buffer size
+     *
+     * @param metrics run metrics
+     * @param options options to filter the data
+     */
+    size_t calculate_flowcell_buffer_size(const model::metrics::run_metrics& metrics,
+                                          const model::plot::filter_options& options);
 
 
 }}}}

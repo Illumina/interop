@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Illumina.InterOp.Run;
 using Illumina.InterOp.Metrics;
+using Illumina.InterOp.Comm;
 
 
 class TileSummary
@@ -62,7 +63,7 @@ class Helper
 	{
 		try
 		{
-			c_csharp_metrics.read_interop (filename, tile_metric_set);
+			c_csharp_comm.read_interop (filename, tile_metric_set);
 		}
 		catch(incomplete_file_exception){}
 		catch(file_not_found_exception ex)

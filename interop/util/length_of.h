@@ -3,7 +3,6 @@
  * This generic function determines the length of an array or vector
  *
  *  @file
- *
  *  @date 10/28/15
  *  @version 1.0
  *  @copyright GNU Public License.

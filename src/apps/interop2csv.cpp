@@ -207,13 +207,13 @@ int read_metrics_from_file(const std::string& filename, MetricSet& metrics)
     try {
         io::read_interop(filename, metrics);
     }
-    catch(const io::file_not_found_exception&){return 1;}
+    catch(const io::file_not_found_exception& ex){if(kPrintError) std::cerr << ex.what() << std::endl;return 1;}
     catch(const io::bad_format_exception& ex)
     {
         if(kPrintError) std::cerr << io::interop_basename<MetricSet>() << " - " << ex.what() << std::endl;
         return BAD_FORMAT;
     }
-    catch(const io::incomplete_file_exception&){ }
+    catch(const io::incomplete_file_exception& ex){ if(kPrintError) std::cerr << ex.what() << std::endl; }
     catch(const std::exception& ex)
     {
         if(kPrintError) std::cerr << io::interop_basename<MetricSet>() << " - " << ex.what() << std::endl;
@@ -595,7 +595,7 @@ int write_q_metrics(std::ostream& out, const std::string& filename)
         write_id(out, metric);
         out  << metric.size();
         for(size_t i=0;i<metric.size();i++)
-            out << "," << metric.qscoreHist(i);
+            out << "," << metric.qscore_hist(i);
         out << "\n";
     }
 

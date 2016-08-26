@@ -3,7 +3,6 @@
  * Each version of the image metrics file has a layout defined below.
  *
  *  @file
- *
  *  @date 8/20/2015
  *  @version 1.0
  *  @copyright GNU Public License.
@@ -15,7 +14,8 @@
 
 using namespace illumina::interop::model::metrics;
 
-namespace illumina{ namespace interop{ namespace io {
+namespace illumina { namespace interop { namespace io
+{
 #pragma pack(1)
             /** Image Metric Record Layout Version 1
              *

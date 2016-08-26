@@ -9,7 +9,8 @@
  */
 #pragma once
 
-namespace illumina { namespace interop {
+namespace illumina { namespace interop
+{
 
     /** Place holder for */
     struct null_type{};

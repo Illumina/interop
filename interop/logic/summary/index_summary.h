@@ -11,7 +11,8 @@
 #include "interop/model/run_metrics.h"
 
 
-namespace illumina { namespace interop { namespace logic { namespace summary {
+namespace illumina { namespace interop { namespace logic { namespace summary
+{
 
     /** Summarize a collection index metrics for a specific lane
      *

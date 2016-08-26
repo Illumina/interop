@@ -9,8 +9,8 @@
 #ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable:4290 4244)  // 4290: MSVC warns that it ignores the exception specification.
-// 4244: MSVC warns about  conversion from 'std::streamoff' to 'size_t', possible loss of data
-// Ideally, we would not disable 4244, but the problem is in rapidxml
+                                    // 4244: MSVC warns about  conversion from 'std::streamoff' to 'size_t', possible loss of data
+                                    // Ideally, we would not disable 4244, but the problem is in rapidxml
 #endif
 
 #include <stdio.h>

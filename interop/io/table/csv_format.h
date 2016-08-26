@@ -9,7 +9,8 @@
 #include "interop/util/lexical_cast.h"
 
 
-namespace illumina { namespace interop { namespace io {  namespace  table {
+namespace illumina { namespace interop { namespace io {  namespace  table
+{
     /** Read a vector of values from a single in a CSV file
      *
      * @param in input stream

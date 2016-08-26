@@ -5,6 +5,7 @@ using Illumina.InterOp.Run;
 using Illumina.InterOp.Metrics;
 using Illumina.InterOp.Plot;
 using Illumina.InterOp.Imaging;
+using Illumina.InterOp.Comm;
 
 namespace Illumina.InterOp.Interop.UnitTest
 {
@@ -22,7 +23,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		public void TestFileNotFoundException()
 		{
             base_corrected_intensity_metrics metrics = new base_corrected_intensity_metrics();
-            c_csharp_metrics.read_interop("/NO/FILE/EXISTS", metrics);
+            c_csharp_comm.read_interop("/NO/FILE/EXISTS", metrics);
 		}
 		/// <summary>
 		/// Test XmlFileNotFoundException

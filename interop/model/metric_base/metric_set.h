@@ -63,6 +63,10 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         typedef typename metric_array_t::const_iterator const_iterator;
         /** Metric iterator */
         typedef typename metric_array_t::iterator iterator;
+        enum {
+            /** Group type enum */
+            TYPE=T::TYPE
+        };
     private:
         typedef std::map<id_t, size_t> id_map_t;
 
@@ -72,7 +76,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          * @param version version of the file format
          */
         metric_set(const ::int16_t version )
-                : header_type(header_type::default_header()), m_version(version)
+                : header_type(header_type::default_header()), m_version(version), m_data_source_exists(false)
         { }
         /** Constructor
          *
@@ -80,7 +84,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          * @param version version of the file format
          */
         metric_set(const header_type &header = header_type::default_header(), const ::int16_t version = 0)
-                : header_type(header), m_version(version)
+                : header_type(header), m_version(version), m_data_source_exists(false)
         { }
 
         /** Constructor
@@ -92,7 +96,8 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         metric_set(const metric_array_t &vec, const ::int16_t version, const header_type &header) :
                 header_type(header),
                 m_data(vec),
-                m_version(version)
+                m_version(version),
+                m_data_source_exists(false)
         {
             size_t offset = 0;
             for (typename metric_array_t::const_iterator b = vec.begin(), e = vec.end(); b != e; ++b)
@@ -104,6 +109,22 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         }
 
     public:
+        /** Flag that indicates whether the data source exists
+         *
+         * @return true if the data source, e.g. file, exists
+         */
+        bool data_source_exists()const
+        {
+            return !empty() || m_data_source_exists;
+        }
+        /** Set flag that indicates whether the data source exists
+         *
+         * @param exists true if the data source, e.g. file, exists
+         */
+        void data_source_exists(const bool exists)
+        {
+            m_data_source_exists = exists;
+        }
         /** Get start of metric collection
          *
          * @return iterator to start of metric collection
@@ -380,7 +401,8 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         metric_array_t metrics_for_cycle(const uint_t cycle) const
         {
-            return metrics_for_cycle(cycle, (typename T::header_type *) 0);
+            typedef typename metric_type::base_t base_t;
+            return metrics_for_cycle(cycle, base_t::null());
         }
 
     public:
@@ -500,7 +522,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         }
 
     private:
-        metric_array_t metrics_for_cycle(const uint_t cycle, base_cycle_metric_header *) const
+        metric_array_t metrics_for_cycle(const uint_t cycle, const constants::base_cycle_t*) const
         {
             metric_array_t cycle_metrics;
             cycle_metrics.reserve(size());
@@ -512,12 +534,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
             return cycle_metrics;
         }
 
-        metric_array_t metrics_for_cycle(const uint_t, base_metric_header *) const
-        {
-            return metric_array_t();
-        }
-
-        metric_array_t metrics_for_cycle(const uint_t, base_read_metric_header *) const
+        metric_array_t metrics_for_cycle(const uint_t, const void *) const
         {
             return metric_array_t();
         }
@@ -600,6 +617,8 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         metric_array_t m_data;
         /** Version of the metric read */
         ::int16_t m_version;
+        /** Does the file or other source exist */
+        bool m_data_source_exists;
 
         // TODO: remove the following
         /** Map unique identifiers to the index of the metric */

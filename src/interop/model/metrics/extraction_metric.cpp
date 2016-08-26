@@ -3,19 +3,19 @@
  * Each version of the extraction metrics file has a layout defined below.
  *
  *  @file
- *
  *  @date 8/20/2015
  *  @version 1.0
  *  @copyright GNU Public License.
  */
 #include <limits>
+#include "interop/util/math.h"
 #include "interop/model/metrics/extraction_metric.h"
 #include "interop/io/format/metric_format_factory.h"
-#include "interop/util/math.h"
 
 using namespace illumina::interop::model::metrics;
 
-namespace illumina{ namespace interop{ namespace io {
+namespace illumina { namespace interop { namespace io
+{
 #pragma pack(1)
             /** Extraction Metric Record Layout Version 2
              *

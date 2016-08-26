@@ -1,7 +1,7 @@
 /** Write an imaging table into a CSV file
  *
  *  @file
- *  @date  7/21/16
+ *  @date 7/21/16
  *  @version 1.0
  *  @copyright GNU Public License.
  */
@@ -10,7 +10,8 @@
 #include "interop/logic/table/create_imaging_table_columns.h"
 #include "interop/logic/table/create_imaging_table.h"
 
-namespace illumina { namespace interop { namespace model { namespace table {
+namespace illumina { namespace interop { namespace model { namespace table
+{
 
 
     /** Read a column header from an input stream

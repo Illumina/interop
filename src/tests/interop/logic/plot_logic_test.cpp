@@ -1,6 +1,10 @@
-//
-// Created by dev on 4/29/16.
-//
+/** Unit tests for plot logic
+ *
+ *  @file
+ *  @date  4/29/16
+ *  @version 1.0
+ *  @copyright GNU Public License.
+ */
 #include <gtest/gtest.h>
 #include "interop/model/plot/filter_options.h"
 #include "interop/logic/plot/plot_by_cycle.h"
@@ -15,6 +19,41 @@
 #include "src/tests/interop/metrics/inc/index_metrics_test.h"
 
 using namespace illumina::interop;
+
+TEST(plot_logic, check_plot_by_cycle_list)
+{
+    std::vector<constants::metric_type> types;
+    logic::plot::list_by_cycle_metrics(types);
+    for(size_t i=0;i<types.size();++i)
+    {
+        EXPECT_FALSE(logic::utils::is_read_metric(types[i]));
+        EXPECT_FALSE(logic::utils::is_tile_metric(types[i]));
+        EXPECT_TRUE(logic::utils::is_cycle_metric(types[i]));
+    }
+}
+
+TEST(plot_logic, check_plot_by_lane_list)
+{
+    std::vector<constants::metric_type> types;
+    logic::plot::list_by_lane_metrics(types);
+    for(size_t i=0;i<types.size();++i)
+    {
+        EXPECT_TRUE(logic::utils::is_read_metric(types[i]) || logic::utils::is_tile_metric(types[i]));
+        EXPECT_FALSE(logic::utils::is_cycle_metric(types[i]));
+    }
+}
+
+TEST(plot_logic, check_plot_flowcell_list)
+{
+    std::vector<constants::metric_type> types;
+    logic::plot::list_flowcell_metrics(types);
+    for(size_t i=0;i<types.size();++i)
+    {
+        EXPECT_TRUE(logic::utils::is_read_metric(types[i])
+                    || logic::utils::is_tile_metric(types[i])
+                    || logic::utils::is_cycle_metric(types[i]));
+    }
+}
 
 /** @test Confirm invalid metric thrown */
 TEST(plot_logic, failure_mode_bad_metric_plot_by_cycle)

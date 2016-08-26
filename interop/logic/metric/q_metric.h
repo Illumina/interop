@@ -11,11 +11,11 @@
 #include "interop/model/metrics/q_collapsed_metric.h"
 #include "interop/model/metrics/q_by_lane_metric.h"
 #include "interop/model/model_exceptions.h"
-//#include "interop/constants/enums.h"
 #include "interop/model/metric_base/metric_set.h"
 
 
-namespace illumina { namespace interop { namespace logic { namespace metric {
+namespace illumina { namespace interop { namespace logic { namespace metric
+{
 
     /** Count the number of bins in the q metric
      *

@@ -1,6 +1,18 @@
 
 #if defined(SWIGCSHARP)
 %include "arrays_csharp_impl.i"
+#elif defined(SWIGJAVA)
+
+%include "arrays_java.i"
+
+%apply signed char[] { uint8_t *buffer};// Allow unsigned char to be wrapped as a byte
+%apply (char *STRING, size_t LENGTH) { (uint8_t *buffer, size_t buffer_size) };
+%apply int[] {uint16_t *}
+%apply long[] {uint32_t *}
+%apply long[] {uint64_t *}
+
+%apply float[] {float *};
+
 #elif defined(SWIGPYTHON)
 %include "arrays_numpy_impl.i"
 #endif

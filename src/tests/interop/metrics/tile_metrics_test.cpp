@@ -11,8 +11,9 @@
 #include <set>
 #include <gtest/gtest.h>
 #include "inc/tile_metrics_test.h"
+#include "interop/util/math.h"
 #include "interop/util/statistics.h"
-#include "interop/util/type_traits.h"
+#include "interop/model/run_metrics.h"
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::model::metric_base;
 using namespace illumina::interop::io;
@@ -59,8 +60,10 @@ TYPED_TEST(tile_metrics_test, test_read_write)
         {
             EXPECT_EQ(it_read_expected->read(), it_read_actual->read());
             EXPECT_NEAR(it_read_expected->percent_aligned(), it_read_actual->percent_aligned(), tol);
-            EXPECT_NEAR(it_read_expected->percent_phasing()*scale, it_read_actual->percent_phasing(), tol);
-            EXPECT_NEAR(it_read_expected->percent_prephasing()*scale, it_read_actual->percent_prephasing(), tol);
+            if(!std::isnan(it_read_expected->percent_phasing()) && !std::isnan(it_read_actual->percent_phasing()))
+                EXPECT_NEAR(it_read_expected->percent_phasing()*scale, it_read_actual->percent_phasing(), tol);
+            if(!std::isnan(it_read_expected->percent_prephasing()) && !std::isnan(it_read_actual->percent_prephasing()))
+                EXPECT_NEAR(it_read_expected->percent_prephasing()*scale, it_read_actual->percent_prephasing(), tol);
         }
     }
 }
@@ -197,6 +200,14 @@ TEST(tile_metrics_test, test_tile_metric_for_lane)
     EXPECT_EQ(expected_metric.read_metrics().size(), actual_metric.read_metrics().size());
 
 
+}
+TEST(run_metrics_tile_test, test_is_group_empty)
+{
+    run_metrics metrics;
+    EXPECT_TRUE(metrics.is_group_empty(constants::Tile));
+    std::istringstream fin(tile_v2::binary_data());
+    io::read_metrics(fin, metrics.get_set<tile_metric>());
+    EXPECT_FALSE(metrics.is_group_empty(constants::Tile));
 }
 
 #define FIXTURE tile_metrics_test

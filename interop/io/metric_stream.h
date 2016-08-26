@@ -309,7 +309,9 @@ namespace illumina { namespace interop { namespace io
         if (version < 0) version = metrics.version();
         if (format_map.find(version) == format_map.end())
             INTEROP_THROW(bad_format_exception, "No format found to write file with version: " <<
-                                                version <<  " of " << format_map.size());
+                                                version <<  " of " << format_map.size()
+                                                << " for " << metric_type::prefix() << "" << metric_type::suffix()
+                                                << " with " << metrics.size() << " metrics");
 
         INTEROP_ASSERT(format_map[version]);
         format_map[version]->write_metric_header(out, metrics);

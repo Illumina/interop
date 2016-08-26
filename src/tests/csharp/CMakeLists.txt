@@ -11,16 +11,6 @@ if(NOT CSHARP_FOUND)
     return()
 endif()
 
-find_package(SWIG)
-if(NOT SWIG_FOUND)
-    return()
-endif()
-
-check_swig_version(swig_major_ver)
-if(swig_major_ver LESS "3")
-    return()
-endif()
-
 find_package(NUnit)
 if(NOT NUNIT_FOUND)
     message(WARNING "NUnit not found, C# unit testing will be disabled")

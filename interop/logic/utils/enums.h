@@ -20,7 +20,8 @@
 /** This macro maps an enum description to a string/enum pair */
 #define INTEROP_TUPLE4(X, IGNORED_1, IGNORED_2, IGNORED_3) name_type_pair_t(#X,X)
 
-namespace illumina { namespace interop {  namespace constants {
+namespace illumina { namespace interop {  namespace constants
+{
     /** Template class declaration to map enum types to string representations
      *
      * @note only the specializations do something

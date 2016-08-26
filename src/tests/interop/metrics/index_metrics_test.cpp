@@ -10,8 +10,10 @@
 #include <fstream>
 #include <gtest/gtest.h>
 #include "inc/index_metrics_test.h"
+#include "interop/model/run_metrics.h"
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::io;
+using namespace illumina::interop;
 using namespace illumina::interop::unittest;
 
 typedef ::testing::Types<
@@ -48,6 +50,14 @@ TYPED_TEST(index_metrics_test, test_read_write)
     }
 }
 
+TEST(run_metrics_index_test, test_is_group_empty)
+{
+    run_metrics metrics;
+    EXPECT_TRUE(metrics.is_group_empty(constants::Index));
+    std::istringstream fin(index_v1::binary_data());
+    io::read_metrics(fin, metrics.get_set<index_metric>());
+    EXPECT_FALSE(metrics.is_group_empty(constants::Index));
+}
 #define FIXTURE index_metrics_test
 /**
  * @class illumina::interop::model::metrics::index_metric

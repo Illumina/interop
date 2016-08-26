@@ -52,11 +52,9 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
      *
      * These classes define both a lane, tile and read identifier.
      */
-    class base_read_metric : public base_metric
-    {
+    class base_read_metric : public base_metric {
     public:
-        enum
-        {
+        enum {
             /** Base for records written out once for each tile/read */
             BASE_TYPE = constants::BaseReadType
         };
@@ -73,8 +71,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          * @param read read number
          */
         base_read_metric(const uint_t lane, const uint_t tile, const uint_t read) :
-                base_metric(lane, tile), m_read(read)
-        { }
+                base_metric(lane, tile), m_read(read) { }
 
     public:
 
@@ -100,12 +97,13 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
             m_read = base.read;
         }
 
+
+
         /** Read number
          *
          * @return read number
          */
-        uint_t read() const
-        { return m_read; }
+        uint_t read() const { return m_read; }
 
         /** Unique id created from the lane, tile and read
          *

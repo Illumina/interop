@@ -35,6 +35,7 @@
         INTEROP_TUPLE4(FWHM, "FWHM", Extraction, CycleFeature|ChannelFeature),\
         /*INTEROP_TUPLE4(PercentBase, "% Base", CorrectedInt, CycleFeature|BaseFeature), */\
         INTEROP_TUPLE4(BasePercent, "% Base", CorrectedInt, CycleFeature|BaseFeature),\
+        INTEROP_TUPLE4(PercentNoCall, "% NoCall", CorrectedInt, CycleFeature),\
         /*INTEROP_TUPLE4(PercentQ20, "% >=Q20", Q, CycleFeature),*/\
         INTEROP_TUPLE4(Q20Percent, "% >=Q20", Q, CycleFeature),\
         /*INTEROP_TUPLE4(PercentQ30, "% >=Q30", Q, CycleFeature),*/\
@@ -158,10 +159,10 @@
         INTEROP_TUPLE1(InstrumentCount), \
         INTEROP_TUPLE1(UnknownInstrument)
 
-/** Enumeration of instrument types
+/** Enumeration of metric types
  *
  * @note This macro requires the macro INTEROP_TUPLE1 to be defined before use
- * @see illumina::interop::constants::instrument_type
+ * @see illumina::interop::constants::metric_base_type
  */
 #define INTEROP_ENUM_METRIC_BASE_TYPES \
         /** Tile base types are written out once for each tile */\

@@ -1,4 +1,3 @@
-
 /** C# Time Conversion
  *
  *  @file

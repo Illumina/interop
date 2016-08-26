@@ -4,6 +4,7 @@ using System.IO;
 using Illumina.InterOp.Plot;
 using Illumina.InterOp.Metrics;
 using Illumina.InterOp.Run;
+using Illumina.InterOp.Comm;
 
 namespace Illumina.InterOp.Interop.UnitTest
 {
@@ -59,8 +60,8 @@ namespace Illumina.InterOp.Interop.UnitTest
             byte[] expected_binary_data2 = new byte[tmp2.Length];
             for(int i=0;i<expected_binary_data2.Length;i++) expected_binary_data2[i] = (byte)tmp2[i];
             run_metrics run = new run_metrics();
-            c_csharp_metrics.read_interop_from_buffer(expected_binary_data1, (uint)expected_binary_data1.Length, run.index_metric_set());
-            c_csharp_metrics.read_interop_from_buffer(expected_binary_data2, (uint)expected_binary_data2.Length, run.tile_metric_set());
+            c_csharp_comm.read_interop_from_buffer(expected_binary_data1, (uint)expected_binary_data1.Length, run.index_metric_set());
+            c_csharp_comm.read_interop_from_buffer(expected_binary_data2, (uint)expected_binary_data2.Length, run.tile_metric_set());
 
             read_info_vector reads = new read_info_vector();
             reads.Add(new read_info(1, 1, 26));

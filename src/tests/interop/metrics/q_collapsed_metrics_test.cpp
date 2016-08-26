@@ -11,6 +11,7 @@
 #include "interop/logic/metric/q_metric.h"
 #include "inc/q_collapsed_metrics_test.h"
 #include "inc/q_metrics_test.h"
+#include "interop/model/run_metrics.h"
 
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::model::metric_base;
@@ -85,6 +86,16 @@ TEST(q_collapsed_metrics_test, test_convert_write_read)
         EXPECT_EQ(it_expected->q30(), it_actual->q30());
         EXPECT_EQ(it_expected->median_qscore(), it_actual->median_qscore());
     }
+}
+
+TEST(run_metrics_q_collapsed_test, test_is_group_empty)
+{
+    run_metrics metrics;
+    EXPECT_TRUE(metrics.is_group_empty(constants::QCollapsed));
+    std::istringstream fin(q_v4::binary_data());
+    io::read_metrics(fin, metrics.get_set<q_metric>());
+    logic::metric::create_collapse_q_metrics(metrics.get_set<q_metric>(), metrics.get_set<q_collapsed_metric>());
+    EXPECT_FALSE(metrics.is_group_empty(constants::QCollapsed));
 }
 
 #define FIXTURE q_collapsed_metrics_test

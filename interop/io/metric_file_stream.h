@@ -11,7 +11,8 @@
 #include "interop/util/exception.h"
 #include "interop/io/metric_stream.h"
 
-namespace illumina { namespace interop { namespace io {
+namespace illumina { namespace interop { namespace io
+{
 
     /** @defgroup file_io Reading/Writing Binary InterOp files
      *
@@ -51,7 +52,6 @@ namespace illumina { namespace interop { namespace io {
             buffer[i] = static_cast< ::uint8_t >(str[i]);
         return i;
     }
-
     /** Read the binary InterOp file into the given metric set
      *
      * @param buffer byte buffer
@@ -97,6 +97,56 @@ namespace illumina { namespace interop { namespace io {
         if(!fin.good()) INTEROP_THROW(file_not_found_exception, "File not found: " << file_name);
         read_metrics(fin, metrics);
     }
+    /** Check for the existence of the binary InterOp file into the given metric set
+     *
+     * @note The 'Out' suffix (parameter: use_out) is appended when we read the file. We excluded the Out in certain
+     * conditions when writing the file.
+     *
+     * @param run_directory file path to the run directory
+     * @param use_out use the copied version
+     */
+    template<class MetricSet>
+    bool interop_exists(const std::string& run_directory, MetricSet&, const bool use_out=true)   throw
+    (interop::io::file_not_found_exception,
+    interop::io::bad_format_exception,
+    interop::io::incomplete_file_exception,
+    model::index_out_of_bounds_exception)
+    {
+        const std::string file_name = interop_filename<MetricSet>(run_directory, use_out);
+        std::ifstream fin(file_name.c_str(), std::ios::binary);
+        if(!fin.good()) return false;
+        return true;
+    }
+    /** Read the binary InterOp file into the given metric set
+     *
+     * @snippet src/examples/example1.cpp Reading a binary InterOp file
+     *
+     * @note The 'Out' suffix (parameter: use_out) is appended when we read the file. We excluded the Out in certain
+     * conditions when writing the file.
+     *
+     * @param run_directory file path to the run directory
+     * @param metrics metric set
+     * @param use_out use the copied version
+     * @throw file_not_found_exception
+     * @throw bad_format_exception
+     * @throw incomplete_file_exception
+     */
+    template<class MetricSet>
+    void read_interop_by_cycle(const std::string& run_directory,
+                               MetricSet& metrics,
+                               const size_t last_cycle)
+                                throw (interop::io::file_not_found_exception,
+                                interop::io::bad_format_exception,
+                                interop::io::incomplete_file_exception,
+                                model::index_out_of_bounds_exception)
+    {
+        for(size_t cycle=1;cycle <= last_cycle;++cycle)
+        {
+            const std::string file_name = interop_filename<MetricSet>(run_directory, cycle);
+            std::ifstream fin(file_name.c_str(), std::ios::binary);
+            if(fin.good())read_metrics(fin, metrics);
+        }
+    }
     /** Write the metric set to a binary InterOp file
      *
      * @note The 'Out' suffix (parameter: use_out) is appended when we read the file. We excluded the Out in certain
@@ -113,6 +163,7 @@ namespace illumina { namespace interop { namespace io {
                        const bool use_out=true,
                        const ::int16_t version=-1) throw(file_not_found_exception, bad_format_exception, incomplete_file_exception)
     {
+        if(metrics.empty())return;
         const std::string file_name = interop_filename<MetricSet>(run_directory, use_out);
         std::ofstream fout(file_name.c_str(), std::ios::binary);
         if(!fout.good())INTEROP_THROW(file_not_found_exception, "File not found: " << file_name);

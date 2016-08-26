@@ -11,6 +11,7 @@
 #include "interop/model/metrics/q_by_lane_metric.h"
 #include "inc/q_metrics_test.h"
 #include "interop/logic/metric/q_metric.h"
+#include "interop/model/run_metrics.h"
 using namespace illumina::interop;
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::model::metric_base;
@@ -60,4 +61,14 @@ TEST(q_by_lane_metrics_test, test_convert_write_read)
             EXPECT_EQ(it_expected->qscore_hist(i), it_actual->qscore_hist(i));
         }
     }
+}
+
+TEST(run_metrics_q_by_lane_test, test_is_group_empty)
+{
+    run_metrics metrics;
+    EXPECT_TRUE(metrics.is_group_empty(constants::QByLane));
+    std::istringstream fin(q_v4::binary_data());
+    io::read_metrics(fin, metrics.get_set<q_metric>());
+    logic::metric::create_q_metrics_by_lane(metrics.get_set<q_metric>(), metrics.get_set<q_by_lane_metric>());
+    EXPECT_FALSE(metrics.is_group_empty(constants::QByLane));
 }

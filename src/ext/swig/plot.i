@@ -10,6 +10,7 @@
 // Don't wrap it, just use it with %import
 //////////////////////////////////////////////
 %import "src/ext/swig/exceptions/exceptions_impl.i"
+%include "src/ext/swig/arrays/arrays_impl.i"
 %import "src/ext/swig/run.i"
 %import "src/ext/swig/metrics.i"
 
@@ -85,6 +86,8 @@ WRAP_VECTOR(illumina::interop::model::plot::plot_data<illumina::interop::model::
 WRAP_VECTOR(illumina::interop::model::plot::plot_data<illumina::interop::model::plot::bar_point>);
 %template(candle_stick_plot_data) illumina::interop::model::plot::plot_data<illumina::interop::model::plot::candle_stick_point>;
 %template(bar_plot_data) illumina::interop::model::plot::plot_data<illumina::interop::model::plot::bar_point>;
+%template(metric_type_vector) std::vector< illumina::interop::constants::metric_type>;
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

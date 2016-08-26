@@ -25,7 +25,7 @@ namespace illumina{ namespace interop { namespace unittest {
     {
         enum{
             /** Do not check the expected binary data */
-            disable_binary_data=true // TODO: Move this to template?
+            disable_binary_data=true // The order here could change
         };
         /** Build the expected metric set
          *

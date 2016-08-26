@@ -3,7 +3,6 @@
  * Each version of the corrected intensity metrics file has a layout defined below.
  *
  *  @file
- *
  *  @date 8/6/2015
  *  @version 1.0
  *  @copyright GNU Public License.

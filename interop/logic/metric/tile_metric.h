@@ -12,7 +12,8 @@
 #include "interop/model/run/flowcell_layout.h"
 
 
-namespace illumina { namespace interop { namespace logic { namespace metric {
+namespace illumina { namespace interop { namespace logic { namespace metric
+{
 
     /** Convert string lane/tile identifier (1_1111) to lane number
      *

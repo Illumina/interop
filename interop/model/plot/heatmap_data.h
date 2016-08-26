@@ -34,6 +34,16 @@ namespace illumina { namespace interop { namespace model { namespace plot
     public:
         /** Resize the heat map to the given number of rows and columns
          *
+         * @param data use the given buffer to back the heat mapll
+         */
+        void set_buffer(float* data) throw(invalid_parameter)
+        {
+            if(m_free) throw invalid_parameter("Cannot use internal buffer map with external buffer");
+            if(empty()) throw invalid_parameter("Cannot set external buffer to empty map");
+            m_data = data;
+        }
+        /** Resize the heat map to the given number of rows and columns
+         *
          * @param data use the given buffer to back the heat map
          * @param rows number of rows
          * @param cols number of columns
@@ -149,6 +159,14 @@ namespace illumina { namespace interop { namespace model { namespace plot
         size_t length() const
         {
             return m_num_columns * m_num_rows;
+        }
+        /** Test if heatmap is empty
+         *
+         * @return true if there are not values in heatmap
+         */
+        bool empty()const
+        {
+            return length()==0;
         }
 
         /** Clear the data

@@ -8,7 +8,8 @@
 #include "interop/logic/plot/plot_qscore_histogram.h"
 #include "interop/logic/metric/q_metric.h"
 
-namespace illumina { namespace interop { namespace logic { namespace plot {
+namespace illumina { namespace interop { namespace logic { namespace plot
+{
 
 
     /** Populate the q-score histogram based on the filter options

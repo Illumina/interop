@@ -3,7 +3,6 @@
  * Each version of the error metrics file has a layout defined below.
  *
  *  @file
- *
  *  @date 8/19/2015
  *  @version 1.0
  *  @copyright GNU Public License.

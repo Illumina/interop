@@ -16,6 +16,7 @@
     #pragma warning(disable:4127) // MSVC warns about using constants in conditional statements, for template constants
 #endif
 
+using namespace illumina::interop::model;
 using namespace illumina::interop::model::metric_base;
 
 TEST(base_metric_test, lane_from_id)

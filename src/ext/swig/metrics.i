@@ -31,13 +31,21 @@ using Illumina.InterOp.Run;
 EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Ignore methods
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+%ignore confusion_matrix;
+%ignore focus_score_matrix;
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Wrap the base metrics
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 %{
 #include "interop/util/time.h"
-#include "interop/io/metric_file_stream.h"
 %}
 
 %ignore metric_group_iuo;
@@ -50,7 +58,6 @@ EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 %include "interop/model/metric_base/base_cycle_metric.h"
 %include "interop/model/metric_base/base_read_metric.h"
 %include "interop/model/metric_base/metric_set.h"
-%include "interop/io/metric_file_stream.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Define shared macros
@@ -62,7 +69,6 @@ EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 
     %apply size_t { std::map< std::size_t, metric_t >::size_type };
     %apply uint64_t { metric_base::metric_set<metric_t>::id_t };
-    %apply uint64_t { io::layout::base_metric::id_t };
     WRAP_VECTOR(illumina::interop::model::metric_base::metric_set<metric_t>);
 
 %enddef
@@ -73,10 +79,6 @@ EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 
     %template(base_ ## metric_t ## s) metric_base::metric_set<metric_t>;
     %template(vector_ ## metric_t ## s) std::vector<metric_t>;
-    %template(compute_buffer_size ) illumina::interop::io::compute_buffer_size< metric_base::metric_set<metric_t> >;
-    %template(write_interop_to_buffer ) illumina::interop::io::write_interop_to_buffer< metric_base::metric_set<metric_t> >;
-    %template(read_interop_from_buffer )  illumina::interop::io::read_interop_from_buffer< metric_base::metric_set<metric_t> >;
-    %template(read_interop )  illumina::interop::io::read_interop< metric_base::metric_set<metric_t> >;
 
 %enddef
 
@@ -119,7 +121,6 @@ WRAP_METRICS(IMPORT_METRIC_WRAPPER)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 %template(index_info_vector) std::vector< illumina::interop::model::metrics::index_info  >;
-//%template(string_vector) std::vector< std::string  >;
 %template(ulong_vector) std::vector< uint64_t  >;
 %template(ushort_vector) std::vector< uint16_t >;
 %template(uint_vector) std::vector< uint32_t >;

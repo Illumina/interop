@@ -74,7 +74,7 @@ macro(interop_config_compiler_and_linker)
     if(IS_INT64_LONG)
         add_definitions(-DHAVE_LONG64)
     endif()
-
+    check_type_size(size_t SIZE_T)
     if(MINGW)
         set(CXX11_FLAG_ "-std=gnu++11")
     else()

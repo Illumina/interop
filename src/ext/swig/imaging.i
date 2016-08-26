@@ -9,7 +9,8 @@
 //////////////////////////////////////////////
 // Don't wrap it, just use it with %import
 //////////////////////////////////////////////
-%import "src/ext/swig/exceptions/exceptions_impl.i"
+%import "src/ext/swig/exceptions/exceptions_impl.i" // Import is used when the file wraps code avoiding duplicates
+%include "src/ext/swig/arrays/arrays_impl.i"
 %import "src/ext/swig/run.i"
 %import "src/ext/swig/metrics.i"
 
@@ -33,8 +34,11 @@ WRAP_METRICS(IMPORT_METRIC_WRAPPER)
 // This allows exceptions to be imported, but not belong to the module
 EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 
-%template(map_id_offset) std::map<uint64_t, size_t>;
-//%template(ushort_vector) std::vector< uint16_t >;
+#if defined(HAVE_UINT64_SIZE_T) && defined(SWIGPYTHON) // Python workaround
+    %template(map_id_offset) std::map<uint64_t, uint64_t>;
+#else
+    %template(map_id_offset) std::map<uint64_t, size_t>;
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Imaging model
@@ -43,7 +47,6 @@ EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 #include "interop/logic/table/create_imaging_table_columns.h"
 #include "interop/logic/table/create_imaging_table.h"
 %}
-
 
 %include "interop/model/table/imaging_column.h"
 %include "interop/model/table/imaging_table.h"

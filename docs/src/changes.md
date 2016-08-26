@@ -1,10 +1,32 @@
 # Changes                                               {#changes}
 
 
-## Trunk
+## v1.0.9
 
-Commit     | Description
--------    | -----------
+Date       | Description
+---------- | -----------
+2016-08-26 | Refactor CSharp code into additional library
+2016-08-26 | IPA-5028: Add RunInfo and InterOp validation
+2016-08-19 | Fix sorting in imaging table
+2016-08-18 | Cleanup code
+2016-08-17 | Fix the read ID
+2016-08-16 | IPA-5009: Add sorting to imaging table
+2016-08-16 | IPA-5007: Fix combo boxes on analysis tab
+2016-08-16 | Fix msvc warning and some script differences
+2016-08-15 | Add clear function to run metrics
+2016-08-15 | IPA-4799: Create Internal Coverity Build
+2016-08-11 | Refactor unit tests to make more flexible for regression testing
+2016-08-08 | IPA-4922: Move logic code from header to cpp
+2016-08-05 | IPA-4827: Make run info parsing more robust
+2016-08-03 | Refactor code and add test build script
+2016-08-02 | Add big object support for unit tests
+2016-08-02 | Clean buffers in the heatmap and flowcell
+2016-08-02 | Update travis-ci to GCC-5
+2016-07-28 | Added float array backing to heat map
+2016-07-25 | IPA-4752: Replace InterOp 1.x Code with InterOp 2.x Code - Imaging Tab
+2016-07-22 | Fix camel case
+2016-07-22 | IPA-4751: Integrated InterOp2.x with Analysis Tab
+2016-07-22 | Github Issue 74: Compiler warning as error unsigned/signed comp
 2016-07-21 | Bug fixes for flowcell chart and more recent versions of GCC
 2016-07-17 | Added coverity online scan and fixed some issues found
 

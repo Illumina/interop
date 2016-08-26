@@ -6,8 +6,6 @@
  *  @copyright GNU Public License.
  */
 #include "interop/logic/plot/plot_by_cycle.h"
-
-
 #include "interop/logic/metric/metric_value.h"
 #include "interop/logic/plot/plot_point.h"
 #include "interop/logic/plot/plot_data.h"
@@ -325,12 +323,6 @@ namespace illumina { namespace interop { namespace logic { namespace plot
         plot_by_cycle_t(metrics, type, options, data);
     }
 
-
-
-
-
-
-
     /** Plot a specified metric value by cycle using the candle stick model
      *
      * @ingroup plot_logic
@@ -352,22 +344,41 @@ namespace illumina { namespace interop { namespace logic { namespace plot
         plot_by_cycle_t(metrics, metric_name, options, data);
     }
 
-
-
-
+    /** List metric types available for by cycle plots
+     *
+     * @param types destination vector to fill with metric types
+     * @param ignore_accumulated if true, ignore accumulated Q20 and Q30
+     */
+    void list_by_cycle_metrics(std::vector<constants::metric_type>& types, const bool ignore_accumulated)
+    {
+        types.clear();
+        std::vector<constants::metric_type> tmp;
+        constants::list_enums(tmp);
+        types.reserve(tmp.size());
+        for(size_t i=0;i<tmp.size();++i)
+        {
+            if(!utils::is_cycle_metric(tmp[i])) continue;
+            if(ignore_accumulated)
+            {
+                if (tmp[i] == constants::AccumPercentQ20) continue;
+                if (tmp[i] == constants::AccumPercentQ30)continue;
+            }
+            types.push_back(tmp[i]);
+        }
+    }
     /** List metric type names available for by cycle plots
      *
      * @param names destination vector to fill with metric type names
+     * @param ignore_accumulated if true, ignore accumulated Q20 and Q30
      */
-    void list_by_cycle_metrics(std::vector<std::string>& names)
+    void list_by_cycle_metrics(std::vector<std::string>& names, const bool ignore_accumulated)
     {
         std::vector<constants::metric_type> types;
-        constants::list_enums(types);
+        list_by_cycle_metrics(types, ignore_accumulated);
         names.clear();
         names.reserve(types.size());
         for(size_t i=0;i<types.size();++i)
         {
-            if(!utils::is_cycle_metric(types[i])) continue;
             names.push_back(utils::to_description(types[i]));
         }
     }

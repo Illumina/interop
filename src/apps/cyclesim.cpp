@@ -67,20 +67,22 @@ void print_help(std::ostream& out);
  *  5. Image
  *  6. Q
  *  7. Index
- *
- * @param input path to run folder
+
+ * @param filename path to run folder
  * @param output path to output run folder
- * @param max_cycle number of cycles to copy
- * @param max_read number of reads to copy
- * @param cycle_to_align cycle alignment occurs
- * @return error code or 0
+ * @param max_cycle maximum number of cycles
+ * @param max_read maximum number of reads
+ * @param cycle_to_align cycle to align
+ * @return 0 if success, or an error code
  */
-int write_interops(const std::string& input, const std::string& output, unsigned int max_cycle, unsigned int max_read, unsigned int cycle_to_align);
+int write_interops(const std::string& filename,
+                   const std::string& output,
+                   const unsigned int max_cycle,
+                   const unsigned int max_read,
+                   const unsigned int cycle_to_align);
 
 /** Set false if you want to disable error messages printing to the error stream */
-bool kPrintError=true;
-/** Set greater than zero if you want to view less recoreds */
-int kMaxRecordCount=0;
+const bool kPrintError=true;
 
 
 int main(int argc, char** argv)

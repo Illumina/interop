@@ -4,6 +4,7 @@ using System.IO;
 using Illumina.InterOp.Plot;
 using Illumina.InterOp.Metrics;
 using Illumina.InterOp.Run;
+using Illumina.InterOp.Comm;
 
 namespace Illumina.InterOp.Interop.UnitTest
 {
@@ -13,6 +14,12 @@ namespace Illumina.InterOp.Interop.UnitTest
 	[TestFixture]
 	public class PlotDataByCycleTest
 	{
+	    public void MetricTypeList()
+     	{
+            var typeList = new metric_type_vector();
+            c_csharp_plot.list_by_cycle_metrics(typeList);
+            Assert.AreEqual(typeList[0], metric_type.Intensity);
+        }
 		/// <summary>
 		/// Test plotting intensity by cycle
 		/// </summary>
@@ -28,7 +35,7 @@ namespace Illumina.InterOp.Interop.UnitTest
             byte[] expected_binary_data = new byte[tmp.Length];
             for(int i=0;i<expected_binary_data.Length;i++) expected_binary_data[i] = (byte)tmp[i];
             run_metrics run = new run_metrics();
-            c_csharp_metrics.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, run.extraction_metric_set());
+            c_csharp_comm.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, run.extraction_metric_set());
 
             var run_param = new parameters();
             Assert.AreEqual(run_param.version(), 0);
@@ -67,7 +74,7 @@ namespace Illumina.InterOp.Interop.UnitTest
             byte[] expected_binary_data = new byte[tmp.Length];
             for(int i=0;i<expected_binary_data.Length;i++) expected_binary_data[i] = (byte)tmp[i];
             run_metrics run = new run_metrics();
-            c_csharp_metrics.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, run.extraction_metric_set());
+            c_csharp_comm.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, run.extraction_metric_set());
 
 
             run.set_naming_method(tile_naming_method.FourDigit);

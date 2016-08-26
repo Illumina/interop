@@ -2,7 +2,6 @@
  *
  *
  *  @file
- *
  *  @date 8/6/2015
  *  @version 1.0
  *  @copyright GNU Public License.

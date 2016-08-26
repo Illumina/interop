@@ -433,6 +433,13 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         }
 
     public:
+        /** Check if the InterOp file for each metric set exists
+         *
+         * This will set the `metric_set::data_source_exists` flag.
+         *
+         * @param run_folder run folder path
+         */
+        void check_for_data_sources(const std::string &run_folder);
         /** Read binary metrics from the run folder
          *
          * This function ignores:
@@ -446,6 +453,13 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         io::file_not_found_exception,
         io::bad_format_exception,
         io::incomplete_file_exception);
+        /** Write binary metrics to the run folder
+         *
+         * @param run_folder run folder path
+         */
+        void write_metrics(const std::string &run_folder)const throw(
+        io::file_not_found_exception,
+        io::bad_format_exception);
 
         /** Validate whether the RunInfo.xml matches the InterOp files
          *
@@ -474,16 +488,33 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         {
             m_metrics.apply(func);
         }
+        /** Check if the metric group is empty
+         *
+         * @param group_name prefix of interop group metric
+         * @return true if metric is empty
+         */
+        bool is_group_empty(const std::string& group_name) const;
+        /** Check if the metric group is empty
+         *
+         * @param group_name prefix of interop group metric
+         * @return true if metric is empty
+         */
+        bool is_group_empty(const constants::metric_group group_id) const;
+
         /** Populate a map of valid tiles
          *
          * @param map mapping between tile has and base_metric
          */
-        void populate_id_map(tile_metric_map_t& map)const;
+        void populate_id_map(tile_metric_map_t &map) const;
+
         /** Populate a map of valid tiles and cycles
          *
          * @param map mapping between tile has and base_metric
          */
-        void populate_id_map(cycle_metric_map_t& map)const;
+        void populate_id_map(cycle_metric_map_t &map) const;
+        /** Sort the metrics by id
+         */
+        void sort();
 
         /** Clear all the metrics
          */

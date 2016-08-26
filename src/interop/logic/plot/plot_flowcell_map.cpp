@@ -11,9 +11,8 @@
 #include "interop/logic/metric/metric_value.h"
 #include "interop/logic/metric/q_metric.h"
 
-namespace illumina { namespace interop { namespace logic { namespace plot {
-
-
+namespace illumina { namespace interop { namespace logic { namespace plot
+{
     /** Populate the flowcell map based on the filter options
      *
      * @param beg iterator to start of q-metric collection
@@ -224,19 +223,49 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
     }
     /** List metric type names available for flowcell
      *
+     * @param types destination vector to fill with metric type names
+     */
+    void list_flowcell_metrics(std::vector<constants::metric_type>& types)
+    {
+        types.clear();
+        std::vector<constants::metric_type> tmp;
+        constants::list_enums(tmp);
+        types.reserve(tmp.size());
+        for(size_t i=0;i<tmp.size();++i)
+        {
+            if(utils::to_feature(tmp[i]) == constants::UnknownMetricFeature) continue;
+            if(tmp[i] == constants::AccumPercentQ20) continue;
+            if(tmp[i] == constants::AccumPercentQ30)continue;
+            types.push_back(tmp[i]);
+        }
+    }
+    /** List metric type names available for flowcell
+     *
      * @param names destination vector to fill with metric type names
      */
     void list_flowcell_metrics(std::vector<std::string>& names)
     {
         std::vector<constants::metric_type> types;
-        constants::list_enums(types);
+        list_flowcell_metrics(types);
         names.clear();
         names.reserve(types.size());
         for(size_t i=0;i<types.size();++i)
         {
-            if(utils::to_feature(types[i]) == constants::UnknownMetricFeature) continue;
             names.push_back(utils::to_description(types[i]));
         }
+    }
+    /** Calculate the required buffer size
+     *
+     * @param metrics run metrics
+     * @param options options to filter the data
+     */
+    size_t calculate_flowcell_buffer_size(const model::metrics::run_metrics& metrics,
+                                          const model::plot::filter_options& options)
+    {
+        const model::run::flowcell_layout& layout = metrics.run_info().flowcell();
+        return layout.lane_count()*
+                (layout.total_swaths(layout.surface_count() > 1 && !options.is_specific_surface())) *
+                layout.tiles_per_lane();
     }
 
 

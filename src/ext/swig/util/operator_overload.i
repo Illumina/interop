@@ -3,18 +3,16 @@
 
 #if defined(SWIGCSHARP) || defined(SWIGJAVA)
 
+// TODO: Add python section and rename to appropriate python operator
     %rename(equals) operator==;
 
     %rename(subtract) operator-;
     %rename(add) *::operator+=;
     %rename(is_less) operator< const;
     %rename(copy) operator=;
-
-
 #else
    // Do nothing
 #endif
-
 
 %ignore operator<<;
 %ignore operator>>;
@@ -22,3 +20,8 @@
 
 // TODO: Remove at in C++ and rename operator[] to at
 %ignore *::operator[];
+
+
+
+
+

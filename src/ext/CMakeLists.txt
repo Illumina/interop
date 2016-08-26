@@ -21,11 +21,15 @@ if(IS_INT64_LONG)
 else()
     set(SWIG_WORDSIZE_FLAG "")
 endif()
+if("${SIZE_T}" EQUAL 8)
+    set(SWIG_WORDSIZE_FLAG "${SWIG_WORDSIZE_FLAG};-DHAVE_UINT64_SIZE_T")
+endif()
 include(${SWIG_USE_FILE})
 set(CMAKE_SWIG_FLAGS "")
 
-set(SWIG_SRCS_TEMP swig/run.i swig/metrics.i swig/imaging.i swig/plot.i swig/summary.i)
+set(SWIG_SRCS_TEMP swig/run.i swig/metrics.i swig/comm.i swig/imaging.i swig/plot.i swig/summary.i)
 set(SWIG_DEPS_TEMP
+        swig/util/operator_overload.i
         swig/exceptions/exceptions_impl.i
         swig/exceptions/exceptions_csharp.i
         swig/arrays/arrays_csharp_impl.i
@@ -54,6 +58,9 @@ endforeach()
 
 # Language options
 # https://github.com/SimpleITK/SimpleITK/blob/master/CMake/sitkLanguageOptions.cmake
-add_subdirectory("csharp")
+
+if(ENABLE_CSHARP)
+    add_subdirectory("csharp")
+endif()
 
 

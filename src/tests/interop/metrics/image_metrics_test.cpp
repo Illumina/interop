@@ -11,8 +11,10 @@
 #include <fstream>
 #include <gtest/gtest.h>
 #include "inc/image_metrics_test.h"
+#include "interop/model/run_metrics.h"
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::io;
+using namespace illumina::interop;
 using namespace illumina::interop::unittest;
 
 
@@ -36,7 +38,7 @@ TYPED_TEST(image_metrics_test, test_read_write)
 {
     EXPECT_EQ(TypeParam::actual_metric_set.version(), TypeParam::VERSION);
     EXPECT_EQ(TypeParam::actual_metric_set.size(), TypeParam::expected_metric_set.size());
-    EXPECT_EQ(TypeParam::actual_metric_set.channelCount(), TypeParam::expected_metric_set.channelCount());
+    EXPECT_EQ(TypeParam::actual_metric_set.channel_count(), TypeParam::expected_metric_set.channel_count());
     EXPECT_EQ(TypeParam::actual_metric_set.max_cycle(), TypeParam::expected_metric_set.max_cycle());
 
     for(typename TypeParam::const_iterator it_expected=TypeParam::expected_metric_set.begin(), it_actual = TypeParam::actual_metric_set.begin();
@@ -53,6 +55,14 @@ TYPED_TEST(image_metrics_test, test_read_write)
             EXPECT_EQ(it_expected->max_contrast(i), it_actual->max_contrast(i));
         }
     }
+}
+TEST(run_metrics_image_test, test_is_group_empty)
+{
+    run_metrics metrics;
+    EXPECT_TRUE(metrics.is_group_empty(constants::Image));
+    std::istringstream fin(image_v1::binary_data());
+    io::read_metrics(fin, metrics.get_set<image_metric>());
+    EXPECT_FALSE(metrics.is_group_empty(constants::Image));
 }
 #define FIXTURE image_metrics_test
 /**

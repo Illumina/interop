@@ -13,6 +13,7 @@
 #include "src/tests/interop/inc/proxy_parameter_generator.h"
 #include "src/tests/interop/metrics/inc/metric_generator.h"
 #include "src/tests/interop/metrics/inc/error_metrics_test.h"
+#include "interop/model/run_metrics.h"
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::model::metric_base;
 using namespace illumina::interop::io;
@@ -81,6 +82,16 @@ TEST(error_metrics_single_test, test_expected_get_metric)
     {
         EXPECT_EQ(keys[i], metrics.get_metric(keys[i]).id());
     }
+}
+
+
+TEST(run_metrics_error_metric_test, test_is_group_empty)
+{
+    run_metrics metrics;
+    EXPECT_TRUE(metrics.is_group_empty(constants::Error));
+    std::istringstream fin(error_metric_v3::binary_data());
+    io::read_metrics(fin, metrics.get_set<error_metric>());
+    EXPECT_FALSE(metrics.is_group_empty(constants::Error));
 }
 
 

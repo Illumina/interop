@@ -16,35 +16,42 @@ namespace illumina { namespace interop { namespace model { namespace metrics
 {
     struct populate_tile_list
     {
-        populate_tile_list(run_metrics::tile_metric_map_t& map) : m_map(map){}
+        populate_tile_list(run_metrics::tile_metric_map_t &map) : m_map(map)
+        {}
 
         template<class MetricSet>
-        void operator()(const MetricSet &metrics)const
+        void operator()(const MetricSet &metrics) const
         {
             typedef typename MetricSet::base_t base_t;
             populate_id(metrics, base_t::null());
         }
+
     private:
         template<class MetricSet>
-        void populate_id(const MetricSet &metrics, const void*)const
+        void populate_id(const MetricSet &metrics, const void *) const
         {
-            for(typename MetricSet::const_iterator it = metrics.begin();it != metrics.end();++it)
+            for (typename MetricSet::const_iterator it = metrics.begin(); it != metrics.end(); ++it)
             {
-                INTEROP_ASSERTMSG(it->tile()>0, it->lane() << "_" << it->tile());
+                INTEROP_ASSERTMSG(it->tile() > 0, it->lane() << "_" << it->tile());
                 m_map[it->tile_hash()] = *it;
             }
         }
-        template<class MetricSet>
-        void populate_id(const MetricSet &, const constants::base_lane_t*)const{}
 
-        run_metrics::tile_metric_map_t& m_map;
+        template<class MetricSet>
+        void populate_id(const MetricSet &, const constants::base_lane_t *) const
+        {}
+
+        run_metrics::tile_metric_map_t &m_map;
     };
+
+
     struct populate_tile_cycle_list
     {
-        populate_tile_cycle_list(run_metrics::cycle_metric_map_t& map) : m_map(map){}
+        populate_tile_cycle_list(run_metrics::cycle_metric_map_t &map) : m_map(map)
+        {}
 
         template<class MetricSet>
-        void operator()(const MetricSet &metrics)const
+        void operator()(const MetricSet &metrics) const
         {
             typedef typename MetricSet::base_t base_t;
             populate_id(metrics, base_t::null());
@@ -52,22 +59,26 @@ namespace illumina { namespace interop { namespace model { namespace metrics
 
     private:
         template<class MetricSet>
-        void populate_id(const MetricSet &metrics, const constants::base_cycle_t*)const
+        void populate_id(const MetricSet &metrics, const constants::base_cycle_t *) const
         {
-            for(typename MetricSet::const_iterator it = metrics.begin();it != metrics.end();++it)
+            for (typename MetricSet::const_iterator it = metrics.begin(); it != metrics.end(); ++it)
             {
-                INTEROP_ASSERTMSG(it->tile()>0, it->lane() << "_" << it->tile() << " @ " << it->cycle());
+                INTEROP_ASSERTMSG(it->tile() > 0, it->lane() << "_" << it->tile() << " @ " << it->cycle());
                 m_map[it->id()] = *it;
             }
         }
+
         template<class MetricSet>
-        void populate_id(const MetricSet &, const void*)const{}
-        run_metrics::cycle_metric_map_t& m_map;
+        void populate_id(const MetricSet &, const void *) const
+        {}
+
+        run_metrics::cycle_metric_map_t &m_map;
     };
+
     struct is_metric_empty
     {
         is_metric_empty() : m_empty(true)
-        { }
+        {}
 
         template<class MetricSet>
         void operator()(const MetricSet &metrics)
@@ -82,6 +93,18 @@ namespace illumina { namespace interop { namespace model { namespace metrics
 
         bool m_empty;
     };
+
+    struct check_for_each_data_source
+    {
+        check_for_each_data_source(const std::string &f) : m_run_folder(f)
+        {}
+        template<class MetricSet>
+        void operator()(MetricSet &metrics)const
+        {
+            metrics.data_source_exists(io::interop_exists(m_run_folder, metrics));
+        }
+        std::string m_run_folder;
+    };
     struct clear_metric
     {
         template<class MetricSet>
@@ -94,7 +117,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     struct read_func
     {
         read_func(const std::string &f) : m_run_folder(f)
-        { }
+        {}
 
         template<class MetricSet>
         int operator()(MetricSet &metrics) const
@@ -123,6 +146,83 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         std::string m_run_folder;
     };
 
+    struct write_func
+    {
+        write_func(const std::string &f) : m_run_folder(f)
+        {}
+
+        template<class MetricSet>
+        void operator()(const MetricSet &metrics) const
+        {
+            io::write_interop(m_run_folder, metrics);
+        }
+
+        std::string m_run_folder;
+    };
+
+    struct check_if_groupid_is_empty
+    {
+        check_if_groupid_is_empty(const constants::metric_group group): m_empty(true), m_group(group)
+        {}
+
+        template<class MetricSet>
+        void operator()(const MetricSet &metrics)
+        {
+            if(m_group == static_cast<constants::metric_group>(MetricSet::TYPE))
+            {
+                m_empty = metrics.empty();
+            }
+        }
+
+        bool empty() const
+        {
+            return m_empty;
+        }
+
+        bool m_empty;
+        constants::metric_group m_group;
+    };
+    struct check_if_group_is_empty
+    {
+        check_if_group_is_empty(const std::string &name) :  m_empty(true), m_prefix(name)
+        {}
+
+        template<class MetricSet>
+        void operator()(const MetricSet &metrics)
+        {
+            if(m_prefix == metrics.prefix())
+            {
+                m_empty = metrics.empty();
+            }
+        }
+
+        bool empty() const
+        {
+            return m_empty;
+        }
+
+        bool m_empty;
+        std::string m_prefix;
+    };
+
+
+
+    struct sort_by_lane_tile_cycle
+    {
+        template<class MetricSet>
+        void operator()(MetricSet &metrics) const
+        {
+            typedef typename MetricSet::metric_type metric_type;
+            std::sort(metrics.begin(), metrics.end(), is_less<metric_type>);
+        }
+        template<class T>
+        static bool is_less(const T& lhs, const T& rhs)
+        {
+            return lhs.id() < rhs.id();
+        }
+    };
+
+
     struct validate_run_info
     {
         validate_run_info(const run::info& info) : m_info(info){}
@@ -131,11 +231,11 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         void operator()(const MetricSet &metrics)const
         {
             typedef typename MetricSet::base_t base_t;
-            populate_id(metrics, base_t::null());
+            validate(metrics, base_t::null());
         }
     private:
         template<class MetricSet>
-        void populate_id(const MetricSet &metrics, const constants::base_tile_t*)const
+        void validate(const MetricSet &metrics, const constants::base_tile_t*)const
         {
             for(typename MetricSet::const_iterator it = metrics.begin();it != metrics.end();++it)
             {
@@ -143,7 +243,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             }
         }
         template<class MetricSet>
-        void populate_id(const MetricSet &metrics, const constants::base_cycle_t*)const
+        void validate(const MetricSet &metrics, const constants::base_cycle_t*)const
         {
             for(typename MetricSet::const_iterator it = metrics.begin();it != metrics.end();++it)
             {
@@ -151,7 +251,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             }
         }
         template<class MetricSet>
-        void populate_id(const MetricSet &metrics, const constants::base_read_t*)const
+        void validate(const MetricSet &metrics, const constants::base_read_t*)const
         {
             for(typename MetricSet::const_iterator it = metrics.begin();it != metrics.end();++it)
             {
@@ -159,7 +259,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             }
         }
         template<class MetricSet>
-        void populate_id(const MetricSet &, const void*)const{}
+        void validate(const MetricSet &, const void*)const{}
 
         const run::info& m_info;
     };
@@ -192,12 +292,12 @@ namespace illumina { namespace interop { namespace model { namespace metrics
      * @param run_folder run folder path
      */
     size_t run_metrics::read_xml(const std::string &run_folder)
-                                    throw(io::file_not_found_exception,
-                                    xml::xml_file_not_found_exception,
-                                    xml::bad_xml_format_exception,
-                                    xml::empty_xml_format_exception,
-                                    xml::missing_xml_element_exception,
-                                    xml::xml_parse_exception)
+    throw(io::file_not_found_exception,
+    xml::xml_file_not_found_exception,
+    xml::bad_xml_format_exception,
+    xml::empty_xml_format_exception,
+    xml::missing_xml_element_exception,
+    xml::xml_parse_exception)
     {
         read_run_info(run_folder);
         return read_run_parameters(run_folder);
@@ -208,11 +308,11 @@ namespace illumina { namespace interop { namespace model { namespace metrics
      * @param run_folder run folder path
      */
     void run_metrics::read_run_info(const std::string &run_folder)
-                                    throw(xml::xml_file_not_found_exception,
-                                    xml::bad_xml_format_exception,
-                                    xml::empty_xml_format_exception,
-                                    xml::missing_xml_element_exception,
-                                    xml::xml_parse_exception)
+    throw(xml::xml_file_not_found_exception,
+    xml::bad_xml_format_exception,
+    xml::empty_xml_format_exception,
+    xml::missing_xml_element_exception,
+    xml::xml_parse_exception)
     {
         m_run_info.read(run_folder);
     }
@@ -271,9 +371,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         }
         if (count == std::numeric_limits<size_t>::max())
         {
-            if(get_set<q_metric>().size() > 0)
+            if (get_set<q_metric>().size() > 0)
                 count = logic::metric::count_legacy_q_score_bins(get_set<q_metric>());
-            else if(get_set<q_by_lane_metric>().size())
+            else if (get_set<q_by_lane_metric>().size())
                 count = logic::metric::count_legacy_q_score_bins(get_set<q_by_lane_metric>());
         }
         logic::metric::populate_legacy_q_score_bins(get_set<q_metric>().bins(), m_run_parameters.instrument_type(),
@@ -285,7 +385,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         logic::metric::populate_cumulative_distribution(get_set<q_metric>());
         logic::metric::populate_cumulative_distribution(get_set<q_by_lane_metric>());
         logic::metric::populate_cumulative_distribution(get_set<q_collapsed_metric>());
-        INTEROP_ASSERT(get_set<q_metric>().size() == 0 || get_set<q_metric>().size() == get_set<q_collapsed_metric>().size());
+        INTEROP_ASSERT(
+                get_set<q_metric>().size() == 0 || get_set<q_metric>().size() == get_set<q_collapsed_metric>().size());
         if (m_run_info.channels().empty())
         {
             legacy_channel_update(m_run_parameters.instrument_type());
@@ -303,7 +404,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         }
         extraction_metric_set_t& extraction_metrics = get_set<extraction_metric>();
         // Trim excess channel data for imaging table
-        for(extraction_metric_set_t::iterator it = extraction_metrics.begin(); it != extraction_metrics.end();++it)
+        for (extraction_metric_set_t::iterator it = extraction_metrics.begin(); it != extraction_metrics.end(); ++it)
             it->trim(run_info().channels().size());
     }
 
@@ -361,19 +462,54 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         m_metrics.apply(read_func(run_folder));
     }
 
+    /** Write binary metrics to the run folder
+     *
+     * @param run_folder run folder path
+     */
+    void run_metrics::write_metrics(const std::string &run_folder) const
+    throw(io::file_not_found_exception,
+    io::bad_format_exception)
+    {
+        m_metrics.apply(write_func(run_folder));
+    }
+
     /** Populate a map of valid tiles
      *
      * @param map mapping between tile has and base_metric
      */
-    void run_metrics::populate_id_map(tile_metric_map_t& map)const
+    void run_metrics::populate_id_map(tile_metric_map_t &map) const
     {
         m_metrics.apply(populate_tile_list(map));
     }
+
+    /** Check if the metric group is empty
+     *
+     * @param group_name prefix of interop group metric
+     * @return true if metric is empty
+     */
+    bool run_metrics::is_group_empty(const std::string& group_name) const
+    {
+        check_if_group_is_empty func(group_name);
+        m_metrics.apply(func);
+        return func.empty();
+    }
+    /** Check if the metric group is empty
+     *
+     * @param group_name prefix of interop group metric
+     * @return true if metric is empty
+     */
+    bool run_metrics::is_group_empty(const constants::metric_group group_id) const
+    {
+        check_if_groupid_is_empty func(group_id);
+        m_metrics.apply(func);
+        return func.empty();
+    }
+
     /** Populate a map of valid tiles and cycles
      *
      * @param map mapping between tile has and base_metric
      */
-    void run_metrics::populate_id_map(cycle_metric_map_t& map)const
+    void run_metrics::populate_id_map(cycle_metric_map_t &map) const
     {
         m_metrics.apply(populate_tile_cycle_list(map));
     }
@@ -385,5 +521,24 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     {
         m_metrics.apply(validate_run_info(m_run_info));
     }
+
+    /** Sort the metrics by lane, then tile, then cycle
+     *
+     */
+    void run_metrics::sort()
+    {
+        m_metrics.apply(sort_by_lane_tile_cycle());
+    }
+
+    /** Check if the InterOp file for each metric set exists
+     *
+     * This will set the `metric_set::data_source_exists` flag.
+     * @param run_folder run folder path
+     */
+    void run_metrics::check_for_data_sources(const std::string &run_folder)
+    {
+        m_metrics.apply(check_for_each_data_source(run_folder));
+    }
+
 
 }}}}
