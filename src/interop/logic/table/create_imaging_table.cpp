@@ -12,6 +12,9 @@
 #include "interop/logic/table/create_imaging_table_columns.h"
 #include "interop/logic/table/table_populator.h"
 #include "interop/logic/metric/q_metric.h"
+#include "interop/logic/utils/metric_type_ext.h"
+#include "interop/logic/utils/enums.h"
+#include "interop/model/metric_base/base_metric.h"
 
 namespace illumina { namespace interop { namespace logic { namespace table
 {
@@ -295,6 +298,43 @@ namespace illumina { namespace interop { namespace logic { namespace table
         data_vector_t data(row_offset.size()*count_table_columns(columns), std::numeric_limits<float>::quiet_NaN());
         create_imaging_table_data(metrics, columns, row_offset, data.begin(), data.end());
         table.set_data(row_offset.size(), columns, data);
+    }
+
+
+    /** Convert metric type to metric group
+     *
+     * @param type metric type
+     * @return metric group
+     */
+    inline constants::metric_group to_group(const model::table::column_id type)
+    {
+        using namespace constants;
+        using namespace model::table;
+        using namespace model;
+        // TODO: This can be reduced to a single macro define
+        typedef std::pair<column_id, metric_group > mapped_t;
+#       define INTEROP_TUPLE7(Id, Metric, Ignore2, Ignore3, Ignore4, Ignore5, Ignored6) \
+        mapped_t(Id##Column,static_cast<metric_group>(Metric::TYPE)),
+        static const mapped_t name_types[] = {INTEROP_IMAGING_COLUMN_TYPES mapped_t(ImagingColumnCount, UnknownMetricGroup)};
+#       undef INTEROP_TUPLE7
+        return util::constant_mapping_get(name_types, type, UnknownMetricGroup);
+    }
+
+    /** List the required on demand metrics
+     *
+     * @param valid_to_load list of metrics to load on demand
+     */
+    void list_imaging_table_metrics(std::vector<unsigned char>& valid_to_load)
+    {
+        if(valid_to_load.size() != constants::MetricCount) valid_to_load.assign(constants::MetricCount, 0);
+        std::vector<model::table::column_id> columns;
+        constants::list_enums<model::table::column_id>(columns);
+        for(size_t i=0;i<columns.size();++i)
+        {
+            const constants::metric_group group = to_group(columns[i]);
+            if(group >= constants::MetricCount)continue;
+            valid_to_load[group] = static_cast<unsigned char>(1);
+        }
     }
 
 }}}}

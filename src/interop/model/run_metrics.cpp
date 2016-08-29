@@ -116,12 +116,14 @@ namespace illumina { namespace interop { namespace model { namespace metrics
 
     struct read_func
     {
-        read_func(const std::string &f) : m_run_folder(f)
+        typedef const unsigned char* bool_pointer;
+        read_func(const std::string &f, bool_pointer valid=0) : m_run_folder(f), m_valid(valid)
         {}
 
         template<class MetricSet>
         int operator()(MetricSet &metrics) const
         {
+            if(m_valid != 0 && m_valid[MetricSet::TYPE] == 0) return 0;
             try
             {
                 io::read_interop(m_run_folder, metrics);
@@ -144,6 +146,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         }
 
         std::string m_run_folder;
+        bool_pointer m_valid;
     };
 
     struct write_func
@@ -283,6 +286,30 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                                             model::invalid_run_info_exception)
     {
         read_metrics(run_folder);
+        const size_t count = read_xml(run_folder);
+        finalize_after_load(count);
+    }
+    /** Read binary metrics and XML files from the run folder
+     *
+     * @param run_folder run folder path
+     * @param valid_to_load list of metrics to load
+     */
+    void run_metrics::read(const std::string &run_folder, const std::vector<unsigned char>& valid_to_load)
+    throw(xml::xml_file_not_found_exception,
+    xml::bad_xml_format_exception,
+    xml::empty_xml_format_exception,
+    xml::missing_xml_element_exception,
+    xml::xml_parse_exception,
+    io::file_not_found_exception,
+    io::bad_format_exception,
+    io::incomplete_file_exception,
+    io::format_exception,
+    model::index_out_of_bounds_exception,
+    model::invalid_tile_naming_method,
+    model::invalid_run_info_exception,
+    invalid_parameter)
+    {
+        read_metrics(run_folder, valid_to_load);
         const size_t count = read_xml(run_folder);
         finalize_after_load(count);
     }
@@ -460,6 +487,46 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     io::incomplete_file_exception)
     {
         m_metrics.apply(read_func(run_folder));
+    }
+    /** Read binary metrics from the run folder
+     *
+     * This function ignores:
+     *  - Missing InterOp files
+     *  - Incomplete InterOp files
+     *  - Missing RunParameters.xml for non-legacy run folders
+     *
+     * @param run_folder run folder path
+     * @param valid_to_load list of metrics to load
+     * @param n number of elements in valid_to_load
+     */
+    void run_metrics::read_metrics(const std::string &run_folder, const unsigned char* valid_to_load, const size_t n)
+    throw( io::file_not_found_exception,
+    io::bad_format_exception,
+    io::incomplete_file_exception,
+    invalid_parameter)
+    {
+        if(n != constants::MetricCount)
+            INTEROP_THROW(invalid_parameter, "Boolean array valid_to_load does not match expected number of metrics: "
+            << n << " != " << constants::MetricCount);
+        m_metrics.apply(read_func(run_folder, valid_to_load));
+    }
+    /** Read binary metrics from the run folder
+     *
+     * This function ignores:
+     *  - Missing InterOp files
+     *  - Incomplete InterOp files
+     *  - Missing RunParameters.xml for non-legacy run folders
+     *
+     * @param run_folder run folder path
+     * @param valid_to_load list of metrics to load
+     */
+    void run_metrics::read_metrics(const std::string &run_folder, const std::vector<unsigned char>& valid_to_load)
+    throw(io::file_not_found_exception,
+    io::bad_format_exception,
+    io::incomplete_file_exception,
+    invalid_parameter)
+    {
+        read_metrics(run_folder, &valid_to_load.front(), valid_to_load.size());
     }
 
     /** Write binary metrics to the run folder

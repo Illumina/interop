@@ -32,7 +32,19 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                     model::invalid_filter_option,
                     model::invalid_read_exception);
 
-
+    /** List the required on demand metrics
+     *
+     * @param type specific metric value to plot by cycle
+     * @param valid_to_load list of metrics to load on demand
+     */
+    void list_plot_by_cycle_metrics(const constants::metric_type type, std::vector<unsigned char>& valid_to_load);
+    /** List the required on demand metrics
+     *
+     * @param metric_name name of metric value to plot by cycle
+     * @param valid_to_load list of metrics to load on demand
+     */
+    void list_plot_by_cycle_metrics(const std::string& metric_name, std::vector<unsigned char>& valid_to_load)
+    throw(model::invalid_metric_type);
 
     /** Plot a specified metric value by cycle using the candle stick model
      *

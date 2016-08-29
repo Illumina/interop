@@ -45,7 +45,9 @@ int main(int argc, char** argv)
     {
         run_metrics run;
         std::cout << "# Run Folder: " << io::basename(argv[i]) << std::endl;
-        int ret = read_run_metrics(argv[i], run);
+        std::vector<unsigned char> valid_to_load;
+        logic::table::list_imaging_table_metrics(valid_to_load);
+        int ret = read_run_metrics(argv[i], run,valid_to_load);
         if (ret != SUCCESS) return ret;
         model::table::imaging_table table;
         try

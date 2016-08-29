@@ -102,7 +102,9 @@ int main(int argc, const char** argv)
         run_metrics run;
         const std::string run_name = io::basename(argv[i]);
         std::cout << "# Run Folder: " << run_name << std::endl;
-        int ret = read_run_metrics(argv[i], run);
+        std::vector<unsigned char> valid_to_load;
+        logic::plot::list_plot_by_cycle_metrics(metric_name, valid_to_load); // Only load the InterOp files required
+        int ret = read_run_metrics(argv[i], run, valid_to_load);
         if(ret != SUCCESS) return ret;
 
         /*if(1 == 1)
