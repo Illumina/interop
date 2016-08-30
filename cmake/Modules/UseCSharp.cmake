@@ -92,7 +92,6 @@ macro( CSHARP_ADD_PROJECT type name )
   #endif ()
   #list( SORT sources_dep )
 
-  set(CSHARP_OUTPUT_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
   set(CSHARP_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR})
 
   string (REPLACE ";" "," source_list "${sources}")
@@ -101,17 +100,17 @@ macro( CSHARP_ADD_PROJECT type name )
   # Add custom target and command
   MESSAGE( STATUS "Adding C# ${type} ${name}: '${CSHARP_COMPILER} /t:${type} /out:${name}.${output} /platform:${CSHARP_PLATFORM} ${CSHARP_SDK} ${refs} ${sources}'" )
   add_custom_command(
-    COMMENT "Compiling C# ${type} ${name}: '${CSHARP_COMPILER} /unsafe /t:${type} /out:${CSHARP_OUTPUT_DIR}/${name}.${output} /platform:${CSHARP_PLATFORM} ${CSHARP_SDK} ${refs} ${sources}'"
-    OUTPUT ${CMAKE_BINARY_DIR}/${name}.${output}
-    COMMAND ${CMAKE_COMMAND} -DFILES_TO_COPY="${source_list}" -DDESTINATION_DIR="${CMAKE_BINARY_DIR}" -P "${CMAKE_SOURCE_DIR}/cmake/CopyListOfFiles.cmake"
+    COMMENT "Compiling C# ${type} ${name}: '${CSHARP_COMPILER} /unsafe /t:${type} /out:${CMAKE_CURRENT_BINARY_DIR}/${name}.${output} /platform:${CSHARP_PLATFORM} ${CSHARP_SDK} ${refs} ${sources}'"
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${name}.${output}
+    COMMAND ${CMAKE_COMMAND} -DFILES_TO_COPY="${source_list}" -DDESTINATION_DIR="${CMAKE_CURRENT_BINARY_DIR}" -P "${CMAKE_SOURCE_DIR}/cmake/CopyListOfFiles.cmake"
     COMMAND ${CSHARP_COMPILER}
     ARGS /t:${type} /out:${CSHARP_OUTPUT_DIR}/${name}.${output} /unsafe /platform:${CSHARP_PLATFORM} ${CSHARP_SDK} ${refs} ${sources}
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     DEPENDS ${sources_dep}
   )
   add_custom_target(
     ${name} ALL
-    DEPENDS ${CMAKE_BINARY_DIR}/${name}.${output}
+    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${name}.${output}
     SOURCES ${sources_dep}
   )
 endmacro( CSHARP_ADD_PROJECT )

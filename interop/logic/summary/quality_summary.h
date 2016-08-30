@@ -15,8 +15,8 @@
 #include "interop/model/metrics/q_metric.h"
 #include "interop/model/summary/run_summary.h"
 
-namespace illumina { namespace interop { namespace logic { namespace summary {
-
+namespace illumina { namespace interop { namespace logic { namespace summary
+{
     /** Contains number above Q30 and total number of calls
      */
     struct qval_total
@@ -67,7 +67,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
                                              I end,
                                              const read_cycle_vector_t& cycle_to_read,
                                              model::summary::run_summary &run)
-                                            throw( model::index_out_of_bounds_exception )
+                                             throw( model::index_out_of_bounds_exception )
     {
         typedef model::summary::lane_summary lane_summary;
         typedef std::vector< size_t > size_vector_t;
@@ -181,7 +181,4 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
         run.total_summary().yield_g(yield_g);
         run.total_summary().percent_gt_q30(100 * divide(float(useable_calls_gt_q30), float(total_useable_calls)));
     }
-}
-}
-}
-}
+}}}}

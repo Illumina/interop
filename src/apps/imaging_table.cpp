@@ -23,7 +23,8 @@
 #include <iomanip>
 #include "interop/io/metric_file_stream.h"
 #include "interop/model/run_metrics.h"
-#include "interop/logic/table/populate_imaging_table.h"
+#include "interop/logic/table/create_imaging_table.h"
+#include "interop/io/table/imaging_table_csv.h"
 #include "interop/version.h"
 #include "inc/application.h"
 
@@ -49,15 +50,13 @@ int main(int argc, char** argv)
         model::table::imaging_table table;
         try
         {
-            logic::table::populate_imaging_table(run, table);
-            logic::table::populate_column_headers(run.run_info().channels(), table);
+            logic::table::create_imaging_table(run, table);
         }
         catch(const std::exception& ex)
         {
             std::cerr << ex.what() << std::endl;
             return UNEXPECTED_EXCEPTION;
         }
-        //table.resize(3);
         std::cout << table << std::endl;
     }
     return SUCCESS;

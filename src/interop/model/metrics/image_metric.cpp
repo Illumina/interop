@@ -3,7 +3,6 @@
  * Each version of the image metrics file has a layout defined below.
  *
  *  @file
- *
  *  @date 8/20/2015
  *  @version 1.0
  *  @copyright GNU Public License.
@@ -15,7 +14,8 @@
 
 using namespace illumina::interop::model::metrics;
 
-namespace illumina{ namespace interop{ namespace io {
+namespace illumina { namespace interop { namespace io
+{
 #pragma pack(1)
             /** Image Metric Record Layout Version 1
              *
@@ -104,12 +104,12 @@ namespace illumina{ namespace interop{ namespace io {
                     std::streamsize count = 0;
                     metric_id_t metric_id;
                     metric_id.set(metric);
-                    for(image_metric::ushort_t channelIndex=0;channelIndex < image_metric::MAX_CHANNELS;++channelIndex)
+                    for(image_metric::ushort_t channel_index=0;channel_index < image_metric::MAX_CHANNELS;++channel_index)
                     {
-                        if(channelIndex > 0) write_binary(stream, metric_id);
-                        count += stream_map< channel_t >(stream, channelIndex);
-                        count += stream_map< contrast_t >(stream, metric.m_min_contrast[channelIndex]);
-                        count += stream_map< contrast_t >(stream, metric.m_max_contrast[channelIndex]);
+                        if(channel_index > 0) write_binary(stream, metric_id);
+                        count += stream_map< channel_t >(stream, channel_index);
+                        count += stream_map< contrast_t >(stream, metric.m_min_contrast[channel_index]);
+                        count += stream_map< contrast_t >(stream, metric.m_max_contrast[channel_index]);
                     }
                     return count;
                 }
@@ -212,7 +212,7 @@ namespace illumina{ namespace interop{ namespace io {
                  */
                 static record_size_t compute_size(const image_metric::header_type& header)
                 {
-                    return static_cast<record_size_t>(sizeof(metric_id_t)+header.channelCount()*sizeof(contrast_t)*2);
+                    return static_cast<record_size_t>(sizeof(metric_id_t)+header.channel_count()*sizeof(contrast_t)*2);
                 }
                 /** Map reading/writing a header to a stream
                  *
@@ -237,7 +237,7 @@ namespace illumina{ namespace interop{ namespace io {
                 }
             };
 #pragma pack() // DO NOT MOVE
-        }}}
+ }}}
 
 INTEROP_FORCE_LINK_DEF(image_metric)
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(image_metric, 1 )

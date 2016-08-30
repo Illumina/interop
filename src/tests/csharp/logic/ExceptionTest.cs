@@ -5,6 +5,7 @@ using Illumina.InterOp.Run;
 using Illumina.InterOp.Metrics;
 using Illumina.InterOp.Plot;
 using Illumina.InterOp.Imaging;
+using Illumina.InterOp.Comm;
 
 namespace Illumina.InterOp.Interop.UnitTest
 {
@@ -22,7 +23,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		public void TestFileNotFoundException()
 		{
             base_corrected_intensity_metrics metrics = new base_corrected_intensity_metrics();
-            c_csharp_metrics.read_interop("/NO/FILE/EXISTS", metrics);
+            c_csharp_comm.read_interop("/NO/FILE/EXISTS", metrics);
 		}
 		/// <summary>
 		/// Test XmlFileNotFoundException
@@ -55,7 +56,7 @@ namespace Illumina.InterOp.Interop.UnitTest
             filter_options options = new filter_options(tile_naming_method.FourDigit);
             candle_stick_plot_data data = new candle_stick_plot_data();
             options.cycle(1);
-            c_csharp_plot.plot_candle_stick_by_cycle(metrics, metric_type.Intensity, options, data);
+            c_csharp_plot.plot_by_cycle(metrics, metric_type.Intensity, options, data);
 		}
 		/// <summary>
 		/// Test invalid_metric_type
@@ -67,19 +68,19 @@ namespace Illumina.InterOp.Interop.UnitTest
             run_metrics metrics = new run_metrics();
             filter_options options = new filter_options(tile_naming_method.FourDigit);
             candle_stick_plot_data data = new candle_stick_plot_data();
-            c_csharp_plot.plot_candle_stick_by_cycle(metrics, "NoMetric", options, data);
+            c_csharp_plot.plot_by_cycle(metrics, "NoMetric", options, data);
 		}
 		/// <summary>
 		/// Test invalid_metric_type
 		/// </summary>
-		[Test]
+		/*[Test]
 	    [ExpectedException("Illumina.InterOp.Run.invalid_column_type")]
 		public void TestInvalidColumnType()
 		{
             size_vector_2d offsets = new size_vector_2d();
             column_header_vector headers = new column_header_vector();
-            headers.Add(new column_header("NoColumn"));
+            headers.Add(new column_header("NoColumn", column_data_type.UnknownDataType));
             c_csharp_imaging.populate_column_offsets(offsets, headers);
-		}
+		}*/
 	}
 }

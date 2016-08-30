@@ -7,16 +7,11 @@
  *  @copyright GNU Public License.
  */
 #pragma once
+
 #include <string>
 #include <vector>
 
-namespace illumina
-{
-namespace interop
-{
-namespace model
-{
-namespace run
+namespace illumina { namespace interop { namespace model { namespace run
 {
     /** Dimenions of the image
      *
@@ -29,7 +24,8 @@ namespace run
          * @param width width of the image
          * @param height height of the image
          */
-        image_dimensions(size_t width=0, size_t height=0) : m_width(width), m_height(height){}
+        image_dimensions(size_t width = 0, size_t height = 0) : m_width(width), m_height(height)
+        {}
 
     public:
         /** @defgroup image_dimensions Image Dimensions
@@ -44,21 +40,22 @@ namespace run
          *
          * @return image width
          */
-        size_t width()const{return m_width;}
+        size_t width() const
+        { return m_width; }
+
         /** Get the height of the image
          *
          * @return image height
          */
-        size_t height()const{return m_height;}
+        size_t height() const
+        { return m_height; }
         /** @} */
     private:
         size_t m_width;
         size_t m_height;
+
         friend class info;
     };
 
-}
-}
-}
-}
+}}}}
 

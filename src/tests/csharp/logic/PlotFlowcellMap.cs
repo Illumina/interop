@@ -4,6 +4,7 @@ using System.IO;
 using Illumina.InterOp.Plot;
 using Illumina.InterOp.Metrics;
 using Illumina.InterOp.Run;
+using Illumina.InterOp.Comm;
 
 namespace Illumina.InterOp.Interop.UnitTest
 {
@@ -28,7 +29,7 @@ namespace Illumina.InterOp.Interop.UnitTest
             byte[] expected_binary_data = new byte[tmp.Length];
             for(int i=0;i<expected_binary_data.Length;i++) expected_binary_data[i] = (byte)tmp[i];
             run_metrics run = new run_metrics();
-            c_csharp_metrics.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, run.q_metric_set());
+            c_csharp_comm.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, run.q_metric_set());
             uint ALL_IDS = (uint)filter_options.UseAll.ALL_IDS;
             filter_options options = new filter_options(tile_naming_method.FourDigit, ALL_IDS, 0, dna_bases.A, ALL_IDS, 1, 1);
             read_info_vector reads = new read_info_vector();
@@ -46,8 +47,14 @@ namespace Illumina.InterOp.Interop.UnitTest
             run.legacy_channel_update(instrument_type.HiSeq);
             run.finalize_after_load();
 
+            var layout = run.run_info().flowcell();
+            uint lane_count = layout.lane_count();
+            uint swath_count = layout.total_swaths(layout.surface_count() > 1 && !options.is_specific_surface());
+            uint tile_count = layout.tiles_per_lane();
+            float[] data_buffer = new float[lane_count*swath_count*tile_count];
+            uint[] tile_buffer  = new uint[lane_count*swath_count*tile_count];
             flowcell_data data = new flowcell_data();
-            c_csharp_plot.plot_flowcell_map(run,  metric_type.QScore, options, data);
+            c_csharp_plot.plot_flowcell_map(run,  metric_type.QScore, options, data, data_buffer, tile_buffer);
             Assert.AreEqual(data.row_count(), 8);
 		}
 		/// <summary>
@@ -66,7 +73,7 @@ namespace Illumina.InterOp.Interop.UnitTest
             byte[] expected_binary_data = new byte[tmp.Length];
             for(int i=0;i<expected_binary_data.Length;i++) expected_binary_data[i] = (byte)tmp[i];
             run_metrics run = new run_metrics();
-            c_csharp_metrics.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, run.q_metric_set());
+            c_csharp_comm.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, run.q_metric_set());
             uint ALL_IDS = (uint)filter_options.UseAll.ALL_IDS;
             filter_options options = new filter_options(tile_naming_method.FourDigit, ALL_IDS, 0, dna_bases.A, ALL_IDS, 1, 1);
             read_info_vector reads = new read_info_vector();

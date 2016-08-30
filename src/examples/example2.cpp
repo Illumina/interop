@@ -44,8 +44,8 @@ int main(int argc, char** argv)
     lane_summary_map_t lane_summary_map;
     for(metric_set<tile_metric>::metric_array_t::const_iterator beg = tile_metric_set.metrics().begin(), end = tile_metric_set.metrics().end();beg != end;++beg)
     {
-        lane_summary_map[beg->lane()].cluster_count += beg->clusterCount();
-        lane_summary_map[beg->lane()].cluster_count_pf += beg->clusterCountPf();
+        lane_summary_map[beg->lane()].cluster_count += beg->cluster_count();
+        lane_summary_map[beg->lane()].cluster_count_pf += beg->cluster_count_pf();
         lane_summary_map[beg->lane()].tile_count += 1;
     }
 

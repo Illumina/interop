@@ -4,6 +4,7 @@ using System.IO;
 using Illumina.InterOp.Plot;
 using Illumina.InterOp.Metrics;
 using Illumina.InterOp.Run;
+using Illumina.InterOp.Comm;
 
 namespace Illumina.InterOp.Interop.UnitTest
 {
@@ -28,7 +29,7 @@ namespace Illumina.InterOp.Interop.UnitTest
             byte[] expected_binary_data = new byte[tmp.Length];
             for(int i=0;i<expected_binary_data.Length;i++) expected_binary_data[i] = (byte)tmp[i];
             run_metrics run = new run_metrics();
-            c_csharp_metrics.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, run.q_metric_set());
+            c_csharp_comm.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, run.q_metric_set());
 
             filter_options options = new filter_options(tile_naming_method.FourDigit);
             read_info_vector reads = new read_info_vector();
@@ -46,9 +47,22 @@ namespace Illumina.InterOp.Interop.UnitTest
             run.legacy_channel_update(instrument_type.HiSeq);
             run.finalize_after_load();
 
+            uint row_count = c_csharp_plot.count_rows_for_heatmap(run);
+            uint col_count = c_csharp_plot.count_columns_for_heatmap(run);
+            var buffer = new float[row_count*col_count];
             heatmap_data data = new heatmap_data();
-            c_csharp_plot.plot_qscore_heatmap(run, options, data);
+            c_csharp_plot.plot_qscore_heatmap(run, options, data, buffer);
             Assert.AreEqual(data.row_count(), 3);
+            Assert.AreEqual(data.column_count(), 40);
+            heatmap_data data2 = new heatmap_data();
+            c_csharp_plot.plot_qscore_heatmap(run, options, data2);
+            for(uint row=0;row<data.row_count();row++)
+            {
+                for(uint col=0;col<data.column_count();col++)
+                {
+                    Assert.AreEqual(buffer[row*data.column_count()+col], data2.at(row,col));
+                }
+            }
 
 		}
 	}

@@ -11,6 +11,7 @@
 #include "interop/logic/metric/q_metric.h"
 #include "inc/q_collapsed_metrics_test.h"
 #include "inc/q_metrics_test.h"
+#include "interop/model/run_metrics.h"
 
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::model::metric_base;
@@ -40,13 +41,13 @@ TYPED_TEST(q_collapsed_metrics_test, test_read_write)
     EXPECT_EQ(TypeParam::actual_metric_set.size(), TypeParam::expected_metric_set.size());
     EXPECT_EQ(TypeParam::actual_metric_set.max_cycle(), TypeParam::expected_metric_set.max_cycle());
 
-    for(typename TypeParam::const_iterator itExpected=TypeParam::expected_metric_set.begin(), itActual = TypeParam::actual_metric_set.begin();
-        itExpected != TypeParam::expected_metric_set.end() && itActual != TypeParam::actual_metric_set.end();
-        itExpected++,itActual++)
+    for(typename TypeParam::const_iterator it_expected=TypeParam::expected_metric_set.begin(), it_actual = TypeParam::actual_metric_set.begin();
+        it_expected != TypeParam::expected_metric_set.end() && it_actual != TypeParam::actual_metric_set.end();
+        it_expected++,it_actual++)
     {
-        EXPECT_EQ(itExpected->lane(), itActual->lane());
-        EXPECT_EQ(itExpected->tile(), itActual->tile());
-        EXPECT_EQ(itExpected->cycle(), itActual->cycle());
+        EXPECT_EQ(it_expected->lane(), it_actual->lane());
+        EXPECT_EQ(it_expected->tile(), it_actual->tile());
+        EXPECT_EQ(it_expected->cycle(), it_actual->cycle());
     }
 }
 
@@ -73,18 +74,28 @@ TEST(q_collapsed_metrics_test, test_convert_write_read)
     EXPECT_EQ(actual_metric_set.version(), expected_metric_set.version());
     EXPECT_EQ(actual_metric_set.max_cycle(), expected_metric_set.max_cycle());
     ASSERT_EQ(actual_metric_set.size(), expected_metric_set.size());
-    for(metric_set<q_collapsed_metric>::const_iterator itExpected=expected_metric_set.begin(),
-                itActual = actual_metric_set.begin();
-        itExpected != expected_metric_set.end();
-        itExpected++,itActual++)
+    for(metric_set<q_collapsed_metric>::const_iterator it_expected=expected_metric_set.begin(),
+                it_actual = actual_metric_set.begin();
+        it_expected != expected_metric_set.end();
+        it_expected++,it_actual++)
     {
-        EXPECT_EQ(itExpected->lane(), itActual->lane());
-        EXPECT_EQ(itExpected->tile(), itActual->tile());
-        EXPECT_EQ(itExpected->cycle(), itActual->cycle());
-        EXPECT_EQ(itExpected->q20(), itActual->q20());
-        EXPECT_EQ(itExpected->q30(), itActual->q30());
-        EXPECT_EQ(itExpected->median_qscore(), itActual->median_qscore());
+        EXPECT_EQ(it_expected->lane(), it_actual->lane());
+        EXPECT_EQ(it_expected->tile(), it_actual->tile());
+        EXPECT_EQ(it_expected->cycle(), it_actual->cycle());
+        EXPECT_EQ(it_expected->q20(), it_actual->q20());
+        EXPECT_EQ(it_expected->q30(), it_actual->q30());
+        EXPECT_EQ(it_expected->median_qscore(), it_actual->median_qscore());
     }
+}
+
+TEST(run_metrics_q_collapsed_test, test_is_group_empty)
+{
+    run_metrics metrics;
+    EXPECT_TRUE(metrics.is_group_empty(constants::QCollapsed));
+    std::istringstream fin(q_v4::binary_data());
+    io::read_metrics(fin, metrics.get_set<q_metric>());
+    logic::metric::create_collapse_q_metrics(metrics.get_set<q_metric>(), metrics.get_set<q_collapsed_metric>());
+    EXPECT_FALSE(metrics.is_group_empty(constants::QCollapsed));
 }
 
 #define FIXTURE q_collapsed_metrics_test

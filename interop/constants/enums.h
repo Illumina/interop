@@ -24,6 +24,7 @@
         INTEROP_TUPLE2(ChannelFeature, 0x10), \
         INTEROP_TUPLE1(UnknownMetricFeature)
 
+
 /** Enumeration of each metric type
  *
  * @note This macro requires the macro INTEROP_TUPLE3 to be defined before use
@@ -34,6 +35,7 @@
         INTEROP_TUPLE4(FWHM, "FWHM", Extraction, CycleFeature|ChannelFeature),\
         /*INTEROP_TUPLE4(PercentBase, "% Base", CorrectedInt, CycleFeature|BaseFeature), */\
         INTEROP_TUPLE4(BasePercent, "% Base", CorrectedInt, CycleFeature|BaseFeature),\
+        INTEROP_TUPLE4(PercentNoCall, "% NoCall", CorrectedInt, CycleFeature),\
         /*INTEROP_TUPLE4(PercentQ20, "% >=Q20", Q, CycleFeature),*/\
         INTEROP_TUPLE4(Q20Percent, "% >=Q20", Q, CycleFeature),\
         /*INTEROP_TUPLE4(PercentQ30, "% >=Q30", Q, CycleFeature),*/\
@@ -45,7 +47,7 @@
         /*INTEROP_TUPLE4(Density, "Density (K/mm2)", Tile, TileFeature),*/ \
         INTEROP_TUPLE4(ClustersPF, "Density PF", Tile, TileFeature),\
         /*INTEROP_TUPLE4(DensityPF, "Density PF", Tile, TileFeature),*/\
-        INTEROP_TUPLE4(ClusterCount, "Clusters", Tile, TileFeature),\
+        INTEROP_TUPLE4(ClusterCount, "Cluster Count", Tile, TileFeature),\
         /*INTEROP_TUPLE4(ClusterCount, "Cluster Count", Tile, TileFeature),*/\
         INTEROP_TUPLE4(ClusterCountPF, "Clusters PF", Tile, TileFeature),\
         INTEROP_TUPLE4(ErrorRate, "Error Rate", Error, CycleFeature),\
@@ -157,10 +159,10 @@
         INTEROP_TUPLE1(InstrumentCount), \
         INTEROP_TUPLE1(UnknownInstrument)
 
-/** Enumeration of instrument types
+/** Enumeration of metric types
  *
  * @note This macro requires the macro INTEROP_TUPLE1 to be defined before use
- * @see illumina::interop::constants::instrument_type
+ * @see illumina::interop::constants::metric_base_type
  */
 #define INTEROP_ENUM_METRIC_BASE_TYPES \
         /** Tile base types are written out once for each tile */\
@@ -169,6 +171,8 @@
         INTEROP_TUPLE1(BaseCycleType),\
         /** Read base types are written out once for each tile and read */\
         INTEROP_TUPLE1(BaseReadType),\
+        /** Lane base types are written out once for each lane and cycle */\
+        INTEROP_TUPLE1(BaseLaneType),\
         INTEROP_TUPLE1(BaseMetricCount),\
         INTEROP_TUPLE1(UnknownBaseType)
 
@@ -201,6 +205,7 @@
         INTEROP_TUPLE1(Shifted),\
         INTEROP_TUPLE1(UnknownBarPlotOption)
 
+/** Sentinel for an unknown enum type */
 #define INTEROP_UNKNOWN 0xff
 /** This temp macro converts a enum/description pair into the an enum (first element of the pair) */
 #define INTEROP_TUPLE4(X, Y, Z, A) X
@@ -210,6 +215,8 @@
 #define INTEROP_TUPLE1(X) X
 /** This temp macro converts an enum/value pair to an enum */
 #define INTEROP_TUPLE2(X, V) X=V
+
+
 
 namespace illumina { namespace interop { namespace constants
 {

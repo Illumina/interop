@@ -20,6 +20,7 @@
 #include "interop/util/xml_parser.h"
 #include "interop/io/metric_stream.h"
 #include "interop/logic/utils/enums.h"
+#include "interop/logic/metric/tile_metric.h"
 
 
 using namespace illumina::interop::xml;
@@ -44,7 +45,7 @@ namespace illumina { namespace interop { namespace model { namespace run
         }
 
         xml_node_ptr p_root = doc.first_node();
-        if (p_root == 0) INTEROP_THROW(empty_xml_format_exception, "Root not found");
+        if (p_root == 0) INTEROP_THROW(empty_xml_format_exception, "Root node not found");
         if (p_root->name() != std::string("RunInfo"))
             INTEROP_THROW(bad_xml_format_exception, "Invalid run info xml file");
 
@@ -56,9 +57,14 @@ namespace illumina { namespace interop { namespace model { namespace run
 
 
         xml_node_ptr p_run_node = p_root->first_node();
-        if (p_run_node == 0) INTEROP_THROW(bad_xml_format_exception, "Run not found");
+
+        for (; p_run_node; p_run_node = p_run_node->next_sibling())
+        {
+            if(p_run_node->name() == std::string("Run"))break;
+        }
+        if (p_run_node == 0) INTEROP_THROW(bad_xml_format_exception, "Run node not found");
         if (p_run_node->name() != std::string("Run"))
-            INTEROP_THROW(bad_xml_format_exception, "Invalid run info xml file");
+            INTEROP_THROW(bad_xml_format_exception, "Invalid run info xml file: expected Run, got: " << p_run_node->name());
 
         // Parse run attributes
         for (xml_attr_ptr attr = p_run_node->first_attribute();
@@ -138,7 +144,7 @@ namespace illumina { namespace interop { namespace model { namespace run
                 }
             }
         }
-
+        m_total_cycle_count = total_cycles();
     }
 
     void info::read_file(const std::string &filename)  throw(xml::xml_file_not_found_exception,
@@ -149,8 +155,8 @@ namespace illumina { namespace interop { namespace model { namespace run
     {
         try
         {
-            rapidxml::file<> xmlFile(filename.c_str());
-            parse(xmlFile.data());
+            rapidxml::file<> xml_file(filename.c_str());
+            parse(xml_file.data());
         } catch (const std::runtime_error &ex)
         {
             INTEROP_THROW(xml_file_not_found_exception, ex.what());
@@ -169,6 +175,87 @@ namespace illumina { namespace interop { namespace model { namespace run
             return;
         }
         read_file(io::combine(run_folder, "RunInfo.xml"));
+    }
+    /** Test if tile list matches flowcell layout
+     *
+     * @param lane lane number
+     * @param tile tile number
+     * @param read read number
+     * @throws invalid_run_info_exception
+     */
+    void info::validate_read(const ::uint32_t lane, const ::uint32_t tile, const size_t read)const
+    throw(invalid_run_info_exception)
+    {
+        validate(lane, tile);
+        if(read > m_reads.size())
+            INTEROP_THROW(invalid_run_info_exception, "Read number exceeds number of reads");
+    }
+    /** Test if tile list matches flowcell layout
+     *
+     * @param lane lane number
+     * @param tile tile number
+     * @param cycle cycle number
+     * @throws invalid_run_info_exception
+     */
+    void info::validate_cycle(const ::uint32_t lane, const ::uint32_t tile, const size_t cycle)const
+    throw(invalid_run_info_exception)
+    {
+        validate(lane, tile);
+        if(cycle > m_total_cycle_count)
+            INTEROP_THROW(invalid_run_info_exception, "Cycle number exceeds number of cycles: "
+                    << cycle << " > " << m_total_cycle_count);
+    }
+
+    /** Test if tile list matches flowcell layout
+     *
+     * @param lane lane number
+     * @param tile tile number
+     * @throws invalid_run_info_exception
+     */
+    void info::validate(const ::uint32_t lane, const ::uint32_t tile)const throw(invalid_run_info_exception)
+    {
+        if(lane > m_flowcell.lane_count())
+            INTEROP_THROW(invalid_run_info_exception,"Lane identifier exceeds number of lanes");
+        const ::uint32_t swath = logic::metric::swath(tile, m_flowcell.naming_method());
+        if(swath > m_flowcell.swath_count())
+            INTEROP_THROW(invalid_run_info_exception, "Swath number exceeds number of swaths");
+        const ::uint32_t tile_number = logic::metric::number(tile, m_flowcell.naming_method());
+        if(tile_number > m_flowcell.tile_count())
+            INTEROP_THROW(invalid_run_info_exception, "Tile number exceeds number of tiles");
+        const ::uint32_t surface = logic::metric::surface(tile, m_flowcell.naming_method());
+        if(surface > m_flowcell.surface_count())
+            INTEROP_THROW(invalid_run_info_exception, "Surface number exceeds number of surfaces");
+        const ::uint32_t section = logic::metric::section(tile, m_flowcell.naming_method());
+        if(section > m_flowcell.sections_per_lane())
+            INTEROP_THROW(invalid_run_info_exception, "Section number exceeds number of sections");
+    }
+
+    /** Test if tile list matches flowcell layout
+     *
+     * @throws invalid_run_info_exception
+     */
+    void info::validate()const throw(invalid_run_info_exception, invalid_tile_naming_method)
+    {
+        typedef flowcell_layout::str_vector_t str_vector_t;
+        if(m_flowcell.naming_method()==constants::UnknownTileNamingMethod)
+            INTEROP_THROW(invalid_tile_naming_method, "Unknown tile naming method");
+        std::set<size_t> unique_numbers;
+        for(read_vector_t::const_iterator it = m_reads.begin();it != m_reads.end();++it)
+        {
+            if(unique_numbers.find(it->number()) != unique_numbers.end())
+                INTEROP_THROW(invalid_run_info_exception, "Repeated read number");
+            if (it->number() > m_reads.size())
+                INTEROP_THROW(invalid_run_info_exception, "Missing reads");
+            unique_numbers.insert(it->number());
+        }
+        for(str_vector_t::const_iterator it = m_flowcell.tiles().begin();it != m_flowcell.tiles().end();++it)
+        {
+            const ::uint32_t lane = logic::metric::lane_from_name(*it);
+            if(lane == 0) INTEROP_THROW( invalid_run_info_exception, "Invalid tile identifier in tile names");
+            const ::uint32_t tile = logic::metric::tile_from_name(*it);
+            if(tile == 0) INTEROP_THROW( invalid_run_info_exception, "Invalid tile identifier in tile names");
+            validate(lane, tile);
+        }
     }
 
 }}}}

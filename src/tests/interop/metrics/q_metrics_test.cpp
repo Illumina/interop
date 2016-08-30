@@ -2,7 +2,6 @@
  *
  *
  *  @file
- *
  *  @date 8/25/2015
  *  @version 1.0
  *  @copyright GNU Public License.
@@ -13,6 +12,7 @@
 #include <gtest/gtest.h>
 #include "interop/logic/metric/q_metric.h"
 #include "inc/q_metrics_test.h"
+#include "interop/model/run_metrics.h"
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::model::metric_base;
 using namespace illumina::interop::io;
@@ -45,26 +45,26 @@ TYPED_TEST(q_metrics_test, test_read_write)
     EXPECT_EQ(TypeParam::actual_metric_set.size(), TypeParam::expected_metric_set.size());
     EXPECT_EQ(TypeParam::actual_metric_set.max_cycle(), TypeParam::expected_metric_set.max_cycle());
 
-    for(typename TypeParam::const_iterator itExpected=TypeParam::expected_metric_set.begin(), itActual = TypeParam::actual_metric_set.begin();
-        itExpected != TypeParam::expected_metric_set.end() && itActual != TypeParam::actual_metric_set.end();
-        itExpected++,itActual++)
+    for(typename TypeParam::const_iterator it_expected=TypeParam::expected_metric_set.begin(), it_actual = TypeParam::actual_metric_set.begin();
+        it_expected != TypeParam::expected_metric_set.end() && it_actual != TypeParam::actual_metric_set.end();
+        it_expected++,it_actual++)
     {
-        EXPECT_EQ(itExpected->lane(), itActual->lane());
-        EXPECT_EQ(itExpected->tile(), itActual->tile());
-        EXPECT_EQ(itExpected->cycle(), itActual->cycle());
-        EXPECT_EQ(itExpected->size(), itActual->size());
-        for(size_t i=0;i<std::min(itExpected->size(), itActual->size());i++)
+        EXPECT_EQ(it_expected->lane(), it_actual->lane());
+        EXPECT_EQ(it_expected->tile(), it_actual->tile());
+        EXPECT_EQ(it_expected->cycle(), it_actual->cycle());
+        EXPECT_EQ(it_expected->size(), it_actual->size());
+        for(size_t i=0;i<std::min(it_expected->size(), it_actual->size());i++)
         {
-            EXPECT_EQ(itExpected->qscoreHist(i), itActual->qscoreHist(i));
+            EXPECT_EQ(it_expected->qscore_hist(i), it_actual->qscore_hist(i));
         }
     }
     EXPECT_EQ(logic::metric::count_q_metric_bins(TypeParam::actual_metric_set),logic::metric::count_q_metric_bins(TypeParam::expected_metric_set));
-    EXPECT_EQ(TypeParam::actual_metric_set.binCount(), TypeParam::expected_metric_set.binCount());
-    for(size_t i=0;i<std::min(TypeParam::actual_metric_set.binCount(), TypeParam::expected_metric_set.binCount());i++)
+    EXPECT_EQ(TypeParam::actual_metric_set.bin_count(), TypeParam::expected_metric_set.bin_count());
+    for(size_t i=0;i<std::min(TypeParam::actual_metric_set.bin_count(), TypeParam::expected_metric_set.bin_count());i++)
     {
-        EXPECT_EQ(TypeParam::actual_metric_set.binAt(i).lower(), TypeParam::expected_metric_set.binAt(i).lower());
-        EXPECT_EQ(TypeParam::actual_metric_set.binAt(i).upper(), TypeParam::expected_metric_set.binAt(i).upper());
-        EXPECT_EQ(TypeParam::actual_metric_set.binAt(i).value(), TypeParam::expected_metric_set.binAt(i).value());
+        EXPECT_EQ(TypeParam::actual_metric_set.bin_at(i).lower(), TypeParam::expected_metric_set.bin_at(i).lower());
+        EXPECT_EQ(TypeParam::actual_metric_set.bin_at(i).upper(), TypeParam::expected_metric_set.bin_at(i).upper());
+        EXPECT_EQ(TypeParam::actual_metric_set.bin_at(i).value(), TypeParam::expected_metric_set.bin_at(i).value());
     }
 }
 
@@ -109,6 +109,16 @@ TEST(q_metrics_test, test_cumulative)
     }
 
     EXPECT_EQ(q_metric_set.get_metric(7, 1114, 3).sum_qscore_cumulative(), qsum);
+}
+
+
+TEST(run_metrics_q_test, test_is_group_empty)
+{
+    run_metrics metrics;
+    EXPECT_TRUE(metrics.is_group_empty(constants::Q));
+    std::istringstream fin(q_v4::binary_data());
+    io::read_metrics(fin, metrics.get_set<q_metric>());
+    EXPECT_FALSE(metrics.is_group_empty(constants::Q));
 }
 
 #define FIXTURE q_metrics_test

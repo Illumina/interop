@@ -3,6 +3,7 @@
 using System;
 using Illumina.InterOp.Run;
 using Illumina.InterOp.Metrics;
+using Illumina.InterOp.Comm;
 
 class Example1
 {
@@ -21,7 +22,7 @@ class Example1
 		base_tile_metrics tile_metric_set = new base_tile_metrics ();
 		try
 		{
-			c_csharp_metrics.read_interop (args [0], tile_metric_set);
+			c_csharp_comm.read_interop (args [0], tile_metric_set);
 		}
 		catch(incomplete_file_exception){}
 		catch(file_not_found_exception ex)

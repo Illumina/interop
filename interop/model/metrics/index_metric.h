@@ -33,12 +33,6 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     class index_info
     {
     public:
-        enum
-        {
-            /** Unique type code for metric */
-            TYPE = constants::Index
-        };
-    public:
         /** Constructor
          *
          */
@@ -167,6 +161,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     public:
         enum
         {
+            /** Unique type code for metric */
+            TYPE = constants::Index,
             /** Latest version of the InterOp format */
             LATEST_VERSION = 1
         };

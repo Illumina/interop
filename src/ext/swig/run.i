@@ -15,6 +15,7 @@
 #include "interop/model/run/image_dimensions.h"
 #include "interop/model/run/info.h"
 #include "interop/model/run/parameters.h"
+#include "interop/logic/metric/q_metric.h"
 %}
 
 %template(string_vector) std::vector< std::string  >;

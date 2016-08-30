@@ -33,24 +33,24 @@ namespace illumina{ namespace interop { namespace unittest {
             typedef metric_t::uint_t uint_t;
             typedef metric_t::ushort_t ushort_t;
             std::vector<metric_t> metrics;
-            ushort_t correctedIntAll1[] = {1213, 966, 960, 1095};
-            ushort_t correctedIntCalled1[] = {4070, 4074, 4029, 3972};
-            uint_t calledCounts1[] = {0, 698433, 548189, 548712, 646638};
+            ushort_t corrected_int_all1[] = {1213, 966, 960, 1095};
+            ushort_t corrected_int_called1[] = {4070, 4074, 4029, 3972};
+            uint_t called_counts1[] = {0, 698433, 548189, 548712, 646638};
             metrics.push_back(
-                    metric_t(1, 1104, 25, 1063, 11.9458876f, to_vector(correctedIntCalled1), to_vector(correctedIntAll1),
-                             to_vector(calledCounts1)));
-            ushort_t correctedIntAll2[] = {1558, 1151, 1158, 1293};
-            uint_t calledCounts2[] = {10938, 733661, 537957, 543912, 615504};
-            ushort_t correctedIntCalled2[] = {5013, 4983, 4915, 4932};
+                    metric_t(1, 1104, 25, 1063, 11.9458876f, to_vector(corrected_int_called1), to_vector(corrected_int_all1),
+                             to_vector(called_counts1)));
+            ushort_t corrected_int_all2[] = {1558, 1151, 1158, 1293};
+            uint_t called_counts2[] = {10938, 733661, 537957, 543912, 615504};
+            ushort_t corrected_int_called2[] = {5013, 4983, 4915, 4932};
             metrics.push_back(
-                    metric_t(1, 1104, 1, 1295, 13.3051805f, to_vector(correctedIntCalled2), to_vector(correctedIntAll2),
-                             to_vector(calledCounts2)));
-            ushort_t correctedIntAll3[] = {1171, 932, 912, 1069};
-            uint_t calledCounts3[] = {0, 706987, 556441, 556067, 653959};
-            ushort_t correctedIntCalled3[] = {3931, 3931, 3923, 3878};
+                    metric_t(1, 1104, 1, 1295, 13.3051805f, to_vector(corrected_int_called2), to_vector(corrected_int_all2),
+                             to_vector(called_counts2)));
+            ushort_t corrected_int_all3[] = {1171, 932, 912, 1069};
+            uint_t called_counts3[] = {0, 706987, 556441, 556067, 653959};
+            ushort_t corrected_int_called3[] = {3931, 3931, 3923, 3878};
             metrics.push_back(
-                    metric_t(1, 1105, 25, 1025, 11.7396259f, to_vector(correctedIntCalled3), to_vector(correctedIntAll3),
-                             to_vector(calledCounts3)));
+                    metric_t(1, 1105, 25, 1025, 11.7396259f, to_vector(corrected_int_called3), to_vector(corrected_int_all3),
+                             to_vector(called_counts3)));
             return metrics;
         }
         /** Get the expected metric set header
@@ -120,18 +120,18 @@ namespace illumina{ namespace interop { namespace unittest {
             typedef metric_t::uint_t uint_t;
             typedef metric_t::ushort_t ushort_t;
             std::vector<metric_t> metrics;
-            uint_t calledCounts1[] = {52, 1049523, 654071, 500476, 982989};
-            ushort_t correctedIntCalled1[] = {245, 252, 61, 235};
-            //expected_metrics.push_back(metric_type(7, 1114, 1, to_vector(correctedIntCalled1), to_vector(calledCounts1)));
-            metrics.push_back(metric_t(7, 1114, 1, (correctedIntCalled1), (calledCounts1)));
-            uint_t calledCounts2[] = {0, 1063708, 582243, 588028, 953132};
-            ushort_t correctedIntCalled2[] = {232, 257, 68, 228};
-            //expected_metrics.push_back(metric_type(7, 1114, 2, to_vector(correctedIntCalled2), to_vector(calledCounts2)));
-            metrics.push_back(metric_t(7, 1114, 2, (correctedIntCalled2), (calledCounts2)));
-            uint_t calledCounts3[] = {0, 1022928, 617523, 594836, 951825};
-            ushort_t correctedIntCalled3[] = {227, 268, 68, 229};
-            metrics.push_back(metric_t(7, 1114, 3, (correctedIntCalled3), (calledCounts3)));
-            //expected_metrics.push_back(metric_type(7, 1114, 3, to_vector(correctedIntCalled3), to_vector(calledCounts3)));
+            uint_t called_counts1[] = {52, 1049523, 654071, 500476, 982989};
+            ushort_t corrected_int_called1[] = {245, 252, 61, 235};
+            //expected_metrics.push_back(metric_type(7, 1114, 1, to_vector(corrected_int_called1), to_vector(called_counts1)));
+            metrics.push_back(metric_t(7, 1114, 1, (corrected_int_called1), (called_counts1)));
+            uint_t called_counts2[] = {0, 1063708, 582243, 588028, 953132};
+            ushort_t corrected_int_called2[] = {232, 257, 68, 228};
+            //expected_metrics.push_back(metric_type(7, 1114, 2, to_vector(corrected_int_called2), to_vector(called_counts2)));
+            metrics.push_back(metric_t(7, 1114, 2, (corrected_int_called2), (called_counts2)));
+            uint_t called_counts3[] = {0, 1022928, 617523, 594836, 951825};
+            ushort_t corrected_int_called3[] = {227, 268, 68, 229};
+            metrics.push_back(metric_t(7, 1114, 3, (corrected_int_called3), (called_counts3)));
+            //expected_metrics.push_back(metric_type(7, 1114, 3, to_vector(corrected_int_called3), to_vector(called_counts3)));
             return metrics;
         }
         /** Get the expected metric set header

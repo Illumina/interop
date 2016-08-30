@@ -3,6 +3,7 @@
 
 %include <std_vector.i>
 %include <stdint.i>
+%include <std_map.i>
 %import "src/ext/swig/exceptions/exceptions_impl.i"
 %include "src/ext/swig/extends/extends_impl.i"
 %include "src/ext/swig/arrays/arrays_impl.i"
@@ -30,13 +31,21 @@ using Illumina.InterOp.Run;
 EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Ignore methods
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+%ignore confusion_matrix;
+%ignore focus_score_matrix;
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Wrap the base metrics
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 %{
 #include "interop/util/time.h"
-#include "interop/io/metric_file_stream.h"
 %}
 
 %ignore metric_group_iuo;
@@ -49,7 +58,6 @@ EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 %include "interop/model/metric_base/base_cycle_metric.h"
 %include "interop/model/metric_base/base_read_metric.h"
 %include "interop/model/metric_base/metric_set.h"
-%include "interop/io/metric_file_stream.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Define shared macros
@@ -61,7 +69,6 @@ EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 
     %apply size_t { std::map< std::size_t, metric_t >::size_type };
     %apply uint64_t { metric_base::metric_set<metric_t>::id_t };
-    %apply uint64_t { io::layout::base_metric::id_t };
     WRAP_VECTOR(illumina::interop::model::metric_base::metric_set<metric_t>);
 
 %enddef
@@ -72,10 +79,6 @@ EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 
     %template(base_ ## metric_t ## s) metric_base::metric_set<metric_t>;
     %template(vector_ ## metric_t ## s) std::vector<metric_t>;
-    %template(compute_buffer_size ) illumina::interop::io::compute_buffer_size< metric_base::metric_set<metric_t> >;
-    %template(write_interop_to_buffer ) illumina::interop::io::write_interop_to_buffer< metric_base::metric_set<metric_t> >;
-    %template(read_interop_from_buffer )  illumina::interop::io::read_interop_from_buffer< metric_base::metric_set<metric_t> >;
-    %template(read_interop )  illumina::interop::io::read_interop< metric_base::metric_set<metric_t> >;
 
 %enddef
 
@@ -94,7 +97,6 @@ EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 // List metrics
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 %define WRAP_METRICS(WRAPPER)
     WRAPPER(corrected_intensity_metric)
     WRAPPER(error_metric)
@@ -107,6 +109,7 @@ EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
     WRAPPER(q_by_lane_metric)
 %enddef
 
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Import metrics
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -118,12 +121,13 @@ WRAP_METRICS(IMPORT_METRIC_WRAPPER)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 %template(index_info_vector) std::vector< illumina::interop::model::metrics::index_info  >;
-//%template(string_vector) std::vector< std::string  >;
 %template(ulong_vector) std::vector< uint64_t  >;
 %template(ushort_vector) std::vector< uint16_t >;
 %template(uint_vector) std::vector< uint32_t >;
 %template(float_vector) std::vector< float >;
 %template(bool_vector) std::vector< bool >;
+%template(tile_metric_map) std::map< uint64_t, illumina::interop::model::metric_base::base_metric >;
+%template(cycle_metric_map) std::map< uint64_t, illumina::interop::model::metric_base::base_cycle_metric >;
 %template(read_metric_vector) std::vector< illumina::interop::model::metrics::read_metric >;
 %template(q_score_bin_vector) std::vector< illumina::interop::model::metrics::q_score_bin >;
 
@@ -163,10 +167,13 @@ WRAP_METRICS(WRAP_METRIC_SET)
 #include "interop/logic/metric/extraction_metric.h"
 #include "interop/logic/metric/q_metric.h"
 #include "interop/model/run_metrics.h"
+#include "interop/logic/utils/metric_type_ext.h"
 %}
 
 %include "interop/logic/metric/extraction_metric.h"
 %include "interop/logic/metric/q_metric.h"
 %include "interop/model/run_metrics.h"
+%include "interop/logic/utils/metric_type_ext.h"
+
 
 

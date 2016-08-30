@@ -14,7 +14,8 @@
 #include "interop/model/metrics/q_metric.h"
 #include "interop/io/format/metric_format_factory.h"
 
-namespace illumina { namespace interop { namespace model { namespace metrics {
+namespace illumina { namespace interop { namespace model { namespace metrics
+{
     /** Total histogram by lane
      */
     class q_by_lane_metric : public q_metric
@@ -26,6 +27,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics {
             /** Tells the reader to include any records that have 0 for tile */
             CHECK_TILE_ID = 0
         };
+        /** Define the base type */
+        typedef constants::base_lane_t base_t;
     public:
         /** Constructor
          */

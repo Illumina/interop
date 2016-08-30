@@ -10,7 +10,8 @@
 #include "interop/constants/enums.h"
 #include "interop/logic/utils/enums.h"
 
-namespace illumina { namespace interop {  namespace logic { namespace utils {
+namespace illumina { namespace interop {  namespace logic { namespace utils
+{
 
     /** Convert metric type to metric group
      *
@@ -95,6 +96,16 @@ namespace illumina { namespace interop {  namespace logic { namespace utils {
     inline bool is_cycle_metric(const constants::metric_type type)
     {
         return (to_feature(type) & constants::CycleFeature) == constants::CycleFeature;
+    }
+
+    /** Test if metric type is produced for a tile
+     *
+     * @param type metric type
+     * @return true if metric is produced for every tile
+     */
+    inline bool is_tile_metric(const constants::metric_type type)
+    {
+        return (to_feature(type) & constants::TileFeature) == constants::TileFeature;
     }
 
 }}}}

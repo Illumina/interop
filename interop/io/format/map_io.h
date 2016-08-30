@@ -58,12 +58,12 @@ namespace illumina { namespace interop { namespace io
      * TODO: create more efficient buffered version
      *
      * @param in input stream
-     * @param vals destinatin array of values
+     * @param vals destination array of values
      * @param n number of values to read
      * @return number of bytes read from the stream
      */
     template<typename ReadType, typename ValueType>
-    std::streamsize stream_map(std::istream &in, ValueType &vals, size_t n)
+    std::streamsize stream_map(std::istream &in, ValueType &vals, const size_t n)
     {
         std::streamsize tot = 0;
         vals.resize(n);
@@ -82,12 +82,37 @@ namespace illumina { namespace interop { namespace io
      * TODO: create more efficient buffered version
      *
      * @param in input stream
-     * @param vals destinatin array of values
+     * @param vals destination array of values
+     * @param offset starting index of values to copy to in vals
+     * @param n number of values to read
+     * @return number of bytes read from the stream
+     */
+    template<typename ReadType, typename ValueType>
+    std::streamsize stream_map(std::istream &in, ValueType &vals, const size_t offset, const size_t n)
+    {
+        std::streamsize tot = 0;
+        vals.resize(offset + n);
+        for (size_t i = 0; i < n; i++)
+        {
+            ReadType read_val;
+            read_binary(in, read_val);
+            vals[offset + i] = read_val;
+            tot += in.gcount();
+        }
+        return tot;
+    }
+
+    /** Read an array of values of type ReadType from the given input stream
+     *
+     * TODO: create more efficient buffered version
+     *
+     * @param in input stream
+     * @param vals destination array of values
      * @param n number of values in array
      * @return number of bytes read from the stream
      */
     template<typename ReadType, typename ValueType, size_t N>
-    std::streamsize stream_map(std::istream &in, ValueType (&vals)[N], size_t n)
+    std::streamsize stream_map(std::istream &in, ValueType (&vals)[N], const size_t n)
     {
         std::streamsize tot = 0;
         for (size_t i = 0; i < n; i++)
@@ -107,7 +132,7 @@ namespace illumina { namespace interop { namespace io
      * @return number of bytes written to the stream
      */
     template<typename WriteType, typename ValueType>
-    std::streamsize stream_map(std::ostream &out, ValueType val)
+    std::streamsize stream_map(std::ostream &out, const ValueType val)
     {
         write_binary(out, static_cast<WriteType>(val));
         return out.tellp();
@@ -118,12 +143,12 @@ namespace illumina { namespace interop { namespace io
      * TODO: create more efficient buffered version
      *
      * @param out output stream
-     * @param vals destinatin array of values
+     * @param vals destination array of values
      * @param n number of values in array
      * @return number of bytes written to the stream
      */
     template<typename WriteType, typename ValueType>
-    std::streamsize stream_map(std::ostream &out, const ValueType &vals, size_t n)
+    std::streamsize stream_map(std::ostream &out, const ValueType &vals, const size_t n)
     {
         for (size_t i = 0; i < n; i++)
         {
@@ -133,7 +158,28 @@ namespace illumina { namespace interop { namespace io
         return out.tellp();
     }
 
-    /** Place older that does nothing
+    /** Write an array of values of type ReadType to the given output stream
+     *
+     * TODO: create more efficient buffered version
+     *
+     * @param out output stream
+     * @param vals destination array of values
+     * @param offset starting index of values to write to in vals
+     * @param n number of values in array
+     * @return number of bytes written to the stream
+     */
+    template<typename WriteType, typename ValueType>
+    std::streamsize stream_map(std::ostream &out, const ValueType &vals, const size_t offset, const size_t n)
+    {
+        for (size_t i = 0; i < n; i++)
+        {
+            WriteType write_val = vals[offset + i];
+            write_binary(out, write_val);
+        }
+        return out.tellp();
+    }
+
+    /** Placeholder that does nothing
      */
     template<typename Layout>
     void map_resize(const std::vector<Layout> &, size_t)
@@ -146,7 +192,7 @@ namespace illumina { namespace interop { namespace io
      * @param n number of elements
      */
     template<typename Layout>
-    void map_resize(std::vector<Layout> &layout, size_t n)
+    void map_resize(std::vector<Layout> &layout, const size_t n)
     {
         layout.resize(n);
     }

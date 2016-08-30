@@ -3,7 +3,6 @@
  * Each version of the q-score metrics file has a layout defined below.
  *
  *  @file
- *
  *  @date 8/21/2015
  *  @version 1.0
  *  @copyright GNU Public License.
@@ -17,7 +16,8 @@
 
 using namespace illumina::interop::model::metrics;
 
-namespace illumina{ namespace interop{ namespace io {
+namespace illumina { namespace interop { namespace io
+{
 
 #pragma pack(1)
             /** Q-score Metric Record Layout Version 4
@@ -531,7 +531,7 @@ namespace illumina{ namespace interop{ namespace io {
             };
 
 #pragma pack()// DO NOT MOVE
-        }}}
+ }}}
 
 INTEROP_FORCE_LINK_DEF(q_metric)
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(q_metric, 4 )

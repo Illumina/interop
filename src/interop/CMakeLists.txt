@@ -1,5 +1,7 @@
 
 set(SRCS
+        logic/metric/q_metric.cpp
+        logic/metric/extraction_metric.cpp
         model/run/info.cpp
         model/run/parameters.cpp
         model/metrics/corrected_intensity_metric.cpp
@@ -10,7 +12,21 @@ set(SRCS
         model/metrics/q_metric.cpp
         model/metrics/index_metric.cpp
         model/metrics/q_collapsed_metric.cpp
-        model/summary/run_summary.cpp)
+        model/summary/run_summary.cpp
+        logic/plot/plot_by_cycle.cpp
+        logic/plot/plot_by_lane.cpp
+        logic/plot/plot_flowcell_map.cpp
+        logic/plot/plot_qscore_heatmap.cpp
+        logic/plot/plot_sample_qc.cpp
+        logic/plot/plot_qscore_histogram.cpp
+        model/run_metrics.cpp
+        logic/summary/run_summary.cpp
+        logic/summary/index_summary.cpp
+        logic/table/create_imaging_table_columns.cpp
+        logic/table/create_imaging_table.cpp
+        util/time.cpp
+        util/filesystem.cpp
+        )
 
 set(HEADERS
         ../../interop/model/summary/cycle_state_summary.h
@@ -72,7 +88,6 @@ set(HEADERS
         ../../interop/util/type_traits.h
         ../../interop/util/linear_hierarchy.h
         ../../interop/util/object_list.h
-        ../../interop/util/exception_specification.h
         ../../interop/logic/summary/map_cycle_to_read.h
         ../../interop/logic/summary/cycle_state_summary.h
         ../../interop/util/math.h
@@ -103,7 +118,6 @@ set(HEADERS
         ../../interop/model/summary/index_flowcell_summary.h
         ../../interop/model/summary/index_count_summary.h
         ../../interop/logic/summary/index_summary.h
-        ../../interop/logic/table/populate_imaging_table.h
         ../../interop/model/table/imaging_table.h
         ../../interop/util/string.h
         ../../interop/model/metrics/q_collapsed_metric.h
@@ -113,13 +127,17 @@ set(HEADERS
         ../../interop/logic/metric/tile_metric.h
         ../../interop/logic/logic.h
         ../../interop/interop.h
-        ../../interop/model/table/table_util.h
-        ../../interop/interop.h
         ../../interop/util/exception.h
         ../../interop/io/table/csv_format.h
-        ../../interop/model/table/column_header.h
-        ../../interop/model/table/imaging_table_entry.h
-        ../../interop/util/option_parser.h ../../interop/logic/metric/extraction_metric.h)
+        ../../interop/util/option_parser.h
+        ../../interop/logic/metric/extraction_metric.h
+        ../../interop/logic/table/create_imaging_table.h
+        ../../interop/model/table/imaging_column.h
+        ../../interop/logic/table/create_imaging_table_columns.h
+        ../../interop/logic/table/table_util.h
+        ../../interop/io/table/imaging_table_csv.h
+        ../../interop/logic/table/check_imaging_table_column.h
+        ../../interop/logic/table/table_populator.h)
 
 set(INTEROP_HEADERS ${HEADERS} PARENT_SCOPE)
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR CMAKE_COMPILER_IS_GNUCC)
@@ -133,11 +151,11 @@ check_function_exists("strptime" HAVE_STRPTIME)
 if(HAVE_STRPTIME)
     add_definitions(-DHAVE_STRPTIME)
 elseif(MSVC)
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS  -D_SCL_SECURE_NO_WARNINGS)
 endif()
 
 add_library(${INTEROP_LIB} ${LIBRARY_TYPE} ${SRCS} ${HEADERS})
-add_library(${INTEROP_DL_LIB} ${LIBRARY_TYPE} ${SRCS} ${HEADERS})
+add_library(${INTEROP_DL_LIB} ${LIBRARY_TYPE} ${SRCS} ${HEADERS} )
 add_dependencies(${INTEROP_LIB} version)
 add_dependencies(${INTEROP_DL_LIB} version)
 

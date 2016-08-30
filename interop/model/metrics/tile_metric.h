@@ -286,7 +286,6 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         float percent_pf() const
         {
-            if (m_cluster_count == 0) return 0;
             return 100 * m_cluster_count_pf / m_cluster_count;
         }
 

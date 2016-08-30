@@ -15,6 +15,7 @@
 #include <fstream>
 #include "interop/util/math.h"
 #include "inc/corrected_intensity_metrics_test.h"
+#include "interop/model/run_metrics.h"
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop;
 using namespace illumina::interop::io;
@@ -37,34 +38,35 @@ TYPED_TEST_CASE(corrected_intensity_metrics_test, Formats);
 template<class T>
 void compare_metrics(const T& actual, const T& expected)
 {
+    const float tol = 1e-3f;
     EXPECT_EQ(actual.version(), expected.version());
     EXPECT_EQ(actual.size(), expected.size());
     EXPECT_EQ(actual.max_cycle(), expected.max_cycle());
 
-    for(typename T::const_iterator itExpected=expected.begin(), itActual = actual.begin();
-        itExpected != expected.end() && itActual != actual.end();
-        itExpected++,itActual++)
+    for(typename T::const_iterator it_expected=expected.begin(), it_actual = actual.begin();
+        it_expected != expected.end() && it_actual != actual.end();
+        it_expected++,it_actual++)
     {
-        EXPECT_EQ(itExpected->lane(), itActual->lane());
-        EXPECT_EQ(itExpected->tile(), itActual->tile());
-        EXPECT_EQ(itExpected->cycle(), itActual->cycle());
+        EXPECT_EQ(it_expected->lane(), it_actual->lane());
+        EXPECT_EQ(it_expected->tile(), it_actual->tile());
+        EXPECT_EQ(it_expected->cycle(), it_actual->cycle());
         if(expected.version() < 3)
         {
-            EXPECT_EQ(itExpected->averageCycleIntensity(), itActual->averageCycleIntensity());
+            EXPECT_EQ(it_expected->average_cycle_intensity(), it_actual->average_cycle_intensity());
         }
         if(expected.version() == 2)
         {
-            if (!std::isnan(itExpected->signalToNoise()) || !std::isnan(itActual->signalToNoise()))
-                EXPECT_NEAR(itExpected->signalToNoise(), itActual->signalToNoise(), 1e-7f);
+            if (!std::isnan(it_expected->signal_to_noise()) || !std::isnan(it_actual->signal_to_noise()))
+                EXPECT_NEAR(it_expected->signal_to_noise(), it_actual->signal_to_noise(), tol);
         }
         for(ptrdiff_t i=-1;i<constants::NUM_OF_BASES;i++)
-            EXPECT_EQ(itExpected->calledCounts(i), itActual->calledCounts(i));
+            EXPECT_EQ(it_expected->called_counts(static_cast<constants::dna_bases>(i)), it_actual->called_counts(static_cast<constants::dna_bases>(i)));
         for(size_t i=0;i<constants::NUM_OF_BASES;i++)
         {
-            EXPECT_EQ(itExpected->correctedIntCalled(i), itActual->correctedIntCalled(i));
+            EXPECT_EQ(it_expected->corrected_int_called(static_cast<constants::dna_bases>(i)), it_actual->corrected_int_called(static_cast<constants::dna_bases>(i)));
             if(expected.version() < 3)
             {
-                EXPECT_EQ(itExpected->correctedIntAll(i), itActual->correctedIntAll(i));
+                EXPECT_EQ(it_expected->corrected_int_all(static_cast<constants::dna_bases>(i)), it_actual->corrected_int_all(static_cast<constants::dna_bases>(i)));
             }
         }
     }
@@ -88,6 +90,16 @@ TEST(corrected_intensity_metrics_test, test_percent_base_nan)
     typedef corrected_intensity_metric::uint_array_t uint_array_t;
     corrected_intensity_metric metric(1, 1112, 1, ushort_array_t(4,0), uint_array_t(5,0));
     EXPECT_TRUE(std::isnan(metric.percent_bases()[0]));
+}
+
+
+TEST(run_metrics_corrected_intensity_test, test_is_group_empty)
+{
+    run_metrics metrics;
+    std::istringstream fin(corrected_intensity_v2::binary_data());
+    EXPECT_TRUE(metrics.is_group_empty(constants::CorrectedInt));
+    io::read_metrics(fin, metrics.get_set<corrected_intensity_metric>());
+    EXPECT_FALSE(metrics.is_group_empty(constants::CorrectedInt));
 }
 
 #define FIXTURE corrected_intensity_metrics_test

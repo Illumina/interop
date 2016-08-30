@@ -3,7 +3,6 @@
  * The header provides exceptions for specific errors that may be raised while reading a binary InterOp file.
  *
  *  @file
- *
  *  @date 8/9/15
  *  @version 1.0
  *  @copyright GNU Public License.
@@ -13,7 +12,6 @@
 
 #include <string>
 #include <stdexcept>
-#include "interop/util/exception_specification.h"
 
 #ifdef _MSC_VER
 #pragma warning(disable:4290) // MSVC warns that it ignores the exception specification.
@@ -86,13 +84,13 @@ namespace illumina { namespace interop { namespace io
      *
      * This is only raised if the record is read from the stream incomplete
      */
-    struct invalid_argument : public std::invalid_argument
+    struct invalid_argument : public std::runtime_error
     {
         /** Constructor
          *
          *  @param mesg error message
          */
-        invalid_argument(const std::string &mesg) : std::invalid_argument(mesg)
+        invalid_argument(const std::string &mesg) : std::runtime_error(mesg)
         { }
     };
     /** @} */

@@ -9,7 +9,6 @@
  * @note These classes are packed such that there is not padding. Their size reflects the accumulation of their member fields.
  *
  *  @file
- *
  *  @date 7/30/15
  *  @version 1.0
  *  @copyright GNU Public License.

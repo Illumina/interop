@@ -14,8 +14,6 @@
 
 namespace illumina { namespace interop { namespace logic { namespace summary
 {
-
-
     /** Read number and cycle in read
      */
     struct read_cycle

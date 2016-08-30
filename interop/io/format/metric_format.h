@@ -72,20 +72,25 @@ namespace illumina { namespace interop { namespace io
         {
             if (in.fail())
                 INTEROP_THROW(incomplete_file_exception, "Insufficient header data read from the file");
+
+            //if we're not actually reading the record size from the stream (the stream position is the same before and after),
+            // then don't compare the layout size against the record size
+            const ::int64_t stream_position_pre_record_check = in.tellg();
             const std::streamsize record_size = Layout::map_stream_record_size(in,
                                                                                static_cast<record_size_t>(0));
+            const ::int64_t stream_position_post_record_check = in.tellg();
             Layout::map_stream_for_header(in, header);
 
             if (in.fail())
                 INTEROP_THROW(incomplete_file_exception, "Insufficient extended header data read from the file");
             const std::streamsize layout_size = Layout::compute_size(header);
-            if (record_size != layout_size)
+            if (stream_position_pre_record_check != stream_position_post_record_check && record_size != layout_size)
                 INTEROP_THROW(bad_format_exception, "Record size does not match layout size, record size: " <<
                                            record_size << " != layout size: " <<
                                            layout_size << " for "  <<
                                            Metric::prefix() <<  " "  << Metric::suffix()  <<  " v"  <<
                                            Layout::VERSION);
-            return record_size;
+            return layout_size;
         }
 
         /** Read a metric set from the given input stream

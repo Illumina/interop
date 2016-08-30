@@ -6,6 +6,11 @@
  *  @copyright GNU Public License.
  */
 #pragma once
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable:4290)// MSVC warns that it ignores the exception specification.
+#endif
+
 #include <string>
 #include <cctype>
 #include <algorithm>
@@ -190,3 +195,6 @@ namespace illumina { namespace interop { namespace logic { namespace utils
 
 
 }}}}
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif

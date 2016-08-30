@@ -29,73 +29,31 @@ endif()
 
 include(${CSHARP_USE_FILE})
 
-set(EXAMPLE_SRCS
-        Example1.cs
-        )
-set(csharp_files ${SWIG_GEN_CSHARP_SOURCE_FILES})
-foreach(SRC ${EXAMPLE_SRCS})
-    get_filename_component(CSHARP_TEST_SRCS ${SRC} ABSOLUTE)
-    list(APPEND csharp_files ${CSHARP_TEST_SRCS})
-endforeach()
-
-csharp_add_executable(csharp_example1 ${csharp_files})
-add_dependencies(csharp_example1 csharp_interop)
-add_custom_command(TARGET csharp_example1 POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy ${CSHARP_csharp_example1_BINARY} $<TARGET_FILE_DIR:${INTEROP_LIB}>)
-
-set(EXAMPLE_SRCS
-        Example2.cs
-        )
-
-set(csharp_files ${SWIG_GEN_CSHARP_SOURCE_FILES})
-foreach(SRC ${EXAMPLE_SRCS})
-    get_filename_component(CSHARP_TEST_SRCS ${SRC} ABSOLUTE)
-    list(APPEND csharp_files ${CSHARP_TEST_SRCS})
-endforeach()
-
-csharp_add_executable(csharp_example2 ${csharp_files})
-add_dependencies(csharp_example2 csharp_interop)
-add_custom_command(TARGET csharp_example2 POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy ${CSHARP_csharp_example2_BINARY} $<TARGET_FILE_DIR:${INTEROP_LIB}>)
 
 
-set(EXAMPLE_SRCS
-        Example3.cs
-        )
+function(add_csharp_example _target _source_files)
+    set(_abs_source_files)
+    foreach(SRC ${_source_files})
+        list(APPEND _abs_source_files "${CMAKE_CURRENT_SOURCE_DIR}/${SRC}")
+    endforeach()
+    csharp_add_executable(${_target} ${_abs_source_files} ${SWIG_CSHARP_LIBRARY})
+    add_dependencies(${_target} csharp_interop)
+    add_custom_command(TARGET ${_target} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy ${CSHARP_${_target}_BINARY} $<TARGET_FILE_DIR:${INTEROP_LIB}>)
+    if(NOT ENABLE_EXAMPLES)
+        set_target_properties(${_target} PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
+    else()
+        install(FILES ${CSHARP_${_target}_BINARY} ${CSHARP_INTEROP_LIBRARY}
+                DESTINATION share/illumina/interop/examples
+                )
+    endif()
+    if(NOT ENABLE_STATIC)
+        add_custom_command(TARGET ${_target} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE_DIR:${INTEROP_LIB}> ${CMAKE_CURRENT_BINARY_DIR})
+    endif()
+endfunction()
 
-set(csharp_files ${SWIG_GEN_CSHARP_SOURCE_FILES})
-foreach(SRC ${EXAMPLE_SRCS})
-    get_filename_component(CSHARP_TEST_SRCS ${SRC} ABSOLUTE)
-    list(APPEND csharp_files ${CSHARP_TEST_SRCS})
-endforeach()
+add_csharp_example(csharp_example1 Example1.cs)
+add_csharp_example(csharp_example2 Example2.cs)
+add_csharp_example(csharp_example3 Example3.cs)
 
-csharp_add_executable(csharp_example3 ${csharp_files})
-add_dependencies(csharp_example3 csharp_interop)
-add_custom_command(TARGET csharp_example3 POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy ${CSHARP_csharp_example3_BINARY} $<TARGET_FILE_DIR:${INTEROP_LIB}>)
-
-if(NOT ENABLE_EXAMPLES)
-    set_target_properties(csharp_example1 PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
-    set_target_properties(csharp_example2 PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
-    set_target_properties(csharp_example3 PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
-else()
-    install(FILES ${CSHARP_csharp_example1_BINARY} ${CSHARP_csharp_example2_BINARY} ${CSHARP_csharp_example3_BINARY} ${CSHARP_INTEROP_LIBRARY}
-            DESTINATION share/illumina/interop/examples
-            )
-endif()
-
-if(NOT ENABLE_STATIC)
-    add_custom_command(TARGET csharp_example1 POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE_DIR:${INTEROP_LIB}> ${CMAKE_CURRENT_BINARY_DIR})
-    add_custom_command(TARGET csharp_example2 POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE_DIR:${INTEROP_LIB}> ${CMAKE_CURRENT_BINARY_DIR})
-    add_custom_command(TARGET csharp_example3 POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE_DIR:${INTEROP_LIB}> ${CMAKE_CURRENT_BINARY_DIR})
-endif()
-
-
-if(NOT ENABLE_EXAMPLES)
-    set_target_properties(csharp_example1 PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
-    set_target_properties(csharp_example2 PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
-    set_target_properties(csharp_example3 PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
-endif()

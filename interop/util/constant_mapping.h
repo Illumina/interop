@@ -1,11 +1,11 @@
 /** Map a constant of one type to another type
  *
- * This is designed to simplify mapping between enums, enums to strings or strings built using #define statements.
+ * This is designed to simplify mapping between enums, enums to strings or strings built using define statements.
  *
  *  @file
  *  @date 8/9/15
  *  @version 1.0
- *  @opyright GNU Public License.
+ *  @copyright GNU Public License.
  */
 
 #pragma once

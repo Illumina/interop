@@ -1,6 +1,10 @@
-//
-// Created by dev on 4/29/16.
-//
+/** Unit tests for plot logic
+ *
+ *  @file
+ *  @date  4/29/16
+ *  @version 1.0
+ *  @copyright GNU Public License.
+ */
 #include <gtest/gtest.h>
 #include "interop/model/plot/filter_options.h"
 #include "interop/logic/plot/plot_by_cycle.h"
@@ -16,6 +20,42 @@
 
 using namespace illumina::interop;
 
+TEST(plot_logic, check_plot_by_cycle_list)
+{
+    std::vector<constants::metric_type> types;
+    logic::plot::list_by_cycle_metrics(types);
+    for(size_t i=0;i<types.size();++i)
+    {
+        EXPECT_FALSE(logic::utils::is_read_metric(types[i]));
+        EXPECT_FALSE(logic::utils::is_tile_metric(types[i]));
+        EXPECT_TRUE(logic::utils::is_cycle_metric(types[i]));
+    }
+}
+
+TEST(plot_logic, check_plot_by_lane_list)
+{
+    std::vector<constants::metric_type> types;
+    logic::plot::list_by_lane_metrics(types);
+    for(size_t i=0;i<types.size();++i)
+    {
+        EXPECT_TRUE(logic::utils::is_read_metric(types[i]) || logic::utils::is_tile_metric(types[i]));
+        EXPECT_FALSE(logic::utils::is_cycle_metric(types[i]));
+    }
+}
+
+TEST(plot_logic, check_plot_flowcell_list)
+{
+    std::vector<constants::metric_type> types;
+    logic::plot::list_flowcell_metrics(types);
+    for(size_t i=0;i<types.size();++i)
+    {
+        EXPECT_TRUE(logic::utils::is_read_metric(types[i])
+                    || logic::utils::is_tile_metric(types[i])
+                    || logic::utils::is_cycle_metric(types[i]));
+    }
+}
+
+/** @test Confirm invalid metric thrown */
 TEST(plot_logic, failure_mode_bad_metric_plot_by_cycle)
 {
     model::metrics::run_metrics metrics;
@@ -116,7 +156,7 @@ TEST(plot_logic, q_score_histogram)
             "",
             "",
             1,
-            model::run::flowcell_layout(2, 2, 2, 16),
+            model::run::flowcell_layout(8, 2, 2, 16),
             std::vector<std::string>(),
             model::run::image_dimensions(),
             reads
@@ -152,7 +192,7 @@ TEST(plot_logic, q_score_heatmap)
             "",
             "",
             1,
-            model::run::flowcell_layout(2, 2, 2, 16),
+            model::run::flowcell_layout(8, 2, 2, 16),
             std::vector<std::string>(),
             model::run::image_dimensions(),
             reads

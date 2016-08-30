@@ -10,8 +10,10 @@
 #include <fstream>
 #include <gtest/gtest.h>
 #include "inc/index_metrics_test.h"
+#include "interop/model/run_metrics.h"
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::io;
+using namespace illumina::interop;
 using namespace illumina::interop::unittest;
 
 typedef ::testing::Types<
@@ -30,24 +32,32 @@ TYPED_TEST(index_metrics_test, test_read_write)
     EXPECT_EQ(TypeParam::actual_metric_set.version(), TypeParam::VERSION);
     EXPECT_EQ(TypeParam::actual_metric_set.size(), TypeParam::expected_metric_set.size());
 
-    for(typename TypeParam::const_iterator itExpected=TypeParam::expected_metric_set.begin(), itActual = TypeParam::actual_metric_set.begin();
-        itExpected != TypeParam::expected_metric_set.end() && itActual != TypeParam::actual_metric_set.end();
-        itExpected++,itActual++)
+    for(typename TypeParam::const_iterator it_expected=TypeParam::expected_metric_set.begin(), it_actual = TypeParam::actual_metric_set.begin();
+        it_expected != TypeParam::expected_metric_set.end() && it_actual != TypeParam::actual_metric_set.end();
+        it_expected++,it_actual++)
     {
-        EXPECT_EQ(itExpected->lane(), itActual->lane());
-        EXPECT_EQ(itExpected->tile(), itActual->tile());
-        EXPECT_EQ(itExpected->read(), itActual->read());
-        EXPECT_EQ(itExpected->size(), itActual->size());
-        for(size_t i=0;i<std::min(itExpected->size(), itActual->size());i++)
+        EXPECT_EQ(it_expected->lane(), it_actual->lane());
+        EXPECT_EQ(it_expected->tile(), it_actual->tile());
+        EXPECT_EQ(it_expected->read(), it_actual->read());
+        EXPECT_EQ(it_expected->size(), it_actual->size());
+        for(size_t i=0;i<std::min(it_expected->size(), it_actual->size());i++)
         {
-            EXPECT_EQ(itExpected->indices(i).index_seq(), itActual->indices(i).index_seq());
-            EXPECT_EQ(itExpected->indices(i).sample_id(), itActual->indices(i).sample_id());
-            EXPECT_EQ(itExpected->indices(i).sample_proj(), itActual->indices(i).sample_proj());
-            EXPECT_EQ(itExpected->indices(i).count(), itActual->indices(i).count());
+            EXPECT_EQ(it_expected->indices(i).index_seq(), it_actual->indices(i).index_seq());
+            EXPECT_EQ(it_expected->indices(i).sample_id(), it_actual->indices(i).sample_id());
+            EXPECT_EQ(it_expected->indices(i).sample_proj(), it_actual->indices(i).sample_proj());
+            EXPECT_EQ(it_expected->indices(i).count(), it_actual->indices(i).count());
         }
     }
 }
 
+TEST(run_metrics_index_test, test_is_group_empty)
+{
+    run_metrics metrics;
+    EXPECT_TRUE(metrics.is_group_empty(constants::Index));
+    std::istringstream fin(index_v1::binary_data());
+    io::read_metrics(fin, metrics.get_set<index_metric>());
+    EXPECT_FALSE(metrics.is_group_empty(constants::Index));
+}
 #define FIXTURE index_metrics_test
 /**
  * @class illumina::interop::model::metrics::index_metric

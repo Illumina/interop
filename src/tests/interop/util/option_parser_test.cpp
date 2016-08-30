@@ -10,7 +10,6 @@
 #include "interop/util/option_parser.h"
 #include "interop/model/plot/filter_options.h"
 
-
 using namespace illumina::interop;
 
 

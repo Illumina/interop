@@ -1,6 +1,6 @@
 /** Back port of C++11 math functions
  *
- * @TODO include this everywhere isnan is used
+ * @todo include this everywhere isnan is used
  *
  *  @file
  *  @date 4/20/16
@@ -10,9 +10,8 @@
 
 #pragma once
 
-#if defined(HAVE_STD_ISNAN)
 #include <cmath>
-#else
+#if !defined(HAVE_STD_ISNAN)
 #   if defined(HAVE_ISNAN)
 #       include <math.h>
     #elif defined(HAVE___ISNAN)

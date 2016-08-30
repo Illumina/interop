@@ -3,7 +3,6 @@
  * This is a compile time check for debugging purposes.
  *
  *  @file
- *
  *  @date 9/26/15
  *  @version 1.0
  *  @copyright GNU Public License.

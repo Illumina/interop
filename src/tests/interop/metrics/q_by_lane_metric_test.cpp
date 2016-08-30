@@ -11,6 +11,7 @@
 #include "interop/model/metrics/q_by_lane_metric.h"
 #include "inc/q_metrics_test.h"
 #include "interop/logic/metric/q_metric.h"
+#include "interop/model/run_metrics.h"
 using namespace illumina::interop;
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::model::metric_base;
@@ -46,18 +47,28 @@ TEST(q_by_lane_metrics_test, test_convert_write_read)
     EXPECT_EQ(actual_metric_set.version(), expected_metric_set.version());
     EXPECT_EQ(actual_metric_set.max_cycle(), expected_metric_set.max_cycle());
     ASSERT_EQ(actual_metric_set.size(), expected_metric_set.size());
-    for(metric_set<q_by_lane_metric>::const_iterator itExpected=expected_metric_set.begin(),
-                itActual = actual_metric_set.begin();
-        itExpected != expected_metric_set.end();
-        itExpected++,itActual++)
+    for(metric_set<q_by_lane_metric>::const_iterator it_expected=expected_metric_set.begin(),
+                it_actual = actual_metric_set.begin();
+        it_expected != expected_metric_set.end();
+        it_expected++,it_actual++)
     {
-        EXPECT_EQ(itExpected->lane(), itActual->lane());
-        EXPECT_EQ(itExpected->tile(), itActual->tile());
-        EXPECT_EQ(itExpected->cycle(), itActual->cycle());
-        EXPECT_EQ(itExpected->size(), itActual->size());
-        for(size_t i=0;i<std::min(itExpected->size(), itActual->size());i++)
+        EXPECT_EQ(it_expected->lane(), it_actual->lane());
+        EXPECT_EQ(it_expected->tile(), it_actual->tile());
+        EXPECT_EQ(it_expected->cycle(), it_actual->cycle());
+        EXPECT_EQ(it_expected->size(), it_actual->size());
+        for(size_t i=0;i<std::min(it_expected->size(), it_actual->size());i++)
         {
-            EXPECT_EQ(itExpected->qscoreHist(i), itActual->qscoreHist(i));
+            EXPECT_EQ(it_expected->qscore_hist(i), it_actual->qscore_hist(i));
         }
     }
+}
+
+TEST(run_metrics_q_by_lane_test, test_is_group_empty)
+{
+    run_metrics metrics;
+    EXPECT_TRUE(metrics.is_group_empty(constants::QByLane));
+    std::istringstream fin(q_v4::binary_data());
+    io::read_metrics(fin, metrics.get_set<q_metric>());
+    logic::metric::create_q_metrics_by_lane(metrics.get_set<q_metric>(), metrics.get_set<q_by_lane_metric>());
+    EXPECT_FALSE(metrics.is_group_empty(constants::QByLane));
 }

@@ -9,7 +9,8 @@
 #pragma once
 #include <cctype>
 
-namespace illumina { namespace interop { namespace util {
+namespace illumina { namespace interop { namespace util
+{
 
     // replace, camel_to_space
     //

@@ -18,7 +18,8 @@
 #include "interop/model/metrics/corrected_intensity_metric.h"
 
 
-namespace illumina { namespace interop { namespace logic { namespace metric {
+namespace illumina { namespace interop { namespace logic { namespace metric
+{
 
     /** This template class retrieves a value from a metric object based on the value of the
      * provided metric_type enum and possibly an index or other information.
@@ -211,6 +212,8 @@ namespace illumina { namespace interop { namespace logic { namespace metric {
                     return metric.corrected_int_called(base);
                 case constants::SignalToNoise:
                     return metric.signal_to_noise();
+                case constants::PercentNoCall:
+                    return metric.percent_nocall();
                 default:
                     INTEROP_THROW(model::invalid_metric_type, "Unknown metric type " << constants::to_string(type));
             }

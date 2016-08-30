@@ -9,12 +9,8 @@
  */
 #pragma once
 
-#include <ostream>
-#include <stdexcept>
 #include <limits>
-#include <cmath>
 #include "interop/util/assert.h"
-#include "interop/util/type_traits.h"
 #include "interop/io/layout/base_metric.h"
 #include "interop/constants/enums.h"
 #include "interop/constants/typedefs.h"
@@ -91,10 +87,16 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         typedef constants::base_tile_t base_t;
         enum
         {
+            TYPE=constants::UnknownMetricType,
+            //Compress Lane, Tile and cycle into a 64-bit Integer
+            // Cycle: Bits 0-32
+            // Tile: Bits 32-58
+            // Lane: Bits 58-64
             LANE_BIT_COUNT = 6, // Supports up to 63 lanes
-            TILE_BIT_COUNT = 32,
-            LANE_BIT_SHIFT = LANE_BIT_COUNT, // Supports up to 63 lanes
-            TILE_BIT_SHIFT =/*LANE_BIT_COUNT+*/TILE_BIT_COUNT, // TODO change back
+            TILE_BIT_COUNT = 26, // Support 7 digit tile (up to 67108864)
+            CYCLE_BIT_COUNT = 32, // Support up to 4294967296 cycles
+            LANE_BIT_SHIFT = CYCLE_BIT_COUNT+TILE_BIT_COUNT, // Supports up to 63 lanes
+            TILE_BIT_SHIFT =CYCLE_BIT_COUNT,
             /** Base for records written out once for each tile */
             BASE_TYPE = constants::BaseTileType,
             /** Tells the reader to exclude any records that have 0 for tile */
@@ -106,11 +108,21 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          * @param lane lane number
          * @param tile tile number
          */
-        base_metric(const uint_t lane, const uint_t tile) :
+        base_metric(const uint_t lane=0, const uint_t tile=0) :
                 m_lane(lane), m_tile(tile)
         { }
 
     public:
+        /** Set id
+         *
+         * @param lane lane number
+         * @param tile tile number
+         */
+        void set_base(const uint_t lane, const uint_t tile)
+        {
+            m_lane = lane;
+            m_tile = tile;
+        }
         /** Get the metric name suffix
          *
          * @return empty string
@@ -122,7 +134,8 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          *
          * @param base layout base
          */
-        void set_base(const io::layout::base_metric &base)
+        template<class BaseMetric>
+        void set_base(const BaseMetric &base)
         {
             m_lane = base.lane;
             m_tile = base.tile;
@@ -134,7 +147,16 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         id_t id() const
         {
-            return id(m_lane, m_tile);
+            return create_id(m_lane, m_tile);
+        }
+
+        /** Unique id created from both the lane and tile
+         *
+         * @return unique identifier
+         */
+        id_t tile_hash() const
+        {
+            return create_id(m_lane, m_tile);
         }
 
         /** Unique id created from both the lane and tile
@@ -143,9 +165,9 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          * @param tile tile number
          * @return unique id
          */
-        static id_t id(const id_t lane, const id_t tile, const id_t= 0)// TODO: remove hack (const id_t=0)
+        static id_t create_id(const id_t lane, const id_t tile, const id_t= 0)// TODO: remove hack (const id_t=0)
         {
-            return lane | (tile << LANE_BIT_SHIFT);
+            return (lane << LANE_BIT_SHIFT) | (tile << TILE_BIT_SHIFT);
         }
 
         /** Get the lane from the unique lane/tile id
@@ -155,7 +177,28 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         static id_t lane_from_id(const id_t id)
         {
-            return id & ~((~0u) << LANE_BIT_SHIFT);
+            return id >> LANE_BIT_SHIFT;
+        }
+        /** Get the tile hash from the unique lane/tile/cycle id
+         *
+         * @param id unique lane/tile/cycle id
+         * @return tile hash number
+         */
+        static id_t tile_hash_from_id(const id_t id)
+        {
+            // 1. Remove cycle information
+            return (id >> TILE_BIT_SHIFT) << TILE_BIT_SHIFT;
+        }
+        /** Get the tile hash from the unique lane/tile/cycle id
+         *
+         * @param id unique lane/tile/cycle id
+         * @return tile hash number
+         */
+        static id_t tile_from_id(const id_t id)
+        {
+            // 1. Mask out lane
+            // 2. Shift tile id
+            return (id & ~((~static_cast<id_t>(0)) << LANE_BIT_SHIFT)) >> TILE_BIT_SHIFT;
         }
 
         /** Lane number
@@ -316,8 +359,8 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
                                        const bool all_surfaces) const
         {
 
-            INTEROP_ASSERT(swath(method) <= swath_count);
-            INTEROP_ASSERT(number(method) <= tile_count);
+            INTEROP_ASSERTMSG(swath(method) <= swath_count, swath(method) << " <= " << swath_count);
+            INTEROP_ASSERTMSG(number(method) <= tile_count, number(method) << " <= " << tile_count);
             const uint_t column = physical_location_column(method, swath_count, all_surfaces);
             const uint_t row = physical_location_row(method, section_per_lane, tile_count);
             const uint_t row_count = section_per_lane * tile_count;
@@ -378,4 +421,6 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         uint_t m_lane;
         uint_t m_tile;
     };
+
+
 }}}}

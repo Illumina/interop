@@ -2,6 +2,7 @@ using System;
 using NUnit.Framework;
 using System.IO;
 using Illumina.InterOp.Metrics;
+using Illumina.InterOp.Comm;
 
 namespace Illumina.InterOp.Interop.UnitTest
 {
@@ -50,7 +51,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 			expected_binary_data = new byte[tmp.Length];
 			for(int i=0;i<expected_binary_data.Length;i++) expected_binary_data[i] = (byte)tmp[i];
 			expected_metric_set = new base_index_metrics(expected_metrics, Version, header);
-			c_csharp_metrics.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, actual_metric_set);
+			c_csharp_comm.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, actual_metric_set);
 			actual_metrics = actual_metric_set.metrics();
 		}
 

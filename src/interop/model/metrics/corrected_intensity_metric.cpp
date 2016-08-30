@@ -3,7 +3,6 @@
  * Each version of the corrected intensity metrics file has a layout defined below.
  *
  *  @file
- *
  *  @date 8/6/2015
  *  @version 1.0
  *  @copyright GNU Public License.
@@ -108,7 +107,7 @@ namespace illumina{ namespace interop{ namespace io {
                             sizeof(metric_id_t)+
                                     sizeof(intensity_t) +                                // m_average_cycle_intensity
                                     sizeof(intensity_t)*constants::NUM_OF_BASES +        // m_corrected_int_all
-                                    sizeof(intensity_t)*constants::NUM_OF_BASES +        // m_correctedIntCalled
+                                    sizeof(intensity_t)*constants::NUM_OF_BASES +        // m_corrected_int_called
                                     sizeof(count_t)*constants::NUM_OF_BASES_AND_NC + // m_called_counts
                                     sizeof(float)                                       // m_signal_to_noise
                     );
@@ -202,7 +201,7 @@ namespace illumina{ namespace interop{ namespace io {
                 {
                     return static_cast<record_size_t>(
                             sizeof(metric_id_t)+
-                            sizeof(intensity_t)*constants::NUM_OF_BASES +    // m_correctedIntCalled
+                            sizeof(intensity_t)*constants::NUM_OF_BASES +    // m_corrected_int_called
                             sizeof(count_t)*constants::NUM_OF_BASES_AND_NC   // m_called_counts
                     );
                 }
@@ -216,10 +215,7 @@ namespace illumina{ namespace interop{ namespace io {
                 }
             };
 #pragma pack()
-
-        }
-    }
-}
+}}}
 
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(corrected_intensity_metric, 2 )
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(corrected_intensity_metric, 3 )

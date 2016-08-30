@@ -207,13 +207,13 @@ int read_metrics_from_file(const std::string& filename, MetricSet& metrics)
     try {
         io::read_interop(filename, metrics);
     }
-    catch(const io::file_not_found_exception&){return 1;}
+    catch(const io::file_not_found_exception& ex){if(kPrintError) std::cerr << ex.what() << std::endl;return 1;}
     catch(const io::bad_format_exception& ex)
     {
         if(kPrintError) std::cerr << io::interop_basename<MetricSet>() << " - " << ex.what() << std::endl;
         return BAD_FORMAT;
     }
-    catch(const io::incomplete_file_exception&){ }
+    catch(const io::incomplete_file_exception& ex){ if(kPrintError) std::cerr << ex.what() << std::endl; }
     catch(const std::exception& ex)
     {
         if(kPrintError) std::cerr << io::interop_basename<MetricSet>() << " - " << ex.what() << std::endl;
@@ -313,7 +313,7 @@ int write_tile_metrics(std::ostream& out, const std::string& filename)
     {
         const tile_metric& metric = *beg;
         write_id(out, metric);
-        out << metric.clusterCount() << "," << metric.clusterCountPf() << "," << metric.clusterDensity() << "," << metric.clusterDensityPf() << "\n";
+        out << metric.cluster_count() << "," << metric.cluster_count_pf() << "," << metric.cluster_density() << "," << metric.cluster_density_pf() << "\n";
     }
 
     write_header(out, metrics);
@@ -360,7 +360,7 @@ int write_error_metrics(std::ostream& out, const std::string& filename)
     {
         const error_metric& metric = *beg;
         write_id(out, metric);
-        out << metric.errorRate() << "\n";
+        out << metric.error_rate() << "\n";
     }
 
     return res;
@@ -399,13 +399,13 @@ int write_corrected_intensity_metrics(std::ostream& out, const std::string& file
     {
         const corrected_intensity_metric& metric = *beg;
         write_id(out, metric);
-        out << metric.averageCycleIntensity() << "," << metric.signalToNoise();
+        out << metric.average_cycle_intensity() << "," << metric.signal_to_noise();
         for(int i=-1;i<constants::NUM_OF_BASES;i++)
-            out << "," << metric.calledCounts(i);
+            out << "," << metric.called_counts(static_cast<constants::dna_bases>(i));
         for(size_t i=0;i<constants::NUM_OF_BASES;i++)
-            out << "," << metric.correctedIntCalled(i);
+            out << "," << metric.corrected_int_called(static_cast<constants::dna_bases>(i));
         for(size_t i=0;i<constants::NUM_OF_BASES;i++)
-            out << "," << metric.correctedIntAll(i);
+            out << "," << metric.corrected_int_all(static_cast<constants::dna_bases>(i));
         out << "\n";
     }
 
@@ -443,11 +443,11 @@ int write_extraction_metrics(std::ostream& out, const std::string& filename) thr
     {
         const extraction_metric& metric = *beg;
         write_id(out, metric);
-        out  << metric.dateTime();
+        out  << metric.date_time();
         for(size_t i=0;i<extraction_metric::MAX_CHANNELS;i++)
             out << "," << metric.max_intensity(i);
         for(size_t i=0;i<extraction_metric::MAX_CHANNELS;i++)
-            out << "," << metric.focusScore(i);
+            out << "," << metric.focus_score(i);
         out << "\n";
     }
 
@@ -478,20 +478,20 @@ int write_image_metrics(std::ostream& out, const std::string& filename)
 
     write_header(out, metrics);
     out << "Lane,Tile,Cycle,ChannelCount";
-    for(size_t i=0;i<metrics.channelCount();i++)
+    for(size_t i=0;i<metrics.channel_count();i++)
         out << ",MinContrast_" << i+1;
-    for(size_t i=0;i<metrics.channelCount();i++)
+    for(size_t i=0;i<metrics.channel_count();i++)
         out << ",MaxContrast_" << i+1;
     out << "\n";
     for(image_metric_set::metric_array_t::const_iterator beg = metrics.metrics().begin(), end = vec_end(metrics.metrics());beg != end;++beg)
     {
         const image_metric& metric = *beg;
         write_id(out, metric);
-        out  << metric.channelCount();
-        for(size_t i=0;i<metric.channelCount();i++)
-            out << "," << metric.minContrast(i);
-        for(size_t i=0;i<metric.channelCount();i++)
-            out << "," << metric.maxContrast(i);
+        out  << metric.channel_count();
+        for(size_t i=0;i<metric.channel_count();i++)
+            out << "," << metric.min_contrast(i);
+        for(size_t i=0;i<metric.channel_count();i++)
+            out << "," << metric.max_contrast(i);
         out << "\n";
     }
 
@@ -562,24 +562,24 @@ int write_q_metrics(std::ostream& out, const std::string& filename)
     int res = read_metrics_from_file(filename, metrics);
     if(res != 0) return res;
 
-    if(metrics.binCount()>0)
+    if(metrics.bin_count()>0)
     {
         write_header(out, metrics);
         out << "Type";
-        for (size_t i = 0; i < metrics.binCount(); i++)
+        for (size_t i = 0; i < metrics.bin_count(); i++)
             out << ",Bin" << i + 1;
         out << "\n";
         out << "Lower";
-        for (size_t i = 0; i < metrics.binCount(); i++)
-            out << "," << metrics.binAt(i).lower();
+        for (size_t i = 0; i < metrics.bin_count(); i++)
+            out << "," << metrics.bin_at(i).lower();
         out << "\n";
         out << "Upper";
-        for (size_t i = 0; i < metrics.binCount(); i++)
-            out << "," << metrics.binAt(i).upper();
+        for (size_t i = 0; i < metrics.bin_count(); i++)
+            out << "," << metrics.bin_at(i).upper();
         out << "\n";
         out << "Value";
-        for (size_t i = 0; i < metrics.binCount(); i++)
-            out << "," << metrics.binAt(i).value();
+        for (size_t i = 0; i < metrics.bin_count(); i++)
+            out << "," << metrics.bin_at(i).value();
         out << "\n";
     }
 
@@ -595,7 +595,7 @@ int write_q_metrics(std::ostream& out, const std::string& filename)
         write_id(out, metric);
         out  << metric.size();
         for(size_t i=0;i<metric.size();i++)
-            out << "," << metric.qscoreHist(i);
+            out << "," << metric.qscore_hist(i);
         out << "\n";
     }
 
@@ -632,24 +632,24 @@ int write_q_by_lane_metrics(std::ostream& out, const std::string& filename)
     int res = read_metrics_from_file(filename, metrics);
     if(res != 0) return res;
 
-    if(metrics.binCount()>0)
+    if(metrics.bin_count()>0)
     {
         write_header(out, metrics);
         out << "Type";
-        for (size_t i = 0; i < metrics.binCount(); i++)
+        for (size_t i = 0; i < metrics.bin_count(); i++)
             out << ",Bin" << i + 1;
         out << "\n";
         out << "Lower";
-        for (size_t i = 0; i < metrics.binCount(); i++)
-            out << "," << metrics.binAt(i).lower();
+        for (size_t i = 0; i < metrics.bin_count(); i++)
+            out << "," << metrics.bin_at(i).lower();
         out << "\n";
         out << "Upper";
-        for (size_t i = 0; i < metrics.binCount(); i++)
-            out << "," << metrics.binAt(i).upper();
+        for (size_t i = 0; i < metrics.bin_count(); i++)
+            out << "," << metrics.bin_at(i).upper();
         out << "\n";
         out << "Value";
-        for (size_t i = 0; i < metrics.binCount(); i++)
-            out << "," << metrics.binAt(i).value();
+        for (size_t i = 0; i < metrics.bin_count(); i++)
+            out << "," << metrics.bin_at(i).value();
         out << "\n";
     }
 
@@ -665,7 +665,7 @@ int write_q_by_lane_metrics(std::ostream& out, const std::string& filename)
         write_id(out, metric);
         out  << metric.size();
         for(size_t i=0;i<metric.size();i++)
-            out << "," << metric.qscoreHist(i);
+            out << "," << metric.qscore_hist(i);
         out << "\n";
     }
 

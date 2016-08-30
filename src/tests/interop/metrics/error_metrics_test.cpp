@@ -2,7 +2,6 @@
  *
  *
  *  @file
- *
  *  @date 8/23/2015
  *  @version 1.0
  *  @copyright GNU Public License.
@@ -11,6 +10,7 @@
 #include <fstream>
 #include <gtest/gtest.h>
 #include "inc/error_metrics_test.h"
+#include "interop/model/run_metrics.h"
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::model::metric_base;
 using namespace illumina::interop::io;
@@ -31,28 +31,41 @@ TYPED_TEST_CASE(error_metrics_test, Formats);
  */
 TYPED_TEST(error_metrics_test, test_read_write)
 {
+    const float tol = 1e-4f;
     EXPECT_EQ(TypeParam::actual_metric_set.version(), TypeParam::VERSION);
     EXPECT_EQ(TypeParam::actual_metric_set.size(), TypeParam::expected_metric_set.size());
     EXPECT_EQ(TypeParam::actual_metric_set.max_cycle(), TypeParam::expected_metric_set.max_cycle());
 
-    for(typename TypeParam::const_iterator itExpected=TypeParam::expected_metric_set.begin(), itActual = TypeParam::actual_metric_set.begin();
-        itExpected != TypeParam::expected_metric_set.end() && itActual != TypeParam::actual_metric_set.end();
-        itExpected++,itActual++)
+    for(typename TypeParam::const_iterator it_expected=TypeParam::expected_metric_set.begin(), it_actual = TypeParam::actual_metric_set.begin();
+        it_expected != TypeParam::expected_metric_set.end() && it_actual != TypeParam::actual_metric_set.end();
+        it_expected++,it_actual++)
     {
-        EXPECT_EQ(itExpected->lane(), itActual->lane());
-        EXPECT_EQ(itExpected->tile(), itActual->tile());
-        EXPECT_EQ(itExpected->cycle(), itActual->cycle());
-        EXPECT_EQ(itExpected->mismatch_count(), itActual->mismatch_count());
-        EXPECT_NEAR(itExpected->errorRate(), itActual->errorRate(), 1e-7f);
-        for(ptrdiff_t i=0;i<static_cast<ptrdiff_t>(itExpected->mismatch_count());i++)
-            EXPECT_EQ(itExpected->mismatch_cluster_count(i), itActual->mismatch_cluster_count(i));
+        EXPECT_EQ(it_expected->lane(), it_actual->lane());
+        EXPECT_EQ(it_expected->tile(), it_actual->tile());
+        EXPECT_EQ(it_expected->cycle(), it_actual->cycle());
+        EXPECT_EQ(it_expected->mismatch_count(), it_actual->mismatch_count());
+        EXPECT_NEAR(it_expected->error_rate(), it_actual->error_rate(), tol);
+        for(ptrdiff_t i=0;i<static_cast<ptrdiff_t>(it_expected->mismatch_count());i++)
+            EXPECT_EQ(it_expected->mismatch_cluster_count(i), it_actual->mismatch_cluster_count(i));
     }
 }
 
 
 TYPED_TEST(error_metrics_test, test_tile_metric_count_for_lane)
 {
-    EXPECT_EQ(TypeParam::expected_metric_set.tile_numbers_for_lane(7).size(), 1u);
+    ASSERT_GT(TypeParam::expected_metric_set.size(), 1u);
+    const error_metric::uint_t lane = TypeParam::expected_metric_set.metrics()[0].lane();
+    EXPECT_EQ(TypeParam::expected_metric_set.tile_numbers_for_lane(lane).size(), 1u);
+}
+
+
+TEST(run_metrics_error_test, test_is_group_empty)
+{
+    run_metrics metrics;
+    std::istringstream fin(error_v3::binary_data());
+    EXPECT_TRUE(metrics.is_group_empty(constants::Error));
+    io::read_metrics(fin, metrics.get_set<error_metric>());
+    EXPECT_FALSE(metrics.is_group_empty(constants::Error));
 }
 
 #define FIXTURE error_metrics_test

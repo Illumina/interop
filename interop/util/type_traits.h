@@ -9,8 +9,8 @@
  */
 #pragma once
 
-namespace illumina {
-namespace interop {
+namespace illumina { namespace interop
+{
 
     /** Place holder for */
     struct null_type{};
@@ -29,12 +29,14 @@ namespace interop {
             typename T1=null_type, typename T2=null_type, typename T3=null_type, typename T4=null_type,
             typename T5=null_type, typename T6=null_type, typename T7=null_type, typename T8=null_type,
             typename T9=null_type, typename T10=null_type, typename T11=null_type, typename T12=null_type,
-            typename T13=null_type, typename T14=null_type, typename T15=null_type, typename T16=null_type>
+            typename T13=null_type, typename T14=null_type, typename T15=null_type, typename T16=null_type,
+            typename T17=null_type, typename T18=null_type, typename T19=null_type, typename T20=null_type,
+            typename T21=null_type, typename T22=null_type, typename T23=null_type, typename T24=null_type>
     struct make_type_list
     {
     private:
         typedef typename make_type_list<
-                T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16
+                T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24
         >::result_t tail_result_t;
     public:
         /** List of types */
@@ -120,7 +122,7 @@ namespace interop {
         /** Define the value type */
         typedef T value_t;
         /** Define the pointer type */
-        typedef T* pointer_t;
+        typedef constant_type<T, v>* pointer_t;
         /** Get the value of the constant type
          *
          * @return value
@@ -146,5 +148,4 @@ namespace interop {
      */
     template<int v>
     struct int_constant_type : public constant_type<int, v>{};
-}
-}
+}}

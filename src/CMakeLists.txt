@@ -8,4 +8,7 @@ endif()
 
 add_subdirectory("apps")
 add_subdirectory("examples")
-add_subdirectory("tests")
+
+if(ENABLE_TEST)
+    add_subdirectory("tests")
+endif()

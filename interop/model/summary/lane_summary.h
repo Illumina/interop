@@ -16,12 +16,12 @@
 namespace illumina { namespace interop { namespace model { namespace summary
 {
 
-/**  Summary statistics compiled by lane
- *
- * @note The reported standard deviation is always between tiles, not cycles. For metrics like error metrics,
- * the mean over all cycles is used for each tile, before calculating the standard deviation.
- *
- */
+    /**  Summary statistics compiled by lane
+     *
+     * @note The reported standard deviation is always between tiles, not cycles. For metrics like error metrics,
+     * the mean over all cycles is used for each tile, before calculating the standard deviation.
+     *
+     */
     class lane_summary
     {
     public:
@@ -309,118 +309,120 @@ namespace illumina { namespace interop { namespace model { namespace summary
         {
             m_reads_pf = val;
         }
-        /** Get statistics summarizing the density of tiles in the lane
+        /** Set statistics summarizing the density of tiles in the lane
          *
-         * @return statistics summarizing the density of tiles in the lane
+         * @param stat statistics summarizing the density of tiles in the lane
          */
-        metric_stat_t &density()
+        void density(const metric_stat_t& stat)
         {
-            return m_density;
+            m_density = stat;
         }
-        /** Get statistics summarizing the passing filter density of tiles in the lane
+        /** Set statistics summarizing the passing filter density of tiles in the lane
          *
-         * @return statistics summarizing the passing filter density of tiles in the lane
+         * @param stat statistics summarizing the passing filter density of tiles in the lane
          */
-        metric_stat_t &density_pf()
+        void density_pf(const metric_stat_t& stat)
         {
-            return m_density_pf;
+            m_density_pf = stat;
         }
-        /** Get statistics summarizing the cluster count of tiles in the lane
+        /** Set statistics summarizing the cluster count of tiles in the lane
          *
-         * @return statistics summarizing the cluster count of tiles in the lane
+         * @param stat statistics summarizing the cluster count of tiles in the lane
          */
-        metric_stat_t &cluster_count()
+        void cluster_count(const metric_stat_t& stat)
         {
-            return m_cluster_count;
+            m_cluster_count = stat;
         }
-        /** Get statistics summarizing the passing filter cluster count of tiles in the lane
+        /** Set statistics summarizing the passing filter cluster count of tiles in the lane
          *
-         * @return statistics summarizing the passing filter cluster count of tiles in the lane
+         * @param stat statistics summarizing the passing filter cluster count of tiles in the lane
          */
-        metric_stat_t &cluster_count_pf()
+        void cluster_count_pf(const metric_stat_t& stat)
         {
-            return m_cluster_count_pf;
+            m_cluster_count_pf = stat;
         }
-        /** Get statistics summarizing the percent of clusters passing filter of tiles in the lane
+        /** Set statistics summarizing the percent of clusters passing filter of tiles in the lane
          *
-         * @return statistics summarizing the percent of clusters passing filter of tiles in the lane
+         * @param stat statistics summarizing the percent of clusters passing filter of tiles in the lane
          */
-        metric_stat_t &percent_pf()
+        void percent_pf(const metric_stat_t& stat)
         {
-            return m_percent_pf;
+            m_percent_pf = stat;
         }
-        /** Get statistics summarizing the phasing of tiles in the lane
+        /** Set statistics summarizing the phasing of tiles in the lane
          *
-         * @return statistics summarizing the phasing of tiles in the lane
+         * @param stat statistics summarizing the phasing of tiles in the lane
          */
-        metric_stat_t &phasing()
+        void phasing(const metric_stat_t& stat)
         {
-            return m_phasing;
+            m_phasing = stat;
         }
-        /** Get statistics summarizing the prephasing of tiles in the lane
+        /** Set statistics summarizing the prephasing of tiles in the lane
          *
-         * @return statistics summarizing the prephasing of tiles in the lane
+         * @param stat statistics summarizing the prephasing of tiles in the lane
          */
-        metric_stat_t &prephasing()
+        void prephasing(const metric_stat_t& stat)
         {
-            return m_prephasing;
+            m_prephasing = stat;
         }
-        /** Get statistics summarizing the PhiX percent aligned of tiles in the lane
+        /** Set statistics summarizing the PhiX percent aligned of tiles in the lane
          *
-         * @return statistics summarizing the PhiX percent aligned of tiles in the lane
+         * @param stat statistics summarizing the PhiX percent aligned of tiles in the lane
          */
-        metric_stat_t &percent_aligned()
+        void percent_aligned(const metric_stat_t& stat)
         {
-            return m_percent_aligned;
+            m_percent_aligned = stat;
         }
-        /** Get statistics summarizing the PhiX error rate of tiles in the lane
+        /** Set statistics summarizing the PhiX error rate of tiles in the lane
          *
-         * @return statistics summarizing the PhiX error rate of tiles in the lane
+         * @param stat statistics summarizing the PhiX error rate of tiles in the lane
          */
-        metric_stat_t &error_rate()
+        void error_rate(const metric_stat_t& stat)
         {
-            return m_error_rate;
+            m_error_rate = stat;
         }
-        /** Get statistics summarizing the PhiX error rate over the first 35 cycles of tiles in the lane
+        /** Set statistics summarizing the PhiX error rate over the first 35 cycles of tiles in the lane
          *
-         * @return statistics summarizing the PhiX error rate over the first 35 cycles of tiles in the lane
+         * @param stat statistics summarizing the PhiX error rate over the first 35 cycles of tiles in the lane
          */
-        metric_stat_t &error_rate_35()
+        void error_rate_35(const metric_stat_t& stat)
         {
-            return m_error_rate_35;
+            m_error_rate_35 = stat;
         }
-        /** Get statistics summarizing the PhiX error rate over the first 50 cycles of tiles in the lane
+        /** Set statistics summarizing the PhiX error rate over the first 50 cycles of tiles in the lane
          *
-         * @return statistics summarizing the PhiX error rate over the first 50 cycles of tiles in the lane
+         * @param stat statistics summarizing the PhiX error rate over the first 50 cycles of tiles in the lane
          */
-        metric_stat_t &error_rate_50()
+        void error_rate_50(const metric_stat_t& stat)
         {
-            return m_error_rate_50;
+            m_error_rate_50 = stat;
         }
-        /** Get statistics summarizing the PhiX error rate over the first 75 cycles of tiles in the lane
+        /** Set statistics summarizing the PhiX error rate over the first 75 cycles of tiles in the lane
          *
-         * @return statistics summarizing the PhiX error rate over the first 75 cycles of tiles in the lane
+         * @param stat statistics summarizing the PhiX error rate over the first 75 cycles of tiles in the lane
          */
-        metric_stat_t &error_rate_75()
+        void error_rate_75(const metric_stat_t& stat)
         {
-            return m_error_rate_75;
+            m_error_rate_75 = stat;
         }
-        /** Get statistics summarizing the PhiX error rate over the first 100 cycles  of tiles in the lane
+        /** Set statistics summarizing the PhiX error rate over the first 100 cycles  of tiles in the lane
          *
-         * @return statistics summarizing the PhiX error rate over the first 100 cycles  of tiles in the lane
+         * @param stat statistics summarizing the PhiX error rate over the first 100 cycles  of tiles in the lane
          */
-        metric_stat_t &error_rate_100()
+        void error_rate_100(const metric_stat_t& stat)
         {
-            return m_error_rate_100;
+            m_error_rate_100 = stat;
         }
-        /** Get statistics summarizing the first cycle intensity of tiles in the lane
+        /** Set statistics summarizing the first cycle intensity of tiles in the lane
          *
-         * @return statistics summarizing the first cycle intensity of tiles in the lane
+         * @param stat statistics summarizing the first cycle intensity of tiles in the lane
          */
-        metric_stat_t &first_cycle_intensity()
+        void first_cycle_intensity(const metric_stat_t & stat)
         {
-            return m_first_cycle_intensity;
+            m_first_cycle_intensity=stat;
         }
+
+
         /** Get statistics summarizing the cycle of each RTA state of tiles in the lane
          *
          * @return statistics summarizing the cycle of each RTA state of tiles in the lane
@@ -429,6 +431,17 @@ namespace illumina { namespace interop { namespace model { namespace summary
         {
             return m_cycle_state;
         }
+
+
+        /** Set statistics summarizing the cycle of each RTA state of tiles in the lane
+         *
+         * @param state statistics summarizing the cycle of each RTA state of tiles in the lane
+         */
+        /*void cycle_state(cycle_state_summary& state)
+        {
+            m_cycle_state = state;
+        }*/
+
 
     private:
         size_t m_lane;

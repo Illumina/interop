@@ -39,7 +39,7 @@ namespace illumina{ namespace interop { namespace unittest {
     class metric_test
     {
     public:
-        enum
+        enum Checks
         {
             /** Version of the format */
             VERSION=Version,

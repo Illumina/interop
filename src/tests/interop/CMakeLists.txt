@@ -9,9 +9,10 @@ add_executable(interop_gtests
         run/parameters_test.cpp
         metrics/corrected_intensity_metrics_test.cpp
         metrics/error_metrics_test.cpp
+        metrics/error_metrics_test2.cpp
         metrics/extraction_metrics_test.cpp
-        metrics/image_metrics_test.cpp
         metrics/index_metrics_test.cpp
+        metrics/image_metrics_test.cpp
         metrics/q_metrics_test.cpp
         metrics/tile_metrics_test.cpp
         metrics/q_by_lane_metric_test.cpp
@@ -32,26 +33,25 @@ add_executable(interop_gtests
         logic/enum_parsing_test.cpp
         logic/metric_type_ext_test.cpp
         logic/plot_logic_test.cpp
-        logic/image_table_logic_test.cpp
         util/option_parser_test.cpp
         inc/regression_fixture.h
         unit_tests.cpp
         inc/failure_listener.h
-        inc/persistent_parameter_generator.h)
+        inc/persistent_parameter_generator.h
+        logic/imaging_table_logic_test.cpp
+        logic/imaging_table_regression_test.cpp
+        inc/generic_fixture.h
+        metrics/inc/metric_generator.h
+        metrics/inc/metric_stream_tests.hpp
+        inc/regression_test_data.h
+        inc/proxy_parameter_generator.h)
 
 target_link_libraries(interop_gtests ${INTEROP_LIB}  ${GTEST_LIBRARY} ${GMOCK_LIBRARY}  ${CMAKE_THREAD_LIBS_INIT})
 add_test(NAME interop_gtests WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/testBin
               COMMAND ${CMAKE_BINARY_DIR}/testBin/${INTEROP_TESTS} )
 
 if(MSVC)
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-endif()
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-    set_target_properties(interop_gtests PROPERTIES COMPILE_FLAGS "-Wno-unnamed-type-template-args")
-endif()
-
-if(NOT ENABLE_TEST)
-    set_target_properties(interop_gtests PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS)
 endif()
 
 if(NOT ENABLE_STATIC)
@@ -64,6 +64,6 @@ if(MSVC)
 elseif(MINGW)
     set_target_properties(interop_gtests PROPERTIES COMPILE_FLAGS "-Wa,-mbig-obj -Wno-unused-function")
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR CMAKE_COMPILER_IS_GNUCC)
-    set_target_properties(interop_gtests PROPERTIES COMPILE_FLAGS "-Wno-unused-function")
+    set_target_properties(interop_gtests PROPERTIES COMPILE_FLAGS "-Wno-unused-function -Wno-unnamed-type-template-args")
 endif()
 

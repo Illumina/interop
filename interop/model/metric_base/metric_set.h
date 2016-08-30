@@ -41,6 +41,8 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         typedef std::vector<T> metric_array_t;
         /** Define a write header */
         typedef typename T::header_type header_type;
+        /** Define the base type for the metric */
+        typedef typename T::base_t base_t;
         /** Define a metric type */
         typedef T metric_type;
         /** Define a metric set type */
@@ -61,17 +63,28 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         typedef typename metric_array_t::const_iterator const_iterator;
         /** Metric iterator */
         typedef typename metric_array_t::iterator iterator;
+        enum {
+            /** Group type enum */
+            TYPE=T::TYPE
+        };
     private:
         typedef std::map<id_t, size_t> id_map_t;
 
     public:
         /** Constructor
          *
+         * @param version version of the file format
+         */
+        metric_set(const ::int16_t version )
+                : header_type(header_type::default_header()), m_version(version), m_data_source_exists(false)
+        { }
+        /** Constructor
+         *
          * @param header header information for the metric set
          * @param version version of the file format
          */
         metric_set(const header_type &header = header_type::default_header(), const ::int16_t version = 0)
-                : header_type(header), m_version(version)
+                : header_type(header), m_version(version), m_data_source_exists(false)
         { }
 
         /** Constructor
@@ -83,7 +96,8 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         metric_set(const metric_array_t &vec, const ::int16_t version, const header_type &header) :
                 header_type(header),
                 m_data(vec),
-                m_version(version)
+                m_version(version),
+                m_data_source_exists(false)
         {
             size_t offset = 0;
             for (typename metric_array_t::const_iterator b = vec.begin(), e = vec.end(); b != e; ++b)
@@ -95,6 +109,22 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         }
 
     public:
+        /** Flag that indicates whether the data source exists
+         *
+         * @return true if the data source, e.g. file, exists
+         */
+        bool data_source_exists()const
+        {
+            return !empty() || m_data_source_exists;
+        }
+        /** Set flag that indicates whether the data source exists
+         *
+         * @param exists true if the data source, e.g. file, exists
+         */
+        void data_source_exists(const bool exists)
+        {
+            m_data_source_exists = exists;
+        }
         /** Get start of metric collection
          *
          * @return iterator to start of metric collection
@@ -141,7 +171,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         size_t find(const uint_t lane, const uint_t tile, const uint_t cycle = 0) const
         {
-            return find(metric_type::id(lane, tile, cycle));
+            return find(metric_type::create_id(lane, tile, cycle));
         }
 
         /** Find index of metric given the id. If not found, return number of metrics
@@ -164,7 +194,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         bool has_metric(const uint_t lane, const uint_t tile, const uint_t cycle = 0) const
         {
-            return has_metric(metric_type::id(lane, tile, cycle));
+            return has_metric(metric_type::create_id(lane, tile, cycle));
         }
 
         /** Test if set has metric
@@ -214,12 +244,12 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         {
             try
             {
-                return get_metric(metric_type::id(lane, tile, cycle));
+                return get_metric(metric_type::create_id(lane, tile, cycle));
             }
             catch (const index_out_of_bounds_exception &)
             {
                 INTEROP_THROW( index_out_of_bounds_exception, "No tile available: key: " <<
-                                       metric_type::id(lane, tile, cycle) <<
+                                       metric_type::create_id(lane, tile, cycle) <<
                                                     " map: " << (m_id_map.size()) <<
                                                     "  lane: " << (lane) <<
                                                     "  tile: " << (tile) <<
@@ -371,7 +401,8 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         metric_array_t metrics_for_cycle(const uint_t cycle) const
         {
-            return metrics_for_cycle(cycle, (typename T::header_type *) 0);
+            typedef typename metric_type::base_t base_t;
+            return metrics_for_cycle(cycle, base_t::null());
         }
 
     public:
@@ -381,6 +412,12 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         size_t size() const
         { return m_data.size(); }
+        /** Test if metric set is empty
+         *
+         * @return true if metric set is empty
+         */
+        bool empty() const
+        { return m_data.empty(); }
 
         /** Version of the InterOp file parsed
          *
@@ -451,12 +488,12 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         {
             try
             {
-                return get_metric_ref(metric_type::id(lane, tile, cycle));
+                return get_metric_ref(metric_type::create_id(lane, tile, cycle));
             }
             catch (const index_out_of_bounds_exception &)
             {
                 INTEROP_THROW( index_out_of_bounds_exception,"No tile available: key: " <<
-                                                    metric_type::id(lane, tile, cycle) <<
+                                                    metric_type::create_id(lane, tile, cycle) <<
                                                     " map: " <<(m_id_map.size()) <<
                                                     "  lane: " << (lane) <<
                                                     "  tile: " << (tile) <<
@@ -485,7 +522,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         }
 
     private:
-        metric_array_t metrics_for_cycle(const uint_t cycle, base_cycle_metric_header *) const
+        metric_array_t metrics_for_cycle(const uint_t cycle, const constants::base_cycle_t*) const
         {
             metric_array_t cycle_metrics;
             cycle_metrics.reserve(size());
@@ -497,12 +534,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
             return cycle_metrics;
         }
 
-        metric_array_t metrics_for_cycle(const uint_t, base_metric_header *) const
-        {
-            return metric_array_t();
-        }
-
-        metric_array_t metrics_for_cycle(const uint_t, base_read_metric_header *) const
+        metric_array_t metrics_for_cycle(const uint_t, const void *) const
         {
             return metric_array_t();
         }
@@ -585,6 +617,8 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         metric_array_t m_data;
         /** Version of the metric read */
         ::int16_t m_version;
+        /** Does the file or other source exist */
+        bool m_data_source_exists;
 
         // TODO: remove the following
         /** Map unique identifiers to the index of the metric */

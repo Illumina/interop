@@ -16,7 +16,8 @@
 #include "interop/util/exception.h"
 #include "interop/util/unique_ptr.h"
 
-namespace illumina { namespace interop { namespace util{
+namespace illumina { namespace interop { namespace util
+{
 
     /** Abstract option
      */

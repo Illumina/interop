@@ -1,4 +1,5 @@
 %include "std_except.i"
+%include "exception.i"
 #if defined(SWIGCSHARP)
 namespace std
 {
@@ -8,6 +9,33 @@ namespace std
   struct out_of_range {};
   %ignore invalid_argument;
   struct invalid_argument {};
+}
+#elif defined(SWIGJAVA)
+%typemap(javabase) std::runtime_error "java.lang.Exception";
+%typemap(javacode) std::runtime_error %{
+  public String getMessage() {
+    return what();
+  }
+%}
+%typemap(javabase) std::out_of_range "java.lang.Exception";
+%typemap(javacode) std::out_of_range %{
+  public String getMessage() {
+    return what();
+  }
+%}
+namespace std {
+  struct runtime_error
+  {
+    runtime_error(const string& msg);
+    virtual ~runtime_error() throw();
+    virtual const char* what() const throw();
+  };
+  struct out_of_range
+  {
+    out_of_range(const string& msg);
+    virtual ~out_of_range() throw();
+    virtual const char* what() const throw();
+  };
 }
 #endif
 %{
@@ -32,6 +60,29 @@ namespace std
         }
     %enddef
 
+#elif defined(SWIGJAVA)
+
+    %define WRAP_EXCEPTION_IMPORT(NAMESPACE, EXCEPTION_CPLUS_PLUS, EXCEPTION_CSHARP)
+    %enddef
+
+    %define WRAP_EXCEPTION(NAMESPACE, EXCEPTION_CPLUS_PLUS, EXCEPTION_JAVA)
+        %typemap(throws, throws="EXCEPTION_CPLUS_PLUS") NAMESPACE EXCEPTION_CPLUS_PLUS {
+            // the following namespace thing is hacky
+          jclass excep = jenv->FindClass("com/illumina/interop/EXCEPTION_CPLUS_PLUS");
+          if (excep)
+            jenv->ThrowNew(excep, $1.what());
+          return $null;
+        }
+    %enddef
+
+#else
+
+    %define WRAP_EXCEPTION_IMPORT(NAMESPACE, EXCEPTION_CPLUS_PLUS, EXCEPTION_CSHARP)
+    %enddef
+
+    %define WRAP_EXCEPTION(NAMESPACE, EXCEPTION_CPLUS_PLUS, EXCEPTION_CSHARP)
+    %enddef
+
 #endif
 
 %define EXCEPTION_WRAPPER(WRAPPER)
@@ -47,6 +98,7 @@ WRAPPER(illumina::interop::model::, invalid_channel_exception, invalid_channel_e
 WRAPPER(illumina::interop::model::, invalid_read_exception, invalid_read_exception)
 WRAPPER(illumina::interop::model::, invalid_metric_type, invalid_metric_type)
 WRAPPER(illumina::interop::model::, invalid_filter_option, invalid_filter_option)
+WRAPPER(illumina::interop::model::, invalid_run_info_exception, invalid_run_info_exception)
 
 // XML
 WRAPPER(illumina::interop::xml::, xml_file_not_found_exception, xml_file_not_found_exception)

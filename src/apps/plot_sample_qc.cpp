@@ -11,8 +11,21 @@
  *
  * In this sample, 140131_1287_0851_A01n401drr is a run folder and the summary is written to the standard output.
  *
- *      # Version: v1.0.4-147-gb6d5c19-dirty
- *      # Run Folder: 11115124_11854Unbin2R2I
+ *      # Version: v1.0.4-246-ge7f7de7
+ *      # Run Folder: 18818805
+ *      set terminal png crop
+ *      set output '18818805_sample-qc.png'
+ *      set yrange [0 : 14 ]
+ *      set ylabel "% Reads Identified (PF)"
+ *      set xrange [0 : 92 ]
+ *      set xlabel "Index Number"
+ *      set style fill solid border -1
+ *      unset key
+ *      plot "-" using 1:2:3 with boxes title "% reads" lt rgb "green"
+ *      1	0.793876	1
+ *      2	0.85501	1
+ *      3	1.09858	1
+ *      ...
  *
  */
 

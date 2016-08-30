@@ -11,6 +11,7 @@
 #include <fstream>
 #include <gtest/gtest.h>
 #include "inc/extraction_metrics_test.h"
+#include "interop/model/run_metrics.h"
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::io;
 using namespace illumina::interop;
@@ -31,31 +32,40 @@ TYPED_TEST_CASE(extraction_metrics_test, Formats);
  */
 TYPED_TEST(extraction_metrics_test, test_read_write)
 {
+    const float tol = 1e-7f;
     EXPECT_EQ(TypeParam::actual_metric_set.version(), TypeParam::VERSION);
     EXPECT_EQ(TypeParam::actual_metric_set.size(), TypeParam::expected_metric_set.size());
     EXPECT_EQ(TypeParam::actual_metric_set.max_cycle(), TypeParam::expected_metric_set.max_cycle());
 
 
-    for(typename TypeParam::const_iterator itExpected=TypeParam::expected_metric_set.begin(), itActual = TypeParam::actual_metric_set.begin();
-        itExpected != TypeParam::expected_metric_set.end() && itActual != TypeParam::actual_metric_set.end();
-        itExpected++,itActual++)
+    for(typename TypeParam::const_iterator it_expected=TypeParam::expected_metric_set.begin(), it_actual = TypeParam::actual_metric_set.begin();
+        it_expected != TypeParam::expected_metric_set.end() && it_actual != TypeParam::actual_metric_set.end();
+        it_expected++,it_actual++)
     {
-        EXPECT_EQ(itExpected->lane(), itActual->lane());
-        EXPECT_EQ(itExpected->tile(), itActual->tile());
-        EXPECT_EQ(itExpected->cycle(), itActual->cycle());
-        EXPECT_EQ(itExpected->dateTime(), itActual->dateTime());
+        EXPECT_EQ(it_expected->lane(), it_actual->lane());
+        EXPECT_EQ(it_expected->tile(), it_actual->tile());
+        EXPECT_EQ(it_expected->cycle(), it_actual->cycle());
+        EXPECT_EQ(it_expected->date_time(), it_actual->date_time());
 
 
-        std::time_t t = static_cast<std::time_t>(itActual->dateTime());
+        std::time_t t = static_cast<std::time_t>(it_actual->date_time());
         std::tm* tm = std::localtime(&t);
         EXPECT_NE(tm, static_cast<std::tm*>(0));
-
-        for(size_t i=0;i<extraction_metric::MAX_CHANNELS;i++)
+        ASSERT_EQ(it_expected->channel_count(), it_actual->channel_count());
+        for(size_t i=0;i<it_expected->channel_count();i++)
         {
-            EXPECT_EQ(itExpected->max_intensity(i), itActual->max_intensity(i));
-            EXPECT_NEAR(itExpected->focusScore(i), itActual->focusScore(i), 1e-7);
+            EXPECT_EQ(it_expected->max_intensity(i), it_actual->max_intensity(i));
+            EXPECT_NEAR(it_expected->focus_score(i), it_actual->focus_score(i), tol);
         }
     }
+}
+TEST(run_metrics_extraction_test, test_is_group_empty)
+{
+    run_metrics metrics;
+    EXPECT_TRUE(metrics.is_group_empty(constants::Extraction));
+    std::istringstream fin(extraction_v2::binary_data());
+    io::read_metrics(fin, metrics.get_set<extraction_metric>());
+    EXPECT_FALSE(metrics.is_group_empty(constants::Extraction));
 }
 
 #define FIXTURE extraction_metrics_test

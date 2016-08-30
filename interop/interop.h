@@ -18,7 +18,8 @@
 #include "interop/logic/summary/index_summary.h"
 #include "interop/logic/summary/run_summary.h"
 
-namespace illumina { namespace interop{
+namespace illumina { namespace interop
+{
     /** Get the version of the library
      *
      * @return library version

@@ -9,6 +9,7 @@
 
 #include <fstream>
 #include <gtest/gtest.h>
+#include "interop/util/math.h"
 #include "interop/logic/summary/run_summary.h"
 #include "inc/error_metrics_test.h"
 #include "inc/extraction_metrics_test.h"
@@ -16,7 +17,7 @@
 #include "inc/q_metrics_test.h"
 #include "inc/index_metrics_test.h"
 #include "inc/summary_fixture.h"
-#include "../inc/regression_fixture.h"
+#include "src/tests/interop/inc/regression_fixture.h"
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::io;
 using namespace illumina::interop;
@@ -52,41 +53,53 @@ TYPED_TEST_CASE(summary_metrics_test, Formats);
     EXPECT_EQ(ACTUAL.number(), EXPECTED.number()); \
     EXPECT_EQ(ACTUAL.is_index(), EXPECTED.is_index())
 
-void test_run_summary(const model::summary::run_summary& expected, const model::summary::run_summary& actual)
+
+
+/** Test if calculated run summary matches actual run summary
+ *
+ * @todo Add more robust testing (e.g. non-index)
+ */
+TYPED_TEST(summary_metrics_test, run_summary)
 {
+    const model::summary::run_summary& expected_summary=TypeParam::expected;
+    const model::summary::run_summary& actual_summary=TypeParam::actual;
     const float tol = 1e-7f;
-    ASSERT_EQ(actual.size(), expected.size());
-    ASSERT_EQ(actual.lane_count(), expected.lane_count());
-    EXPECT_NEAR(actual.total_summary().error_rate(), expected.total_summary().error_rate(), tol);
-    EXPECT_NEAR(actual.total_summary().percent_aligned(), expected.total_summary().percent_aligned(), tol);
-    EXPECT_NEAR(actual.total_summary().first_cycle_intensity(), expected.total_summary().first_cycle_intensity(), tol);
-    EXPECT_NEAR(actual.total_summary().percent_gt_q30(), expected.total_summary().percent_gt_q30(), tol);
-    EXPECT_NEAR(actual.total_summary().yield_g(), expected.total_summary().yield_g(), tol);
-    EXPECT_NEAR(actual.total_summary().projected_yield_g(), expected.total_summary().projected_yield_g(), tol);
+    ASSERT_EQ(actual_summary.size(), expected_summary.size());
+    ASSERT_EQ(actual_summary.lane_count(), expected_summary.lane_count());
+    EXPECT_NEAR(actual_summary.total_summary().error_rate(), expected_summary.total_summary().error_rate(), tol);
+    EXPECT_NEAR(actual_summary.total_summary().percent_aligned(), expected_summary.total_summary().percent_aligned(), tol);
+    EXPECT_NEAR(actual_summary.total_summary().first_cycle_intensity(), expected_summary.total_summary().first_cycle_intensity(), tol);
+    EXPECT_NEAR(actual_summary.total_summary().percent_gt_q30(), expected_summary.total_summary().percent_gt_q30(), tol);
+    EXPECT_NEAR(actual_summary.total_summary().yield_g(), expected_summary.total_summary().yield_g(), tol);
+    EXPECT_NEAR(actual_summary.total_summary().projected_yield_g(), expected_summary.total_summary().projected_yield_g(), tol);
 
 
-    EXPECT_NEAR(actual.nonindex_summary().error_rate(), expected.nonindex_summary().error_rate(), tol);
-    EXPECT_NEAR(actual.nonindex_summary().percent_aligned(), expected.nonindex_summary().percent_aligned(), tol);
-    EXPECT_NEAR(actual.nonindex_summary().first_cycle_intensity(), expected.nonindex_summary().first_cycle_intensity(), tol);
-    EXPECT_NEAR(actual.nonindex_summary().percent_gt_q30(), expected.nonindex_summary().percent_gt_q30(), tol);
-    EXPECT_NEAR(actual.nonindex_summary().yield_g(), expected.nonindex_summary().yield_g(), tol);
-    EXPECT_NEAR(actual.nonindex_summary().projected_yield_g(), expected.nonindex_summary().projected_yield_g(), tol);
+    EXPECT_NEAR(actual_summary.nonindex_summary().error_rate(), expected_summary.nonindex_summary().error_rate(), tol);
+    EXPECT_NEAR(actual_summary.nonindex_summary().percent_aligned(), expected_summary.nonindex_summary().percent_aligned(), tol);
+    EXPECT_NEAR(actual_summary.nonindex_summary().first_cycle_intensity(), expected_summary.nonindex_summary().first_cycle_intensity(), tol);
+    EXPECT_NEAR(actual_summary.nonindex_summary().percent_gt_q30(), expected_summary.nonindex_summary().percent_gt_q30(), tol);
+    EXPECT_NEAR(actual_summary.nonindex_summary().yield_g(), expected_summary.nonindex_summary().yield_g(), tol);
+    EXPECT_NEAR(actual_summary.nonindex_summary().projected_yield_g(), expected_summary.nonindex_summary().projected_yield_g(), tol);
 
-    const model::summary::cycle_state_summary& actual_cycle_summary = actual.cycle_state();
-    const model::summary::cycle_state_summary& expected_cycle_summary = expected.cycle_state();
+    const model::summary::cycle_state_summary& actual_cycle_summary = actual_summary.cycle_state();
+    const model::summary::cycle_state_summary& expected_cycle_summary = expected_summary.cycle_state();
     EXPECT_CYCLE_EQ(actual_cycle_summary.extracted_cycle_range(), expected_cycle_summary.extracted_cycle_range());
     EXPECT_CYCLE_EQ(actual_cycle_summary.called_cycle_range(), expected_cycle_summary.called_cycle_range());
     EXPECT_CYCLE_EQ(actual_cycle_summary.qscored_cycle_range(), expected_cycle_summary.qscored_cycle_range());
     EXPECT_CYCLE_EQ(actual_cycle_summary.error_cycle_range(), expected_cycle_summary.error_cycle_range());
 }
-void test_read_summary(const model::summary::run_summary& expected, const model::summary::run_summary& actual)
+/** Test if calculated read summary matches actual read summary
+ */
+TYPED_TEST(summary_metrics_test, read_summary)
 {
-    ASSERT_EQ(actual.size(), expected.size());
+    const model::summary::run_summary& expected_summary=TypeParam::expected;
+    const model::summary::run_summary& actual_summary=TypeParam::actual;
+    ASSERT_EQ(actual_summary.size(), expected_summary.size());
     const float tol = 1e-7f;
-    for(size_t read=0;read<expected.size();++read)
+    for(size_t read=0;read<expected_summary.size();++read)
     {
-        const model::summary::read_summary &actual_read_summary = actual[read];
-        const model::summary::read_summary &expected_read_summary = expected[read];
+        const model::summary::read_summary &actual_read_summary = actual_summary[read];
+        const model::summary::read_summary &expected_read_summary = expected_summary[read];
         EXPECT_EQ(actual_read_summary.size(), expected_read_summary.size());
         EXPECT_EQ(actual_read_summary.lane_count(), expected_read_summary.lane_count());
         EXPECT_NEAR(actual_read_summary.summary().error_rate(), expected_read_summary.summary().error_rate(), tol);
@@ -98,8 +111,12 @@ void test_read_summary(const model::summary::run_summary& expected, const model:
         EXPECT_READ_EQ(actual_read_summary.read(), expected_read_summary.read());
     }
 }
-void test_lane_summary(const model::summary::run_summary& expected, const model::summary::run_summary& actual)
+/** Test if calculated lane summary matches actual lane summary
+ */
+TYPED_TEST(summary_metrics_test, lane_summary)
 {
+    const model::summary::run_summary& expected_summary = TypeParam::expected;
+    const model::summary::run_summary& actual_summary = TypeParam::actual;
 #ifdef _INTEROP_WIN32
     const float density_tol = 0.5f;
     const float tol = 1e-2f; // TODO: fix this unit test on external Windows Builds (appveyor) was 1e-7f
@@ -107,14 +124,14 @@ void test_lane_summary(const model::summary::run_summary& expected, const model:
     const float density_tol = 1e-7f;
     const float tol = 1e-7f;
 #endif
-    ASSERT_EQ(actual.size(), expected.size());
-    for(size_t read=0;read<expected.size();++read)
+    ASSERT_EQ(actual_summary.size(), expected_summary.size());
+    for(size_t read=0;read<expected_summary.size();++read)
     {
-        ASSERT_EQ(actual[read].size(), expected[read].size());
-        for(size_t lane=0;lane<expected[read].size();++lane)
+        ASSERT_EQ(actual_summary[read].size(), expected_summary[read].size());
+        for(size_t lane=0;lane<expected_summary[read].size();++lane)
         {
-            const model::summary::lane_summary& actual_lane_summary = actual[read][lane];
-            const model::summary::lane_summary& expected_lane_summary = expected[read][lane];
+            const model::summary::lane_summary& actual_lane_summary = actual_summary[read][lane];
+            const model::summary::lane_summary& expected_lane_summary = expected_summary[read][lane];
             EXPECT_EQ(actual_lane_summary.lane(), expected_lane_summary.lane());
             EXPECT_GT(actual_lane_summary.lane(), 0u);
             EXPECT_EQ(actual_lane_summary.tile_count(), expected_lane_summary.tile_count()) << "Failed read: " << read << ", lane: " << lane;
@@ -148,27 +165,6 @@ void test_lane_summary(const model::summary::run_summary& expected, const model:
             EXPECT_CYCLE_EQ(actual_cycle_summary.error_cycle_range(), expected_cycle_summary.error_cycle_range()) << "Failed read: " << read << ", lane: " << lane;
         }
     }
-}
-
-/** Test if calculated run summary matches actual run summary
- *
- * @todo Add more robust testing (e.g. non-index)
- */
-TYPED_TEST(summary_metrics_test, run_summary)
-{
-    test_run_summary(TypeParam::expected, TypeParam::actual);
-}
-/** Test if calculated read summary matches actual read summary
- */
-TYPED_TEST(summary_metrics_test, read_summary)
-{
-    test_read_summary(TypeParam::expected, TypeParam::actual);
-}
-/** Test if calculated lane summary matches actual lane summary
- */
-TYPED_TEST(summary_metrics_test, lane_summary)
-{
-    test_lane_summary(TypeParam::expected, TypeParam::actual);
 }
 
 TEST(summary_metrics_test, empty_run_metrics)
@@ -233,22 +229,22 @@ TEST(index_summary_test, lane_summary)
  * summary and finally properly sets up the expected summary object.
  *
  */
-struct summary_regression_test : public regression_test_fixture< summary_regression_test, model::summary::run_summary>
-{
-    /** Constructor */
-    summary_regression_test() : regression_test_fixture< summary_regression_test, model::summary::run_summary>("summary"){}
-    /** Populate the actual summary metrics using the given run_metrics
-     *
-     * @param actual_metrics run_metrics read in from a run_folder
-     * @param actual run_summary constructed from the run_metrics
-     */
-    static void populate_actual(model::metrics::run_metrics& actual_metrics, model::summary::run_summary& actual)
-    {
-        logic::summary::summarize_run_metrics(actual_metrics, actual);
-    }
-};
+//struct summary_regression_test : public regression_test_fixture< summary_regression_test, model::summary::run_summary>
+//{
+//    /** Constructor */
+//    summary_regression_test() : regression_test_fixture< summary_regression_test, model::summary::run_summary>("summary"){}
+//    /** Populate the actual summary metrics using the given run_metrics
+//     *
+//     * @param actual_metrics run_metrics read in from a run_folder
+//     * @param actual run_summary constructed from the run_metrics
+//     */
+//    static void populate_actual(model::metrics::run_metrics& actual_metrics, model::summary::run_summary& actual)
+//    {
+//        logic::summary::summarize_run_metrics(actual_metrics, actual);
+//    }
+//};
 
-
+/*
 TEST_P(summary_regression_test, compare_to_baseline)
 {
     if(!test) return;
@@ -260,3 +256,4 @@ TEST_P(summary_regression_test, compare_to_baseline)
 INSTANTIATE_TEST_CASE_P(regression_input,
                         summary_regression_test,
                         PersistentValuesIn(regression_test_data::instance().files()));
+*/

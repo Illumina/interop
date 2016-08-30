@@ -270,7 +270,7 @@ namespace illumina{ namespace interop { namespace unittest {
          * @return expected metric set header
          */
         static header_t header()
-        {;
+        {
             typedef header_t::qscore_bin_vector_type qscore_bin_vector_type;
             typedef header_t::bin_t bin_t;
             typedef bin_t::bin_type ushort_t;
