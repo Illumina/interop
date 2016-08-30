@@ -25,7 +25,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
     class check_imaging_table_column
     {
         typedef model::metrics::q_metric::uint_t uint_t;
-        enum
+        enum VoidType
         {
             Void
         };
