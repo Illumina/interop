@@ -28,7 +28,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
      */
     class table_populator
     {
-        enum
+        enum VoidType
         {
             Void
         };
