@@ -81,22 +81,20 @@ int write_interops(const std::string& filename,
                    const unsigned int max_read,
                    const unsigned int cycle_to_align);
 
-/** Set false if you want to disable error messages printing to the error stream */
-const bool kPrintError=true;
 
 
 int main(int argc, char** argv)
 {
     if(argc <= 1)
     {
-        if(kPrintError) std::cerr << "No arguments specified!" << std::endl;
-        if(kPrintError) print_help(std::cout);
+        std::cerr << "No arguments specified!" << std::endl;
+        print_help(std::cout);
         return 1;
     }
     if(argc < 5)
     {
-        if(kPrintError) std::cerr << "Too few arguments specified!" << std::endl;
-        if(kPrintError) print_help(std::cout);
+        std::cerr << "Too few arguments specified!" << std::endl;
+        print_help(std::cout);
         return 1;
     }
 
@@ -155,19 +153,19 @@ int read_metrics_from_file(const std::string& filename, MetricSet& metrics)
     catch(const io::file_not_found_exception&){return 1;}
     catch(const io::bad_format_exception& ex)
     {
-        if(kPrintError) std::cerr << ex.what() << std::endl;
+        std::cerr << ex.what() << std::endl;
         return BAD_FORMAT;
     }
     catch(const io::incomplete_file_exception&){ }
     catch(const std::exception& ex)
     {
-        if(kPrintError) std::cerr << ex.what() << std::endl;
+        std::cerr << ex.what() << std::endl;
         return UNEXPECTED_EXCEPTION;
     }
     if(metrics.size()==0)
     {
 
-        if(kPrintError) std::cerr << "Empty metric file: " << io::interop_basename<MetricSet>() << std::endl;
+        std::cerr << "Empty metric file: " << io::interop_basename<MetricSet>() << std::endl;
         return EMPTY_INTEROP;
     }
     return 0;
@@ -196,12 +194,12 @@ int copy_tile_metrics(const std::string& input, const std::string& output, const
     }
     catch(const io::file_not_found_exception& ex)
     {
-        if(kPrintError) std::cerr << ex.what() << std::endl;
+        std::cerr << ex.what() << std::endl;
         return 1;
     }
     catch(const io::bad_format_exception& ex)
     {
-        if(kPrintError) std::cerr << ex.what() << std::endl;
+        std::cerr << ex.what() << std::endl;
         return BAD_FORMAT;
     }
 
@@ -225,12 +223,12 @@ int copy_tile_metrics(const std::string& input, const std::string& output, const
     }
     catch(const io::file_not_found_exception& ex)
     {
-        if(kPrintError) std::cerr << ex.what() << std::endl;
+        std::cerr << ex.what() << std::endl;
         return 1;
     }
     catch(const io::bad_format_exception& ex)
     {
-        if(kPrintError) std::cerr << ex.what() << std::endl;
+        std::cerr << ex.what() << std::endl;
         return BAD_FORMAT;
     }
 
@@ -276,12 +274,12 @@ int copy_cycle_metrics(const std::string& input, const std::string& output, cons
     }
     catch(const io::file_not_found_exception& ex)
     {
-        if(kPrintError) std::cerr << ex.what() << std::endl;
+        std::cerr << ex.what() << std::endl;
         return 1;
     }
     catch(const io::bad_format_exception& ex)
     {
-        if(kPrintError) std::cerr << ex.what() << std::endl;
+        std::cerr << ex.what() << std::endl;
         return BAD_FORMAT;
     }
 
@@ -332,7 +330,7 @@ int write_interops(const std::string& filename,
     if(res == 0) valid_count++;
     if(valid_count == 0)
     {
-        if(kPrintError) std::cerr << "No files found" << std::endl;
+        std::cerr << "No files found" << std::endl;
         return EMPTY_INTEROP;
     }
     return 0;
