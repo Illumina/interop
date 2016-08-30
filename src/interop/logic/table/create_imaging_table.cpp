@@ -206,7 +206,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
         {
             const id_t tid = model::metric_base::base_cycle_metric::tile_hash_from_id(it->first);
             if (!tile_metrics.has_metric(tid)) continue;
-            const id_t cycle = model::metric_base::base_cycle_metric::cycle_from_id(it->first);
+            const size_t cycle = static_cast<size_t>(model::metric_base::base_cycle_metric::cycle_from_id(it->first));
             const size_t row = it->second;
             const summary::read_cycle& read = cycle_to_read[cycle-1];
             table_populator::populate(tile_metrics.get_metric(tid),
