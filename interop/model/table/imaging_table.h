@@ -61,7 +61,7 @@ namespace illumina { namespace interop { namespace model { namespace table
          */
         float operator()(const size_t r, const column_id c, const size_t subcol=0)const
         {
-            if(c >= m_enum_to_index.size())
+            if(static_cast<size_t>(c) >= m_enum_to_index.size())
                 INTEROP_THROW(model::index_out_of_bounds_exception, "Invalid enum id for column");
             const size_t col = m_enum_to_index[static_cast<size_t>(c)];
             if(col >= m_enum_to_index.size())
