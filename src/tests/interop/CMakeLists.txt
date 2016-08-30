@@ -53,9 +53,6 @@ add_test(NAME interop_gtests WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/testB
 if(MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS)
 endif()
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-    set_target_properties(interop_gtests PROPERTIES COMPILE_FLAGS "-Wno-unnamed-type-template-args")
-endif()
 
 if(NOT ENABLE_STATIC)
 add_custom_command(TARGET interop_gtests POST_BUILD
@@ -67,6 +64,6 @@ if(MSVC)
 elseif(MINGW)
     set_target_properties(interop_gtests PROPERTIES COMPILE_FLAGS "-Wa,-mbig-obj -Wno-unused-function")
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR CMAKE_COMPILER_IS_GNUCC)
-    set_target_properties(interop_gtests PROPERTIES COMPILE_FLAGS "-Wno-unused-function")
+    set_target_properties(interop_gtests PROPERTIES COMPILE_FLAGS "-Wno-unused-function -Wno-unnamed-type-template-args")
 endif()
 
