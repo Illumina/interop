@@ -96,14 +96,14 @@ int main(int argc, const char** argv)
         std::cerr << ex.what() << std::endl;
         return INVALID_ARGUMENTS;
     }
+    std::vector<unsigned char> valid_to_load;
+    logic::utils::list_metrics_to_load(metric_name, valid_to_load); // Only load the InterOp files required
 
     for(int i=1;i<argc;i++)
     {
         run_metrics run;
         const std::string run_name = io::basename(argv[i]);
         std::cout << "# Run Folder: " << run_name << std::endl;
-        std::vector<unsigned char> valid_to_load;
-        logic::plot::list_plot_by_cycle_metrics(metric_name, valid_to_load); // Only load the InterOp files required
         int ret = read_run_metrics(argv[i], run, valid_to_load);
         if(ret != SUCCESS) return ret;
 

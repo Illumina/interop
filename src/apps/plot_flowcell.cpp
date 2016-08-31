@@ -111,6 +111,8 @@ int main(int argc, const char** argv)
         std::cerr << ex.what() << std::endl;
         return INVALID_ARGUMENTS;
     }
+    std::vector<unsigned char> valid_to_load;
+    logic::utils::list_metrics_to_load(metric_name, valid_to_load); // Only load the InterOp files required
 
     for(int i=1;i<argc;i++)
     {
@@ -118,7 +120,7 @@ int main(int argc, const char** argv)
 
         const std::string run_name = io::basename(argv[i]);
         std::cout << "# Run Folder: " << run_name << std::endl;
-        int ret = read_run_metrics(argv[i], run);
+        int ret = read_run_metrics(argv[i], run, valid_to_load);
         if(ret != SUCCESS) return ret;
 
         options.tile_naming_method(run.run_info().flowcell().naming_method());

@@ -72,11 +72,13 @@ int main(int argc, char** argv)
         return INVALID_ARGUMENTS;
     }
 
+    std::vector<unsigned char> valid_to_load;
+    logic::utils::list_index_metrics_to_load(valid_to_load); // Only load the InterOp files required
     std::cout << "# Version: " << INTEROP_VERSION << std::endl;
     for(int i=1;i<argc;i++)
     {
         run_metrics run;
-        int ret = read_run_metrics(argv[i], run);
+        int ret = read_run_metrics(argv[i], run, valid_to_load);
         if (ret != SUCCESS) return ret;
         index_flowcell_summary summary;
         try

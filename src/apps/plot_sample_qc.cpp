@@ -53,13 +53,15 @@ int main(int argc, char** argv)
 
     std::cout << "# Version: " << INTEROP_VERSION << std::endl;
 
+    std::vector<unsigned char> valid_to_load;
+    logic::utils::list_index_metrics_to_load(valid_to_load); // Only load the InterOp files required
     for(int i=1;i<argc;i++)
     {
         run_metrics run;
 
         const std::string run_name = io::basename(argv[i]);
         std::cout << "# Run Folder: " << run_name << std::endl;
-        int ret = read_run_metrics(argv[i], run);
+        int ret = read_run_metrics(argv[i], run, valid_to_load);
         if(ret != SUCCESS) return ret;
 
         model::plot::plot_data<model::plot::bar_point> data;

@@ -117,13 +117,20 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     struct read_func
     {
         typedef const unsigned char* bool_pointer;
-        read_func(const std::string &f, bool_pointer valid=0) : m_run_folder(f), m_valid(valid)
+        read_func(const std::string &f, bool_pointer load_metric_check=0) :
+                m_run_folder(f), m_load_metric_check(load_metric_check)
         {}
 
         template<class MetricSet>
         int operator()(MetricSet &metrics) const
         {
-            if(m_valid != 0 && m_valid[MetricSet::TYPE] == 0) return 0;
+            // If the m_load_metric_check is not set, read in the metric
+            // Otherwise, check if the metric should be read and that it is not empty
+            // This logic is for SAV OnDemand (TM) loading
+            if(m_load_metric_check != 0 && (m_load_metric_check[MetricSet::TYPE] == 0 || !metrics.empty()))
+            {
+                return 0;
+            }
             try
             {
                 io::read_interop(m_run_folder, metrics);
@@ -146,7 +153,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         }
 
         std::string m_run_folder;
-        bool_pointer m_valid;
+        bool_pointer m_load_metric_check;
     };
 
     struct write_func

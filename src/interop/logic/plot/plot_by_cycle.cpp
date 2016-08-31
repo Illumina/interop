@@ -382,28 +382,4 @@ namespace illumina { namespace interop { namespace logic { namespace plot
             names.push_back(utils::to_description(types[i]));
         }
     }
-
-    /** List the required on demand metrics
-     *
-     * @param type specific metric value to plot by cycle
-     * @param valid_to_load list of metrics to load on demand
-     */
-    void list_plot_by_cycle_metrics(const constants::metric_type type, std::vector<unsigned char>& valid_to_load)
-    {
-        if(valid_to_load.size() != constants::MetricCount) valid_to_load.assign(constants::MetricCount, 0);
-        valid_to_load[utils::to_group(type)]=static_cast<unsigned char>(1);
-    }
-    /** List the required on demand metrics
-     *
-     * @param metric_name name of metric value to plot by cycle
-     * @param valid_to_load list of metrics to load on demand
-     */
-    void list_plot_by_cycle_metrics(const std::string& metric_name, std::vector<unsigned char>& valid_to_load)
-    throw(model::invalid_metric_type)
-    {
-        const constants::metric_type type = constants::parse<constants::metric_type>(metric_name);
-        if(type == constants::UnknownMetricType)
-            INTEROP_THROW(model::invalid_metric_type, "Unsupported metric type: " << metric_name);
-        list_plot_by_cycle_metrics(type, valid_to_load);
-    }
 }}}}

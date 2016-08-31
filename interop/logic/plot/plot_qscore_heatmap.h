@@ -10,6 +10,7 @@
 #include "interop/model/run_metrics.h"
 #include "interop/model/plot/filter_options.h"
 #include "interop/model/plot/heatmap_data.h"
+#include "interop/logic/utils/metrics_to_load.h"
 
 namespace illumina { namespace interop { namespace logic { namespace plot
 {

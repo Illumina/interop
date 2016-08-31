@@ -12,6 +12,7 @@
 #include "interop/model/plot/filter_options.h"
 #include "interop/model/plot/plot_data.h"
 #include "interop/model/plot/candle_stick_point.h"
+#include "interop/logic/utils/metrics_to_load.h"
 
 namespace illumina { namespace interop { namespace logic { namespace plot
 {
@@ -61,5 +62,6 @@ namespace illumina { namespace interop { namespace logic { namespace plot
      * @param ignore_pf if true, ignore density PF and cluster PF
      */
     void list_by_lane_metrics(std::vector<std::string>& names, const bool ignore_pf=false);
+
 
 }}}}

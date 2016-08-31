@@ -11,6 +11,7 @@
 #include "interop/model/plot/plot_data.h"
 #include "interop/model/plot/candle_stick_point.h"
 #include "interop/constants/enums.h"
+#include "interop/logic/utils/metrics_to_load.h"
 
 namespace illumina { namespace interop { namespace logic { namespace plot
 {
@@ -31,20 +32,6 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                     model::invalid_channel_exception,
                     model::invalid_filter_option,
                     model::invalid_read_exception);
-
-    /** List the required on demand metrics
-     *
-     * @param type specific metric value to plot by cycle
-     * @param valid_to_load list of metrics to load on demand
-     */
-    void list_plot_by_cycle_metrics(const constants::metric_type type, std::vector<unsigned char>& valid_to_load);
-    /** List the required on demand metrics
-     *
-     * @param metric_name name of metric value to plot by cycle
-     * @param valid_to_load list of metrics to load on demand
-     */
-    void list_plot_by_cycle_metrics(const std::string& metric_name, std::vector<unsigned char>& valid_to_load)
-    throw(model::invalid_metric_type);
 
     /** Plot a specified metric value by cycle using the candle stick model
      *
@@ -76,4 +63,5 @@ namespace illumina { namespace interop { namespace logic { namespace plot
      * @param ignore_accumulated if true, ignore accumulated Q20 and Q30
      */
     void list_by_cycle_metrics(std::vector<std::string>& names, const bool ignore_accumulated=false);
+
 }}}}

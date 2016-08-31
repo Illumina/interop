@@ -324,7 +324,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
      *
      * @param valid_to_load list of metrics to load on demand
      */
-    void list_imaging_table_metrics(std::vector<unsigned char>& valid_to_load)
+    void list_imaging_table_metrics_to_load(std::vector<unsigned char>& valid_to_load)
     {
         if(valid_to_load.size() != constants::MetricCount) valid_to_load.assign(constants::MetricCount, 0);
         std::vector<model::table::column_id> columns;
