@@ -341,6 +341,76 @@ namespace illumina{ namespace interop { namespace unittest {
         }
     };
 
+    /** This test writes three records of an InterOp files, then reads them back in and compares
+     * each value to ensure they did not change.
+     *
+     * @note Version 6
+     */
+    struct q_v6_unbinned : metric_test<model::metrics::q_metric, 6>
+    {
+        /** Build the expected metric set
+         *
+         * @return vector of metrics
+         */
+        static std::vector<metric_t> metrics()
+        {
+            std::vector<metric_t> expected_metrics;
+            typedef metric_t::uint_t uint_t;
+
+            std::vector<uint_t> hist_tmp(50, 0);
+
+            expected_metrics.push_back(metric_t(1, 1110, 1, hist_tmp));
+            expected_metrics.push_back(metric_t(1, 1110, 2, hist_tmp));
+            expected_metrics.push_back(metric_t(1, 1110, 3, hist_tmp));
+
+            return expected_metrics;
+        }
+        /** Get the expected metric set header
+         *
+         * @return expected metric set header
+         */
+        static header_t header()
+        {
+            typedef header_t::qscore_bin_vector_type qscore_bin_vector_type;
+            qscore_bin_vector_type headervec;
+            return header_t(headervec);
+        }
+        /** Get the expected binary data
+         *
+         * @return binary data string
+         */
+        static std::string binary_data()
+        {
+            const int tmp[] = {
+                    6,-50,0,1,0,86,4,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+                    ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+                    ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+                    ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+                    ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+                    ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+                    ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+                    ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,86,4,2
+                    ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+                    ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+                    ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+                    ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+                    ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+                    ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+                    ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+                    ,0,0,0,0,0,0,0,0,0,0,0,0,1,0,86,4,3,0,0,0,0,0,0,0,0,0
+                    ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+                    ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+                    ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+                    ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+                    ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+                    ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+                    ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+                    ,0,0,0
+            };
+            return to_string(tmp);
+        }
+    };
+
     /** Interface between fixtures and Google Test */
     template<typename TestSetup>
     struct q_metrics_test : public ::testing::Test, public TestSetup { };
