@@ -36,9 +36,6 @@ EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 // Ignore methods
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-%ignore confusion_matrix;
-%ignore focus_score_matrix;
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Wrap the base metrics
@@ -48,7 +45,6 @@ EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 #include "interop/util/time.h"
 %}
 
-%ignore metric_group_iuo;
 %ignore set_base(const io::layout::base_metric& base);
 %ignore set_base(const io::layout::base_cycle_metric& base);
 %ignore set_base(const io::layout::base_read_metric& base);
@@ -131,6 +127,9 @@ WRAP_METRICS(IMPORT_METRIC_WRAPPER)
 %template(cycle_metric_map) std::map< uint64_t, illumina::interop::model::metric_base::base_cycle_metric >;
 %template(read_metric_vector) std::vector< illumina::interop::model::metrics::read_metric >;
 %template(q_score_bin_vector) std::vector< illumina::interop::model::metrics::q_score_bin >;
+%template(metric_type_vector) std::vector< illumina::interop::constants::metric_type>;
+%template(metric_group_vector) std::vector< illumina::interop::constants::metric_group>;
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
