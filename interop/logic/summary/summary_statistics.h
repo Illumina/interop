@@ -167,6 +167,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
     template<typename I, typename S, typename BinaryOp, typename Compare>
     size_t nan_summarize(I beg, I end, S &stat, BinaryOp op, Compare comp)
     {
+        stat.clear();
         if (beg == end) return 0;
         end = util::remove_nan(beg, end, op);
         if (beg == end) return 0;

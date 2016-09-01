@@ -94,7 +94,14 @@ int main(int argc, const char** argv)
         return INVALID_ARGUMENTS;
     }
     std::vector<unsigned char> valid_to_load;
-    logic::utils::list_metrics_to_load(metric_name, valid_to_load); // Only load the InterOp files required
+    try{
+        logic::utils::list_metrics_to_load(metric_name, valid_to_load); // Only load the InterOp files required
+    }
+    catch(const std::exception& ex)
+    {
+        std::cerr << ex.what() << std::endl;
+        return INVALID_ARGUMENTS;
+    }
 
     for(int i=1;i<argc;i++)
     {

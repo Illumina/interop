@@ -1,5 +1,16 @@
 # Changes                                               {#changes}
 
+## v1.0.10
+
+Date       | Description
+---------- | -----------
+2016-09-01 | Bug fix clearing the summary stat prior to setting it
+2016-09-01 | Fixed a bug in QMetrics V6 Unbinned, added unit test and C# example
+2016-08-31 | IPA-5069: Flush out on demand loading further for each tab
+2016-08-30 | Various minor fixes to get public working with Clang3.4 and MSVC12
+2016-08-30 | Bug fix to RunInfo section validation
+2016-08-30 | IPA-5069: Support on demand loading for SAV (Part 1)
+2016-08-26 | IPA-5028: Add RunInfo and InterOp validation
 
 ## v1.0.9
 
