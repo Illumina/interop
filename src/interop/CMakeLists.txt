@@ -25,8 +25,7 @@ set(SRCS
         logic/table/create_imaging_table_columns.cpp
         logic/table/create_imaging_table.cpp
         util/time.cpp
-        util/filesystem.cpp
-        )
+        util/filesystem.cpp logic/utils/metrics_to_load.cpp)
 
 set(HEADERS
         ../../interop/model/summary/cycle_state_summary.h
@@ -137,7 +136,7 @@ set(HEADERS
         ../../interop/logic/table/table_util.h
         ../../interop/io/table/imaging_table_csv.h
         ../../interop/logic/table/check_imaging_table_column.h
-        ../../interop/logic/table/table_populator.h)
+        ../../interop/logic/table/table_populator.h ../../interop/logic/utils/metrics_to_load.h)
 
 set(INTEROP_HEADERS ${HEADERS} PARENT_SCOPE)
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR CMAKE_COMPILER_IS_GNUCC)

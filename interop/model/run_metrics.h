@@ -131,6 +131,25 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         model::index_out_of_bounds_exception,
         model::invalid_tile_naming_method,
         model::invalid_run_info_exception);
+        /** Read binary metrics and XML files from the run folder
+         *
+         * @param run_folder run folder path
+         * @param valid_to_load list of metrics to load
+         */
+        void read(const std::string &run_folder, const std::vector<unsigned char>& valid_to_load)
+        throw(xml::xml_file_not_found_exception,
+        xml::bad_xml_format_exception,
+        xml::empty_xml_format_exception,
+        xml::missing_xml_element_exception,
+        xml::xml_parse_exception,
+        io::file_not_found_exception,
+        io::bad_format_exception,
+        io::incomplete_file_exception,
+        io::format_exception,
+        model::index_out_of_bounds_exception,
+        model::invalid_tile_naming_method,
+        model::invalid_run_info_exception,
+        invalid_parameter);
 
         /** Read XML files: RunInfo.xml and possibly RunParameters.xml
          *
@@ -453,6 +472,37 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         io::file_not_found_exception,
         io::bad_format_exception,
         io::incomplete_file_exception);
+        /** Read binary metrics from the run folder
+         *
+         * This function ignores:
+         *  - Missing InterOp files
+         *  - Incomplete InterOp files
+         *  - Missing RunParameters.xml for non-legacy run folders
+         *
+         * @param run_folder run folder path
+         * @param valid_to_load list of metrics to load
+         * @param n number of elements in valid_to_load
+         */
+        void read_metrics(const std::string &run_folder, const unsigned char* valid_to_load, const size_t n) throw(
+        io::file_not_found_exception,
+        io::bad_format_exception,
+        io::incomplete_file_exception,
+        invalid_parameter);
+        /** Read binary metrics from the run folder
+         *
+         * This function ignores:
+         *  - Missing InterOp files
+         *  - Incomplete InterOp files
+         *  - Missing RunParameters.xml for non-legacy run folders
+         *
+         * @param run_folder run folder path
+         * @param valid_to_load list of metrics to load
+         */
+        void read_metrics(const std::string &run_folder, const std::vector<unsigned char>& valid_to_load) throw(
+        io::file_not_found_exception,
+        io::bad_format_exception,
+        io::incomplete_file_exception,
+        invalid_parameter);
         /** Write binary metrics to the run folder
          *
          * @param run_folder run folder path

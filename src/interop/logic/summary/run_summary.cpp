@@ -13,6 +13,7 @@
 #include "interop/logic/summary/quality_summary.h"
 #include "interop/logic/utils/channel.h"
 #include "interop/logic/metric/q_metric.h"
+#include "interop/util/length_of.h"
 
 
 namespace illumina { namespace interop { namespace logic { namespace summary
@@ -95,7 +96,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                                      summary);
 
         if(0 == metrics.get_set<q_collapsed_metric>().size())
-            logic::metric::create_collapse_q_metrics(metrics.get_set<model::metrics::q_metric>(),
+            logic::metric::create_collapse_q_metrics(metrics.get_set<q_metric>(),
                                                      metrics.get_set<q_collapsed_metric>());
         summarize_collapsed_quality_metrics(metrics.get_set<q_collapsed_metric>().begin(),
                                             metrics.get_set<q_collapsed_metric>().end(),

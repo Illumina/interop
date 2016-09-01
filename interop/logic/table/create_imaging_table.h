@@ -46,4 +46,10 @@ namespace illumina { namespace interop { namespace logic { namespace table
     void create_imaging_table(const model::metrics::run_metrics& metrics, model::table::imaging_table& table)
     throw(model::invalid_column_type, model::index_out_of_bounds_exception);
 
+    /** List the required on demand metrics
+     *
+     * @param valid_to_load list of metrics to load on demand
+     */
+    void list_imaging_table_metrics_to_load(std::vector<unsigned char>& valid_to_load);
+
 }}}}

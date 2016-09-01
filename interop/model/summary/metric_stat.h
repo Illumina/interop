@@ -33,6 +33,16 @@ namespace illumina { namespace interop { namespace model { namespace summary
         }
 
     public:
+        /** Clear the stat variables
+         */
+        void clear()
+        {
+            m_mean = 0;
+            m_stddev = 0;
+            m_median = 0;
+        }
+
+    public:
         /** Set the mean value
          *
          * @param val mean value

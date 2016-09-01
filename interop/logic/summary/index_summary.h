@@ -9,6 +9,7 @@
 #include "interop/model/model_exceptions.h"
 #include "interop/model/summary/index_flowcell_summary.h"
 #include "interop/model/run_metrics.h"
+#include "interop/logic/utils/metrics_to_load.h"
 
 
 namespace illumina { namespace interop { namespace logic { namespace summary
@@ -47,6 +48,4 @@ namespace illumina { namespace interop { namespace logic { namespace summary
     void summarize_index_metrics(const model::metrics::run_metrics &metrics,
                                         model::summary::index_flowcell_summary &summary)
                                             throw(model::index_out_of_bounds_exception);
-
-
 }}}}

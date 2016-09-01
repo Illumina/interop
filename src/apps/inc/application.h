@@ -74,3 +74,49 @@ inline int read_run_metrics(const char* filename, illumina::interop::model::metr
     }
     return SUCCESS;
 }
+/** Read run metrics from the given filename
+ *
+ * This function handles many error conditions.
+ *
+ * @param filename run folder containing RunInfo.xml and InterOps
+ * @param metrics run metrics
+ * @param valid_to_load list of metrics that are valid to load
+ * @return exit code
+ */
+inline int read_run_metrics(const char* filename,
+                            illumina::interop::model::metrics::run_metrics& metrics,
+                            const std::vector<unsigned char>& valid_to_load)
+{
+    using namespace illumina::interop;
+    using namespace illumina::interop::model;
+    try
+    {
+        metrics.read(filename, valid_to_load);
+    }
+    catch(const xml::xml_file_not_found_exception& ex)
+    {
+        std::cerr << ex.what() << std::endl;
+        return MISSING_RUNINFO_XML;
+    }
+    catch(const xml::xml_parse_exception& ex)
+    {
+        std::cerr << ex.what() << std::endl;
+        return MALFORMED_XML;
+    }
+    catch(const io::bad_format_exception& ex)
+    {
+        std::cerr << ex.what() << std::endl;
+        return BAD_FORMAT;
+    }
+    catch(const std::exception& ex)
+    {
+        std::cerr << ex.what() << std::endl;
+        return UNEXPECTED_EXCEPTION;
+    }
+    if(metrics.empty())
+    {
+        std::cerr << "No InterOp files found" << std::endl;
+        return EMPTY_INTEROP;
+    }
+    return SUCCESS;
+}

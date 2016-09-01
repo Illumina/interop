@@ -26,7 +26,9 @@ typedef ::testing::Types<
         hardcoded_fixture<q_v5>,
         write_read_fixture<q_v5>,
         hardcoded_fixture<q_v6>,
-        write_read_fixture<q_v6>
+        write_read_fixture<q_v6>,
+        hardcoded_fixture<q_v6_unbinned>,
+        write_read_fixture<q_v6_unbinned>
 > Formats;
 TYPED_TEST_CASE(q_metrics_test, Formats);
 

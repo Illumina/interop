@@ -126,6 +126,7 @@ WRAP_METRICS(IMPORT_METRIC_WRAPPER)
 %template(uint_vector) std::vector< uint32_t >;
 %template(float_vector) std::vector< float >;
 %template(bool_vector) std::vector< bool >;
+%template(uchar_vector) std::vector< uint8_t >;
 %template(tile_metric_map) std::map< uint64_t, illumina::interop::model::metric_base::base_metric >;
 %template(cycle_metric_map) std::map< uint64_t, illumina::interop::model::metric_base::base_cycle_metric >;
 %template(read_metric_vector) std::vector< illumina::interop::model::metrics::read_metric >;
@@ -168,12 +169,14 @@ WRAP_METRICS(WRAP_METRIC_SET)
 #include "interop/logic/metric/q_metric.h"
 #include "interop/model/run_metrics.h"
 #include "interop/logic/utils/metric_type_ext.h"
+#include "interop/logic/utils/metrics_to_load.h"
 %}
 
 %include "interop/logic/metric/extraction_metric.h"
 %include "interop/logic/metric/q_metric.h"
 %include "interop/model/run_metrics.h"
 %include "interop/logic/utils/metric_type_ext.h"
+%include "interop/logic/utils/metrics_to_load.h"
 
 
 

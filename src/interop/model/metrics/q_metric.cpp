@@ -413,7 +413,8 @@ namespace illumina { namespace interop { namespace io
                 template<class Stream, class Metric, class Header>
                 static std::streamsize map_stream(Stream& stream, Metric& metric, Header& header, const bool)
                 {
-                    const std::streamsize count = stream_map< count_t >(stream, metric.m_qscore_hist, header.bin_count());
+                    const size_t bin_count = (header.bin_count() == 0) ? static_cast<size_t>(q_metric::MAX_Q_BINS) : header.bin_count();
+                    const std::streamsize count = stream_map< count_t >(stream, metric.m_qscore_hist, bin_count);
                     resize_accumulated(stream, metric);
                     return count;
                 }
@@ -423,7 +424,8 @@ namespace illumina { namespace interop { namespace io
                  */
                 static record_size_t compute_size(const q_metric::header_type& header)
                 {
-                    return static_cast<record_size_t>(sizeof(metric_id_t)+sizeof(count_t)*header.bin_count());
+                    const size_t bin_count = header.bin_count() == 0 ? static_cast<size_t>(q_metric::MAX_Q_BINS) : header.bin_count();
+                    return static_cast<record_size_t>(sizeof(metric_id_t)+sizeof(count_t)*bin_count);
                 }
                 /** Map reading/writing a header to a stream
                  *
