@@ -94,6 +94,17 @@ namespace Illumina.InterOp.Interop.UnitTest
             flowcell_data data = new flowcell_data();
             c_csharp_plot.plot_flowcell_map(run, "NoMetric", options, data);
 		}
+		/// <summary>
+		/// Test whether you can load metrics specific to flowcell layout
+		/// </summary>
+		[Test]
+		public void TestListFlowMetrics()
+		{
+		    var interopsToLoad = new uchar_vector();
+		    var types = new metric_type_vector();
+		    c_csharp_plot.list_flowcell_metrics(types);
+		    c_csharp_metrics.list_metrics_to_load(types, interopsToLoad);
+		}
 	}
 }
 
