@@ -62,9 +62,9 @@ TYPED_TEST(error_metrics_test, test_tile_metric_count_for_lane)
 TEST(run_metrics_error_test, test_is_group_empty)
 {
     run_metrics metrics;
-    std::istringstream fin(error_v3::binary_data());
     EXPECT_TRUE(metrics.is_group_empty(constants::Error));
-    io::read_metrics(fin, metrics.get_set<error_metric>());
+    io::read_interop_from_string(error_v3::binary_data(),
+                                 metrics.get_set<error_metric>());
     EXPECT_FALSE(metrics.is_group_empty(constants::Error));
 }
 

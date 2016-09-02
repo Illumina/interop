@@ -11,6 +11,7 @@
 #include <algorithm>
 #include "interop/model/summary/run_summary.h"
 #include "interop/io/format/metric_format_factory.h"
+#include "interop/io/format/default_layout.h"
 
 using namespace illumina::interop::model::summary;
 using namespace illumina::interop;

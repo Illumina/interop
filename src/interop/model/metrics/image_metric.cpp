@@ -11,6 +11,8 @@
 #include <algorithm>
 #include "interop/model/metrics/image_metric.h"
 #include "interop/io/format/metric_format_factory.h"
+#include "interop/io/format/default_layout.h"
+#include "interop/io/format/metric_format.h"
 
 using namespace illumina::interop::model::metrics;
 
@@ -29,7 +31,7 @@ namespace illumina { namespace interop { namespace io
              *      2. Version: 1
              */
             template<>
-            struct generic_layout<image_metric, 1> : public default_layout<1>
+            struct generic_layout<image_metric, 1> : public default_layout<1, 1 /*Multi record */>
             {
                 /** @page image_v1 Image Version 1
                  *
@@ -91,6 +93,11 @@ namespace illumina { namespace interop { namespace io
                     metric.m_min_contrast[rec.channel] = rec.min_contrast;
                     metric.m_max_contrast[rec.channel] = rec.max_contrast;
                     return count;
+                }
+                template<class Metric, class Header>
+                static std::streamsize map_stream(const char*, Metric&, Header&, const bool)
+                {
+                    INTEROP_THROW(std::runtime_error, "This function should not be called");
                 }
                 /** Write metric to the output stream
                  *

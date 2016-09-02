@@ -13,6 +13,8 @@
 #include "interop/util/assert.h"
 #include "interop/model/metrics/q_collapsed_metric.h"
 #include "interop/io/format/metric_format_factory.h"
+#include "interop/io/format/default_layout.h"
+#include "interop/io/format/metric_format.h"
 
 using namespace illumina::interop::model::metrics;
 
@@ -30,7 +32,7 @@ namespace illumina{ namespace interop{ namespace io {
      *      2. Version: 2
      */
     template<>
-    struct generic_layout<q_collapsed_metric, 2> : public default_layout<2>
+    struct generic_layout<q_collapsed_metric, 2> : public default_layout<2, 1 /*Tmp hack */>
     {
         /** @page q_collapsed_v2 Collapsed Q-Metrics Version 2
          *
@@ -165,8 +167,16 @@ namespace illumina{ namespace interop{ namespace io {
             return static_cast<record_size_t>(ALT_RECORD_SIZE);
         }
     private:
+        static bool is_output(const char*){return false;}
         static bool is_output(std::istream&){return false;}
         static bool is_output(std::ostream&){return true;}
+        static void test_incomplete(const char*, const std::streamsize extra)
+        {
+            if(static_cast<size_t>(extra) != sizeof(median_t) )
+                INTEROP_THROW( incomplete_file_exception, "Insufficient data read from the file, got: " <<
+                                                          extra << " != expected: " <<
+                                                          sizeof(median_t) );
+        }
         static void test_incomplete(std::istream&, const std::streamsize extra)
         {
             if(static_cast<size_t>(extra) != sizeof(median_t) )
@@ -177,6 +187,11 @@ namespace illumina{ namespace interop{ namespace io {
         static void test_incomplete(std::ostream&, const std::streamsize ){}
         template<class Header>
         static void set_record_size(std::istream&, Header& header, const record_size_t record_size)
+        {
+            header.m_record_size = record_size;
+        }
+        template<class Header>
+        static void set_record_size(const char*, Header& header, const record_size_t record_size)
         {
             header.m_record_size = record_size;
         }
@@ -292,7 +307,7 @@ namespace illumina{ namespace interop{ namespace io {
      *      2. Version: 5
      */
     template<>
-    struct generic_layout<q_collapsed_metric, 5> : public default_layout<5>
+    struct generic_layout<q_collapsed_metric, 5> : public default_layout<5, 1 /*Tmp hack */>
     {
         /** @page q_collapsed_v5 Collapsed Q-Metrics Version 5
          *
@@ -368,17 +383,20 @@ namespace illumina{ namespace interop{ namespace io {
          * @return number of bytes read or total number of bytes written
          */
         template<class Stream, class Metric, class Header>
-        static std::streamsize map_stream(Stream &stream, Metric &metric, Header & header, const bool) {
+        static std::streamsize map_stream(Stream &stream, Metric &metric, Header & header, const bool)
+        {
             std::streamsize count = 0;
             count += stream_map<count_t>(stream, metric.m_q20);
             count += stream_map<count_t>(stream, metric.m_q30);
             count += stream_map<count_t>(stream, metric.m_total);
-            if (header.m_record_size == ALT_RECORD_SIZE || is_output(stream)) {
-                std::streamsize extra = stream_map<median_t>(stream, metric.m_median_qscore);
+            if (header.m_record_size == ALT_RECORD_SIZE || is_output(stream))
+            {
+                const std::streamsize extra = stream_map<median_t>(stream, metric.m_median_qscore);
                 test_incomplete(stream, extra);
                 count += extra;
             }
-            else {
+            else
+            {
                 if (count != TOTAL_RECORD_SIZE)
                     INTEROP_THROW(incomplete_file_exception, "Insufficient data read from the file, got: " <<
                                                              count << " != expected: " << TOTAL_RECORD_SIZE);
@@ -451,8 +469,16 @@ namespace illumina{ namespace interop{ namespace io {
             return static_cast<record_size_t>(ALT_RECORD_SIZE);
         }
     private:
+        static bool is_output(const char*){return false;}
         static bool is_output(std::istream&){return false;}
         static bool is_output(std::ostream&){return true;}
+        static void test_incomplete(const char*, const std::streamsize extra)
+        {
+            if(static_cast<size_t>(extra) != sizeof(median_t) )
+                INTEROP_THROW( incomplete_file_exception, "Insufficient data read from the file, got: " <<
+                                                          extra << " != expected: " <<
+                                                          sizeof(median_t) );
+        }
         static void test_incomplete(std::istream&, const std::streamsize extra)
         {
             if(static_cast<size_t>(extra) != sizeof(median_t) )
@@ -461,6 +487,11 @@ namespace illumina{ namespace interop{ namespace io {
                                                 sizeof(median_t) );
         }
         static void test_incomplete(std::ostream&, const std::streamsize ){}
+        template<class Header>
+        static void set_record_size(const char*, Header& header, const record_size_t record_size)
+        {
+            header.m_record_size = record_size;
+        }
         template<class Header>
         static void set_record_size(std::istream&, Header& header, const record_size_t record_size)
         {

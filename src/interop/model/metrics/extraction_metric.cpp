@@ -11,6 +11,8 @@
 #include "interop/util/math.h"
 #include "interop/model/metrics/extraction_metric.h"
 #include "interop/io/format/metric_format_factory.h"
+#include "interop/io/format/default_layout.h"
+#include "interop/io/format/metric_format.h"
 
 using namespace illumina::interop::model::metrics;
 
@@ -87,7 +89,7 @@ namespace illumina { namespace interop { namespace io
                 {
                     std::streamsize count = 0;
                     count += stream_map< focus_t >(stream, metric.m_focus_scores, extraction_metric::MAX_CHANNELS);
-                    if(stream.good())
+                    if(stream)
                         set_nan_to_zero(stream, metric.m_focus_scores);// TODO: Remove and rebaseline regression tests
                     count += stream_map< intensity_t >(stream, metric.m_max_intensity_values, extraction_metric::MAX_CHANNELS);
                     count += stream_map< datetime_t >(stream, metric.m_date_time_csharp.value);
@@ -119,6 +121,10 @@ namespace illumina { namespace interop { namespace io
                 static void convert_datetime(std::ostream&, const extraction_metric&)
                 {
                 }
+                static void convert_datetime(const char*, extraction_metric& metric)
+                {
+                    metric.m_date_time = metric.m_date_time_csharp.to_unix();
+                }
                 static void convert_datetime(std::istream& in, extraction_metric& metric)
                 {
                     if(in.fail()) return;
@@ -129,6 +135,11 @@ namespace illumina { namespace interop { namespace io
 
                 }
                 static void set_nan_to_zero(std::istream&, std::vector<float>& vals)
+                {
+                    for(size_t i=0;i<vals.size();++i)
+                        if(std::isnan(vals[i])) vals[i] = 0;
+                }
+                static void set_nan_to_zero(const char*, std::vector<float>& vals)
                 {
                     for(size_t i=0;i<vals.size();++i)
                         if(std::isnan(vals[i])) vals[i] = 0;

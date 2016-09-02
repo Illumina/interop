@@ -9,6 +9,8 @@
  */
 #pragma once
 #include "interop/util/exception.h"
+#include "interop/util/filesystem.h"
+#include "interop/io/format/stream_membuf.h"
 #include "interop/io/metric_stream.h"
 
 namespace illumina { namespace interop { namespace io
@@ -69,7 +71,26 @@ namespace illumina { namespace interop { namespace io
     {
         detail::membuf sbuf(reinterpret_cast<char*>(buffer), reinterpret_cast<char*>(buffer) + buffer_size);
         std::istream in(&sbuf);
-        read_metrics(in, metrics);
+        read_metrics(in, metrics, buffer_size);
+    }
+    /** Read the binary InterOp file into the given metric set
+     *
+     * @param buffer string holding a byte buffer
+     * @param metrics metric set
+     * @throw bad_format_exception
+     * @throw incomplete_file_exception
+     * @throw model::index_out_of_bounds_exception
+     */
+    template<class MetricSet>
+    void read_interop_from_string(const std::string& buffer, MetricSet& metrics)  throw
+    (interop::io::file_not_found_exception,
+    interop::io::bad_format_exception,
+    interop::io::incomplete_file_exception,
+    model::index_out_of_bounds_exception)
+    {
+        detail::membuf sbuf(const_cast<char*>(buffer.c_str()), const_cast<char*>(buffer.c_str()) + buffer.length());
+        std::istream in(&sbuf);
+        read_metrics(in, metrics, buffer.length());
     }
     /** Read the binary InterOp file into the given metric set
      *
@@ -95,7 +116,7 @@ namespace illumina { namespace interop { namespace io
         const std::string file_name = interop_filename<MetricSet>(run_directory, use_out);
         std::ifstream fin(file_name.c_str(), std::ios::binary);
         if(!fin.good()) INTEROP_THROW(file_not_found_exception, "File not found: " << file_name);
-        read_metrics(fin, metrics);
+        read_metrics(fin, metrics, file_size(file_name));
     }
     /** Check for the existence of the binary InterOp file into the given metric set
      *

@@ -89,8 +89,8 @@ TEST(run_metrics_error_metric_test, test_is_group_empty)
 {
     run_metrics metrics;
     EXPECT_TRUE(metrics.is_group_empty(constants::Error));
-    std::istringstream fin(error_metric_v3::binary_data());
-    io::read_metrics(fin, metrics.get_set<error_metric>());
+    io::read_interop_from_string(error_v3::binary_data(),
+                                 metrics.get_set<error_metric>());
     EXPECT_FALSE(metrics.is_group_empty(constants::Error));
 }
 

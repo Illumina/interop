@@ -6,7 +6,6 @@
  *  @copyright GNU Public License.
  */
 #pragma once
-
 #include <stdexcept>
 
 #ifdef _MSC_VER

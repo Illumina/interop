@@ -7,6 +7,10 @@
  *  @copyright GNU Public License.
  */
 #pragma once
+#ifdef _MSC_VER
+#pragma warning(disable:4702) // MSVC warns that there is unreachable code
+#endif
+
 
 #include "interop/util/exception.h"
 #include "interop/io/format/abstract_metric_format.h"
@@ -26,6 +30,10 @@ namespace illumina { namespace interop { namespace io
     template<class Metric, class Layout>
     struct metric_format : public abstract_metric_format<Metric>
     {
+    private:
+        typedef typename Metric::id_t id_t;
+        typedef std::map<id_t, size_t> offset_map_t;
+    public:
         /** Define the metric type */
         typedef Metric metric_t;
         /** Define the metric header type */
@@ -62,6 +70,42 @@ namespace illumina { namespace interop { namespace io
             Layout::map_stream(out, metric, header, false);
         }
 
+        /** Read all the metrics into a metric set
+         *
+         * @param in input stream
+         * @param metric_set destination set of metrics
+         * @param file_size size of the file
+         */
+        void read_metrics(std::istream& in, model::metric_base::metric_set<Metric>& metric_set, const size_t file_size)
+        {
+            const std::streamsize record_size = read_header(in, metric_set);
+            offset_map_t metric_offset_map;
+            metric_t metric(metric_set);
+            if(file_size > 0 && !Layout::MULTI_RECORD)
+            {
+                const size_t record_count = (file_size-header_size(metric_set))/record_size;
+                metric_set.resize(record_count);
+                std::vector<char> buffer(record_size);
+                while (in)
+                {
+                    char *in_ptr = &buffer.front();
+                    in.read(in_ptr, record_size);
+                    const std::streamsize count = in.gcount();
+                    // TODO: buffer up multiple records
+                    if(!test_stream(in, metric_offset_map, count, record_size)) break;
+                    read_record(in_ptr, metric_set, metric_offset_map, metric, record_size);
+                }
+            }
+            else
+            {
+                while (in)
+                {
+                    read_record(in, metric_set, metric_offset_map, metric, record_size);
+                }
+            }
+
+
+        }
         /** Read a metric set from the given input stream
          *
          * @param in input stream containing binary InterOp file data
@@ -70,14 +114,20 @@ namespace illumina { namespace interop { namespace io
          */
         std::streamsize read_header(std::istream &in, header_t &header)
         {
+            // TODO: optimize header reading with block read
             if (in.fail())
                 INTEROP_THROW(incomplete_file_exception, "Insufficient header data read from the file");
 
-            //if we're not actually reading the record size from the stream (the stream position is the same before and after),
+            //if we're not actually reading the record size from the stream
+            // (the stream position is the same before and after),
             // then don't compare the layout size against the record size
             const ::int64_t stream_position_pre_record_check = in.tellg();
             const std::streamsize record_size = Layout::map_stream_record_size(in,
                                                                                static_cast<record_size_t>(0));
+            if(record_size==0)
+            {
+                INTEROP_THROW(bad_format_exception, "Record size cannot be 0");
+            }
             const ::int64_t stream_position_post_record_check = in.tellg();
             Layout::map_stream_for_header(in, header);
 
@@ -91,20 +141,6 @@ namespace illumina { namespace interop { namespace io
                                            Metric::prefix() <<  " "  << Metric::suffix()  <<  " v"  <<
                                            Layout::VERSION);
             return layout_size;
-        }
-
-        /** Read a metric set from the given input stream
-         *
-         * @param in input stream containing binary InterOp file data
-         * @param metric metric
-         * @return number of bytes in the record
-         */
-        std::streamsize read_metric_id(std::istream &in, metric_t &metric)
-        {
-            metric_id_t id;
-            read_binary(in, id);
-            metric.set_base(id);
-            return in.gcount();
         }
 
         /** Calculate the size of a record
@@ -127,19 +163,6 @@ namespace illumina { namespace interop { namespace io
             return static_cast<size_t>(Layout::compute_header_size(header));
         }
 
-        /** Read a metric set from the given input stream
-         *
-         * @param in input stream containing binary InterOp file data
-         * @param metric metric
-         * @param header metric header
-         * @param is_new the metric does not already exist in the set
-         * @return number of bytes in the record
-         */
-        std::streamsize read_metric(std::istream &in, metric_t &metric, const header_t &header, const bool is_new)
-        {
-            return Layout::map_stream(in, metric, header, is_new);
-        }
-
         /** Get the version of this metric format
          *
          * @return version number
@@ -147,6 +170,69 @@ namespace illumina { namespace interop { namespace io
         ::int16_t version() const
         {
             return static_cast< ::int16_t >(Layout::VERSION);
+        }
+
+    private:
+        static bool test_stream(std::istream& in,
+                         const offset_map_t& metric_offset_map,
+                         const std::streamsize count,
+                         const std::streamsize record_size)
+        {
+            if (in.fail())
+            {
+                if (count == 0 && !metric_offset_map.empty()) return false;
+                INTEROP_THROW(incomplete_file_exception, "Insufficient data read from the file, got: " << count
+                                                         << " != expected: " << record_size);
+            }
+            return true;
+        }
+        static bool test_stream(const char*, const offset_map_t&, const std::streamsize, const std::streamsize)
+        {return true;}
+        template<typename InputStream>
+        static void read_record(InputStream& in,
+                         model::metric_base::metric_set<Metric>& metric_set,
+                         offset_map_t& metric_offset_map,
+                         metric_t& metric,
+                         const std::streamsize record_size)
+        {
+            metric_id_t id;
+
+            const std::streamsize read_byte_count = read_binary_with_count (in, id);
+            if(!test_stream(in, metric_offset_map, read_byte_count, record_size)) return;
+            std::streamsize count=read_byte_count;
+            if (id.is_valid(metric_t::CHECK_TILE_ID))
+            {
+                metric.set_base(id);// TODO replace with static call
+                if (metric_offset_map.find(metric.id()) == metric_offset_map.end())
+                {
+                    const size_t offset = metric_offset_map.size();
+                    if(offset>= metric_set.size()) metric_set.resize(offset+1);
+                    metric_set.at(offset).set_base(id);
+                    count += Layout::map_stream(in, metric_set.at(offset), metric_set, true);
+                    if(metric_set.at(offset).id()==0)//Avoid adding control lanes
+                    {
+                        metric_set.resize(offset);
+                    }
+                    else metric_offset_map[metric.id()] = offset;
+                }
+                else
+                {
+                    const size_t offset = metric_offset_map[metric.id()];
+                    INTEROP_ASSERTMSG(metric_set.at(offset).lane() != 0, offset);
+                    count += Layout::map_stream(in, metric_set.at(offset), metric_set, false);
+                    INTEROP_ASSERT(metric_set.at(offset).id()>0);
+                }
+            }
+            else
+            {
+                count += Layout::map_stream(in, metric, metric_set, true);
+                //TODO: replace with skip function
+            }
+            if(!test_stream(in, metric_offset_map, count, record_size)) return;
+            if (count != record_size)
+            {
+                INTEROP_THROW(bad_format_exception, "Record does not match expected size!");
+            }
         }
     };
 }}}

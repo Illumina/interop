@@ -118,8 +118,8 @@ TEST(run_metrics_q_test, test_is_group_empty)
 {
     run_metrics metrics;
     EXPECT_TRUE(metrics.is_group_empty(constants::Q));
-    std::istringstream fin(q_v4::binary_data());
-    io::read_metrics(fin, metrics.get_set<q_metric>());
+    io::read_interop_from_string(q_v4::binary_data(),
+                                 metrics.get_set<q_metric>());
     EXPECT_FALSE(metrics.is_group_empty(constants::Q));
 }
 

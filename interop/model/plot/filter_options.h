@@ -6,6 +6,10 @@
  *  @copyright GNU Public License.
  */
 #pragma once
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable:4290)// MSVC warns that it ignores the exception specification.
+#endif
 
 #include "interop/model/metric_base/base_metric.h"
 #include "interop/util/lexical_cast.h"
@@ -80,7 +84,9 @@ namespace illumina { namespace interop { namespace model { namespace plot
     public:
         /** Test if the filter options are valid, if not throw an exception
          */
-        void validate(const constants::metric_type type, const run::info& run_info, const bool check_ignored=false)const throw(model::invalid_filter_option)
+        void validate(const constants::metric_type type,
+                      const run::info& run_info,
+                      const bool check_ignored=false)const throw(model::invalid_filter_option)
         {
             if(m_naming_method == constants::UnknownTileNamingMethod)
                 INTEROP_THROW(model::invalid_filter_option, "Invalid tile naming method: Unknown");
@@ -589,3 +595,6 @@ namespace illumina { namespace interop { namespace model { namespace plot
 
 
 }}}}
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif

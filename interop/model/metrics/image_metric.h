@@ -109,6 +109,16 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                 m_max_contrast(MAX_CHANNELS, 0),
                 m_channel_count(0)
         { }
+        /** Constructor
+         *
+         * @param header metric set header
+         */
+        image_metric(const header_type& header) :
+                metric_base::base_cycle_metric(0, 0, 0),
+                m_min_contrast(header.channel_count(), 0),
+                m_max_contrast(header.channel_count(), 0),
+                m_channel_count(0)
+        { }
 
         /** Constructor
          *

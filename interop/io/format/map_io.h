@@ -37,6 +37,16 @@ namespace illumina { namespace interop { namespace io
     {
         dst = src;
     }
+    /** Copy from the destination to the source
+     *
+     * @param dst destination
+     * @param src source
+     */
+    template<typename Source, typename Destination>
+    void copy_from(const char*, Destination &dst, const Source &src)
+    {
+        dst = src;
+    }
 
     /** Read a value of type ReadType from the given input stream
      *
@@ -52,6 +62,107 @@ namespace illumina { namespace interop { namespace io
         val = static_cast<ValueType>(read_val);
         return in.gcount();
     }
+    /** Read a value of type ReadType from the given input stream
+     *
+     * @param in input stream
+     * @param val destination value
+     * @return number of characters read
+     */
+    template<typename ReadType, typename ValueType>
+    std::streamsize stream_map(char*& in, ValueType &val)
+    {
+        ReadType read_val;
+        read_binary(in, read_val);
+        val = static_cast<ValueType>(read_val);
+        return sizeof(ReadType);
+    }
+
+    /** Helper to read an array
+     */
+    template<typename ReadType, typename ValueType, bool SameSize=sizeof(ReadType)==sizeof(ValueType)>
+    struct read_array_helper
+    {
+        /** Read an array of values of type ReadType from the given input stream
+         *
+         * TODO: create more efficient buffered version
+         *
+         * @param in input stream
+         * @param vals destination array of values
+         * @param n number of values to read
+         * @param offset offset into the destination array
+         * @return number of bytes read from the stream
+         */
+        static std::streamsize read_array_from_stream(std::istream &in, ValueType* vals, const size_t n, const size_t offset=0)
+        {
+            std::streamsize tot = 0;
+            for (size_t i = 0; i < n; i++)
+            {
+                ReadType read_val;
+                read_binary(in, read_val);
+                vals[offset + i] = read_val;
+                tot += in.gcount();
+            }
+            return tot;
+        }
+        /** Read an array of values of type ReadType from the given input stream
+         *
+         * TODO: create more efficient buffered version
+         *
+         * @param in input stream
+         * @param vals destination array of values
+         * @param n number of values to read
+         * @param offset offset into the destination array
+         * @return number of bytes read from the stream
+         */
+        static std::streamsize read_array_from_stream(char* &in, ValueType* vals, const size_t n, const size_t offset=0)
+        {
+            for (size_t i = 0; i < n; i++)
+            {
+                ReadType read_val;
+                read_binary(in, read_val);
+                vals[offset + i] = read_val;
+            }
+            return n*sizeof(ReadType);
+        }
+    };
+    /** Helper to read an array
+     *
+     * Specialization for when ReadType and ValueType are the same size
+     */
+    template<typename ReadType, typename ValueType>
+    struct read_array_helper<ReadType, ValueType, true>
+    {
+        /** Read an array of values of type ReadType from the given input stream
+         *
+         * TODO: create more efficient buffered version
+         *
+         * @param in input stream
+         * @param vals destination array of values
+         * @param n number of values to read
+         * @param offset offset into the destination array
+         * @return number of bytes read from the stream
+         */
+        static std::streamsize read_array_from_stream(std::istream &in, ValueType* vals, const size_t n, const size_t offset=0)
+        {
+            read_binary(in, vals+offset, n);
+            return in.gcount();
+        }
+        /** Read an array of values of type ReadType from the given input stream
+         *
+         * TODO: create more efficient buffered version
+         *
+         * @param in input stream
+         * @param vals destination array of values
+         * @param n number of values to read
+         * @param offset offset into the destination array
+         * @return number of bytes read from the stream
+         */
+        static std::streamsize read_array_from_stream(char* &in, ValueType* vals, const size_t n, const size_t offset=0)
+        {
+            read_binary(in, vals+offset, n);
+            return n*sizeof(ReadType);
+        }
+    };
 
     /** Read an array of values of type ReadType from the given input stream
      *
@@ -63,18 +174,27 @@ namespace illumina { namespace interop { namespace io
      * @return number of bytes read from the stream
      */
     template<typename ReadType, typename ValueType>
-    std::streamsize stream_map(std::istream &in, ValueType &vals, const size_t n)
+    std::streamsize stream_map(std::istream &in, std::vector<ValueType>&vals, const size_t n)
     {
-        std::streamsize tot = 0;
         vals.resize(n);
-        for (size_t i = 0; i < n; i++)
-        {
-            ReadType read_val;
-            read_binary(in, read_val);
-            vals[i] = read_val;
-            tot += in.gcount();
-        }
-        return tot;
+        return read_array_helper<ReadType,ValueType>::read_array_from_stream(in, &vals.front(), n);
+    }
+
+
+    /** Read an array of values of type ReadType from the given input stream
+     *
+     * TODO: create more efficient buffered version
+     *
+     * @param in input stream
+     * @param vals destination array of values
+     * @param n number of values to read
+     * @return number of bytes read from the stream
+     */
+    template<typename ReadType, typename ValueType>
+    std::streamsize stream_map(char*& in, std::vector<ValueType>&vals, const size_t n)
+    {
+        vals.resize(n);
+        return read_array_helper<ReadType,ValueType>::read_array_from_stream(in, &vals.front(), n);
     }
 
     /** Read an array of values of type ReadType from the given input stream
@@ -88,18 +208,27 @@ namespace illumina { namespace interop { namespace io
      * @return number of bytes read from the stream
      */
     template<typename ReadType, typename ValueType>
-    std::streamsize stream_map(std::istream &in, ValueType &vals, const size_t offset, const size_t n)
+    std::streamsize stream_map(std::istream &in, std::vector<ValueType> &vals, const size_t offset, const size_t n)
     {
-        std::streamsize tot = 0;
         vals.resize(offset + n);
-        for (size_t i = 0; i < n; i++)
-        {
-            ReadType read_val;
-            read_binary(in, read_val);
-            vals[offset + i] = read_val;
-            tot += in.gcount();
-        }
-        return tot;
+        return read_array_helper<ReadType,ValueType>::read_array_from_stream(in, &vals.front(), n, offset);
+    }
+
+    /** Read an array of values of type ReadType from the given input stream
+     *
+     * TODO: create more efficient buffered version
+     *
+     * @param in input stream
+     * @param vals destination array of values
+     * @param offset starting index of values to copy to in vals
+     * @param n number of values to read
+     * @return number of bytes read from the stream
+     */
+    template<typename ReadType, typename ValueType>
+    std::streamsize stream_map(char*& in, std::vector<ValueType> &vals, const size_t offset, const size_t n)
+    {
+        vals.resize(offset + n);
+        return read_array_helper<ReadType,ValueType>::read_array_from_stream(in, &vals.front(), n, offset);
     }
 
     /** Read an array of values of type ReadType from the given input stream
@@ -114,15 +243,22 @@ namespace illumina { namespace interop { namespace io
     template<typename ReadType, typename ValueType, size_t N>
     std::streamsize stream_map(std::istream &in, ValueType (&vals)[N], const size_t n)
     {
-        std::streamsize tot = 0;
-        for (size_t i = 0; i < n; i++)
-        {
-            ReadType read_val;
-            read_binary(in, read_val);
-            vals[i] = read_val;
-            tot += in.gcount();
-        }
-        return tot;
+        return read_array_helper<ReadType,ValueType>::read_array_from_stream(in, vals, n);
+    }
+
+    /** Read an array of values of type ReadType from the given input stream
+     *
+     * TODO: create more efficient buffered version
+     *
+     * @param in input stream
+     * @param vals destination array of values
+     * @param n number of values in array
+     * @return number of bytes read from the stream
+     */
+    template<typename ReadType, typename ValueType, size_t N>
+    std::streamsize stream_map(char* &in, ValueType (&vals)[N], const size_t n)
+    {
+        return read_array_helper<ReadType,ValueType>::read_array_from_stream(in, vals, n);
     }
 
     /** Write a value of type ReadType to the given output stream

@@ -11,10 +11,12 @@
 #include <istream>
 #include <cstddef>
 #include <vector>
+#include <cstring>
 #include "interop/util/exception.h"
 #include "interop/io/stream_exceptions.h"
 #include "interop/util/lexical_cast.h"
 #include "interop/util/cstdint.h"
+#include "interop/io/format/stream_membuf.h"
 
 namespace illumina { namespace interop { namespace io
 {
@@ -40,6 +42,54 @@ namespace illumina { namespace interop { namespace io
     void read_binary(std::istream &in, T &buffer)
     {
         read_binary(in, &buffer, 1);
+    }
+    /** Read an array of data from an input stream
+     *
+     * @param in input stream
+     * @param buffer array of data
+     * @param n number of elements in the array
+     */
+    template<class T>
+    void read_binary(char*& in, T *buffer, const size_t n)
+    {
+        std::memcpy(reinterpret_cast<char *>(buffer), in, n * sizeof(T));
+        in+=n * sizeof(T);
+    }
+    /** Read an value of binary data from an input stream
+     *
+     * @param in input stream
+     * @param buffer destination
+     */
+    template<class T>
+    void read_binary(char*& in, T &buffer)
+    {
+        read_binary(in, &buffer, 1);
+    }
+
+    /** Read binary and return a count
+     *
+     * @param in input stream
+     * @param buffer destination
+     * @return number of bytes read
+     */
+    template<class T>
+    std::streamsize read_binary_with_count(std::istream &in, T &buffer)
+    {
+        read_binary(in, &buffer, 1);
+        return in.gcount();
+    }
+
+    /** Read binary and return
+     *
+     * @param in input stream
+     * @param buffer destination
+     * @return number of bytes read
+     */
+    template<class T>
+    std::streamsize read_binary_with_count(char*& in, T &buffer)
+    {
+        read_binary(in, &buffer, 1);
+        return static_cast<std::streamsize >(sizeof(T));
     }
 
     /** Read an value of binary data from an input stream

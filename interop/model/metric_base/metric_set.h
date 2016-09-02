@@ -99,13 +99,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
                 m_version(version),
                 m_data_source_exists(false)
         {
-            size_t offset = 0;
-            for (typename metric_array_t::const_iterator b = vec.begin(), e = vec.end(); b != e; ++b)
-            {
-                m_id_map[b->id()] = offset;
-                ++offset;
-                T::header_type::update_max_cycle(*b);
-            }
+            rebuild_index();
         }
 
     public:
@@ -162,6 +156,43 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         }
 
     public:
+        /** Rebuild the index map and update the cycle state
+         */
+        void rebuild_index()
+        {
+            size_t offset = 0;
+            for (const_iterator b = m_data.begin(), e = m_data.end(); b != e; ++b)
+            {
+                INTEROP_ASSERT(b->id()>0);
+                m_id_map[b->id()] = offset;
+                ++offset;
+                T::header_type::update_max_cycle(*b);
+            }
+        }
+        /** Swap the contents of the internal vector with an external vector
+         *
+         * @param dest source or destination vector
+         */
+        void swap(metric_array_t& dest)
+        {
+            m_data.swap(dest);
+        }
+        /** Resert the number of places in the metric vector
+         *
+         * @param n expected number of elements
+         */
+        void reserve(const size_t n)
+        {
+            m_data.reserve(n);
+        }
+        /** Resert the number of places in the metric vector
+         *
+         * @param n expected number of elements
+         */
+        void resize(const size_t n)
+        {
+            m_data.resize(n, metric_type(*this));
+        }
         /** Find index of metric given the id. If not found, return number of metrics
          *
          * @param lane lane
@@ -461,17 +492,6 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         static const char *suffix()
         { return T::suffix(); }
-
-        /** The metric at the underlying index has changed, update the
-         * metric set.
-         *
-         * By default, this method does nothing.
-         *
-         * This is called by illumina::interop::io::metric_format_stream::read_metrics_static every
-         * time a metric record is read from a stream.
-         */
-        void metric_updated_at(const size_t)
-        { }
 
     public:
         /** Get metric for lane, tile and cycle

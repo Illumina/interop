@@ -10,6 +10,7 @@
 #pragma once
 
 #include <string>
+#include "interop/util/cstdint.h"
 
 namespace illumina { namespace interop { namespace io
 {
@@ -48,5 +49,13 @@ namespace illumina { namespace interop { namespace io
      * @return true if directory was created
      */
     bool mkdir(const std::string& path, const int mode=0733);
+    /** Get the size of a file
+     *
+     * This should be more efficient than opening a file and seeking the end.
+     *
+     * @param path path to the target file
+     * @return size of the file or -1 if the operation failed
+     */
+    ::int64_t file_size(const std::string& path);
 }}}
 

@@ -63,8 +63,8 @@ TEST(run_metrics_extraction_test, test_is_group_empty)
 {
     run_metrics metrics;
     EXPECT_TRUE(metrics.is_group_empty(constants::Extraction));
-    std::istringstream fin(extraction_v2::binary_data());
-    io::read_metrics(fin, metrics.get_set<extraction_metric>());
+    io::read_interop_from_string(extraction_v2::binary_data(),
+                                 metrics.get_set<extraction_metric>());
     EXPECT_FALSE(metrics.is_group_empty(constants::Extraction));
 }
 

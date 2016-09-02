@@ -21,16 +21,16 @@ using namespace illumina::interop::unittest;
 TEST(q_by_lane_metrics_test, test_read_v4)
 {
     metric_set<q_by_lane_metric> metrics;
-    std::istringstream fin(q_v4::binary_data());
-    illumina::interop::io::read_metrics(fin, metrics);
+    io::read_interop_from_string(q_v4::binary_data(),
+                                 metrics);
 }
 
 // Test if we can parse by lane q-metrics
 TEST(q_by_lane_metrics_test, test_convert_write_read)
 {
     metric_set<q_metric> metrics;
-    std::istringstream fin(q_v4::binary_data());
-    illumina::interop::io::read_metrics(fin, metrics);
+    io::read_interop_from_string(q_v4::binary_data(),
+                                 metrics);
 
 
     metric_set<q_by_lane_metric> expected_metric_set;
@@ -40,8 +40,8 @@ TEST(q_by_lane_metrics_test, test_convert_write_read)
     illumina::interop::io::write_metrics(fout, expected_metric_set);
 
     metric_set<q_by_lane_metric> actual_metric_set;
-    std::istringstream iss(fout.str());
-    illumina::interop::io::read_metrics(iss, actual_metric_set);
+    io::read_interop_from_string(fout.str(),
+                                 actual_metric_set);
 
 
     EXPECT_EQ(actual_metric_set.version(), expected_metric_set.version());
@@ -67,8 +67,8 @@ TEST(run_metrics_q_by_lane_test, test_is_group_empty)
 {
     run_metrics metrics;
     EXPECT_TRUE(metrics.is_group_empty(constants::QByLane));
-    std::istringstream fin(q_v4::binary_data());
-    io::read_metrics(fin, metrics.get_set<q_metric>());
+    io::read_interop_from_string(q_v4::binary_data(),
+                                 metrics.get_set<q_metric>());
     logic::metric::create_q_metrics_by_lane(metrics.get_set<q_metric>(), metrics.get_set<q_by_lane_metric>());
     EXPECT_FALSE(metrics.is_group_empty(constants::QByLane));
 }

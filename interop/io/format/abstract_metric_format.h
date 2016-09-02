@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <istream>
-#include <ostream>
+#include <iosfwd>
 #include "interop/util/cstdint.h"
+#include "interop/model/metric_base/metric_set.h"
 
 namespace illumina { namespace interop { namespace io
 {
@@ -48,33 +48,15 @@ namespace illumina { namespace interop { namespace io
          * @return size of record in bytes
          */
         virtual size_t record_size(const header_t &header) const = 0;
-
-        /** Read the header describing metrics stored in a binary InterOp file
+        /** Read all the metrics into a metric set
          *
-         * @param in input stream containing binary InterOp file data
-         * @param header metric set header
-         * @return number of bytes in the record
+         * @param in input stream
+         * @param metric_set destination set of metrics
+         * @param file_size number of bytes in the file
          */
-        virtual std::streamsize read_header(std::istream &in, header_t &header) = 0;
-
-        /** Read a metric id from the given input stream
-         *
-         * @param in input stream containing binary InterOp file data
-         * @param metric metric
-         * @return number of bytes in the record
-         */
-        virtual std::streamsize read_metric_id(std::istream &in, metric_t &metric) = 0;
-
-        /** Read a single metric record from the given input stream
-         *
-         * @param in input stream containing binary InterOp file data
-         * @param metric metric
-         * @param header metric set header
-         * @param is_new true if the metric is new to the set
-         * @return number of bytes in the record
-         */
-        virtual std::streamsize read_metric(std::istream &in, metric_t &metric, const header_t &header,
-                                            const bool is_new) = 0;
+        virtual void read_metrics(std::istream& in,
+                                  model::metric_base::metric_set<Metric>& metric_set,
+                                  const size_t file_size)=0;
 
         /** Write a metric record to the given output stream
          *

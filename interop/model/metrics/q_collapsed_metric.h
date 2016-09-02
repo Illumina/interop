@@ -75,6 +75,17 @@ namespace illumina { namespace interop { namespace model { namespace metrics {
                 m_cumulative_q30(0),
                 m_cumulative_total(0) {}
         /** Constructor
+         */
+        q_collapsed_metric(const header_type&) :
+                metric_base::base_cycle_metric(0,0,0),
+                m_q20(0),
+                m_q30(0),
+                m_total(0),
+                m_median_qscore(0),
+                m_cumulative_q20(0),
+                m_cumulative_q30(0),
+                m_cumulative_total(0) {}
+        /** Constructor
          *
          * @param lane lane number
          * @param tile tile number

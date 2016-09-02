@@ -39,8 +39,8 @@ namespace illumina{ namespace interop { namespace unittest {
             model::metrics::run_metrics metrics(run_info);
             try
             {
-                std::istringstream fin(Gen::binary_data());
-                illumina::interop::io::read_metrics(fin, metrics.get_set<typename Gen::metric_t>());
+                io::read_interop_from_string(Gen::binary_data(),
+                                             metrics.get_set<typename Gen::metric_t>());
             }
             catch (const std::exception &) { }
             metrics.finalize_after_load();

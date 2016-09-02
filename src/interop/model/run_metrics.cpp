@@ -319,6 +319,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         read_metrics(run_folder, valid_to_load);
         const size_t count = read_xml(run_folder);
         finalize_after_load(count);
+        check_for_data_sources(run_folder);
     }
 
     /** Read XML files: RunInfo.xml and possibly RunParameters.xml

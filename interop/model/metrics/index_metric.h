@@ -15,6 +15,7 @@
 
 #include <string>
 #include <map>
+#include <vector>
 #include "interop/util/exception.h"
 #include "interop/util/assert.h"
 #include "interop/model/metric_base/base_read_metric.h"
@@ -176,6 +177,12 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         /** Constructor
          */
         index_metric() :
+                metric_base::base_read_metric(0, 0, 0)
+        {
+        }
+        /** Constructor
+         */
+        index_metric(const header_type&) :
                 metric_base::base_read_metric(0, 0, 0)
         {
         }

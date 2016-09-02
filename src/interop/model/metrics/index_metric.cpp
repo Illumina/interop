@@ -10,6 +10,8 @@
 #include <string>
 #include "interop/model/metrics/index_metric.h"
 #include "interop/io/format/metric_format_factory.h"
+#include "interop/io/format/default_layout.h"
+#include "interop/io/format/metric_format.h"
 
 using namespace illumina::interop::model::metrics;
 
@@ -29,7 +31,7 @@ namespace illumina { namespace interop { namespace io
      *      2. Version: 1
      */
     template<>
-    struct generic_layout<index_metric, 1> : public default_layout<1>
+    struct generic_layout<index_metric, 1> : public default_layout<1, 1 /*Multi record */>
     {
         /** @page index_v1 Index Version 1
          *
@@ -107,6 +109,11 @@ namespace illumina { namespace interop { namespace io
             else beg->m_count += count;
 
             return BYTE_COUNT;
+        }
+        template<class Metric, class Header>
+        static std::streamsize map_stream(const char*, Metric&, Header&, const bool)
+        {
+            INTEROP_THROW(std::runtime_error, "This function should not be called");
         }
 
         /** Write metric to the output stream

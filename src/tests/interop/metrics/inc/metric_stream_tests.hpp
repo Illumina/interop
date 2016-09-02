@@ -42,9 +42,8 @@ WRAPPED_TEST(FIXTURE, test_hardcoded_bad_format_exception)
 {
     std::string tmp = std::string(expected);
     tmp[0] = 34;
-    std::istringstream fin(tmp);
     metric_set_t metrics;
-    EXPECT_THROW(illumina::interop::io::read_metrics(fin, metrics), bad_format_exception);
+    EXPECT_THROW(illumina::interop::io::read_interop_from_string(tmp, metrics), bad_format_exception);
 }
 
 /** Confirm incomplete_file_exception is thrown for a small partial record
@@ -54,10 +53,9 @@ WRAPPED_TEST(FIXTURE, test_hardcoded_incomplete_file_exception)
     ::uint32_t incomplete = 0;
     for(::uint32_t i=2;i<25;i++)
     {
-        std::istringstream fin(expected.substr(0, i));
         metric_set_t metrics;
         try{
-            illumina::interop::io::read_metrics(fin, metrics);
+            illumina::interop::io::read_interop_from_string(expected.substr(0, i), metrics);
         }
         catch(const incomplete_file_exception&){incomplete++;}
         catch(const std::exception& ex){ std::cerr << i << " " << ex.what() << std::endl;throw;}
@@ -68,9 +66,8 @@ WRAPPED_TEST(FIXTURE, test_hardcoded_incomplete_file_exception)
  */
 WRAPPED_TEST(FIXTURE, test_hardcoded_incomplete_file_exception_last_metric)
 {
-    std::istringstream fin(expected.substr(0,expected.length()-4));
     metric_set_t metrics;
-    EXPECT_THROW(illumina::interop::io::read_metrics(fin, metrics), incomplete_file_exception);
+    EXPECT_THROW(illumina::interop::io::read_interop_from_string(expected.substr(0,expected.length()-4), metrics), incomplete_file_exception);
 }
 /** Confirm bad_format_exception is thrown when record size is incorrect
  */
@@ -81,9 +78,8 @@ WRAPPED_TEST(FIXTURE, test_hardcoded_incorrect_record_size)
 #   endif
     std::string tmp = std::string(expected);
     tmp[1] = 0;
-    std::istringstream fin(tmp);
     metric_set_t metrics;
-    EXPECT_THROW(illumina::interop::io::read_metrics(fin, metrics), bad_format_exception);
+    EXPECT_THROW(illumina::interop::io::read_interop_from_string(tmp, metrics), bad_format_exception);
 }
 /** Confirm file_not_found_exception is thrown when a file is not found
  */
@@ -97,22 +93,19 @@ WRAPPED_TEST(FIXTURE, test_hardcoded_file_not_found)
 WRAPPED_TEST(FIXTURE, test_hardcoded_read)
 {
     std::string tmp = std::string(expected);
-    std::istringstream fin(tmp);
     metric_set_t metrics;
-    EXPECT_NO_THROW(illumina::interop::io::read_metrics(fin, metrics));
+    EXPECT_NO_THROW(illumina::interop::io::read_interop_from_string(tmp, metrics));
 }
 /** Confirm the clear function works
  */
 WRAPPED_TEST(FIXTURE, test_clear)
 {
     std::string tmp = std::string(expected);
-    std::istringstream fin(tmp);
     metric_set_t metrics;
-    EXPECT_NO_THROW(illumina::interop::io::read_metrics(fin, metrics));
+    EXPECT_NO_THROW(illumina::interop::io::read_interop_from_string(tmp, metrics));
     size_t cnt = metrics.size();
     metrics.clear();
-    std::istringstream fin2(tmp);
-    EXPECT_NO_THROW(illumina::interop::io::read_metrics(fin2, metrics));
+    EXPECT_NO_THROW(illumina::interop::io::read_interop_from_string(tmp, metrics));
     EXPECT_EQ(cnt, metrics.size());
 
 }
