@@ -18,7 +18,7 @@
 
 namespace illumina { namespace interop { namespace logic { namespace summary
 {
-    /** Summarize a collection extraction metrics
+    /** Summarize and aggregate the first_cycle_intensity
      *
      * @sa model::summary::lane_summary::first_cycle_intensity
      * @sa model::summary::read_summary::first_cycle_intensity
@@ -47,7 +47,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
         for (; beg != end; ++beg)
         {
             if ((beg->cycle() - 1) >= cycle_to_read.size())
-                throw model::index_out_of_bounds_exception("Cycle exceeds total cycles from Reads in the RunInfo.xml");
+                INTEROP_THROW(model::index_out_of_bounds_exception, "Cycle exceeds total cycles from Reads in the RunInfo.xml");
             const size_t read = cycle_to_read[beg->cycle() - 1].number - 1;
             if (cycle_to_read[beg->cycle() - 1].cycle_within_read > 1) continue;
             INTEROP_ASSERT(read < temp.read_count());
@@ -61,6 +61,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
         size_t total = 0;
         float first_cycle_intensity_nonindex = 0;
         size_t total_nonindex = 0;
+
         for (size_t read = 0; read < run.size(); ++read)
         {
             INTEROP_ASSERT(read < temp.read_count());
@@ -83,7 +84,8 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                     divide(first_cycle_intensity_by_read, static_cast<float>(total_by_read)));
             first_cycle_intensity += first_cycle_intensity_by_read;
             total += total_by_read;
-            if (!run[read].read().is_index())
+
+            if (!run[read].read().is_index()) //Only for non-indexed reads
             {
                 first_cycle_intensity_nonindex += first_cycle_intensity_by_read;
                 total_nonindex += total_by_read;
@@ -91,6 +93,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
         }
         run.nonindex_summary().first_cycle_intensity(
                 divide(first_cycle_intensity_nonindex, static_cast<float>(total_nonindex)));
+
         run.total_summary().first_cycle_intensity(divide(first_cycle_intensity, static_cast<float>(total)));
     }
 

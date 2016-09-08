@@ -156,7 +156,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
                                           metrics.run_info().reads().end(),
                                           cycle_to_read);
         if(data_beg+column_count*row_offset.size() > data_end)
-            throw model::index_out_of_bounds_exception("Table is larger than buffer");
+            INTEROP_THROW(model::index_out_of_bounds_exception, "Table is larger than buffer");
         zero_first_column(data_beg, data_beg+column_count*row_offset.size(), column_count);
         populate_imaging_table_data_by_cycle(metrics.get_set<model::metrics::extraction_metric>(),
                                              q20_idx,
@@ -251,6 +251,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
                                      float* data_beg,
                                      const size_t n)
     {
+        std::fill(data_beg, data_beg+n, std::numeric_limits<float>::quiet_NaN());
         create_imaging_table_data(metrics, columns, row_offset, data_beg, data_beg+n);
     }
     /** Count the number of rows in the imaging table and setup an ordering
