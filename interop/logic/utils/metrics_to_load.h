@@ -12,6 +12,8 @@
 
 namespace illumina { namespace interop { namespace logic { namespace utils
 {
+    /** Define a metric type description */
+    typedef constants::enum_description< constants::metric_type> metric_type_description_t;
     /** List the required on demand metrics
      *
      * @param group specific metric group to load
@@ -59,17 +61,23 @@ namespace illumina { namespace interop { namespace logic { namespace utils
     void list_index_summary_metric_groups(std::vector<constants::metric_group>& groups);
 
 
-    /** List all required metric groups
+    /** List all required metric groups for the summary tab
      *
      * @param valid_to_load list of metrics to load on demand
      */
     void list_summary_metrics_to_load(std::vector<unsigned char>& valid_to_load);
 
-    /** List all required metric groups
+    /** List all required metric groups for the index tab
      *
      * @param valid_to_load list of metrics to load on demand
      */
     void list_index_metrics_to_load(std::vector<unsigned char>& valid_to_load);
+
+    /** List all required metric groups for the analysis tab
+     *
+     * @param valid_to_load list of metrics to load on demand
+     */
+    void list_analysis_metrics_to_load(std::vector<unsigned char>& valid_to_load);
 
 
 }}}}

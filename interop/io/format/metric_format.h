@@ -83,15 +83,15 @@ namespace illumina { namespace interop { namespace io
             metric_t metric(metric_set);
             if(file_size > 0 && !Layout::MULTI_RECORD)
             {
-                const size_t record_count = (file_size-header_size(metric_set))/record_size;
+                const size_t record_count = static_cast<size_t>((file_size-header_size(metric_set))/record_size);
                 metric_set.resize(record_count);
-                std::vector<char> buffer(record_size);
+                std::vector<char> buffer(static_cast<size_t>(record_size));
+                INTEROP_ASSERT(!buffer.empty());
                 while (in)
                 {
                     char *in_ptr = &buffer.front();
                     in.read(in_ptr, record_size);
                     const std::streamsize count = in.gcount();
-                    // TODO: buffer up multiple records
                     if(!test_stream(in, metric_offset_map, count, record_size)) break;
                     read_record(in_ptr, metric_set, metric_offset_map, metric, record_size);
                 }
@@ -124,6 +124,10 @@ namespace illumina { namespace interop { namespace io
             const ::int64_t stream_position_pre_record_check = in.tellg();
             const std::streamsize record_size = Layout::map_stream_record_size(in,
                                                                                static_cast<record_size_t>(0));
+            if(in.fail())
+            {
+                INTEROP_THROW(incomplete_file_exception, "Insufficient header data read from the file");
+            }
             if(record_size==0)
             {
                 INTEROP_THROW(bad_format_exception, "Record size cannot be 0");
@@ -226,7 +230,7 @@ namespace illumina { namespace interop { namespace io
             else
             {
                 count += Layout::map_stream(in, metric, metric_set, true);
-                //TODO: replace with skip function
+                //TODO: replace with skip function, simplify code, required for index metrics
             }
             if(!test_stream(in, metric_offset_map, count, record_size)) return;
             if (count != record_size)

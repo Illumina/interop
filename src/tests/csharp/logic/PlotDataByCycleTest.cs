@@ -16,7 +16,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 	{
 	    public void MetricTypeList()
      	{
-            var typeList = new metric_type_vector();
+            var typeList = new metric_type_description_vector();
             c_csharp_plot.list_by_cycle_metrics(typeList);
             Assert.AreEqual(typeList[0], metric_type.Intensity);
         }

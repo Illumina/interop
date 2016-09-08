@@ -4,6 +4,7 @@
 %include <std_vector.i>
 %include <stdint.i>
 %include <std_map.i>
+%include <std_pair.i>
 %import "src/ext/swig/exceptions/exceptions_impl.i"
 %include "src/ext/swig/extends/extends_impl.i"
 %include "src/ext/swig/arrays/arrays_impl.i"
@@ -127,6 +128,12 @@ WRAP_METRICS(IMPORT_METRIC_WRAPPER)
 %template(cycle_metric_map) std::map< uint64_t, illumina::interop::model::metric_base::base_cycle_metric >;
 %template(read_metric_vector) std::vector< illumina::interop::model::metrics::read_metric >;
 %template(q_score_bin_vector) std::vector< illumina::interop::model::metrics::q_score_bin >;
+
+%template(metric_type_name_pair) std::pair< illumina::interop::constants::metric_type, std::string>;
+%template(metric_type_description) illumina::interop::constants::enum_description< illumina::interop::constants::metric_type>;
+%template(metric_type_description_vector) std::vector< illumina::interop::constants::enum_description< illumina::interop::constants::metric_type> >;
+
+// std::vector of enums causes a crash in Visual Studio C#
 %template(metric_type_vector) std::vector< illumina::interop::constants::metric_type>;
 %template(metric_group_vector) std::vector< illumina::interop::constants::metric_group>;
 

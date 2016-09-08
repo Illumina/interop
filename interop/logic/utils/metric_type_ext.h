@@ -43,6 +43,21 @@ namespace illumina { namespace interop {  namespace logic { namespace utils
 #       undef INTEROP_TUPLE4
         return util::constant_mapping_get(name_types, type, std::string("UnknownDescription"));
     }
+    /** Convert metric type to string description
+     *
+     * @param type metric type
+     * @return string description
+     */
+    inline void list_descriptions(std::vector< constants::enum_description< constants::metric_type> >& types )
+    {
+        using namespace constants;
+        // TODO: This can be reduced to a single macro define
+        typedef std::pair<metric_type, std::string > mapped_t;
+#       define INTEROP_TUPLE4(Metric, Description, Group, Feature) mapped_t(Metric,Description)
+        static const mapped_t name_types[] = {INTEROP_ENUM_METRIC_TYPES};
+#       undef INTEROP_TUPLE4
+        types.assign(name_types, name_types+util::length_of(name_types));
+    }
     /** Convert metric type to metric group
      *
      * @param type metric type

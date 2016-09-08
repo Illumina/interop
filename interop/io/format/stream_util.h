@@ -114,6 +114,7 @@ namespace illumina { namespace interop { namespace io
     template<class T>
     void read_binary(std::istream &in, std::vector<T> &buffer, const size_t n)
     {
+        INTEROP_ASSERT(!buffer.empty());
         read_binary(in, &buffer.front(), n);
     }
 
@@ -125,6 +126,7 @@ namespace illumina { namespace interop { namespace io
     template<class T>
     void read_binary(std::istream &in, std::vector<T> &buffer)
     {
+        INTEROP_ASSERT(!buffer.empty());
         read_binary(in, &buffer.front(), buffer.size());
     }
 
@@ -177,6 +179,7 @@ namespace illumina { namespace interop { namespace io
     template<class T>
     void write_binary(std::ostream &out, const std::vector<T> &buffer, const size_t n)
     {
+        if(buffer.empty())return;
         write_binary(out, &buffer.front(), n);
     }
 

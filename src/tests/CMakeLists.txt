@@ -31,9 +31,7 @@ endif()
 if(ENABLE_CSHARP)
     add_subdirectory("csharp")
     if(CSHARP_TEST_ENABLED)
-        add_custom_command(TARGET check POST_BUILD
-                COMMAND ${NUNIT_COMMAND_EXE} $<TARGET_FILE_DIR:${INTEROP_LIB}>/${CSHARP_UNIT_TEST_EXE})
-        add_dependencies(check csharp_unittest)
+        add_dependencies(check check_csharp)
 
         add_custom_command(TARGET performance POST_BUILD
                 COMMAND ${NUNIT_COMMAND_EXE} $<TARGET_FILE_DIR:${INTEROP_LIB}>/${CSHARP_PERF_TEST_EXE})

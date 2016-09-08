@@ -481,22 +481,6 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          *
          * @param run_folder run folder path
          * @param valid_to_load list of metrics to load
-         * @param n number of elements in valid_to_load
-         */
-        void read_metrics(const std::string &run_folder, const unsigned char* valid_to_load, const size_t n) throw(
-        io::file_not_found_exception,
-        io::bad_format_exception,
-        io::incomplete_file_exception,
-        invalid_parameter);
-        /** Read binary metrics from the run folder
-         *
-         * This function ignores:
-         *  - Missing InterOp files
-         *  - Incomplete InterOp files
-         *  - Missing RunParameters.xml for non-legacy run folders
-         *
-         * @param run_folder run folder path
-         * @param valid_to_load list of metrics to load
          */
         void read_metrics(const std::string &run_folder, const std::vector<unsigned char>& valid_to_load) throw(
         io::file_not_found_exception,

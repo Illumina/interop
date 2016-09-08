@@ -22,7 +22,7 @@ using namespace illumina::interop;
 
 TEST(plot_logic, check_plot_by_cycle_list)
 {
-    std::vector<constants::metric_type> types;
+    std::vector<logic::utils::metric_type_description_t> types;
     logic::plot::list_by_cycle_metrics(types);
     for(size_t i=0;i<types.size();++i)
     {
@@ -34,7 +34,7 @@ TEST(plot_logic, check_plot_by_cycle_list)
 
 TEST(plot_logic, check_plot_by_lane_list)
 {
-    std::vector<constants::metric_type> types;
+    std::vector<logic::utils::metric_type_description_t> types;
     logic::plot::list_by_lane_metrics(types);
     for(size_t i=0;i<types.size();++i)
     {
@@ -45,7 +45,7 @@ TEST(plot_logic, check_plot_by_lane_list)
 
 TEST(plot_logic, check_plot_flowcell_list)
 {
-    std::vector<constants::metric_type> types;
+    std::vector< logic::utils::metric_type_description_t > types;
     logic::plot::list_flowcell_metrics(types);
     for(size_t i=0;i<types.size();++i)
     {
@@ -120,7 +120,7 @@ TEST(plot_logic, pf_clusters_by_lane)
             "",
             "",
             1,
-            model::run::flowcell_layout(2, 2, 2, 16),
+            model::run::flowcell_layout(8, 2, 2, 16),
             std::vector<std::string>(),
             model::run::image_dimensions(),
             reads

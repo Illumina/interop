@@ -27,7 +27,7 @@ namespace illumina { namespace interop { namespace io
     void copy_from(std::ostream &, const Source &, const Destination &)
     { }
 
-    /** Copy from the destination to the source
+    /** Copy from source to destination
      *
      * @param dst destination
      * @param src source
@@ -37,13 +37,13 @@ namespace illumina { namespace interop { namespace io
     {
         dst = src;
     }
-    /** Copy from the destination to the source
+    /** Copy from source to destination
      *
      * @param dst destination
      * @param src source
      */
     template<typename Source, typename Destination>
-    void copy_from(const char*, Destination &dst, const Source &src)
+    void copy_from(const char*, Destination &dst, const Source &src) // TODO: Simplify this entire file with templates
     {
         dst = src;
     }
@@ -177,6 +177,7 @@ namespace illumina { namespace interop { namespace io
     std::streamsize stream_map(std::istream &in, std::vector<ValueType>&vals, const size_t n)
     {
         vals.resize(n);
+        INTEROP_ASSERT(!vals.empty());
         return read_array_helper<ReadType,ValueType>::read_array_from_stream(in, &vals.front(), n);
     }
 
@@ -194,6 +195,7 @@ namespace illumina { namespace interop { namespace io
     std::streamsize stream_map(char*& in, std::vector<ValueType>&vals, const size_t n)
     {
         vals.resize(n);
+        INTEROP_ASSERT(!vals.empty());
         return read_array_helper<ReadType,ValueType>::read_array_from_stream(in, &vals.front(), n);
     }
 
@@ -211,6 +213,7 @@ namespace illumina { namespace interop { namespace io
     std::streamsize stream_map(std::istream &in, std::vector<ValueType> &vals, const size_t offset, const size_t n)
     {
         vals.resize(offset + n);
+        INTEROP_ASSERT(!vals.empty());
         return read_array_helper<ReadType,ValueType>::read_array_from_stream(in, &vals.front(), n, offset);
     }
 
@@ -228,6 +231,7 @@ namespace illumina { namespace interop { namespace io
     std::streamsize stream_map(char*& in, std::vector<ValueType> &vals, const size_t offset, const size_t n)
     {
         vals.resize(offset + n);
+        INTEROP_ASSERT(!vals.empty());
         return read_array_helper<ReadType,ValueType>::read_array_from_stream(in, &vals.front(), n, offset);
     }
 

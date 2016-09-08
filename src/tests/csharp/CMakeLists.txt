@@ -51,8 +51,6 @@ add_custom_command(TARGET csharp_unittest POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy ${CSHARP_csharp_unittest_BINARY} $<TARGET_FILE_DIR:${INTEROP_LIB}>
         COMMAND ${CMAKE_COMMAND} -E copy ${NUNIT_LIBRARIES} $<TARGET_FILE_DIR:${INTEROP_LIB}>)
 
-set(CSHARP_UNIT_TEST_EXE "${CSHARP_csharp_unittest_BINARY_NAME}" PARENT_SCOPE)
-set(NUNIT_COMMAND_EXE "${NUNIT_COMMAND}" PARENT_SCOPE)
 
 if(NOT ENABLE_STATIC)
     add_custom_command(TARGET csharp_unittest POST_BUILD
@@ -76,8 +74,19 @@ add_custom_command(TARGET csharp_perftest POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy ${CSHARP_csharp_perftest_BINARY} $<TARGET_FILE_DIR:${INTEROP_LIB}>
         COMMAND ${CMAKE_COMMAND} -E copy ${NUNIT_LIBRARIES} $<TARGET_FILE_DIR:${INTEROP_LIB}>)
 
-set(CSHARP_PERF_TEST_EXE "${CSHARP_csharp_perftest_BINARY_NAME}" PARENT_SCOPE)
 if(NOT ENABLE_STATIC)
     add_custom_command(TARGET csharp_perftest POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE_DIR:${INTEROP_LIB}> ${CMAKE_CURRENT_BINARY_DIR})
 endif()
+
+add_custom_target(check_csharp
+        COMMENT "Running C# unit tests: ${NUNIT_COMMAND} $<TARGET_FILE_DIR:${INTEROP_LIB}>/${CSHARP_csharp_unittest_BINARY_NAME}}"
+        COMMAND ${NUNIT_COMMAND} $<TARGET_FILE_DIR:${INTEROP_LIB}>/${CSHARP_csharp_unittest_BINARY_NAME}
+        )
+
+add_dependencies(check_csharp csharp_unittest)
+set_target_properties(check_csharp PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
+
+
+set(NUNIT_COMMAND_EXE "${NUNIT_COMMAND}" PARENT_SCOPE)
+set(CSHARP_PERF_TEST_EXE "${CSHARP_csharp_perftest_BINARY_NAME}" PARENT_SCOPE)
