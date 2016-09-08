@@ -259,6 +259,14 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         q_metric() :
                 metric_base::base_cycle_metric(0, 0, 0)
         { }
+        /** Constructor
+         *
+         * @param header q-metric set header
+         */
+        q_metric(const header_type& header) :
+                metric_base::base_cycle_metric(0, 0, 0),
+                m_qscore_hist(header.bin_count()==0?static_cast<size_t>(MAX_Q_BINS):header.bin_count())
+        { }
 
         /** Constructor
          *
@@ -272,8 +280,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                  const uint_t cycle,
                  const uint32_vector &qscore_hist) :
                 metric_base::base_cycle_metric(lane, tile, cycle),
-                m_qscore_hist(qscore_hist),
-                m_qscore_hist_cumulative(qscore_hist.size(), 0)
+                m_qscore_hist(qscore_hist)
         {
         }
 
@@ -291,8 +298,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                  const uint_pointer_t qscore_hist,
                  const uint_t count) :
                 metric_base::base_cycle_metric(lane, tile, cycle),
-                m_qscore_hist(qscore_hist, qscore_hist + count),
-                m_qscore_hist_cumulative(count, 0)
+                m_qscore_hist(qscore_hist, qscore_hist + count)
         {
         }
 

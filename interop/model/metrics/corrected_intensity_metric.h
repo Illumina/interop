@@ -84,6 +84,16 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                 m_called_counts(constants::NUM_OF_BASES_AND_NC, 0),
                 m_signal_to_noise(std::numeric_limits<float>::quiet_NaN())
         { }
+        /** Constructor
+         */
+        corrected_intensity_metric(const header_type&) :
+                metric_base::base_cycle_metric(0, 0, 0),
+                m_average_cycle_intensity(0),
+                m_corrected_int_all(constants::NUM_OF_BASES, 0),
+                m_corrected_int_called(constants::NUM_OF_BASES, 0),
+                m_called_counts(constants::NUM_OF_BASES_AND_NC, 0),
+                m_signal_to_noise(std::numeric_limits<float>::quiet_NaN())
+        { }
 
         /** Constructor
          *

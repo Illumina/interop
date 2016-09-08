@@ -63,9 +63,9 @@ namespace illumina { namespace interop { namespace io { namespace layout
          *
          * @return true if data is valid
          */
-        bool is_valid() const
+        bool is_valid(const bool check_tile) const
         {
-            return tile > 0 && lane > 0;
+            return (!check_tile || tile > 0) && lane > 0;
         }
 
         /** Lane number
@@ -111,9 +111,9 @@ namespace illumina { namespace interop { namespace io { namespace layout
          *
          * @return true if data is valid
          */
-        bool is_valid() const
+        bool is_valid(const bool check_tile) const
         {
-            return tile > 0 && lane > 0 && cycle > 0;
+            return base_metric::is_valid(check_tile) && cycle > 0;
         }
 
         /** Cycle number
@@ -156,9 +156,9 @@ namespace illumina { namespace interop { namespace io { namespace layout
          *
          * @return true if data is valid
          */
-        bool is_valid() const
+        bool is_valid(const bool check_tile) const
         {
-            return tile > 0 && lane > 0 && read > 0;
+            return base_metric::is_valid(check_tile) && read > 0;
         }
 
         /** Read number

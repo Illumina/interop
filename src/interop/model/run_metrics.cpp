@@ -319,6 +319,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         read_metrics(run_folder, valid_to_load);
         const size_t count = read_xml(run_folder);
         finalize_after_load(count);
+        check_for_data_sources(run_folder);
     }
 
     /** Read XML files: RunInfo.xml and possibly RunParameters.xml
@@ -495,28 +496,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     {
         m_metrics.apply(read_func(run_folder));
     }
-    /** Read binary metrics from the run folder
-     *
-     * This function ignores:
-     *  - Missing InterOp files
-     *  - Incomplete InterOp files
-     *  - Missing RunParameters.xml for non-legacy run folders
-     *
-     * @param run_folder run folder path
-     * @param valid_to_load list of metrics to load
-     * @param n number of elements in valid_to_load
-     */
-    void run_metrics::read_metrics(const std::string &run_folder, const unsigned char* valid_to_load, const size_t n)
-    throw( io::file_not_found_exception,
-    io::bad_format_exception,
-    io::incomplete_file_exception,
-    invalid_parameter)
-    {
-        if(n != constants::MetricCount)
-            INTEROP_THROW(invalid_parameter, "Boolean array valid_to_load does not match expected number of metrics: "
-            << n << " != " << constants::MetricCount);
-        m_metrics.apply(read_func(run_folder, valid_to_load));
-    }
+
     /** Read binary metrics from the run folder
      *
      * This function ignores:
@@ -533,7 +513,11 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     io::incomplete_file_exception,
     invalid_parameter)
     {
-        read_metrics(run_folder, &valid_to_load.front(), valid_to_load.size());
+        if(valid_to_load.empty())return;
+        if(valid_to_load.size() != constants::MetricCount)
+            INTEROP_THROW(invalid_parameter, "Boolean array valid_to_load does not match expected number of metrics: "
+                    << valid_to_load.size() << " != " << constants::MetricCount);
+        m_metrics.apply(read_func(run_folder, &valid_to_load.front()));
     }
 
     /** Write binary metrics to the run folder
@@ -587,14 +571,6 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     {
         m_metrics.apply(populate_tile_cycle_list(map));
     }
-    /** Validate whether the RunInfo.xml matches the InterOp files
-     *
-     * @throws invalid_run_info_exception
-     */
-    void run_metrics::validate() throw(invalid_run_info_exception)
-    {
-        m_metrics.apply(validate_run_info(m_run_info));
-    }
 
     /** Sort the metrics by lane, then tile, then cycle
      *
@@ -612,6 +588,14 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     void run_metrics::check_for_data_sources(const std::string &run_folder)
     {
         m_metrics.apply(check_for_each_data_source(run_folder));
+    }
+    /** Validate whether the RunInfo.xml matches the InterOp files
+     *
+     * @throws invalid_run_info_exception
+     */
+    void run_metrics::validate() throw(invalid_run_info_exception)
+    {
+        m_metrics.apply(validate_run_info(m_run_info));
     }
 
 

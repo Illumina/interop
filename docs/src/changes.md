@@ -1,5 +1,13 @@
 # Changes                                               {#changes}
 
+## Master
+
+Date       | Description
+---------- | -----------
+2016-09-07 | IPA-5101: Fix MSVC bug in vector type loading (Master)
+2016-09-02 | Added buffered reader to improve loading speed
+2016-09-01 | Bug fix for SWIG in on-demand loading
+
 ## v1.0.10
 
 Date       | Description

@@ -35,6 +35,13 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         q_by_lane_metric() {}
         /** Constructor
          *
+         * @param header header of q-metric set
+         */
+        q_by_lane_metric(const header_type& header) : q_metric(header)
+        {
+        }
+        /** Constructor
+         *
          * @param lane lane number
          * @param tile tile number
          * @param cycle cycle number
@@ -81,17 +88,3 @@ namespace illumina { namespace interop { namespace model { namespace metrics
 
 }}}}
 
-namespace illumina { namespace interop { namespace io
-{
-    /** Specialization of metric type adapter
-     *
-     * This class allows a metric derived from another metric to use it's format
-     * For example, q_by_lane_metric uses the q_metric format
-     */
-    template<>
-    struct metric_format_adapter<model::metrics::q_by_lane_metric>
-    {
-        /** Define the template parameter as the target type */
-        typedef model::metrics::q_metric metric_t;
-    };
-}}}

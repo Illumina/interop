@@ -67,6 +67,16 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                 m_focus_scores(MAX_CHANNELS, 0)
         {
         }
+        /** Constructor
+         */
+        extraction_metric(const header_type&) :
+                metric_base::base_cycle_metric(0, 0, 0),
+                m_date_time_csharp(0),
+                m_date_time(0),
+                m_max_intensity_values(MAX_CHANNELS, 0),
+                m_focus_scores(MAX_CHANNELS, 0)
+        {
+        }
 
         /** Constructor
          *

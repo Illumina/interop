@@ -146,6 +146,14 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                         m_cluster_count(0),
                         m_cluster_count_pf(0)
         { }
+        /** Constructor
+         */
+        tile_metric(const header_type&) : metric_base::base_metric(0, 0),
+                m_cluster_density(0),
+                m_cluster_density_pf(0),
+                m_cluster_count(0),
+                m_cluster_count_pf(0)
+        { }
 
         /** Constructor
          *

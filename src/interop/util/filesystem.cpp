@@ -12,6 +12,8 @@
 
 #ifdef WIN32
 #include <direct.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 /** Platform dependent path separator */
 #define INTEROP_OS_SEP '\\'
 #else
@@ -128,6 +130,27 @@ namespace illumina { namespace interop { namespace io
 #       else
             return ::mkdir( path.c_str(), static_cast<mode_t>(mode)) == 0;
 #       endif
+    }
+
+    /** Get the size of a file
+     *
+     * This should be more efficient than opening a file and seeking the end.
+     *
+     * @param path path to the target file
+     * @return size of the file or -1 if the operation failed
+     */
+    ::int64_t file_size(const std::string& path)
+    {
+#       ifdef WIN32
+            struct __stat64 buf;
+            if (_stat64(path.c_str(), &buf) != 0)return -1; // error, could use errno to find out more
+            return buf.st_size;
+#       else
+            struct stat buf;
+            if (stat(path.c_str(), &buf) != 0)return -1; // error, could use errno to find out more
+            return buf.st_size;
+#       endif
+
     }
 }}}
 

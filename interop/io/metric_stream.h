@@ -69,23 +69,6 @@ namespace illumina { namespace interop { namespace io
                 return io::combine(run_directory, interop_basename(prefix, suffix, use_out));
             return io::combine(interop_directory_name(run_directory), interop_basename(prefix, suffix, use_out));
         }
-
-        /** Memory buffer for a stream
-         *
-         * This class is used to turn a binary byte buffer into an input stream for reading.
-         */
-        struct membuf : std::streambuf
-        {
-            /** Constructor
-             *
-             * @param begin start iterator for a char buffer
-             * @param end end iterator for a char buffer
-             */
-            membuf(char *begin, char *end)
-            {
-                this->setg(begin, begin, end);
-            }
-        };
     }
 
     /** Generate a file name from a run directory and the metric type
@@ -121,18 +104,15 @@ namespace illumina { namespace interop { namespace io
      *
      * @param in input stream
      * @param metrics metric set
+     * @param file_size number of bytes in the file
      */
     template<class MetricSet>
-    void read_metrics(std::istream &in, MetricSet &metrics)
+    void read_metrics(std::istream &in, MetricSet &metrics, const size_t file_size)
     {
         typedef typename MetricSet::metric_type metric_t;
-        typedef typename metric_format_adapter<metric_t>::metric_t format_metric_t;
-        typedef metric_format_factory<format_metric_t> factory_t;
+        typedef metric_format_factory<metric_t> factory_t;
         typedef typename factory_t::metric_format_map metric_format_map;
-        typedef typename metric_t::id_t id_t;
-        typedef std::map<id_t, size_t> offset_map_t;
         metric_format_map &format_map = factory_t::metric_formats();
-
         if (!in.good()) INTEROP_THROW(incomplete_file_exception, "Empty file found");
         const int version = in.get();
         if (version == -1) INTEROP_THROW(incomplete_file_exception, "Empty file found");
@@ -141,60 +121,8 @@ namespace illumina { namespace interop { namespace io
                     interop_basename<MetricSet>() << " with version: " << version << " of " << format_map.size() );
         INTEROP_ASSERT(format_map[version]);
         metrics.set_version(static_cast< ::int16_t>(version));
-        const std::streamsize record_size = format_map[version]->read_header(in, metrics);
-
-        offset_map_t metric_offset_map;
-        while (in)
-        {
-            metric_t metric;// Moving this out breaks index metrics - TODO: fix by adding clear to index metrics (or move) or swap
-            const std::streamsize icount = format_map[version]->read_metric_id(in, metric);
-            if (in.fail())
-            {
-                if (icount == 0 && !metric_offset_map.empty()) break;
-                INTEROP_THROW(incomplete_file_exception, "Insufficient data read from the file, got: " << icount
-                                                         << " != expected: " << record_size);
-            }
-
-            if (metric_offset_map.find(metric.id()) == metric_offset_map.end())
-            {
-                const std::streamsize count = format_map[version]->read_metric(in, metric, metrics, true) + icount;
-                if (in.fail())
-                {
-                    if (count == 0 && !metric_offset_map.empty()) break;
-                    INTEROP_THROW(incomplete_file_exception, "Insufficient data read from the file, got: " << count
-                                                             << " != expected: " << record_size);
-                }
-                if (count != record_size)
-                {
-                    INTEROP_THROW(bad_format_exception, "Record does not match expected size: "
-                            << count << " != " << record_size);
-                }
-                if (metric.lane() > 0 && (metric_t::CHECK_TILE_ID == 0 || metric.tile() > 0))
-                {
-                    metric_offset_map[metric.id()] = metrics.size();
-                    metrics.insert(metric.id(), metric);
-                    metrics.metric_updated_at(metric_offset_map[metric.id()]);
-                }
-            }
-            else
-            {
-                const size_t offset = metric_offset_map[metric.id()];
-                INTEROP_ASSERTMSG(metrics.at(offset).lane() != 0, offset);
-                const std::streamsize count =
-                        format_map[version]->read_metric(in, metrics.at(offset), metrics, false) + icount;
-                if (in.fail())
-                {
-                    if (count == 0 && !metric_offset_map.empty()) break;
-                    INTEROP_THROW(incomplete_file_exception, "Insufficient data read from the file, got: " << count
-                                                             << " != expected: " << record_size);
-                }
-                if (count != record_size)
-                {
-                    INTEROP_THROW(bad_format_exception, "Record does not match expected size!");
-                }
-                metrics.metric_updated_at(offset);
-            }
-        }
+        format_map[version]->read_metrics(in, metrics, file_size);
+        metrics.rebuild_index();
     }
 
     /** Get the size of a single metric record
@@ -207,8 +135,7 @@ namespace illumina { namespace interop { namespace io
     size_t record_size(const typename MetricType::header_type &header,
                        const ::int16_t version = MetricType::LATEST_VERSION)
     {
-        typedef typename metric_format_adapter<MetricType>::metric_t format_metric_t;
-        typedef metric_format_factory<format_metric_t> factory_type;
+        typedef metric_format_factory<MetricType> factory_type;
         typedef typename factory_type::metric_format_map metric_format_map;
         metric_format_map &format_map = factory_type::metric_formats();
 
@@ -230,8 +157,7 @@ namespace illumina { namespace interop { namespace io
     size_t header_size(const typename MetricType::header_type &header,
                        const ::int16_t version = MetricType::LATEST_VERSION)
     {
-        typedef typename metric_format_adapter<MetricType>::metric_t format_metric_t;
-        typedef metric_format_factory<format_metric_t> factory_type;
+        typedef metric_format_factory<MetricType> factory_type;
         typedef typename factory_type::metric_format_map metric_format_map;
         metric_format_map &format_map = factory_type::metric_formats();
 
@@ -256,8 +182,7 @@ namespace illumina { namespace interop { namespace io
                       const typename MetricType::header_type &header,
                       const ::int16_t version)
     {
-        typedef typename metric_format_adapter<MetricType>::metric_t format_metric_t;
-        typedef metric_format_factory<format_metric_t> factory_type;
+        typedef metric_format_factory<MetricType> factory_type;
         typedef typename factory_type::metric_format_map metric_format_map;
         metric_format_map &format_map = factory_type::metric_formats();
 
@@ -280,8 +205,7 @@ namespace illumina { namespace interop { namespace io
                              const ::int16_t version,
                              const typename MetricType::header_type &header = typename MetricType::header_type())
     {
-        typedef typename metric_format_adapter<MetricType>::metric_t format_metric_t;
-        typedef metric_format_factory<format_metric_t> factory_type;
+        typedef metric_format_factory<MetricType> factory_type;
         typedef typename factory_type::metric_format_map metric_format_map;
         metric_format_map &format_map = factory_type::metric_formats();
         if (format_map.find(version) == format_map.end())
@@ -302,8 +226,7 @@ namespace illumina { namespace interop { namespace io
     static void write_metrics(std::ostream &out, const MetricSet &metrics, ::int16_t version = -1)
     {
         typedef typename MetricSet::metric_type metric_type;
-        typedef typename metric_format_adapter<metric_type>::metric_t format_metric_t;
-        typedef metric_format_factory<format_metric_t> factory_type;
+        typedef metric_format_factory<metric_type> factory_type;
         typedef typename factory_type::metric_format_map metric_format_map;
         metric_format_map &format_map = factory_type::metric_formats();
 

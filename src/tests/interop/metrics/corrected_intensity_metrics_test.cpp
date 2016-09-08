@@ -96,9 +96,9 @@ TEST(corrected_intensity_metrics_test, test_percent_base_nan)
 TEST(run_metrics_corrected_intensity_test, test_is_group_empty)
 {
     run_metrics metrics;
-    std::istringstream fin(corrected_intensity_v2::binary_data());
     EXPECT_TRUE(metrics.is_group_empty(constants::CorrectedInt));
-    io::read_metrics(fin, metrics.get_set<corrected_intensity_metric>());
+    io::read_interop_from_string(corrected_intensity_v2::binary_data(),
+                                 metrics.get_set<corrected_intensity_metric>());
     EXPECT_FALSE(metrics.is_group_empty(constants::CorrectedInt));
 }
 

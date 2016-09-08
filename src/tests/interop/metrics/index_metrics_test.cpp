@@ -54,8 +54,8 @@ TEST(run_metrics_index_test, test_is_group_empty)
 {
     run_metrics metrics;
     EXPECT_TRUE(metrics.is_group_empty(constants::Index));
-    std::istringstream fin(index_v1::binary_data());
-    io::read_metrics(fin, metrics.get_set<index_metric>());
+    io::read_interop_from_string(index_v1::binary_data(),
+                                 metrics.get_set<index_metric>());
     EXPECT_FALSE(metrics.is_group_empty(constants::Index));
 }
 #define FIXTURE index_metrics_test

@@ -31,8 +31,8 @@ namespace illumina{ namespace interop { namespace unittest {
             Gen::create_expected(expected);
             try
             {
-                std::istringstream fin(Gen::binary_data());
-                illumina::interop::io::read_metrics(fin, actual);
+                io::read_interop_from_string(Gen::binary_data(),
+                                             actual);
             }
             catch (const std::exception &) { }
             return true;
@@ -64,8 +64,8 @@ namespace illumina{ namespace interop { namespace unittest {
             catch (const std::exception &) { }
             try
             {
-                std::istringstream fin(fout.str());
-                illumina::interop::io::read_metrics(fin, actual);
+                io::read_interop_from_string(fout.str(),
+                                             actual);
             }
             catch (const std::exception &) { }
             return true;

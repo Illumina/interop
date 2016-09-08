@@ -292,9 +292,9 @@ namespace illumina { namespace interop { namespace logic { namespace plot
      */
     template<class Point>
     void plot_by_cycle_t(model::metrics::run_metrics& metrics,
-                       const std::string& metric_name,
-                       const model::plot::filter_options& options,
-                       model::plot::plot_data<Point>& data)
+                         const std::string& metric_name,
+                         const model::plot::filter_options& options,
+                         model::plot::plot_data<Point>& data)
     {
         const constants::metric_type type = constants::parse<constants::metric_type>(metric_name);
         if(type == constants::UnknownMetricType)
@@ -349,37 +349,25 @@ namespace illumina { namespace interop { namespace logic { namespace plot
      * @param types destination vector to fill with metric types
      * @param ignore_accumulated if true, ignore accumulated Q20 and Q30
      */
-    void list_by_cycle_metrics(std::vector<constants::metric_type>& types, const bool ignore_accumulated)
+    void list_by_cycle_metrics(std::vector< logic::utils::metric_type_description_t >& types,
+                               const bool ignore_accumulated)
     {
-        types.clear();
-        std::vector<constants::metric_type> tmp;
-        constants::list_enums(tmp);
-        types.reserve(tmp.size());
-        for(size_t i=0;i<tmp.size();++i)
+        utils::list_descriptions(types);
+        std::vector< logic::utils::metric_type_description_t >::iterator dst = types.begin();
+        for(std::vector< logic::utils::metric_type_description_t >::iterator src = types.begin();src != types.end();++src)
         {
-            if(!utils::is_cycle_metric(tmp[i])) continue;
+            const constants::metric_type type = *src;
+            if(utils::to_feature(type) == constants::UnknownMetricFeature) continue;
             if(ignore_accumulated)
             {
-                if (tmp[i] == constants::AccumPercentQ20) continue;
-                if (tmp[i] == constants::AccumPercentQ30)continue;
+                if (type == constants::AccumPercentQ20) continue;
+                if (type == constants::AccumPercentQ30)continue;
             }
-            types.push_back(tmp[i]);
+            if(!utils::is_cycle_metric(type)) continue;
+            if(src != dst) std::swap(*src, *dst);
+            ++dst;
         }
-    }
-    /** List metric type names available for by cycle plots
-     *
-     * @param names destination vector to fill with metric type names
-     * @param ignore_accumulated if true, ignore accumulated Q20 and Q30
-     */
-    void list_by_cycle_metrics(std::vector<std::string>& names, const bool ignore_accumulated)
-    {
-        std::vector<constants::metric_type> types;
-        list_by_cycle_metrics(types, ignore_accumulated);
-        names.clear();
-        names.reserve(types.size());
-        for(size_t i=0;i<types.size();++i)
-        {
-            names.push_back(utils::to_description(types[i]));
-        }
+        types.resize(std::distance(types.begin(), dst));
+
     }
 }}}}

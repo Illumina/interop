@@ -12,7 +12,10 @@
 #include <algorithm>
 #include "interop/util/assert.h"
 #include "interop/model/metrics/q_metric.h"
+#include "interop/model/metrics/q_by_lane_metric.h"
 #include "interop/io/format/metric_format_factory.h"
+#include "interop/io/format/default_layout.h"
+#include "interop/io/format/metric_format.h"
 
 using namespace illumina::interop::model::metrics;
 
@@ -98,6 +101,10 @@ namespace illumina { namespace interop { namespace io
                 }
 
             private:
+                static void resize_accumulated(const char*, q_metric& metric)
+                {
+                    metric.m_qscore_hist_cumulative.resize(metric.m_qscore_hist.size(), 0);
+                }
                 static void resize_accumulated(std::istream&, q_metric& metric)
                 {
                     metric.m_qscore_hist_cumulative.resize(metric.m_qscore_hist.size(), 0);
@@ -176,8 +183,8 @@ namespace illumina { namespace interop { namespace io
                  * @param header metric header
                  * @return number of bytes read or total number of bytes written
                  */
-                template<class Metric, class Header>
-                static std::streamsize map_stream(std::istream& stream, Metric& metric, Header& header, const bool)
+                template<class Stream, class Metric, class Header>
+                static std::streamsize map_stream(Stream& stream, Metric& metric, Header& header, const bool)
                 {
                     if(header.m_qscore_bins.size()>0)
                     {
@@ -328,6 +335,10 @@ namespace illumina { namespace interop { namespace io
                 static void copy_value_write(std::vector<q_score_bin>&, bin_t*) { }
 
             private:
+                static void resize_accumulated(const char*, q_metric& metric)
+                {
+                    metric.m_qscore_hist_cumulative.resize(metric.m_qscore_hist.size(), 0);
+                }
                 static void resize_accumulated(std::istream&, q_metric& metric)
                 {
                     metric.m_qscore_hist_cumulative.resize(metric.m_qscore_hist.size(), 0);
@@ -471,7 +482,8 @@ namespace illumina { namespace interop { namespace io
                  */
                 static record_size_t compute_header_size(const q_metric::header_type& header)
                 {
-                    if(header.bin_count()==0) return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t) + sizeof(bool_t));
+                    if(header.bin_count()==0)
+                        return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t) + sizeof(bool_t));
                     return static_cast<record_size_t>(sizeof(record_size_t) +
                            sizeof(version_t) + // version
                            sizeof(bool_t) + // has bins
@@ -525,6 +537,10 @@ namespace illumina { namespace interop { namespace io
                 static void copy_value_write(std::vector<q_score_bin>&, bin_t*) { }
 
             private:
+                static void resize_accumulated(const char*, q_metric& metric)
+                {
+                    metric.m_qscore_hist_cumulative.resize(metric.m_qscore_hist.size(), 0);
+                }
                 static void resize_accumulated(std::istream&, q_metric& metric)
                 {
                     metric.m_qscore_hist_cumulative.resize(metric.m_qscore_hist.size(), 0);
@@ -539,3 +555,8 @@ INTEROP_FORCE_LINK_DEF(q_metric)
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(q_metric, 4 )
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(q_metric, 5 )
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(q_metric, 6 )
+
+INTEROP_FORCE_LINK_DEF(q_by_lane_metric)
+INTEROP_REGISTER_METRIC_ANOTHER_GENERIC_LAYOUT(q_metric, q_by_lane_metric, 4)
+INTEROP_REGISTER_METRIC_ANOTHER_GENERIC_LAYOUT(q_metric, q_by_lane_metric, 5)
+INTEROP_REGISTER_METRIC_ANOTHER_GENERIC_LAYOUT(q_metric, q_by_lane_metric, 6)

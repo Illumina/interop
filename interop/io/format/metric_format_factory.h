@@ -12,9 +12,7 @@
 #include "interop/util/assert.h"
 #include "interop/io/format/abstract_metric_format.h"
 #include "interop/util/unique_ptr.h"
-#include "interop/util/lexical_cast.h"
 #include "interop/io/stream_exceptions.h"
-#include "interop/io/format/metric_format.h"
 
 /** Register a metric format with the factory
  *
@@ -24,6 +22,16 @@
 #define INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(Metric, Version) \
     illumina::interop::io::metric_format_factory< Metric >  \
     illumina_interop_io_##Type##Metric##Version(new illumina::interop::io::metric_format<Metric, illumina::interop::io::generic_layout<Metric, Version> >);
+
+/** Register a metric format with the factory
+ *
+ * @param Metric metric class
+ * @param Proxy actual metric parser to use
+ * @param Version version number
+ */
+#define INTEROP_REGISTER_METRIC_ANOTHER_GENERIC_LAYOUT(Metric, Proxy, Version) \
+    illumina::interop::io::metric_format_factory< Proxy >  \
+    illumina_interop_io_##Type##Proxy##Version(new illumina::interop::io::metric_format<Proxy, illumina::interop::io::generic_layout<Metric, Version> >);
 
 /** Ensure that static libraries are properly linked
  *  This must be used in a function that will definitely be linked.
@@ -41,18 +49,6 @@
 
 namespace illumina { namespace interop { namespace io
 {
-    /** Metric type adapter
-     *
-     * This class allows a metric derived from another metric to use it's format
-     * For example, q_by_lane_metric uses the q_metric format
-     */
-    template<typename Metric>
-    struct metric_format_adapter
-    {
-        /** Define the template parameter as the target type */
-        typedef Metric metric_t;
-    };
-
     /** Factory for generating metric formats
      *
      * This class defines static methods to register a metric format. The registered metric formats can

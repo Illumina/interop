@@ -205,8 +205,8 @@ TEST(run_metrics_tile_test, test_is_group_empty)
 {
     run_metrics metrics;
     EXPECT_TRUE(metrics.is_group_empty(constants::Tile));
-    std::istringstream fin(tile_v2::binary_data());
-    io::read_metrics(fin, metrics.get_set<tile_metric>());
+    io::read_interop_from_string(tile_v2::binary_data(),
+                                 metrics.get_set<tile_metric>());
     EXPECT_FALSE(metrics.is_group_empty(constants::Tile));
 }
 

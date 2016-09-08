@@ -1,5 +1,4 @@
 
-
 add_subdirectory("interop")
 
 if(ENABLE_SWIG)

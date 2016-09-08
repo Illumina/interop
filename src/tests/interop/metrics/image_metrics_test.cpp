@@ -60,8 +60,8 @@ TEST(run_metrics_image_test, test_is_group_empty)
 {
     run_metrics metrics;
     EXPECT_TRUE(metrics.is_group_empty(constants::Image));
-    std::istringstream fin(image_v1::binary_data());
-    io::read_metrics(fin, metrics.get_set<image_metric>());
+    io::read_interop_from_string(image_v1::binary_data(),
+                                 metrics.get_set<image_metric>());
     EXPECT_FALSE(metrics.is_group_empty(constants::Image));
 }
 #define FIXTURE image_metrics_test

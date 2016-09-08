@@ -57,8 +57,7 @@ void simulate_read_error_metrics(model::metrics::run_metrics& metrics)
     metrics.legacy_channel_update(constants::HiSeq);
     metrics.set_naming_method(constants::FourDigit);
 
-    std::istringstream iss(unittest::error_v3::binary_data());
-    io::read_metrics(iss, metrics.get_set<model::metrics::error_metric>());
+    io::read_interop_from_string(unittest::error_v3::binary_data(), metrics.get_set<model::metrics::error_metric>());
 }
 /**
  * @class illumina::interop::model::table::imaging_table

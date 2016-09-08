@@ -22,7 +22,7 @@ using namespace illumina::interop;
 
 TEST(plot_logic, check_plot_by_cycle_list)
 {
-    std::vector<constants::metric_type> types;
+    std::vector<logic::utils::metric_type_description_t> types;
     logic::plot::list_by_cycle_metrics(types);
     for(size_t i=0;i<types.size();++i)
     {
@@ -34,7 +34,7 @@ TEST(plot_logic, check_plot_by_cycle_list)
 
 TEST(plot_logic, check_plot_by_lane_list)
 {
-    std::vector<constants::metric_type> types;
+    std::vector<logic::utils::metric_type_description_t> types;
     logic::plot::list_by_lane_metrics(types);
     for(size_t i=0;i<types.size();++i)
     {
@@ -45,7 +45,7 @@ TEST(plot_logic, check_plot_by_lane_list)
 
 TEST(plot_logic, check_plot_flowcell_list)
 {
-    std::vector<constants::metric_type> types;
+    std::vector< logic::utils::metric_type_description_t > types;
     logic::plot::list_flowcell_metrics(types);
     for(size_t i=0;i<types.size();++i)
     {
@@ -84,8 +84,8 @@ TEST(plot_logic, intensity_by_cycle)
     metrics.set_naming_method(constants::FourDigit);
     metrics.legacy_channel_update(constants::HiSeq);
 
-    std::istringstream iss(unittest::extraction_v2::binary_data());
-    io::read_metrics(iss, metrics.extraction_metric_set());
+    io::read_interop_from_string(unittest::extraction_v2::binary_data(),
+                                 metrics.get_set<model::metrics::extraction_metric>());
 
     model::plot::plot_data<model::plot::candle_stick_point> data;
     logic::plot::plot_by_cycle(metrics, constants::Intensity, options, data);
@@ -120,7 +120,7 @@ TEST(plot_logic, pf_clusters_by_lane)
             "",
             "",
             1,
-            model::run::flowcell_layout(2, 2, 2, 16),
+            model::run::flowcell_layout(8, 2, 2, 16),
             std::vector<std::string>(),
             model::run::image_dimensions(),
             reads
@@ -128,8 +128,7 @@ TEST(plot_logic, pf_clusters_by_lane)
     metrics.set_naming_method(constants::FourDigit);
     metrics.legacy_channel_update(constants::HiSeq);
 
-    std::istringstream iss(unittest::tile_v2::binary_data());
-    io::read_metrics(iss, metrics.tile_metric_set());
+    io::read_interop_from_string(unittest::tile_v2::binary_data(), metrics.get_set<model::metrics::tile_metric>());
 
     model::plot::plot_data<model::plot::candle_stick_point> data;
     logic::plot::plot_by_lane(metrics, constants::ClusterCountPF, options, data);
@@ -164,8 +163,7 @@ TEST(plot_logic, q_score_histogram)
     metrics.legacy_channel_update(constants::HiSeq);
     metrics.set_naming_method(constants::FourDigit);
 
-    std::istringstream iss(unittest::q_v6::binary_data());
-    io::read_metrics(iss, metrics.q_metric_set());
+    io::read_interop_from_string(unittest::q_v6::binary_data(), metrics.get_set<model::metrics::q_metric>());
     metrics.finalize_after_load();
 
     model::plot::plot_data<model::plot::bar_point> data;
@@ -200,8 +198,7 @@ TEST(plot_logic, q_score_heatmap)
     metrics.legacy_channel_update(constants::HiSeq);
     metrics.set_naming_method(constants::FourDigit);
 
-    std::istringstream iss(unittest::q_v6::binary_data());
-    io::read_metrics(iss, metrics.q_metric_set());
+    io::read_interop_from_string(unittest::q_v6::binary_data(), metrics.get_set<model::metrics::q_metric>());
     metrics.finalize_after_load();
 
     model::plot::heatmap_data data;
@@ -236,8 +233,7 @@ TEST(plot_logic, flowcell_map)
     model::plot::filter_options options(constants::FourDigit, ALL_IDS, 0, constants::A, ALL_IDS, 1, 1);
     metrics.legacy_channel_update(constants::HiSeq);
 
-    std::istringstream iss(unittest::extraction_v2::binary_data());
-    io::read_metrics(iss, metrics.extraction_metric_set());
+    io::read_interop_from_string(unittest::extraction_v2::binary_data(), metrics.get_set<model::metrics::extraction_metric>());
     ASSERT_GT(metrics.extraction_metric_set().size(), 0u);
 
     model::plot::flowcell_data data;
@@ -269,10 +265,8 @@ TEST(plot_logic, sample_qc)
     model::plot::filter_options options(constants::FourDigit, ALL_IDS, 0, constants::A, ALL_IDS, 1, 1);
     metrics.legacy_channel_update(constants::HiSeq);
 
-    std::istringstream iss(unittest::index_v1::binary_data());
-    io::read_metrics(iss, metrics.index_metric_set());
-    std::istringstream iss2(unittest::tile_v2::binary_data());
-    io::read_metrics(iss2, metrics.tile_metric_set());
+    io::read_interop_from_string(unittest::index_v1::binary_data(), metrics.get_set<model::metrics::index_metric>());
+    io::read_interop_from_string(unittest::tile_v2::binary_data(), metrics.get_set<model::metrics::tile_metric>());
     ASSERT_GT(metrics.index_metric_set().size(), 0u);
 
     model::plot::plot_data<model::plot::bar_point> data;

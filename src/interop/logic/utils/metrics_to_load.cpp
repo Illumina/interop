@@ -9,6 +9,7 @@
 #include "interop/logic/utils/metrics_to_load.h"
 #include "interop/logic/utils/metric_type_ext.h"
 #include "interop/model/run_metrics.h"
+#include "interop/logic/plot/plot_flowcell_map.h"
 
 namespace illumina { namespace interop { namespace logic { namespace utils
 {
@@ -125,5 +126,18 @@ namespace illumina { namespace interop { namespace logic { namespace utils
         list_index_summary_metric_groups(groups);
         logic::utils::list_metrics_to_load(groups, valid_to_load); // Only load the InterOp files required
     }
+    /** List all required metric groups for the analysis tab
+     *
+     * @param valid_to_load list of metrics to load on demand
+     */
+    void list_analysis_metrics_to_load(std::vector<unsigned char>& valid_to_load)
+    {
+        typedef std::vector< metric_type_description_t > description_vector_t;
+        description_vector_t types;
+        logic::plot::list_flowcell_metrics(types);
+        for(description_vector_t::const_iterator it = types.begin();it != types.end();++it)
+            list_metrics_to_load(*it, valid_to_load);
+    }
+
 
 }}}}

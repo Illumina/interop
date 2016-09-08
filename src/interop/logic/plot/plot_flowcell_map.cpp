@@ -221,38 +221,30 @@ namespace illumina { namespace interop { namespace logic { namespace plot
             INTEROP_THROW(model::invalid_metric_type, "Unsupported metric type: " << metric_name);
         plot_flowcell_map(metrics, type, options, data, buffer, tile_buffer);
     }
+
     /** List metric type names available for flowcell
      *
      * @param types destination vector to fill with metric type names
+     * @param ignore_accumulated exclude accumulated q-metrics
      */
-    void list_flowcell_metrics(std::vector<constants::metric_type>& types)
+    void list_flowcell_metrics(std::vector< logic::utils::metric_type_description_t > &types,
+                               const bool ignore_accumulated)
     {
-        types.clear();
-        std::vector<constants::metric_type> tmp;
-        constants::list_enums(tmp);
-        types.reserve(tmp.size());
-        for(size_t i=0;i<tmp.size();++i)
+        utils::list_descriptions(types);
+        std::vector< logic::utils::metric_type_description_t >::iterator dst = types.begin();
+        for(std::vector< logic::utils::metric_type_description_t >::iterator src = types.begin();src != types.end();++src)
         {
-            if(utils::to_feature(tmp[i]) == constants::UnknownMetricFeature) continue;
-            if(tmp[i] == constants::AccumPercentQ20) continue;
-            if(tmp[i] == constants::AccumPercentQ30)continue;
-            types.push_back(tmp[i]);
+            const constants::metric_type type = *src;
+            if(utils::to_feature(type) == constants::UnknownMetricFeature) continue;
+            if(ignore_accumulated)
+            {
+                if (type == constants::AccumPercentQ20) continue;
+                if (type == constants::AccumPercentQ30)continue;
+            }
+            if(src != dst) std::swap(*src, *dst);
+            ++dst;
         }
-    }
-    /** List metric type names available for flowcell
-     *
-     * @param names destination vector to fill with metric type names
-     */
-    void list_flowcell_metrics(std::vector<std::string>& names)
-    {
-        std::vector<constants::metric_type> types;
-        list_flowcell_metrics(types);
-        names.clear();
-        names.reserve(types.size());
-        for(size_t i=0;i<types.size();++i)
-        {
-            names.push_back(utils::to_description(types[i]));
-        }
+        types.resize(std::distance(types.begin(), dst));
     }
     /** Calculate the required buffer size
      *

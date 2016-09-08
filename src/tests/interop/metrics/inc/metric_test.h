@@ -137,8 +137,7 @@ namespace illumina{ namespace interop { namespace unittest {
         {
             try
             {
-                std::istringstream fin(data);
-                illumina::interop::io::read_metrics(fin, metrics);
+                illumina::interop::io::read_interop_from_string(data, metrics);
             }
             catch (const std::exception &) { }
         }

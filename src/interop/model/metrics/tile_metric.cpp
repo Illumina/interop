@@ -11,6 +11,8 @@
 #include "interop/model/metrics/tile_metric.h"
 #include "interop/io/format/metric_format_factory.h"
 #include "interop/util/math.h"
+#include "interop/io/format/default_layout.h"
+#include "interop/io/format/metric_format.h"
 
 using namespace illumina::interop::model::metrics;
 
@@ -29,7 +31,7 @@ namespace illumina { namespace interop { namespace io
              *      2. Version: 2
              */
             template<>
-            struct generic_layout<tile_metric, 2> : public default_layout<2>
+            struct generic_layout<tile_metric, 2> : public default_layout<2, 1 /*Multi record */>
             {
                 /** @page tile_v2 Tile Version 2
                  *
@@ -139,6 +141,11 @@ namespace illumina { namespace interop { namespace io
                     };
 
                     return count;
+                }
+                template<class Metric, class Header>
+                static std::streamsize map_stream(const char*, Metric&, Header&, const bool)
+                {
+                    INTEROP_THROW(std::runtime_error, "This function should not be called");
                 }
                 /** Write metric to the output stream
                  *

@@ -101,9 +101,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		public void TestListFlowMetrics()
 		{
 		    var interopsToLoad = new uchar_vector();
-		    var types = new metric_type_vector();
-		    c_csharp_plot.list_flowcell_metrics(types);
-		    c_csharp_metrics.list_metrics_to_load(types, interopsToLoad);
+		    c_csharp_metrics.list_analysis_metrics_to_load(interopsToLoad);
 		}
 	}
 }
