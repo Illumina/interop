@@ -126,8 +126,8 @@ namespace illumina { namespace interop { namespace io
      * @param use_out use the copied version
      */
     template<class MetricSet>
-    bool interop_exists(const std::string& run_directory, MetricSet&, const bool use_out=true)   throw
-    (interop::io::file_not_found_exception,
+    bool interop_exists(const std::string& run_directory, MetricSet&, const bool use_out=true)
+    throw(interop::io::file_not_found_exception,
     interop::io::bad_format_exception,
     interop::io::incomplete_file_exception,
     model::index_out_of_bounds_exception)
