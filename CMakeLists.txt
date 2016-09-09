@@ -23,6 +23,7 @@ option(ENABLE_APPS "Build command line programs" ON)
 option(ENABLE_EXAMPLES "Build example programs" ON)
 option(ENABLE_STATIC "Build static libraries instead of dynamic" ON)
 option(FORCE_X86 "Force 32-bit libraries instead of platform default (Does nothing for Visual Studio)" OFF)
+option(FORCE_SHARED_CRT "Used the shared (DLL) run time lib" OFF)
 
 include_directories(.)
 add_version_target(version ${CMAKE_SOURCE_DIR}/interop/version.h INTEROP_VERSION)
