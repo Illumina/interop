@@ -12,6 +12,7 @@
 #include "metric_test.h"
 #include "interop/model/metrics/error_metric.h"
 #include "interop/model/summary/run_summary.h"
+#include "interop/util/length_of.h"
 
 
 namespace illumina { namespace interop { namespace unittest
@@ -38,16 +39,38 @@ namespace illumina { namespace interop { namespace unittest
         }
         /** Get the expected binary data
          *
+         * @param buffer binary data vector
+         */
+        static void create_binary_data(std::vector< ::uint8_t >& buffer)
+        {
+            create_binary_data_t(buffer);
+        }
+        /** Get the expected binary data
+         *
+         * @param buffer binary data string
+         */
+        static void create_binary_data(std::string& buffer)
+        {
+            create_binary_data_t(buffer);
+        }
+
+    private:
+        /** Get the expected binary data
+         *
          * @return binary data string
          */
-        static std::string binary_data()
+        template<class T>
+        static void create_binary_data_t(T& buffer)
         {
-            const int tmp[] = {3, 30, 7, 0, 90, 4, 1, 0, -96, 115, -26, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                               0, 0, 0, 0, 0, 7, 0, 90, 4, 2, 0, -96, 115, 102, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                               0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 90, 4, 3, 0, -12, 101, -18, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                               0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+            static const int tmp[] = {3, 30,
+                                      7, 0, 90, 4, 1, 0, -96, 115, -26, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                      0, 0, 0, 0, 0,
+                                      7, 0, 90, 4, 2, 0, -96, 115, 102, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                      0, 0, 0, 0, 0, 0, 0, 0,
+                                      7, 0, 90, 4, 3, 0, -12, 101, -18, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
             };
-            return to_string(tmp);
+            buffer.assign(tmp, tmp+util::length_of(tmp));
         }
     };
 

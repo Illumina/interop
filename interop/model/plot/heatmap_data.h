@@ -38,9 +38,10 @@ namespace illumina { namespace interop { namespace model { namespace plot
          */
         void set_buffer(float* data) throw(invalid_parameter)
         {
-            if(m_free) throw invalid_parameter("Cannot use internal buffer map with external buffer");
-            if(empty()) throw invalid_parameter("Cannot set external buffer to empty map");
+            if(m_free) INTEROP_THROW( invalid_parameter, "Cannot use internal buffer map with external buffer");
+            if(empty()) INTEROP_THROW( invalid_parameter, "Cannot set external buffer to empty map");
             m_data = data;
+            std::fill(m_data, m_data+length(), std::numeric_limits<float>::quiet_NaN());
         }
         /** Resize the heat map to the given number of rows and columns
          *
@@ -55,6 +56,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
             m_num_columns = cols;
             m_num_rows = rows;
             m_free=false;
+            std::fill(data, data+length(), std::numeric_limits<float>::quiet_NaN());
         }
         /** Resize the heat map to the given number of rows and columns
          *
@@ -67,10 +69,10 @@ namespace illumina { namespace interop { namespace model { namespace plot
             {
                 if (m_free) delete[] m_data;
                 m_data = new float[cols * rows];
-                std::memset(reinterpret_cast<char*>(m_data), 0, sizeof(float)*rows*cols);
                 m_num_columns = cols;
                 m_num_rows = rows;
                 m_free = true;
+                std::fill(m_data, m_data+length(), std::numeric_limits<float>::quiet_NaN());
             }
         }
 

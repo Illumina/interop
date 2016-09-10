@@ -81,9 +81,11 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                         layout.total_swaths(layout.surface_count() > 1 && !options.is_specific_surface()),
                         layout.tiles_per_lane());
         else
+        {
             data.set_buffer(buffer, tile_buffer, layout.lane_count(),
                             layout.total_swaths(layout.surface_count() > 1 && !options.is_specific_surface()),
                             layout.tiles_per_lane());
+        }
         std::vector<float> values_for_scaling;
         values_for_scaling.reserve(data.length());
 

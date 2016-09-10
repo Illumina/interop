@@ -98,6 +98,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 			ushort[] correctedIntAll1 = new ushort[]{1213, 966, 960, 1095};
 			ushort[] correctedIntCalled1 = new ushort[]{4070, 4074, 4029, 3972};
 			uint[] calledCounts1 = new uint[]{0, 698433, 548189, 548712, 646638};
+			expected_metrics.Clear();
 			expected_metrics.Add(
 				new corrected_intensity_metric(1, 1104, 25, 1063, 11.9458876f, correctedIntCalled1, correctedIntAll1,
 					calledCounts1));
@@ -140,6 +141,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		{
 			uint_vector calledCounts1 = new uint_vector(new uint[]{52, 1049523, 654071, 500476, 982989});
 			ushort_vector correctedIntCalled1 = new ushort_vector(new ushort[]{245, 252, 61, 235});
+			expected_metrics.Clear();
 			expected_metrics.Add(new corrected_intensity_metric(7, 1114, 1, correctedIntCalled1, (calledCounts1)));
 			uint_vector calledCounts2 = new uint_vector(new uint[]{0, 1063708, 582243, 588028, 953132});
 			ushort_vector correctedIntCalled2 = new ushort_vector(new ushort[]{232, 257, 68, 228});

@@ -57,7 +57,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                                   model::invalid_metric_type,
                                   model::index_out_of_bounds_exception);
 
-    /** List metric type names available for subtile
+    /** List metric type names available for flowcell
      *
      * @param types destination vector to fill with metric type names
      * @param ignore_accumulated exclude accumulated q-metrics

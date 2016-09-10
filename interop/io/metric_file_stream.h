@@ -93,6 +93,26 @@ namespace illumina { namespace interop { namespace io
     }
     /** Read the binary InterOp file into the given metric set
      *
+     * @param buffer string holding a byte buffer
+     * @param metrics metric set
+     * @throw bad_format_exception
+     * @throw incomplete_file_exception
+     * @throw model::index_out_of_bounds_exception
+     */
+    template<class MetricSet>
+    void read_interop_from_string(const std::vector< ::uint8_t>& buffer, MetricSet& metrics)  throw
+    (interop::io::bad_format_exception,
+    interop::io::incomplete_file_exception,
+    model::index_out_of_bounds_exception)
+    {
+        if(buffer.empty())return;
+        char* pbuffer =reinterpret_cast<char*>(const_cast< ::uint8_t* >(&buffer.front()));
+        detail::membuf sbuf(pbuffer, pbuffer + buffer.size());
+        std::istream in(&sbuf);
+        read_metrics(in, metrics, buffer.size());
+    }
+    /** Read the binary InterOp file into the given metric set
+     *
      * @snippet src/examples/example1.cpp Reading a binary InterOp file
      *
      * @note The 'Out' suffix (parameter: use_out) is appended when we read the file. We excluded the Out in certain
