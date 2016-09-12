@@ -43,6 +43,11 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         }
 
     protected:
+        /** Does nothing
+         *
+         * @todo remove this method
+         */
+        void clear(){}
         /** Update max cycle
          *
          * This does nothing, and is here for compatibility.

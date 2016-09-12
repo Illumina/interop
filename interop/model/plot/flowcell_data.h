@@ -264,6 +264,7 @@ protected:
     size_t m_swath_count;
     /** Number of tiles per swath */
     size_t m_tile_count;
+private:
     bool m_free;
 };
 

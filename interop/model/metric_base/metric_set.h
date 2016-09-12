@@ -466,6 +466,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         void clear()
         {
+            header_type::clear();
             m_id_map.clear();
             m_data.clear();
         }
