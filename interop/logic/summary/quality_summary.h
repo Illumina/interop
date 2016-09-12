@@ -86,7 +86,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
             INTEROP_ASSERT(beg->cycle() > 0);
             INTEROP_ASSERT((beg->cycle()-1) < cycle_to_read.size());
             if((beg->cycle()-1) >= cycle_to_read.size())
-                throw model::index_out_of_bounds_exception("Cycle exceeds total cycles from Reads in the RunInfo.xml");
+                INTEROP_THROW(model::index_out_of_bounds_exception, "Cycle exceeds total cycles from Reads in the RunInfo.xml");
             const size_t read_number = cycle_to_read[beg->cycle()-1].number-1;
             if(cycle_to_read[beg->cycle()-1].is_last_cycle_in_read) continue;
             const size_t lane = beg->lane()-1;

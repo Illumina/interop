@@ -213,6 +213,48 @@ TEST(plot_logic, q_score_heatmap)
     EXPECT_NEAR(data.y_axis().max(), 40.0f, tol);
 }
 
+TEST(plot_logic, q_score_heatmap_buffer)
+{
+    const float tol = 1e-5f;
+    model::metrics::run_metrics metrics;
+    model::plot::filter_options options(constants::FourDigit);
+    std::vector<model::run::read_info> reads(2);
+    reads[0] = model::run::read_info(1, 1, 26);
+    reads[1] = model::run::read_info(2, 27, 76);
+    metrics.run_info(model::run::info(
+            "",
+            "",
+            1,
+            model::run::flowcell_layout(8, 2, 2, 16),
+            std::vector<std::string>(),
+            model::run::image_dimensions(),
+            reads
+    ));
+    metrics.legacy_channel_update(constants::HiSeq);
+    metrics.set_naming_method(constants::FourDigit);
+
+    io::read_interop_from_string(unittest::q_v6::binary_data(), metrics.get_set<model::metrics::q_metric>());
+    metrics.finalize_after_load();
+
+    model::plot::heatmap_data data1;
+    logic::plot::plot_qscore_heatmap(metrics, options, data1);
+
+    size_t row_count = logic::plot::count_rows_for_heatmap(metrics);
+    size_t col_count = logic::plot::count_columns_for_heatmap(metrics);
+    std::vector<float> buffer(row_count*col_count, 1);
+    model::plot::heatmap_data data2;
+    logic::plot::plot_qscore_heatmap(metrics, options, data2, &buffer.front());
+
+    for(size_t row=0;row<data2.row_count();row++)
+    {
+        for(size_t col=0;col<data2.column_count();col++)
+        {
+            if(std::isnan(buffer[row*data2.column_count()+col]) && std::isnan(data1.at(row,col))) continue;
+            EXPECT_NEAR(buffer[row*data2.column_count()+col], data1.at(row,col), tol) << data1.at(row,col);
+        }
+    }
+}
+
 TEST(plot_logic, flowcell_map)
 {
     const model::plot::filter_options::id_t ALL_IDS = model::plot::filter_options::ALL_IDS;

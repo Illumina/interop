@@ -78,6 +78,11 @@ if(NOT GTEST_INCLUDE_DIR OR NOT GTEST_LIBRARY OR NOT GTEST_MAIN_LIBRARY OR NOT G
     else()
         set(USE_OWN_TR1_TUPLE 1)
     endif()
+    if(FORCE_SHARED_CRT)
+        set(gtest_force_shared_crt ON)
+    else()
+        set(gtest_force_shared_crt OFF)
+    endif()
     set(GTEST_PREFIX ${CMAKE_BINARY_DIR}/external/gtest)
     include(ExternalProject)
     ExternalProject_Add(
@@ -93,6 +98,7 @@ if(NOT GTEST_INCLUDE_DIR OR NOT GTEST_LIBRARY OR NOT GTEST_MAIN_LIBRARY OR NOT G
                 -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=${GTEST_PREFIX}/lib64
                 -DCMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG=${GTEST_PREFIX}/lib64
                 -DCMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE=${GTEST_PREFIX}/lib64
+                -Dgtest_force_shared_crt=${gtest_force_shared_crt}
             INSTALL_COMMAND ""
             #SOURCE_DIR ${GTEST_PREFIX}/src/gtest
             LOG_DOWNLOAD ON

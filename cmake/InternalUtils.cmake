@@ -18,7 +18,7 @@ macro(fix_default_compiler_settings_)
         foreach (flag_var
                 CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
                 CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
-            if (NOT BUILD_SHARED_LIBS AND NOT gtest_force_shared_crt)
+            if (NOT BUILD_SHARED_LIBS AND NOT FORCE_SHARED_CRT)
                 # When Google Test is built as a shared library, it should also use
                 # shared runtime libraries.  Otherwise, it may end up with multiple
                 # copies of runtime library data in different modules, resulting in
@@ -81,6 +81,7 @@ macro(interop_config_compiler_and_linker)
         set(CXX11_FLAG_ "-std=c++11")
     endif()
 
+    check_cxx_compiler_flag("-std=c89" COMPILER_SUPPORTS_ANSI)
     check_cxx_compiler_flag("${CXX11_FLAG_}" COMPILER_SUPPORTS_CXX11)
     if(COMPILER_SUPPORTS_CXX11)
         set(CXX_CX11_FLAG "${CXX11_FLAG_}")
@@ -131,6 +132,8 @@ macro(interop_config_compiler_and_linker)
     elseif(MINGW)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_CX11_FLAG}")
         message(WARNING "ENABLE_BACKWARDS_COMPATIBILITY=ON does not work with MinGW, ignoring")
+    elseif(COMPILER_SUPPORTS_ANSI)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c89")
     endif()
 endmacro()
 

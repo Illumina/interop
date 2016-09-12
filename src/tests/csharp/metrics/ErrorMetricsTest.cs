@@ -42,8 +42,6 @@ namespace Illumina.InterOp.Interop.UnitTest
 			expected_metric_set = new base_error_metrics(expected_metrics, Version, header);
 			c_csharp_comm.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, actual_metric_set);
 			actual_metrics = actual_metric_set.metrics();
-
-
 		}
 
 		/// <summary>

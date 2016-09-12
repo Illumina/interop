@@ -29,9 +29,11 @@ namespace illumina{ namespace interop { namespace unittest {
         {
             actual.clear();
             Gen::create_expected(expected);
+            std::vector< ::uint8_t > binary_data;
+            Gen::create_binary_data(binary_data);
             try
             {
-                io::read_interop_from_string(Gen::binary_data(),
+                io::read_interop_from_string(binary_data,
                                              actual);
             }
             catch (const std::exception &) { }
@@ -147,8 +149,7 @@ namespace illumina{ namespace interop { namespace unittest {
          */
         bool generate(std::string& expected, std::string& actual)
         {
-            expected = Gen::binary_data();
-
+            Gen::create_binary_data(expected);
             metric_set_t metrics;
             Gen::create_expected(metrics);
             std::ostringstream fout;

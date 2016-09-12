@@ -18,7 +18,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		/// Test plotting q-score heat map
 		/// </summary>
 		[Test]
-		public void Histogram()
+		public void Heatmap()
 		{
 			int[] tmp = new int[]{
                 6,34,1,7,2,10,20,25,30,35,40,9,19,24,29,34,39,40,2,14,21,27,32,36,40

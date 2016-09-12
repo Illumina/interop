@@ -4,6 +4,10 @@
 
 Date       | Description
 ---------- | -----------
+2016-09-09 | Added sentinel for missing values in the heatmap type plots
+2016-09-09 | Fixed invalid pointer deference and double free in MSVC
+2016-09-08 | Added sentinel for missing values in the imaging table
+2016-09-08 | Fixed potential problem found by coverity
 2016-09-07 | IPA-5101: Fix MSVC bug in vector type loading (Master)
 2016-09-02 | Added buffered reader to improve loading speed
 2016-09-01 | Bug fix for SWIG in on-demand loading

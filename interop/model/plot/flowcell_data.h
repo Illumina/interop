@@ -216,8 +216,8 @@ namespace illumina { namespace interop { namespace model { namespace plot
          */
         void set_buffer(::uint32_t *id_buffer) throw(invalid_parameter)
         {
-            if (m_free) throw invalid_parameter("Cannot use internal buffer map with external buffer");
-            if (empty()) throw invalid_parameter("Cannot set external buffer to empty map");
+            if (m_free) INTEROP_THROW(invalid_parameter, "Cannot use internal buffer map with external buffer");
+            if (empty()) INTEROP_THROW(invalid_parameter, "Cannot set external buffer to empty map");
             m_data = id_buffer;
         }
 
@@ -236,6 +236,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
             m_swath_count = swaths;
             m_tile_count = tiles;
             m_free = false;
+            std::fill(id_buffer, id_buffer+length(), 0);
         }
 
         /** Resize the tile ID map to the given number of rows and columns
@@ -263,6 +264,7 @@ protected:
     size_t m_swath_count;
     /** Number of tiles per swath */
     size_t m_tile_count;
+private:
     bool m_free;
 };
 

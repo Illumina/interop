@@ -44,6 +44,12 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         base_metric::uint_t max_cycle() const
         { return m_max_cycle; }
+        /** Clear the max_cycle
+         */
+        void clear()
+        {
+            m_max_cycle=0;
+        }
 
     protected:
         /** Update the max cycle
