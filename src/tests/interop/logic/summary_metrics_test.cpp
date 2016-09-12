@@ -11,32 +11,85 @@
 #include <gtest/gtest.h>
 #include "interop/util/math.h"
 #include "interop/logic/summary/run_summary.h"
-#include "inc/error_metrics_test.h"
-#include "inc/extraction_metrics_test.h"
-#include "inc/tile_metrics_test.h"
-#include "inc/q_metrics_test.h"
-#include "inc/index_metrics_test.h"
-#include "inc/summary_fixture.h"
+#include "interop/logic/summary/index_summary.h"
+#include "src/tests/interop/metrics/inc/error_metrics_test.h"
+#include "src/tests/interop/metrics/inc/extraction_metrics_test.h"
+#include "src/tests/interop/metrics/inc/tile_metrics_test.h"
+#include "src/tests/interop/metrics/inc/q_metrics_test.h"
+#include "src/tests/interop/metrics/inc/index_metrics_test.h"
 #include "src/tests/interop/inc/regression_fixture.h"
+#include "src/tests/interop/inc/abstract_regression_test_generator.h"
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::io;
 using namespace illumina::interop;
 using namespace illumina::interop::unittest;
 
 
-/** Interface between fixtures and Google Test */
-template<typename TestSetup>
-struct summary_metrics_test : public ::testing::Test, public TestSetup{};
+/** Generate the actual metric set by reading in from hardcoded binary buffer
+ *
+ * The expected metric set is provided by the generator.
+ */
+template<class Gen>
+class run_summary_generator : public abstract_generator< model::summary::run_summary >
+{
+    typedef typename Gen::metric_set_t metric_set_t;
+public:
+    /** Generate the expected and actual metric sets
+     *
+     * @param expected expected metric set
+     * @param actual actual metric set
+     */
+    bool generate(model::summary::run_summary& expected, model::summary::run_summary& actual)const
+    {
+        expected = Gen::summary();
+        std::vector<model::run::read_info> reads;
+        expected.copy_reads(reads);
+        actual = model::summary::run_summary(reads.begin(), reads.end(), 8);
+        std::vector<std::string> channels;
+        channels.push_back("Red");
+        channels.push_back("Green");
+        model::run::info run_info("XX",
+                                  "",
+                                  1,
+                                  model::run::flowcell_layout(8, 2, 4, 99, 6, 6),
+                                  channels,
+                                  model::run::image_dimensions(),
+                                  reads);
+        run_info.set_naming_method(constants::FourDigit);
+        model::metrics::run_metrics metrics(run_info);
+        try
+        {
+            io::read_interop_from_string(Gen::binary_data(),
+                                         metrics.get_set<typename Gen::metric_t>());
+        }
+        catch (const std::exception &) { }
+        metrics.finalize_after_load();
+        logic::summary::summarize_run_metrics(metrics, actual);
+        return true;
+    }
+    abstract_generator< model::summary::run_summary >* clone()const
+    {
+        return new run_summary_generator<Gen>;
+    }
+};
 
-typedef ::testing::Types<
-        summary_fixture<error_v3>,
-        summary_fixture<extraction_v2>,
-        summary_fixture<q_v4>,
-        summary_fixture<q_v5>,
-        summary_fixture<q_v6>,
-        summary_fixture<tile_v2>
-> Formats;
-TYPED_TEST_CASE(summary_metrics_test, Formats);
+/** Setup for tests that compare two run summaries */
+struct run_summary_tests : public generic_test_fixture< model::summary::run_summary > {};
+
+run_summary_tests::generator_type run_summary_unit_test_generators[] = {
+        new run_summary_generator< error_v3 >(),
+        new run_summary_generator< extraction_v2 >(),
+        new run_summary_generator< q_v4 >(),
+        new run_summary_generator< q_v5 >(),
+        new run_summary_generator< q_v6 >(),
+        new run_summary_generator< tile_v2 >()
+};
+
+
+// Setup unit tests for run summary tests
+INSTANTIATE_TEST_CASE_P(run_summary_unit_test,
+                        run_summary_tests,
+                        ::testing::ValuesIn(run_summary_unit_test_generators));
 
 #define EXPECT_STAT_NEAR(ACTUAL, EXPECTED, TOL) \
     EXPECT_NEAR(ACTUAL.mean(), EXPECTED.mean(), TOL); \
@@ -59,30 +112,29 @@ TYPED_TEST_CASE(summary_metrics_test, Formats);
  *
  * @todo Add more robust testing (e.g. non-index)
  */
-TYPED_TEST(summary_metrics_test, run_summary)
+TEST_P(run_summary_tests, run_summary)
 {
-    const model::summary::run_summary& expected_summary=TypeParam::expected;
-    const model::summary::run_summary& actual_summary=TypeParam::actual;
+    if(!test) return;// Disable test for rebaseline
     const float tol = 1e-7f;
-    ASSERT_EQ(actual_summary.size(), expected_summary.size());
-    ASSERT_EQ(actual_summary.lane_count(), expected_summary.lane_count());
-    EXPECT_NEAR(actual_summary.total_summary().error_rate(), expected_summary.total_summary().error_rate(), tol);
-    EXPECT_NEAR(actual_summary.total_summary().percent_aligned(), expected_summary.total_summary().percent_aligned(), tol);
-    EXPECT_NEAR(actual_summary.total_summary().first_cycle_intensity(), expected_summary.total_summary().first_cycle_intensity(), tol);
-    EXPECT_NEAR(actual_summary.total_summary().percent_gt_q30(), expected_summary.total_summary().percent_gt_q30(), tol);
-    EXPECT_NEAR(actual_summary.total_summary().yield_g(), expected_summary.total_summary().yield_g(), tol);
-    EXPECT_NEAR(actual_summary.total_summary().projected_yield_g(), expected_summary.total_summary().projected_yield_g(), tol);
+    ASSERT_EQ(actual.size(), expected.size());
+    ASSERT_EQ(actual.lane_count(), expected.lane_count());
+    EXPECT_NEAR(actual.total_summary().error_rate(), expected.total_summary().error_rate(), tol);
+    EXPECT_NEAR(actual.total_summary().percent_aligned(), expected.total_summary().percent_aligned(), tol);
+    EXPECT_NEAR(actual.total_summary().first_cycle_intensity(), expected.total_summary().first_cycle_intensity(), tol);
+    EXPECT_NEAR(actual.total_summary().percent_gt_q30(), expected.total_summary().percent_gt_q30(), tol);
+    EXPECT_NEAR(actual.total_summary().yield_g(), expected.total_summary().yield_g(), tol);
+    EXPECT_NEAR(actual.total_summary().projected_yield_g(), expected.total_summary().projected_yield_g(), tol);
 
 
-    EXPECT_NEAR(actual_summary.nonindex_summary().error_rate(), expected_summary.nonindex_summary().error_rate(), tol);
-    EXPECT_NEAR(actual_summary.nonindex_summary().percent_aligned(), expected_summary.nonindex_summary().percent_aligned(), tol);
-    EXPECT_NEAR(actual_summary.nonindex_summary().first_cycle_intensity(), expected_summary.nonindex_summary().first_cycle_intensity(), tol);
-    EXPECT_NEAR(actual_summary.nonindex_summary().percent_gt_q30(), expected_summary.nonindex_summary().percent_gt_q30(), tol);
-    EXPECT_NEAR(actual_summary.nonindex_summary().yield_g(), expected_summary.nonindex_summary().yield_g(), tol);
-    EXPECT_NEAR(actual_summary.nonindex_summary().projected_yield_g(), expected_summary.nonindex_summary().projected_yield_g(), tol);
+    EXPECT_NEAR(actual.nonindex_summary().error_rate(), expected.nonindex_summary().error_rate(), tol);
+    EXPECT_NEAR(actual.nonindex_summary().percent_aligned(), expected.nonindex_summary().percent_aligned(), tol);
+    EXPECT_NEAR(actual.nonindex_summary().first_cycle_intensity(), expected.nonindex_summary().first_cycle_intensity(), tol);
+    EXPECT_NEAR(actual.nonindex_summary().percent_gt_q30(), expected.nonindex_summary().percent_gt_q30(), tol);
+    EXPECT_NEAR(actual.nonindex_summary().yield_g(), expected.nonindex_summary().yield_g(), tol);
+    EXPECT_NEAR(actual.nonindex_summary().projected_yield_g(), expected.nonindex_summary().projected_yield_g(), tol);
 
-    const model::summary::cycle_state_summary& actual_cycle_summary = actual_summary.cycle_state();
-    const model::summary::cycle_state_summary& expected_cycle_summary = expected_summary.cycle_state();
+    const model::summary::cycle_state_summary& actual_cycle_summary = actual.cycle_state();
+    const model::summary::cycle_state_summary& expected_cycle_summary = expected.cycle_state();
     EXPECT_CYCLE_EQ(actual_cycle_summary.extracted_cycle_range(), expected_cycle_summary.extracted_cycle_range());
     EXPECT_CYCLE_EQ(actual_cycle_summary.called_cycle_range(), expected_cycle_summary.called_cycle_range());
     EXPECT_CYCLE_EQ(actual_cycle_summary.qscored_cycle_range(), expected_cycle_summary.qscored_cycle_range());
@@ -90,16 +142,15 @@ TYPED_TEST(summary_metrics_test, run_summary)
 }
 /** Test if calculated read summary matches actual read summary
  */
-TYPED_TEST(summary_metrics_test, read_summary)
+TEST_P(run_summary_tests, read_summary)
 {
-    const model::summary::run_summary& expected_summary=TypeParam::expected;
-    const model::summary::run_summary& actual_summary=TypeParam::actual;
-    ASSERT_EQ(actual_summary.size(), expected_summary.size());
+    if(!test) return;// Disable test for rebaseline
+    ASSERT_EQ(actual.size(), expected.size());
     const float tol = 1e-7f;
-    for(size_t read=0;read<expected_summary.size();++read)
+    for(size_t read=0;read<expected.size();++read)
     {
-        const model::summary::read_summary &actual_read_summary = actual_summary[read];
-        const model::summary::read_summary &expected_read_summary = expected_summary[read];
+        const model::summary::read_summary &actual_read_summary = actual[read];
+        const model::summary::read_summary &expected_read_summary = expected[read];
         EXPECT_EQ(actual_read_summary.size(), expected_read_summary.size());
         EXPECT_EQ(actual_read_summary.lane_count(), expected_read_summary.lane_count());
         EXPECT_NEAR(actual_read_summary.summary().error_rate(), expected_read_summary.summary().error_rate(), tol);
@@ -113,10 +164,9 @@ TYPED_TEST(summary_metrics_test, read_summary)
 }
 /** Test if calculated lane summary matches actual lane summary
  */
-TYPED_TEST(summary_metrics_test, lane_summary)
+TEST_P(run_summary_tests, lane_summary)
 {
-    const model::summary::run_summary& expected_summary = TypeParam::expected;
-    const model::summary::run_summary& actual_summary = TypeParam::actual;
+    if(!test) return;// Disable test for rebaseline
 #ifdef _INTEROP_WIN32
     const float density_tol = 0.5f;
     const float tol = 1e-2f; // TODO: fix this unit test on external Windows Builds (appveyor) was 1e-7f
@@ -124,14 +174,14 @@ TYPED_TEST(summary_metrics_test, lane_summary)
     const float density_tol = 1e-7f;
     const float tol = 1e-7f;
 #endif
-    ASSERT_EQ(actual_summary.size(), expected_summary.size());
-    for(size_t read=0;read<expected_summary.size();++read)
+    ASSERT_EQ(actual.size(), expected.size());
+    for(size_t read=0;read<expected.size();++read)
     {
-        ASSERT_EQ(actual_summary[read].size(), expected_summary[read].size());
-        for(size_t lane=0;lane<expected_summary[read].size();++lane)
+        ASSERT_EQ(actual[read].size(), expected[read].size());
+        for(size_t lane=0;lane<expected[read].size();++lane)
         {
-            const model::summary::lane_summary& actual_lane_summary = actual_summary[read][lane];
-            const model::summary::lane_summary& expected_lane_summary = expected_summary[read][lane];
+            const model::summary::lane_summary& actual_lane_summary = actual[read][lane];
+            const model::summary::lane_summary& expected_lane_summary = expected[read][lane];
             EXPECT_EQ(actual_lane_summary.lane(), expected_lane_summary.lane());
             EXPECT_GT(actual_lane_summary.lane(), 0u);
             EXPECT_EQ(actual_lane_summary.tile_count(), expected_lane_summary.tile_count()) << "Failed read: " << read << ", lane: " << lane;
@@ -222,38 +272,60 @@ TEST(index_summary_test, lane_summary)
 //---------------------------------------------------------------------------------------------------------------------
 // Regression test section
 //---------------------------------------------------------------------------------------------------------------------
-
-/** Summary regression test fixture.
- *
- * This provides the test group name, provides the tested type as run_summary, ensures the output file is prefixed with
- * summary and finally properly sets up the expected summary object.
- *
+/** Generate the actual run summary writing out the expected and reading it back in again
  */
-//struct summary_regression_test : public regression_test_fixture< summary_regression_test, model::summary::run_summary>
-//{
-//    /** Constructor */
-//    summary_regression_test() : regression_test_fixture< summary_regression_test, model::summary::run_summary>("summary"){}
-//    /** Populate the actual summary metrics using the given run_metrics
-//     *
-//     * @param actual_metrics run_metrics read in from a run_folder
-//     * @param actual run_summary constructed from the run_metrics
-//     */
-//    static void populate_actual(model::metrics::run_metrics& actual_metrics, model::summary::run_summary& actual)
-//    {
-//        logic::summary::summarize_run_metrics(actual_metrics, actual);
-//    }
-//};
-
-/*
-TEST_P(summary_regression_test, compare_to_baseline)
+class regression_test_summary_generator : public abstract_regression_test_generator< model::summary::run_summary >
 {
-    if(!test) return;
-    test_run_summary(expected, actual);
-    test_read_summary(expected, actual);
-    test_lane_summary(expected, actual);
-}
+    typedef abstract_regression_test_generator< model::summary::run_summary > parent_t;
+public:
+    regression_test_summary_generator(const std::string& test_dir) : parent_t(test_dir){}
+    regression_test_summary_generator(const std::string& run_folder, const std::string& test_dir) : parent_t(run_folder, test_dir){}
 
-INSTANTIATE_TEST_CASE_P(regression_input,
-                        summary_regression_test,
-                        PersistentValuesIn(regression_test_data::instance().files()));
-*/
+protected:
+    /** Read the expected data from the baseline file into the model
+     *
+     * @param baseline_file baseline file
+     * @param expected expected model data
+     */
+    void read_expected(const std::string& baseline_file,  model::summary::run_summary& expected)const
+    {
+        std::ifstream fin(baseline_file.c_str());
+        fin >> expected;
+    }
+    /** Read the actual data from the run folder
+     *
+     * @param run_folder run folder
+     * @param actual actual model data
+     */
+    void generate_actual(const std::string& run_folder,  model::summary::run_summary& actual)const
+    {
+        model::metrics::run_metrics actual_metrics;
+        actual_metrics.read(run_folder);
+        logic::summary::summarize_run_metrics(actual_metrics, actual);
+    }
+    /** Write the actual data to the run folder
+     *
+     * @param baseline_file baseline file
+     * @param actual actual model data
+     */
+    bool write_actual(const std::string& baseline_file,  const model::summary::run_summary& actual)const
+    {
+        std::ofstream fout(baseline_file.c_str());
+        fout << actual;
+        return fout.good();
+    }
+    /** Create a copy of the current object
+     *
+     * @return pointer to new copy
+     */
+    base_type clone()const
+    {
+        return new regression_test_summary_generator(m_run_folder, m_test_dir);
+    }
+};
+
+regression_test_summary_generator run_summary_regression_gen("summary");
+INSTANTIATE_TEST_CASE_P(run_summary_regression_test,
+                        run_summary_tests,
+                        ProxyValuesIn(run_summary_regression_gen, regression_test_data::instance().files()));
+

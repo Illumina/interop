@@ -43,6 +43,7 @@ namespace illumina{ namespace interop { namespace unittest
         /** Constructor */
         regression_test_fixture(const char* test_dir) : test(false)
         {
+            regression_test_data::instance().add_subdir(test_dir);
             run_folder = GetParam();
             const regression_test_data& data = regression_test_data::instance();
             const std::string baseline_file = io::combine(io::combine(data.baseline(), test_dir), io::basename(run_folder));
@@ -76,7 +77,10 @@ namespace illumina{ namespace interop { namespace unittest
                 {
                     fout << actual;
                 }
-                catch(const std::exception&){}
+                catch(const std::exception& ex)
+                {
+                    EXPECT_TRUE(false)<< "Failed to write baseline: " << baseline_file << " " << ex.what();
+                }
                 EXPECT_TRUE(fout.good()) << "Failed to write baseline: " << baseline_file;
             }
         }

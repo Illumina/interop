@@ -64,11 +64,6 @@ namespace illumina{ namespace interop { namespace unittest {
             };
             return to_string(tmp);
         }
-        /** Get number lanes in data
-         *
-         * @return 8 lanes
-         */
-        static model::metric_base::base_metric::uint_t lane_count(){return 8;}
         /** Get reads describing data
          *
          * @return reads vector
@@ -84,8 +79,9 @@ namespace illumina{ namespace interop { namespace unittest {
          */
         static model::summary::run_summary summary()
         {
+            const size_t lane_count=1;
             std::vector<model::run::read_info> read_infos = reads();
-            model::summary::run_summary summary(read_infos.begin(), read_infos.end(), 1);
+            model::summary::run_summary summary(read_infos.begin(), read_infos.end(), lane_count);
             summary[0][0].lane(7);
             summary[0][0].first_cycle_intensity(model::summary::metric_stat(321, 24.75883674621582f, 312));
             summary[0][0].cycle_state().extracted_cycle_range(model::run::cycle_range(1, 1));

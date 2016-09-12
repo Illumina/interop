@@ -9,6 +9,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include "interop/util/filesystem.h"
 
 namespace illumina{ namespace interop { namespace unittest
 {
@@ -92,9 +93,30 @@ namespace illumina{ namespace interop { namespace unittest
             return m_rebaseline;
         }
 
+        /** Add baseline subdirectory
+         *
+         * @param path sub directory for a test
+         */
+        void add_subdir(const std::string& path)
+        {
+            m_sub_dirs.push_back(path);
+        }
+        /** Make all output subdirs
+         */
+        void finalize()
+        {
+            io::mkdir(m_baseline);
+            for(std::vector <std::string>::const_iterator it = m_sub_dirs.begin();it != m_sub_dirs.end();++it)
+            {
+                io::mkdir(io::combine(m_baseline, *it));
+            }
+        }
+
+
     private:
         std::string m_baseline;
         std::vector <std::string> m_files;
+        std::vector <std::string> m_sub_dirs;
         bool m_rebaseline;
     };
 }}}

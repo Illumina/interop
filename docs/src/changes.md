@@ -1,9 +1,10 @@
 # Changes                                               {#changes}
 
-## Master
+## v1.0.11
 
 Date       | Description
 ---------- | -----------
+2016-09-12 | Added summary regression test, fixed regression test framework, fixed runParameters reading
 2016-09-09 | Added sentinel for missing values in the heatmap type plots
 2016-09-09 | Fixed invalid pointer deference and double free in MSVC
 2016-09-08 | Added sentinel for missing values in the imaging table
