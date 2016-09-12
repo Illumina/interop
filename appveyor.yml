@@ -17,6 +17,8 @@
 # Removed support for 32-bit MinGW
 #
 # C# Compiler is always .NET v4.0.30319
+#
+# TODO: Why does enabling CRT fail on appveyor?
 
 configuration:
   - Debug
@@ -71,7 +73,7 @@ install:
 build_script:
   - set BUILD_PATH=%CD%\%BUILD%_%configuration%
   - cmake --version
-  - cmake ../ -G "%GENERATOR%" -H. -Bbuild -DCMAKE_BUILD_TYPE="%configuration%" -DCMAKE_INSTALL_PREFIX=%BUILD_PATH%
+  - cmake ../ -G "%GENERATOR%" -H. -Bbuild -DCMAKE_BUILD_TYPE="%configuration%" -DCMAKE_INSTALL_PREFIX=%BUILD_PATH% -DFORCE_SHARED_CRT=OFF
   - cmake --build build --config "%configuration%"
   - cmake --build build --config "%configuration%" --target install
 
