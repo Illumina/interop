@@ -45,8 +45,7 @@ namespace illumina { namespace interop {  namespace logic { namespace utils
     }
     /** Convert metric type to string description
      *
-     * @param type metric type
-     * @return string description
+     * @param types destination vector of metric types
      */
     inline void list_descriptions(std::vector< constants::enum_description< constants::metric_type> >& types )
     {

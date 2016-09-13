@@ -210,6 +210,13 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             INTEROP_ASSERT(n < binCount());
             return m_qscore_bins[n];
         }
+        /** Clear the data
+         */
+        void clear()
+        {
+            m_qscore_bins.clear();
+            metric_base::base_cycle_metric::header_type::clear();
+        }
 
     protected:
         /** Q-score bins */

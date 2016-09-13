@@ -41,6 +41,13 @@ namespace illumina { namespace interop { namespace model { namespace metrics {
         {
             return q_collapsed_header();
         }
+        /** Clear the data
+         */
+        void clear()
+        {
+            m_record_size=0;
+            q_score_header::clear();
+        }
     private:
         ::uint32_t m_record_size; // Hack to support this format
     private:

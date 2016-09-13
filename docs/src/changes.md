@@ -4,6 +4,7 @@
 
 Date       | Description
 ---------- | -----------
+2016-09-12 | Fixed bug in q-score heatmap and q-score clearing
 2016-09-12 | Added summary regression test, fixed regression test framework, fixed runParameters reading
 2016-09-09 | Added sentinel for missing values in the heatmap type plots
 2016-09-09 | Fixed invalid pointer deference and double free in MSVC

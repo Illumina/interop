@@ -65,6 +65,13 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         {
             return image_metric_header(MAX_CHANNELS);
         }
+        /** Clear the data
+         */
+        void clear()
+        {
+            m_channel_count=MAX_CHANNELS;
+            metric_base::base_cycle_metric::header_type::clear();
+        }
 
     private:
         ushort_t m_channel_count;
