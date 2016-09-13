@@ -92,7 +92,8 @@ namespace illumina { namespace interop { namespace model { namespace run
         }
     }
 
-    void parameters::read_file(const std::string &filename)   throw(xml::xml_file_not_found_exception,
+    void parameters::read_file(const std::string &filename)
+    throw(xml::xml_file_not_found_exception,
     xml::bad_xml_format_exception,
     xml::empty_xml_format_exception,
     xml::missing_xml_element_exception,
@@ -126,7 +127,7 @@ namespace illumina { namespace interop { namespace model { namespace run
         {
             read_file(io::combine(run_folder, "runParameters.xml"));
         }
-        catch (const io::file_not_found_exception &)
+        catch (const xml_file_not_found_exception &)
         {
             read_file(io::combine(run_folder, "RunParameters.xml"));
         }

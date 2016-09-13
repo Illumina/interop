@@ -52,7 +52,6 @@ namespace illumina { namespace interop { namespace logic { namespace plot
         for (;beg != end;++beg)
         {
             if( !options.valid_tile(*beg) ) continue;
-
             for(size_t bin =0;bin < beg->size();++bin)
                 data(beg->cycle()-1, bin) += beg->qscore_hist(bin);
         }
@@ -108,8 +107,8 @@ namespace illumina { namespace interop { namespace logic { namespace plot
     {
         const size_t max_q_val = logic::metric::max_qval(metric_set);
         const size_t max_cycle = metric_set.max_cycle();
-        if(buffer != 0) data.set_buffer(buffer, max_cycle, max_q_val);
-        else data.resize(max_cycle, max_q_val);
+        if(buffer != 0) data.set_buffer(buffer, max_cycle, max_q_val, 0);
+        else data.resize(max_cycle, max_q_val, 0);
         INTEROP_ASSERT(data.row_count() > 0);
         INTEROP_ASSERTMSG(data.column_count() > 0, data.column_count() << ", " << metric_set.size() << ", "
                                                    << metric_set.bin_count() << ", "

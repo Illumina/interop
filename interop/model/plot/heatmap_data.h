@@ -34,36 +34,44 @@ namespace illumina { namespace interop { namespace model { namespace plot
     public:
         /** Resize the heat map to the given number of rows and columns
          *
-         * @param data use the given buffer to back the heat mapll
+         * @param data use the given buffer to back the heat map
+         * @param default_val value to fill heatmap
          */
-        void set_buffer(float* data) throw(invalid_parameter)
+        void set_buffer(float* data,
+                        const float default_val=std::numeric_limits<float>::quiet_NaN()) throw(invalid_parameter)
         {
             if(m_free) INTEROP_THROW( invalid_parameter, "Cannot use internal buffer map with external buffer");
             if(empty()) INTEROP_THROW( invalid_parameter, "Cannot set external buffer to empty map");
             m_data = data;
-            std::fill(m_data, m_data+length(), std::numeric_limits<float>::quiet_NaN());
+            std::fill(m_data, m_data+length(), default_val);
         }
         /** Resize the heat map to the given number of rows and columns
          *
          * @param data use the given buffer to back the heat map
          * @param rows number of rows
          * @param cols number of columns
+         * @param default_val value to fill heatmap
          */
-        void set_buffer(float* data, const size_t rows, const size_t cols)
+        void set_buffer(float* data,
+                        const size_t rows,
+                        const size_t cols,
+                        const float default_val=std::numeric_limits<float>::quiet_NaN())
         {
             if(m_free) delete[] m_data;
             m_data = data;
             m_num_columns = cols;
             m_num_rows = rows;
             m_free=false;
-            std::fill(data, data+length(), std::numeric_limits<float>::quiet_NaN());
+            std::fill(data, data+length(), default_val);
         }
         /** Resize the heat map to the given number of rows and columns
          *
          * @param rows number of rows
          * @param cols number of columns
+         * @param default_val value to fill heatmap
          */
-        void resize(const size_t rows, const size_t cols)
+        void resize(const size_t rows, const size_t cols,
+                    const float default_val=std::numeric_limits<float>::quiet_NaN())
         {
             if(rows != m_num_rows && cols != m_num_columns)
             {
@@ -72,7 +80,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
                 m_num_columns = cols;
                 m_num_rows = rows;
                 m_free = true;
-                std::fill(m_data, m_data+length(), std::numeric_limits<float>::quiet_NaN());
+                std::fill(m_data, m_data+length(), default_val);
             }
         }
 
@@ -89,7 +97,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
             if (row >= m_num_rows)
                 INTEROP_THROW(model::index_out_of_bounds_exception, "Row index out of bounds");
             if (col >= m_num_columns)
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Column index out of bounds");
+                INTEROP_THROW(model::index_out_of_bounds_exception, "Column index out of bounds (at): " << col << " >= " << m_num_columns);
             const size_t idx = index_of(row, col);
             INTEROP_ASSERT(idx < m_num_rows*m_num_columns);
             INTEROP_ASSERT(m_data != 0);
@@ -109,7 +117,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
             if (row >= m_num_rows)
                 INTEROP_THROW(model::index_out_of_bounds_exception, "Row index out of bounds");
             if (col >= m_num_columns)
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Column index out of bounds");
+                INTEROP_THROW(model::index_out_of_bounds_exception, "Column index out of bounds (operator): " << col << " >= " << m_num_columns);
             const size_t idx = index_of(row, col);
             INTEROP_ASSERT(idx < m_num_rows*m_num_columns);
             INTEROP_ASSERT(m_data != 0);
@@ -129,7 +137,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
             if (row >= m_num_rows)
                 INTEROP_THROW(model::index_out_of_bounds_exception, "Row index out of bounds");
             if (col >= m_num_columns)
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Column index out of bounds");
+                INTEROP_THROW(model::index_out_of_bounds_exception, "Column index out of bounds (operator const): " << col << " >= " << m_num_columns);
             const size_t idx = index_of(row, col);
             INTEROP_ASSERT(idx < m_num_rows*m_num_columns);
             INTEROP_ASSERT(m_data != 0);

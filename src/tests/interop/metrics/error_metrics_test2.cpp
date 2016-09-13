@@ -25,8 +25,8 @@ typedef metric_set< error_metric > error_metric_set;
 struct error_metrics_tests : public generic_test_fixture< error_metric_set > {};
 
 error_metrics_tests::generator_type unit_test_generators[] = {
-        new hardcoded_metric_generator< error_metric_v3 >() ,
-        new write_read_metric_generator< error_metric_v3 >()
+        wrap(new hardcoded_metric_generator< error_metric_v3 >) ,
+        wrap(new write_read_metric_generator< error_metric_v3 >)
 };
 
 // Setup unit tests for error_metrics_tests

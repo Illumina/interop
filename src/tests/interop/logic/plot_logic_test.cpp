@@ -204,6 +204,7 @@ TEST(plot_logic, q_score_heatmap)
     model::plot::heatmap_data data;
     logic::plot::plot_qscore_heatmap(metrics, options, data);
     ASSERT_EQ(data.row_count(), 3u);
+    ASSERT_EQ(data.column_count(), 40u);
     EXPECT_EQ(data.title(), "All Lanes");
     EXPECT_EQ(data.x_axis().label(), "Cycle");
     EXPECT_EQ(data.y_axis().label(), "Q Score");
@@ -211,6 +212,22 @@ TEST(plot_logic, q_score_heatmap)
     EXPECT_NEAR(data.y_axis().min(), 0.0f, tol);
     EXPECT_NEAR(data.x_axis().max(), 3.0f, tol);
     EXPECT_NEAR(data.y_axis().max(), 40.0f, tol);
+    double expected[] =
+            {0,0,0,0,0,0,0,0,0,9.1749,9.1749,9.1749,9.1749,9.1749,9.1749,9.1749,9.1749,9.1749,9.1749,4.06434,4.06434,
+             4.06434,4.06434,4.06434,0.146682,0.146682,0.146682,0.146682,0.146682,95.7376,95.7376,95.7376,95.7376,
+             95.7376,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,8.26827,8.26827,8.26827,8.26827,8.26827,8.26827,8.26827,8.26827,
+             8.26827,8.26827,1.53941,1.53941,1.53941,1.53941,1.53941,0.0376635,0.0376635,0.0376635,0.0376635,0.0376635,
+             99.2799,99.2799,99.2799,99.2799,99.2799,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7.26372,7.26372,7.26372,7.26372,
+             7.26372,7.26372,7.26372,7.26372,7.26372,7.26372,1.84695,1.84695,1.84695,1.84695,1.84695,0.0146203,
+             0.0146203,0.0146203,0.0146203,0.0146203,100,100,100,100,100,0,0,0,0,0,0};
+
+    for(size_t row=0, k=0;row<data.row_count();++row)
+    {
+        for(size_t col=0;col<data.column_count();++col,++k)
+        {
+            EXPECT_NEAR(static_cast<float>(expected[k]), data(row,col), 1e-3f);
+        }
+    }
 }
 
 TEST(plot_logic, q_score_heatmap_buffer)

@@ -81,11 +81,6 @@ namespace illumina{ namespace interop { namespace unittest {
             };
             return to_string(tmp);
         }
-        /** Get number lanes in data
-         *
-         * @return 8 lanes
-         */
-        static model::metric_base::base_metric::uint_t lane_count(){return 8;}
         /** Get reads describing data
          *
          * @return reads vector
@@ -197,11 +192,6 @@ namespace illumina{ namespace interop { namespace unittest {
             };
             return to_string(tmp);
         }
-        /** Get number lanes in data
-         *
-         * @return 8 lanes
-         */
-        static model::metric_base::base_metric::uint_t lane_count(){return 8;}
         /** Get reads describing data
          *
          * @return reads vector
@@ -299,11 +289,6 @@ namespace illumina{ namespace interop { namespace unittest {
             };
             return to_string(tmp);
         }
-        /** Get number lanes in data
-         *
-         * @return 8 lanes
-         */
-        static model::metric_base::base_metric::uint_t lane_count(){return 8;}
         /** Get reads describing data
          *
          * @return reads vector

@@ -34,6 +34,7 @@ int main(int argc, char **argv)
         }
         data.add_file(arg);
     }
+    data.finalize();
 
 
     // initialize

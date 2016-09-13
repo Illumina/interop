@@ -101,6 +101,15 @@ namespace illumina { namespace interop { namespace model { namespace summary
                     b->at(lane).lane(lane + 1);
             }
         }
+        /** Copy reads to destination vector
+         *
+         * @param dst destination vector
+         */
+        void copy_reads(std::vector<run::read_info> & dst)
+        {
+            dst.resize(size());
+            for(size_t i=0;i<dst.size();++i) dst[i] = m_summary_by_read[i].read();
+        }
 
     public:
         /** @defgroup run_summary Run Summary

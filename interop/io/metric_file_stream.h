@@ -166,18 +166,23 @@ namespace illumina { namespace interop { namespace io
      * @param metrics metric set
      * @param use_out use the copied version
      * @param version version of format to write
+     * @return true if write is successful
      */
     template<class MetricSet>
-    void write_interop(const std::string& run_directory,
+    bool write_interop(const std::string& run_directory,
                        const MetricSet& metrics,
                        const bool use_out=true,
-                       const ::int16_t version=-1) throw(file_not_found_exception, bad_format_exception, incomplete_file_exception)
+                       const ::int16_t version=-1)
+    throw(file_not_found_exception,
+    bad_format_exception,
+    incomplete_file_exception)
     {
-        if(metrics.empty())return;
+        if(metrics.empty())return true;
         const std::string file_name = interop_filename<MetricSet>(run_directory, use_out);
         std::ofstream fout(file_name.c_str(), std::ios::binary);
         if(!fout.good())INTEROP_THROW(file_not_found_exception, "File not found: " << file_name);
         write_metrics(fout, metrics, version);
+        return fout.good();
     }
     /** Write only the header to a binary InterOp file
      *
@@ -193,8 +198,10 @@ namespace illumina { namespace interop { namespace io
     void write_interop_header(const std::string& run_directory,
                               const ::int16_t version=-1,
                               const typename MetricType::header_type& header = typename MetricType::header_type(),
-                              const bool use_out=true) throw(file_not_found_exception,
-                                                                bad_format_exception, incomplete_file_exception)
+                              const bool use_out=true)
+    throw(file_not_found_exception,
+    bad_format_exception,
+    incomplete_file_exception)
     {
         const std::string file_name = interop_filename<MetricType>(run_directory, use_out);
         std::ofstream fout(file_name.c_str(), std::ios::binary);

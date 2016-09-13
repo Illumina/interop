@@ -90,10 +90,10 @@ int main(int argc, const char** argv)
     std::vector<unsigned char> valid_to_load;
     logic::utils::list_metrics_to_load(constants::Q, valid_to_load); // Only load the InterOp files required
 
+    run_metrics run;
     for(int i=1;i<argc;i++)
     {
-        run_metrics run;
-
+        run.clear();
         const std::string run_name = io::basename(argv[i]);
         std::cout << "# Run Folder: " << run_name << std::endl;
         int ret = read_run_metrics(argv[i], run, valid_to_load);

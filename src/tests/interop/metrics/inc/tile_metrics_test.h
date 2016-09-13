@@ -97,11 +97,6 @@ namespace illumina{ namespace interop { namespace unittest {
             };
             return to_string(tmp);
         }
-        /** Get number lanes in data
-         *
-         * @return 8 lanes
-         */
-        static model::metric_base::base_metric::uint_t lane_count(){return 8;}
         /** Get reads describing data
          *
          * @return reads vector
@@ -120,8 +115,9 @@ namespace illumina{ namespace interop { namespace unittest {
          */
         static model::summary::run_summary summary()
         {
+            const size_t lane_count=1;
             std::vector<model::run::read_info> read_infos = reads();
-            model::summary::run_summary summary(read_infos.begin(), read_infos.end(), 1);
+            model::summary::run_summary summary(read_infos.begin(), read_infos.end(), lane_count);
             for(size_t read=0;read<read_infos.size();++read)
             {
                 summary[read][0].lane(7);
