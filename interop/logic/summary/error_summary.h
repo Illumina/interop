@@ -74,9 +74,8 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                 const size_t lane = ebeg->first.first - 1;
                 if (lane >= summary_by_lane_read.lane_count())
                     INTEROP_THROW(model::index_out_of_bounds_exception, "Lane exceeds number of lanes in RunInfo.xml");
-                if (max_cycle < std::numeric_limits<size_t>::max() && max_error_cycle[read] < max_cycle)
-                    summary_by_lane_read(read, lane).push_back(0);
-                else summary_by_lane_read(read, lane).push_back(divide(ebeg->second.first, ebeg->second.second));
+                if(max_cycle < std::numeric_limits<size_t>::max() && ebeg->second.second < max_cycle) continue;
+                summary_by_lane_read(read, lane).push_back(divide(ebeg->second.first, ebeg->second.second));
             }
         }
     }

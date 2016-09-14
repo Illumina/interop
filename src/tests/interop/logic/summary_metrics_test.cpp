@@ -218,6 +218,60 @@ TEST_P(run_summary_tests, lane_summary)
     }
 }
 
+TEST(summary_metrics_test, cycle_35_cycle_34_tile)
+{
+    std::vector<std::string> channels;
+    channels.push_back("Red");
+    channels.push_back("Green");
+    std::vector<model::run::read_info> reads;
+    reads.push_back(model::run::read_info(1, 1, 36));
+    model::run::info run_info("XX",
+                              "",
+                              1,
+                              model::run::flowcell_layout(8, 2, 4, 99, 6, 6),
+                              channels,
+                              model::run::image_dimensions(),
+                              reads);
+    run_info.set_naming_method(constants::FourDigit);
+
+    model::metrics::run_metrics expected_run_metrics(run_info);
+    model::metric_base::metric_set<model::metrics::error_metric>& expected_error_metrics=
+            expected_run_metrics.get_set<model::metrics::error_metric>();
+    model::metrics::run_metrics actual_run_metrics(run_info);
+    model::metric_base::metric_set<model::metrics::error_metric>& actual_error_metrics=
+            actual_run_metrics.get_set<model::metrics::error_metric>();
+    typedef model::metrics::error_metric::uint_t  uint_t;
+    for(uint_t cycle_number=0;cycle_number<36;++cycle_number)
+    {
+        expected_error_metrics.insert(error_metric(1, 1101, 1 + cycle_number, 3.0f));
+        actual_error_metrics.insert(error_metric(1, 1101, 1 + cycle_number, 3.0f));
+    }
+    for(uint_t cycle_number=0;cycle_number<34;++cycle_number)
+    {
+        actual_error_metrics.insert(error_metric(1, 1102, 1 + cycle_number, 1.0f));
+    }
+
+    model::summary::run_summary expected;
+    logic::summary::summarize_run_metrics(expected_run_metrics, expected);
+    model::summary::run_summary actual;
+    logic::summary::summarize_run_metrics(actual_run_metrics, actual);
+    ASSERT_EQ(actual.size(), expected.size());
+    ASSERT_EQ(actual[0].size(), expected[0].size());
+    ASSERT_EQ(actual.size(), 1u);
+    ASSERT_EQ(actual[0].size(), 1u);
+
+    const float tol = 1e-7f;
+    const model::summary::lane_summary& actual_lane_summary = actual[0][0];
+    const model::summary::lane_summary& expected_lane_summary = expected[0][0];
+    model::summary::metric_stat expected_stat(3.0f, 0.0f, 3.0f);
+    EXPECT_STAT_NEAR(expected_lane_summary.error_rate_35(), expected_stat, tol);
+    EXPECT_NEAR(actual_lane_summary.error_rate_35().mean(), expected_lane_summary.error_rate_35().mean(), tol);
+    expected_stat=model::summary::metric_stat(0.0f, 0.0f, 0.0f);
+    EXPECT_STAT_NEAR(expected_lane_summary.error_rate_50(), expected_stat, tol);
+    EXPECT_NEAR(actual_lane_summary.error_rate_50().mean(), expected_lane_summary.error_rate_50().mean(), tol);
+
+}
+
 TEST(summary_metrics_test, empty_run_metrics)
 {
     model::metrics::run_metrics metrics;
