@@ -208,6 +208,8 @@ namespace illumina { namespace interop { namespace io
                 static std::streamsize map_stream(Stream& stream, Metric& metric, Header& header, const bool)
                 {
                     std::streamsize count = 0;
+                    if(header.m_channel_count==0)
+                        INTEROP_THROW(bad_format_exception, "Cannot write data where channel count is 0");
                     copy_from(stream, metric.m_channel_count, header.m_channel_count);
                     count += stream_map< contrast_t >(stream, metric.m_min_contrast, header.m_channel_count);
                     count += stream_map< contrast_t >(stream, metric.m_max_contrast, header.m_channel_count);
@@ -232,7 +234,11 @@ namespace illumina { namespace interop { namespace io
                 template<class Stream, class Header>
                 static std::streamsize map_stream_for_header(Stream& stream, Header& header)
                 {
-                    return stream_map< channel_count_t >(stream, header.m_channel_count);
+                    std::streamsize count = stream_map< channel_count_t >(stream, header.m_channel_count);
+                    if(stream.fail()) return count;
+                    if(header.m_channel_count==0)
+                        INTEROP_THROW(bad_format_exception, "Cannot write data where channel count is 0");
+                    return count;
                 }
                 /** Compute header size
                  *

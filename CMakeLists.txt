@@ -4,7 +4,12 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules)
 enable_testing()
 include(${PROJECT_SOURCE_DIR}/cmake/Modules/UseGitVersion.cmake)
 include(${PROJECT_SOURCE_DIR}/cmake/InternalUtils.cmake)
-set(ARCHIVE_VERSION "v1.0.11-10-gbe8fb4f")
+set(ARCHIVE_VERSION "v1.0.11-13-gd736ca2")
+
+if (NOT CMAKE_BUILD_TYPE)
+    message(STATUS "No build type selected, default to Release")
+    set(CMAKE_BUILD_TYPE "Release")
+endif()
 
 interop_config_compiler_and_linker()
 # TODO: https://help.github.com/articles/creating-project-pages-manually/
@@ -51,7 +56,7 @@ if(INTEROP_VERSION)
     set(CPACK_PACKAGE_VERSION_MINOR "${VERSION_MINOR}")
     set(CPACK_PACKAGE_VERSION_PATCH "${VERSION_PATCH}")
     set(CPACK_PACKAGE_INSTALL_DIRECTORY "interop_${VERSION_SHORT}")
-    set(CPACK_OUTPUT_FILE_PREFIX "interop/${VERSION_SHORT}")
+    set(CPACK_OUTPUT_FILE_PREFIX "interop/${VERSION}")
 endif()
 
 #Adds the target "package"

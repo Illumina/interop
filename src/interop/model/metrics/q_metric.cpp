@@ -256,6 +256,8 @@ namespace illumina { namespace interop { namespace io
                     bin_count_t bin_count = static_cast<bin_count_t>(header.bin_count());
                     count+=stream_map< bin_count_t>(stream, bin_count);
                     if(stream.fail()) return count;
+                    if(bin_count==0)
+                        INTEROP_THROW(bad_format_exception, "Zero bins is not supported");
                     INTEROP_ASSERT(bin_count>0);
                     bin_t tmp[q_metric::MAX_Q_BINS];
                     map_resize(header.m_qscore_bins, bin_count);
@@ -425,6 +427,8 @@ namespace illumina { namespace interop { namespace io
                 static std::streamsize map_stream(Stream& stream, Metric& metric, Header& header, const bool)
                 {
                     const size_t bin_count = (header.bin_count() == 0) ? static_cast<size_t>(q_metric::MAX_Q_BINS) : header.bin_count();
+                    if(bin_count==0)
+                        INTEROP_THROW(bad_format_exception, "Zero bins is not supported");
                     const std::streamsize count = stream_map< count_t >(stream, metric.m_qscore_hist, bin_count);
                     resize_accumulated(stream, metric);
                     return count;
@@ -457,6 +461,8 @@ namespace illumina { namespace interop { namespace io
                     bin_count_t bin_count = static_cast<bin_count_t>(header.bin_count());
                     count+=stream_map< bin_count_t >(stream, bin_count);
                     if(stream.fail()) return count;
+                    if(bin_count==0)
+                        INTEROP_THROW(bad_format_exception, "Zero bins is not supported");
                     INTEROP_ASSERT(bin_count>0);
                     bin_t tmp[q_metric::MAX_Q_BINS];
                     map_resize(header.m_qscore_bins, bin_count);
