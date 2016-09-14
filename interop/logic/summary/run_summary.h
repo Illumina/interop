@@ -22,8 +22,11 @@ namespace illumina { namespace interop { namespace logic { namespace summary
      * @ingroup summary_logic
      * @param metrics source collection of all metrics
      * @param summary destination run summary
+     * @param skip_median skip the median calculation
      */
-    void summarize_run_metrics(model::metrics::run_metrics& metrics, model::summary::run_summary& summary)
+    void summarize_run_metrics(model::metrics::run_metrics& metrics,
+                               model::summary::run_summary& summary,
+                               const bool skip_median=false)
     throw( model::index_out_of_bounds_exception, model::invalid_channel_exception );
 
 

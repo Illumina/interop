@@ -94,7 +94,8 @@ INSTANTIATE_TEST_CASE_P(run_summary_unit_test,
 #define EXPECT_STAT_NEAR(ACTUAL, EXPECTED, TOL) \
     EXPECT_NEAR(ACTUAL.mean(), EXPECTED.mean(), TOL); \
     EXPECT_NEAR(ACTUAL.stddev(), EXPECTED.stddev(), TOL); \
-    EXPECT_NEAR(ACTUAL.median(), EXPECTED.median(), TOL)
+    if(!std::isnan(ACTUAL.median()) && !std::isnan(EXPECTED.median())) \
+        EXPECT_NEAR(ACTUAL.median(), EXPECTED.median(), TOL)
 
 #define EXPECT_CYCLE_EQ(ACTUAL, EXPECTED) \
     EXPECT_EQ(ACTUAL.first_cycle(), EXPECTED.first_cycle()); \

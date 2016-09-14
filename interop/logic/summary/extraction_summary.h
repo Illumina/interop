@@ -30,13 +30,15 @@ namespace illumina { namespace interop { namespace logic { namespace summary
      * @param cycle_to_read map cycle to the read number and cycle within read number
      * @param channel channel to use for intensity reporting
      * @param run destination run summary
+     * @param skip_median skip the median calculation
      */
     template<typename I>
     void summarize_extraction_metrics(I beg,
                                       I end,
                                       const read_cycle_vector_t &cycle_to_read,
                                       const size_t channel,
-                                      model::summary::run_summary &run) throw(model::index_out_of_bounds_exception)
+                                      model::summary::run_summary &run,
+                                      const bool skip_median=false) throw(model::index_out_of_bounds_exception)
     {
         typedef typename model::metrics::extraction_metric::ushort_t ushort_t;
         typedef summary_by_lane_read<ushort_t> summary_by_lane_read_t;
@@ -73,7 +75,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
             {
                 INTEROP_ASSERT(lane < temp.lane_count());
                 INTEROP_ASSERT(lane < run[read].size());
-                summarize(temp(read, lane).begin(), temp(read, lane).end(), first_cycle_intensity_stat);
+                summarize(temp(read, lane).begin(), temp(read, lane).end(), first_cycle_intensity_stat, skip_median);
                 run[read][lane].first_cycle_intensity(first_cycle_intensity_stat);
                 first_cycle_intensity_by_read += std::accumulate(temp(read, lane).begin(),
                                                                  temp(read, lane).end(),

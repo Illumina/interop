@@ -128,14 +128,15 @@ namespace illumina { namespace interop { namespace logic { namespace summary
      * @param beg iterator to start of collection
      * @param end iterator to end of collection
      * @param stat object to store mean, stddev, and median
+     * @param skip_median skip the median calculation
      */
     template<typename I, typename S>
-    void summarize(I beg, I end, S &stat)
+    void summarize(I beg, I end, S &stat, const bool skip_median)
     {
         if (beg == end) return;
         stat.mean(util::mean<float>(beg, end));
         stat.stddev(std::sqrt(util::variance_with_mean<float>(beg, end, stat.mean())));
-        stat.median(util::median_interpolated<float>(beg, end));
+        if(!skip_median) stat.median(util::median_interpolated<float>(beg, end));
     }
 
     /** Calculate the mean, standard deviation (stddev) and median over a collection of values
@@ -145,14 +146,15 @@ namespace illumina { namespace interop { namespace logic { namespace summary
      * @param stat object to store mean, stddev, and median
      * @param op unary/binary operator for getting a value in a complex object
      * @param comp comparison operator to compare a single value in a complex object
+     * @param skip_median skip the median calculation
      */
     template<typename I, typename S, typename BinaryOp, typename Compare>
-    void summarize(I beg, I end, S &stat, BinaryOp op, Compare comp)
+    void summarize(I beg, I end, S &stat, BinaryOp op, Compare comp, const bool skip_median)
     {
         if (beg == end) return;
         stat.mean(util::mean<float>(beg, end, op));
         stat.stddev(std::sqrt(util::variance_with_mean<float>(beg, end, stat.mean(), op)));
-        stat.median(util::median_interpolated<float>(beg, end, comp, op));
+        if(!skip_median) stat.median(util::median_interpolated<float>(beg, end, comp, op));
     }
 
     /** Calculate the mean, standard deviation (stddev) and median over a collection of values, ignoring NaNs
@@ -162,10 +164,11 @@ namespace illumina { namespace interop { namespace logic { namespace summary
      * @param stat object to store mean, stddev, and median
      * @param op unary/binary operator for getting a value in a complex object
      * @param comp comparison operator to compare a single value in a complex object
+     * @param skip_median skip the median calculation
      * @return number of non-NaN elements
      */
     template<typename I, typename S, typename BinaryOp, typename Compare>
-    size_t nan_summarize(I beg, I end, S &stat, BinaryOp op, Compare comp)
+    size_t nan_summarize(I beg, I end, S &stat, BinaryOp op, Compare comp, const bool skip_median)
     {
         stat.clear();
         if (beg == end) return 0;
@@ -174,7 +177,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
         stat.mean(util::mean<float>(beg, end, op));
         INTEROP_ASSERT(!std::isnan(stat.mean()));
         stat.stddev(std::sqrt(util::variance_with_mean<float>(beg, end, stat.mean(), op)));
-        stat.median(util::median_interpolated<float>(beg, end, comp, op));
+        if(!skip_median) stat.median(util::median_interpolated<float>(beg, end, comp, op));
         return size_t(std::distance(beg, end));
     }
 

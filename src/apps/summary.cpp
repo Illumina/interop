@@ -76,7 +76,7 @@ int main(int argc, char** argv)
         run_summary summary;
         try
         {
-            summarize_run_metrics(run, summary);
+            summarize_run_metrics(run, summary, true);
         }
         catch(const std::exception& ex)
         {
