@@ -64,6 +64,8 @@ EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
     using namespace illumina::interop::model::metrics;
     namespace metric_base = illumina::interop::model::metric_base;
 
+    %ignore illumina::interop::model::metric_base::metric_set<metric_t>::offset_map;
+
     %apply size_t { std::map< std::size_t, metric_t >::size_type };
     %apply uint64_t { metric_base::metric_set<metric_t>::id_t };
     WRAP_VECTOR(illumina::interop::model::metric_base::metric_set<metric_t>);
@@ -136,7 +138,6 @@ WRAP_METRICS(IMPORT_METRIC_WRAPPER)
 // std::vector of enums causes a crash in Visual Studio C#
 %template(metric_type_vector) std::vector< illumina::interop::constants::metric_type>;
 %template(metric_group_vector) std::vector< illumina::interop::constants::metric_group>;
-
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

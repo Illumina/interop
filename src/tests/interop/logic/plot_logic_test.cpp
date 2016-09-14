@@ -230,6 +230,35 @@ TEST(plot_logic, q_score_heatmap)
     }
 }
 
+//Checks that q-score heatmap works as intended
+TEST(plot_logic, q_score_heatmap_empty_interop)
+{
+    const float tol = 1e-3f;
+    model::metrics::run_metrics metrics;
+    model::plot::filter_options options(constants::FourDigit);
+    std::vector<model::run::read_info> reads(2);
+    reads[0] = model::run::read_info(1, 1, 26);
+    reads[1] = model::run::read_info(2, 27, 76);
+    metrics.run_info(model::run::info("", "", 1, model::run::flowcell_layout(8, 2, 2, 16),
+                                      std::vector<std::string>(), model::run::image_dimensions(), reads));
+    metrics.legacy_channel_update(constants::HiSeq);
+    metrics.set_naming_method(constants::FourDigit);
+
+    metrics.finalize_after_load();
+
+    model::plot::heatmap_data data;
+    logic::plot::plot_qscore_heatmap(metrics, options, data);
+    ASSERT_EQ(data.row_count(), 0u);
+    ASSERT_EQ(data.column_count(), 0u);
+    EXPECT_EQ(data.title(), "");
+    EXPECT_EQ(data.x_axis().label(), "");
+    EXPECT_EQ(data.y_axis().label(), "");
+    EXPECT_NEAR(data.x_axis().min(), 0.0f, tol);
+    EXPECT_NEAR(data.y_axis().min(), 0.0f, tol);
+    EXPECT_NEAR(data.x_axis().max(), 0.0f, tol);
+    EXPECT_NEAR(data.y_axis().max(), 0.0f, tol);
+}
+
 TEST(plot_logic, q_score_heatmap_buffer)
 {
     const float tol = 1e-5f;

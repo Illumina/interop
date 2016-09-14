@@ -135,11 +135,7 @@ namespace illumina{ namespace interop { namespace unittest {
          */
         static void read_metrics(const std::string& data, metric_set_t& metrics)
         {
-            try
-            {
-                illumina::interop::io::read_interop_from_string(data, metrics);
-            }
-            catch (const std::exception &) { }
+            illumina::interop::io::read_interop_from_string(data, metrics);
         }
 
     public:
@@ -154,39 +150,39 @@ namespace illumina{ namespace interop { namespace unittest {
     };
 
     /** Setup up a hardcoded metric test */
-    template<class T>
-    class hardcoded_fixture : public metric_test_fixture<T>
+    template<class Gen>
+    class hardcoded_fixture : public metric_test_fixture<Gen>
     {
-        typedef metric_test_fixture<T> fixture_t;
+        typedef metric_test_fixture<Gen> fixture_t;
     public:
         /** Construct hard coded test */
         hardcoded_fixture()
         {
             fixture_t::read_metrics(fixture_t::expected_binary_data,fixture_t::actual_metric_set);
             std::ostringstream fout;
-            illumina::interop::io::write_metrics(fout, fixture_t::actual_metric_set, T::VERSION);
+            illumina::interop::io::write_metrics(fout, fixture_t::actual_metric_set, Gen::VERSION);
             fixture_t::actual_binary_data = fout.str();
         }
     };
 
     /** Sets up a write read test */
-    template<class T>
-    class write_read_fixture : public metric_test_fixture<T>
+    template<class Gen>
+    class write_read_fixture : public metric_test_fixture<Gen>
     {
-        typedef metric_test_fixture<T> fixture_t;
+        typedef metric_test_fixture<Gen> fixture_t;
     public:
         /** Construct write read test */
         write_read_fixture()
         {
             {
                 std::ostringstream fout;
-                illumina::interop::io::write_metrics(fout, fixture_t::expected_metric_set, T::VERSION);
+                illumina::interop::io::write_metrics(fout, fixture_t::expected_metric_set, Gen::VERSION);
                 fixture_t::expected_binary_data = fout.str();
             }
             fixture_t::read_metrics(fixture_t::expected_binary_data,fixture_t::actual_metric_set);
             {
                 std::ostringstream fout;
-                illumina::interop::io::write_metrics(fout, fixture_t::actual_metric_set, T::VERSION);
+                illumina::interop::io::write_metrics(fout, fixture_t::actual_metric_set, Gen::VERSION);
                 fixture_t::actual_binary_data = fout.str();
             }
         }

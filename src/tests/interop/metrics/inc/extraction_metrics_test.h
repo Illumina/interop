@@ -50,7 +50,7 @@ namespace illumina{ namespace interop { namespace unittest {
          */
         static header_t header()
         {
-            return header_t();
+            return header_t::default_header();
         }
         /** Get the expected binary data
          *

@@ -6,6 +6,7 @@
  *  @copyright GNU Public License.
  */
 #pragma once
+
 #ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable:4290)// MSVC warns that it ignores the exception specification.

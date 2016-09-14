@@ -177,7 +177,7 @@ namespace illumina { namespace interop { namespace io
     std::streamsize stream_map(std::istream &in, std::vector<ValueType>&vals, const size_t n)
     {
         vals.resize(n);
-        INTEROP_ASSERT(!vals.empty());
+        INTEROP_ASSERTMSG(!vals.empty(), "n="<<n);
         return read_array_helper<ReadType,ValueType>::read_array_from_stream(in, &vals.front(), n);
     }
 
@@ -292,7 +292,7 @@ namespace illumina { namespace interop { namespace io
     {
         for (size_t i = 0; i < n; i++)
         {
-            WriteType write_val = vals[i];
+            WriteType write_val = static_cast<WriteType>(vals[i]);
             write_binary(out, write_val);
         }
         return out.tellp();
@@ -313,7 +313,7 @@ namespace illumina { namespace interop { namespace io
     {
         for (size_t i = 0; i < n; i++)
         {
-            WriteType write_val = vals[offset + i];
+            WriteType write_val = static_cast<WriteType>(vals[offset + i]);
             write_binary(out, write_val);
         }
         return out.tellp();

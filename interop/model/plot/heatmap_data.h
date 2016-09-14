@@ -37,13 +37,11 @@ namespace illumina { namespace interop { namespace model { namespace plot
          * @param data use the given buffer to back the heat map
          * @param default_val value to fill heatmap
          */
-        void set_buffer(float* data,
-                        const float default_val=std::numeric_limits<float>::quiet_NaN()) throw(invalid_parameter)
+        void set_buffer(float* data) throw(invalid_parameter)
         {
             if(m_free) INTEROP_THROW( invalid_parameter, "Cannot use internal buffer map with external buffer");
             if(empty()) INTEROP_THROW( invalid_parameter, "Cannot set external buffer to empty map");
             m_data = data;
-            std::fill(m_data, m_data+length(), default_val);
         }
         /** Resize the heat map to the given number of rows and columns
          *
@@ -192,8 +190,6 @@ namespace illumina { namespace interop { namespace model { namespace plot
             m_num_columns = 0;
             m_num_rows = 0;
         }
-
-    protected:
         /** Get the index of the row and column in the array
          *
          * @param row row index

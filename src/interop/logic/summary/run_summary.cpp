@@ -6,7 +6,6 @@
  *  @copyright GNU Public License.
  */
 #include "interop/logic/summary/run_summary.h"
-
 #include "interop/logic/summary/error_summary.h"
 #include "interop/logic/summary/tile_summary.h"
 #include "interop/logic/summary/extraction_summary.h"
@@ -78,10 +77,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
     {
         using namespace model::metrics;
         if(metrics.empty()) return;
-
-
         summary.initialize(metrics.run_info().reads(), metrics.run_info().flowcell().lane_count());
-
 
         read_cycle_vector_t cycle_to_read;
         map_read_to_cycle_number(summary.begin(), summary.end(), cycle_to_read);

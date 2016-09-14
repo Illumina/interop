@@ -8,8 +8,6 @@
 #pragma once
 #include "interop/io/format/generic_layout.h"
 
-
-
 namespace illumina { namespace interop { namespace model { namespace summary {
 
     /**  Summary statistics by read, total and non-indexed

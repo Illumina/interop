@@ -35,6 +35,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include "interop/util/math.h"
 #include "interop/io/metric_file_stream.h"
 #include "interop/logic/summary/run_summary.h"
 #include "interop/version.h"

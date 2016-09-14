@@ -79,12 +79,12 @@ namespace illumina { namespace interop { namespace io
         void read_metrics(std::istream& in, model::metric_base::metric_set<Metric>& metric_set, const size_t file_size)
         {
             const std::streamsize record_size = read_header(in, metric_set);
-            offset_map_t metric_offset_map;
+            offset_map_t metric_offset_map(metric_set.offset_map());
             metric_t metric(metric_set);
             if(file_size > 0 && !Layout::MULTI_RECORD)
             {
                 const size_t record_count = static_cast<size_t>((file_size-header_size(metric_set))/record_size);
-                metric_set.resize(record_count);
+                metric_set.resize(metric_set.size()+record_count);
                 std::vector<char> buffer(static_cast<size_t>(record_size));
                 INTEROP_ASSERT(!buffer.empty());
                 while (in)
@@ -103,8 +103,7 @@ namespace illumina { namespace interop { namespace io
                     read_record(in, metric_set, metric_offset_map, metric, record_size);
                 }
             }
-
-
+            metric_set.resize(metric_offset_map.size());
         }
         /** Read a metric set from the given input stream
          *
@@ -116,7 +115,9 @@ namespace illumina { namespace interop { namespace io
         {
             // TODO: optimize header reading with block read
             if (in.fail())
-                INTEROP_THROW(incomplete_file_exception, "Insufficient header data read from the file");
+                INTEROP_THROW(incomplete_file_exception, "Insufficient header data read from the file"
+                        << " for "
+                        << Metric::prefix() <<  " "  << Metric::suffix()  <<  " v"  << Layout::VERSION);
 
             //if we're not actually reading the record size from the stream
             // (the stream position is the same before and after),
@@ -126,7 +127,9 @@ namespace illumina { namespace interop { namespace io
                                                                                static_cast<record_size_t>(0));
             if(in.fail())
             {
-                INTEROP_THROW(incomplete_file_exception, "Insufficient header data read from the file");
+                INTEROP_THROW(incomplete_file_exception, "Insufficient header data read from the file"
+                        << " for "
+                        << Metric::prefix() <<  " "  << Metric::suffix()  <<  " v"  << Layout::VERSION);
             }
             if(record_size==0)
             {
@@ -186,7 +189,9 @@ namespace illumina { namespace interop { namespace io
             {
                 if (count == 0 && !metric_offset_map.empty()) return false;
                 INTEROP_THROW(incomplete_file_exception, "Insufficient data read from the file, got: " << count
-                                                         << " != expected: " << record_size);
+                                                         << " != expected: " << record_size << " for "
+                                                         << Metric::prefix() <<  " "  << Metric::suffix()  <<  " v"
+                                                         << Layout::VERSION);
             }
             return true;
         }
@@ -194,13 +199,12 @@ namespace illumina { namespace interop { namespace io
         {return true;}
         template<typename InputStream>
         static void read_record(InputStream& in,
-                         model::metric_base::metric_set<Metric>& metric_set,
-                         offset_map_t& metric_offset_map,
-                         metric_t& metric,
-                         const std::streamsize record_size)
+                                model::metric_base::metric_set<Metric>& metric_set,
+                                offset_map_t& metric_offset_map,
+                                metric_t& metric,
+                                const std::streamsize record_size)
         {
             metric_id_t id;
-
             const std::streamsize read_byte_count = read_binary_with_count (in, id);
             if(!test_stream(in, metric_offset_map, read_byte_count, record_size)) return;
             std::streamsize count=read_byte_count;
@@ -213,7 +217,7 @@ namespace illumina { namespace interop { namespace io
                     if(offset>= metric_set.size()) metric_set.resize(offset+1);
                     metric_set.at(offset).set_base(id);
                     count += Layout::map_stream(in, metric_set.at(offset), metric_set, true);
-                    if(metric_set.at(offset).id()==0)//Avoid adding control lanes
+                    if(metric_set.at(offset).id()==0)//Avoid adding control lanes in tile metrics
                     {
                         metric_set.resize(offset);
                     }
@@ -235,7 +239,11 @@ namespace illumina { namespace interop { namespace io
             if(!test_stream(in, metric_offset_map, count, record_size)) return;
             if (count != record_size)
             {
-                INTEROP_THROW(bad_format_exception, "Record does not match expected size!");
+                INTEROP_THROW(bad_format_exception, "Record does not match expected size! for "
+                                                     << Metric::prefix() <<  " "  << Metric::suffix()  <<  " v"
+                                                     << Layout::VERSION << " count=" << count << " != "
+                                                     << " record_size: " << record_size
+                                                     << " n= " << metric_offset_map.size());
             }
         }
     };
