@@ -8,7 +8,7 @@
 #   - _macro_name - name of the macro in the header file
 #
 
-function(add_version_target _target _version_file _macro_name)
+function(add_version_target _target _version_file _macro_name _default)
     if(NOT GIT_FOUND)
         find_package(Git REQUIRED)
     endif()
@@ -25,7 +25,7 @@ function(add_version_target _target _version_file _macro_name)
         OUTPUT_STRIP_TRAILING_WHITESPACE
     )
     if(NOT res EQUAL 0)
-        set(VERSION \"Unknown\")
+        set(VERSION \"${BACKUP}\")
     endif()
     configure_file(\${SRC} \${DST} @ONLY)
     "
@@ -33,6 +33,7 @@ function(add_version_target _target _version_file _macro_name)
     add_custom_target(${_target}
         ${CMAKE_COMMAND} -D SRC=${CMAKE_BINARY_DIR}/${version_base}.in
                          -D DST=${_version_file}
+                         -D BACKUP=${_default}
                          -P ${CMAKE_BINARY_DIR}/version.cmake
     )
     execute_process(

@@ -4,6 +4,7 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules)
 enable_testing()
 include(${PROJECT_SOURCE_DIR}/cmake/Modules/UseGitVersion.cmake)
 include(${PROJECT_SOURCE_DIR}/cmake/InternalUtils.cmake)
+set(ARCHIVE_VERSION "v1.0.11-2-gcee3852-src")
 
 interop_config_compiler_and_linker()
 # TODO: https://help.github.com/articles/creating-project-pages-manually/
@@ -26,7 +27,7 @@ option(FORCE_X86 "Force 32-bit libraries instead of platform default (Does nothi
 option(FORCE_SHARED_CRT "Used the shared (DLL) run time lib" ON)
 
 include_directories(.)
-add_version_target(version ${CMAKE_SOURCE_DIR}/interop/version.h INTEROP_VERSION)
+add_version_target(version ${CMAKE_SOURCE_DIR}/interop/version.h INTEROP_VERSION ${ARCHIVE_VERSION})
 
 if(INTEROP_VERSION)
     string(REGEX REPLACE "[^v]*(v.*)" "\\1" VERSION ${INTEROP_VERSION})

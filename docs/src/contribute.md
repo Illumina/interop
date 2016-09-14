@@ -66,3 +66,16 @@ git log v1.0.0..HEAD --oneline --decorate --no-merges
 
 In the above example, v1.0.0 was the last tag, you should replace this value with the actual last tag.
 
+## Linking to our git hooks
+
+Windows: 
+
+~~~~~~~~~{.bat}
+mklink .git\hooks\pre-commit <abs-path>\tools\hooks\pre-commit.sh
+~~~~~~~~~
+
+Linux:
+
+~~~~~~~~~{.sh}
+ln -s tools/hooks/pre-commit.sh .git/hooks/pre-commit
+~~~~~~~~~
