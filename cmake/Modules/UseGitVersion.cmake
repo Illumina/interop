@@ -25,16 +25,18 @@ function(add_version_target _target _version_file _macro_name _default)
         OUTPUT_STRIP_TRAILING_WHITESPACE
     )
     if(NOT res EQUAL 0)
-        set(VERSION \"${BACKUP}\")
+        set(VERSION \"\${BKUP}\")
     endif()
     configure_file(\${SRC} \${DST} @ONLY)
     "
     )
+    add_custom_command(OUTPUT ${_version_file}
+            COMMAND ${CMAKE_COMMAND} -D SRC=${CMAKE_BINARY_DIR}/${version_base}.in
+            -D DST=${_version_file}
+            -D BKUP=${_default}
+            -P ${CMAKE_BINARY_DIR}/version.cmake)
     add_custom_target(${_target}
-        ${CMAKE_COMMAND} -D SRC=${CMAKE_BINARY_DIR}/${version_base}.in
-                         -D DST=${_version_file}
-                         -D BACKUP=${_default}
-                         -P ${CMAKE_BINARY_DIR}/version.cmake
+        DEPENDS ${_version_file}
     )
     execute_process(
             COMMAND ${GIT_EXECUTABLE} describe --tags --dirty=-dirty
@@ -46,7 +48,7 @@ function(add_version_target _target _version_file _macro_name _default)
             OUTPUT_STRIP_TRAILING_WHITESPACE
     )
     if(NOT res EQUAL 0)
-        set(VERSION \"Unknown\")
+        set(VERSION "${_default}")
     endif()
     set(${_macro_name} ${VERSION} PARENT_SCOPE)
 endfunction()
