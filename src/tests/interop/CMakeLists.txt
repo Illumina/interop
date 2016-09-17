@@ -9,7 +9,6 @@ add_executable(interop_gtests
         run/parameters_test.cpp
         metrics/corrected_intensity_metrics_test.cpp
         metrics/error_metrics_test.cpp
-        metrics/error_metrics_test2.cpp
         metrics/extraction_metrics_test.cpp
         metrics/index_metrics_test.cpp
         metrics/image_metrics_test.cpp

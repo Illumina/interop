@@ -10,10 +10,14 @@
 #include <fstream>
 #include <set>
 #include <gtest/gtest.h>
-#include "inc/tile_metrics_test.h"
 #include "interop/util/math.h"
 #include "interop/util/statistics.h"
 #include "interop/model/run_metrics.h"
+#include "src/tests/interop/inc/generic_fixture.h"
+#include "src/tests/interop/inc/proxy_parameter_generator.h"
+#include "src/tests/interop/metrics/inc/metric_generator.h"
+#include "src/tests/interop/metrics/inc/tile_metrics_test.h"
+
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::model::metric_base;
 using namespace illumina::interop::io;
@@ -22,27 +26,38 @@ using namespace illumina::interop::unittest;
 using namespace illumina;
 
 
+typedef metric_set< tile_metric > tile_metric_set;
+/** Setup for tests that compare two tile metric sets */
+struct tile_metrics_tests : public generic_test_fixture< tile_metric_set > {};
 
-typedef ::testing::Types<
-        hardcoded_fixture<tile_v2>,
-        write_read_fixture<tile_v2>
-> Formats;
-TYPED_TEST_CASE(tile_metrics_test, Formats);
+
+tile_metrics_tests::generator_type tile_unit_test_generators[] = {
+        wrap(new hardcoded_metric_generator< tile_metric_v2 >) ,
+        wrap(new write_read_metric_generator< tile_metric_v2 >)
+};
+
+// Setup unit tests for tile_metrics_tests
+INSTANTIATE_TEST_CASE_P(tile_metric_unit_test,
+                        tile_metrics_tests,
+                        ::testing::ValuesIn(tile_unit_test_generators));
 
 /**
  * @class illumina::interop::model::metrics::tile_metric
  * @test Confirm version 2 of the metric can be written to and read from a stream
  * @test Confirm version 2 of the metric matches known binary file
  */
-TYPED_TEST(tile_metrics_test, test_read_write)
+TEST_P(tile_metrics_tests, test_read_write)
 {
-    const float scale = is_same< TypeParam, write_read_fixture<tile_v2> >::value ? 100 : 1;
-    EXPECT_EQ(TypeParam::actual_metric_set.version(), TypeParam::VERSION);
-    EXPECT_EQ(TypeParam::actual_metric_set.size(), TypeParam::expected_metric_set.size());
+    typedef tile_metric_set::const_iterator const_iterator;
+    typedef tile_metric_set::metric_type metric_t;
+    if(!test) return;// Disable test for rebaseline
+    const float scale = 1;//is_same< TypeParam, write_read_fixture<tile_v2> >::value ? 100 : 1;
+    EXPECT_EQ(actual.version(), expected.version());
+    ASSERT_EQ(actual.size(), expected.size());
 
     const float tol = 1e-7f / 0.01f;
-    for(typename TypeParam::const_iterator it_expected=TypeParam::expected_metric_set.begin(), it_actual = TypeParam::actual_metric_set.begin();
-        it_expected != TypeParam::expected_metric_set.end() && it_actual != TypeParam::actual_metric_set.end();
+    for(const_iterator it_expected=expected.begin(), it_actual = actual.begin();
+        it_expected != expected.end() && it_actual != actual.end();
         it_expected++,it_actual++)
     {
         EXPECT_EQ(it_expected->lane(), it_actual->lane());
@@ -53,7 +68,7 @@ TYPED_TEST(tile_metrics_test, test_read_write)
         EXPECT_NEAR(it_expected->cluster_count(), it_actual->cluster_count(), tol);
         EXPECT_NEAR(it_expected->cluster_count_pf(), it_actual->cluster_count_pf(), tol);
         EXPECT_EQ(it_expected->read_metrics().size(), it_actual->read_metrics().size());
-        for(typename TypeParam::metric_t::read_metric_vector::const_iterator it_read_expected = it_expected->read_metrics().begin(),
+        for(metric_t::read_metric_vector::const_iterator it_read_expected = it_expected->read_metrics().begin(),
                         it_read_actual = it_actual->read_metrics().begin();
                         it_read_expected != it_expected->read_metrics().end() &&
                         it_read_actual != it_actual->read_metrics().end(); it_read_expected++, it_read_actual++)
@@ -68,63 +83,75 @@ TYPED_TEST(tile_metrics_test, test_read_write)
     }
 }
 
-TYPED_TEST(tile_metrics_test, median)
+TEST(tile_metrics_test, median)
 {
+    tile_metric_set expected;
+    tile_metric_v2::create_expected(expected);
     const float tol = 1e-7f / 0.01f;
     const size_t read = 0;
-    float expected_percent_aligned_avg = interop::util::median(TypeParam::expected_metric_set.begin(),
-                                                                    TypeParam::expected_metric_set.end(),
+    float expected_percent_aligned_avg = interop::util::median(expected.begin(),
+                                                                    expected.end(),
                                                                     interop::util::op::const_member_function_less(read, &tile_metric::percent_aligned))->percent_aligned(read);
     EXPECT_NEAR(expected_percent_aligned_avg, 2.6163086891174316, tol);
 }
 
-TYPED_TEST(tile_metrics_test, mean)
+TEST(tile_metrics_test, mean)
 {
+    tile_metric_set expected;
+    tile_metric_v2::create_expected(expected);
     const float tol = 1e-7f / 0.01f;
     const size_t read = 0;
-    float expected_percent_aligned_avg = interop::util::mean<float>(TypeParam::expected_metric_set.begin(),
-                                                                    TypeParam::expected_metric_set.end(),
+    float expected_percent_aligned_avg = interop::util::mean<float>(expected.begin(),
+                                                                    expected.end(),
                                                                     interop::util::op::const_member_function(read, &tile_metric::percent_aligned));
     EXPECT_NEAR(expected_percent_aligned_avg, 2.5763518810272217, tol);
 }
 
-TYPED_TEST(tile_metrics_test, nan_mean)
+TEST(tile_metrics_test, nan_mean)
 {
+    tile_metric_set expected;
+    tile_metric_v2::create_expected(expected);
     const float tol = 1e-7f / 0.01f;
     const size_t read = 0;
-    float expected_percent_aligned_avg = interop::util::nan_mean<float>(TypeParam::expected_metric_set.begin(),
-                                                                        TypeParam::expected_metric_set.end(),
+    float expected_percent_aligned_avg = interop::util::nan_mean<float>(expected.begin(),
+                                                                        expected.end(),
                                                                         interop::util::op::const_member_function(read, &tile_metric::percent_aligned));
     EXPECT_NEAR(expected_percent_aligned_avg, 2.5763518810272217, tol);
 }
 
 
-TYPED_TEST(tile_metrics_test, standard_deviation)
+TEST(tile_metrics_test, standard_deviation)
 {
+    tile_metric_set expected;
+    tile_metric_v2::create_expected(expected);
     const float tol = 1e-7f / 0.01f;
     const size_t read = 0;
-    float expected_percent_aligned_std = std::sqrt(interop::util::variance<float>(TypeParam::expected_metric_set.begin(),
-                                                                                  TypeParam::expected_metric_set.end(),
+    float expected_percent_aligned_std = std::sqrt(interop::util::variance<float>(expected.begin(),
+                                                                                  expected.end(),
                                                                                   interop::util::op::const_member_function(read, &tile_metric::percent_aligned)));
     EXPECT_NEAR(expected_percent_aligned_std, 0.074578315019607544, tol);
 }
 
-TYPED_TEST(tile_metrics_test, nan_standard_deviation)
+TEST(tile_metrics_test, nan_standard_deviation)
 {
+    tile_metric_set expected;
+    tile_metric_v2::create_expected(expected);
     const float tol = 1e-7f / 0.01f;
     const size_t read = 0;
-    float expected_percent_aligned_std = std::sqrt(interop::util::nan_variance<float>(TypeParam::expected_metric_set.begin(),
-                                                                                  TypeParam::expected_metric_set.end(),
+    float expected_percent_aligned_std = std::sqrt(interop::util::nan_variance<float>(expected.begin(),
+                                                                                  expected.end(),
                                                                                   interop::util::op::const_member_function(read, &tile_metric::percent_aligned)));
     EXPECT_NEAR(expected_percent_aligned_std, 0.074578315019607544, tol);
 }
 
-TYPED_TEST(tile_metrics_test, standard_deviation_vec)
+TEST(tile_metrics_test, standard_deviation_vec)
 {
+    tile_metric_set expected;
+    tile_metric_v2::create_expected(expected);
     const float tol = 1e-7f / 0.01f;
     const size_t read = 0;
-    std::vector<float> percent_aligned_vec(TypeParam::expected_metric_set.size());
-    for(size_t i=0;i<TypeParam::expected_metric_set.size();++i) percent_aligned_vec[i] = TypeParam::expected_metric_set.at(i).percent_aligned(read);
+    std::vector<float> percent_aligned_vec(expected.size());
+    for(size_t i=0;i<expected.size();++i) percent_aligned_vec[i] = expected.at(i).percent_aligned(read);
     float expected_percent_aligned_std = std::sqrt(interop::util::variance<float>(percent_aligned_vec.begin(),
                                                                                   percent_aligned_vec.end()));
     EXPECT_NEAR(expected_percent_aligned_std, 0.074578315019607544, tol);
@@ -210,16 +237,12 @@ TEST(run_metrics_tile_test, test_is_group_empty)
     EXPECT_FALSE(metrics.is_group_empty(constants::Tile));
 }
 
-#define FIXTURE tile_metrics_test
-/**
- * @class illumina::interop::model::metrics::tile_metric
- * @test Confirm binary write matches expected binary data
- * @test Confirm bad_format_exception is thrown when version is unsupported
- * @test Confirm incomplete_file_exception is thrown for a small partial record
- * @test Confirm incomplete_file_exception is thrown for a mostly complete file
- * @test Confirm bad_format_exception is thrown when record size is incorrect
- * @test Confirm file_not_found_exception is thrown when a file is not found
- * @test Confirm reading from good data does not throw an exception
- */
-#include "inc/stream_tests.hpp"
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Setup regression test
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+regression_test_metric_generator<tile_metric_set> tile_regression_gen("metrics");
+INSTANTIATE_TEST_CASE_P(tile_metric_regression_test,
+                        tile_metrics_tests,
+                        ProxyValuesIn(tile_regression_gen, regression_test_data::instance().files()));
 

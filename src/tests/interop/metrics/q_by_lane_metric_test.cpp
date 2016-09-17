@@ -8,10 +8,13 @@
  */
 
 #include <gtest/gtest.h>
-#include "interop/model/metrics/q_by_lane_metric.h"
-#include "inc/q_metrics_test.h"
 #include "interop/logic/metric/q_metric.h"
 #include "interop/model/run_metrics.h"
+#include "interop/model/metrics/q_by_lane_metric.h"
+#include "src/tests/interop/inc/generic_fixture.h"
+#include "src/tests/interop/inc/proxy_parameter_generator.h"
+#include "src/tests/interop/metrics/inc/metric_generator.h"
+#include "src/tests/interop/metrics/inc/q_metrics_test.h"
 using namespace illumina::interop;
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::model::metric_base;

@@ -8,42 +8,58 @@
  */
 
 #ifdef _MSC_VER
-    #pragma warning(push)
     #pragma warning(disable:4127) // MSVC warns about using constants in conditional statements, for template constants
 #endif
 
-#include <fstream>
+#include <gtest/gtest.h>
 #include "interop/util/math.h"
-#include "inc/corrected_intensity_metrics_test.h"
 #include "interop/model/run_metrics.h"
+#include "src/tests/interop/inc/generic_fixture.h"
+#include "src/tests/interop/inc/proxy_parameter_generator.h"
+#include "src/tests/interop/metrics/inc/metric_generator.h"
+#include "src/tests/interop/metrics/inc/corrected_intensity_metrics_test.h"
 using namespace illumina::interop::model::metrics;
+using namespace illumina::interop::model::metric_base;
 using namespace illumina::interop;
 using namespace illumina::interop::io;
 using namespace illumina::interop::unittest;
 
 
-typedef ::testing::Types<
-        hardcoded_fixture<corrected_intensity_v2>,
-        hardcoded_fixture<corrected_intensity_v3>,
-        write_read_fixture<corrected_intensity_v2>,
-        write_read_fixture<corrected_intensity_v3>
-> Formats;
-TYPED_TEST_CASE(corrected_intensity_metrics_test, Formats);
+typedef metric_set< corrected_intensity_metric > corrected_intensity_metric_set;
+/** Setup for tests that compare two corrected intensity metric sets */
+struct corrected_intensity_metrics_tests : public generic_test_fixture< corrected_intensity_metric_set > {};
 
-/** Compare two corrected intensity metric sets
- *
- * @param actual metric set read from stream
- * @param expected metric set setup from known data
+corrected_intensity_metrics_tests::generator_type corrected_intensity_unit_test_generators[] = {
+        wrap(new hardcoded_metric_generator< corrected_intensity_metric_v2 >) ,
+        wrap(new write_read_metric_generator< corrected_intensity_metric_v2 >),
+        wrap(new hardcoded_metric_generator< corrected_intensity_metric_v3 >),
+        wrap(new write_read_metric_generator< corrected_intensity_metric_v3 >)
+};
+
+// Setup unit tests for corrected_intensity_metrics_tests
+INSTANTIATE_TEST_CASE_P(corrected_intensity_metric_unit_test,
+                        corrected_intensity_metrics_tests,
+                        ::testing::ValuesIn(corrected_intensity_unit_test_generators));
+
+
+/**
+ * @class illumina::interop::model::metrics::corrected_intensity_metric
+ * @test Confirm version 2 of the metric matches known binary file
+ * @test Confirm version 3 of the metric matches known binary file
+ * @test Confirm version 2 of the metric can be written to and read from a stream
+ * @test Confirm version 3 of the metric can be written to and read from a stream
  */
-template<class T>
-void compare_metrics(const T& actual, const T& expected)
+TEST_P(corrected_intensity_metrics_tests, test_metric_io_fidelity)
 {
+    typedef corrected_intensity_metric_set::const_iterator const_iterator;
+    if(!test) return;// Disable test for rebaseline
     const float tol = 1e-3f;
     EXPECT_EQ(actual.version(), expected.version());
-    EXPECT_EQ(actual.size(), expected.size());
+    ASSERT_EQ(actual.size(), expected.size());
     EXPECT_EQ(actual.max_cycle(), expected.max_cycle());
 
-    for(typename T::const_iterator it_expected=expected.begin(), it_actual = actual.begin();
+    for(const_iterator it_expected=expected.begin(),
+                it_actual = actual.begin();
         it_expected != expected.end() && it_actual != actual.end();
         it_expected++,it_actual++)
     {
@@ -60,28 +76,19 @@ void compare_metrics(const T& actual, const T& expected)
                 EXPECT_NEAR(it_expected->signal_to_noise(), it_actual->signal_to_noise(), tol);
         }
         for(ptrdiff_t i=-1;i<constants::NUM_OF_BASES;i++)
-            EXPECT_EQ(it_expected->called_counts(static_cast<constants::dna_bases>(i)), it_actual->called_counts(static_cast<constants::dna_bases>(i)));
+            EXPECT_EQ(it_expected->called_counts(static_cast<constants::dna_bases>(i)),
+                      it_actual->called_counts(static_cast<constants::dna_bases>(i)));
         for(size_t i=0;i<constants::NUM_OF_BASES;i++)
         {
-            EXPECT_EQ(it_expected->corrected_int_called(static_cast<constants::dna_bases>(i)), it_actual->corrected_int_called(static_cast<constants::dna_bases>(i)));
+            EXPECT_EQ(it_expected->corrected_int_called(static_cast<constants::dna_bases>(i)),
+                      it_actual->corrected_int_called(static_cast<constants::dna_bases>(i)));
             if(expected.version() < 3)
             {
-                EXPECT_EQ(it_expected->corrected_int_all(static_cast<constants::dna_bases>(i)), it_actual->corrected_int_all(static_cast<constants::dna_bases>(i)));
+                EXPECT_EQ(it_expected->corrected_int_all(static_cast<constants::dna_bases>(i)),
+                          it_actual->corrected_int_all(static_cast<constants::dna_bases>(i)));
             }
         }
     }
-}
-
-/**
- * @class illumina::interop::model::metrics::corrected_intensity_metric
- * @test Confirm version 2 of the metric matches known binary file
- * @test Confirm version 3 of the metric matches known binary file
- * @test Confirm version 2 of the metric can be written to and read from a stream
- * @test Confirm version 3 of the metric can be written to and read from a stream
- */
-TYPED_TEST(corrected_intensity_metrics_test, test_metric_io_fidelity)
-{
-    compare_metrics(TypeParam::actual_metric_set, TypeParam::expected_metric_set);
 }
 
 TEST(corrected_intensity_metrics_test, test_percent_base_nan)
@@ -93,27 +100,14 @@ TEST(corrected_intensity_metrics_test, test_percent_base_nan)
 }
 
 
-TEST(run_metrics_corrected_intensity_test, test_is_group_empty)
-{
-    run_metrics metrics;
-    EXPECT_TRUE(metrics.is_group_empty(constants::CorrectedInt));
-    io::read_interop_from_string(corrected_intensity_v2::binary_data(),
-                                 metrics.get_set<corrected_intensity_metric>());
-    EXPECT_FALSE(metrics.is_group_empty(constants::CorrectedInt));
-}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Setup regression test
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+regression_test_metric_generator<corrected_intensity_metric_set> corrected_intensity_regression_gen("metrics");
+INSTANTIATE_TEST_CASE_P(corrected_intensity_metric_regression_test,
+                        corrected_intensity_metrics_tests,
+                        ProxyValuesIn(corrected_intensity_regression_gen, regression_test_data::instance().files()));
 
-#define FIXTURE corrected_intensity_metrics_test
-/**
- * @class illumina::interop::model::metrics::corrected_intensity_metric
- * @test Confirm binary write matches expected binary data
- * @test Confirm bad_format_exception is thrown when version is unsupported
- * @test Confirm incomplete_file_exception is thrown for a small partial record
- * @test Confirm incomplete_file_exception is thrown for a mostly complete file
- * @test Confirm bad_format_exception is thrown when record size is incorrect
- * @test Confirm file_not_found_exception is thrown when a file is not found
- * @test Confirm reading from good data does not throw an exception
- */
-#include "inc/stream_tests.hpp"
 
 
 

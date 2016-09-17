@@ -8,10 +8,13 @@
  */
 
 #include <gtest/gtest.h>
-#include "interop/logic/metric/q_metric.h"
-#include "inc/q_collapsed_metrics_test.h"
-#include "inc/q_metrics_test.h"
 #include "interop/model/run_metrics.h"
+#include "src/tests/interop/inc/generic_fixture.h"
+#include "src/tests/interop/inc/proxy_parameter_generator.h"
+#include "src/tests/interop/metrics/inc/metric_generator.h"
+#include "interop/logic/metric/q_metric.h"
+#include "src/tests/interop/metrics/inc/q_collapsed_metrics_test.h"
+#include "src/tests/interop/metrics/inc/q_metrics_test.h"
 
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::model::metric_base;
@@ -20,13 +23,22 @@ using namespace illumina::interop;
 using namespace illumina::interop::unittest;
 
 
-typedef ::testing::Types<
-        hardcoded_fixture<q_collapsed_v2>,
-        write_read_fixture<q_collapsed_v2>,
-        hardcoded_fixture<q_collapsed_v6>,
-        write_read_fixture<q_collapsed_v6>
-> Formats;
-TYPED_TEST_CASE(q_collapsed_metrics_test, Formats);
+typedef metric_set< q_collapsed_metric > q_collapsed_metric_set;
+/** Setup for tests that compare two Q-collapsed metric sets */
+struct q_collapsed_metrics_tests : public generic_test_fixture< q_collapsed_metric_set > {};
+
+
+q_collapsed_metrics_tests::generator_type q_collapsed_unit_test_generators[] = {
+        wrap(new hardcoded_metric_generator< q_collapsed_metric_v2 >) ,
+        wrap(new write_read_metric_generator< q_collapsed_metric_v2 >),
+        wrap(new hardcoded_metric_generator< q_collapsed_metric_v6 >) ,
+        wrap(new write_read_metric_generator< q_collapsed_metric_v6 >)
+};
+
+// Setup unit tests for q_collapsed_metrics_tests
+INSTANTIATE_TEST_CASE_P(q_collapsed_metric_unit_test,
+                        q_collapsed_metrics_tests,
+                        ::testing::ValuesIn(q_collapsed_unit_test_generators));
 
 /**
  * @class illumina::interop::model::metrics::q_collapsed_metric
@@ -35,14 +47,16 @@ TYPED_TEST_CASE(q_collapsed_metrics_test, Formats);
  * @test Confirm version 6 of the metric can be written to and read from a stream
  * @test Confirm version 6 of the metric matches known binary file
  */
-TYPED_TEST(q_collapsed_metrics_test, test_read_write)
+TEST_P(q_collapsed_metrics_tests, test_read_write)
 {
-    EXPECT_EQ(TypeParam::actual_metric_set.version(), TypeParam::expected_metric_set.version());
-    EXPECT_EQ(TypeParam::actual_metric_set.size(), TypeParam::expected_metric_set.size());
-    EXPECT_EQ(TypeParam::actual_metric_set.max_cycle(), TypeParam::expected_metric_set.max_cycle());
+    typedef q_collapsed_metric_set::const_iterator const_iterator;
+    if(!test) return;// Disable test for rebaseline
+    EXPECT_EQ(actual.version(), expected.version());
+    ASSERT_EQ(actual.size(), expected.size());
+    EXPECT_EQ(actual.max_cycle(), expected.max_cycle());
 
-    for(typename TypeParam::const_iterator it_expected=TypeParam::expected_metric_set.begin(), it_actual = TypeParam::actual_metric_set.begin();
-        it_expected != TypeParam::expected_metric_set.end() && it_actual != TypeParam::actual_metric_set.end();
+    for(const_iterator it_expected=expected.begin(), it_actual = actual.begin();
+        it_expected != expected.end() && it_actual != actual.end();
         it_expected++,it_actual++)
     {
         EXPECT_EQ(it_expected->lane(), it_actual->lane());
@@ -89,27 +103,14 @@ TEST(q_collapsed_metrics_test, test_convert_write_read)
     }
 }
 
-TEST(run_metrics_q_collapsed_test, test_is_group_empty)
-{
-    run_metrics metrics;
-    EXPECT_TRUE(metrics.is_group_empty(constants::QCollapsed));
-    io::read_interop_from_string(q_v4::binary_data(),
-                                 metrics.get_set<q_metric>());
-    logic::metric::create_collapse_q_metrics(metrics.get_set<q_metric>(), metrics.get_set<q_collapsed_metric>());
-    EXPECT_FALSE(metrics.is_group_empty(constants::QCollapsed));
-}
 
-#define FIXTURE q_collapsed_metrics_test
-/**
- * @class illumina::interop::model::metrics::q_collapsed_metric
- * @test Confirm binary write matches expected binary data
- * @test Confirm bad_format_exception is thrown when version is unsupported
- * @test Confirm incomplete_file_exception is thrown for a small partial record
- * @test Confirm incomplete_file_exception is thrown for a mostly complete file
- * @test Confirm bad_format_exception is thrown when record size is incorrect
- * @test Confirm file_not_found_exception is thrown when a file is not found
- * @test Confirm reading from good data does not throw an exception
- */
-#include "inc/stream_tests.hpp"
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Setup regression test
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+regression_test_metric_generator<q_collapsed_metric_set> q_collapsed_regression_gen("metrics");
+INSTANTIATE_TEST_CASE_P(q_collapsed_metric_regression_test,
+                        q_collapsed_metrics_tests,
+                        ProxyValuesIn(q_collapsed_regression_gen, regression_test_data::instance().files()));
 
 
