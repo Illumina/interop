@@ -44,7 +44,7 @@ add_executable(interop_gtests
         metrics/inc/metric_generator.h
         metrics/inc/metric_stream_tests.hpp
         inc/regression_test_data.h
-        inc/proxy_parameter_generator.h inc/abstract_regression_test_generator.h)
+        inc/proxy_parameter_generator.h inc/abstract_regression_test_generator.h metrics/metric_streams_test.cpp)
 
 target_link_libraries(interop_gtests ${INTEROP_LIB}  ${GTEST_LIBRARY} ${GMOCK_LIBRARY}  ${CMAKE_THREAD_LIBS_INIT})
 add_test(NAME interop_gtests WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/testBin

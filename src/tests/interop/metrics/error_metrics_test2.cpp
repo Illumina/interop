@@ -70,29 +70,6 @@ TEST(error_metrics_single_test, test_tile_metric_count_for_lane)
     EXPECT_EQ(metrics.tile_numbers_for_lane(7).size(), 1u);
 }
 
-/**
- * @test Ensure the keys function returns the proper metric
- */
-TEST(error_metrics_single_test, test_expected_get_metric)
-{
-    error_metric_set metrics;
-    error_metric_v3::create_expected(metrics);
-    error_metric_set::key_vector keys = metrics.keys();
-    for(size_t i=0;i<keys.size();i++)
-    {
-        EXPECT_EQ(keys[i], metrics.get_metric(keys[i]).id());
-    }
-}
-
-
-TEST(run_metrics_error_metric_test, test_is_group_empty)
-{
-    run_metrics metrics;
-    EXPECT_TRUE(metrics.is_group_empty(constants::Error));
-    io::read_interop_from_string(error_v3::binary_data(),
-                                 metrics.get_set<error_metric>());
-    EXPECT_FALSE(metrics.is_group_empty(constants::Error));
-}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -12,7 +12,8 @@
 #include "interop/model/model_exceptions.h"
 #include "interop/model/summary/index_lane_summary.h"
 
-namespace illumina { namespace interop { namespace model { namespace summary {
+namespace illumina { namespace interop { namespace model { namespace summary
+{
 
     /** Summary of metrics for index reads for the entire flowcell
      */
