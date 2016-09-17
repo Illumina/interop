@@ -84,8 +84,7 @@ TEST(plot_logic, intensity_by_cycle)
     metrics.set_naming_method(constants::FourDigit);
     metrics.legacy_channel_update(constants::HiSeq);
 
-    io::read_interop_from_string(unittest::extraction_v2::binary_data(),
-                                 metrics.get_set<model::metrics::extraction_metric>());
+    unittest::extraction_metric_v2::create_metric_set(metrics.get_set<model::metrics::extraction_metric>());
 
     model::plot::plot_data<model::plot::candle_stick_point> data;
     logic::plot::plot_by_cycle(metrics, constants::Intensity, options, data);
@@ -128,7 +127,7 @@ TEST(plot_logic, pf_clusters_by_lane)
     metrics.set_naming_method(constants::FourDigit);
     metrics.legacy_channel_update(constants::HiSeq);
 
-    io::read_interop_from_string(unittest::tile_v2::binary_data(), metrics.get_set<model::metrics::tile_metric>());
+    unittest::tile_metric_v2::create_metric_set(metrics.get_set<model::metrics::tile_metric>());
 
     model::plot::plot_data<model::plot::candle_stick_point> data;
     logic::plot::plot_by_lane(metrics, constants::ClusterCountPF, options, data);
@@ -163,7 +162,7 @@ TEST(plot_logic, q_score_histogram)
     metrics.legacy_channel_update(constants::HiSeq);
     metrics.set_naming_method(constants::FourDigit);
 
-    io::read_interop_from_string(unittest::q_v6::binary_data(), metrics.get_set<model::metrics::q_metric>());
+    unittest::q_metric_v6::create_metric_set(metrics.get_set<model::metrics::q_metric>());
     metrics.finalize_after_load();
 
     model::plot::plot_data<model::plot::bar_point> data;
@@ -198,7 +197,7 @@ TEST(plot_logic, q_score_heatmap)
     metrics.legacy_channel_update(constants::HiSeq);
     metrics.set_naming_method(constants::FourDigit);
 
-    io::read_interop_from_string(unittest::q_v6::binary_data(), metrics.get_set<model::metrics::q_metric>());
+    unittest::q_metric_v6::create_metric_set(metrics.get_set<model::metrics::q_metric>());
     metrics.finalize_after_load();
 
     model::plot::heatmap_data data;
@@ -279,7 +278,7 @@ TEST(plot_logic, q_score_heatmap_buffer)
     metrics.legacy_channel_update(constants::HiSeq);
     metrics.set_naming_method(constants::FourDigit);
 
-    io::read_interop_from_string(unittest::q_v6::binary_data(), metrics.get_set<model::metrics::q_metric>());
+    unittest::q_metric_v6::create_metric_set(metrics.get_set<model::metrics::q_metric>());
     metrics.finalize_after_load();
 
     model::plot::heatmap_data data1;
@@ -321,7 +320,7 @@ TEST(plot_logic, flowcell_map)
     model::plot::filter_options options(constants::FourDigit, ALL_IDS, 0, constants::A, ALL_IDS, 1, 1);
     metrics.legacy_channel_update(constants::HiSeq);
 
-    io::read_interop_from_string(unittest::extraction_v2::binary_data(), metrics.get_set<model::metrics::extraction_metric>());
+    unittest::extraction_metric_v2::create_metric_set(metrics.get_set<model::metrics::extraction_metric>());
     ASSERT_GT(metrics.extraction_metric_set().size(), 0u);
 
     model::plot::flowcell_data data;
@@ -353,8 +352,8 @@ TEST(plot_logic, sample_qc)
     model::plot::filter_options options(constants::FourDigit, ALL_IDS, 0, constants::A, ALL_IDS, 1, 1);
     metrics.legacy_channel_update(constants::HiSeq);
 
-    io::read_interop_from_string(unittest::index_v1::binary_data(), metrics.get_set<model::metrics::index_metric>());
-    io::read_interop_from_string(unittest::tile_v2::binary_data(), metrics.get_set<model::metrics::tile_metric>());
+    unittest::index_metric_v1::create_metric_set(metrics.get_set<model::metrics::index_metric>());
+    unittest::tile_metric_v2::create_metric_set(metrics.get_set<model::metrics::tile_metric>());
     ASSERT_GT(metrics.index_metric_set().size(), 0u);
 
     model::plot::plot_data<model::plot::bar_point> data;

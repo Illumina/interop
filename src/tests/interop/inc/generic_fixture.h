@@ -24,6 +24,11 @@ namespace illumina{ namespace interop { namespace unittest {
     public:
         typedef  abstract_generator<T>*  base_type;
         typedef generator_ptr<T> parent_type;
+        /** Constructor
+         *
+         * @param test_modifier flag that modifies the test
+         */
+        abstract_generator(const int test_modifier=0) : m_test_modifier(test_modifier){}
         /** Generate the expected and actual metric sets
          *
          * @param expected expected object
@@ -38,6 +43,30 @@ namespace illumina{ namespace interop { namespace unittest {
         virtual base_type clone()const=0;
         /** Destructor */
         virtual ~abstract_generator(){}
+        /** Flag that modifies the test
+         *
+         * @return flag that modifies the test
+         */
+        int test_modifier()const{return m_test_modifier;}
+        /** Write generator info to output stream
+         *
+         * @param out output stream
+         */
+        virtual void write(std::ostream& out)const=0;
+        /** Write name of generator to output stream
+         *
+         * @param out output stream
+         * @param gen generator
+         * @return output stream
+         */
+        friend std::ostream& operator<<(std::ostream& out, const abstract_generator<T>& gen)
+        {
+            gen.write(out);
+            return out;
+        }
+
+    private:
+        int m_test_modifier;
     };
 
     /** Smart pointer wrapper
@@ -57,7 +86,7 @@ namespace illumina{ namespace interop { namespace unittest {
          *
          * @param other source object to copy
          */
-        generator_ptr(const generator_ptr<T>& other) : m_ptr(other.m_ptr->clone()){}
+        generator_ptr(const generator_ptr<T>& other) : m_ptr(other.m_ptr==0?0:other.m_ptr->clone()){}
         /** Copy operator
          *
          * @param other source object to copy
@@ -66,20 +95,61 @@ namespace illumina{ namespace interop { namespace unittest {
         generator_ptr& operator=(const generator_ptr<T>& other)
         {
             delete m_ptr;
-            m_ptr= other.m_ptr->clone();
+            INTEROP_ASSERT(other.m_ptr != 0);
+            if(other.m_ptr != 0) m_ptr= other.m_ptr->clone();
             return *this;
         }
         /** Destructor */
         virtual ~generator_ptr(){delete m_ptr;}
-        /** Generate the expected and actual metric sets
+
+        /** Get access to underlying object
          *
-         * @param expected expected object
-         * @param actual actual object
+         * @return reference to abstract generator
          */
-        bool generate(T& expected, T& actual)const
+        const abstract_generator<T>& operator*()const
         {
             INTEROP_ASSERT(m_ptr != 0);
-            return m_ptr->generate(expected, actual);
+            return *m_ptr;
+        }
+        /** Get access to underlying object
+         *
+         * @return reference to abstract generator
+         */
+        abstract_generator<T>& operator*()
+        {
+            INTEROP_ASSERT(m_ptr != 0);
+            return *m_ptr;
+        }
+        /** Get access to underlying pointer
+         *
+         * @return pointer to abstract generator
+         */
+        const abstract_generator<T>* operator->()const
+        {
+            INTEROP_ASSERT(m_ptr != 0);
+            return m_ptr;
+        }
+        /** Get access to underlying pointer
+         *
+         * @return pointer to abstract generator
+         */
+        abstract_generator<T>* operator->()
+        {
+            INTEROP_ASSERT(m_ptr != 0);
+            return m_ptr;
+        }
+        /** Write name of generator to output stream
+         *
+         * @param out output stream
+         * @param ptr generator pointer
+         * @return output stream
+         */
+        friend std::ostream& operator<<(std::ostream& out, const generator_ptr<T>& ptr)
+        {
+            INTEROP_ASSERT(ptr.m_ptr != 0);
+            if(ptr.m_ptr == 0) return out;
+            ptr.m_ptr->write(out);
+            return out;
         }
     private:
         abstract_generator<T>* m_ptr;
@@ -105,7 +175,6 @@ namespace illumina{ namespace interop { namespace unittest {
     struct generic_test_fixture : public ::testing::TestWithParam< generator_ptr<T> >
     {
     private:
-        //typedef ::testing::TestWithParam<  abstract_generator<T>* > parent_type;
         typedef ::testing::TestWithParam<  generator_ptr<T> > parent_type;
     public:
         //typedef  abstract_generator<T>* generator_type;
@@ -113,10 +182,12 @@ namespace illumina{ namespace interop { namespace unittest {
         /** Value type of the object to test */
         typedef T value_type;
 
-        /** Constructor */
-        generic_test_fixture()//const char* test_dir)
+        /** Constructor
+         */
+        generic_test_fixture()
         {
-            test = parent_type::GetParam().generate(expected, actual);
+            test = parent_type::GetParam()->generate(expected, actual);
+            test_modifier = parent_type::GetParam()->test_modifier();
         }
         /** Expected object to test */
         T expected;
@@ -124,6 +195,8 @@ namespace illumina{ namespace interop { namespace unittest {
         T actual;
         /** Run test */
         bool test;
+        /** Flag for type of test*/
+        int test_modifier;
     };
 
 

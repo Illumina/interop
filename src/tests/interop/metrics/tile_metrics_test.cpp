@@ -7,16 +7,16 @@
  *  @copyright GNU Public License.
  */
 #include <limits>
-#include <fstream>
 #include <set>
 #include <gtest/gtest.h>
 #include "interop/util/math.h"
 #include "interop/util/statistics.h"
+#include "interop/util/type_traits.h"
 #include "interop/model/run_metrics.h"
+#include "src/tests/interop/metrics/inc/tile_metrics_test.h"
 #include "src/tests/interop/inc/generic_fixture.h"
 #include "src/tests/interop/inc/proxy_parameter_generator.h"
 #include "src/tests/interop/metrics/inc/metric_generator.h"
-#include "src/tests/interop/metrics/inc/tile_metrics_test.h"
 
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::model::metric_base;
@@ -51,8 +51,8 @@ TEST_P(tile_metrics_tests, test_read_write)
     typedef tile_metric_set::const_iterator const_iterator;
     typedef tile_metric_set::metric_type metric_t;
     if(!test) return;// Disable test for rebaseline
-    const float scale = 1;//is_same< TypeParam, write_read_fixture<tile_v2> >::value ? 100 : 1;
-    EXPECT_EQ(actual.version(), expected.version());
+    const float scale = (test_modifier==2) ? 0.01f : ( (test_modifier==1) ? 100.0f : 1.0f);
+    ASSERT_EQ(actual.version(), expected.version());
     ASSERT_EQ(actual.size(), expected.size());
 
     const float tol = 1e-7f / 0.01f;
@@ -74,87 +74,14 @@ TEST_P(tile_metrics_tests, test_read_write)
                         it_read_actual != it_actual->read_metrics().end(); it_read_expected++, it_read_actual++)
         {
             EXPECT_EQ(it_read_expected->read(), it_read_actual->read());
-            EXPECT_NEAR(it_read_expected->percent_aligned(), it_read_actual->percent_aligned(), tol);
+            if(!std::isnan(it_read_expected->percent_aligned()) && !std::isnan(it_read_actual->percent_aligned()))
+                EXPECT_NEAR(it_read_expected->percent_aligned(), it_read_actual->percent_aligned(), tol);
             if(!std::isnan(it_read_expected->percent_phasing()) && !std::isnan(it_read_actual->percent_phasing()))
                 EXPECT_NEAR(it_read_expected->percent_phasing()*scale, it_read_actual->percent_phasing(), tol);
             if(!std::isnan(it_read_expected->percent_prephasing()) && !std::isnan(it_read_actual->percent_prephasing()))
                 EXPECT_NEAR(it_read_expected->percent_prephasing()*scale, it_read_actual->percent_prephasing(), tol);
         }
     }
-}
-
-TEST(tile_metrics_test, median)
-{
-    tile_metric_set expected;
-    tile_metric_v2::create_expected(expected);
-    const float tol = 1e-7f / 0.01f;
-    const size_t read = 0;
-    float expected_percent_aligned_avg = interop::util::median(expected.begin(),
-                                                                    expected.end(),
-                                                                    interop::util::op::const_member_function_less(read, &tile_metric::percent_aligned))->percent_aligned(read);
-    EXPECT_NEAR(expected_percent_aligned_avg, 2.6163086891174316, tol);
-}
-
-TEST(tile_metrics_test, mean)
-{
-    tile_metric_set expected;
-    tile_metric_v2::create_expected(expected);
-    const float tol = 1e-7f / 0.01f;
-    const size_t read = 0;
-    float expected_percent_aligned_avg = interop::util::mean<float>(expected.begin(),
-                                                                    expected.end(),
-                                                                    interop::util::op::const_member_function(read, &tile_metric::percent_aligned));
-    EXPECT_NEAR(expected_percent_aligned_avg, 2.5763518810272217, tol);
-}
-
-TEST(tile_metrics_test, nan_mean)
-{
-    tile_metric_set expected;
-    tile_metric_v2::create_expected(expected);
-    const float tol = 1e-7f / 0.01f;
-    const size_t read = 0;
-    float expected_percent_aligned_avg = interop::util::nan_mean<float>(expected.begin(),
-                                                                        expected.end(),
-                                                                        interop::util::op::const_member_function(read, &tile_metric::percent_aligned));
-    EXPECT_NEAR(expected_percent_aligned_avg, 2.5763518810272217, tol);
-}
-
-
-TEST(tile_metrics_test, standard_deviation)
-{
-    tile_metric_set expected;
-    tile_metric_v2::create_expected(expected);
-    const float tol = 1e-7f / 0.01f;
-    const size_t read = 0;
-    float expected_percent_aligned_std = std::sqrt(interop::util::variance<float>(expected.begin(),
-                                                                                  expected.end(),
-                                                                                  interop::util::op::const_member_function(read, &tile_metric::percent_aligned)));
-    EXPECT_NEAR(expected_percent_aligned_std, 0.074578315019607544, tol);
-}
-
-TEST(tile_metrics_test, nan_standard_deviation)
-{
-    tile_metric_set expected;
-    tile_metric_v2::create_expected(expected);
-    const float tol = 1e-7f / 0.01f;
-    const size_t read = 0;
-    float expected_percent_aligned_std = std::sqrt(interop::util::nan_variance<float>(expected.begin(),
-                                                                                  expected.end(),
-                                                                                  interop::util::op::const_member_function(read, &tile_metric::percent_aligned)));
-    EXPECT_NEAR(expected_percent_aligned_std, 0.074578315019607544, tol);
-}
-
-TEST(tile_metrics_test, standard_deviation_vec)
-{
-    tile_metric_set expected;
-    tile_metric_v2::create_expected(expected);
-    const float tol = 1e-7f / 0.01f;
-    const size_t read = 0;
-    std::vector<float> percent_aligned_vec(expected.size());
-    for(size_t i=0;i<expected.size();++i) percent_aligned_vec[i] = expected.at(i).percent_aligned(read);
-    float expected_percent_aligned_std = std::sqrt(interop::util::variance<float>(percent_aligned_vec.begin(),
-                                                                                  percent_aligned_vec.end()));
-    EXPECT_NEAR(expected_percent_aligned_std, 0.074578315019607544, tol);
 }
 
 TEST(tile_metrics_test, test_unique_id_four_digit)
@@ -211,7 +138,8 @@ TEST(tile_metrics_test, test_tile_metric_for_lane)
 {
     metric_set<tile_metric> metrics;
     tile_metric expected_metric(7, 1114, 2355119.25f,1158081.50f,6470949,3181956,
-                tile_metric::read_metric_vector(1, tile_metric::read_metric_type(3, 2.61630869f, 0.0797112584f/100, 0.119908921f/100)));
+                tile_metric::read_metric_vector(1,
+                tile_metric::read_metric_type(3, 2.61630869f, 0.0797112584f/100, 0.119908921f/100)));
     metrics.insert(expected_metric.id(), expected_metric);
     metric_set<tile_metric>::metric_array_t tile_lane_metrics = metrics.metrics_for_lane(7);
     tile_metric& actual_metric = tile_lane_metrics[0];
@@ -225,16 +153,6 @@ TEST(tile_metrics_test, test_tile_metric_for_lane)
     EXPECT_NEAR(expected_metric.cluster_count(), actual_metric.cluster_count(), tol);
     EXPECT_NEAR(expected_metric.cluster_count_pf(), actual_metric.cluster_count_pf(), tol);
     EXPECT_EQ(expected_metric.read_metrics().size(), actual_metric.read_metrics().size());
-
-
-}
-TEST(run_metrics_tile_test, test_is_group_empty)
-{
-    run_metrics metrics;
-    EXPECT_TRUE(metrics.is_group_empty(constants::Tile));
-    io::read_interop_from_string(tile_v2::binary_data(),
-                                 metrics.get_set<tile_metric>());
-    EXPECT_FALSE(metrics.is_group_empty(constants::Tile));
 }
 
 

@@ -11,11 +11,24 @@
 #include "interop/util/length_of.h"
 #include "interop/logic/table/create_imaging_table.h"
 #include "src/tests/interop/metrics/inc/error_metrics_test.h"
-#include "src/tests/interop/inc/regression_fixture.h"
 #include "interop/io/table/imaging_table_csv.h"
 
 using namespace illumina::interop;
 using namespace illumina::interop::unittest;
+
+
+/** Convert an array to a vector
+ *
+ * Determines the length of the stack array automatically.
+ *
+ * @param vals array pointer
+ * @return vector of values
+ */
+template<typename T, size_t N>
+inline std::vector<T> to_vector(const T (&vals)[N])
+{
+    return std::vector<T>(vals, vals + N);
+}
 
 namespace illumina{ namespace interop {namespace model {namespace table
 {
@@ -57,7 +70,7 @@ void simulate_read_error_metrics(model::metrics::run_metrics& metrics)
     metrics.legacy_channel_update(constants::HiSeq);
     metrics.set_naming_method(constants::FourDigit);
 
-    io::read_interop_from_string(unittest::error_v3::binary_data(), metrics.get_set<model::metrics::error_metric>());
+    unittest::error_metric_v3::create_metric_set(metrics.get_set<model::metrics::error_metric>());
 }
 /**
  * @class illumina::interop::model::table::imaging_table

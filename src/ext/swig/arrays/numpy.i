@@ -249,9 +249,9 @@
   }
 
   /* Given a PyArrayObject, check to see if it is contiguous.  If so,
-   * return the input pointer and flag it as not a new object.  If it is
+   * return the input pointer and test_modifier it as not a new object.  If it is
    * not contiguous, create a new PyArrayObject using the original data,
-   * flag it as a new object and return the pointer.
+   * test_modifier it as a new object and return the pointer.
    */
   PyArrayObject* make_contiguous(PyArrayObject* ary,
                                  int*           is_new_object,
@@ -276,9 +276,9 @@
   }
 
   /* Given a PyArrayObject, check to see if it is Fortran-contiguous.
-   * If so, return the input pointer, but do not flag it as not a new
+   * If so, return the input pointer, but do not test_modifier it as not a new
    * object.  If it is not Fortran-contiguous, create a new
-   * PyArrayObject using the original data, flag it as a new object
+   * PyArrayObject using the original data, test_modifier it as a new object
    * and return the pointer.
    */
   PyArrayObject* make_fortran(PyArrayObject* ary,
@@ -303,7 +303,7 @@
 
   /* Convert a given PyObject to a contiguous PyArrayObject of the
    * specified type.  If the input object is not a contiguous
-   * PyArrayObject, a new one will be created and the new object flag
+   * PyArrayObject, a new one will be created and the new object test_modifier
    * will be set.
    */
   PyArrayObject* obj_to_array_contiguous_allow_conversion(PyObject* input,
@@ -331,7 +331,7 @@
 
   /* Convert a given PyObject to a Fortran-ordered PyArrayObject of the
    * specified type.  If the input object is not a Fortran-ordered
-   * PyArrayObject, a new one will be created and the new object flag
+   * PyArrayObject, a new one will be created and the new object test_modifier
    * will be set.
    */
   PyArrayObject* obj_to_array_fortran_allow_conversion(PyObject* input,
@@ -524,7 +524,7 @@
 
   /* Require the given PyArrayObject to to be Fortran ordered.  If the
    * the PyArrayObject is already Fortran ordered, do nothing.  Else,
-   * set the Fortran ordering flag and recompute the strides.
+   * set the Fortran ordering test_modifier and recompute the strides.
    */
   int require_fortran(PyArrayObject* ary)
   {
@@ -533,7 +533,7 @@
     int i;
     npy_intp * strides = array_strides(ary);
     if (array_is_fortran(ary)) return success;
-    /* Set the Fortran ordered flag */
+    /* Set the Fortran ordered test_modifier */
     array_enableflags(ary,NPY_ARRAY_FARRAY);
     /* Recompute the strides */
     strides[0] = strides[nd-1];

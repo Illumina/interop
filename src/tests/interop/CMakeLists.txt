@@ -4,7 +4,7 @@ include(${GTEST_USE_FILE})
 include(${GMOCK_USE_FILE})
 find_package(Threads)
 
-add_executable(interop_gtests
+set(SRCS
         run/info_test.cpp
         run/parameters_test.cpp
         metrics/corrected_intensity_metrics_test.cpp
@@ -16,34 +16,40 @@ add_executable(interop_gtests
         metrics/tile_metrics_test.cpp
         metrics/q_by_lane_metric_test.cpp
         metrics/q_collapsed_metrics_test.cpp
+        logic/summary_metrics_test.cpp
+        metrics/base_metric_tests.cpp
+        logic/enum_parsing_test.cpp
+        logic/metric_type_ext_test.cpp
+        logic/plot_logic_test.cpp
+        util/option_parser_test.cpp
+        logic/imaging_table_logic_test.cpp
+        logic/imaging_table_regression_test.cpp
+        metrics/metric_streams_test.cpp
+        util/stat_test.cpp
+        unit_tests.cpp
+        metrics/run_metric_test.cpp)
+
+set(HEADERS
         metrics/inc/corrected_intensity_metrics_test.h
         metrics/inc/error_metrics_test.h
         metrics/inc/metric_test.h
-        metrics/inc/stream_tests.hpp
-        logic/summary_metrics_test.cpp
-        metrics/inc/summary_fixture.h
         metrics/inc/extraction_metrics_test.h
         metrics/inc/image_metrics_test.h
         metrics/inc/index_metrics_test.h
         metrics/inc/q_metrics_test.h
         metrics/inc/tile_metrics_test.h
         metrics/inc/q_collapsed_metrics_test.h
-        metrics/base_metric_tests.cpp
-        logic/enum_parsing_test.cpp
-        logic/metric_type_ext_test.cpp
-        logic/plot_logic_test.cpp
-        util/option_parser_test.cpp
-        inc/regression_fixture.h
-        unit_tests.cpp
         inc/failure_listener.h
         inc/persistent_parameter_generator.h
-        logic/imaging_table_logic_test.cpp
-        logic/imaging_table_regression_test.cpp
         inc/generic_fixture.h
         metrics/inc/metric_generator.h
-        metrics/inc/metric_stream_tests.hpp
         inc/regression_test_data.h
-        inc/proxy_parameter_generator.h inc/abstract_regression_test_generator.h metrics/metric_streams_test.cpp)
+        inc/proxy_parameter_generator.h
+        inc/abstract_regression_test_generator.h
+        metrics/inc/metric_format_fixtures.h)
+
+
+add_executable(interop_gtests ${SRCS} ${HEADERS})
 
 target_link_libraries(interop_gtests ${INTEROP_LIB}  ${GTEST_LIBRARY} ${GMOCK_LIBRARY}  ${CMAKE_THREAD_LIBS_INIT})
 add_test(NAME interop_gtests WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/testBin

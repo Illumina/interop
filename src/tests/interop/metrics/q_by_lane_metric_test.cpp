@@ -20,19 +20,13 @@ using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::model::metric_base;
 using namespace illumina::interop::unittest;
 
-// Test that q_by_lane_metric can use q_metric parsers/writers
-TEST(q_by_lane_metrics_test, test_read_v4)
-{
-    metric_set<q_by_lane_metric> metrics;
-    io::read_interop_from_string(q_v4::binary_data(),
-                                 metrics);
-}
-
 // Test if we can parse by lane q-metrics
 TEST(q_by_lane_metrics_test, test_convert_write_read)
 {
     metric_set<q_metric> metrics;
-    io::read_interop_from_string(q_v4::binary_data(),
+    std::string data;
+    q_metric_v4::create_binary_data(data);
+    io::read_interop_from_string(data,
                                  metrics);
 
 
@@ -66,11 +60,23 @@ TEST(q_by_lane_metrics_test, test_convert_write_read)
     }
 }
 
+// Test that q_by_lane_metric can use q_metric parsers/writers
+TEST(q_by_lane_metrics_test, test_read_v4)
+{
+    metric_set<q_by_lane_metric> metrics;
+    std::string data;
+    q_metric_v4::create_binary_data(data);
+    io::read_interop_from_string(data,
+                                 metrics);
+}
+
 TEST(run_metrics_q_by_lane_test, test_is_group_empty)
 {
     run_metrics metrics;
     EXPECT_TRUE(metrics.is_group_empty(constants::QByLane));
-    io::read_interop_from_string(q_v4::binary_data(),
+    std::string data;
+    q_metric_v4::create_binary_data(data);
+    io::read_interop_from_string(data,
                                  metrics.get_set<q_metric>());
     logic::metric::create_q_metrics_by_lane(metrics.get_set<q_metric>(), metrics.get_set<q_by_lane_metric>());
     EXPECT_FALSE(metrics.is_group_empty(constants::QByLane));

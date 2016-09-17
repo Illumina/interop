@@ -9,10 +9,10 @@
 
 #include <limits>
 #include <gtest/gtest.h>
+#include "src/tests/interop/metrics/inc/image_metrics_test.h"
 #include "src/tests/interop/inc/generic_fixture.h"
 #include "src/tests/interop/inc/proxy_parameter_generator.h"
 #include "src/tests/interop/metrics/inc/metric_generator.h"
-#include "inc/image_metrics_test.h"
 #include "interop/model/run_metrics.h"
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::model::metric_base;
@@ -51,7 +51,7 @@ TEST_P(image_metrics_tests, test_read_write)
     if(!test) return;// Disable test for rebaseline
     EXPECT_EQ(actual.version(), expected.version());
     ASSERT_EQ(actual.size(), expected.size());
-    EXPECT_EQ(actual.channel_count(), expected.channel_count());
+    ASSERT_EQ(actual.channel_count(), expected.channel_count());
     EXPECT_EQ(actual.max_cycle(), expected.max_cycle());
 
     for(const_iterator it_expected=expected.begin(), it_actual = actual.begin();
@@ -61,8 +61,8 @@ TEST_P(image_metrics_tests, test_read_write)
         EXPECT_EQ(it_expected->lane(), it_actual->lane());
         EXPECT_EQ(it_expected->tile(), it_actual->tile());
         EXPECT_EQ(it_expected->cycle(), it_actual->cycle());
-        EXPECT_EQ(it_expected->channel_count(), it_actual->channel_count());
-        for(size_t i=0;i<std::min(it_expected->channel_count(), it_actual->channel_count());i++)
+        ASSERT_EQ(it_expected->channel_count(), it_actual->channel_count());
+        for(size_t i=0;i<it_actual->channel_count();i++)
         {
             EXPECT_EQ(it_expected->min_contrast(i), it_actual->min_contrast(i));
             EXPECT_EQ(it_expected->max_contrast(i), it_actual->max_contrast(i));

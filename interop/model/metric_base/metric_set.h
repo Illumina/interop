@@ -468,6 +468,8 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
             header_type::clear();
             m_id_map.clear();
             m_data.clear();
+            m_version=0;
+            m_data_source_exists=false;
         }
 
         /** Get the metrics in a vector

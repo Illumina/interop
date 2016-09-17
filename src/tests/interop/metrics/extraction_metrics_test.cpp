@@ -10,10 +10,11 @@
 #include <limits>
 #include <gtest/gtest.h>
 #include "interop/model/run_metrics.h"
+#include "src/tests/interop/metrics/inc/extraction_metrics_test.h"
 #include "src/tests/interop/inc/generic_fixture.h"
 #include "src/tests/interop/inc/proxy_parameter_generator.h"
 #include "src/tests/interop/metrics/inc/metric_generator.h"
-#include "src/tests/interop/metrics/inc/extraction_metrics_test.h"
+
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::model::metric_base;
 using namespace illumina::interop::io;

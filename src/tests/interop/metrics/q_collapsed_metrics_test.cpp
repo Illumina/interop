@@ -9,11 +9,11 @@
 
 #include <gtest/gtest.h>
 #include "interop/model/run_metrics.h"
+#include "src/tests/interop/metrics/inc/q_collapsed_metrics_test.h"
 #include "src/tests/interop/inc/generic_fixture.h"
 #include "src/tests/interop/inc/proxy_parameter_generator.h"
 #include "src/tests/interop/metrics/inc/metric_generator.h"
 #include "interop/logic/metric/q_metric.h"
-#include "src/tests/interop/metrics/inc/q_collapsed_metrics_test.h"
 #include "src/tests/interop/metrics/inc/q_metrics_test.h"
 
 using namespace illumina::interop::model::metrics;
@@ -70,8 +70,9 @@ TEST_P(q_collapsed_metrics_tests, test_read_write)
 TEST(q_collapsed_metrics_test, test_convert_write_read)
 {
     metric_set<q_metric> metrics;
-    std::istringstream fin(q_v4::binary_data());
-    io::read_interop_from_string(q_v4::binary_data(),
+    std::string data;
+    q_metric_v4::create_binary_data(data);
+    io::read_interop_from_string(data,
                                  metrics);
 
 

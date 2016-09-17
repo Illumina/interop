@@ -8,11 +8,11 @@
  */
 
 #include <gtest/gtest.h>
+#include "interop/model/run_metrics.h"
+#include "src/tests/interop/metrics/inc/index_metrics_test.h"
 #include "src/tests/interop/inc/generic_fixture.h"
 #include "src/tests/interop/inc/proxy_parameter_generator.h"
 #include "src/tests/interop/metrics/inc/metric_generator.h"
-#include "src/tests/interop/metrics/inc/index_metrics_test.h"
-#include "interop/model/run_metrics.h"
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::model::metric_base;
 using namespace illumina::interop::io;
@@ -33,12 +33,6 @@ index_metrics_tests::generator_type index_unit_test_generators[] = {
 INSTANTIATE_TEST_CASE_P(index_metric_unit_test,
                         index_metrics_tests,
                         ::testing::ValuesIn(index_unit_test_generators));
-
-typedef ::testing::Types<
-        hardcoded_fixture<index_v1>,
-        write_read_fixture<index_v1>
-> Formats;
-TYPED_TEST_CASE(index_metrics_test, Formats);
 
 /**
  * @class illumina::interop::model::metrics::index_metric

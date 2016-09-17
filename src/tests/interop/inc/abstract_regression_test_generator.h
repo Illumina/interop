@@ -26,8 +26,10 @@ namespace illumina{ namespace interop { namespace unittest
         /** Constructor
          *
          * @param test_dir test subdir
+         * @param test_modifier flag to modify a test
          */
-        abstract_regression_test_generator(const std::string& test_dir) : m_test_dir(test_dir)
+        abstract_regression_test_generator(const std::string& test_dir, const int test_modifier=0) :
+                abstract_generator< Model >(test_modifier), m_test_dir(test_dir)
         {
             regression_test_data::instance().add_subdir(test_dir);
         }
@@ -35,8 +37,12 @@ namespace illumina{ namespace interop { namespace unittest
          *
          * @param run_folder run folder
          * @param test_dir test subdir
+         * @param test_modifier flag to modify a test
          */
-        abstract_regression_test_generator(const std::string& run_folder, const std::string& test_dir) : m_run_folder(run_folder), m_test_dir(test_dir)
+        abstract_regression_test_generator(const std::string& run_folder,
+                                           const std::string& test_dir,
+                                           const int test_modifier=0) :
+                abstract_generator< Model >(test_modifier), m_run_folder(run_folder), m_test_dir(test_dir)
         {
         }
         /** Clone the concret implementation
@@ -71,7 +77,7 @@ namespace illumina{ namespace interop { namespace unittest
             }
             else
             {
-                std::cout << "[          ] Rebaseline: " << io::basename(m_run_folder) << std::endl;
+                std::cout << "[          ] Rebaseline: " << *this << std::endl;
                 try
                 {
                     generate_actual(m_run_folder, actual);

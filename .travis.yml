@@ -165,7 +165,8 @@ branches:
 notifications:
   email: false
 before_deploy:
-- tar czf interop-${BUILD_NAME}.tar.gz ${BUILD_PATH}
+- cd `dirname ${BUILD_PATH}`
+- tar czf interop-${BUILD_NAME}.tar.gz ${BUILD_NAME}
 deploy:
   skip_cleanup: true
   provider: releases

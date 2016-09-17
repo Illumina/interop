@@ -92,9 +92,18 @@ namespace illumina { namespace interop { namespace io
                     char *in_ptr = &buffer.front();
                     in.read(in_ptr, record_size);
                     const std::streamsize count = in.gcount();
-                    if(!test_stream(in, metric_offset_map, count, record_size)) break;
-                    read_record(in_ptr, metric_set, metric_offset_map, metric, record_size);
+                    try
+                    {
+                        if (!test_stream(in, metric_offset_map, count, record_size)) break;
+                        read_record(in_ptr, metric_set, metric_offset_map, metric, record_size);
+                    }
+                    catch(const incomplete_file_exception& ex)
+                    {
+                        metric_set.resize(metric_offset_map.size());
+                        throw ex;
+                    }
                 }
+                metric_set.resize(metric_offset_map.size());
             }
             else
             {
@@ -103,7 +112,6 @@ namespace illumina { namespace interop { namespace io
                     read_record(in, metric_set, metric_offset_map, metric, record_size);
                 }
             }
-            metric_set.resize(metric_offset_map.size());
         }
         /** Read a metric set from the given input stream
          *

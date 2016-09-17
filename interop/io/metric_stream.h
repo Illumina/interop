@@ -121,7 +121,15 @@ namespace illumina { namespace interop { namespace io
                     interop_basename<MetricSet>() << " with version: " << version << " of " << format_map.size() );
         INTEROP_ASSERT(format_map[version]);
         metrics.set_version(static_cast< ::int16_t>(version));
-        format_map[version]->read_metrics(in, metrics, file_size);
+        try
+        {
+            format_map[version]->read_metrics(in, metrics, file_size);
+        }
+        catch(const incomplete_file_exception& ex)
+        {
+            metrics.rebuild_index();
+            throw ex;
+        }
         metrics.rebuild_index();
     }
 

@@ -10,11 +10,11 @@
 #include <limits>
 #include <gtest/gtest.h>
 #include "interop/model/run_metrics.h"
+#include "src/tests/interop/metrics/inc/q_metrics_test.h"
 #include "src/tests/interop/inc/generic_fixture.h"
 #include "src/tests/interop/inc/proxy_parameter_generator.h"
 #include "src/tests/interop/metrics/inc/metric_generator.h"
 #include "interop/logic/metric/q_metric.h"
-#include "src/tests/interop/metrics/inc/q_metrics_test.h"
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::model::metric_base;
 using namespace illumina::interop::io;
@@ -25,7 +25,6 @@ using namespace illumina::interop::unittest;
 typedef metric_set< q_metric > q_metric_set;
 /** Setup for tests that compare two Q metric sets */
 struct q_metrics_tests : public generic_test_fixture< q_metric_set > {};
-
 
 q_metrics_tests::generator_type q_unit_test_generators[] = {
         wrap(new hardcoded_metric_generator< q_metric_v4 >),
@@ -90,7 +89,7 @@ TEST_P(q_metrics_tests, test_read_write)
 TEST(q_metrics_test, test_populate_cumulative_on_empty)
 {
     q_metric_set actual;
-    q_metric_v6::create_expected(actual);
+    q_metric_v6::create_metric_set(actual);
     logic::metric::populate_cumulative_distribution(actual);
 
     for(typename q_metric_set::const_iterator cur=actual.metrics().begin();cur != actual.metrics().end();++cur)
@@ -119,7 +118,7 @@ TEST(q_metrics_test, test_cumulative)
     metric_set<q_metric> q_metric_set(q_metric_vec, 6, q_metric::header_type());
     logic::metric::populate_cumulative_distribution(q_metric_set);
 
-    for(uint_t i=0;i<helper_t::size_of(hist_all1);i++)
+    for(uint_t i=0;i<util::length_of(hist_all1);i++)
     {
         qsum += hist_all1[i];
         qsum += hist_all2[i];

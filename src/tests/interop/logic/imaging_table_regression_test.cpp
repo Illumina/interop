@@ -11,7 +11,6 @@
 #include "interop/util/length_of.h"
 #include "interop/logic/table/create_imaging_table.h"
 #include "src/tests/interop/metrics/inc/error_metrics_test.h"
-#include "src/tests/interop/inc/regression_fixture.h"
 #include "interop/io/table/imaging_table_csv.h"
 #include "src/tests/interop/inc/abstract_regression_test_generator.h"
 
@@ -90,6 +89,14 @@ protected:
     {
         return new imaging_table_regression_test(m_run_folder, m_test_dir);
     }
+    /** Write generator info to output stream
+     *
+     * @param out output stream
+     */
+    void write(std::ostream& out)const
+    {
+        out << "imaging_table_regression_test - " << io::basename(m_run_folder);
+    }
 };
 /** Setup for tests that compare two run summaries */
 struct imaging_table_tests : public generic_test_fixture< model::table::imaging_table > {};
@@ -136,7 +143,8 @@ TEST_P(imaging_table_tests, compare_to_baseline)
                                     << "@" << expected(expected_idx[row_index], model::table::CycleColumn)
                                     << " == "  << actual(actual_idx[row_index], model::table::LaneColumn)
                                     << "_" << actual(actual_idx[row_index], model::table::TileColumn)
-                                    << "@" << actual(actual_idx[row_index], model::table::CycleColumn);
+                                    << "@" << actual(actual_idx[row_index], model::table::CycleColumn)
+                                    << " digit_count: " << digit_count;
             }
         }
     }

@@ -127,13 +127,18 @@ namespace illumina { namespace interop { namespace io
      */
     template<class MetricSet>
     void read_interop(const std::string& run_directory, MetricSet& metrics, const bool use_out=true)   throw
-                                                                        (interop::io::file_not_found_exception,
-                                                                        interop::io::bad_format_exception,
-                                                                        interop::io::incomplete_file_exception,
+                                                                        (file_not_found_exception,
+                                                                        bad_format_exception,
+                                                                        incomplete_file_exception,
                                                                         model::index_out_of_bounds_exception)
     {
-        const std::string file_name = interop_filename<MetricSet>(run_directory, use_out);
+        std::string file_name = interop_filename<MetricSet>(run_directory, use_out);
         std::ifstream fin(file_name.c_str(), std::ios::binary);
+        if(!fin.good())
+        {
+            file_name = interop_filename<MetricSet>(run_directory, !use_out);
+            fin.open(file_name.c_str(), std::ios::binary);
+        }
         if(!fin.good()) INTEROP_THROW(file_not_found_exception, "File not found: " << file_name);
         read_metrics(fin, metrics, static_cast<size_t>(file_size(file_name)));
     }
@@ -147,9 +152,9 @@ namespace illumina { namespace interop { namespace io
      */
     template<class MetricSet>
     bool interop_exists(const std::string& run_directory, MetricSet&, const bool use_out=true)
-    throw(interop::io::file_not_found_exception,
-    interop::io::bad_format_exception,
-    interop::io::incomplete_file_exception,
+    throw(file_not_found_exception,
+    bad_format_exception,
+    incomplete_file_exception,
     model::index_out_of_bounds_exception)
     {
         const std::string file_name = interop_filename<MetricSet>(run_directory, use_out);
