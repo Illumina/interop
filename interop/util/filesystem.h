@@ -60,3 +60,4 @@ namespace illumina { namespace interop { namespace io
     ::int64_t file_size(const std::string& path);
 }}}
 
+

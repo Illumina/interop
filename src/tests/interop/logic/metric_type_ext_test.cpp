@@ -35,3 +35,4 @@ TEST(metric_type_ext, is_cycle_metric)
     EXPECT_TRUE(logic::utils::is_cycle_metric(constants::Intensity));
     EXPECT_FALSE(logic::utils::is_cycle_metric(constants::PercentAligned));
 }
+

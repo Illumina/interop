@@ -660,3 +660,4 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
 #pragma warning(pop)
 #endif
 
+

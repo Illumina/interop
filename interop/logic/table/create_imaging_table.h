@@ -53,3 +53,4 @@ namespace illumina { namespace interop { namespace logic { namespace table
     void list_imaging_table_metrics_to_load(std::vector<unsigned char>& valid_to_load);
 
 }}}}
+

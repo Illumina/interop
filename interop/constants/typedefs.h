@@ -23,3 +23,4 @@ namespace illumina { namespace interop { namespace constants {
     typedef constant_type<metric_base_type, BaseLaneType> base_lane_t;
 
 }}}
+

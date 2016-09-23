@@ -249,3 +249,4 @@ namespace illumina { namespace interop { namespace io
 INTEROP_FORCE_LINK_DEF(image_metric)
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(image_metric, 1 )
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(image_metric, 2 )
+

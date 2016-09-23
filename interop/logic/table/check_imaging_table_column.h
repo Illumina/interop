@@ -88,7 +88,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
                                           std::vector<bool> &filled)
         {
             /* For every entry in INTEROP_IMAGING_COLUMN_TYPES
-             * Add a method call to set a boolean test_modifier to true if the column is occupied by valid values
+             * Add a method call to set a boolean flag to true if the column is occupied by valid values
              *
              * Example:
              * INTEROP_TUPLE7(Lane, metric_base::base_metric, lane, Void, UInt, IdType, 0) ->
@@ -196,3 +196,4 @@ namespace illumina { namespace interop { namespace logic { namespace table
         }
     };
 }}}}
+

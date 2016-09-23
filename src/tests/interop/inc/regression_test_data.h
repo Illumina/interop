@@ -120,3 +120,4 @@ namespace illumina{ namespace interop { namespace unittest
         bool m_rebaseline;
     };
 }}}
+

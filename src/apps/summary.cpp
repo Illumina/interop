@@ -282,3 +282,4 @@ void print_summary(std::ostream& out, const run_summary& summary)
     out << "Called: " << format(summary.cycle_state().called_cycle_range()) << "\n";
     out << "Scored: " << format(summary.cycle_state().qscored_cycle_range()) << "\n";
 }
+

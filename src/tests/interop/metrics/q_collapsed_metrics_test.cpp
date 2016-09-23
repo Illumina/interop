@@ -115,3 +115,4 @@ INSTANTIATE_TEST_CASE_P(q_collapsed_metric_regression_test,
                         ProxyValuesIn(q_collapsed_regression_gen, regression_test_data::instance().files()));
 
 
+

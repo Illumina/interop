@@ -3,7 +3,6 @@
 
 set(CMAKE_SWIG_OUTDIR ${CMAKE_CURRENT_BINARY_DIR})
 
-
 add_custom_target(csharp_lib)
 set_target_properties(csharp_lib PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
 
@@ -27,11 +26,15 @@ foreach(SRC ${SWIG_SRCS})
         set_target_properties(${SWIG_MODULE} PROPERTIES LINK_FLAGS "${EXTRA_LINKER_FLAGS}")
     endif()
     if(MSVC)
-        set_target_properties(${SWIG_MODULE} PROPERTIES COMPILE_FLAGS "/bigobj /wd4100 -D_CRT_SECURE_NO_WARNINGS  -D_SCL_SECURE_NO_WARNINGS")
+        set_target_properties(${SWIG_MODULE} PROPERTIES COMPILE_FLAGS "${ENABLE_BIG_OBJ_FLAG} /wd4100")
     elseif(MINGW)
-        set_target_properties(${SWIG_MODULE} PROPERTIES COMPILE_FLAGS "-Wa,-mbig-obj -Wno-unused-function -Wno-unused-parameter")
-    elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR CMAKE_COMPILER_IS_GNUCC)
-        set_target_properties(${SWIG_MODULE} PROPERTIES COMPILE_FLAGS "-Wno-unused-function -Wno-unused-parameter")
+        set_target_properties(${SWIG_MODULE} PROPERTIES COMPILE_FLAGS "${ENABLE_BIG_OBJ_FLAG} ${_WNO_UNUSED_FUNCTION} ${_WNO_UNUSED_PARAMETER}")
+    elseif(COMPILER_IS_GNUCC_OR_CLANG)
+        set_target_properties(${SWIG_MODULE} PROPERTIES COMPILE_FLAGS "${_WNO_UNUSED_FUNCTION} ${_WNO_UNUSED_PARAMETER}")
+    endif()
+    if(NOT MSVC)
+        set_target_properties(${SWIG_MODULE} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_CURRENT_BINARY_DIR}/Release")
+        set_target_properties(${SWIG_MODULE} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_DEBUG "${CMAKE_CURRENT_BINARY_DIR}/Debug")
     endif()
     swig_link_libraries(${SWIG_MODULE} ${INTEROP_DL_LIB})
 
@@ -47,8 +50,6 @@ foreach(SRC ${SWIG_SRCS})
     list(APPEND SWIG_MODULE_LIST ${SWIG_MODULE})
     add_dependencies(csharp_lib ${SWIG_MODULE})
 endforeach()
-
-
 
 find_package(CSharp)
 
@@ -96,3 +97,60 @@ add_custom_target(clean_csharp
         COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_BINARY_DIR})
 
 set_target_properties(clean_csharp PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
+
+########################################################################################################################
+# Create NuGet nuspec package file
+########################################################################################################################
+if(MSVC)
+    set(CONFIG_DIR "$<CONFIG>")
+else()
+    if(CMAKE_BUILD_TYPE)
+        set(CONFIG_DIR "${CMAKE_BUILD_TYPE}")
+    else()
+        set(CONFIG_DIR "Debug")
+   endif()
+endif()
+
+function(create_nuspec_files _output _config _framework _source_files)
+    # C# Dlls should be packaged in a directory lib\<framework>\<config>
+    # C++ Shared Libraries should be packaged in a directory called build\<config>
+    # The following code generates this file list from the SWIG generated C++ shared libraries and the C# Dll
+    get_filename_component(DLL_NAME ${CSHARP_csharp_interop_BINARY} NAME)
+    set(_files ${${_output}})
+    if(NOT "${_files}" STREQUAL "")
+        set(_files "${_files};")
+    endif()
+    set(_files "${_files}<file;src=\\\"${_config}/${DLL_NAME}\\\";target=\\\"lib\\\\${_framework}\\\\${_config}\\\";/>")
+    list(APPEND _files "<file;src=\\\"interop_${CSHARP_TYPE}_${CMAKE_SYSTEM_NAME}.targets\\\";target=\\\"lib\\\\${_framework}\\\\${_config}\\\";/>")
+    foreach(SRC ${_source_files})
+        get_filename_component(MODULE ${SRC} NAME_WE)
+        set(NUGET_FILE "<file;src=\\\"${_config}/$<TARGET_FILE_NAME:${SWIG_MODULE_c_csharp_${MODULE}_REAL_NAME}>\\\";target=\\\"build\\\\${_config}\\\";/>")
+        list(APPEND _files ${NUGET_FILE})
+    endforeach()
+    set(${_output} ${_files} PARENT_SCOPE)
+endfunction()
+
+set(DOT_NET_FRAMEWORK "net40")
+create_nuspec_files(NUGET_FILE_LIST "Debug" ${DOT_NET_FRAMEWORK} "${SWIG_SRCS}")
+create_nuspec_files(NUGET_FILE_LIST "Release" ${DOT_NET_FRAMEWORK} "${SWIG_SRCS}")
+# This creates the nuspec file in the proper directory
+add_custom_target(nuspec
+        COMMENT "Creating package.nuspec"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${CMAKE_SOURCE_DIR}/cmake/package.targets
+        $<TARGET_FILE_DIR:${SWIG_MODULE_c_csharp_${MODULE}_REAL_NAME}>/../interop_${CSHARP_TYPE}_${CMAKE_SYSTEM_NAME}.targets
+
+        COMMAND ${CMAKE_COMMAND}
+        -DCMAKE_CURRENT_BINARY_DIR=${CMAKE_CURRENT_BINARY_DIR}
+        -DCSHARP_TYPE=${CSHARP_TYPE}
+        -DCSHARP_VERSION=${CSHARP_VERSION}
+        -DINTEROP_VERSION=${VERSION_SHORT}
+        -DPLATFORM=${CMAKE_SYSTEM_NAME}
+        -DNUGET_FILE_LIST="${NUGET_FILE_LIST}"
+        -DCONFIG_INPUT_FILE=${CMAKE_SOURCE_DIR}/cmake/package.nuspec.in
+        -DCONFIG_OUTPUT_FILE=$<TARGET_FILE_DIR:${SWIG_MODULE_c_csharp_${MODULE}_REAL_NAME}>/../package.nuspec
+        -P ${CMAKE_SOURCE_DIR}/cmake/ConfigureFile.cmake
+        )
+add_dependencies(nuspec csharp_interop)
+set_target_properties(nuspec PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
+

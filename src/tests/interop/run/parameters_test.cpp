@@ -422,3 +422,4 @@ TEST(RunParameters, ParseXML_NextSeq)
 
     test_helper_run_parameter_parse_xml(expected_param, xml_file);
 }
+

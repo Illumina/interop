@@ -367,3 +367,4 @@ TEST(plot_logic, sample_qc)
     EXPECT_NEAR(data.x_axis().max(), 1, tol);
     EXPECT_NEAR(data.y_axis().max(), 5, tol);
 }
+

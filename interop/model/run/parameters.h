@@ -115,3 +115,4 @@ namespace illumina { namespace interop { namespace model { namespace run
 #ifdef _MSC_VER
 #pragma warning(pop)
 #endif
+

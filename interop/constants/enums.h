@@ -343,3 +343,4 @@ namespace illumina { namespace interop { namespace constants
 #undef INTEROP_TUPLE3
 #undef INTEROP_TUPLE4
 
+

@@ -69,3 +69,4 @@ namespace illumina { namespace interop {  namespace constants {
     };
 }}}
 #undef INTEROP_TUPLE7 // Reuse this for another conversion
+

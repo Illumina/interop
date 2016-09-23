@@ -65,10 +65,10 @@ add_custom_command(TARGET interop_gtests POST_BUILD
 endif()
 
 if(MSVC)
-    set_target_properties(interop_gtests PROPERTIES COMPILE_FLAGS "/bigobj")
+    set_target_properties(interop_gtests PROPERTIES COMPILE_FLAGS "${ENABLE_BIG_OBJ_FLAG}")
 elseif(MINGW)
-    set_target_properties(interop_gtests PROPERTIES COMPILE_FLAGS "-Wa,-mbig-obj -Wno-unused-function")
-elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR CMAKE_COMPILER_IS_GNUCC)
-    set_target_properties(interop_gtests PROPERTIES COMPILE_FLAGS "-Wno-unused-function -Wno-unnamed-type-template-args")
+    set_target_properties(interop_gtests PROPERTIES COMPILE_FLAGS "${ENABLE_BIG_OBJ_FLAG} ${_WNO_UNUSED_FUNCTION} ${_WNO_UNUSED_PARAMETER}")
+elseif(COMPILER_IS_GNUCC_OR_CLANG)
+    set_target_properties(interop_gtests PROPERTIES COMPILE_FLAGS "${_WNO_UNUSED_FUNCTION} ${_WNO_UNUSED_PARAMETER} ${_WNO_UNNAMED_TYPE_TEMPLATE_ARGS}")
 endif()
 
