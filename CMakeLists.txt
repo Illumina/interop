@@ -4,7 +4,7 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules)
 enable_testing()
 include(${PROJECT_SOURCE_DIR}/cmake/Modules/UseGitVersion.cmake)
 include(${PROJECT_SOURCE_DIR}/cmake/InternalUtils.cmake)
-set(ARCHIVE_VERSION "v1.0.11-9-gf0a5119-src")
+set(ARCHIVE_VERSION "v1.0.11-10-gbe8fb4f")
 
 interop_config_compiler_and_linker()
 # TODO: https://help.github.com/articles/creating-project-pages-manually/
