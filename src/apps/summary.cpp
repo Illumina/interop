@@ -109,9 +109,16 @@ template<typename I>
 void print_array(std::ostream& out, I beg, I end, const size_t width, const char fillch=' ')
 {
     std::ios::fmtflags f( out.flags() );
+    if(beg != end)
+    {
+        out.width(width);
+        out.fill(fillch);
+        out << std::left << *beg;
+        ++beg;
+    }
     for(;beg != end;++beg)
     {
-        out << " ";
+        out << ",";
         out.width(width);
         out.fill(fillch);
         out << std::left << *beg;
