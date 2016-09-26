@@ -135,3 +135,4 @@ REGISTER_TYPED_TEST_CASE_P(metric_stream_test, test_write_read_binary_data,
 
 
 INSTANTIATE_TYPED_TEST_CASE_P(Public, metric_stream_test, PublicFormats);
+

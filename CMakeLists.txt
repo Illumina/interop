@@ -4,7 +4,7 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules)
 enable_testing()
 include(${PROJECT_SOURCE_DIR}/cmake/Modules/UseGitVersion.cmake)
 include(${PROJECT_SOURCE_DIR}/cmake/InternalUtils.cmake)
-set(ARCHIVE_VERSION "v1.0.11-13-gd736ca2")
+set(ARCHIVE_VERSION "v1.0.11-14-g824273c")
 
 if (NOT CMAKE_BUILD_TYPE)
     message(STATUS "No build type selected, default to Release")
@@ -81,9 +81,9 @@ install(FILES README.md docs/src/changes.md DESTINATION .)
 
 find_package(Git)
 if(GIT_FOUND)
-    string(REGEX REPLACE "[^v]*(v[0-9]+.[0-9]+.[0-9])-.*" "\\1" TAG ${INTEROP_VERSION})
+    string(REGEX REPLACE "[^v]*(v[0-9]+.[0-9]+.[0-9]+)-.*" "\\1" TAG ${INTEROP_VERSION})
     add_custom_target(history
-        COMMAND ${GIT_EXECUTABLE};log;${TAG}..HEAD;-m;--first-parent;--date=short;--format='%ad | %b'
+        COMMAND ${GIT_EXECUTABLE};--no-pager;log;${TAG}..HEAD;--date=short;--format='%ad | %B'
         COMMENT "List all commits from last tag - ${TAG}"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 endif()

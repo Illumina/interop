@@ -83,3 +83,4 @@ REGISTER_TYPED_TEST_CASE_P(run_metric_test,
 
 
 INSTANTIATE_TYPED_TEST_CASE_P(Public, run_metric_test, PublicFormats);
+

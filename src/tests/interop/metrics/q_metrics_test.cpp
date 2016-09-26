@@ -92,7 +92,7 @@ TEST(q_metrics_test, test_populate_cumulative_on_empty)
     q_metric_v6::create_metric_set(actual);
     logic::metric::populate_cumulative_distribution(actual);
 
-    for(typename q_metric_set::const_iterator cur=actual.metrics().begin();cur != actual.metrics().end();++cur)
+    for(q_metric_set::const_iterator cur=actual.metrics().begin();cur != actual.metrics().end();++cur)
         EXPECT_TRUE(!cur->is_cumulative_empty());
     metric_set<q_metric> empty_metrics;
     logic::metric::populate_cumulative_distribution(empty_metrics);

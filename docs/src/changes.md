@@ -1,5 +1,20 @@
 # Changes                                               {#changes}
 
+## v1.0.12
+
+Date       | Description
+---------- | -----------
+2016-09-26 | IPA-5210: Create CSV parsable summary output
+2016-09-23 | IPA-5194: Create nuspec package file
+2016-09-17 | Refactor individual metric unit tests
+2016-09-17 | Refactor metric stream tests
+2016-09-14 | Reorganized code into own stat util file
+2016-09-14 | Fixes error rate at a specific cycle when tiles are at different cycles
+2016-09-14 | Add version information for zip archives
+2016-09-14 | IPA-5070: Add optional flag to skip median for summary
+2016-09-13 | Ensure ANSI build is being tested
+
+
 ## v1.0.11
 
 Date       | Description
