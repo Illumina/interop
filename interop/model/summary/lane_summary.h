@@ -9,8 +9,10 @@
 
 #include <cstddef>
 #include <climits>
-#include "interop/model/summary/metric_stat.h"
+#include "interop/model/model_exceptions.h"
 #include "interop/model/summary/cycle_state_summary.h"
+#include "interop/model/summary/stat_summary.h"
+#include "interop/model/summary/surface_summary.h"
 #include "interop/io/format/generic_layout.h"
 
 namespace illumina { namespace interop { namespace model { namespace summary
@@ -22,11 +24,24 @@ namespace illumina { namespace interop { namespace model { namespace summary
      * the mean over all cycles is used for each tile, before calculating the standard deviation.
      *
      */
-    class lane_summary
+    class lane_summary : public stat_summary
     {
+        /** Lane vector type */
+        typedef std::vector<surface_summary> surface_summary_vector_t;
     public:
         /** Collection of metric statistics type */
         typedef metric_stat metric_stat_t;
+    public:
+        /** Reference to lane_summary */
+        typedef surface_summary_vector_t::reference reference;
+        /** Constant reference to lane_summary */
+        typedef surface_summary_vector_t::const_reference const_reference;
+        /** Random access iterator to vector of lane_summary */
+        typedef surface_summary_vector_t::iterator iterator;
+        /** Constant random access iterator to vector of lane_summary */
+        typedef surface_summary_vector_t::const_iterator const_iterator;
+        /** Unsigned integral type (usually size_t) */
+        typedef surface_summary_vector_t::size_type size_type;
     public:
         /** Constructor
          *
@@ -34,12 +49,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
          */
         lane_summary(const size_t lane = 0) :
                 m_lane(lane),
-                m_tile_count(0),
-                m_percent_gt_q30(std::numeric_limits<float>::quiet_NaN()),
-                m_yield_g(0),
-                m_projected_yield_g(0),
-                m_reads(0),
-                m_reads_pf(0)
+                m_tile_count(0)
         {
         }
 
@@ -50,8 +60,32 @@ namespace illumina { namespace interop { namespace model { namespace summary
          *
          * @ingroup read_summary
          * @ref illumina::interop::model::summary::lane_summary "See full class description"
+         * @ref illumina::interop::model::summary::stat_summary "See full class description"
          * @{
          */
+        /** Get constant reference to lane_summary at given index
+         *
+         * @param n index
+         * @return constant reference to lane_summary
+         */
+        const_reference operator[](const size_type n) const throw(model::index_out_of_bounds_exception)
+        {
+            if (n >= m_summary_by_surface.size())
+                INTEROP_THROW( index_out_of_bounds_exception, "Surface index exceeds surface count");
+            return m_summary_by_surface[n];
+        }
+
+        /** Get constant reference to lane_summary at given index
+         *
+         * @param n index
+         * @return constant reference to lane_summary
+         */
+        const_reference at(const size_type n) const throw(model::index_out_of_bounds_exception)
+        {
+            if (n >= m_summary_by_surface.size())
+                INTEROP_THROW( index_out_of_bounds_exception, "Surface index exceeds surface count");
+            return m_summary_by_surface[n];
+        }
         /** Get lane number
          *
          * @return lane number
@@ -68,180 +102,6 @@ namespace illumina { namespace interop { namespace model { namespace summary
         {
             return m_tile_count;
         }
-
-    public:
-        /** Get the percent of bases greater than Q30
-         *
-         * @return percent of bases greater than Q30
-         */
-        float percent_gt_q30() const
-        {
-            return m_percent_gt_q30;
-        }
-
-        /** Get the yield of the run in gigabases
-         *
-         * @return yield of the run in gigabases
-         */
-        float yield_g() const
-        {
-            return m_yield_g;
-        }
-
-        /** Get the projected yield of teh run in gigabases
-         *
-         * @return projected yield of teh run in gigabases
-         */
-        float projected_yield_g() const
-        {
-            return m_projected_yield_g;
-        }
-
-        /** Get the total number of clusters in the lane
-         *
-         * @return total number of clusters in the lane
-         */
-        float reads() const
-        {
-            return m_reads;
-        }
-
-        /** Get the total number of clusters passing filter in the lane
-         *
-         * @return total number of clusters passing filter in the lane
-         */
-        float reads_pf() const
-        {
-            return m_reads_pf;
-        }
-
-    public:
-        /** Get statistics summarizing the density of tiles in the lane (in clusters per mm2)
-         *
-         * @return statistics summarizing the density of tiles in the lane
-         */
-        const metric_stat_t &density() const
-        {
-            return m_density;
-        }
-
-        /** Get statistics summarizing the passing filter density of tiles in the lane (in clusters per mm2)
-         *
-         * @return statistics summarizing the passing filter density of tiles in the lane
-         */
-        const metric_stat_t &density_pf() const
-        {
-            return m_density_pf;
-        }
-
-        /** Get statistics summarizing the cluster count of tiles in the lane
-         *
-         * @return statistics summarizing the cluster count of tiles in the lane
-         */
-        const metric_stat_t &cluster_count() const
-        {
-            return m_cluster_count;
-        }
-
-        /** Get statistics summarizing the passing filter cluster count of tiles in the lane
-         *
-         * @return statistics summarizing the passing filter cluster count of tiles in the lane
-         */
-        const metric_stat_t &cluster_count_pf() const
-        {
-            return m_cluster_count_pf;
-        }
-
-        /** Get statistics summarizing the percent of clusters passing filter of tiles in the lane
-         *
-         * @return statistics summarizing the percent of clusters passing filter of tiles in the lane
-         */
-        const metric_stat_t &percent_pf() const
-        {
-            return m_percent_pf;
-        }
-
-        /** Get statistics summarizing the phasing of tiles in the lane
-         *
-         * @return statistics summarizing the phasing of tiles in the lane
-         */
-        const metric_stat_t &phasing() const
-        {
-            return m_phasing;
-        }
-
-        /** Get statistics summarizing the prephasing of tiles in the lane
-         *
-         * @return statistics summarizing the prephasing of tiles in the lane
-         */
-        const metric_stat_t &prephasing() const
-        {
-            return m_prephasing;
-        }
-
-        /** Get statistics summarizing the PhiX percent aligned of tiles in the lane
-         *
-         * @return statistics summarizing the PhiX percent aligned of tiles in the lane
-         */
-        const metric_stat_t &percent_aligned() const
-        {
-            return m_percent_aligned;
-        }
-
-        /** Get statistics summarizing the PhiX error rate of tiles in the lane
-         *
-         * @return statistics summarizing the PhiX error rate of tiles in the lane
-         */
-        const metric_stat_t &error_rate() const
-        {
-            return m_error_rate;
-        }
-
-        /** Get statistics summarizing the PhiX error rate over the first 35 cycles of tiles in the lane
-         *
-         * @return statistics summarizing the PhiX error rate over the first 35 cycles of tiles in the lane
-         */
-        const metric_stat_t &error_rate_35() const
-        {
-            return m_error_rate_35;
-        }
-
-        /** Get statistics summarizing the PhiX error rate over the first 50 cycles of tiles in the lane
-         *
-         * @return statistics summarizing the PhiX error rate over the first 50 cycles of tiles in the lane
-         */
-        const metric_stat_t &error_rate_50() const
-        {
-            return m_error_rate_50;
-        }
-
-        /** Get statistics summarizing the PhiX error rate over the first 75 cycles of tiles in the lane
-         *
-         * @return statistics summarizing the PhiX error rate over the first 75 cycles of tiles in the lane
-         */
-        const metric_stat_t &error_rate_75() const
-        {
-            return m_error_rate_75;
-        }
-
-        /** Get statistics summarizing the PhiX error rate over the first 100 cycles  of tiles in the lane
-         *
-         * @return statistics summarizing the PhiX error rate over the first 100 cycles  of tiles in the lane
-         */
-        const metric_stat_t &error_rate_100() const
-        {
-            return m_error_rate_100;
-        }
-
-        /** Get statistics summarizing the first cycle intensity of tiles in the lane
-         *
-         * @return statistics summarizing the first cycle intensity of tiles in the lane
-         */
-        const metric_stat_t &first_cycle_intensity() const
-        {
-            return m_first_cycle_intensity;
-        }
-
         /** Get statistics summarizing the cycle of each RTA state of tiles in the lane
          *
          * @return statistics summarizing the cycle of each RTA state of tiles in the lane
@@ -250,9 +110,67 @@ namespace illumina { namespace interop { namespace model { namespace summary
         {
             return m_cycle_state;
         }
+        /** Get number of summaries by surface
+         *
+         * @return number of summaries by surface
+         */
+        size_t size() const
+        {
+            return m_summary_by_surface.size();
+        }
         /** @} */
 
     public:
+        /** Get reference to lane_summary at given index
+         *
+         * @param n index
+         * @return reference to lane_summary
+         */
+        reference operator[](const size_type n) throw(model::index_out_of_bounds_exception)
+        {
+            if (n >= m_summary_by_surface.size())
+                INTEROP_THROW( index_out_of_bounds_exception, "Surface index exceeds surface count");
+            return m_summary_by_surface[n];
+        }
+
+        /** Get reference to lane_summary at given index
+         *
+         * @param n index
+         * @return reference to lane_summary
+         */
+        surface_summary &at(const size_type n) throw(model::index_out_of_bounds_exception)
+        {
+            if (n >= m_summary_by_surface.size())
+                INTEROP_THROW( index_out_of_bounds_exception, "Surface index exceeds surface count");
+            return m_summary_by_surface[n];
+        }
+
+        /** Get random access iterator to start of summaries by lane
+         *
+         * @return random access iterator
+         */
+        iterator begin()
+        {
+            return m_summary_by_surface.begin();
+        }
+
+        /** Get random access iterator to end of summaries by lane
+         *
+         * @return random access iterator
+         */
+        iterator end()
+        {
+            return m_summary_by_surface.end();
+        }
+
+        /** Resize the summary by lane vector
+         *
+         * @param n new size of summary by lane vector
+         */
+        void resize(const size_type n)
+        {
+            m_summary_by_surface.resize(n);
+        }
         /** Set lane number
          *
          * @param val lane number
@@ -269,160 +187,6 @@ namespace illumina { namespace interop { namespace model { namespace summary
         {
             m_tile_count = val;
         }
-        /** Set the percent of bases greater than Q30
-         *
-         * @param val percent of bases greater than Q30
-         */
-        void percent_gt_q30(const float val)
-        {
-            m_percent_gt_q30 = val;
-        }
-        /** Set the yield of the run in gigabases
-         *
-         * @param val yield of the run in gigabases
-         */
-        void yield_g(const float val)
-        {
-            m_yield_g = val;
-        }
-        /** Set the projected yield of teh run in gigabases
-         *
-         * @param val projected yield of teh run in gigabases
-         */
-        void projected_yield_g(const float val)
-        {
-            m_projected_yield_g = val;
-        }
-        /** Set the total number of clusters in the lane
-         *
-         * @param val total number of clusters in the lane
-         */
-        void reads(const float val)
-        {
-            m_reads = val;
-        }
-        /** Set the total number of clusters passing filter in the lane
-         *
-         * @param val total number of clusters passing filter in the lane
-         */
-        void reads_pf(const float val)
-        {
-            m_reads_pf = val;
-        }
-        /** Set statistics summarizing the density of tiles in the lane
-         *
-         * @param stat statistics summarizing the density of tiles in the lane
-         */
-        void density(const metric_stat_t& stat)
-        {
-            m_density = stat;
-        }
-        /** Set statistics summarizing the passing filter density of tiles in the lane
-         *
-         * @param stat statistics summarizing the passing filter density of tiles in the lane
-         */
-        void density_pf(const metric_stat_t& stat)
-        {
-            m_density_pf = stat;
-        }
-        /** Set statistics summarizing the cluster count of tiles in the lane
-         *
-         * @param stat statistics summarizing the cluster count of tiles in the lane
-         */
-        void cluster_count(const metric_stat_t& stat)
-        {
-            m_cluster_count = stat;
-        }
-        /** Set statistics summarizing the passing filter cluster count of tiles in the lane
-         *
-         * @param stat statistics summarizing the passing filter cluster count of tiles in the lane
-         */
-        void cluster_count_pf(const metric_stat_t& stat)
-        {
-            m_cluster_count_pf = stat;
-        }
-        /** Set statistics summarizing the percent of clusters passing filter of tiles in the lane
-         *
-         * @param stat statistics summarizing the percent of clusters passing filter of tiles in the lane
-         */
-        void percent_pf(const metric_stat_t& stat)
-        {
-            m_percent_pf = stat;
-        }
-        /** Set statistics summarizing the phasing of tiles in the lane
-         *
-         * @param stat statistics summarizing the phasing of tiles in the lane
-         */
-        void phasing(const metric_stat_t& stat)
-        {
-            m_phasing = stat;
-        }
-        /** Set statistics summarizing the prephasing of tiles in the lane
-         *
-         * @param stat statistics summarizing the prephasing of tiles in the lane
-         */
-        void prephasing(const metric_stat_t& stat)
-        {
-            m_prephasing = stat;
-        }
-        /** Set statistics summarizing the PhiX percent aligned of tiles in the lane
-         *
-         * @param stat statistics summarizing the PhiX percent aligned of tiles in the lane
-         */
-        void percent_aligned(const metric_stat_t& stat)
-        {
-            m_percent_aligned = stat;
-        }
-        /** Set statistics summarizing the PhiX error rate of tiles in the lane
-         *
-         * @param stat statistics summarizing the PhiX error rate of tiles in the lane
-         */
-        void error_rate(const metric_stat_t& stat)
-        {
-            m_error_rate = stat;
-        }
-        /** Set statistics summarizing the PhiX error rate over the first 35 cycles of tiles in the lane
-         *
-         * @param stat statistics summarizing the PhiX error rate over the first 35 cycles of tiles in the lane
-         */
-        void error_rate_35(const metric_stat_t& stat)
-        {
-            m_error_rate_35 = stat;
-        }
-        /** Set statistics summarizing the PhiX error rate over the first 50 cycles of tiles in the lane
-         *
-         * @param stat statistics summarizing the PhiX error rate over the first 50 cycles of tiles in the lane
-         */
-        void error_rate_50(const metric_stat_t& stat)
-        {
-            m_error_rate_50 = stat;
-        }
-        /** Set statistics summarizing the PhiX error rate over the first 75 cycles of tiles in the lane
-         *
-         * @param stat statistics summarizing the PhiX error rate over the first 75 cycles of tiles in the lane
-         */
-        void error_rate_75(const metric_stat_t& stat)
-        {
-            m_error_rate_75 = stat;
-        }
-        /** Set statistics summarizing the PhiX error rate over the first 100 cycles  of tiles in the lane
-         *
-         * @param stat statistics summarizing the PhiX error rate over the first 100 cycles  of tiles in the lane
-         */
-        void error_rate_100(const metric_stat_t& stat)
-        {
-            m_error_rate_100 = stat;
-        }
-        /** Set statistics summarizing the first cycle intensity of tiles in the lane
-         *
-         * @param stat statistics summarizing the first cycle intensity of tiles in the lane
-         */
-        void first_cycle_intensity(const metric_stat_t & stat)
-        {
-            m_first_cycle_intensity=stat;
-        }
-
-
         /** Get statistics summarizing the cycle of each RTA state of tiles in the lane
          *
          * @return statistics summarizing the cycle of each RTA state of tiles in the lane
@@ -446,30 +210,8 @@ namespace illumina { namespace interop { namespace model { namespace summary
     private:
         size_t m_lane;
         size_t m_tile_count;
-
-    private:
-        float m_percent_gt_q30;
-        float m_yield_g;
-        float m_projected_yield_g;
-        float m_reads;
-        float m_reads_pf;
-
-    private:
-        metric_stat_t m_density;
-        metric_stat_t m_density_pf;
-        metric_stat_t m_cluster_count;
-        metric_stat_t m_cluster_count_pf;
-        metric_stat_t m_percent_pf;
-        metric_stat_t m_phasing;
-        metric_stat_t m_prephasing;
-        metric_stat_t m_percent_aligned;
-        metric_stat_t m_error_rate;
-        metric_stat_t m_error_rate_35;
-        metric_stat_t m_error_rate_50;
-        metric_stat_t m_error_rate_75;
-        metric_stat_t m_error_rate_100;
-        metric_stat_t m_first_cycle_intensity;
         cycle_state_summary m_cycle_state;
+        surface_summary_vector_t m_summary_by_surface;
         template<class MetricType, int Version>
         friend struct io::generic_layout;
     };

@@ -57,6 +57,7 @@ void print_summary(std::ostream& out, const run_summary& summary);
 
 int main(int argc, char** argv)
 {
+    const bool skip_median_calculation=true;
     if(argc == 0)
     {
         std::cerr << "No arguments specified!" << std::endl;
@@ -77,7 +78,7 @@ int main(int argc, char** argv)
         run_summary summary;
         try
         {
-            summarize_run_metrics(run, summary, true);
+            summarize_run_metrics(run, summary, skip_median_calculation);
         }
         catch(const std::exception& ex)
         {
@@ -210,6 +211,7 @@ std::string format(const model::run::cycle_range& rng)
 void summarize(const metric_summary& summary, std::vector<std::string>& values)
 {
     INTEROP_ASSERT(values.size() >= 7);
+    // format(value, width in spaces, number of values after decimal, multiplier)
     values[1] = util::format(summary.yield_g(), 3, 2);
     values[2] = util::format(summary.projected_yield_g(), 3, 2);
     values[3] = util::format(summary.percent_aligned(), 3, 2);
@@ -217,25 +219,51 @@ void summarize(const metric_summary& summary, std::vector<std::string>& values)
     values[5] = util::lexical_cast<std::string>(long(summary.first_cycle_intensity()+0.5));
     values[6] = util::format(summary.percent_gt_q30(), 3, 2);
 }
+void summarize(const surface_summary& summary, std::vector<std::string>& values)
+{
+    INTEROP_ASSERT(values.size() >= 16);
+    size_t i=0;
+    values[i++] = "-";
+    values[i++] = util::lexical_cast<std::string>(summary.surface());
+    values[i++] = util::lexical_cast<std::string>(summary.tile_count());
+    // format(value, width in spaces, number of values after decimal, multiplier)
+    values[i++] = format(summary.density(), 0, 0, 1e3);
+    values[i++] = format(summary.percent_pf(), 0, 2);
+    values[i++] = util::format(summary.phasing().mean(), 3, 3) + " / " + util::format(summary.prephasing().mean(), 3, 3);
+    values[i++] = format(summary.reads(), 0, 2, 1e6);
+    values[i++] = format(summary.reads_pf(), 0, 2, 1e6);
+    values[i++] = format(summary.percent_gt_q30(), 0, 2);
+    values[i++] = format(summary.yield_g(), 0, 2);
+    values[i++] = "-";
+    values[i++] = format(summary.percent_aligned(), 0, 2);
+    values[i++] = format(summary.error_rate(), 0, 2);
+    values[i++] = format(summary.error_rate_35(), 0, 2);
+    values[i++] = format(summary.error_rate_75(), 0, 2);
+    values[i++] = format(summary.error_rate_100(), 0, 2);
+    values[i++] = format(summary.first_cycle_intensity(), 0, 0);
+}
 void summarize(const lane_summary& summary, std::vector<std::string>& values)
 {
     INTEROP_ASSERT(values.size() >= 16);
-    values[0] = util::lexical_cast<std::string>(summary.lane());
-    values[1] = util::lexical_cast<std::string>(summary.tile_count());
-    values[2] = format(summary.density(), 0, 0, 1e3);
-    values[3] = format(summary.percent_pf(), 0, 2);
-    values[4] = util::format(summary.phasing().mean(), 3, 3) + " / " + util::format(summary.prephasing().mean(), 3, 3);
-    values[5] = format(summary.reads(), 0, 2, 1e6);
-    values[6] = format(summary.reads_pf(), 0, 2, 1e6);
-    values[7] = format(summary.percent_gt_q30(), 0, 2);
-    values[8] = format(summary.yield_g(), 0, 2);
-    values[9] = format(summary.cycle_state().error_cycle_range());
-    values[10] = format(summary.percent_aligned(), 0, 2);
-    values[11] = format(summary.error_rate(), 0, 2);
-    values[12] = format(summary.error_rate_35(), 0, 2);
-    values[13] = format(summary.error_rate_75(), 0, 2);
-    values[14] = format(summary.error_rate_100(), 0, 2);
-    values[15] = format(summary.first_cycle_intensity(), 0, 0);
+    size_t i=0;
+    values[i++] = util::lexical_cast<std::string>(summary.lane());
+    values[i++] = "-";
+    values[i++] = util::lexical_cast<std::string>(summary.tile_count());
+    // format(value, width in spaces, number of values after decimal, multiplier)
+    values[i++] = format(summary.density(), 0, 0, 1e3);
+    values[i++] = format(summary.percent_pf(), 0, 2);
+    values[i++] = util::format(summary.phasing().mean(), 3, 3) + " / " + util::format(summary.prephasing().mean(), 3, 3);
+    values[i++] = format(summary.reads(), 0, 2, 1e6);
+    values[i++] = format(summary.reads_pf(), 0, 2, 1e6);
+    values[i++] = format(summary.percent_gt_q30(), 0, 2);
+    values[i++] = format(summary.yield_g(), 0, 2);
+    values[i++] = format(summary.cycle_state().error_cycle_range());
+    values[i++] = format(summary.percent_aligned(), 0, 2);
+    values[i++] = format(summary.error_rate(), 0, 2);
+    values[i++] = format(summary.error_rate_35(), 0, 2);
+    values[i++] = format(summary.error_rate_75(), 0, 2);
+    values[i++] = format(summary.error_rate_100(), 0, 2);
+    values[i++] = format(summary.first_cycle_intensity(), 0, 0);
 }
 std::string format_read(const run::read_info& read)
 {
@@ -263,7 +291,7 @@ void print_summary(std::ostream& out, const run_summary& summary)
     print_array(out, values, width);
     out<< "\n\n";
 
-    const char* lane_header[] = {"Lane", "Tiles", "Density", "Cluster PF", "Phas/Prephas", "Reads",
+    const char* lane_header[] = {"Lane", "Surface", "Tiles", "Density", "Cluster PF", "Phas/Prephas", "Reads",
                                  "Reads PF", "%>=Q30", "Yield", "Cycles Error", "Aligned", "Error",
                                  "Error (35)", "Error (75)", "Error (100)", "Intensity C1" };
     values.resize(size_of(lane_header));
@@ -276,6 +304,11 @@ void print_summary(std::ostream& out, const run_summary& summary)
             INTEROP_ASSERT(summary[read][lane].tile_count() > 0);
             summarize(summary[read][lane], values);
             print_array(out, values, width);
+            for(size_t surface=0;surface<summary.surface_count();++surface)
+            {
+                summarize(summary[read][lane][surface], values);
+                print_array(out, values, width);
+            }
         }
     }
     out << "Extracted: " << format(summary.cycle_state().extracted_cycle_range()) << "\n";

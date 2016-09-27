@@ -74,11 +74,11 @@ TEST_P(tile_metrics_tests, test_read_write)
                         it_read_actual != it_actual->read_metrics().end(); it_read_expected++, it_read_actual++)
         {
             EXPECT_EQ(it_read_expected->read(), it_read_actual->read());
-            if(!std::isnan(it_read_expected->percent_aligned()) && !std::isnan(it_read_actual->percent_aligned()))
+            if(!std::isnan(it_read_expected->percent_aligned()) || !std::isnan(it_read_actual->percent_aligned()))
                 EXPECT_NEAR(it_read_expected->percent_aligned(), it_read_actual->percent_aligned(), tol);
-            if(!std::isnan(it_read_expected->percent_phasing()) && !std::isnan(it_read_actual->percent_phasing()))
+            if(!std::isnan(it_read_expected->percent_phasing()) || !std::isnan(it_read_actual->percent_phasing()))
                 EXPECT_NEAR(it_read_expected->percent_phasing()*scale, it_read_actual->percent_phasing(), tol);
-            if(!std::isnan(it_read_expected->percent_prephasing()) && !std::isnan(it_read_actual->percent_prephasing()))
+            if(!std::isnan(it_read_expected->percent_prephasing()) || !std::isnan(it_read_actual->percent_prephasing()))
                 EXPECT_NEAR(it_read_expected->percent_prephasing()*scale, it_read_actual->percent_prephasing(), tol);
         }
     }

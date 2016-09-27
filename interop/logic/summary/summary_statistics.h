@@ -51,9 +51,12 @@ namespace illumina { namespace interop { namespace logic { namespace summary
          *
          * @param run run summary
          * @param n maximum number of values expected
+         * @param surface_count number of surfaces
          */
-        summary_by_lane_read(const model::summary::run_summary &run, const ptrdiff_t n) :
-                m_summary_by_lane_read(run.size(), vector2d_t(run.lane_count())), m_lane_count(run.lane_count())
+        summary_by_lane_read(const model::summary::run_summary &run, const ptrdiff_t n, const size_t surface_count=1) :
+                m_summary_by_lane_read(run.size(), vector2d_t(run.lane_count()*std::max(static_cast<size_t>(1),surface_count))),
+                m_lane_count(run.lane_count()),
+                m_surface_count(std::max(static_cast<size_t>(1),surface_count))
         {
             for (read_iterator beg = m_summary_by_lane_read.begin(), end = m_summary_by_lane_read.end();
                  beg != end; ++beg)
@@ -63,16 +66,18 @@ namespace illumina { namespace interop { namespace logic { namespace summary
     public:
         /** Access vector of values at given read and lane
          *
-         * @param read read number (0-indexed)
-         * @param lane lane number (0-indexed)
+         * @param read read index (0-indexed)
+         * @param lane lane index (0-indexed)
+         * @param surface surface index (0-indexed)
          * @return vector of values
          */
-        vector_t &operator()(const size_t read, const size_t lane)
+        vector_t &operator()(const size_t read, const size_t lane, const size_t surface=0)
         {
             INTEROP_ASSERTMSG(read < m_summary_by_lane_read.size(), read << " < " << m_summary_by_lane_read.size());
-            INTEROP_ASSERTMSG(lane < m_summary_by_lane_read[read].size(),
-                              lane << " < " << m_summary_by_lane_read[read].size());
-            return m_summary_by_lane_read[read][lane];
+            const size_t offset = lane*m_surface_count+surface;
+            INTEROP_ASSERTMSG(offset < m_summary_by_lane_read[read].size(),
+                              offset << " < " << m_summary_by_lane_read[read].size());
+            return m_summary_by_lane_read[read][offset];
         }
 
         /** Clear the vector of values in each read/lane
@@ -110,6 +115,14 @@ namespace illumina { namespace interop { namespace logic { namespace summary
         {
             return m_lane_count;
         }
+        /** Number of surfaces
+         *
+         * @return number of surfaces
+         */
+        size_t surface_count() const
+        {
+            return m_surface_count;
+        }
 
     private:
         template<typename I>
@@ -121,6 +134,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
     private:
         vector3d_t m_summary_by_lane_read;
         size_t m_lane_count;
+        size_t m_surface_count;
     };
 
     /** Calculate the mean, standard deviation (stddev) and median over a collection of values

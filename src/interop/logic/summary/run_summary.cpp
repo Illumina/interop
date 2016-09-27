@@ -77,14 +77,19 @@ namespace illumina { namespace interop { namespace logic { namespace summary
     {
         using namespace model::metrics;
         if(metrics.empty()) return;
-        summary.initialize(metrics.run_info().reads(), metrics.run_info().flowcell().lane_count());
+        summary.initialize(metrics.run_info());
 
         read_cycle_vector_t cycle_to_read;
+        const constants::tile_naming_method naming_method = metrics.run_info().flowcell().naming_method();
         map_read_to_cycle_number(summary.begin(), summary.end(), cycle_to_read);
-        summarize_tile_metrics(metrics.get_set<tile_metric>().begin(), metrics.get_set<tile_metric>().end(), summary);
+        summarize_tile_metrics(metrics.get_set<tile_metric>().begin(),
+                               metrics.get_set<tile_metric>().end(),
+                               naming_method,
+                               summary);
         summarize_error_metrics(metrics.get_set<error_metric>().begin(),
                                 metrics.get_set<error_metric>().end(),
                                 cycle_to_read,
+                                naming_method,
                                 summary,
                                 skip_median);
         INTEROP_ASSERT(metrics.run_info().channels().size()>0);
@@ -93,6 +98,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                                      metrics.get_set<extraction_metric>().end(),
                                      cycle_to_read,
                                      intensity_channel,
+                                     naming_method,
                                      summary,
                                      skip_median);
 
@@ -102,6 +108,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
         summarize_collapsed_quality_metrics(metrics.get_set<q_collapsed_metric>().begin(),
                                             metrics.get_set<q_collapsed_metric>().end(),
                                             cycle_to_read,
+                                            naming_method,
                                             summary);
         summarize_tile_count(metrics, summary);
 
