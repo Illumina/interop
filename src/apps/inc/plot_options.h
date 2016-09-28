@@ -99,3 +99,4 @@ std::string plot_image_name(const std::string& plot_name,
     if(extra != "") name += "_"+extra;
     return name+".png";
 }
+

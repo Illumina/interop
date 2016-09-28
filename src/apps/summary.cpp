@@ -35,6 +35,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include "interop/util/math.h"
 #include "interop/io/metric_file_stream.h"
 #include "interop/logic/summary/run_summary.h"
 #include "interop/version.h"
@@ -76,7 +77,7 @@ int main(int argc, char** argv)
         run_summary summary;
         try
         {
-            summarize_run_metrics(run, summary);
+            summarize_run_metrics(run, summary, true);
         }
         catch(const std::exception& ex)
         {
@@ -108,9 +109,16 @@ template<typename I>
 void print_array(std::ostream& out, I beg, I end, const size_t width, const char fillch=' ')
 {
     std::ios::fmtflags f( out.flags() );
+    if(beg != end)
+    {
+        out.width(width);
+        out.fill(fillch);
+        out << std::left << *beg;
+        ++beg;
+    }
     for(;beg != end;++beg)
     {
-        out << " ";
+        out << ",";
         out.width(width);
         out.fill(fillch);
         out << std::left << *beg;
@@ -274,3 +282,4 @@ void print_summary(std::ostream& out, const run_summary& summary)
     out << "Called: " << format(summary.cycle_state().called_cycle_range()) << "\n";
     out << "Scored: " << format(summary.cycle_state().qscored_cycle_range()) << "\n";
 }
+

@@ -3,7 +3,7 @@ function(add_application _target _source_files)
     add_executable(${_target} ${_source_files} inc/application.h inc/plot_options.h)
     target_link_libraries(${_target} ${INTEROP_LIB})
 
-    if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR CMAKE_COMPILER_IS_GNUCC)
+    if(COMPILER_IS_GNUCC_OR_CLANG)
         set_target_properties(${_target} PROPERTIES COMPILE_FLAGS "${CXX_PEDANTIC_FLAG}" )
     endif()
 
@@ -20,10 +20,6 @@ function(add_application _target _source_files)
                 COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE_DIR:${INTEROP_LIB}> ${CMAKE_CURRENT_BINARY_DIR})
     endif()
 endfunction()
-
-if(MSVC)
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS)
-endif()
 
 add_application(interop2csv interop2csv.cpp)
 add_application(cyclesim cyclesim.cpp)

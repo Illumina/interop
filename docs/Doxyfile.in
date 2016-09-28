@@ -159,7 +159,7 @@ STRIP_FROM_PATH        =
 # header file to include in order to use a class. If left blank only the name of
 # the header file containing the class definition is used. Otherwise one should
 # specify the list of include paths that are normally passed to the compiler
-# using the -I flag.
+# using the -I test_modifier.
 
 STRIP_FROM_INC_PATH    =
 
@@ -444,7 +444,7 @@ EXTRACT_STATIC         = NO
 
 EXTRACT_LOCAL_CLASSES  = YES
 
-# This flag is only useful for Objective-C code. If set to YES, local methods,
+# This test_modifier is only useful for Objective-C code. If set to YES, local methods,
 # which are defined in the implementation section but not in the interface are
 # included in the documentation. If set to NO, only methods in the interface are
 # included.
@@ -452,7 +452,7 @@ EXTRACT_LOCAL_CLASSES  = YES
 
 EXTRACT_LOCAL_METHODS  = NO
 
-# If this flag is set to YES, the members of anonymous namespaces will be
+# If this test_modifier is set to YES, the members of anonymous namespaces will be
 # extracted and appear in the documentation as a namespace called
 # 'anonymous_namespace{file}', where file will be replaced with the base name of
 # the file that contains the anonymous namespace. By default anonymous namespace
@@ -720,7 +720,7 @@ WARNINGS               = YES
 #WARN_AS_ERROR = YES
 
 # If the WARN_IF_UNDOCUMENTED tag is set to YES then doxygen will generate
-# warnings for undocumented members. If EXTRACT_ALL is set to YES then this flag
+# warnings for undocumented members. If EXTRACT_ALL is set to YES then this test_modifier
 # will automatically be disabled.
 # The default value is: YES.
 
@@ -1269,7 +1269,7 @@ CHM_FILE               =
 
 HHC_LOCATION           =
 
-# The GENERATE_CHI flag controls if a separate .chi index file is generated
+# The GENERATE_CHI test_modifier controls if a separate .chi index file is generated
 # (YES) or that it should be included in the master .chm file (NO).
 # The default value is: NO.
 # This tag requires that the tag GENERATE_HTMLHELP is set to YES.
@@ -1282,7 +1282,7 @@ GENERATE_CHI           = NO
 
 CHM_INDEX_ENCODING     =
 
-# The BINARY_TOC flag controls whether a binary table of contents is generated
+# The BINARY_TOC test_modifier controls whether a binary table of contents is generated
 # (YES) or a normal table of contents (NO) in the .chm file. Furthermore it
 # enables the Previous and Next buttons.
 # The default value is: NO.
@@ -1290,7 +1290,7 @@ CHM_INDEX_ENCODING     =
 
 BINARY_TOC             = NO
 
-# The TOC_EXPAND flag can be set to YES to add extra items for group members to
+# The TOC_EXPAND test_modifier can be set to YES to add extra items for group members to
 # the table of contents of the HTML help documentation and to the tree view.
 # The default value is: NO.
 # This tag requires that the tag GENERATE_HTMLHELP is set to YES.

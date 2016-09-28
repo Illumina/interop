@@ -105,3 +105,4 @@ namespace illumina { namespace interop { namespace logic { namespace plot
         data.set_yrange(ymin, ymax);
     }
 }}}}
+

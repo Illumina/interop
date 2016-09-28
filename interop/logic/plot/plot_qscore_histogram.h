@@ -32,3 +32,4 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                                 model::invalid_filter_option);
 
 }}}}
+

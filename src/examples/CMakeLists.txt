@@ -2,10 +2,8 @@ function(add_example _target _source_files)
     add_executable(${_target} ${_source_files})
     target_link_libraries(${_target} ${INTEROP_LIB})
 
-    if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR CMAKE_COMPILER_IS_GNUCC)
+    if(COMPILER_IS_GNUCC_OR_CLANG)
         set_target_properties(${_target} PROPERTIES COMPILE_FLAGS "${CXX_PEDANTIC_FLAG}" )
-    elseif(MSVC)
-        add_definitions(-D_CRT_SECURE_NO_WARNINGS  -D_SCL_SECURE_NO_WARNINGS)
     endif()
 
     if(NOT ENABLE_EXAMPLES)

@@ -10,7 +10,8 @@
 #include "src/tests/interop/inc/regression_test_data.h"
 #include "src/tests/interop/inc/abstract_regression_test_generator.h"
 
-namespace illumina{ namespace interop { namespace unittest {
+namespace illumina{ namespace interop { namespace unittest
+{
 
     /** Generate the actual metric set by reading in from hardcoded binary buffer
      *
@@ -30,15 +31,10 @@ namespace illumina{ namespace interop { namespace unittest {
         bool generate(metric_set_t& expected, metric_set_t& actual)const
         {
             actual.clear();
-            Gen::create_expected(expected);
+            Gen::create_metric_set(expected);
             std::vector< ::uint8_t > binary_data;
             Gen::create_binary_data(binary_data);
-            try
-            {
-                io::read_interop_from_string(binary_data,
-                                             actual);
-            }
-            catch (const std::exception &) { }
+            io::read_interop_from_string(binary_data, actual);
             return true;
         }
         /** Create a copy of this object
@@ -46,6 +42,14 @@ namespace illumina{ namespace interop { namespace unittest {
          * @return pointer to copy
          */
         parent_t clone()const{return new hardcoded_metric_generator<Gen>;}
+        /** Write generator info to output stream
+         *
+         * @param out output stream
+         */
+        void write(std::ostream& out)const
+        {
+            out << "hardcoded_metric_generator<" << Gen::name() << ">";
+        }
 
     };
     /** Generate the actual metric set writing out the expected and reading it back in again
@@ -58,6 +62,8 @@ namespace illumina{ namespace interop { namespace unittest {
         typedef typename Gen::metric_set_t metric_set_t;
         typedef typename abstract_generator<metric_set_t>::base_type parent_t;
     public:
+        /** Constructor */
+        write_read_metric_generator() : abstract_generator< typename Gen::metric_set_t >(1){}
         /** Generate the expected and actual metric sets
          *
          * @param expected expected metric set
@@ -66,19 +72,10 @@ namespace illumina{ namespace interop { namespace unittest {
         bool generate(metric_set_t& expected, metric_set_t& actual)const
         {
             actual.clear();
-            Gen::create_expected(expected);
+            Gen::create_metric_set(expected);
             std::ostringstream fout;
-            try
-            {
-                illumina::interop::io::write_metrics(fout, expected);
-            }
-            catch (const std::exception &) { }
-            try
-            {
-                io::read_interop_from_string(fout.str(),
-                                             actual);
-            }
-            catch (const std::exception &) { }
+            illumina::interop::io::write_metrics(fout, expected);
+            io::read_interop_from_string(fout.str(), actual);
             return true;
         }
         /** Create a copy of this object
@@ -86,6 +83,14 @@ namespace illumina{ namespace interop { namespace unittest {
          * @return pointer to copy
          */
         parent_t clone()const{return new write_read_metric_generator<Gen>;}
+        /** Write generator info to output stream
+         *
+         * @param out output stream
+         */
+        void write(std::ostream& out)const
+        {
+            out << "write_read_metric_generator<" << Gen::name() << ">";
+        }
     };
     /** Generate the actual metric set writing out the expected and reading it back in again
      *
@@ -100,10 +105,20 @@ namespace illumina{ namespace interop { namespace unittest {
     public:
         typedef typename abstract_regression_test_generator< MetricSet >::parent_type  parent_type;
     public:
-        regression_test_metric_generator(const std::string& test_dir) : parent_t(test_dir)
+        /** Constructor
+         *
+         * @param test_dir subdirectory for baseline data
+         */
+        regression_test_metric_generator(const std::string& test_dir) : parent_t(test_dir, 2)
         {
         }
-        regression_test_metric_generator(const std::string& run_folder, const std::string& test_dir) : parent_t(run_folder, test_dir)
+        /** Constructor
+         *
+         * @param run_folder run folder
+         * @param test_dir subdirectory for baseline data
+         */
+        regression_test_metric_generator(const std::string& run_folder, const std::string& test_dir) :
+                parent_t(run_folder, test_dir, 2)
         {
         }
 
@@ -120,8 +135,10 @@ namespace illumina{ namespace interop { namespace unittest {
             {
                 illumina::interop::io::read_interop(baseline_file, expected);
             }
-            catch(const io::incomplete_file_exception&){}
-            catch(const io::file_not_found_exception&){}
+            // Should never have an incomplete file in baseline, set sentinel to detect
+            catch(const io::incomplete_file_exception&){expected.set_version(250);}
+            // Ensure missing file is expected
+            catch(const io::file_not_found_exception&){expected.set_version(251);}
         }
         /** Read the actual data from the run folder
          *
@@ -135,7 +152,10 @@ namespace illumina{ namespace interop { namespace unittest {
             {
                 illumina::interop::io::read_interop(run_folder, actual);
             }
-            catch(const io::incomplete_file_exception&){}
+            // Ensure missing file is expected
+            catch(const io::incomplete_file_exception&){if(actual.empty()) actual.set_version(251);}
+            // Ensure file is missing
+            catch(const io::file_not_found_exception&){actual.set_version(251);}
         }
         /** Write the actual data to the run folder
          *
@@ -156,42 +176,17 @@ namespace illumina{ namespace interop { namespace unittest {
         {
             return new regression_test_metric_generator<MetricSet>(parent_t::m_run_folder, parent_t::m_test_dir);
         }
+        /** Write generator info to output stream
+         *
+         * @param out output stream
+         */
+        void write(std::ostream& out)const
+        {
+            out << "regression_test_metric_generator< "<< metric_set_t::prefix() << metric_set_t::suffix() << "> - "
+                    << io::basename(parent_t::m_run_folder);
+        }
     };
 
-    /** Generate the actual binary data by writing out the expected metric set
-     *
-     * The expected binary data is provided by the generator.
-     */
-    template<class Gen>
-    class write_metric_generator : public abstract_generator< std::string >
-    {
-        typedef typename Gen::metric_set_t metric_set_t;
-        typedef typename abstract_generator<std::string>::base_type parent_t;
-    public:
-        /** Generate the expected and actual metric sets
-         *
-         * @param expected expected binary buffer
-         * @param actual actual binary buffer
-         */
-        bool generate(std::string& expected, std::string& actual)const
-        {
-            Gen::create_binary_data(expected);
-            metric_set_t metrics;
-            Gen::create_expected(metrics);
-            std::ostringstream fout;
-            try
-            {
-                illumina::interop::io::write_metrics(fout, metrics);
-            }
-            catch (const std::exception &) { }
-            actual = fout.str();
-            return true;
-        }
-        /** Create a copy of this object
-         *
-         * @return pointer to copy
-         */
-        parent_t clone()const{return new write_metric_generator<Gen>;}
-    };
 
 }}}
+

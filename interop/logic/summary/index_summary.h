@@ -49,3 +49,4 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                                         model::summary::index_flowcell_summary &summary)
                                             throw(model::index_out_of_bounds_exception);
 }}}}
+

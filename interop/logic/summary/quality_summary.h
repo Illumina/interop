@@ -182,3 +182,4 @@ namespace illumina { namespace interop { namespace logic { namespace summary
         run.total_summary().percent_gt_q30(100 * divide(float(useable_calls_gt_q30), float(total_useable_calls)));
     }
 }}}}
+

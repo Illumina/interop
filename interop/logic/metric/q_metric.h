@@ -282,3 +282,4 @@ namespace illumina { namespace interop { namespace logic { namespace metric
                                          model::metric_base::metric_set<model::metrics::q_by_lane_metric>& bylane)
                                         throw(model::index_out_of_bounds_exception);
 }}}}
+

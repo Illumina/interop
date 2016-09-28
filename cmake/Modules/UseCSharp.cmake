@@ -34,8 +34,10 @@ endif( NOT CSHARP_COMPILER )
 # Include type-based USE_FILE
 if( CSHARP_TYPE MATCHES ".NET" )
   include( ${DotNetFrameworkSdk_USE_FILE} )
+  set(CSHARP_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR})
 elseif ( CSHARP_TYPE MATCHES "Mono" )
   include( ${Mono_USE_FILE} )
+  set(CSHARP_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE})
 endif ( CSHARP_TYPE MATCHES ".NET" )
 
 macro( CSHARP_ADD_LIBRARY name )
@@ -91,16 +93,14 @@ macro( CSHARP_ADD_PROJECT type name )
   #  MESSAGE( SEND_ERROR "No C# sources were specified for ${type} ${name}" )
   #endif ()
   #list( SORT sources_dep )
-
-  set(CSHARP_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR})
-
+  file(MAKE_DIRECTORY ${CSHARP_OUTPUT_DIR})
   string (REPLACE ";" "," source_list "${sources}")
   set(CSHARP_${name}_BINARY ${CSHARP_OUTPUT_DIR}/${name}.${output})
   set(CSHARP_${name}_BINARY_NAME ${name}.${output})
   # Add custom target and command
   MESSAGE( STATUS "Adding C# ${type} ${name}: '${CSHARP_COMPILER} /t:${type} /out:${name}.${output} /platform:${CSHARP_PLATFORM} ${CSHARP_SDK} ${refs} ${sources}'" )
   add_custom_command(
-    COMMENT "Compiling C# ${type} ${name}: '${CSHARP_COMPILER} /unsafe /t:${type} /out:${CMAKE_CURRENT_BINARY_DIR}/${name}.${output} /platform:${CSHARP_PLATFORM} ${CSHARP_SDK} ${refs} ${sources}'"
+    COMMENT "Compiling C# ${type} ${name}: '${CSHARP_COMPILER} /unsafe /t:${type} /out:${CSHARP_OUTPUT_DIR}/${name}.${output} /platform:${CSHARP_PLATFORM} ${CSHARP_SDK} ${refs} ${sources}'"
     OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${name}.${output}
     COMMAND ${CMAKE_COMMAND} -DFILES_TO_COPY="${source_list}" -DDESTINATION_DIR="${CMAKE_CURRENT_BINARY_DIR}" -P "${CMAKE_SOURCE_DIR}/cmake/CopyListOfFiles.cmake"
     COMMAND ${CSHARP_COMPILER}

@@ -169,3 +169,4 @@ namespace illumina { namespace interop { namespace io { namespace layout
 #pragma pack()
 }}}}
 
+

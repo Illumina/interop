@@ -149,3 +149,4 @@ namespace illumina { namespace interop
     template<int v>
     struct int_constant_type : public constant_type<int, v>{};
 }}
+

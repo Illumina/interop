@@ -163,7 +163,6 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
             size_t offset = 0;
             for (const_iterator b = m_data.begin(), e = m_data.end(); b != e; ++b)
             {
-                INTEROP_ASSERT(b->id()>0);
                 m_id_map[b->id()] = offset;
                 ++offset;
                 T::header_type::update_max_cycle(*b);
@@ -469,6 +468,8 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
             header_type::clear();
             m_id_map.clear();
             m_data.clear();
+            m_version=0;
+            m_data_source_exists=false;
         }
 
         /** Get the metrics in a vector
@@ -540,6 +541,15 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
                         (m_data.size()));
             INTEROP_ASSERT(it->second < m_data.size());
             return m_data[it->second];
+        }
+
+        /** Get the current id offset map
+         *
+         * @return id offset map
+         */
+        const id_map_t& offset_map()const
+        {
+            return m_id_map;
         }
 
     private:
@@ -649,4 +659,5 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
 #ifdef _MSC_VER
 #pragma warning(pop)
 #endif
+
 

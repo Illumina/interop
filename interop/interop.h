@@ -26,3 +26,4 @@ namespace illumina { namespace interop
      */
     inline const char* library_version(){return INTEROP_VERSION;}
 }}
+

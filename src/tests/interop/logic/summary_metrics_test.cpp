@@ -17,7 +17,6 @@
 #include "src/tests/interop/metrics/inc/tile_metrics_test.h"
 #include "src/tests/interop/metrics/inc/q_metrics_test.h"
 #include "src/tests/interop/metrics/inc/index_metrics_test.h"
-#include "src/tests/interop/inc/regression_fixture.h"
 #include "src/tests/interop/inc/abstract_regression_test_generator.h"
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::io;
@@ -41,7 +40,13 @@ public:
      */
     bool generate(model::summary::run_summary& expected, model::summary::run_summary& actual)const
     {
-        expected = Gen::summary();
+        const size_t lane_count = 8;
+        const size_t surface_count = 2;
+        const size_t swath_count = 4;
+        const size_t tile_count = 99;
+        const size_t sections_per_lane = 6;
+        const size_t lanes_per_section = 6;
+        Gen::create_summary(expected);
         std::vector<model::run::read_info> reads;
         expected.copy_reads(reads);
         actual = model::summary::run_summary(reads.begin(), reads.end(), 8);
@@ -51,25 +56,38 @@ public:
         model::run::info run_info("XX",
                                   "",
                                   1,
-                                  model::run::flowcell_layout(8, 2, 4, 99, 6, 6),
+                                  model::run::flowcell_layout(lane_count,
+                                                              surface_count,
+                                                              swath_count,
+                                                              tile_count,
+                                                              sections_per_lane,
+                                                              lanes_per_section),
                                   channels,
                                   model::run::image_dimensions(),
                                   reads);
         run_info.set_naming_method(constants::FourDigit);
         model::metrics::run_metrics metrics(run_info);
-        try
-        {
-            io::read_interop_from_string(Gen::binary_data(),
-                                         metrics.get_set<typename Gen::metric_t>());
-        }
-        catch (const std::exception &) { }
+        Gen::create_metric_set(metrics.get_set<typename Gen::metric_t>());
         metrics.finalize_after_load();
         logic::summary::summarize_run_metrics(metrics, actual);
         return true;
     }
+    /** Create a copy of this object
+     *
+     * @return pointer to an abstract_generator
+     */
     abstract_generator< model::summary::run_summary >* clone()const
     {
         return new run_summary_generator<Gen>;
+    }
+    /** Write generator info to output stream
+     *
+     * @param out output stream
+     */
+    void write(std::ostream& out)const
+    {
+        out << "run_summary_generator<"<< metric_set_t::prefix()
+        << " " << metric_set_t::suffix() << ">";
     }
 };
 
@@ -77,12 +95,12 @@ public:
 struct run_summary_tests : public generic_test_fixture< model::summary::run_summary > {};
 
 run_summary_tests::generator_type run_summary_unit_test_generators[] = {
-        new run_summary_generator< error_v3 >(),
-        new run_summary_generator< extraction_v2 >(),
-        new run_summary_generator< q_v4 >(),
-        new run_summary_generator< q_v5 >(),
-        new run_summary_generator< q_v6 >(),
-        new run_summary_generator< tile_v2 >()
+        new run_summary_generator< error_metric_v3 >(),
+        new run_summary_generator< extraction_metric_v2 >(),
+        new run_summary_generator< q_metric_v4 >(),
+        new run_summary_generator< q_metric_v5 >(),
+        new run_summary_generator< q_metric_v6 >(),
+        new run_summary_generator< tile_metric_v2 >()
 };
 
 
@@ -92,9 +110,12 @@ INSTANTIATE_TEST_CASE_P(run_summary_unit_test,
                         ::testing::ValuesIn(run_summary_unit_test_generators));
 
 #define EXPECT_STAT_NEAR(ACTUAL, EXPECTED, TOL) \
-    EXPECT_NEAR(ACTUAL.mean(), EXPECTED.mean(), TOL); \
-    EXPECT_NEAR(ACTUAL.stddev(), EXPECTED.stddev(), TOL); \
-    EXPECT_NEAR(ACTUAL.median(), EXPECTED.median(), TOL)
+    if(!std::isnan(ACTUAL.mean()) && !std::isnan(EXPECTED.mean())) \
+        EXPECT_NEAR(ACTUAL.mean(), EXPECTED.mean(), TOL); \
+    if(!std::isnan(ACTUAL.stddev()) && !std::isnan(EXPECTED.stddev())) \
+        EXPECT_NEAR(ACTUAL.stddev(), EXPECTED.stddev(), TOL); \
+    if(!std::isnan(ACTUAL.median()) && !std::isnan(EXPECTED.median())) \
+        EXPECT_NEAR(ACTUAL.median(), EXPECTED.median(), TOL)
 
 #define EXPECT_CYCLE_EQ(ACTUAL, EXPECTED) \
     EXPECT_EQ(ACTUAL.first_cycle(), EXPECTED.first_cycle()); \
@@ -217,6 +238,71 @@ TEST_P(run_summary_tests, lane_summary)
     }
 }
 
+TEST(summary_metrics_test, cycle_35_cycle_34_tile)
+{
+    const size_t lane_count = 8;
+    const size_t surface_count = 2;
+    const size_t swath_count = 4;
+    const size_t tile_count = 99;
+    const size_t sections_per_lane = 6;
+    const size_t lanes_per_section = 6;
+    std::vector<std::string> channels;
+    channels.push_back("Red");
+    channels.push_back("Green");
+    std::vector<model::run::read_info> reads;
+    reads.push_back(model::run::read_info(1, 1, 36));
+    model::run::info run_info("XX",
+                              "",
+                              1,
+                              model::run::flowcell_layout(lane_count,
+                                                          surface_count,
+                                                          swath_count,
+                                                          tile_count,
+                                                          sections_per_lane,
+                                                          lanes_per_section),
+                              channels,
+                              model::run::image_dimensions(),
+                              reads);
+    run_info.set_naming_method(constants::FourDigit);
+
+    model::metrics::run_metrics expected_run_metrics(run_info);
+    model::metric_base::metric_set<model::metrics::error_metric>& expected_error_metrics=
+            expected_run_metrics.get_set<model::metrics::error_metric>();
+    model::metrics::run_metrics actual_run_metrics(run_info);
+    model::metric_base::metric_set<model::metrics::error_metric>& actual_error_metrics=
+            actual_run_metrics.get_set<model::metrics::error_metric>();
+    typedef model::metrics::error_metric::uint_t  uint_t;
+    for(uint_t cycle_number=0;cycle_number<36;++cycle_number)
+    {
+        expected_error_metrics.insert(error_metric(1, 1101, 1 + cycle_number, 3.0f));
+        actual_error_metrics.insert(error_metric(1, 1101, 1 + cycle_number, 3.0f));
+    }
+    for(uint_t cycle_number=0;cycle_number<34;++cycle_number)
+    {
+        actual_error_metrics.insert(error_metric(1, 1102, 1 + cycle_number, 1.0f));
+    }
+
+    model::summary::run_summary expected;
+    logic::summary::summarize_run_metrics(expected_run_metrics, expected);
+    model::summary::run_summary actual;
+    logic::summary::summarize_run_metrics(actual_run_metrics, actual);
+    ASSERT_EQ(actual.size(), expected.size());
+    ASSERT_EQ(actual[0].size(), expected[0].size());
+    ASSERT_EQ(actual.size(), 1u);
+    ASSERT_EQ(actual[0].size(), 1u);
+
+    const float tol = 1e-7f;
+    const model::summary::lane_summary& actual_lane_summary = actual[0][0];
+    const model::summary::lane_summary& expected_lane_summary = expected[0][0];
+    model::summary::metric_stat expected_stat(3.0f, 0.0f, 3.0f);
+    EXPECT_STAT_NEAR(expected_lane_summary.error_rate_35(), expected_stat, tol);
+    EXPECT_NEAR(actual_lane_summary.error_rate_35().mean(), expected_lane_summary.error_rate_35().mean(), tol);
+    expected_stat=model::summary::metric_stat(0.0f, 0.0f, 0.0f);
+    EXPECT_STAT_NEAR(expected_lane_summary.error_rate_50(), expected_stat, tol);
+    EXPECT_NEAR(actual_lane_summary.error_rate_50().mean(), expected_lane_summary.error_rate_50().mean(), tol);
+
+}
+
 TEST(summary_metrics_test, empty_run_metrics)
 {
     model::metrics::run_metrics metrics;
@@ -227,14 +313,31 @@ TEST(summary_metrics_test, empty_run_metrics)
 /** TODO take tile metrics and index metrics from the same run */
 TEST(index_summary_test, lane_summary)
 {
-    model::summary::index_flowcell_summary expected(index_v1::summary());
+    const size_t lane_count = 8;
+    std::vector<model::run::read_info> reads(1, model::run::read_info(1, 1, 3, false));
+    std::vector<std::string> channels;
+    channels.push_back("Red");
+    channels.push_back("Green");
+    model::run::info run_info("XX",
+                              "",
+                              1,
+                              model::run::flowcell_layout(lane_count),
+                              channels,
+                              model::run::image_dimensions(),
+                              reads);
+
+    model::summary::index_flowcell_summary expected;
+    index_metric_v1::create_summary(expected);
     model::summary::index_flowcell_summary actual;
-    model::metrics::run_metrics metrics(index_v1::run_info());
+    model::metrics::run_metrics metrics(run_info);
     try
     {
-        io::read_interop_from_string(index_v1::binary_data(),
+        std::string data;
+        index_metric_v1::create_binary_data(data);
+        io::read_interop_from_string(data,
                                      metrics.get_set<index_metric>());
-        io::read_interop_from_string(tile_v2::binary_data(),
+        tile_metric_v2::create_binary_data(data);
+        io::read_interop_from_string(data,
                                      metrics.get_set<tile_metric>());
     }
     catch (const std::exception &) { }
@@ -322,10 +425,19 @@ protected:
     {
         return new regression_test_summary_generator(m_run_folder, m_test_dir);
     }
+    /** Write generator info to output stream
+     *
+     * @param out output stream
+     */
+    void write(std::ostream& out)const
+    {
+        out << "regression_test_summary_generator - " << io::basename(m_run_folder);
+    }
 };
 
 regression_test_summary_generator run_summary_regression_gen("summary");
 INSTANTIATE_TEST_CASE_P(run_summary_regression_test,
                         run_summary_tests,
                         ProxyValuesIn(run_summary_regression_gen, regression_test_data::instance().files()));
+
 

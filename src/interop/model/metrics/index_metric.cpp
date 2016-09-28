@@ -176,3 +176,4 @@ namespace illumina { namespace interop { namespace io
 INTEROP_FORCE_LINK_DEF(index_metric)
 
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(index_metric, 1)
+

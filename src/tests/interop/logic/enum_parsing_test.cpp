@@ -36,3 +36,4 @@ TEST(enum_parsing_test, metric_type_to_group)
 {
     EXPECT_EQ(logic::utils::to_group(constants::Intensity), constants::Extraction);
 }
+

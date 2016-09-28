@@ -198,3 +198,4 @@ namespace illumina { namespace interop { namespace logic { namespace utils
 #ifdef _MSC_VER
 #pragma warning(pop)
 #endif
+

@@ -25,7 +25,8 @@ set(SRCS
         logic/table/create_imaging_table_columns.cpp
         logic/table/create_imaging_table.cpp
         util/time.cpp
-        util/filesystem.cpp logic/utils/metrics_to_load.cpp)
+        util/filesystem.cpp
+        logic/utils/metrics_to_load.cpp)
 
 set(HEADERS
         ../../interop/model/summary/cycle_state_summary.h
@@ -143,7 +144,7 @@ set(HEADERS
         )
 
 set(INTEROP_HEADERS ${HEADERS} PARENT_SCOPE)
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR CMAKE_COMPILER_IS_GNUCC)
+if(COMPILER_IS_GNUCC_OR_CLANG)
     foreach(SRC ${SRCS})
         set_source_files_properties(${SRC} PROPERTIES COMPILE_FLAGS "${CXX_PEDANTIC_FLAG}" )
     endforeach()

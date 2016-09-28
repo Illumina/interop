@@ -261,7 +261,6 @@ namespace illumina { namespace interop { namespace util
         template<typename T>
         option_parser &operator()(T &value, const std::string &flag, const std::string &help)
         {
-            //m_options.push_back(option_pointer(new option<T>(value_container<T>(&value), flag, help)));
             m_options.push_back(option_pointer(new option<T>(&value, flag, help)));
             return *this;
         }
@@ -376,3 +375,4 @@ namespace illumina { namespace interop { namespace util
 
 
 }}}
+

@@ -35,9 +35,13 @@ namespace illumina { namespace interop { namespace logic { namespace summary
     * @param beg iterator to start of a collection of tile metrics
     * @param end iterator to end of a collection of tile metrics
     * @param run destination run summary
+    * @param skip_median skip the median calculation
     */
     template<typename I>
-    void summarize_tile_metrics(I beg, I end, model::summary::run_summary &run)
+    void summarize_tile_metrics(I beg,
+                                I end,
+                                model::summary::run_summary &run,
+                                const bool skip_median=false)
                                     throw(model::index_out_of_bounds_exception)
     {
         typedef typename model::metrics::tile_metric::read_metric_vector read_metric_vector_t;
@@ -83,31 +87,36 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                       tile_data_by_lane[lane].end(),
                       stat,
                       util::op::const_member_function(&model::metrics::tile_metric::cluster_density),
-                      util::op::const_member_function_less(&model::metrics::tile_metric::cluster_density));
+                      util::op::const_member_function_less(&model::metrics::tile_metric::cluster_density),
+                      skip_median);
             run[0][lane].density(stat);
             summarize(tile_data_by_lane[lane].begin(),
                       tile_data_by_lane[lane].end(),
                       stat,
                       util::op::const_member_function(&model::metrics::tile_metric::cluster_density_pf),
-                      util::op::const_member_function_less(&model::metrics::tile_metric::cluster_density_pf));
+                      util::op::const_member_function_less(&model::metrics::tile_metric::cluster_density_pf),
+                      skip_median);
             run[0][lane].density_pf(stat);
             summarize(tile_data_by_lane[lane].begin(),
                       tile_data_by_lane[lane].end(),
                       stat,
                       util::op::const_member_function(&model::metrics::tile_metric::cluster_count),
-                      util::op::const_member_function_less(&model::metrics::tile_metric::cluster_count));
+                      util::op::const_member_function_less(&model::metrics::tile_metric::cluster_count),
+                      skip_median);
             run[0][lane].cluster_count(stat);
             summarize(tile_data_by_lane[lane].begin(),
                       tile_data_by_lane[lane].end(),
                       stat,
                       util::op::const_member_function(&model::metrics::tile_metric::cluster_count_pf),
-                      util::op::const_member_function_less(&model::metrics::tile_metric::cluster_count_pf));
+                      util::op::const_member_function_less(&model::metrics::tile_metric::cluster_count_pf),
+                      skip_median);
             run[0][lane].cluster_count_pf(stat);
             summarize(tile_data_by_lane[lane].begin(),
                       tile_data_by_lane[lane].end(),
                       stat,
                       util::op::const_member_function(&model::metrics::tile_metric::percent_pf),
-                      util::op::const_member_function_less(&model::metrics::tile_metric::percent_pf));
+                      util::op::const_member_function_less(&model::metrics::tile_metric::percent_pf),
+                      skip_median);
             run[0][lane].percent_pf(stat);
             run[0][lane].reads(std::accumulate(tile_data_by_lane[lane].begin(),
                                                tile_data_by_lane[lane].end(),
@@ -151,19 +160,22 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                                                      util::op::const_member_function(
                                                              &model::metrics::read_metric::percent_aligned),
                                                      util::op::const_member_function_less(
-                                                             &model::metrics::read_metric::percent_aligned));
+                                                             &model::metrics::read_metric::percent_aligned),
+                                                     skip_median);
                 run[read][lane].percent_aligned(stat);
                 nan_summarize(read_data_by_lane_read(read, lane).begin(),
                               read_data_by_lane_read(read, lane).end(),
                               stat,
                               util::op::const_member_function(&model::metrics::read_metric::percent_prephasing),
-                              util::op::const_member_function_less(&model::metrics::read_metric::percent_prephasing));
+                              util::op::const_member_function_less(&model::metrics::read_metric::percent_prephasing),
+                              skip_median);
                 run[read][lane].prephasing(stat);
                 nan_summarize(read_data_by_lane_read(read, lane).begin(),
                               read_data_by_lane_read(read, lane).end(),
                               stat,
                               util::op::const_member_function(&model::metrics::read_metric::percent_phasing),
-                              util::op::const_member_function_less(&model::metrics::read_metric::percent_phasing));
+                              util::op::const_member_function_less(&model::metrics::read_metric::percent_phasing),
+                              skip_median);
                 run[read][lane].phasing(stat);
                 INTEROP_ASSERT(!std::isnan(run[read][lane].percent_aligned().mean()));
                 percent_aligned_by_read += run[read][lane].percent_aligned().mean() * non_nan;
@@ -184,3 +196,4 @@ namespace illumina { namespace interop { namespace logic { namespace summary
     }
 
 }}}}
+

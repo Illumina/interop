@@ -163,3 +163,4 @@ namespace illumina{ namespace interop { namespace unittest {
         return ::testing::internal::ParamGenerator< typename T::parent_type >(new proxy_argument_generator<T, Proxy>(object, values));
     }
 }}}
+

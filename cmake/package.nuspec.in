@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/01/nuspec.xsd">
+    <metadata minClientVersion="2.5">
+        <id>illumina_interop_@CSHARP_TYPE@_@PLATFORM@</id>
+        <version>@INTEROP_VERSION@</version>
+        <title>Illumina InterOp Library for @CSHARP_TYPE@ on @PLATFORM@</title>
+        <authors>Illumina Inc.</authors>
+        <owners>Illumina Inc.</owners>
+        <licenseUrl>https://github.com/Illumina/interop/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/Illumina/interop</projectUrl>
+        <requireLicenseAcceptance>true</requireLicenseAcceptance>
+        <developmentDependency>false</developmentDependency>
+        <description>
+        The Illumina InterOp libraries are a set of common routines used for reading InterOp metric files
+        produced by Illumina sequencers. These libraries are backwards compatible and capable of supporting prior
+        releases of the software, with one exception: GA systems have been excluded.
+        </description>
+        <summary>
+        High-level C++ binding for Illumina C++ InterOp Library, packaged for
+        @CSHARP_TYPE@ @CSHARP_VERSION@ on @PLATFORM@
+        </summary>
+        <releaseNotes>https://github.com/Illumina/interop/blob/master/README.md</releaseNotes>
+        <copyright>GNU GPL v3</copyright>
+        <tags>native, Illumina, InterOp, C++, C#, @PLATFORM@, @CSHARP_TYPE@ </tags>
+    </metadata>
+    <files>
+        @NUGET_FILE_LIST@
+    </files>
+</package>
+

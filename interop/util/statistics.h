@@ -12,6 +12,7 @@
 
 #pragma once
 
+#include <cstddef>
 #include <limits>
 #include <numeric>
 #include <algorithm>
@@ -690,4 +691,5 @@ namespace illumina { namespace interop { namespace util
     }
 
 }}}
+
 

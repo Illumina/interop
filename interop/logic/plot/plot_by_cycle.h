@@ -60,3 +60,4 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                                const bool ignore_accumulated=false);
 
 }}}}
+

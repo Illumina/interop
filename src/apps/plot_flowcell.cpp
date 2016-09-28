@@ -225,3 +225,4 @@ int test_all_filter_options(run_metrics& run)
     std::cout << "I just created " << plot_count << " plots" << std::endl;
     return SUCCESS;
 }
+

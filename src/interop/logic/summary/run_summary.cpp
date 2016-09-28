@@ -6,7 +6,6 @@
  *  @copyright GNU Public License.
  */
 #include "interop/logic/summary/run_summary.h"
-
 #include "interop/logic/summary/error_summary.h"
 #include "interop/logic/summary/tile_summary.h"
 #include "interop/logic/summary/extraction_summary.h"
@@ -68,17 +67,17 @@ namespace illumina { namespace interop { namespace logic { namespace summary
      * @ingroup summary_logic
      * @param metrics source collection of all metrics
      * @param summary destination run summary
+     * @param skip_median skip the median calculation
      */
-    void summarize_run_metrics(model::metrics::run_metrics& metrics, model::summary::run_summary& summary)
+    void summarize_run_metrics(model::metrics::run_metrics& metrics,
+                               model::summary::run_summary& summary,
+                               const bool skip_median)
     throw( model::index_out_of_bounds_exception,
     model::invalid_channel_exception )
     {
         using namespace model::metrics;
         if(metrics.empty()) return;
-
-
         summary.initialize(metrics.run_info().reads(), metrics.run_info().flowcell().lane_count());
-
 
         read_cycle_vector_t cycle_to_read;
         map_read_to_cycle_number(summary.begin(), summary.end(), cycle_to_read);
@@ -86,14 +85,16 @@ namespace illumina { namespace interop { namespace logic { namespace summary
         summarize_error_metrics(metrics.get_set<error_metric>().begin(),
                                 metrics.get_set<error_metric>().end(),
                                 cycle_to_read,
-                                summary);
+                                summary,
+                                skip_median);
         INTEROP_ASSERT(metrics.run_info().channels().size()>0);
         const size_t intensity_channel = utils::expected2actual_map(metrics.run_info().channels())[0];
         summarize_extraction_metrics(metrics.get_set<extraction_metric>().begin(),
                                      metrics.get_set<extraction_metric>().end(),
                                      cycle_to_read,
                                      intensity_channel,
-                                     summary);
+                                     summary,
+                                     skip_median);
 
         if(0 == metrics.get_set<q_collapsed_metric>().size())
             logic::metric::create_collapse_q_metrics(metrics.get_set<q_metric>(),
@@ -140,3 +141,4 @@ namespace illumina { namespace interop { namespace logic { namespace summary
     }
 
 }}}}
+

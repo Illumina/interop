@@ -9,7 +9,7 @@
 #include <vector>
 #include <gtest/gtest.h>
 #include "src/tests/interop/inc/failure_listener.h"
-#include "src/tests/interop/inc/regression_fixture.h"
+#include "src/tests/interop/inc/regression_test_data.h"
 using namespace illumina::interop::unittest;
 
 int main(int argc, char **argv)
@@ -60,7 +60,6 @@ int main(int argc, char **argv)
     failure_listener *listener = new failure_listener(default_printer);
     listeners.Append(listener);
 
-
     // run
     try
     {
@@ -72,4 +71,5 @@ int main(int argc, char **argv)
         return 1;
     }
 }
+
 

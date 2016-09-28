@@ -67,7 +67,7 @@
         INTEROP_TUPLE7(Fwhm,                  metrics::extraction_metric,         focus_scores,               Void, Float, ChannelArray, 2) \
         INTEROP_TUPLE7(Corrected,             metrics::corrected_intensity_metric,corrected_int_all_array,    Void, UShort, BaseArray, 0)\
         INTEROP_TUPLE7(Called,                metrics::corrected_intensity_metric,corrected_int_called_array, Void, UShort, BaseArray, 0)\
-        INTEROP_TUPLE7(SignalToNoise,         metrics::corrected_intensity_metric,signal_to_noise,            Void, Float, ValueType, 0)\
+        INTEROP_TUPLE7(SignalToNoise,         metrics::corrected_intensity_metric,signal_to_noise,            Void, Float, ValueType, 2)\
         INTEROP_TUPLE7(MinimumContrast,       metrics::image_metric,              min_contrast_array,         Void, UShort, ChannelArray, 0)\
         INTEROP_TUPLE7(MaximumContrast,       metrics::image_metric,              max_contrast_array,         Void, UShort, ChannelArray, 0)\
         INTEROP_TUPLE7(Time,                  metrics::extraction_metric,         date_time_csharp,           Void, DateTime, StructType, 0)\
@@ -284,3 +284,4 @@ namespace illumina { namespace interop { namespace model { namespace table
 
 
 }}}}
+

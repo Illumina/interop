@@ -270,3 +270,4 @@ TEST(RunInfo, ParseXML_NextSeq)
     test_helper_run_info_parse_xml(expected_run_info, xml_file);
 }
 
+

@@ -146,3 +146,4 @@ namespace illumina{ namespace interop { namespace unittest {
         return ::testing::internal::ParamGenerator<T>(new argument_generator<T>(values));
     }
 }}}
+

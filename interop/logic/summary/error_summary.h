@@ -74,9 +74,8 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                 const size_t lane = ebeg->first.first - 1;
                 if (lane >= summary_by_lane_read.lane_count())
                     INTEROP_THROW(model::index_out_of_bounds_exception, "Lane exceeds number of lanes in RunInfo.xml");
-                if (max_cycle < std::numeric_limits<size_t>::max() && max_error_cycle[read] < max_cycle)
-                    summary_by_lane_read(read, lane).push_back(0);
-                else summary_by_lane_read(read, lane).push_back(divide(ebeg->second.first, ebeg->second.second));
+                if(max_cycle < std::numeric_limits<size_t>::max() && ebeg->second.second < max_cycle) continue;
+                summary_by_lane_read(read, lane).push_back(divide(ebeg->second.first, ebeg->second.second));
             }
         }
     }
@@ -86,10 +85,12 @@ namespace illumina { namespace interop { namespace logic { namespace summary
      * @param summary_by_lane_read source cache by read then by lane a collection of errors
      * @param run destination run summary
      * @param func member function pointer to metric
+     * @param skip_median skip the median calculation
      */
     inline void error_summary_from_cache(summary_by_lane_read<float> &summary_by_lane_read,
                                          model::summary::run_summary &run,
-                                         void (model::summary::lane_summary::*func )(const model::summary::metric_stat&))
+                                         void (model::summary::lane_summary::*func )(const model::summary::metric_stat&),
+                                         const bool skip_median=false)
     {
         for (size_t read = 0; read < run.size(); ++read)
         {
@@ -102,7 +103,8 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                 model::summary::metric_stat stat;
                 summarize(summary_by_lane_read(read, lane).begin(),
                           summary_by_lane_read(read, lane).end(),
-                          stat);
+                          stat,
+                          skip_median);
                 (run[read][lane].*func)(stat);
             }
         }
@@ -126,12 +128,14 @@ namespace illumina { namespace interop { namespace logic { namespace summary
      * @param end iterator to end of a collection of error metrics
      * @param cycle_to_read map cycle to the read number and cycle within read number
      * @param run destination run summary
+     * @param skip_median skip the median calculation
      */
     template<typename I>
     void summarize_error_metrics(I beg,
                                  I end,
                                  const read_cycle_vector_t &cycle_to_read,
-                                 model::summary::run_summary &run) throw(model::index_out_of_bounds_exception)
+                                 model::summary::run_summary &run,
+                                 const bool skip_median=false) throw(model::index_out_of_bounds_exception)
     {
         typedef summary_by_lane_read<float> summary_by_lane_read_t;
         typedef void (model::summary::lane_summary::*error_functor_t )(const model::summary::metric_stat&);
@@ -150,7 +154,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
         for (size_t i = 0; i < util::length_of(cycle_functor_pairs); ++i)
         {
             cache_error_by_lane_read(beg, end, cycle_functor_pairs[i].first, cycle_to_read, temp);
-            error_summary_from_cache(temp, run, cycle_functor_pairs[i].second);
+            error_summary_from_cache(temp, run, cycle_functor_pairs[i].second, skip_median);
             temp.clear();
         }
 
@@ -172,7 +176,8 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                 model::summary::metric_stat stat;
                 summarize(temp(read, lane).begin(),
                           temp(read, lane).end(),
-                          stat);
+                          stat,
+                          skip_median);
                 run[read][lane].error_rate(stat);
                 error_rate_by_read += std::accumulate(temp(read, lane).begin(),
                                                       temp(read, lane).end(),
@@ -196,3 +201,4 @@ namespace illumina { namespace interop { namespace logic { namespace summary
     }
 
 }}}}
+

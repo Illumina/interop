@@ -1,9 +1,12 @@
 /** Q-score metric
  *
- *
  * The InterOp files parsed by this class include:
  *  - InterOp/QMetrics.bin
  *  - InterOp/QMetricsOut.bin
+ *
+ *  The QMetricsOut.bin InterOp file contains a histogram of the counts of PF clusters at each quality value ranging
+ *  from 1 to 50 for each lane, tile, and cycle.  % >= Q30 is calculated as the sum of the populations in bins with a
+ *  quality value of 30 or greater divided by the total non-N basecalls (sum of the population over all bins) times 100.
  *
  *  @file
  *  @date 8/21/2015
@@ -228,6 +231,11 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     };
 
     /** Q-score metric
+     *
+     *  The QMetricsOut.bin InterOp file contains a histogram of the counts of PF clusters at each quality value
+     *  ranging from 1 to 50 for each lane, tile, and cycle.  % >= Q30 is calculated as the sum of the populations in
+     *  bins with a quality value of 30 or greater divided by the total non-N basecalls (sum of the population over
+     *  all bins times) 100.
      *
      * @note Supported versions: 4, 5 and 6
      */
@@ -613,4 +621,5 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         struct io::generic_layout;
     };
 }}}}
+
 

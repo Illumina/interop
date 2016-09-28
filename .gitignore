@@ -2,6 +2,7 @@ packages.config
 interop/version.h
 .idea
 src/ext/csharp/src
+.CMakeLists.txt.bak
 
 # Mac OSX Stuff
 .DS_Store

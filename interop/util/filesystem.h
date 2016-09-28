@@ -45,10 +45,11 @@ namespace illumina { namespace interop { namespace io
     /** Create a directory
      *
      * @param path path to new directory
-     * @param mode linux permissions
+     * @param mode permissions on directory
      * @return true if directory was created
      */
     bool mkdir(const std::string& path, const int mode=0733);
+
     /** Get the size of a file
      *
      * This should be more efficient than opening a file and seeking the end.
@@ -58,4 +59,5 @@ namespace illumina { namespace interop { namespace io
      */
     ::int64_t file_size(const std::string& path);
 }}}
+
 
