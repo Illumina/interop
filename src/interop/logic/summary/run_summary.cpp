@@ -25,15 +25,32 @@ namespace illumina { namespace interop { namespace logic { namespace summary
     void summarize_tile_count(const model::metrics::run_metrics& metrics, model::summary::run_summary& summary)
     {
         using namespace model::metrics;
+        model::metrics::run_metrics::id_set_t tile_count_set;
+        const size_t surface_count = metrics.run_info().flowcell().surface_count();
+        const constants::tile_naming_method naming_convention = metrics.run_info().flowcell().naming_method();
         for(unsigned int lane=0;lane<summary.lane_count();++lane)
         {
-            size_t tile_count = 0;
-            tile_count = std::max(tile_count, metrics.get_set<tile_metric>().tile_numbers_for_lane(lane+1).size());
-            tile_count = std::max(tile_count, metrics.get_set<error_metric>().tile_numbers_for_lane(lane+1).size());
-            tile_count = std::max(tile_count, metrics.get_set<extraction_metric>().tile_numbers_for_lane(lane+1).size());
-            tile_count = std::max(tile_count, metrics.get_set<q_metric>().tile_numbers_for_lane(lane+1).size());
+            size_t tile_count_for_lane = 0;
+            for(unsigned int surface=0;surface < surface_count;++surface)
+            {
+                metrics.get_set<tile_metric>().tile_numbers_for_lane_surface(tile_count_set, lane+1, surface+1, naming_convention);
+                metrics.get_set<error_metric>().tile_numbers_for_lane_surface(tile_count_set, lane+1, surface+1, naming_convention);
+                metrics.get_set<extraction_metric>().tile_numbers_for_lane_surface(tile_count_set, lane+1, surface+1, naming_convention);
+                metrics.get_set<q_metric>().tile_numbers_for_lane_surface(tile_count_set, lane+1, surface+1, naming_convention);
+
+                if(surface_count > 1)
+                {
+                    for(size_t read = 0; read < summary.size(); ++read)
+                    {
+                        summary[read][lane][surface].tile_count(tile_count_set.size());
+                    }
+                }
+                tile_count_for_lane += tile_count_set.size();
+                tile_count_set.clear();
+            }
+
             for(size_t read=0;read<summary.size();++read)
-                summary[read][lane].tile_count(tile_count);
+                summary[read][lane].tile_count(tile_count_for_lane);
         }
     }
 

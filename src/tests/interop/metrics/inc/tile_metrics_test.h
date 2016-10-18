@@ -131,6 +131,8 @@ namespace illumina{ namespace interop { namespace unittest
                 summary[read][0].cluster_count(model::summary::metric_stat(6470949.5f, 0, 6470949));
                 summary[read][0].cluster_count_pf(model::summary::metric_stat(3246238.25f, 75232.1640625f, 3227776));
                 summary[read][0].percent_pf(model::summary::metric_stat(50.166339874267578f, 1.1626163721084595f, 49.881031036376953f));
+                summary[read][0][0].tile_count(2);
+                summary[read][0][1].tile_count(1);
             }
             summary[0][0].phasing(model::summary::metric_stat(0.10935487598180771f, 0.026172075420618057f, 0.11908555030822754f));
             summary[0][0].prephasing(model::summary::metric_stat(0.1159147247672081f, 0.021491257473826408f, 0.11990892142057419f));

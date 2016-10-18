@@ -304,10 +304,13 @@ void print_summary(std::ostream& out, const run_summary& summary)
             INTEROP_ASSERT(summary[read][lane].tile_count() > 0);
             summarize(summary[read][lane], values);
             print_array(out, values, width);
-            for(size_t surface=0;surface<summary.surface_count();++surface)
+            if(summary.surface_count() > 1)
             {
-                summarize(summary[read][lane][surface], values);
-                print_array(out, values, width);
+                for (size_t surface = 0; surface < summary.surface_count(); ++surface)
+                {
+                    summarize(summary[read][lane][surface], values);
+                    print_array(out, values, width);
+                }
             }
         }
     }

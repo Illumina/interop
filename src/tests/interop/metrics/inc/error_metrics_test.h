@@ -68,6 +68,7 @@ namespace illumina { namespace interop { namespace unittest
             summary[0][0].lane(7);
             summary[0][0].error_rate(model::summary::metric_stat(0.67515134811401367f, 0, 0.67515134811401367f));
             summary[0][0][0].error_rate(model::summary::metric_stat(0.67515134811401367f, 0, 0.67515134811401367f));
+            summary[0][0][0].tile_count(1);
             summary[0][0].error_rate_35(model::summary::metric_stat());
             summary[0][0].error_rate_50(model::summary::metric_stat());
             summary[0][0].error_rate_75(model::summary::metric_stat());

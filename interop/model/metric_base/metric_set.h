@@ -57,6 +57,8 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         typedef std::vector<id_t> key_vector;
         /** Define the size type */
         typedef typename metric_array_t::size_type size_type;
+        /** Define a set of ids */
+        typedef std::set<uint_t> id_set_t;
 
     public:
         /** Const metric iterator */
@@ -391,6 +393,27 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
             return tile_numbers;
         }
 
+        /** Get a list of all available tile numbers for the specified lane/surface
+         *
+         * @note this does not clear the set!
+         *
+         * @param tile_number_set destination set to ensure unique tile numbers
+         * @param lane lane number
+         * @param surface surface number
+         * @param naming_convention tile naming convetion enum
+         */
+        void tile_numbers_for_lane_surface(id_set_t& tile_number_set,
+                                           const uint_t lane,
+                                           const uint_t surface,
+                                           const constants::tile_naming_method naming_convention) const
+        {
+            transform_if(m_data.begin(),
+                         m_data.end(),
+                         std::inserter(tile_number_set, tile_number_set.begin()),
+                         lane_surface_equals(lane, surface, naming_convention),
+                         to_tile);
+        }
+
         /** Get a list of all available tile numbers
          *
          * @return vector of tile numbers
@@ -630,6 +653,27 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
             { return metric.lane() == m_lane; }
 
             uint_t m_lane;
+        };
+
+        struct lane_surface_equals
+        {
+            lane_surface_equals(const uint_t lane,
+                                const uint_t surface,
+                                const constants::tile_naming_method naming_convention) :
+                    m_lane(lane), m_surface(surface), m_naming_convention(naming_convention)
+            { }
+
+            bool operator()(const metric_type &metric) const
+            { return check(metric, base_t::null());}
+
+            bool check(const metric_type& metric, const void *)const
+            {
+                return metric.lane() == m_lane && metric.surface(m_naming_convention) == m_surface;
+            }
+
+            const uint_t m_lane;
+            const uint_t m_surface;
+            const constants::tile_naming_method m_naming_convention;
         };
 
         struct cycle_equals

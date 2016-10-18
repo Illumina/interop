@@ -84,7 +84,7 @@ namespace illumina{ namespace interop { namespace unittest
             summary[0][0].projected_yield_g(0.0098816361278295517);
             summary[0][0].yield_g(0.0074112270958721638f);
             summary[0][0].percent_gt_q30(95.733200073242188f);
-            summary[0][0][0].tile_count(0);
+            summary[0][0][0].tile_count(2);
             summary[0][0][0].projected_yield_g(0.0098816361278295517);
             summary[0][0][0].yield_g(0.0074112270958721638f);
             summary[0][0][0].percent_gt_q30(95.733200073242188f);
@@ -183,7 +183,7 @@ namespace illumina{ namespace interop { namespace unittest
             summary[0][0].projected_yield_g(0.0056276721879839897f);
             summary[0][0].yield_g(0.0056276721879839897f);
             summary[0][0].percent_gt_q30(95.650672912597656f);
-            summary[0][0][0].tile_count(0);
+            summary[0][0][0].tile_count(3);
             summary[0][0][0].projected_yield_g(0.0056276721879839897f);
             summary[0][0][0].yield_g(0.0056276721879839897f);
             summary[0][0][0].percent_gt_q30(95.650672912597656f);
@@ -270,7 +270,7 @@ namespace illumina{ namespace interop { namespace unittest
             summary[0][0].projected_yield_g(0.0095612816512584686f);
             summary[0][0].yield_g(0.009561280719935894f);
             summary[0][0].percent_gt_q30(90.1163330078125f);
-            summary[0][0][0].tile_count(0);
+            summary[0][0][0].tile_count(1);
             summary[0][0][0].projected_yield_g(0.0095612816512584686f);
             summary[0][0][0].yield_g(0.009561280719935894f);
             summary[0][0][0].percent_gt_q30(90.1163330078125f);

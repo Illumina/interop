@@ -88,6 +88,10 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         /** Define a map of ids to a base cycle metric */
         typedef std::map<id_t, metric_base::base_cycle_metric> cycle_metric_map_t;
 
+    public:
+        /** Define set of ids */
+        typedef error_metric_set_t::id_set_t id_set_t;
+
 
     public:
         /** Constructor

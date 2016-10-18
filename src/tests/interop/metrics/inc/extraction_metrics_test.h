@@ -72,6 +72,8 @@ namespace illumina{ namespace interop { namespace unittest
             summary.initialize(to_vector(reads), lane_count, surface_count);
             summary[0][0].lane(7);
             summary[0][0].first_cycle_intensity(model::summary::metric_stat(321, 24.75883674621582f, 312));
+            summary[0][0][0].tile_count(2);
+            summary[0][0][1].tile_count(1);
             summary[0][0][0].first_cycle_intensity(model::summary::metric_stat(307.0f, 7.0710678f, 307.0f));
             summary[0][0][1].first_cycle_intensity(model::summary::metric_stat(349.0f, 0.0f, 349.0f));
             summary[0][0].cycle_state().extracted_cycle_range(model::run::cycle_range(1, 1));
