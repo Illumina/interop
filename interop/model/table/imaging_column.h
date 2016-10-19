@@ -70,11 +70,11 @@
         INTEROP_TUPLE7(SignalToNoise,         metrics::corrected_intensity_metric,signal_to_noise,            Void, Float, ValueType, 2)\
         INTEROP_TUPLE7(MinimumContrast,       metrics::image_metric,              min_contrast_array,         Void, UShort, ChannelArray, 0)\
         INTEROP_TUPLE7(MaximumContrast,       metrics::image_metric,              max_contrast_array,         Void, UShort, ChannelArray, 0)\
-        INTEROP_TUPLE7(Time,                  metrics::extraction_metric,         date_time_csharp,           Void, DateTime, StructType, 0)\
         INTEROP_TUPLE7(Surface,               metric_base::base_metric,           surface,                    NamingConvention, UInt, IdType, 0)\
         INTEROP_TUPLE7(Swath,                 metric_base::base_metric,           swath,                      NamingConvention, UInt, IdType, 0)\
         INTEROP_TUPLE7(Section,               metric_base::base_metric,           section,                    NamingConvention, UInt, IdType, 0)\
         INTEROP_TUPLE7(TileNumber,            metric_base::base_metric,           number,                     NamingConvention, UInt, IdType, 0)
+        //INTEROP_TUPLE7(Time,                  metrics::extraction_metric,         date_time_csharp,           Void, DateTime, StructType, 0)
 
 namespace illumina { namespace interop { namespace model { namespace table
 {

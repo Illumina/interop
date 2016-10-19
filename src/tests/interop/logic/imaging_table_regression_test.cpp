@@ -126,7 +126,6 @@ TEST_P(imaging_table_tests, compare_to_baseline)
         for(size_t col_index=0;col_index<expected.column_count();++col_index)
         {
 
-            if(expected.column_at(col_index).id() == model::table::TimeColumn) continue;
             const size_t digit_count = logic::table::get_column_rounding(expected.column_at(col_index).id());
             INTEROP_ASSERT(digit_count < util::length_of(round_tols));
             const float eps = round_tols[digit_count];
