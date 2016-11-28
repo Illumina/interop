@@ -4,7 +4,7 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules)
 enable_testing()
 include(${PROJECT_SOURCE_DIR}/cmake/Modules/UseGitVersion.cmake)
 include(${PROJECT_SOURCE_DIR}/cmake/InternalUtils.cmake)
-set(ARCHIVE_VERSION "v1.0.4-361-g6c63896")
+set(ARCHIVE_VERSION "v1.0.12-src")
 
 if (NOT CMAKE_BUILD_TYPE)
     message(STATUS "No build type selected, default to Release")

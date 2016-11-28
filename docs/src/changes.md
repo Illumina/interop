@@ -1,5 +1,14 @@
 # Changes                                               {#changes}
 
+## v1.0.13
+
+Date       | Description
+---------- | -----------
+2016-11-28 | IPA-5830: Fix tile naming bug for on demand datasets
+2016-10-19 | Remove time from imaging table
+2016-09-27 | IPA-5213: Create per surface summary model/logic/app
+
+
 ## v1.0.12
 
 Date       | Description
