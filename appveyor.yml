@@ -37,15 +37,15 @@ environment:
     - generator: "Visual Studio 14 2015 Win64"
       BUILD: msvc14_win64
       config_type: win64
-    - generator: "Visual Studio 14 2015"
-      BUILD: msvc14_win32
-      config_type: win32
+#    - generator: "Visual Studio 14 2015"
+#      BUILD: msvc14_win32
+#      config_type: win32
     - generator: "Visual Studio 12 2013 Win64"
       BUILD: msvc12_win64
       config_type: win64
-    - generator: "Visual Studio 12 2013"
-      BUILD: msvc12_win32
-      config_type: win32
+#    - generator: "Visual Studio 12 2013"
+#      BUILD: msvc12_win32
+#      config_type: win32
 #    - generator: "MinGW Makefiles"
 #      COMPILER_PATH: C:\MinGW\bin
 #      BUILD: mingw_win32
