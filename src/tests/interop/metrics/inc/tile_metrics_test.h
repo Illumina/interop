@@ -95,14 +95,34 @@ namespace illumina{ namespace interop { namespace unittest
         static void create_summary(model::summary::run_summary& summary)
         {
             const size_t lane_count = 1;
+            const size_t surface_count = 2;
             const model::run::read_info reads[]={
                     model::run::read_info(1, 1, 3, false),
                     model::run::read_info(2, 1, 3, false)
             };
-            summary.initialize(to_vector(reads), lane_count);
+            summary.initialize(to_vector(reads), lane_count, surface_count);
             for(size_t read=0;read<summary.size();++read)
             {
                 summary[read][0].lane(7);
+                //
+                summary[read][0][0].tile_count(0);
+                summary[read][0][0].reads_pf(6409732);
+                summary[read][0][0].reads(12941898);
+                summary[read][0][0].density(model::summary::metric_stat(2355119.25f, 0, 2355119.25f));
+                summary[read][0][0].density_pf(model::summary::metric_stat(1166419.625f, 11791.8896484375f, 1166419.625f));
+                summary[read][0][0].cluster_count(model::summary::metric_stat(6470949.0f, 0, 6470949));
+                summary[read][0][0].cluster_count_pf(model::summary::metric_stat(3204866.0f, 32399.6328125f, 3204866));
+                summary[read][0][0].percent_pf(model::summary::metric_stat(49.526985168457031f, 0.50069648027420044f, 49.526985168457031f));
+                //
+                summary[read][0][1].tile_count(0);
+                summary[read][0][1].reads_pf(3328983);
+                summary[read][0][1].reads(6470949);
+                summary[read][0][1].density(model::summary::metric_stat(2355119.25f, 0, 2355119.25f));
+                summary[read][0][1].density_pf(model::summary::metric_stat(1211592.375f, 0.0f, 1211592.375f));
+                summary[read][0][1].cluster_count(model::summary::metric_stat(6470949.0f, 0, 6470949));
+                summary[read][0][1].cluster_count_pf(model::summary::metric_stat(3328983.0f, 0.0f, 3328983));
+                summary[read][0][1].percent_pf(model::summary::metric_stat(51.445053100585938f, 0.0f, 51.445053100585938f));
+                //
                 summary[read][0].tile_count(3);
                 summary[read][0].reads_pf(9738715);
                 summary[read][0].reads(19412848);
@@ -111,10 +131,25 @@ namespace illumina{ namespace interop { namespace unittest
                 summary[read][0].cluster_count(model::summary::metric_stat(6470949.5f, 0, 6470949));
                 summary[read][0].cluster_count_pf(model::summary::metric_stat(3246238.25f, 75232.1640625f, 3227776));
                 summary[read][0].percent_pf(model::summary::metric_stat(50.166339874267578f, 1.1626163721084595f, 49.881031036376953f));
+                summary[read][0][0].tile_count(2);
+                summary[read][0][1].tile_count(1);
             }
             summary[0][0].phasing(model::summary::metric_stat(0.10935487598180771f, 0.026172075420618057f, 0.11908555030822754f));
             summary[0][0].prephasing(model::summary::metric_stat(0.1159147247672081f, 0.021491257473826408f, 0.11990892142057419f));
             summary[0][0].percent_aligned(model::summary::metric_stat(2.5763518810272217f, 0.074578315019607544f, 2.6163086891174316f));
+
+            summary[0][0][0].phasing(model::summary::metric_stat(0.1044895350933075f, 0.035041775554418564f, 0.1044895350933075f));
+            summary[0][0][0].prephasing(model::summary::metric_stat(0.12751880288124084f, 0.010762002319097519f,  0.12751880288124084f));
+            summary[0][0][0].percent_aligned(model::summary::metric_stat( 2.6193733215332031f, 0.0043340446427464485f, 2.6193733215332031f));
+
+            summary[1][0][0].phasing(model::summary::metric_stat(0.079711258411407471f, 0, 0.079711258411407471f));
+            summary[1][0][0].prephasing(model::summary::metric_stat(0.11990892142057419f, 0,  0.11990892142057419f));
+            summary[1][0][0].percent_aligned(model::summary::metric_stat(2.6163086891174316f, 0, 2.6163086891174316f));
+
+
+            summary[0][0][1].phasing(model::summary::metric_stat( 0.11908555030822754f, 0.0,  0.11908555030822754f));
+            summary[0][0][1].prephasing(model::summary::metric_stat(0.092706575989723206f, 0.0f,  0.092706575989723206f));
+            summary[0][0][1].percent_aligned(model::summary::metric_stat(2.4903090000152588f, 0.0f, 2.4903090000152588f));
 
             summary[1][0].phasing(model::summary::metric_stat(0.079711258411407471f, 0, 0.079711258411407471f));
             summary[1][0].prephasing(model::summary::metric_stat(0.11990892142057419f, 0, 0.11990892142057419f));

@@ -25,10 +25,13 @@
 %ignore vector_t::end;
 %ignore vector_t::operator[];
 %apply size_t { vector_t::size_type };
+%ignore vector_t::at(const size_type) const;
 %enddef
 
 
 %define WRAP_AS_VECTOR(value_t)
+%apply value_t& { std::vector<value_t>::reference };
+//%apply value_t& const  { std::vector<value_t>::const_reference };
 WRAP_VECTOR(std::vector<value_t>);
 %enddef
 

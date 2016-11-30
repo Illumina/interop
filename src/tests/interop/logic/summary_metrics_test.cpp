@@ -49,7 +49,7 @@ public:
         Gen::create_summary(expected);
         std::vector<model::run::read_info> reads;
         expected.copy_reads(reads);
-        actual = model::summary::run_summary(reads.begin(), reads.end(), 8);
+        actual = model::summary::run_summary(reads.begin(), reads.end(), lane_count, surface_count);
         std::vector<std::string> channels;
         channels.push_back("Red");
         channels.push_back("Green");
@@ -86,8 +86,7 @@ public:
      */
     void write(std::ostream& out)const
     {
-        out << "run_summary_generator<"<< metric_set_t::prefix()
-        << " " << metric_set_t::suffix() << ">";
+        out << "run_summary_generator<"<< Gen::name() << ">";
     }
 };
 
@@ -110,11 +109,11 @@ INSTANTIATE_TEST_CASE_P(run_summary_unit_test,
                         ::testing::ValuesIn(run_summary_unit_test_generators));
 
 #define EXPECT_STAT_NEAR(ACTUAL, EXPECTED, TOL) \
-    if(!std::isnan(ACTUAL.mean()) && !std::isnan(EXPECTED.mean())) \
+    if(!std::isnan(ACTUAL.mean()) || !std::isnan(EXPECTED.mean())) \
         EXPECT_NEAR(ACTUAL.mean(), EXPECTED.mean(), TOL); \
-    if(!std::isnan(ACTUAL.stddev()) && !std::isnan(EXPECTED.stddev())) \
+    if(!std::isnan(ACTUAL.stddev()) || !std::isnan(EXPECTED.stddev())) \
         EXPECT_NEAR(ACTUAL.stddev(), EXPECTED.stddev(), TOL); \
-    if(!std::isnan(ACTUAL.median()) && !std::isnan(EXPECTED.median())) \
+    if(!std::isnan(ACTUAL.median()) || !std::isnan(EXPECTED.median())) \
         EXPECT_NEAR(ACTUAL.median(), EXPECTED.median(), TOL)
 
 #define EXPECT_CYCLE_EQ(ACTUAL, EXPECTED) \
@@ -127,8 +126,6 @@ INSTANTIATE_TEST_CASE_P(run_summary_unit_test,
     EXPECT_EQ(ACTUAL.number(), EXPECTED.number()); \
     EXPECT_EQ(ACTUAL.is_index(), EXPECTED.is_index())
 
-
-
 /** Test if calculated run summary matches actual run summary
  *
  * @todo Add more robust testing (e.g. non-index)
@@ -137,8 +134,9 @@ TEST_P(run_summary_tests, run_summary)
 {
     if(!test) return;// Disable test for rebaseline
     const float tol = 1e-7f;
-    ASSERT_EQ(actual.size(), expected.size());
-    ASSERT_EQ(actual.lane_count(), expected.lane_count());
+    EXPECT_EQ(actual.size(), expected.size());
+    EXPECT_EQ(actual.lane_count(), expected.lane_count());
+    EXPECT_EQ(actual.surface_count(), expected.surface_count());
     EXPECT_NEAR(actual.total_summary().error_rate(), expected.total_summary().error_rate(), tol);
     EXPECT_NEAR(actual.total_summary().percent_aligned(), expected.total_summary().percent_aligned(), tol);
     EXPECT_NEAR(actual.total_summary().first_cycle_intensity(), expected.total_summary().first_cycle_intensity(), tol);
@@ -206,7 +204,7 @@ TEST_P(run_summary_tests, lane_summary)
             EXPECT_EQ(actual_lane_summary.lane(), expected_lane_summary.lane());
             EXPECT_GT(actual_lane_summary.lane(), 0u);
             EXPECT_EQ(actual_lane_summary.tile_count(), expected_lane_summary.tile_count()) << "Failed read: " << read << ", lane: " << lane;
-            if(!std::isnan(actual_lane_summary.percent_gt_q30()) && !std::isnan(expected_lane_summary.percent_gt_q30()))
+            if(!std::isnan(actual_lane_summary.percent_gt_q30()) || !std::isnan(expected_lane_summary.percent_gt_q30()))
                 EXPECT_NEAR(actual_lane_summary.percent_gt_q30(), expected_lane_summary.percent_gt_q30(), tol) << "Failed read: " << read << ", lane: " << lane;
             EXPECT_NEAR(actual_lane_summary.yield_g(), expected_lane_summary.yield_g(), tol) << "Failed read: " << read << ", lane: " << lane;
             EXPECT_NEAR(actual_lane_summary.projected_yield_g(), expected_lane_summary.projected_yield_g(), tol) << "Failed read: " << read << ", lane: " << lane;
@@ -234,6 +232,75 @@ TEST_P(run_summary_tests, lane_summary)
             EXPECT_CYCLE_EQ(actual_cycle_summary.called_cycle_range(), expected_cycle_summary.called_cycle_range());
             EXPECT_CYCLE_EQ(actual_cycle_summary.qscored_cycle_range(), expected_cycle_summary.qscored_cycle_range());
             EXPECT_CYCLE_EQ(actual_cycle_summary.error_cycle_range(), expected_cycle_summary.error_cycle_range()) << "Failed read: " << read << ", lane: " << lane;
+        }
+    }
+}
+
+
+/** Test if calculated lane summary matches actual lane summary
+ */
+TEST_P(run_summary_tests, surface_summary)
+{
+    if(!test) return;// Disable test for rebaseline
+#ifdef _INTEROP_WIN32
+    const float density_tol = 0.5f;
+    const float tol = 1e-2f; // TODO: fix this unit test on external Windows Builds (appveyor) was 1e-7f
+#else
+    const float density_tol = 1e-7f;
+    const float tol = 1e-7f;
+#endif
+    ASSERT_EQ(actual.size(), expected.size());
+    for(size_t read=0;read<expected.size();++read)
+    {
+        ASSERT_EQ(actual[read].size(), expected[read].size());
+        for(size_t lane=0;lane<expected[read].size();++lane)
+        {
+            ASSERT_EQ(actual[read][lane].size(), expected[read][lane].size());
+            for(size_t surface=0;surface<expected[read][lane].size();++surface)
+            {
+                const model::summary::surface_summary &actual_surface_summary = actual[read][lane][surface];
+                const model::summary::surface_summary &expected_surface_summary = expected[read][lane][surface];
+                EXPECT_EQ(actual_surface_summary.surface(), expected_surface_summary.surface());
+                EXPECT_GT(actual_surface_summary.surface(), 0u);
+                EXPECT_EQ(actual_surface_summary.tile_count(), expected_surface_summary.tile_count())
+                                    << "Failed surface: " << read << ", lane: " << lane;
+                if (!std::isnan(actual_surface_summary.percent_gt_q30()) ||
+                    !std::isnan(expected_surface_summary.percent_gt_q30()))
+                    EXPECT_NEAR(actual_surface_summary.percent_gt_q30(), expected_surface_summary.percent_gt_q30(), tol)
+                                        << "Failed surface: " << read << ", lane: " << lane << " surface: " << surface;
+                EXPECT_NEAR(actual_surface_summary.yield_g(), expected_surface_summary.yield_g(), tol)
+                                    << "Failed surface: " << read << ", lane: " << lane << " surface: " << surface;
+                EXPECT_NEAR(actual_surface_summary.projected_yield_g(), expected_surface_summary.projected_yield_g(), tol)
+                                    << "Failed surface: " << read << ", lane: " << lane << " surface: " << surface;
+                EXPECT_NEAR(actual_surface_summary.reads_pf(), expected_surface_summary.reads_pf(), tol)
+                                    << "Failed surface: " << read << ", lane: " << lane << " surface: " << surface;
+                EXPECT_NEAR(actual_surface_summary.reads(), expected_surface_summary.reads(), tol)
+                                    << "Failed surface: " << read << ", lane: " << lane << " surface: " << surface;
+                EXPECT_STAT_NEAR(actual_surface_summary.density(), expected_surface_summary.density(), density_tol)
+                                        << "Failed surface: " << read << ", lane: " << lane;
+                EXPECT_STAT_NEAR(actual_surface_summary.density_pf(), expected_surface_summary.density_pf(), density_tol);
+                EXPECT_STAT_NEAR(actual_surface_summary.cluster_count(), expected_surface_summary.cluster_count(),
+                                 density_tol) << "Failed surface: " << read << ", lane: " << lane << " surface: " << surface;
+                EXPECT_STAT_NEAR(actual_surface_summary.cluster_count_pf(), expected_surface_summary.cluster_count_pf(),
+                                 density_tol);
+                EXPECT_STAT_NEAR(actual_surface_summary.percent_pf(), expected_surface_summary.percent_pf(), tol)
+                                        << "Failed surface: " << read << ", lane: " << lane << " surface: " << surface;
+                EXPECT_STAT_NEAR(actual_surface_summary.phasing(), expected_surface_summary.phasing(), tol)
+                                        << "Failed surface: " << read << ", lane: " << lane << " surface: " << surface;
+                EXPECT_STAT_NEAR(actual_surface_summary.prephasing(), expected_surface_summary.prephasing(), tol)
+                                        << "Failed surface: " << read << ", lane: " << lane << " surface: " << surface;
+                EXPECT_STAT_NEAR(actual_surface_summary.percent_aligned(), expected_surface_summary.percent_aligned(), tol)
+                                        << "Failed surface: " << read << ", lane: " << lane << " surface: " << surface;
+                EXPECT_STAT_NEAR(actual_surface_summary.error_rate(), expected_surface_summary.error_rate(), tol);
+                EXPECT_STAT_NEAR(actual_surface_summary.error_rate_35(), expected_surface_summary.error_rate_35(), tol);
+                EXPECT_STAT_NEAR(actual_surface_summary.error_rate_50(), expected_surface_summary.error_rate_50(), tol);
+                EXPECT_STAT_NEAR(actual_surface_summary.error_rate_75(), expected_surface_summary.error_rate_75(), tol);
+                EXPECT_STAT_NEAR(actual_surface_summary.error_rate_100(), expected_surface_summary.error_rate_100(), tol)
+                                        << "Failed surface: " << read << ", lane: " << lane;
+                EXPECT_STAT_NEAR(actual_surface_summary.first_cycle_intensity(),
+                                 expected_surface_summary.first_cycle_intensity(), tol)
+                                        << "Failed surface: " << read << ", lane: " << lane << " surface: " << surface;
+            }
         }
     }
 }
@@ -297,7 +364,7 @@ TEST(summary_metrics_test, cycle_35_cycle_34_tile)
     model::summary::metric_stat expected_stat(3.0f, 0.0f, 3.0f);
     EXPECT_STAT_NEAR(expected_lane_summary.error_rate_35(), expected_stat, tol);
     EXPECT_NEAR(actual_lane_summary.error_rate_35().mean(), expected_lane_summary.error_rate_35().mean(), tol);
-    expected_stat=model::summary::metric_stat(0.0f, 0.0f, 0.0f);
+    expected_stat=model::summary::metric_stat();
     EXPECT_STAT_NEAR(expected_lane_summary.error_rate_50(), expected_stat, tol);
     EXPECT_NEAR(actual_lane_summary.error_rate_50().mean(), expected_lane_summary.error_rate_50().mean(), tol);
 
@@ -352,7 +419,7 @@ TEST(index_summary_test, lane_summary)
         EXPECT_EQ(expected_lane.total_reads(), actual_lane.total_reads());
         EXPECT_EQ(expected_lane.total_pf_reads(), actual_lane.total_pf_reads());
         EXPECT_NEAR(expected_lane.total_fraction_mapped_reads(), actual_lane.total_fraction_mapped_reads(), tol);
-        if(!std::isnan(expected_lane.mapped_reads_cv()) && !std::isnan(actual_lane.mapped_reads_cv()))
+        if(!std::isnan(expected_lane.mapped_reads_cv()) || !std::isnan(actual_lane.mapped_reads_cv()))
             EXPECT_NEAR(expected_lane.mapped_reads_cv(), actual_lane.mapped_reads_cv(), tol);
         EXPECT_NEAR(expected_lane.min_mapped_reads(), actual_lane.min_mapped_reads(), tol);
         EXPECT_NEAR(expected_lane.max_mapped_reads(), actual_lane.max_mapped_reads(), tol);

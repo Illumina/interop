@@ -73,10 +73,11 @@ namespace illumina{ namespace interop { namespace unittest
         static void create_summary(model::summary::run_summary& summary)
         {
             const size_t lane_count = 1;
+            const size_t surface_count = 1;
             const model::run::read_info reads[]={
                     model::run::read_info(1, 1, 27, false)
             };
-            summary.initialize(to_vector(reads), lane_count);
+            summary.initialize(to_vector(reads), lane_count, surface_count);
             summary[0][0].cycle_state().called_cycle_range(model::run::cycle_range(1, 25));
             summary.cycle_state().called_cycle_range(model::run::cycle_range(1, 25));
         }
@@ -132,10 +133,11 @@ namespace illumina{ namespace interop { namespace unittest
         static void create_summary(model::summary::run_summary& summary)
         {
             const size_t lane_count = 1;
+            const size_t surface_count = 1;
             const model::run::read_info reads[]={
                     model::run::read_info(1, 1, 27, false)
             };
-            summary.initialize(to_vector(reads), lane_count);
+            summary.initialize(to_vector(reads), lane_count, surface_count);
             summary[0][0].cycle_state().called_cycle_range(model::run::cycle_range(3, 3));
             summary.cycle_state().called_cycle_range(model::run::cycle_range(3, 3));
         }

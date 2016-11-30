@@ -35,7 +35,6 @@ namespace illumina { namespace interop { namespace model { namespace plot
         /** Resize the heat map to the given number of rows and columns
          *
          * @param data use the given buffer to back the heat map
-         * @param default_val value to fill heatmap
          */
         void set_buffer(float* data) throw(invalid_parameter)
         {

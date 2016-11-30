@@ -75,14 +75,19 @@ namespace illumina{ namespace interop { namespace unittest
         static void create_summary(model::summary::run_summary& summary)
         {
             const size_t lane_count = 1;
+            const size_t surface_count = 2;
             const model::run::read_info reads[]={
                     model::run::read_info(1, 1, 3, false)
             };
-            summary.initialize(to_vector(reads), lane_count);
+            summary.initialize(to_vector(reads), lane_count, surface_count);
             summary[0][0].tile_count(2);
             summary[0][0].projected_yield_g(0.0098816361278295517);
             summary[0][0].yield_g(0.0074112270958721638f);
             summary[0][0].percent_gt_q30(95.733200073242188f);
+            summary[0][0][0].tile_count(2);
+            summary[0][0][0].projected_yield_g(0.0098816361278295517);
+            summary[0][0][0].yield_g(0.0074112270958721638f);
+            summary[0][0][0].percent_gt_q30(95.733200073242188f);
             summary[0][0].cycle_state().qscored_cycle_range(model::run::cycle_range(1, 2));
             summary[0].summary().projected_yield_g(0.0098816361278295517);
             summary[0].summary().yield_g(0.0074112270958721638f);
@@ -169,14 +174,19 @@ namespace illumina{ namespace interop { namespace unittest
         static void create_summary(model::summary::run_summary& summary)
         {
             const size_t lane_count = 1;
+            const size_t surface_count = 2;
             const model::run::read_info reads[]={
                     model::run::read_info(1, 1, 2, false)
             };
-            summary.initialize(to_vector(reads), lane_count);
+            summary.initialize(to_vector(reads), lane_count, surface_count);
             summary[0][0].tile_count(3);
             summary[0][0].projected_yield_g(0.0056276721879839897f);
             summary[0][0].yield_g(0.0056276721879839897f);
             summary[0][0].percent_gt_q30(95.650672912597656f);
+            summary[0][0][0].tile_count(3);
+            summary[0][0][0].projected_yield_g(0.0056276721879839897f);
+            summary[0][0][0].yield_g(0.0056276721879839897f);
+            summary[0][0][0].percent_gt_q30(95.650672912597656f);
             summary[0][0].cycle_state().qscored_cycle_range(model::run::cycle_range(1, 1));
             summary[0].summary().projected_yield_g(0.0056276721879839897f);
             summary[0].summary().yield_g(0.0056276721879839897f);
@@ -250,15 +260,20 @@ namespace illumina{ namespace interop { namespace unittest
         static void create_summary(model::summary::run_summary& summary)
         {
             const size_t lane_count = 1;
+            const size_t surface_count = 2;
             const model::run::read_info reads[]={
                     model::run::read_info(1, 1, 4, false)
             };
-            summary.initialize(to_vector(reads), lane_count);
+            summary.initialize(to_vector(reads), lane_count, surface_count);
             summary[0][0].lane(7);
             summary[0][0].tile_count(1);
             summary[0][0].projected_yield_g(0.0095612816512584686f);
             summary[0][0].yield_g(0.009561280719935894f);
             summary[0][0].percent_gt_q30(90.1163330078125f);
+            summary[0][0][0].tile_count(1);
+            summary[0][0][0].projected_yield_g(0.0095612816512584686f);
+            summary[0][0][0].yield_g(0.009561280719935894f);
+            summary[0][0][0].percent_gt_q30(90.1163330078125f);
             summary[0][0].cycle_state().qscored_cycle_range(model::run::cycle_range(3, 3));
             summary[0].summary().projected_yield_g(0.0095612816512584686f);
             summary[0].summary().yield_g(0.0095612816512584686f);

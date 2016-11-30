@@ -10,6 +10,7 @@
 #include <vector>
 #include "interop/util/exception.h"
 #include "interop/util/assert.h"
+#include "interop/model/run/info.h"
 #include "interop/model/summary/read_summary.h"
 #include "interop/model/model_exceptions.h"
 #include "interop/io/stream_exceptions.h"
@@ -38,7 +39,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
     public:
         /** Constructor
          */
-        run_summary() : m_lane_count(0), m_read_count(0)
+        run_summary() : m_surface_count(0), m_lane_count(0), m_read_count(0)
         {
         }
 
@@ -47,46 +48,49 @@ namespace illumina { namespace interop { namespace model { namespace summary
          * @param beg iterator to start of read collection
          * @param end iterator to end of read collection
          * @param lane_count number of lanes on flowcell
+         * @param surface_count number of surfaces on flowcell
          */
         template<typename I>
-        run_summary(I beg, I end, const size_t lane_count) : m_lane_count(lane_count),
-                                                             m_summary_by_read(beg, end)
+        run_summary(I beg, I end, const size_t lane_count, const size_t surface_count) :
+                m_surface_count(surface_count),
+                m_lane_count(lane_count),
+                m_read_count(static_cast<size_t>(std::distance(beg, end))),
+                m_summary_by_read(beg, end)
         {
-            m_read_count = m_summary_by_read.size();
-            for (iterator b = m_summary_by_read.begin(), e = m_summary_by_read.end(); b != e; ++b)
-            {
-                b->resize(lane_count);
-                for (size_t lane = 0; lane < lane_count; ++lane)
-                    b->at(lane).lane(lane + 1);
-            }
+            preallocate_memory();
         }
 
         /** Constructor
          *
          * @param reads read info vector
          * @param lane_count number of lanes on flowcell
+         * @param surface_count number of surfaces on flowcell
          */
-        run_summary(const std::vector<run::read_info> &reads, const size_t lane_count) : m_lane_count(lane_count),
-                                                                                         m_summary_by_read(
-                                                                                                 reads.begin(),
-                                                                                                 reads.end())
+        run_summary(const std::vector<run::read_info> &reads, const size_t lane_count, const size_t surface_count) :
+                m_surface_count(surface_count),
+                m_lane_count(lane_count),
+                m_read_count(reads.size()),
+                m_summary_by_read(reads.begin(), reads.end())
         {
-            m_read_count = reads.size();
-            for (iterator b = m_summary_by_read.begin(), e = m_summary_by_read.end(); b != e; ++b)
-            {
-                b->resize(lane_count);
-                for (size_t lane = 0; lane < lane_count; ++lane)
-                    b->at(lane).lane(lane + 1);
-            }
+            preallocate_memory();
         }
 
     public:
+        /** Initialize the run summary with the run info
+         *
+         * @param run_info run info
+         */
+        void initialize(const run::info& run_info)
+        {
+            initialize(run_info.reads(), run_info.flowcell().lane_count(), run_info.flowcell().surface_count());
+        }
         /** Initialize the run summary with the number of reads and lanes
          *
          * @param reads vector of reads
          * @param lane_count number of lanes
+         * @param surface_count number of surfaces on flowcell
          */
-        void initialize(const std::vector<run::read_info> &reads, const size_t lane_count)
+        void initialize(const std::vector<run::read_info> &reads, const size_t lane_count, const size_t surface_count)
         {
             m_read_count = reads.size();
             m_summary_by_read.clear();
@@ -94,12 +98,8 @@ namespace illumina { namespace interop { namespace model { namespace summary
             for (size_t read = 0; read < reads.size(); ++read)
                 m_summary_by_read.push_back(read_summary(reads[read]));
             m_lane_count = lane_count;
-            for (iterator b = m_summary_by_read.begin(), e = m_summary_by_read.end(); b != e; ++b)
-            {
-                b->resize(lane_count);
-                for (size_t lane = 0; lane < lane_count; ++lane)
-                    b->at(lane).lane(lane + 1);
-            }
+            m_surface_count=surface_count;
+            preallocate_memory();
         }
         /** Copy reads to destination vector
          *
@@ -110,6 +110,28 @@ namespace illumina { namespace interop { namespace model { namespace summary
             dst.resize(size());
             for(size_t i=0;i<dst.size();++i) dst[i] = m_summary_by_read[i].read();
         }
+
+    private:
+        void preallocate_memory()
+        {
+            for (iterator b = m_summary_by_read.begin(), e = m_summary_by_read.end(); b != e; ++b)
+            {
+                b->resize(m_lane_count);
+                for (size_t lane = 0; lane < m_lane_count; ++lane)
+                {
+                    b->at(lane).lane(lane + 1);
+                    if(m_surface_count > 1)
+                    {
+                        b->at(lane).resize(m_surface_count);
+                        for (size_t surface = 0; surface < m_surface_count; ++surface)
+                        {
+                            b->at(lane).at(surface).surface(surface + 1);
+                        }
+                    }
+                }
+            }
+        }
+
 
     public:
         /** @defgroup run_summary Run Summary
@@ -238,6 +260,23 @@ namespace illumina { namespace interop { namespace model { namespace summary
         {
             m_lane_count = lane_count;
         }
+        /** Get number of surfaces
+         *
+         * @return number of surfaces
+         */
+        size_t surface_count() const
+        {
+            return m_surface_count;
+        }
+
+        /** Set number of surfaces
+         *
+         * @param surface_count number of surfaces
+         */
+        void surface_count(const size_t surface_count)
+        {
+            m_surface_count = surface_count;
+        }
 
     public:
         /** Get summary metrics
@@ -335,6 +374,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
         friend std::istream& operator>>(std::istream& in, run_summary& summary);
 
     private:
+        size_t m_surface_count;
         size_t m_lane_count;
         size_t m_read_count;
     private:

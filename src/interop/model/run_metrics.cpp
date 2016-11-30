@@ -274,6 +274,33 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         const run::info& m_info;
     };
 
+    class determine_tile_naming_method
+    {
+    public:
+        determine_tile_naming_method() : m_naming_method(constants::UnknownTileNamingMethod){}
+        template<class MetricSet>
+        void operator()(const MetricSet &metrics)
+        {
+            typedef typename MetricSet::base_t base_t;
+            determine(metrics, base_t::null());
+        }
+        constants::tile_naming_method naming_method()const
+        {
+            return m_naming_method;
+        }
+
+    private:
+        template<class MetricSet>
+        void determine(const MetricSet &metrics, const void*)
+        {
+            if (!metrics.empty() && m_naming_method == constants::UnknownTileNamingMethod)
+                m_naming_method = logic::metric::tile_naming_method_from_metric(metrics);
+        }
+
+    private:
+        constants::tile_naming_method m_naming_method;
+    };
+
     /** Read binary metrics and XML files from the run folder
      *
      * @param run_folder run folder path
@@ -395,14 +422,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     {
         if (m_run_info.flowcell().naming_method() == constants::UnknownTileNamingMethod)
         {
-            m_run_info.set_naming_method(
-                    logic::metric::tile_naming_method_from_metric(get_set<metrics::tile_metric>()));
-            if (m_run_info.flowcell().naming_method() == constants::UnknownTileNamingMethod)
-                m_run_info.set_naming_method(
-                        logic::metric::tile_naming_method_from_metric(get_set<metrics::extraction_metric>()));
-            if (m_run_info.flowcell().naming_method() == constants::UnknownTileNamingMethod)
-                m_run_info.set_naming_method(
-                        logic::metric::tile_naming_method_from_metric(get_set<metrics::q_metric>()));
+            determine_tile_naming_method naming_method_determinator;
+            m_metrics.apply(naming_method_determinator);
+            m_run_info.set_naming_method( naming_method_determinator.naming_method());
         }
         if (count == std::numeric_limits<size_t>::max())
         {

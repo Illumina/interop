@@ -141,7 +141,7 @@ set(HEADERS
         ../../interop/logic/utils/metrics_to_load.h
         ../../interop/io/format/default_layout.h
         ../../interop/io/format/stream_membuf.h
-        )
+        ../../interop/model/summary/surface_summary.h ../../interop/model/summary/stat_summary.h)
 
 set(INTEROP_HEADERS ${HEADERS} PARENT_SCOPE)
 if(COMPILER_IS_GNUCC_OR_CLANG)

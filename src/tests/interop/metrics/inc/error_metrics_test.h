@@ -60,16 +60,19 @@ namespace illumina { namespace interop { namespace unittest
         static void create_summary(model::summary::run_summary &summary)
         {
             const size_t lane_count = 1;
+            const size_t surface_count = 2;
             const model::run::read_info reads[] = {
                     model::run::read_info(1, 1, 3, false)
             };
-            summary.initialize(to_vector(reads), lane_count);
+            summary.initialize(to_vector(reads), lane_count, surface_count);
             summary[0][0].lane(7);
             summary[0][0].error_rate(model::summary::metric_stat(0.67515134811401367f, 0, 0.67515134811401367f));
-            summary[0][0].error_rate_35(model::summary::metric_stat(0.0f, 0, 0.0f));
-            summary[0][0].error_rate_50(model::summary::metric_stat(0.0f, 0, 0.0f));
-            summary[0][0].error_rate_75(model::summary::metric_stat(0.0f, 0, 0.0f));
-            summary[0][0].error_rate_100(model::summary::metric_stat(0.0f, 0, 0.0f));
+            summary[0][0][0].error_rate(model::summary::metric_stat(0.67515134811401367f, 0, 0.67515134811401367f));
+            summary[0][0][0].tile_count(1);
+            summary[0][0].error_rate_35(model::summary::metric_stat());
+            summary[0][0].error_rate_50(model::summary::metric_stat());
+            summary[0][0].error_rate_75(model::summary::metric_stat());
+            summary[0][0].error_rate_100(model::summary::metric_stat());
             summary[0][0].cycle_state().error_cycle_range(model::run::cycle_range(3, 3));
             summary[0].summary().error_rate(0.67515134811401367f);
             summary.total_summary().error_rate(0.67515134811401367f);

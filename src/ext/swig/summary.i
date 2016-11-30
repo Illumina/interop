@@ -38,6 +38,8 @@ EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 %{
 #include "interop/model/summary/cycle_state_summary.h"
+#include "interop/model/summary/stat_summary.h"
+#include "interop/model/summary/surface_summary.h"
 #include "interop/model/summary/metric_summary.h"
 #include "interop/model/summary/lane_summary.h"
 #include "interop/model/summary/metric_stat.h"
@@ -46,11 +48,14 @@ EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 #include "interop/logic/metric/q_metric.h"
 %}
 
+WRAP_VECTOR(illumina::interop::model::summary::lane_summary);
 WRAP_VECTOR(illumina::interop::model::summary::read_summary);
 %ignore illumina::interop::model::summary::read_summary::read()const;
 WRAP_VECTOR(illumina::interop::model::summary::run_summary);
 
 %include "interop/model/summary/cycle_state_summary.h"
+%include "interop/model/summary/stat_summary.h"
+%include "interop/model/summary/surface_summary.h"
 %include "interop/model/summary/metric_summary.h"
 %include "interop/model/summary/lane_summary.h"
 %include "interop/model/summary/metric_stat.h"
@@ -60,9 +65,11 @@ WRAP_VECTOR(illumina::interop::model::summary::run_summary);
 //
 // Setup typemaps for summary metrics
 //
+WRAP_AS_VECTOR(illumina::interop::model::summary::surface_summary);
 WRAP_AS_VECTOR(illumina::interop::model::summary::lane_summary);
 WRAP_AS_VECTOR(illumina::interop::model::summary::read_summary);
 
+%template(lane_summary_vector) std::vector<illumina::interop::model::summary::surface_summary>;
 %template(lane_summary_vector) std::vector<illumina::interop::model::summary::lane_summary>;
 %template(read_summary_vector) std::vector<illumina::interop::model::summary::read_summary>;
 

@@ -57,19 +57,25 @@ namespace illumina{ namespace interop { namespace unittest
                 ,7,0,66,8,1,0,74,-68,6,64,-118,-7,8,64,0,0,0,0,0,0,0,0,93,1,46,1,0,0,0,0,-47,-104,2,40,122,-86,-46,-120
             };
             buffer.assign(tmp, tmp+util::length_of(tmp));
-        }/** Get the summary for these metrics
+        }
+        /** Get the summary for these metrics
          *
          * @return run summary
          */
         static void create_summary(model::summary::run_summary& summary)
         {
             const size_t lane_count = 1;
+            const size_t surface_count = 2;
             const model::run::read_info reads[]={
                     model::run::read_info(1, 1, 2, false)
             };
-            summary.initialize(to_vector(reads), lane_count);
+            summary.initialize(to_vector(reads), lane_count, surface_count);
             summary[0][0].lane(7);
             summary[0][0].first_cycle_intensity(model::summary::metric_stat(321, 24.75883674621582f, 312));
+            summary[0][0][0].tile_count(2);
+            summary[0][0][1].tile_count(1);
+            summary[0][0][0].first_cycle_intensity(model::summary::metric_stat(307.0f, 7.0710678f, 307.0f));
+            summary[0][0][1].first_cycle_intensity(model::summary::metric_stat(349.0f, 0.0f, 349.0f));
             summary[0][0].cycle_state().extracted_cycle_range(model::run::cycle_range(1, 1));
             summary[0].summary().first_cycle_intensity(321);
             summary.total_summary().first_cycle_intensity(321);

@@ -16,6 +16,7 @@
 #include "interop/logic/summary/cycle_state_summary.h"
 #include "interop/model/metrics/error_metric.h"
 #include "interop/model/summary/run_summary.h"
+#include "interop/logic/metric/tile_metric.h"
 
 
 namespace illumina { namespace interop { namespace logic { namespace summary
@@ -29,14 +30,18 @@ namespace illumina { namespace interop { namespace logic { namespace summary
      * @param end iterator to end of a collection of error metrics
      * @param max_cycle maximum cycle to take
      * @param cycle_to_read map that takes a cycle and returns the read-number cycle-in-read pair
-     * @param summary_by_lane_read destination cache by read then by lane a collection of errors
+     * @param naming_method tile naming convention
+     * @param read_lane_cache destination cache by read then by lane a collection of errors
+     * @param read_lane_surface_cache source cache by read then by lane then by surface a collection of errors
      */
     template<typename I>
     void cache_error_by_lane_read(I beg,
                                   I end,
                                   const size_t max_cycle,
                                   const std::vector<read_cycle> &cycle_to_read,
-                                  summary_by_lane_read<float> &summary_by_lane_read)
+                                  const constants::tile_naming_method naming_method,
+                                  summary_by_lane_read<float> &read_lane_cache,
+                                  summary_by_lane_read<float> &read_lane_surface_cache)
     throw(model::index_out_of_bounds_exception)
     {
         typedef std::vector<size_t> cycle_vector_t;
@@ -44,8 +49,8 @@ namespace illumina { namespace interop { namespace logic { namespace summary
         typedef std::pair<float, float> value_t;
         typedef std::map<key_t, value_t> error_tile_t;
         typedef std::vector<error_tile_t> error_by_read_tile_t;
-        error_by_read_tile_t tmp(summary_by_lane_read.size());
-        cycle_vector_t max_error_cycle(summary_by_lane_read.size(), 0);
+        error_by_read_tile_t tmp(read_lane_cache.size());
+        cycle_vector_t max_error_cycle(read_lane_cache.size(), 0);
         for (; beg != end; ++beg)
         {
             INTEROP_ASSERT(beg->cycle() > 0);
@@ -54,7 +59,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                 INTEROP_THROW(model::index_out_of_bounds_exception, "Cycle exceeds total cycles from Reads in the RunInfo.xml");
             const read_cycle &read = cycle_to_read[beg->cycle() - 1];
             if (read.cycle_within_read > max_cycle || read.is_last_cycle_in_read) continue;
-            key_t key = std::make_pair(beg->lane(), beg->tile());
+            const key_t key = std::make_pair(beg->lane(), beg->tile());
             const size_t read_number = read.number - 1;
             max_error_cycle[read_number] = std::max(max_error_cycle[read_number],
                                                     static_cast<size_t>(read.cycle_within_read));
@@ -70,53 +75,71 @@ namespace illumina { namespace interop { namespace logic { namespace summary
             for (typename error_tile_t::const_iterator ebeg = tmp[read].begin(), eend = tmp[read].end();
                  ebeg != eend; ++ebeg)
             {
-                INTEROP_ASSERT(read < summary_by_lane_read.read_count());
+                INTEROP_ASSERT(read < read_lane_cache.read_count());
                 const size_t lane = ebeg->first.first - 1;
-                if (lane >= summary_by_lane_read.lane_count())
+                if (lane >= read_lane_cache.lane_count())
                     INTEROP_THROW(model::index_out_of_bounds_exception, "Lane exceeds number of lanes in RunInfo.xml");
                 if(max_cycle < std::numeric_limits<size_t>::max() && ebeg->second.second < max_cycle) continue;
-                summary_by_lane_read(read, lane).push_back(divide(ebeg->second.first, ebeg->second.second));
+                const float err_avg = divide(ebeg->second.first, ebeg->second.second);
+                read_lane_cache(read, lane).push_back(err_avg);
+                if(read_lane_surface_cache.surface_count() < 2) continue;
+                const ::uint32_t surface = logic::metric::surface(static_cast< ::uint32_t >(ebeg->first.second), naming_method);
+                INTEROP_ASSERT(surface <= read_lane_surface_cache.surface_count());
+                INTEROP_ASSERT(surface > 0);
+                read_lane_surface_cache(read, lane, surface-1).push_back(err_avg);
             }
         }
     }
 
     /** Calculate summary statistics for each collection of metrics organized by read and lane
      *
-     * @param summary_by_lane_read source cache by read then by lane a collection of errors
+     * @param read_lane_cache source cache by read then by lane a collection of errors
+     * @param read_lane_surface_cache source cache by read then by lane then by surface a collection of errors
      * @param run destination run summary
      * @param func member function pointer to metric
      * @param skip_median skip the median calculation
      */
-    inline void error_summary_from_cache(summary_by_lane_read<float> &summary_by_lane_read,
+    inline void error_summary_from_cache(summary_by_lane_read<float> &read_lane_cache,
+                                         summary_by_lane_read<float> &read_lane_surface_cache,
                                          model::summary::run_summary &run,
-                                         void (model::summary::lane_summary::*func )(const model::summary::metric_stat&),
+                                         void (model::summary::stat_summary::*func )(const model::summary::metric_stat&),
                                          const bool skip_median=false)
     {
         for (size_t read = 0; read < run.size(); ++read)
         {
-            INTEROP_ASSERT(read < summary_by_lane_read.read_count());
+            INTEROP_ASSERT(read < read_lane_cache.read_count());
             INTEROP_ASSERT(read < run.size());
             for (size_t lane = 0; lane < run[read].size(); ++lane)
             {
                 INTEROP_ASSERT(lane < run[read].size());
-                INTEROP_ASSERT(lane < summary_by_lane_read.lane_count());
+                INTEROP_ASSERT(lane < read_lane_cache.lane_count());
                 model::summary::metric_stat stat;
-                summarize(summary_by_lane_read(read, lane).begin(),
-                          summary_by_lane_read(read, lane).end(),
+                summarize(read_lane_cache(read, lane).begin(),
+                          read_lane_cache(read, lane).end(),
                           stat,
                           skip_median);
                 (run[read][lane].*func)(stat);
+                if(read_lane_surface_cache.surface_count() < 2) continue;
+                for(size_t surface=0;surface<read_lane_surface_cache.surface_count();++surface)
+                {
+                    stat.clear();
+                    summarize(read_lane_surface_cache(read, lane, surface).begin(),
+                              read_lane_surface_cache(read, lane, surface).end(),
+                           stat,
+                           skip_median);
+                    (run[read][lane][surface].*func)(stat);
+                }
             }
         }
     }
 
     /** Summarize a collection error metrics
      *
-     * @sa model::summary::lane_summary::error_rate
-     * @sa model::summary::lane_summary::error_rate_35
-     * @sa model::summary::lane_summary::error_rate_50
-     * @sa model::summary::lane_summary::error_rate_75
-     * @sa model::summary::lane_summary::error_rate_100
+     * @sa model::summary::stat_summary::error_rate
+     * @sa model::summary::stat_summary::error_rate_35
+     * @sa model::summary::stat_summary::error_rate_50
+     * @sa model::summary::stat_summary::error_rate_75
+     * @sa model::summary::stat_summary::error_rate_100
      *
      * @sa model::summary::read_summary::error_rate
      *
@@ -127,6 +150,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
      * @param beg iterator to start of a collection of error metrics
      * @param end iterator to end of a collection of error metrics
      * @param cycle_to_read map cycle to the read number and cycle within read number
+     * @param naming_method tile naming convention
      * @param run destination run summary
      * @param skip_median skip the median calculation
      */
@@ -134,32 +158,52 @@ namespace illumina { namespace interop { namespace logic { namespace summary
     void summarize_error_metrics(I beg,
                                  I end,
                                  const read_cycle_vector_t &cycle_to_read,
+                                 const constants::tile_naming_method naming_method,
                                  model::summary::run_summary &run,
                                  const bool skip_median=false) throw(model::index_out_of_bounds_exception)
     {
         typedef summary_by_lane_read<float> summary_by_lane_read_t;
-        typedef void (model::summary::lane_summary::*error_functor_t )(const model::summary::metric_stat&);
+        typedef void (model::summary::stat_summary::*error_functor_t )(const model::summary::metric_stat&);
         typedef std::pair<size_t, error_functor_t> cycle_functor_pair_t;
 
         if (beg == end) return;
         if (run.size() == 0) return;
-        summary_by_lane_read_t temp(run, std::distance(beg, end));
+        const size_t surface_count = run.surface_count();
+        summary_by_lane_read_t read_lane_cache(run, std::distance(beg, end));
+        summary_by_lane_read_t read_lane_surface_cache(run, std::distance(beg, end), surface_count);
 
         cycle_functor_pair_t cycle_functor_pairs[] = {
-                cycle_functor_pair_t(35u, &model::summary::lane_summary::error_rate_35),
-                cycle_functor_pair_t(50u, &model::summary::lane_summary::error_rate_50),
-                cycle_functor_pair_t(75u, &model::summary::lane_summary::error_rate_75),
-                cycle_functor_pair_t(100u, &model::summary::lane_summary::error_rate_100),
+                cycle_functor_pair_t(35u, &model::summary::stat_summary::error_rate_35),
+                cycle_functor_pair_t(50u, &model::summary::stat_summary::error_rate_50),
+                cycle_functor_pair_t(75u, &model::summary::stat_summary::error_rate_75),
+                cycle_functor_pair_t(100u, &model::summary::stat_summary::error_rate_100),
         };
         for (size_t i = 0; i < util::length_of(cycle_functor_pairs); ++i)
         {
-            cache_error_by_lane_read(beg, end, cycle_functor_pairs[i].first, cycle_to_read, temp);
-            error_summary_from_cache(temp, run, cycle_functor_pairs[i].second, skip_median);
-            temp.clear();
+            cache_error_by_lane_read(beg,
+                                     end,
+                                     cycle_functor_pairs[i].first,
+                                     cycle_to_read,
+                                     naming_method,
+                                     read_lane_cache,
+                                     read_lane_surface_cache);
+            error_summary_from_cache(read_lane_cache,
+                                     read_lane_surface_cache,
+                                     run,
+                                     cycle_functor_pairs[i].second,
+                                     skip_median);
+            read_lane_cache.clear();
+            read_lane_surface_cache.clear();
         }
 
 
-        cache_error_by_lane_read(beg, end, std::numeric_limits<size_t>::max(), cycle_to_read, temp);
+        cache_error_by_lane_read(beg,
+                                 end,
+                                 std::numeric_limits<size_t>::max(),
+                                 cycle_to_read,
+                                 naming_method,
+                                 read_lane_cache,
+                                 read_lane_surface_cache);
 
         float error_rate = 0;
         size_t total = 0;
@@ -173,16 +217,26 @@ namespace illumina { namespace interop { namespace logic { namespace summary
             for (size_t lane = 0; lane < run[read].size(); ++lane)
             {
                 INTEROP_ASSERT(lane < run[read].size());
-                model::summary::metric_stat stat;
-                summarize(temp(read, lane).begin(),
-                          temp(read, lane).end(),
-                          stat,
+                model::summary::metric_stat error_stat;
+                summarize(read_lane_cache(read, lane).begin(),
+                          read_lane_cache(read, lane).end(),
+                          error_stat,
                           skip_median);
-                run[read][lane].error_rate(stat);
-                error_rate_by_read += std::accumulate(temp(read, lane).begin(),
-                                                      temp(read, lane).end(),
+                run[read][lane].error_rate(error_stat);
+                error_rate_by_read += std::accumulate(read_lane_cache(read, lane).begin(),
+                                                      read_lane_cache(read, lane).end(),
                                                       float(0));
-                total_by_read += temp(read, lane).size();
+                total_by_read += read_lane_cache(read, lane).size();
+                if(surface_count < 2) continue;
+                for(size_t surface=0;surface<surface_count;++surface)
+                {
+                    error_stat.clear();
+                    summarize(read_lane_surface_cache(read, lane, surface).begin(),
+                              read_lane_surface_cache(read, lane, surface).end(),
+                              error_stat,
+                              skip_median);
+                    run[read][lane][surface].error_rate(error_stat);
+                }
             }
             if (total_by_read > 0)
                 run[read].summary().error_rate(divide(error_rate_by_read, static_cast<float>(total_by_read)));
