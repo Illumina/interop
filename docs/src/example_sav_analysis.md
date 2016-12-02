@@ -18,7 +18,7 @@ Each plot command has an additional set of options that allow the user
 to choose a specific metric to plot or how to filter the data. For
 example, the user can choose to only plot data from lane 1 by specifiying
 the option `--filter-by-lane=1`.  A full list of options for each program
-can be obtained with the `--help` test_modifier.
+can be obtained with the `--help` flag.
 
 ## SAV Analysis Tab
 

@@ -121,7 +121,7 @@ cmake --help
 ~~~~~~~~~~~~~
 
 The default CMake generator for Windows is 32-bit.  This can be changed by specifying the appropriate generator 
-using the `-G` test_modifier:
+using the `-G` flag:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.sh}
 cmake ../interop -G “Visual Studio 12 2013 Win64”
