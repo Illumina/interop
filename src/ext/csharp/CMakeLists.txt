@@ -91,6 +91,13 @@ endforeach()
 install(FILES ${CSHARP_csharp_interop_BINARY}
         DESTINATION lib64
         )
+install(DIRECTORY ${CMAKE_SWIG_OUTDIR}
+        DESTINATION share/illumina/interop/src
+        FILES_MATCHING
+        PATTERN "*.cs"
+        PATTERN "*.cxx"
+        PATTERN "CMakeFiles" EXCLUDE
+        PATTERN "${CMAKE_BUILD_TYPE}" EXCLUDE)
 
 add_custom_target(clean_csharp
         COMMENT "Removing SWIG generated C# files in ${CMAKE_CURRENT_BINARY_DIR}"
@@ -121,7 +128,7 @@ function(create_nuspec_files _output _config _framework _source_files)
         set(_files "${_files};")
     endif()
     set(_files "${_files}<file;src=\\\"${_config}/${DLL_NAME}\\\";target=\\\"lib\\\\${_framework}\\\\${_config}\\\";/>")
-    list(APPEND _files "<file;src=\\\"interop_${CSHARP_TYPE}_${CMAKE_SYSTEM_NAME}.targets\\\";target=\\\"lib\\\\${_framework}\\\\${_config}\\\";/>")
+    list(APPEND _files "<file;src=\\\"illumina_interop_${CSHARP_TYPE}_${NUGET_SYS_ID}.targets\\\";target=\\\"build\\\";/>")
     foreach(SRC ${_source_files})
         get_filename_component(MODULE ${SRC} NAME_WE)
         set(NUGET_FILE "<file;src=\\\"${_config}/$<TARGET_FILE_NAME:${SWIG_MODULE_c_csharp_${MODULE}_REAL_NAME}>\\\";target=\\\"build\\\\${_config}\\\";/>")
@@ -130,22 +137,27 @@ function(create_nuspec_files _output _config _framework _source_files)
     set(${_output} ${_files} PARENT_SCOPE)
 endfunction()
 
+set(NUGET_SYS_ID "${CMAKE_SYSTEM_NAME}-${CMAKE_CXX_COMPILER_ID}-${CMAKE_CXX_COMPILER_VERSION}${PACKAGE_SUFFIX}")
 set(DOT_NET_FRAMEWORK "net40")
 create_nuspec_files(NUGET_FILE_LIST "Debug" ${DOT_NET_FRAMEWORK} "${SWIG_SRCS}")
 create_nuspec_files(NUGET_FILE_LIST "Release" ${DOT_NET_FRAMEWORK} "${SWIG_SRCS}")
+if(BUILD_NUMBER)
+    set(INTEROP_VERSION_STR ${VERSION_SHORT}-alpha-${BUILD_NUMBER})
+else()
+    set(INTEROP_VERSION_STR ${VERSION_SHORT})
+endif()
 # This creates the nuspec file in the proper directory
 add_custom_target(nuspec
         COMMENT "Creating package.nuspec"
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
         ${CMAKE_SOURCE_DIR}/cmake/package.targets
-        $<TARGET_FILE_DIR:${SWIG_MODULE_c_csharp_${MODULE}_REAL_NAME}>/../interop_${CSHARP_TYPE}_${CMAKE_SYSTEM_NAME}.targets
-
+        $<TARGET_FILE_DIR:${SWIG_MODULE_c_csharp_${MODULE}_REAL_NAME}>/../illumina_interop_${CSHARP_TYPE}_${NUGET_SYS_ID}.targets
         COMMAND ${CMAKE_COMMAND}
         -DCMAKE_CURRENT_BINARY_DIR=${CMAKE_CURRENT_BINARY_DIR}
         -DCSHARP_TYPE=${CSHARP_TYPE}
         -DCSHARP_VERSION=${CSHARP_VERSION}
-        -DINTEROP_VERSION=${VERSION_SHORT}
-        -DPLATFORM=${CMAKE_SYSTEM_NAME}
+        -DINTEROP_VERSION=${INTEROP_VERSION_STR}
+        -DPLATFORM=${NUGET_SYS_ID}
         -DNUGET_FILE_LIST="${NUGET_FILE_LIST}"
         -DCONFIG_INPUT_FILE=${CMAKE_SOURCE_DIR}/cmake/package.nuspec.in
         -DCONFIG_OUTPUT_FILE=$<TARGET_FILE_DIR:${SWIG_MODULE_c_csharp_${MODULE}_REAL_NAME}>/../package.nuspec
