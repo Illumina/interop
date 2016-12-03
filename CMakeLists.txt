@@ -31,6 +31,10 @@ option(FORCE_X86 "Force 32-bit libraries instead of platform default (Does nothi
 option(FORCE_SHARED_CRT "Used the shared (DLL) run time lib" ON)
 option(ENABLE_CSHARP "Build C# language bindings" ON)
 
+# Options to control integration builds
+set(PACKAGE_SUFFIX "" CACHE STRING "Suffix added to the output packages")
+set(BUILD_NUMBER "" CACHE STRING "Build number used for select packing scripts")
+
 include_directories(.)
 add_version_target(version ${CMAKE_SOURCE_DIR}/interop/version.h INTEROP_VERSION ${ARCHIVE_VERSION})
 
@@ -41,6 +45,7 @@ if(INTEROP_VERSION)
     string(REGEX REPLACE "^v[0-9]+\\.[0-9]+\\.([0-9]+).*" "\\1" VERSION_PATCH "${VERSION}")
     string(REGEX REPLACE "^v[0-9]+\\.[0-9]+\\.[0-9]+(.*)" "\\1" VERSION_SHA1 "${VERSION}")
     set(VERSION_SHORT "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
+    string(REPLACE "." "," VERSION_LIST "${VERSION_SHORT}")  # Used to configure the version info file
     message(STATUS "InterOp v${VERSION_SHORT}")
 
     if(WIN32)
@@ -55,7 +60,7 @@ if(INTEROP_VERSION)
     set(CPACK_PACKAGE_VERSION_MAJOR "${VERSION_MAJOR}")
     set(CPACK_PACKAGE_VERSION_MINOR "${VERSION_MINOR}")
     set(CPACK_PACKAGE_VERSION_PATCH "${VERSION_PATCH}")
-    set(CPACK_SYSTEM_NAME "${CMAKE_SYSTEM_NAME}-${CMAKE_CXX_COMPILER_ID}-${CMAKE_CXX_COMPILER_VERSION}")
+    set(CPACK_SYSTEM_NAME "${CMAKE_SYSTEM_NAME}-${CMAKE_CXX_COMPILER_ID}-${CMAKE_CXX_COMPILER_VERSION}${PACKAGE_SUFFIX}")
     set(CPACK_PACKAGE_INSTALL_DIRECTORY "interop_${VERSION_SHORT}")
     set(CPACK_OUTPUT_FILE_PREFIX "interop/${VERSION}")
 endif()

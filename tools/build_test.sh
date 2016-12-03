@@ -33,7 +33,7 @@ echo "##teamcity[blockOpened name='Configure $build_type']"
 mkdir build_${build_type}
 cd build_${build_type}
 echo "cmake $source_dir -DCMAKE_BUILD_TYPE=$build_type $build_param"
-cmake $source_dir -DCMAKE_BUILD_TYPE=$build_type $build_param
+cmake $source_dir -DCMAKE_BUILD_TYPE=$build_type $build_param -DCMAKE_INSTALL_PREFIX=../usr
 echo "##teamcity[blockClosed name='Configure $build_type']"
 
 echo "##teamcity[blockOpened name='Build $build_type']"
@@ -43,4 +43,9 @@ echo "##teamcity[blockClosed name='Build $build_type']"
 echo "##teamcity[blockOpened name='Test $build_type']"
 cmake --build . --target check -- -j8
 echo "##teamcity[blockClosed name='Test $build_type']"
+
+echo "##teamcity[blockOpened name='Install $build_type']"
+cmake --build . --target install -- -j4
+echo "##teamcity[blockClosed name='Install $build_type']"
+
 cd ..
