@@ -6,6 +6,9 @@
  *  @copyright GNU Public License.
  */
 #pragma once
+#include "interop/util/exception.h"
+#include "interop/util/lexical_cast.h"
+#include "interop/io/table/csv_format.h"
 
 
 namespace illumina { namespace interop { namespace model { namespace plot {
@@ -85,6 +88,22 @@ namespace illumina { namespace interop { namespace model { namespace plot {
         {
             m_y = y;
             m_x = x;
+        }
+        friend std::ostream& operator<<(std::ostream& out, const data_point& data)
+        {
+            out << std::setprecision(10) << io::table::handle_nan(data.m_x) << ",";
+            out << std::setprecision(10) << io::table::handle_nan(data.m_y) << ",";
+            //out << "\n";
+            return out;
+        }
+        friend std::istream& operator>>(std::istream& in, data_point& data)
+        {
+            std::string tmp;
+            std::getline(in, tmp, ',');
+            data.m_x = util::lexical_cast<x_type>(tmp);
+            std::getline(in, tmp, ',');
+            data.m_y = util::lexical_cast<y_type>(tmp);
+            return in;
         }
 
     private:

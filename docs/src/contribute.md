@@ -79,3 +79,12 @@ Linux:
 ~~~~~~~~~{.sh}
 ln -s tools/hooks/pre-commit.sh .git/hooks/pre-commit
 ~~~~~~~~~
+
+## Debugging Unit Tests
+
+The unit tests use the Google Test Framework. The following flags may help with debugging:
+
+ - `--gtest_catch_exceptions=0`: Ensure GTest throws an exception
+ - `--gtest_break_on_failure`: Ensure GTest stopps on the first failure
+ 
+ 

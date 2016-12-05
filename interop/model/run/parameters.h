@@ -1,6 +1,6 @@
 /** Additional metadata describing a sequencing run
  *
- * The files parsed by this class include:
+ * The InterOp files parsed by this class include:
  *  - RunParameters.xml
  *
  *  @file

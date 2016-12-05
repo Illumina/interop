@@ -79,18 +79,22 @@ if(NOT GTEST_INCLUDE_DIR OR NOT GTEST_LIBRARY OR NOT GTEST_MAIN_LIBRARY OR NOT G
         set(USE_OWN_TR1_TUPLE 1)
     endif()
     if(FORCE_SHARED_CRT)
+        message(STATUS "Enable Shared CRT for GTest")
         set(gtest_force_shared_crt ON)
     else()
         set(gtest_force_shared_crt OFF)
     endif()
     set(GTEST_PREFIX ${CMAKE_BINARY_DIR}/external/gtest)
+    if(FORCE_X86)
+        set(EXTRA_FLAGS " -m32")
+    endif()
     include(ExternalProject)
     ExternalProject_Add(
             gtest
             PREFIX ${GTEST_PREFIX}
             GIT_REPOSITORY https://github.com/google/googletest.git
             GIT_TAG release-1.7.0
-            CMAKE_ARGS -DCMAKE_CXX_FLAGS=-DGTEST_USE_OWN_TR1_TUPLE=${USE_OWN_TR1_TUPLE}
+            CMAKE_ARGS "-DCMAKE_CXX_FLAGS=-DGTEST_USE_OWN_TR1_TUPLE=${USE_OWN_TR1_TUPLE}${EXTRA_FLAGS}"
                 -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
                 -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY=${GTEST_PREFIX}/lib64
                 -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG=${GTEST_PREFIX}/lib64

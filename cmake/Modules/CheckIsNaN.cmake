@@ -8,8 +8,8 @@ CHECK_CXX_SOURCE_COMPILES(
         "#include <cmath>\nint main() { bool a = std::isnan(0e0); return 0; }\n"
         HAVE_STD_ISNAN)
 
-if(HAVE_STD_ISNAN)
-    add_definitions(-DHAVE_STD_ISNAN)
+if(NOT HAVE_STD_ISNAN)
+    add_definitions(-DHAVE_NO_STD_ISNAN)
     return()
 endif()
 

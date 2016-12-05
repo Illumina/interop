@@ -169,12 +169,12 @@ namespace illumina { namespace interop { namespace model { namespace run
     xml::missing_xml_element_exception,
     xml::xml_parse_exception)
     {
-        if (run_folder.find("RunInfo.xml") != std::string::npos)
+        if (run_folder.find(io::paths::run_info()) != std::string::npos)
         {
             read_file(run_folder);
             return;
         }
-        read_file(io::combine(run_folder, "RunInfo.xml"));
+        read_file(io::paths::run_info(run_folder));
     }
     /** Test if tile list matches flowcell layout
      *

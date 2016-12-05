@@ -60,6 +60,23 @@ namespace illumina { namespace interop { namespace model { namespace plot
         {
             return 0;
         }
+        friend std::ostream& operator<<(std::ostream& out, const bar_point& data)
+        {
+            std::ios::fmtflags previous_state( out.flags() );
+            const size_t precision = 10;
+            out << static_cast< const data_point<float, float>& > (data);
+            out << std::setprecision(precision) << io::table::handle_nan(data.m_width) << ",";
+            out.flags(previous_state);
+            return out;
+        }
+        friend std::istream& operator>>(std::istream& in, bar_point& data)
+        {
+            in >> static_cast< data_point<float, float>& > (data);
+            std::string tmp;
+            std::getline(in, tmp, ',');
+            data.m_width = util::lexical_cast<y_type>(tmp);
+            return in;
+        }
 
     private:
         float m_width;

@@ -63,6 +63,18 @@ namespace illumina { namespace interop { namespace util
     size_t length_of(const T (&)[N])
     { return N; }
 
+    /** Convert a stack array into a std::vector
+     *
+     * @tparam T type held by array
+     * @tparam N number of elements in array
+     * @param vals stack array
+     * @return std::vector
+     */
+    template<typename T, size_t N>
+    static std::vector<T> to_vector(const T (&vals)[N])
+    {
+        return std::vector<T>(vals, vals + N);
+    }
 
 }}}
 

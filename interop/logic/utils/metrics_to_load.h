@@ -8,6 +8,7 @@
 #pragma once
 #include <vector>
 #include "interop/constants/enums.h"
+#include "interop/constants/enum_description.h"
 #include "interop/model/model_exceptions.h"
 
 namespace illumina { namespace interop { namespace logic { namespace utils

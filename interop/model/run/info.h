@@ -80,8 +80,8 @@ namespace illumina { namespace interop { namespace model { namespace run
          * @param reads description of the reads
          */
         info(const flowcell_layout &flowcell,
-             const str_vector_t &channels,
-             const read_vector_t &reads) :
+             const str_vector_t &channels=str_vector_t(),
+             const read_vector_t &reads=read_vector_t()) :
                 m_version(0),
                 m_flowcell(flowcell),
                 m_channels(channels),
@@ -222,6 +222,16 @@ namespace illumina { namespace interop { namespace model { namespace run
         void channels(const str_vector_t &channels)
         { m_channels = channels; }
 
+        /** Set the reads info
+         *
+         * @param read_vec reads info
+         */
+        void reads(const read_vector_t& read_vec)
+        {
+            m_reads = read_vec;
+            m_total_cycle_count = total_cycles();
+        }
+
         /** Set the tile naming method
          *
          * @param naming_method tile naming method
@@ -230,6 +240,12 @@ namespace illumina { namespace interop { namespace model { namespace run
         {
             m_flowcell.set_naming_method(naming_method);
         }
+        /** Set the layout of the flowcell
+         *
+         * @param flowcell layout of the flowcell
+         */
+        void flowcell(const flowcell_layout & flowcell)
+        { m_flowcell = flowcell; }
 
         /** Get total number of cycles
          *

@@ -46,8 +46,10 @@ namespace illumina { namespace interop { namespace model { namespace summary
         /** Constructor
          *
          * @param lane lane number
+         * @param channel_count channel count
          */
-        lane_summary(const size_t lane = 0) :
+        lane_summary(const size_t lane = 0, const size_t channel_count=0) :
+                stat_summary(channel_count),
                 m_lane(lane),
                 m_tile_count(0)
         {
@@ -163,6 +165,24 @@ namespace illumina { namespace interop { namespace model { namespace summary
             return m_summary_by_surface.end();
         }
 
+        /** Get random access iterator to start of summaries by lane
+         *
+         * @return random access iterator
+         */
+        const_iterator begin()const
+        {
+            return m_summary_by_surface.begin();
+        }
+
+        /** Get random access iterator to end of summaries by lane
+         *
+         * @return random access iterator
+         */
+        const_iterator end()const
+        {
+            return m_summary_by_surface.end();
+        }
+
         /** Resize the summary by lane vector
          *
          * @param n new size of summary by lane vector
@@ -195,17 +215,6 @@ namespace illumina { namespace interop { namespace model { namespace summary
         {
             return m_cycle_state;
         }
-
-
-        /** Set statistics summarizing the cycle of each RTA state of tiles in the lane
-         *
-         * @param state statistics summarizing the cycle of each RTA state of tiles in the lane
-         */
-        /*void cycle_state(cycle_state_summary& state)
-        {
-            m_cycle_state = state;
-        }*/
-
 
     private:
         size_t m_lane;

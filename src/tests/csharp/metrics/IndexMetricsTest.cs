@@ -16,7 +16,6 @@ namespace Illumina.InterOp.Interop.UnitTest
 		base_index_metrics expected_metric_set;
 		base_index_metrics actual_metric_set = new base_index_metrics();
 		vector_index_metrics expected_metrics = new vector_index_metrics();
-		vector_index_metrics actual_metrics;
 		byte[] expected_binary_data;
 
 		/// <summary>
@@ -52,7 +51,6 @@ namespace Illumina.InterOp.Interop.UnitTest
 			for(int i=0;i<expected_binary_data.Length;i++) expected_binary_data[i] = (byte)tmp[i];
 			expected_metric_set = new base_index_metrics(expected_metrics, Version, header);
 			c_csharp_comm.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, actual_metric_set);
-			actual_metrics = actual_metric_set.metrics();
 		}
 
 		/// <summary>
@@ -65,18 +63,18 @@ namespace Illumina.InterOp.Interop.UnitTest
 			Assert.AreEqual(expected_metric_set.version(),  actual_metric_set.version());
 			Assert.AreEqual(expected_metric_set.size(),  actual_metric_set.size());
 
-			for(int i=0;i<Math.Min(expected_metrics.Count, actual_metrics.Count);i++)
+			for(uint i=0;i<Math.Min(expected_metric_set.size(), actual_metric_set.size());i++)
 			{
-				Assert.AreEqual(expected_metrics[i].lane(), actual_metrics[i].lane());
-				Assert.AreEqual(expected_metrics[i].tile(), actual_metrics[i].tile());
-				Assert.AreEqual(expected_metrics[i].read(), actual_metrics[i].read());
-				Assert.AreEqual(expected_metrics[i].size(), actual_metrics[i].size());
-				for(uint j=0;j<Math.Min(expected_metrics[i].size(),actual_metrics[i].size());j++)
+				Assert.AreEqual(expected_metric_set.at(i).lane(), actual_metric_set.at(i).lane());
+				Assert.AreEqual(expected_metric_set.at(i).tile(), actual_metric_set.at(i).tile());
+				Assert.AreEqual(expected_metric_set.at(i).read(), actual_metric_set.at(i).read());
+				Assert.AreEqual(expected_metric_set.at(i).size(), actual_metric_set.at(i).size());
+				for(uint j=0;j<Math.Min(expected_metric_set.at(i).size(),actual_metric_set.at(i).size());j++)
 				{
-					Assert.AreEqual(expected_metrics[i].indices(j).index_seq(), actual_metrics[i].indices(j).index_seq());
-					Assert.AreEqual(expected_metrics[i].indices(j).sample_id(), actual_metrics[i].indices(j).sample_id());
-					Assert.AreEqual(expected_metrics[i].indices(j).sample_proj(), actual_metrics[i].indices(j).sample_proj());
-					Assert.AreEqual(expected_metrics[i].indices(j).count(), actual_metrics[i].indices(j).count());
+					Assert.AreEqual(expected_metric_set.at(i).indices(j).index_seq(), actual_metric_set.at(i).indices(j).index_seq());
+					Assert.AreEqual(expected_metric_set.at(i).indices(j).sample_id(), actual_metric_set.at(i).indices(j).sample_id());
+					Assert.AreEqual(expected_metric_set.at(i).indices(j).sample_proj(), actual_metric_set.at(i).indices(j).sample_proj());
+					Assert.AreEqual(expected_metric_set.at(i).indices(j).cluster_count(), actual_metric_set.at(i).indices(j).cluster_count());
 				}
 			}
 		}

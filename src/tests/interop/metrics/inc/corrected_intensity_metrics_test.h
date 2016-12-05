@@ -25,7 +25,7 @@ namespace illumina{ namespace interop { namespace unittest
          *
          * @param metrics destination metric set
          */
-        static void create_metric_set(metric_set_t& metrics)
+        static void create_expected(metric_set_t& metrics)
         {
             typedef metric_t::uint_t uint_t;
             typedef metric_t::ushort_t ushort_t;
@@ -34,7 +34,7 @@ namespace illumina{ namespace interop { namespace unittest
             const ushort_t corrected_int_called1[] = {4070, 4074, 4029, 3972};
             const uint_t called_counts1[] = {0, 698433, 548189, 548712, 646638};
             metrics.insert(
-                    metric_t(1, 1104, 25, 1063, 11.9458876f, to_vector(corrected_int_called1), to_vector(corrected_int_all1),
+                    metric_t(1, 1103, 25, 1063, 11.9458876f, to_vector(corrected_int_called1), to_vector(corrected_int_all1),
                              to_vector(called_counts1)));
             const ushort_t corrected_int_all2[] = {1558, 1151, 1158, 1293};
             const uint_t called_counts2[] = {10938, 733661, 537957, 543912, 615504};
@@ -58,7 +58,7 @@ namespace illumina{ namespace interop { namespace unittest
         {
             const int tmp[] =
             {
-                 2, 48, 1, 0, 80, 4, 25, 0, 39, 4, 189, 4, 198, 3, 192, 3, 71, 4, 230, 15, 234, 15, 189, 15, 132,
+                 2, 48, 1, 0, 79, 4, 25, 0, 39, 4, 189, 4, 198, 3, 192, 3, 71, 4, 230, 15, 234, 15, 189, 15, 132,
                  15, 0, 0, 0, 0, 65, 168, 10, 0, 93, 93, 8, 0, 104, 95, 8, 0, 238, 221, 9, 0, 91, 34, 63, 65, 1, 0,
                  80, 4, 1, 0, 15, 5, 22, 6, 127, 4, 134, 4, 13, 5, 149, 19, 119, 19, 51, 19, 68, 19, 186, 42, 0, 0,
                  221, 49, 11, 0, 101, 53, 8, 0, 168, 76, 8, 0, 80, 100, 9, 0, 5, 226, 84, 65, 1, 0, 81, 4, 25, 0, 1,
@@ -72,13 +72,13 @@ namespace illumina{ namespace interop { namespace unittest
          */
         static void create_summary(model::summary::run_summary& summary)
         {
-            const size_t lane_count = 1;
-            const size_t surface_count = 1;
+            const size_t lane_count = 0;
+            const size_t surface_count = 2;
+            const size_t channel_count = 2;
             const model::run::read_info reads[]={
                     model::run::read_info(1, 1, 27, false)
             };
-            summary.initialize(to_vector(reads), lane_count, surface_count);
-            summary[0][0].cycle_state().called_cycle_range(model::run::cycle_range(1, 25));
+            summary.initialize(to_vector(reads), lane_count, surface_count, channel_count);
             summary.cycle_state().called_cycle_range(model::run::cycle_range(1, 25));
         }
     };
@@ -95,7 +95,7 @@ namespace illumina{ namespace interop { namespace unittest
          *
          * @param metrics destination metric set
          */
-        static void create_metric_set(metric_set_t& metrics)
+        static void create_expected(metric_set_t& metrics)
         {
             typedef metric_t::uint_t uint_t;
             typedef metric_t::ushort_t ushort_t;
@@ -132,13 +132,13 @@ namespace illumina{ namespace interop { namespace unittest
          */
         static void create_summary(model::summary::run_summary& summary)
         {
-            const size_t lane_count = 1;
-            const size_t surface_count = 1;
+            const size_t lane_count = 0;
+            const size_t surface_count = 2;
+            const size_t channel_count = 2;
             const model::run::read_info reads[]={
                     model::run::read_info(1, 1, 27, false)
             };
-            summary.initialize(to_vector(reads), lane_count, surface_count);
-            summary[0][0].cycle_state().called_cycle_range(model::run::cycle_range(3, 3));
+            summary.initialize(to_vector(reads), lane_count, surface_count, channel_count);
             summary.cycle_state().called_cycle_range(model::run::cycle_range(3, 3));
         }
     };

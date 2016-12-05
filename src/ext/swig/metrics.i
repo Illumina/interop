@@ -1,12 +1,10 @@
 /** Metrics model and logic
  */
-
 %include <std_vector.i>
 %include <stdint.i>
 %include <std_map.i>
 %include <std_pair.i>
 %import "src/ext/swig/exceptions/exceptions_impl.i"
-%include "src/ext/swig/extends/extends_impl.i"
 %include "src/ext/swig/arrays/arrays_impl.i"
 %include "util/operator_overload.i"
 
@@ -29,6 +27,12 @@ using System.Runtime.InteropServices;
 using Illumina.InterOp.Run;
 %}
 
+%pragma(java) jniclasscode=%{
+  static {
+    System.loadLibrary("interop_metrics");
+  }
+%}
+
 EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 
 
@@ -44,6 +48,7 @@ EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 
 %{
 #include "interop/util/time.h"
+#include "interop/constants/enum_description.h"
 %}
 
 %ignore set_base(const io::layout::base_metric& base);
@@ -60,11 +65,15 @@ EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 // Define shared macros
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+%apply uint64_t { io::layout::base_metric::id_t };
 %define WRAP_TYPES(metric_t)
     using namespace illumina::interop::model::metrics;
     namespace metric_base = illumina::interop::model::metric_base;
 
+    %ignore illumina::interop::model::metric_base::metric_set<metric_t>::populate_tile_numbers_for_lane;
+    %ignore illumina::interop::model::metric_base::metric_set<metric_t>::populate_tile_numbers_for_lane_surface;
     %ignore illumina::interop::model::metric_base::metric_set<metric_t>::offset_map;
+    //%ignore illumina::interop::model::metric_base::metric_set<metric_t>::offset_map; TODO Ignore functions that take set are argument
 
     %apply size_t { std::map< std::size_t, metric_t >::size_type };
     %apply uint64_t { metric_base::metric_set<metric_t>::id_t };
@@ -120,12 +129,7 @@ WRAP_METRICS(IMPORT_METRIC_WRAPPER)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 %template(index_info_vector) std::vector< illumina::interop::model::metrics::index_info  >;
-%template(ulong_vector) std::vector< uint64_t  >;
-%template(ushort_vector) std::vector< uint16_t >;
-%template(uint_vector) std::vector< uint32_t >;
-%template(float_vector) std::vector< float >;
-%template(bool_vector) std::vector< bool >;
-%template(uchar_vector) std::vector< uint8_t >;
+
 %template(tile_metric_map) std::map< uint64_t, illumina::interop::model::metric_base::base_metric >;
 %template(cycle_metric_map) std::map< uint64_t, illumina::interop::model::metric_base::base_cycle_metric >;
 %template(read_metric_vector) std::vector< illumina::interop::model::metrics::read_metric >;
@@ -148,19 +152,6 @@ WRAP_METRICS(IMPORT_METRIC_WRAPPER)
 WRAP_METRICS(INCLUDE_METRIC_WRAPPER)
 WRAP_METRICS(WRAP_TYPES)
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Deprecated
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-EXTEND_CYCLE_METRIC_SET(corrected_intensity_metric)
-EXTEND_CYCLE_METRIC_SET(error_metric)
-EXTEND_CYCLE_METRIC_SET(extraction_metric)
-EXTEND_CYCLE_METRIC_SET(image_metric)
-EXTEND_Q_METRIC(q_metric)
-EXTEND_TILE_METRIC(tile_metric)
-EXTEND_METRIC_SET(index_metric)
-EXTEND_Q_METRIC(q_collapsed_metric)
-EXTEND_Q_METRIC(q_by_lane_metric)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -174,16 +165,28 @@ WRAP_METRICS(WRAP_METRIC_SET)
 %{
 #include "interop/logic/metric/extraction_metric.h"
 #include "interop/logic/metric/q_metric.h"
-#include "interop/model/run_metrics.h"
 #include "interop/logic/utils/metric_type_ext.h"
 #include "interop/logic/utils/metrics_to_load.h"
 %}
 
 %include "interop/logic/metric/extraction_metric.h"
 %include "interop/logic/metric/q_metric.h"
-%include "interop/model/run_metrics.h"
 %include "interop/logic/utils/metric_type_ext.h"
 %include "interop/logic/utils/metrics_to_load.h"
 
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Run Metrics
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+%{
+#include "interop/model/run_metrics.h"
+%}
+%include "interop/model/run_metrics.h"
+
+%define WRAP_RUN_METRICS(metric_t)
+    %template(list_ ## metric_t ## _filenames) illumina::interop::model::metrics::run_metrics::list_filenames< metric_t >;
+    %template(set_ ## metric_t ## _set) illumina::interop::model::metrics::run_metrics::set< illumina::interop::model::metric_base::metric_set< metric_t> >;
+    %template(metric_t ## _set) illumina::interop::model::metrics::run_metrics::get_metric_set< metric_t >;
+%enddef
+WRAP_METRICS(WRAP_RUN_METRICS)

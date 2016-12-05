@@ -16,7 +16,6 @@ namespace Illumina.InterOp.Interop.UnitTest
 		base_extraction_metrics expected_metric_set;
 		base_extraction_metrics actual_metric_set = new base_extraction_metrics();
 		vector_extraction_metrics expected_metrics = new vector_extraction_metrics();
-		vector_extraction_metrics actual_metrics;
 		byte[] expected_binary_data;
 
 		/// <summary>
@@ -46,7 +45,6 @@ namespace Illumina.InterOp.Interop.UnitTest
 			for(int i=0;i<expected_binary_data.Length;i++) expected_binary_data[i] = (byte)tmp[i];
 			expected_metric_set = new base_extraction_metrics(expected_metrics, Version, header);
 			c_csharp_comm.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, actual_metric_set);
-			actual_metrics = actual_metric_set.metrics();
 		}
 
 		/// <summary>
@@ -59,16 +57,16 @@ namespace Illumina.InterOp.Interop.UnitTest
 			Assert.AreEqual(expected_metric_set.version(),  actual_metric_set.version());
 			Assert.AreEqual(expected_metric_set.size(),  actual_metric_set.size());
 
-			for(int i=0;i<Math.Min(expected_metrics.Count, actual_metrics.Count);i++)
+			for(uint i=0;i<Math.Min(expected_metric_set.size(), actual_metric_set.size());i++)
 			{
-				Assert.AreEqual(expected_metrics[i].lane(), actual_metrics[i].lane());
-				Assert.AreEqual(expected_metrics[i].tile(), actual_metrics[i].tile());
-				Assert.AreEqual(expected_metrics[i].cycle(), actual_metrics[i].cycle());
-				Assert.AreEqual(expected_metrics[i].date_time_csharp().value, actual_metrics[i].date_time_csharp().value);
-				for(uint j=0;j<Math.Min(expected_metrics[i].channel_count(), actual_metrics[i].channel_count());j++)
+				Assert.AreEqual(expected_metric_set.at(i).lane(), actual_metric_set.at(i).lane());
+				Assert.AreEqual(expected_metric_set.at(i).tile(), actual_metric_set.at(i).tile());
+				Assert.AreEqual(expected_metric_set.at(i).cycle(), actual_metric_set.at(i).cycle());
+				Assert.AreEqual(expected_metric_set.at(i).date_time_csharp().value, actual_metric_set.at(i).date_time_csharp().value);
+				for(uint j=0;j<Math.Min(expected_metric_set.at(i).channel_count(), actual_metric_set.at(i).channel_count());j++)
 				{
-				    Assert.AreEqual(expected_metrics[i].max_intensity(j), actual_metrics[i].max_intensity(j));
-				    Assert.AreEqual(expected_metrics[i].focusScore(j), actual_metrics[i].focusScore(j));
+				    Assert.AreEqual(expected_metric_set.at(i).max_intensity(j), actual_metric_set.at(i).max_intensity(j));
+				    Assert.AreEqual(expected_metric_set.at(i).focusScore(j), actual_metric_set.at(i).focusScore(j));
 				}
 			}
 		}

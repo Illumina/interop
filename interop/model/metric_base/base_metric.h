@@ -94,18 +94,25 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         {
             TYPE=constants::UnknownMetricType,
             //Compress Lane, Tile and cycle into a 64-bit Integer
-            // Cycle: Bits 0-32
+            // Bit order: LTCR or Lane, Tile, Cycle/Read, Reserved
+            // Reserved: Bits 0-16
+            // Read/Cycle: Bits 16-32
             // Tile: Bits 32-58
             // Lane: Bits 58-64
             LANE_BIT_COUNT = 6, // Supports up to 63 lanes
             TILE_BIT_COUNT = 26, // Support 7 digit tile (up to 67108864)
-            CYCLE_BIT_COUNT = 32, // Support up to 4294967296 cycles
-            LANE_BIT_SHIFT = CYCLE_BIT_COUNT+TILE_BIT_COUNT, // Supports up to 63 lanes
-            TILE_BIT_SHIFT =CYCLE_BIT_COUNT,
+            CYCLE_BIT_COUNT = 16, // Support up to 65535 cycles
+            READ_BIT_COUNT = 16, // Support up to 65535 reads
+            RESERVED_BIT_COUNT = 16, // Support up to 65535 values
+            READ_BIT_SHIFT = RESERVED_BIT_COUNT,
+            CYCLE_BIT_SHIFT = RESERVED_BIT_COUNT,
+            EVENT_BIT_SHIFT = 0,
+            TILE_BIT_SHIFT = CYCLE_BIT_SHIFT+CYCLE_BIT_COUNT,
+            LANE_BIT_SHIFT = TILE_BIT_SHIFT+TILE_BIT_COUNT, // Supports up to 63 lanes
             /** Base for records written out once for each tile */
             BASE_TYPE = constants::BaseTileType,
-            /** Tells the reader to exclude any records that have 0 for tile */
-            CHECK_TILE_ID = 1
+            /** Latest version is sentinel*/
+            LATEST_VERSION=0
         };
     public:
         /** Constructor
@@ -191,7 +198,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         static id_t tile_hash_from_id(const id_t id)
         {
-            // 1. Remove cycle information
+            // 1. Remove cycle and reserved information
             return (id >> TILE_BIT_SHIFT) << TILE_BIT_SHIFT;
         }
         /** Get the tile hash from the unique lane/tile/cycle id
@@ -201,9 +208,9 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         static id_t tile_from_id(const id_t id)
         {
-            // 1. Mask out lane
-            // 2. Shift tile id
-            return (id & ~((~static_cast<id_t>(0)) << LANE_BIT_SHIFT)) >> TILE_BIT_SHIFT;
+            // 1. Shift off lane
+            // 2. Shift tile id into proper position (removing cycle and reserved)
+            return (id << (LANE_BIT_COUNT) >> (LANE_BIT_COUNT+CYCLE_BIT_COUNT+RESERVED_BIT_COUNT));
         }
 
         /** Lane number

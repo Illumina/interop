@@ -54,7 +54,8 @@ INSTANTIATE_TEST_CASE_P(q_metric_unit_test,
 TEST_P(q_metrics_tests, test_read_write)
 {
     typedef q_metric_set::const_iterator const_iterator;
-    if(!test) return;// Disable test for rebaseline
+    if(skip_test) return;
+    ASSERT_TRUE(fixture_test_result);
     EXPECT_EQ(actual.version(), expected.version());
     ASSERT_EQ(actual.size(), expected.size());
     EXPECT_EQ(actual.max_cycle(), expected.max_cycle());
@@ -89,10 +90,10 @@ TEST_P(q_metrics_tests, test_read_write)
 TEST(q_metrics_test, test_populate_cumulative_on_empty)
 {
     q_metric_set actual;
-    q_metric_v6::create_metric_set(actual);
+    q_metric_v6::create_expected(actual);
     logic::metric::populate_cumulative_distribution(actual);
 
-    for(q_metric_set::const_iterator cur=actual.metrics().begin();cur != actual.metrics().end();++cur)
+    for(q_metric_set::const_iterator cur=actual.begin();cur != actual.end();++cur)
         EXPECT_TRUE(!cur->is_cumulative_empty());
     metric_set<q_metric> empty_metrics;
     logic::metric::populate_cumulative_distribution(empty_metrics);
@@ -131,7 +132,7 @@ TEST(q_metrics_test, test_cumulative)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Setup regression test
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-regression_test_metric_generator<q_metric_set> q_regression_gen("metrics");
+regression_test_metric_generator<q_metric_set> q_regression_gen;
 INSTANTIATE_TEST_CASE_P(q_metric_regression_test,
                         q_metrics_tests,
                         ProxyValuesIn(q_regression_gen, regression_test_data::instance().files()));

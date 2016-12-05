@@ -7,8 +7,8 @@
  */
 #pragma once
 
-#include <map>
 #include <vector>
+#include "interop/util/map.h"
 #include "interop/util/assert.h"
 #include "interop/io/format/abstract_metric_format.h"
 #include "interop/util/unique_ptr.h"
@@ -68,7 +68,7 @@ namespace illumina { namespace interop { namespace io
         /** Define a unique pointer to a metric format */
         typedef stdbp::unique_ptr<abstract_metric_format_t> metric_format_pointer;
         /** Define a map between format version and the format */
-        typedef std::map<int, metric_format_pointer> metric_format_map;
+        typedef INTEROP_UNORDERED_MAP(int, metric_format_pointer) metric_format_map;
 
         /** Constructor
          *

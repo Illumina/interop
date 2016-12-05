@@ -22,20 +22,21 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
      */
     template<typename I>
     void summarize_index_metrics(I beg,
-                                        I end,
-                                        const model::metric_base::metric_set<model::metrics::tile_metric>& tile_metrics,
-                                        const size_t lane,
-                                        model::summary::index_lane_summary &summary)
+                                 I end,
+                                 const model::metric_base::metric_set<model::metrics::tile_metric>& tile_metrics,
+                                 const size_t lane,
+                                 model::summary::index_lane_summary &summary)
     throw(model::index_out_of_bounds_exception)
     {
         typedef typename model::summary::index_lane_summary::read_count_t read_count_t;
         typedef typename model::metrics::index_metric::const_iterator const_index_iterator;
         typedef model::summary::index_count_summary index_count_summary;
-        typedef std::map<std::string, index_count_summary> index_count_map_t;
+        typedef INTEROP_UNORDERED_MAP(std::string, index_count_summary) index_count_map_t;
         typedef typename index_count_map_t::iterator map_iterator;
 
+        if(beg == end || tile_metrics.empty()) return;
         index_count_map_t index_count_map;
-        size_t total_mapped_reads = 0;
+        ::uint64_t total_mapped_reads = 0;
         read_count_t pf_cluster_count_total = 0;
         read_count_t cluster_count_total = 0;
         for(;beg != end;++beg)
@@ -57,13 +58,13 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
                                                                                ib->index2(),
                                                                                ib->sample_id(),
                                                                                ib->sample_proj(),
-                                                                               ib->count());
+                                                                               ib->cluster_count());
                     }
                     else
                     {
-                        found_index->second += ib->count();
+                        found_index->second += ib->cluster_count();
                     }
-                    total_mapped_reads += ib->count();
+                    total_mapped_reads += ib->cluster_count();
                 }
             }
             catch(const model::index_out_of_bounds_exception&){continue;} // TODO: check better
@@ -117,9 +118,9 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
                                         model::summary::index_lane_summary &summary)
     throw(model::index_out_of_bounds_exception)
     {
-        summarize_index_metrics(metrics.get_set<model::metrics::index_metric>().begin(),
-                                metrics.get_set<model::metrics::index_metric>().end(),
-                                metrics.get_set<model::metrics::tile_metric>(), lane,
+        summarize_index_metrics(metrics.get<model::metrics::index_metric>().begin(),
+                                metrics.get<model::metrics::index_metric>().end(),
+                                metrics.get<model::metrics::tile_metric>(), lane,
                                 summary);
     }
     /** Summarize a collection index metrics
@@ -136,6 +137,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
                                         model::summary::index_flowcell_summary &summary)
     throw(model::index_out_of_bounds_exception)
     {
+        if(index_metrics.empty() || tile_metrics.empty()) return;
         summary.resize(lane_count);
         for(size_t lane=1;lane <= lane_count;++lane)
         {
@@ -154,8 +156,8 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
     throw(model::index_out_of_bounds_exception)
     {
         const size_t lane_count = metrics.run_info().flowcell().lane_count();
-        summarize_index_metrics(metrics.get_set<model::metrics::index_metric>(),
-                                metrics.get_set<model::metrics::tile_metric>(),
+        summarize_index_metrics(metrics.get<model::metrics::index_metric>(),
+                                metrics.get<model::metrics::tile_metric>(),
                                 lane_count,
                                 summary);
     }

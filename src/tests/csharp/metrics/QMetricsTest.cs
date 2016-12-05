@@ -25,7 +25,6 @@ namespace Illumina.InterOp.Interop.UnitTest
 		/// </summary>
 		protected vector_q_metrics expected_metrics = new vector_q_metrics();
 	    base_q_metrics actual_metric_set = new base_q_metrics();
-	    vector_q_metrics actual_metrics;
 	    byte[] expected_binary_data;
 		/// <summary>
 		/// The setup should be overridden by the specific version of the format
@@ -45,8 +44,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 	        for(int i=0;i<expected_binary_data.Length;i++) expected_binary_data[i] = (byte)tmp[i];
 			expected_metric_set = new base_q_metrics(expected_metrics, version, header);
 	        c_csharp_comm.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, actual_metric_set);
-	        actual_metrics = actual_metric_set.metrics();
-	        //actual_binary_data = write_metrics(actual_metric_set);
+
 	    }
 		/// <summary>
 		/// Confirms that reading the hard coded binary data matches the expected values of the metric
@@ -58,24 +56,24 @@ namespace Illumina.InterOp.Interop.UnitTest
 	        Assert.AreEqual(expected_metric_set.size(),  actual_metric_set.size());
 
 	        Assert.AreEqual(c_csharp_metrics.count_q_metric_bins(expected_metric_set),  c_csharp_metrics.count_q_metric_bins(actual_metric_set));
-	        Assert.AreEqual(expected_metric_set.binCount(),  actual_metric_set.binCount());
+	        Assert.AreEqual(expected_metric_set.bin_count(),  actual_metric_set.bin_count());
 
-	        for(int i=0;i<Math.Min(expected_metrics.Count, actual_metrics.Count);i++)
+	        for(uint i=0;i<Math.Min(expected_metric_set.size(), actual_metric_set.size());i++)
 	        {
-	            Assert.AreEqual(expected_metrics[i].lane(), actual_metrics[i].lane());
-	            Assert.AreEqual(expected_metrics[i].tile(), actual_metrics[i].tile());
-	            Assert.AreEqual(expected_metrics[i].cycle(), actual_metrics[i].cycle());
-	            Assert.AreEqual(expected_metrics[i].size(), actual_metrics[i].size());
-	            for(uint j=0;j<Math.Min(expected_metrics[i].size(), actual_metrics[i].size());j++)
+	            Assert.AreEqual(expected_metric_set.at(i).lane(), actual_metric_set.at(i).lane());
+	            Assert.AreEqual(expected_metric_set.at(i).tile(), actual_metric_set.at(i).tile());
+	            Assert.AreEqual(expected_metric_set.at(i).cycle(), actual_metric_set.at(i).cycle());
+	            Assert.AreEqual(expected_metric_set.at(i).size(), actual_metric_set.at(i).size());
+	            for(uint j=0;j<Math.Min(expected_metric_set.at(i).size(), actual_metric_set.at(i).size());j++)
 	            {
-	                Assert.AreEqual(expected_metrics[i].qscoreHist(j), actual_metrics[i].qscoreHist(j));
+	                Assert.AreEqual(expected_metric_set.at(i).qscoreHist(j), actual_metric_set.at(i).qscoreHist(j));
 	            }
 	        }
-	        for(uint i=0;i<Math.Min(expected_metric_set.binCount(), actual_metric_set.binCount());i++)
+	        for(uint i=0;i<Math.Min(expected_metric_set.bin_count(), actual_metric_set.bin_count());i++)
 	        {
-	            Assert.AreEqual(expected_metric_set.binAt(i).lower(), actual_metric_set.binAt(i).lower());
-	            Assert.AreEqual(expected_metric_set.binAt(i).upper(), actual_metric_set.binAt(i).upper());
-	            Assert.AreEqual(expected_metric_set.binAt(i).value(), actual_metric_set.binAt(i).value());
+	            Assert.AreEqual(expected_metric_set.bin_at(i).lower(), actual_metric_set.bin_at(i).lower());
+	            Assert.AreEqual(expected_metric_set.bin_at(i).upper(), actual_metric_set.bin_at(i).upper());
+	            Assert.AreEqual(expected_metric_set.bin_at(i).value(), actual_metric_set.bin_at(i).value());
 	        }
 	    }
 		/// <summary>
@@ -102,14 +100,14 @@ namespace Illumina.InterOp.Interop.UnitTest
 		[SetUp]
 		protected override void SetUp()
 		{
-		    const uint binCount = 50;
+		    const uint bin_count = 50;
 		    QVal[] hist1 = new QVal[]{new QVal(14,21208), new QVal(21,8227), new QVal(26,73051), new QVal(32,2339486)};
 		    QVal[] hist2 = new QVal[]{new QVal(14,22647), new QVal(21,9570), new QVal(26,81839), new QVal(32,2413227)};
 		    QVal[] hist3 = new QVal[]{new QVal(14,18878), new QVal(21,8168), new QVal(26,72634), new QVal(32,2342292)};
 
-            expected_metrics.Add(new q_metric(1, 1104, 1, ToHist(hist1), binCount));
-            expected_metrics.Add(new q_metric(1, 1106, 1, ToHist(hist2), binCount));
-            expected_metrics.Add(new q_metric(1, 1104, 2, ToHist(hist3), binCount));
+            expected_metrics.Add(new q_metric(1, 1104, 1, ToHist(hist1), bin_count));
+            expected_metrics.Add(new q_metric(1, 1106, 1, ToHist(hist2), bin_count));
+            expected_metrics.Add(new q_metric(1, 1104, 2, ToHist(hist3), bin_count));
 
 			int[] tmp = new int[]{
                  4,206,
@@ -145,14 +143,14 @@ namespace Illumina.InterOp.Interop.UnitTest
 		[SetUp]
 		protected override void SetUp()
 		{
-		    const uint binCount = 7;
+		    const uint bin_count = 7;
 		    QVal[] hist1 = new QVal[]{new QVal(1,45272), new QVal(3,33369), new QVal(4,1784241)};
 		    QVal[] hist2 = new QVal[]{new QVal(1,45229), new QVal(3,34304), new QVal(4,1792186)};
 		    QVal[] hist3 = new QVal[]{new QVal(1,49152), new QVal(3,37440), new QVal(4,1806479)};
 
-            expected_metrics.Add(new q_metric(1, 1103, 1, ToHist(hist1), binCount));
-            expected_metrics.Add(new q_metric(1, 1104, 1, ToHist(hist2), binCount));
-            expected_metrics.Add(new q_metric(1, 1108, 1, ToHist(hist3), binCount));
+            expected_metrics.Add(new q_metric(1, 1103, 1, ToHist(hist1), bin_count));
+            expected_metrics.Add(new q_metric(1, 1104, 1, ToHist(hist2), bin_count));
+            expected_metrics.Add(new q_metric(1, 1108, 1, ToHist(hist3), bin_count));
 
 
             ushort[] lower = new ushort[]{1, 10, 20, 25, 30, 35, 40};

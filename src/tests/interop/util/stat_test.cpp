@@ -26,7 +26,7 @@ typedef metric_set< tile_metric > tile_metric_set;
 TEST(stat_test, median)
 {
     tile_metric_set expected;
-    tile_metric_v2::create_metric_set(expected);
+    tile_metric_v2::create_expected(expected);
     const float tol = 1e-7f / 0.01f;
     const size_t read = 0;
     float expected_percent_aligned_avg = interop::util::median(expected.begin(),
@@ -40,7 +40,7 @@ TEST(stat_test, median)
 TEST(stat_test, mean)
 {
     tile_metric_set expected;
-    tile_metric_v2::create_metric_set(expected);
+    tile_metric_v2::create_expected(expected);
     const float tol = 1e-7f / 0.01f;
     const size_t read = 0;
     float expected_percent_aligned_avg = interop::util::mean<float>(expected.begin(),
@@ -53,7 +53,7 @@ TEST(stat_test, mean)
 TEST(stat_test, nan_mean)
 {
     tile_metric_set expected;
-    tile_metric_v2::create_metric_set(expected);
+    tile_metric_v2::create_expected(expected);
     const float tol = 1e-7f / 0.01f;
     const size_t read = 0;
     float expected_percent_aligned_avg = interop::util::nan_mean<float>(expected.begin(),
@@ -67,7 +67,7 @@ TEST(stat_test, nan_mean)
 TEST(stat_test, standard_deviation)
 {
     tile_metric_set expected;
-    tile_metric_v2::create_metric_set(expected);
+    tile_metric_v2::create_expected(expected);
     const float tol = 1e-7f / 0.01f;
     const size_t read = 0;
     float expected_percent_aligned_std = std::sqrt(interop::util::variance<float>(expected.begin(),
@@ -81,7 +81,7 @@ TEST(stat_test, standard_deviation)
 TEST(stat_test, nan_standard_deviation)
 {
     tile_metric_set expected;
-    tile_metric_v2::create_metric_set(expected);
+    tile_metric_v2::create_expected(expected);
     const float tol = 1e-7f / 0.01f;
     const size_t read = 0;
     float expected_percent_aligned_std = std::sqrt(interop::util::nan_variance<float>(expected.begin(),
@@ -95,7 +95,7 @@ TEST(stat_test, nan_standard_deviation)
 TEST(stat_test, standard_deviation_vec)
 {
     tile_metric_set expected;
-    tile_metric_v2::create_metric_set(expected);
+    tile_metric_v2::create_expected(expected);
     const float tol = 1e-7f / 0.01f;
     const size_t read = 0;
     std::vector<float> percent_aligned_vec(expected.size());
@@ -104,4 +104,5 @@ TEST(stat_test, standard_deviation_vec)
                                                                                   percent_aligned_vec.end()));
     EXPECT_NEAR(expected_percent_aligned_std, 0.074578315019607544, tol);
 }
+
 

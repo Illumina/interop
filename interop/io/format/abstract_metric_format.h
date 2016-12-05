@@ -57,6 +57,13 @@ namespace illumina { namespace interop { namespace io
         virtual void read_metrics(std::istream& in,
                                   model::metric_base::metric_set<Metric>& metric_set,
                                   const size_t file_size)=0;
+        /** Read only the header of a metric set
+         *
+         * @param in input stream
+         * @param metric_set destination set of metrics
+         * @return number of bytes read
+         */
+        virtual size_t read_header(std::istream& in, model::metric_base::metric_set<Metric>& metric_set)=0;
 
         /** Write a metric record to the given output stream
          *
@@ -78,6 +85,11 @@ namespace illumina { namespace interop { namespace io
          * @return version number
          */
         virtual ::int16_t version() const = 0;
+        /** Is the format a multi-record format
+         *
+         * @return true if multiple records make up a single metric
+         */
+        virtual bool is_multi_record() const = 0;
     };
 }}}
 

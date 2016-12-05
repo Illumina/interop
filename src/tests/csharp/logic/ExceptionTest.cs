@@ -4,7 +4,7 @@ using System.IO;
 using Illumina.InterOp.Run;
 using Illumina.InterOp.Metrics;
 using Illumina.InterOp.Plot;
-using Illumina.InterOp.Imaging;
+using Illumina.InterOp.Table;
 using Illumina.InterOp.Comm;
 
 namespace Illumina.InterOp.Interop.UnitTest
@@ -54,6 +54,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		{
             run_metrics metrics = new run_metrics();
             filter_options options = new filter_options(tile_naming_method.FourDigit);
+            metrics.extraction_metric_set().insert(new extraction_metric(1,1101,1, 0L, new ushort_vector(), new float_vector()));
             candle_stick_plot_data data = new candle_stick_plot_data();
             options.cycle(1);
             c_csharp_plot.plot_by_cycle(metrics, metric_type.Intensity, options, data);
@@ -80,7 +81,7 @@ namespace Illumina.InterOp.Interop.UnitTest
             size_vector_2d offsets = new size_vector_2d();
             column_header_vector headers = new column_header_vector();
             headers.Add(new column_header("NoColumn", column_data_type.UnknownDataType));
-            c_csharp_imaging.populate_column_offsets(offsets, headers);
+            c_csharp_table.populate_column_offsets(offsets, headers);
 		}*/
 	}
 }

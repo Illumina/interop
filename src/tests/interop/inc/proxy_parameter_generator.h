@@ -9,9 +9,13 @@
  */
 #pragma once
 #include <gtest/gtest.h>
+#include "interop/util/type_traits.h"
+#include "interop/util/static_assert.h"
 
 
-namespace illumina{ namespace interop { namespace unittest {
+namespace illumina{ namespace interop { namespace unittest
+{
+
     /** Data structure that holds the parameters
      *
      * This holds a reference to the input vector, so ensure it is not on the stack!
@@ -43,7 +47,6 @@ namespace illumina{ namespace interop { namespace unittest {
 
     private:
         const std::vector<Proxy>& m_vec;
-        mutable std::vector< typename T::parent_type > m_proxy_data;
         T& m_object;
     };
     /** Iterator over persistent vector of arguments
@@ -53,7 +56,7 @@ namespace illumina{ namespace interop { namespace unittest {
     template<typename T, typename Proxy>
     class proxy_argument_iterator : public ::testing::internal::ParamIteratorInterface< typename T::parent_type >
     {
-        typedef typename std::vector< typename T::parent_type >::const_iterator const_iterator;
+        typedef typename std::vector< Proxy >::const_iterator const_iterator;
     public:
         /** Constructor
          *
@@ -61,12 +64,19 @@ namespace illumina{ namespace interop { namespace unittest {
          * @param base generator base
          * @param it iterator to std::vector
          */
-        proxy_argument_iterator(T& obj, const proxy_argument_generator<T,Proxy>& base, const_iterator it) :
-                m_base(base), m_begin(it), m_current(it), m_object(obj)
+        proxy_argument_iterator(T& obj, const proxy_argument_generator<T,Proxy>& base, const_iterator it, const_iterator it_end) :
+                m_base(base), m_begin(it), m_current(it), m_end(it_end), m_object(obj)
         {
+            static_assert(!is_pointer<T>::value, "This class does not free memory and should not take a pointer");
+            if(m_current < m_end)
+            {
+                m_current_val=m_object(*m_current);
+            }
         }
         /** Destructor */
-        virtual ~proxy_argument_iterator() {}
+        virtual ~proxy_argument_iterator()
+        {
+        }
         /** A pointer to the base generator instance.
          * Used only for the purposes of iterator comparison
          * to make sure that two iterators belong to the same generator.
@@ -86,7 +96,14 @@ namespace illumina{ namespace interop { namespace unittest {
          */
         virtual void Advance()
         {
-            ++m_current;
+            if(m_current_val == 0 || m_current_val->advance())
+            {
+                ++m_current;
+                if(m_current < m_end)
+                {
+                    m_current_val=m_object(*m_current);
+                }
+            }
         }
         /** Clones the iterator object. Used for implementing copy semantics
          * of ParamIterator<T>.
@@ -106,7 +123,6 @@ namespace illumina{ namespace interop { namespace unittest {
          */
         virtual const typename T::parent_type* Current() const
         {
-            m_current_val=*m_current;
             return &m_current_val;
         }
         /** Determines whether the given iterator and other point to the same
@@ -121,33 +137,34 @@ namespace illumina{ namespace interop { namespace unittest {
             return &m_base == other.BaseGenerator() &&
                     m_current == dynamic_cast<const proxy_argument_iterator<T,Proxy>*>(&other)->m_current;
         }
+
     private:
         proxy_argument_iterator(const proxy_argument_iterator<T,Proxy>& other)
                 : m_base(other.m_base), m_begin(other.m_begin),
-                m_current(other.m_current), m_object(other.m_object)  {}
+                m_current(other.m_current), m_end(other.m_end), m_object(other.m_object)
+        {
+            if(m_current < m_end) m_current_val=m_object(*m_current);
+        }
+
     private:
         const proxy_argument_generator<T,Proxy>& m_base;
         const const_iterator m_begin;
         const_iterator m_current;
-        mutable typename T::parent_type m_current_val;
+        const_iterator m_end;
         T& m_object;
+        mutable typename T::parent_type m_current_val;
     };
 
 
     template<typename T, typename Proxy>
     ::testing::internal::ParamIteratorInterface< typename T::parent_type >* proxy_argument_generator<T,Proxy>::Begin() const
     {
-        if(m_proxy_data.empty())
-        {
-            m_proxy_data.resize(m_vec.size());
-            for(size_t i=0;i<m_vec.size();++i) m_proxy_data[i] = m_object(m_vec[i]);
-        }
-        return new proxy_argument_iterator<T,Proxy>(m_object, *this, m_proxy_data.begin());
+        return new proxy_argument_iterator<T,Proxy>(m_object, *this, m_vec.begin(), m_vec.end());
     }
     template<typename T, typename Proxy>
     ::testing::internal::ParamIteratorInterface< typename T::parent_type >* proxy_argument_generator<T,Proxy>::End() const
     {
-        return new proxy_argument_iterator<T,Proxy>(m_object, *this, m_proxy_data.end());
+        return new proxy_argument_iterator<T,Proxy>(m_object, *this, m_vec.end(), m_vec.end());
     }
 
     /** Generate parameters from a persistent vector (cannot be on the stack!)

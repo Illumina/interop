@@ -28,8 +28,10 @@ namespace illumina { namespace interop { namespace model { namespace summary
         /** Constructor
          *
          * @param surface surface number
+         * @param channel_count number of channels
          */
-        surface_summary(const size_t surface = 0) :
+        surface_summary(const size_t surface = 0, const size_t channel_count=0) :
+                stat_summary(channel_count),
                 m_surface(surface),
                 m_tile_count(0)
         {

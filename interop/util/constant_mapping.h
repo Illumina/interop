@@ -10,26 +10,64 @@
 
 #pragma once
 
-#include <map>
 #include <vector>
+#include <functional>
+#include "interop/util/map.h"
 #include "interop/util/length_of.h"
 
 namespace illumina { namespace interop { namespace util
 {
+
+    namespace detail
+    {
+        /** Convert enum to proper hash
+         */
+        struct enum_hash
+        {
+            /** Convert enum to hash
+             *
+             * @param val enum value
+             * @return hash value
+             */
+            template<typename T>
+            std::size_t operator()(const T val)const
+            {
+                return static_cast<std::size_t>(val);
+            }
+#if defined(__cplusplus) && __cplusplus >= 201103L
+            /** Convert enum to hash
+             *
+             * @param val enum value
+             * @return hash value
+             */
+            std::size_t operator()(const std::string& val)const
+            {
+                return std::hash<std::string>{}(val);
+            }
+#endif
+        };
+    }
 
     /** A singleton that maps a key to a value
      */
     template<class Key, class Value>
     class constant_mapping
     {
+        typedef INTEROP_UNORDERED_HASHMAP(Key, Value, detail::enum_hash) constant_map_t;
     private:
         constant_mapping(const std::pair<Key, Value>* pairs, size_t n)
         {
-            for (size_t i = 0; i < n; ++i) m_mapping[pairs[i].first] = pairs[i].second;
+            for (size_t i = 0; i < n; ++i)
+            {
+                m_mapping.insert(std::make_pair(pairs[i].first, pairs[i].second));
+            }
         }
         constant_mapping(const std::pair<Value, Key>* pairs, size_t n)
         {
-            for (size_t i = 0; i < n; ++i) m_mapping[pairs[i].second] = pairs[i].first;
+            for (size_t i = 0; i < n; ++i)
+            {
+                m_mapping.insert(std::make_pair(pairs[i].second, pairs[i].first));
+            }
         }
 
     public:
@@ -64,13 +102,13 @@ namespace illumina { namespace interop { namespace util
          */
         const Value &get(const Key &key, const Value &default_value) const
         {
-            typename std::map<Key, Value>::const_iterator it = m_mapping.find(key);
+            typename constant_map_t::const_iterator it = m_mapping.find(key);
             if (it == m_mapping.end()) return default_value;
             return it->second;
         }
 
     private:
-        std::map<Key, Value> m_mapping;
+        constant_map_t m_mapping;
     };
 
     /** Get the value corresponding to the key or default_value if none exists

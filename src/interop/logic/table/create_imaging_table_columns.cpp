@@ -21,23 +21,23 @@ namespace illumina { namespace interop { namespace logic { namespace table
      * @param tile_hash map between the tile has and base metric
      * @param filled destination array that indicates whether a column should be filled
      */
-    void determine_filled_columns(const model::metrics::run_metrics& metrics,
+    void determine_filled_columns(model::metrics::run_metrics& metrics,
                                          const model::metrics::run_metrics::tile_metric_map_t& tile_hash,
                                          std::vector< bool >& filled)
     {
         typedef model::metrics::run_metrics::tile_metric_map_t tile_metric_map_t;
         filled.assign(model::table::ImagingColumnCount, false);
-        check_imaging_table_column::set_filled_for_metric_set(metrics.get_set<model::metrics::extraction_metric>(), filled);
-        check_imaging_table_column::set_filled_for_metric_set(metrics.get_set<model::metrics::error_metric>(), filled);
-        check_imaging_table_column::set_filled_for_metric_set(metrics.get_set<model::metrics::image_metric>(), filled);
-        check_imaging_table_column::set_filled_for_metric_set(metrics.get_set<model::metrics::corrected_intensity_metric>(), filled);
-        check_imaging_table_column::set_filled_for_metric_set(metrics.get_set<model::metrics::q_metric>(), filled);
+        check_imaging_table_column::set_filled_for_metric_set(metrics.get<model::metrics::extraction_metric>(), filled);
+        check_imaging_table_column::set_filled_for_metric_set(metrics.get<model::metrics::error_metric>(), filled);
+        check_imaging_table_column::set_filled_for_metric_set(metrics.get<model::metrics::image_metric>(), filled);
+        check_imaging_table_column::set_filled_for_metric_set(metrics.get<model::metrics::corrected_intensity_metric>(), filled);
+        check_imaging_table_column::set_filled_for_metric_set(metrics.get<model::metrics::q_metric>(), filled);
 
         const model::metric_base::metric_set<model::metrics::tile_metric>& tile_metrics =
-                metrics.get_set<model::metrics::tile_metric>();
+                metrics.get<model::metrics::tile_metric>();
         const constants::tile_naming_method naming_method = metrics.run_info().flowcell().naming_method();
-        const size_t q20_idx = metric::index_for_q_value(metrics.get_set<model::metrics::q_metric>(), 20);
-        const size_t q30_idx = metric::index_for_q_value(metrics.get_set<model::metrics::q_metric>(), 30);
+        const size_t q20_idx = metric::index_for_q_value(metrics.get<model::metrics::q_metric>(), 20);
+        const size_t q30_idx = metric::index_for_q_value(metrics.get<model::metrics::q_metric>(), 30);
         for(tile_metric_map_t::const_iterator it = tile_hash.begin();it != tile_hash.end();++it)
         {
             if(!tile_metrics.has_metric(it->first)) continue;
@@ -47,6 +47,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
                                                                   read_it->number(),
                                                                   q20_idx,
                                                                   q30_idx,
+                                                                  0,
                                                                   naming_method,
                                                                   filled);
             }
@@ -95,7 +96,8 @@ namespace illumina { namespace interop { namespace logic { namespace table
                                              const std::vector<bool>& filled,
                                              std::vector< model::table::imaging_column >& columns)
     throw(model::invalid_column_type,
-    model::index_out_of_bounds_exception)
+    model::index_out_of_bounds_exception,
+    model::invalid_channel_exception)
     {
         columns.clear();
         columns.reserve(model::table::ImagingColumnCount+channels.size()+constants::NUM_OF_BASES);
@@ -157,16 +159,30 @@ namespace illumina { namespace interop { namespace logic { namespace table
      * @param metrics source collection of InterOp metrics from the run
      * @param columns destination vector of column descriptors
      */
-    void create_imaging_table_columns(const model::metrics::run_metrics& metrics,
-                                             std::vector< model::table::imaging_column >& columns)
-                                                throw(model::invalid_column_type, model::index_out_of_bounds_exception)
+    void create_imaging_table_columns(model::metrics::run_metrics& metrics,
+                                      std::vector< model::table::imaging_column >& columns)
+                                      throw(model::invalid_column_type,
+                                      model::index_out_of_bounds_exception,
+                                      model::invalid_channel_exception)
     {
         typedef model::metrics::run_metrics::tile_metric_map_t tile_metric_map_t;
         std::vector< bool > filled;
         tile_metric_map_t tile_hash;
         metrics.populate_id_map(tile_hash);
         determine_filled_columns(metrics, tile_hash, filled);
-        create_imaging_table_columns(metrics.run_info().channels(), filled, columns);
+        create_imaging_table_columns(metrics.run_info().channels(),
+                                     filled,
+                                     columns);
+    }
+
+
+    /** Get the maximum number of digits to round
+     *
+     * @return maximum number of rounding digits
+     */
+    ::uint32_t max_digits()
+    {
+        return check_imaging_table_column::max_digits();
     }
 
 

@@ -1,7 +1,7 @@
 using System;
 using NUnit.Framework;
 using System.IO;
-using Illumina.InterOp.Imaging;
+using Illumina.InterOp.Table;
 using Illumina.InterOp.Metrics;
 using Illumina.InterOp.Run;
 using Illumina.InterOp.Comm;
@@ -33,7 +33,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 
             var run_param = new parameters();
             Assert.AreEqual(run_param.version(), 0);
-            Assert.AreEqual(run.extraction_metric_set().MaxCycle, 1);
+            Assert.AreEqual(run.extraction_metric_set().max_cycle(), 1);
 
             read_info_vector reads = new read_info_vector();
             reads.Add(new read_info(1, 1, 26));
@@ -50,12 +50,12 @@ namespace Illumina.InterOp.Interop.UnitTest
             run.legacy_channel_update(instrument_type.HiSeq);
 
             imaging_column_vector columnVector = new imaging_column_vector();
-            c_csharp_imaging.create_imaging_table_columns(run, columnVector);
+            c_csharp_table.create_imaging_table_columns(run, columnVector);
             map_id_offset rowOffsets = new map_id_offset();
-            c_csharp_imaging.count_table_rows(run, rowOffsets);
-            uint columnCount = c_csharp_imaging.count_table_columns(columnVector);
+            c_csharp_table.count_table_rows(run, rowOffsets);
+            uint columnCount = c_csharp_table.count_table_columns(columnVector);
             var data = new float[rowOffsets.Count*columnCount];
-            c_csharp_imaging.populate_imaging_table_data(run, columnVector, rowOffsets, data, (uint)data.Length);
+            c_csharp_table.populate_imaging_table_data(run, columnVector, rowOffsets, data, (uint)data.Length);
             Assert.AreEqual(rowOffsets.Count, 3);
             Assert.AreEqual(data[0], 7);
 
@@ -79,7 +79,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 
             var run_param = new parameters();
             Assert.AreEqual(run_param.version(), 0);
-            Assert.AreEqual(run.extraction_metric_set().MaxCycle, 1);
+            Assert.AreEqual(run.extraction_metric_set().max_cycle(), 1);
 
             read_info_vector reads = new read_info_vector();
             reads.Add(new read_info(1, 1, 26));
@@ -96,7 +96,7 @@ namespace Illumina.InterOp.Interop.UnitTest
             run.legacy_channel_update(instrument_type.HiSeq);
 
             imaging_table table = new imaging_table();
-            c_csharp_imaging.create_imaging_table(run, table);
+            c_csharp_table.create_imaging_table(run, table);
             Assert.AreEqual(table.row_count(), 3);
             Assert.AreEqual(table.at(0, 0), 7);
 

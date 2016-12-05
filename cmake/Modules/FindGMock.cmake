@@ -68,6 +68,9 @@ if(NOT GMOCK_INCLUDE_DIR OR NOT GMOCK_LIBRARY OR NOT GMOCK_MAIN_LIBRARY)
     else()
         set(gtest_force_shared_crt OFF)
     endif()
+    if(FORCE_X86)
+        set(EXTRA_FLAGS " -m32")
+    endif()
     set(GMOCK_PREFIX ${CMAKE_BINARY_DIR}/external/gtest)
     include(ExternalProject)
     ExternalProject_Add(
@@ -75,7 +78,7 @@ if(NOT GMOCK_INCLUDE_DIR OR NOT GMOCK_LIBRARY OR NOT GMOCK_MAIN_LIBRARY)
             PREFIX ${GMOCK_PREFIX}
             GIT_REPOSITORY https://github.com/google/googlemock.git
             GIT_TAG release-1.7.0
-            CMAKE_ARGS -DCMAKE_CXX_FLAGS=-DGMOCK_USE_OWN_TR1_TUPLE=${USE_OWN_TR1_TUPLE}
+            CMAKE_ARGS "-DCMAKE_CXX_FLAGS=-DGMOCK_USE_OWN_TR1_TUPLE=${USE_OWN_TR1_TUPLE}${EXTRA_FLAGS}"
             -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
             -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY=${GMOCK_PREFIX}/lib64
             -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG=${GMOCK_PREFIX}/lib64

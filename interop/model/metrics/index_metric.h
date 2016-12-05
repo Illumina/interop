@@ -41,7 +41,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                 m_index_seq(""),
                 m_sample_id(""),
                 m_sample_proj(""),
-                m_count(0)
+                m_cluster_count(0)
         {
         }
 
@@ -50,16 +50,16 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @param index_seq index sequence
          * @param sample_id sample id
          * @param sample_proj sample project
-         * @param count number of index sequences
+         * @param cluster_count number of index sequences
          */
         index_info(const std::string &index_seq,
                    const std::string &sample_id,
                    const std::string &sample_proj,
-                   const size_t count) :
+                   const ::uint64_t cluster_count) :
                 m_index_seq(index_seq),
                 m_sample_id(sample_id),
                 m_sample_proj(sample_proj),
-                m_count(count)
+                m_cluster_count(cluster_count)
         {
         }
 
@@ -97,8 +97,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          *
          * @return number of clusters
          */
-        size_t count() const
-        { return m_count; }
+        ::uint64_t cluster_count() const
+        { return m_cluster_count; }
 
         /** Test if the sequence is a dual index
          *
@@ -145,7 +145,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         std::string m_index_seq;
         std::string m_sample_id;
         std::string m_sample_proj;
-        size_t m_count;
+        ::uint64_t m_cluster_count;
         template<class MetricType, int Version>
         friend
         struct io::generic_layout;

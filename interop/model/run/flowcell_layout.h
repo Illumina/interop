@@ -155,6 +155,30 @@ namespace illumina { namespace interop { namespace model { namespace run
         {
             m_naming_method = naming_method;
         }
+        /** Set number of lanes
+         *
+         * @param lane_count number of lanes
+         */
+        void lane_count(const uint_t lane_count)
+        { m_lane_count = lane_count; }
+        /** Set number of surfaces
+         *
+         * @param lane_count number of surfaces
+         */
+        void surface_count(const uint_t surface_count)
+        { m_surface_count = surface_count; }
+        /** Set number of swathes
+         *
+         * @param swath_count number of swathes
+         */
+        void swath_count(const uint_t swath_count)
+        { m_swath_count = swath_count; }
+        /** Set number of tiles
+         *
+         * @param tile_count number of tiles
+         */
+        void tile_count(const uint_t tile_count)
+        { m_tile_count = tile_count; }
 
     private:
         tile_naming_method_t m_naming_method;

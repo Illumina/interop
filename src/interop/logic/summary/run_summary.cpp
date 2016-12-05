@@ -33,22 +33,31 @@ namespace illumina { namespace interop { namespace logic { namespace summary
             size_t tile_count_for_lane = 0;
             for(unsigned int surface=0;surface < surface_count;++surface)
             {
-                metrics.get_set<tile_metric>().tile_numbers_for_lane_surface(tile_count_set, lane+1, surface+1, naming_convention);
-                metrics.get_set<error_metric>().tile_numbers_for_lane_surface(tile_count_set, lane+1, surface+1, naming_convention);
-                metrics.get_set<extraction_metric>().tile_numbers_for_lane_surface(tile_count_set, lane+1, surface+1, naming_convention);
-                metrics.get_set<q_metric>().tile_numbers_for_lane_surface(tile_count_set, lane+1, surface+1, naming_convention);
+                metrics.get<tile_metric>().populate_tile_numbers_for_lane_surface(tile_count_set,
+                                                                             lane+1,
+                                                                             surface+1,
+                                                                             naming_convention);
+                metrics.get<error_metric>().populate_tile_numbers_for_lane_surface(tile_count_set,
+                                                                             lane+1,
+                                                                             surface+1,
+                                                                             naming_convention);
+                metrics.get<extraction_metric>().populate_tile_numbers_for_lane_surface(tile_count_set,
+                                                                             lane+1,
+                                                                             surface+1,
+                                                                             naming_convention);
+                metrics.get<q_metric>().populate_tile_numbers_for_lane_surface(tile_count_set,
+                                                                             lane+1,
+                                                                             surface+1,
+                                                                             naming_convention);
 
                 if(surface_count > 1)
                 {
-                    for(size_t read = 0; read < summary.size(); ++read)
-                    {
+                    for (size_t read = 0; read < summary.size(); ++read)
                         summary[read][lane][surface].tile_count(tile_count_set.size());
-                    }
                 }
                 tile_count_for_lane += tile_count_set.size();
                 tile_count_set.clear();
             }
-
             for(size_t read=0;read<summary.size();++read)
                 summary[read][lane].tile_count(tile_count_for_lane);
         }
@@ -88,80 +97,89 @@ namespace illumina { namespace interop { namespace logic { namespace summary
      */
     void summarize_run_metrics(model::metrics::run_metrics& metrics,
                                model::summary::run_summary& summary,
-                               const bool skip_median)
+                               const bool skip_median,
+                               const bool trim)
     throw( model::index_out_of_bounds_exception,
     model::invalid_channel_exception )
     {
         using namespace model::metrics;
-        if(metrics.empty()) return;
+        if(metrics.empty())
+        {
+            summary.clear();
+            return;
+        }
         summary.initialize(metrics.run_info());
 
         read_cycle_vector_t cycle_to_read;
         const constants::tile_naming_method naming_method = metrics.run_info().flowcell().naming_method();
         map_read_to_cycle_number(summary.begin(), summary.end(), cycle_to_read);
-        summarize_tile_metrics(metrics.get_set<tile_metric>().begin(),
-                               metrics.get_set<tile_metric>().end(),
+        summarize_tile_metrics(metrics.get<tile_metric>().begin(),
+                               metrics.get<tile_metric>().end(),
                                naming_method,
                                summary);
-        summarize_error_metrics(metrics.get_set<error_metric>().begin(),
-                                metrics.get_set<error_metric>().end(),
+        summarize_error_metrics(metrics.get<error_metric>().begin(),
+                                metrics.get<error_metric>().end(),
                                 cycle_to_read,
                                 naming_method,
                                 summary,
                                 skip_median);
         INTEROP_ASSERT(metrics.run_info().channels().size()>0);
         const size_t intensity_channel = utils::expected2actual_map(metrics.run_info().channels())[0];
-        summarize_extraction_metrics(metrics.get_set<extraction_metric>().begin(),
-                                     metrics.get_set<extraction_metric>().end(),
+        summarize_extraction_metrics(metrics.get<extraction_metric>().begin(),
+                                     metrics.get<extraction_metric>().end(),
                                      cycle_to_read,
                                      intensity_channel,
                                      naming_method,
                                      summary,
                                      skip_median);
 
-        if(0 == metrics.get_set<q_collapsed_metric>().size())
-            logic::metric::create_collapse_q_metrics(metrics.get_set<q_metric>(),
-                                                     metrics.get_set<q_collapsed_metric>());
-        summarize_collapsed_quality_metrics(metrics.get_set<q_collapsed_metric>().begin(),
-                                            metrics.get_set<q_collapsed_metric>().end(),
+        if(0 == metrics.get<q_collapsed_metric>().size())
+            logic::metric::create_collapse_q_metrics(metrics.get<q_metric>(),
+                                                     metrics.get<q_collapsed_metric>());
+        summarize_collapsed_quality_metrics(metrics.get<q_collapsed_metric>().begin(),
+                                            metrics.get<q_collapsed_metric>().end(),
                                             cycle_to_read,
                                             naming_method,
                                             summary);
         summarize_tile_count(metrics, summary);
 
-        summarize_cycle_state(metrics.get_set<tile_metric>(),
-                              metrics.get_set<error_metric>(),
+        summarize_cycle_state(metrics.get<tile_metric>(),
+                              metrics.get<error_metric>(),
                               cycle_to_read,
                               &model::summary::cycle_state_summary::error_cycle_range,
                               summary);
-        summarize_cycle_state(metrics.get_set<tile_metric>(),
-                              metrics.get_set<extraction_metric>(),
+        summarize_cycle_state(metrics.get<tile_metric>(),
+                              metrics.get<extraction_metric>(),
                               cycle_to_read,
                               &model::summary::cycle_state_summary::extracted_cycle_range,
                               summary);
-        summarize_cycle_state(metrics.get_set<tile_metric>(),
-                              metrics.get_set<q_metric>(),
+        summarize_cycle_state(metrics.get<tile_metric>(),
+                              metrics.get<q_metric>(),
                               cycle_to_read,
                               &model::summary::cycle_state_summary::qscored_cycle_range,
                               summary);
         // Summarize called cycle state
-        summarize_cycle_state(metrics.get_set<tile_metric>(),
-                              metrics.get_set<corrected_intensity_metric>(),
+        summarize_cycle_state(metrics.get<tile_metric>(),
+                              metrics.get<corrected_intensity_metric>(),
                               cycle_to_read,
                               &model::summary::cycle_state_summary::called_cycle_range,
                               summary);
 
-        // Remove the empty lane summary entries
-        size_t max_lane_count = 0;
-        for(size_t read=0;read<summary.size();++read)
+        if(trim)
         {
-            // Shuffle all non-zero tile_count models to beginning of the array
-            summary[read].resize(std::distance(summary[read].begin(),
-                                               std::partition(summary[read].begin(), summary[read].end(), detail::not_empty)));
-            std::sort(summary[read].begin(), summary[read].end(), detail::less_than);
-            max_lane_count = std::max(summary[read].size(), max_lane_count);
+            // Remove the empty lane summary entries
+            size_t max_lane_count = 0;
+            for (size_t read = 0; read < summary.size(); ++read)
+            {
+                // Shuffle all non-zero tile_count models to beginning of the array
+                summary[read].resize(std::distance(summary[read].begin(),
+                                                   std::partition(summary[read].begin(), summary[read].end(),
+                                                                  detail::not_empty)));
+                std::sort(summary[read].begin(), summary[read].end(), detail::less_than);
+                max_lane_count = std::max(summary[read].size(), max_lane_count);
+            }
+            summary.lane_count(max_lane_count);
         }
-        summary.lane_count(max_lane_count);
     }
 
 }}}}

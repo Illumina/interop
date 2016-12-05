@@ -28,6 +28,11 @@ using Illumina.InterOp.Metrics;
 using Illumina.InterOp.Run;
 %}
 
+%pragma(java) jniclasscode=%{
+  static {
+    System.loadLibrary("interop_comm");
+  }
+%}
 
 // This imports the metrics
 WRAP_METRICS(IMPORT_METRIC_WRAPPER)
@@ -36,10 +41,12 @@ EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 
 %{
 #include "interop/io/metric_file_stream.h"
+#include "interop/io/paths.h"
 %}
 
 
 %include "interop/io/metric_file_stream.h"
+%include "interop/io/paths.h"
 
 
 %define WRAP_METRIC_IO(metric_t)
@@ -47,6 +54,7 @@ EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
     %template(write_interop_to_buffer ) illumina::interop::io::write_interop_to_buffer< metric_base::metric_set<metric_t> >;
     %template(read_interop_from_buffer )  illumina::interop::io::read_interop_from_buffer< metric_base::metric_set<metric_t> >;
     %template(read_interop )  illumina::interop::io::read_interop< metric_base::metric_set<metric_t> >;
+    %template(write_interop )  illumina::interop::io::write_interop< metric_base::metric_set<metric_t> >;
 %enddef
 
 

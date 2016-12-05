@@ -27,7 +27,7 @@ struct image_metrics_tests : public generic_test_fixture< image_metric_set > {};
 
 
 image_metrics_tests::generator_type image_unit_test_generators[] = {
-        wrap(new hardcoded_metric_generator< image_metric_v1 >) ,
+        wrap(new hardcoded_metric_generator< image_metric_v1 >),
         wrap(new write_read_metric_generator< image_metric_v1 >),
         wrap(new hardcoded_metric_generator< image_metric_v2 >) ,
         wrap(new write_read_metric_generator< image_metric_v2 >)
@@ -48,7 +48,8 @@ INSTANTIATE_TEST_CASE_P(image_metric_unit_test,
 TEST_P(image_metrics_tests, test_read_write)
 {
     typedef image_metric_set::const_iterator const_iterator;
-    if(!test) return;// Disable test for rebaseline
+    if(skip_test) return;
+    ASSERT_TRUE(fixture_test_result);
     EXPECT_EQ(actual.version(), expected.version());
     ASSERT_EQ(actual.size(), expected.size());
     ASSERT_EQ(actual.channel_count(), expected.channel_count());
@@ -74,7 +75,7 @@ TEST_P(image_metrics_tests, test_read_write)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Setup regression test
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-regression_test_metric_generator<image_metric_set> image_regression_gen("metrics");
+regression_test_metric_generator<image_metric_set> image_regression_gen;
 INSTANTIATE_TEST_CASE_P(image_metric_regression_test,
                         image_metrics_tests,
                         ProxyValuesIn(image_regression_gen, regression_test_data::instance().files()));

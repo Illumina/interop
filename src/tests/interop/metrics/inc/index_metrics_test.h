@@ -34,7 +34,7 @@ namespace illumina{ namespace interop { namespace unittest
          *
          * @param metrics destination metric set
          */
-        static void create_metric_set(metric_set_t& metrics)
+        static void create_expected(metric_set_t& metrics)
         {
             typedef metric_t::index_info_t index_info_t;
             metrics = metric_set_t(VERSION);
@@ -92,6 +92,7 @@ namespace illumina{ namespace interop { namespace unittest
                     index_summary[lane].push_back(model::summary::index_count_summary(3, "CAGATCCA", "AAGGTTCA", "3", "TSCAIndexes", 4578, 0.047f));
                 }
             }
+
         }
     };
 

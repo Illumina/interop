@@ -16,7 +16,6 @@ namespace Illumina.InterOp.Interop.UnitTest
 		base_error_metrics expected_metric_set;
 		base_error_metrics actual_metric_set = new base_error_metrics();
 		vector_error_metrics expected_metrics = new vector_error_metrics();
-		vector_error_metrics actual_metrics;
 		byte[] expected_binary_data;
 
 		/// <summary>
@@ -41,7 +40,6 @@ namespace Illumina.InterOp.Interop.UnitTest
 			}
 			expected_metric_set = new base_error_metrics(expected_metrics, Version, header);
 			c_csharp_comm.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, actual_metric_set);
-			actual_metrics = actual_metric_set.metrics();
 		}
 
 		/// <summary>
@@ -54,15 +52,15 @@ namespace Illumina.InterOp.Interop.UnitTest
 			Assert.AreEqual(expected_metric_set.version(),  actual_metric_set.version());
 			Assert.AreEqual(expected_metric_set.size(),  actual_metric_set.size());
 
-			for(int i=0;i<Math.Min(expected_metrics.Count, actual_metrics.Count);i++)
+			for(uint i=0;i<Math.Min(expected_metric_set.size(), actual_metric_set.size());i++)
 			{
-				Assert.AreEqual(expected_metrics[i].lane(), actual_metrics[i].lane());
-				Assert.AreEqual(expected_metrics[i].tile(), actual_metrics[i].tile());
-				Assert.AreEqual(expected_metrics[i].cycle(), actual_metrics[i].cycle());
-				Assert.AreEqual(expected_metrics[i].errorRate(), actual_metrics[i].errorRate(), 1e-7);
-				Assert.AreEqual(expected_metrics[i].mismatch_count(), actual_metrics[i].mismatch_count());
-				for(uint j=0;j<expected_metrics[i].mismatch_count();j++)
-					Assert.AreEqual(expected_metrics[i].mismatch_cluster_count(j), actual_metrics[i].mismatch_cluster_count(j));
+				Assert.AreEqual(expected_metric_set.at(i).lane(), actual_metric_set.at(i).lane());
+				Assert.AreEqual(expected_metric_set.at(i).tile(), actual_metric_set.at(i).tile());
+				Assert.AreEqual(expected_metric_set.at(i).cycle(), actual_metric_set.at(i).cycle());
+				Assert.AreEqual(expected_metric_set.at(i).errorRate(), actual_metric_set.at(i).errorRate(), 1e-7);
+				Assert.AreEqual(expected_metric_set.at(i).mismatch_count(), actual_metric_set.at(i).mismatch_count());
+				for(uint j=0;j<expected_metric_set.at(i).mismatch_count();j++)
+					Assert.AreEqual(expected_metric_set.at(i).mismatch_cluster_count(j), actual_metric_set.at(i).mismatch_cluster_count(j));
 			}
             byte[] newBuffer = new byte[c_csharp_comm.compute_buffer_size(expected_metric_set)];
 			c_csharp_comm.write_interop_to_buffer(expected_metric_set, newBuffer, (uint)newBuffer.Length);

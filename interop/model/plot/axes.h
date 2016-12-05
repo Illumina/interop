@@ -7,6 +7,7 @@
  */
 #pragma once
 #include <string>
+#include "interop/util/lexical_cast.h"
 
 namespace illumina { namespace interop { namespace model { namespace plot {
 
@@ -59,6 +60,33 @@ namespace illumina { namespace interop { namespace model { namespace plot {
         float max()const
         {
             return m_max;
+        }
+        /** Clear the axis
+         */
+        void clear()
+        {
+            m_min = 0.0f;
+            m_max = 0.0f;
+            m_label = "";
+        }
+
+        friend std::ostream& operator<<(std::ostream& out, const axis& data)
+        {
+            std::ios::fmtflags previous_state( out.flags() );
+            out << std::setprecision(10) << data.m_min << "," << data.m_max << ",";
+            out << data.m_label << ",";
+            out.flags(previous_state);
+            return out;
+        }
+        friend std::istream& operator>>(std::istream& in, axis& data)
+        {
+            std::string tmp;
+            std::getline(in, tmp, ',');
+            data.m_min = util::lexical_cast<float>(tmp);
+            std::getline(in, tmp, ',');
+            data.m_max = util::lexical_cast<float>(tmp);
+            std::getline(in, data.m_label, ',');
+            return in;
         }
 
     private:
@@ -166,6 +194,26 @@ namespace illumina { namespace interop { namespace model { namespace plot {
         const axis& y()const
         {
             return m_y;
+        }
+        /** Clear both axes
+         */
+        void clear()
+        {
+            m_x.clear();
+            m_y.clear();
+        }
+
+        friend std::ostream& operator<<(std::ostream& out, const axes& data)
+        {
+            out << data.m_x;
+            out << data.m_y;
+            return out;
+        }
+        friend std::istream& operator>>(std::istream& in, axes& data)
+        {
+            in >> data.m_x;
+            in >> data.m_y;
+            return in;
         }
 
     private:

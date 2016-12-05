@@ -15,6 +15,7 @@
 #include <sstream>
 #include <iomanip>
 #include <limits>
+#include "interop/util/math.h"
 #include "interop/util/type_traits.h"
 
 namespace illumina { namespace interop { namespace util
@@ -40,49 +41,52 @@ namespace illumina { namespace interop { namespace util
          */
         static Destination cast(const std::string &str)
         {
-            Destination val;
-            if (handle_special_float(str, val)) return val;
+            if (is_nan(str, static_cast<Destination*>(0)))
+            {
+                return nan_value(static_cast<Destination*>(0));
+            }
             std::istringstream iss(str);
+            Destination val;
             iss >> val;
             return val;
         }
 
     private:
-        static bool handle_special_float(const std::string &str, float &val)
+        static double nan_value(double*)
+        {
+            return std::numeric_limits<double>::quiet_NaN();
+        }
+        static float nan_value(float*)
+        {
+            return std::numeric_limits<float>::quiet_NaN();
+        }
+        static Destination nan_value(void*)
+        {
+            return Destination();
+        }
+        static bool is_nan(const std::string &str, double*)
+        {
+            return is_string_nan(str);
+        }
+        static bool is_nan(const std::string &str, float*)
+        {
+            return is_string_nan(str);
+        }
+        static bool is_nan(const std::string&, void*)
+        {
+            return false;
+        }
+        static bool is_string_nan(const std::string &str)
         {
             if (str.length() == 3 && ::tolower(str[0]) =='n' && ::tolower(str[1]) == 'a' && ::tolower(str[2]) == 'n')
             {
-                val = std::numeric_limits<float>::quiet_NaN();
                 return true;
             }
             if (str.length() == 4 && str[0] =='-' && ::tolower(str[1]) =='n' && ::tolower(str[2]) == 'a' &&
                     ::tolower(str[3]) == 'n')
             {
-                val = -std::numeric_limits<float>::quiet_NaN();
                 return true;
             }
-            return false;
-        }
-
-        static bool handle_special_float(const std::string &str, double &val)
-        {
-            if (str.length() == 3 && ::tolower(str[0]) =='n' && ::tolower(str[1]) == 'a' && ::tolower(str[2]) == 'n')
-            {
-                val = std::numeric_limits<double>::quiet_NaN();
-                return true;
-            }
-            if (str.length() == 4 && str[0] =='-' && ::tolower(str[1]) =='n' && ::tolower(str[2]) == 'a' &&
-                ::tolower(str[3]) == 'n')
-            {
-                val = -std::numeric_limits<double>::quiet_NaN();
-                return true;
-            }
-            return false;
-        }
-
-        template<typename T>
-        static bool handle_special_float(const std::string &, T &)
-        {
             return false;
         }
     };
@@ -246,7 +250,8 @@ namespace illumina { namespace interop { namespace util
         if (width > -1) oss << std::setw(width);
         if (precision > -1) oss << std::setprecision(precision);
         if (fill != 0) oss << std::setfill(fill);
-        oss << val;
+        if(std::isnan(val)) oss << std::numeric_limits<float>::quiet_NaN();
+        else oss << val;
         return oss.str();
     }
 
