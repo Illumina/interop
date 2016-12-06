@@ -277,7 +277,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          *
          * @return number of channels
          */
-        size_t channel_count() const
+        size_t channel_count()const
         {
             return m_focus_scores.size();
         }
@@ -323,6 +323,15 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         const float_array_t &focusScores() const
         { return m_focus_scores; }
+        /** Set the current extraction time
+         *
+         * @param time current time
+         */
+        void date_time(const ulong_t time)
+        {
+            m_date_time=time;
+            m_date_time_csharp = util::csharp_date_time::to_csharp(time);
+        }
 
     public:
         /** Get the prefix of the InterOp filename

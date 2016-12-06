@@ -25,7 +25,6 @@
 %ignore vector_t::end;
 %ignore vector_t::operator[];
 %apply size_t { vector_t::size_type };
-%ignore vector_t::at(const size_type) const;
 %enddef
 
 

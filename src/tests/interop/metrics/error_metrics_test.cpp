@@ -44,7 +44,8 @@ INSTANTIATE_TEST_CASE_P(error_metric_unit_test,
  */
 TEST_P(error_metrics_tests, compare_expected_actual)
 {
-    if(!test) return;// Disable test for rebaseline
+    if(skip_test) return;
+    ASSERT_TRUE(fixture_test_result);
     ASSERT_EQ(actual.version(), expected.version());
     ASSERT_EQ(actual.size(), expected.size());
     EXPECT_EQ(actual.max_cycle(), expected.max_cycle()) << actual.offset_map().size()
@@ -71,7 +72,7 @@ TEST_P(error_metrics_tests, compare_expected_actual)
 TEST(error_metrics_single_test, test_tile_metric_count_for_lane)
 {
     error_metric_set metrics;
-    error_metric_v3::create_metric_set(metrics);
+    error_metric_v3::create_expected(metrics);
     EXPECT_EQ(metrics.tile_numbers_for_lane(7).size(), 1u);
 }
 
@@ -80,7 +81,7 @@ TEST(error_metrics_single_test, test_tile_metric_count_for_lane)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Setup regression test
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-regression_test_metric_generator<error_metric_set> error_regression_gen("metrics");
+regression_test_metric_generator<error_metric_set> error_regression_gen;
 INSTANTIATE_TEST_CASE_P(error_metric_regression_test,
                         error_metrics_tests,
                         ProxyValuesIn(error_regression_gen, regression_test_data::instance().files()));

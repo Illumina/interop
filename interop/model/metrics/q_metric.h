@@ -151,7 +151,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          *
          * @return vector of q-score bins
          */
-        const qscore_bin_vector_type &bins() const
+        const qscore_bin_vector_type &get_bins() const
         {
             return m_qscore_bins;
         }
@@ -262,6 +262,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         /** Defines a vector of unsigned 32-bit ints
          */
         typedef std::vector< ::uint32_t > uint32_vector;
+        /** Defines a vector of unsigned 32-bit ints (TODO: remove this def)
+         */
+        typedef std::vector< ::uint32_t > uint_vector;
         /** Defines a vector of unsigned 64-bit ints
         */
         typedef std::vector< ::uint64_t > uint64_vector;

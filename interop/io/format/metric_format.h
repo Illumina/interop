@@ -32,7 +32,8 @@ namespace illumina { namespace interop { namespace io
     {
     private:
         typedef typename Metric::id_t id_t;
-        typedef std::map<id_t, size_t> offset_map_t;
+        typedef model::metric_base::metric_set<Metric> metric_set_t;
+        typedef typename metric_set_t::offset_map_t offset_map_t;
     public:
         /** Define the metric type */
         typedef Metric metric_t;
@@ -69,6 +70,19 @@ namespace illumina { namespace interop { namespace io
             write_binary(out, metric_id);
             Layout::map_stream(out, metric, header, false);
         }
+        /** Read the header into a metric set
+         *
+         * @param in input stream
+         * @param metric_set destination set of metrics
+         * @return number of bytes read
+         */
+        size_t read_header(std::istream& in, model::metric_base::metric_set<Metric>& metric_set)
+        {
+            const size_t version_byte_size = 1;
+            const std::streampos beg = in.tellg();
+            read_header_impl(in, metric_set);
+            return static_cast<size_t>(in.tellg()-beg)+version_byte_size;
+        }
 
         /** Read all the metrics into a metric set
          *
@@ -76,10 +90,10 @@ namespace illumina { namespace interop { namespace io
          * @param metric_set destination set of metrics
          * @param file_size size of the file
          */
-        void read_metrics(std::istream& in, model::metric_base::metric_set<Metric>& metric_set, const size_t file_size)
+        void read_metrics(std::istream& in, metric_set_t& metric_set, const size_t file_size)
         {
-            const std::streamsize record_size = read_header(in, metric_set);
-            offset_map_t metric_offset_map(metric_set.offset_map());
+            const std::streamsize record_size = read_header_impl(in, metric_set);
+            offset_map_t& metric_offset_map = metric_set.offset_map();
             metric_t metric(metric_set);
             if(file_size > 0 && !Layout::MULTI_RECORD)
             {
@@ -99,11 +113,10 @@ namespace illumina { namespace interop { namespace io
                     }
                     catch(const incomplete_file_exception& ex)
                     {
-                        metric_set.resize(metric_offset_map.size());
+                        metric_set.trim(metric_offset_map.size());
                         throw ex;
                     }
                 }
-                metric_set.resize(metric_offset_map.size());
             }
             else
             {
@@ -112,6 +125,7 @@ namespace illumina { namespace interop { namespace io
                     read_record(in, metric_set, metric_offset_map, metric, record_size);
                 }
             }
+            metric_set.trim(metric_offset_map.size());
         }
         /** Read a metric set from the given input stream
          *
@@ -119,7 +133,7 @@ namespace illumina { namespace interop { namespace io
          * @param header metric set header
          * @return number of bytes in the record
          */
-        std::streamsize read_header(std::istream &in, header_t &header)
+        std::streamsize read_header_impl(std::istream &in, header_t &header)
         {
             // TODO: optimize header reading with block read
             if (in.fail())
@@ -186,6 +200,14 @@ namespace illumina { namespace interop { namespace io
         {
             return static_cast< ::int16_t >(Layout::VERSION);
         }
+        /** Is the format a multi-record format
+         *
+         * @return true if multiple records make up a single metric
+         */
+        bool is_multi_record() const
+        {
+            return Layout::MULTI_RECORD > 0;
+        }
 
     private:
         static bool test_stream(std::istream& in,
@@ -216,7 +238,9 @@ namespace illumina { namespace interop { namespace io
             const std::streamsize read_byte_count = read_binary_with_count (in, id);
             if(!test_stream(in, metric_offset_map, read_byte_count, record_size)) return;
             std::streamsize count=read_byte_count;
-            if (id.is_valid(metric_t::CHECK_TILE_ID))
+            if (Layout::is_valid(id))
+                // TODO: Refactor tile metrics to move record type into layout id, then we can remove skip_metric,
+                // simplifiy all this logic
             {
                 metric.set_base(id);// TODO replace with static call
                 if (metric_offset_map.find(metric.id()) == metric_offset_map.end())
@@ -225,7 +249,8 @@ namespace illumina { namespace interop { namespace io
                     if(offset>= metric_set.size()) metric_set.resize(offset+1);
                     metric_set.at(offset).set_base(id);
                     count += Layout::map_stream(in, metric_set.at(offset), metric_set, true);
-                    if(metric_set.at(offset).id()==0)//Avoid adding control lanes in tile metrics
+                    if(!test_stream(in, metric_offset_map, count, record_size)) return;
+                    if(Layout::skip_metric(metric_set.at(offset)))//Avoid adding control lanes in tile metrics
                     {
                         metric_set.resize(offset);
                     }

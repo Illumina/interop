@@ -95,6 +95,7 @@ There are several known limitations to the current library:
   4. We do not support Mono on Windows
   5. If both Visual Studio and Mono are installed, the build script will only use Visual Studio for C#
   6. We do not support 32-bit builds
+  7. MinGW W64 4.9.x and prior will not link properly
 
 SAV Analysis Tab
 ----------------

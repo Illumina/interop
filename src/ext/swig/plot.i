@@ -14,6 +14,7 @@
 %import "src/ext/swig/run.i"
 %import "src/ext/swig/metrics.i"
 
+
 // Ensure all the modules import the shared namespace
 %pragma(csharp) moduleimports=%{
 using Illumina.InterOp.Metrics;
@@ -28,6 +29,11 @@ using Illumina.InterOp.Metrics;
 using Illumina.InterOp.Run;
 %}
 
+%pragma(java) jniclasscode=%{
+  static {
+    System.loadLibrary("interop_plot");
+  }
+%}
 
 // This imports the metrics
 WRAP_METRICS(IMPORT_METRIC_WRAPPER)
@@ -50,6 +56,9 @@ EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 #include "interop/model/plot/heatmap_data.h"
 #include "interop/model/plot/flowcell_data.h"
 %}
+
+%ignore illumina::interop::model::plot::filter_options::option_iterator;
+
 %include "interop/model/plot/axes.h"
 %include "interop/model/plot/filter_options.h"
 %include "interop/model/plot/chart_data.h"

@@ -24,7 +24,9 @@
         <tags>native, Illumina, InterOp, C++, C#, @PLATFORM@, @CSHARP_TYPE@ </tags>
     </metadata>
     <files>
-        @NUGET_FILE_LIST@
+       <file src="@CONFIG@/csharp_interop.dll" target="lib/net40" />
+       <file src="illumina_interop_@CSHARP_TYPE@_@PLATFORM@.targets" target="build" />
+       <file src="@CONFIG@/*@SHARED_EXT@" target="build" />
     </files>
 </package>
 

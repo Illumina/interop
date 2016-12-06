@@ -12,6 +12,8 @@
 #pragma once
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
+#elif HAVE_SYS_TYPES_H
+#include <sys/types.h>
 #else
 #include "interop/util/pstdint.h"
 #endif

@@ -28,10 +28,13 @@ namespace illumina { namespace interop { namespace io
      * @return number of bytes required
      */
     template<class MetricSet>
-    size_t compute_buffer_size(const MetricSet& metrics)
+    size_t compute_buffer_size(const MetricSet& metrics) throw(invalid_argument, bad_format_exception)
     {
         typedef typename MetricSet::metric_type metric_t;
-        return header_size<metric_t>(metrics, metrics.version()) + record_size<metric_t>(metrics, metrics.version()) * metrics.size();
+        if(is_multi_record(metrics))
+            throw invalid_argument("Format does not currently support computing the buffer size");
+        return header_size(metrics, metrics.version()) +
+                size_of_record<metric_t>(metrics, metrics.version()) * metrics.size();
     }
     /** Write the metric to a binary byte buffer
      *
@@ -77,19 +80,19 @@ namespace illumina { namespace interop { namespace io
      *
      * @param buffer string holding a byte buffer
      * @param metrics metric set
+     * @param rebuild whether to rebuild the id map
      * @throw bad_format_exception
      * @throw incomplete_file_exception
      * @throw model::index_out_of_bounds_exception
      */
     template<class MetricSet>
-    void read_interop_from_string(const std::string& buffer, MetricSet& metrics)  throw
+    void read_interop_from_string(const std::string& buffer, MetricSet& metrics, const bool rebuild=true)  throw
     (interop::io::bad_format_exception,
     interop::io::incomplete_file_exception,
     model::index_out_of_bounds_exception)
     {
-        detail::membuf sbuf(const_cast<char*>(buffer.c_str()), const_cast<char*>(buffer.c_str()) + buffer.length());
-        std::istream in(&sbuf);
-        read_metrics(in, metrics, buffer.length());
+        std::istringstream in(buffer);
+        read_metrics(in, metrics, buffer.length(), rebuild);
     }
     /** Read the binary InterOp file into the given metric set
      *
@@ -100,16 +103,13 @@ namespace illumina { namespace interop { namespace io
      * @throw model::index_out_of_bounds_exception
      */
     template<class MetricSet>
-    void read_interop_from_string(const std::vector< ::uint8_t>& buffer, MetricSet& metrics)  throw
+    size_t read_header_from_string(const std::string& buffer, MetricSet& metrics)  throw
     (interop::io::bad_format_exception,
     interop::io::incomplete_file_exception,
     model::index_out_of_bounds_exception)
     {
-        if(buffer.empty())return;
-        char* pbuffer =reinterpret_cast<char*>(const_cast< ::uint8_t* >(&buffer.front()));
-        detail::membuf sbuf(pbuffer, pbuffer + buffer.size());
-        std::istream in(&sbuf);
-        read_metrics(in, metrics, buffer.size());
+        std::istringstream in(buffer);
+        return read_header(in, metrics);
     }
     /** Read the binary InterOp file into the given metric set
      *
@@ -142,26 +142,6 @@ namespace illumina { namespace interop { namespace io
         if(!fin.good()) INTEROP_THROW(file_not_found_exception, "File not found: " << file_name);
         read_metrics(fin, metrics, static_cast<size_t>(file_size(file_name)));
     }
-    /** Check for the existence of the binary InterOp file into the given metric set
-     *
-     * @note The 'Out' suffix (parameter: use_out) is appended when we read the file. We excluded the Out in certain
-     * conditions when writing the file.
-     *
-     * @param run_directory file path to the run directory
-     * @param use_out use the copied version
-     */
-    template<class MetricSet>
-    bool interop_exists(const std::string& run_directory, MetricSet&, const bool use_out=true)
-    throw(file_not_found_exception,
-    bad_format_exception,
-    incomplete_file_exception,
-    model::index_out_of_bounds_exception)
-    {
-        const std::string file_name = interop_filename<MetricSet>(run_directory, use_out);
-        std::ifstream fin(file_name.c_str(), std::ios::binary);
-        if(!fin.good()) return false;
-        return true;
-    }
     /** Write the metric set to a binary InterOp file
      *
      * @note The 'Out' suffix (parameter: use_out) is appended when we read the file. We excluded the Out in certain
@@ -182,7 +162,7 @@ namespace illumina { namespace interop { namespace io
     bad_format_exception,
     incomplete_file_exception)
     {
-        if(metrics.empty())return true;
+        if(metrics.empty() || metrics.version() == 0 )return true;
         const std::string file_name = interop_filename<MetricSet>(run_directory, use_out);
         std::ofstream fout(file_name.c_str(), std::ios::binary);
         if(!fout.good())INTEROP_THROW(file_not_found_exception, "File not found: " << file_name);
@@ -212,6 +192,43 @@ namespace illumina { namespace interop { namespace io
         std::ofstream fout(file_name.c_str(), std::ios::binary);
         if(!fout.good())INTEROP_THROW(file_not_found_exception, "File not found: " << file_name);
         write_metric_header(fout, header, version);
+    }
+    /** Check for the existence of the binary InterOp file into the given metric set
+     *
+     * @note The 'Out' suffix (parameter: use_out) is appended when we read the file. We excluded the Out in certain
+     * conditions when writing the file.
+     *
+     * @param run_directory file path to the run directory
+     * @param use_out use the copied version
+     */
+    template<class MetricSet>
+    bool interop_exists(const std::string& run_directory, MetricSet&, const bool use_out=true)
+    throw(file_not_found_exception,
+    bad_format_exception,
+    incomplete_file_exception,
+    model::index_out_of_bounds_exception)
+    {
+        const std::string file_name = interop_filename<MetricSet>(run_directory, use_out);
+        std::ifstream fin(file_name.c_str(), std::ios::binary);
+        if(!fin.good()) return false;
+        return true;
+    }
+    /** List all possible InterOp file names
+     *
+     * @note The first filename is the legacy name
+     *
+     * @param files destination list of files
+     * @param run_directory file path to the run directory
+     * @param last_cycle last cycle to check
+     * @param use_out use the copied version
+     */
+    template<class MetricSet>
+    void list_interop_filenames(std::vector<std::string>& files,
+                                const std::string& run_directory,
+                                const bool use_out=true)
+    {
+        files.resize(1);
+        files[0] = interop_filename<MetricSet>(run_directory, use_out);
     }
     /** @} */
 

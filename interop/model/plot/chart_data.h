@@ -141,6 +141,26 @@ namespace illumina { namespace interop { namespace model { namespace plot
         {
             return m_axes;
         }
+        /** Clear the title and axis
+         */
+        void clear()
+        {
+            m_axes.clear();
+            m_title = "";
+        }
+
+        friend std::ostream& operator<<(std::ostream& out, const chart_data& data)
+        {
+            out << data.m_title << ",";
+            out << data.m_axes;
+            return out;
+        }
+        friend std::istream& operator>>(std::istream& in, chart_data& data)
+        {
+            std::getline(in, data.m_title, ',');
+            in >> data.m_axes;
+            return in;
+        }
 
     private:
         axes m_axes;

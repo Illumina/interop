@@ -5,8 +5,11 @@ include(${GMOCK_USE_FILE})
 find_package(Threads)
 
 set(SRCS
+        unit_tests.cpp
         run/info_test.cpp
         run/parameters_test.cpp
+        util/option_parser_test.cpp
+        util/stat_test.cpp
         metrics/corrected_intensity_metrics_test.cpp
         metrics/error_metrics_test.cpp
         metrics/extraction_metrics_test.cpp
@@ -16,18 +19,24 @@ set(SRCS
         metrics/tile_metrics_test.cpp
         metrics/q_by_lane_metric_test.cpp
         metrics/q_collapsed_metrics_test.cpp
-        logic/summary_metrics_test.cpp
         metrics/base_metric_tests.cpp
+        metrics/run_metric_test.cpp
+        metrics/metric_streams_test.cpp
+        logic/plot_candle_stick_test.cpp
+        logic/summary_metrics_test.cpp
         logic/enum_parsing_test.cpp
+        logic/channel_test.cpp
         logic/metric_type_ext_test.cpp
         logic/plot_logic_test.cpp
-        util/option_parser_test.cpp
         logic/imaging_table_logic_test.cpp
         logic/imaging_table_regression_test.cpp
-        metrics/metric_streams_test.cpp
-        util/stat_test.cpp
-        unit_tests.cpp
-        metrics/run_metric_test.cpp)
+        logic/plot_bar_test.cpp
+        logic/plot_heatmap_test.cpp
+        logic/plot_flowcell_test.cpp
+        logic/index_summary_test.cpp
+        metrics/coverage_test.cpp
+        metrics/metric_stream_error_test.cpp
+        )
 
 set(HEADERS
         metrics/inc/corrected_intensity_metrics_test.h
@@ -46,7 +55,12 @@ set(HEADERS
         inc/regression_test_data.h
         inc/proxy_parameter_generator.h
         inc/abstract_regression_test_generator.h
-        metrics/inc/metric_format_fixtures.h)
+        metrics/inc/metric_format_fixtures.h
+        logic/inc/metric_filter_iterator.h
+        logic/inc/empty_plot_test_generator.h
+        logic/inc/plot_regression_test_generator.h
+        metrics/inc/format_registry.h
+        )
 
 
 add_executable(interop_gtests ${SRCS} ${HEADERS})

@@ -95,7 +95,7 @@ namespace illumina { namespace interop { namespace logic { namespace utils
             std::swap(expected[0], expected[1]);
             return expected;
         }
-        INTEROP_THROW( model::invalid_channel_exception, "Invalid channel names");
+        INTEROP_THROW( model::invalid_channel_exception, "Invalid channel names: " << norm);
     }
 
     /** Expected channel order
@@ -138,6 +138,8 @@ namespace illumina { namespace interop { namespace logic { namespace utils
         normed.reserve(channels.size());
         normalize(channels.begin(), channels.end(), std::back_inserter(normed));
         std::vector<std::string> expected = expected_order(normed);
+        map.resize(normed.size());
+        INTEROP_ASSERTMSG(expected.size() == normed.size(), expected.size() << " == " << normed.size());
         for(size_t i=0;i<normed.size();++i)
         {
             map[i] = std::distance(expected.begin(), std::find(expected.begin(), expected.end(), normed[i]));

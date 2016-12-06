@@ -82,11 +82,6 @@ cmake --build . --target check --config %BUILD_TYPE% -- /M
 if %errorlevel% neq 0 exit /b %errorlevel%
 echo ##teamcity[blockClosed name='Test %BUILD_TYPE% Visual Studio 2015 Win64']
 
-echo ##teamcity[blockOpened name='NuSpec Debug Visual Studio 2015 Win64']
-cmake --build . --target nuspec --config Debug -- /M
-if %errorlevel% neq 0 exit /b %errorlevel%
-echo ##teamcity[blockClosed name='NuSpec Debug Visual Studio 2015 Win64']
-
 echo ##teamcity[blockOpened name='NuSpec Release Visual Studio 2015 Win64']
 cmake --build . --target nuspec --config Release -- /M
 if %errorlevel% neq 0 exit /b %errorlevel%

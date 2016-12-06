@@ -70,7 +70,8 @@ private:
 
         out << ::int16_t(*sit);
         size_t char_count = length_of(::int16_t(*sit));
-        for (++sit; sit != buffer.end(); ++sit, ++char_count) {
+        for (++sit; sit != buffer.end(); ++sit, ++char_count)
+        {
             const ::int16_t val = ::int16_t(*sit);
             char_count += 1 + length_of(val);
             if (char_count > k_max_line) {
@@ -116,8 +117,9 @@ struct subset_copier
     {
         m_run.get<MetricSet>() = MetricSet(metrics, metrics.version());
         const size_t total = std::min(m_total, metrics.size());
+
         for(size_t i=0;i<total;++i)
-            m_run.get<MetricSet>().insert(metrics.metrics()[i]);
+            m_run.get<MetricSet>().insert(metrics.at(i));
     }
 private:
     run_metrics& m_run;
@@ -144,7 +146,15 @@ int main(int argc, char** argv)
         int ret = read_run_metrics(argv[i], run);
         if(ret != SUCCESS) return ret;
         subset_copier copy_subset(subset, subset_count);
-        run.metrics_callback(copy_subset);
+        try
+        {
+            run.metrics_callback(copy_subset);
+        }
+        catch(const std::exception& ex)
+        {
+            std::cerr << ex.what() << std::endl;
+            return UNEXPECTED_EXCEPTION;
+        }
         try {
             subset.metrics_callback(write_metrics);
         }

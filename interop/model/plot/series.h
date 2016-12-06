@@ -50,7 +50,7 @@ namespace illumina { namespace interop { namespace model { namespace plot {
          * @param series_type type of the series
          */
         series(const std::string& title="",
-               const std::string color="Black",
+               const std::string color="Blue",
                const series_types series_type=Candlestick) :
                 m_title(title),
                 m_color(color),
@@ -96,6 +96,48 @@ namespace illumina { namespace interop { namespace model { namespace plot {
         void add_option(const std::string& option)
         {
             m_options.push_back(option);
+        }
+
+        friend std::ostream& operator<<(std::ostream& out, const series& data)
+        {
+            out << data.m_title << ",";
+            out << data.m_color << ",";
+            out << data.m_series_type << ",";
+            out << data.m_options.size() << ",";
+            for(size_t i=0;i<data.m_options.size();++i)
+                out << data.m_options[i] << ",";
+            out << data.size() << ",";
+            for(size_t i=0;i<data.size();++i)
+            {
+                out << data[i];
+            }
+            return out;
+        }
+        friend std::istream& operator>>(std::istream& in, series& data)
+        {
+            std::string tmp;
+            std::getline(in, data.m_title, ',');
+            std::getline(in, data.m_color, ',');
+            std::getline(in, tmp, ',');
+            int series_type = util::lexical_cast<int>(tmp);
+            data.m_series_type = static_cast<series_types>(series_type);
+
+            std::getline(in, tmp, ',');
+            size_t num_options = util::lexical_cast<size_t>(tmp);
+            data.m_options.resize(num_options);
+            for(size_t i=0;i<data.m_options.size();++i)
+            {
+                std::getline(in, data.m_options[i], ',');
+            }
+
+            std::getline(in, tmp, ',');
+            size_t num_points = util::lexical_cast<size_t>(tmp);
+            data.resize(num_points);
+            for(size_t i=0;i<data.size();++i)
+            {
+                in >> data[i];
+            }
+            return in;
         }
 
     private:

@@ -52,10 +52,11 @@ namespace illumina{ namespace interop{ namespace io {
         static std::streamsize map_records(Stream& stream, Summary& summary)
         {
             std::streamsize count = 0;
+
             count += map_cycle_state(stream, summary.cycle_state());
-            count += map_metric_summary(stream, summary.nonindex_summary());
-            count += map_metric_summary(stream, summary.total_summary());
-            count += map_read_summary(stream, summary.begin(), summary.end());
+            count += map_metric_summary(stream, summary.nonindex_summary(), summary.channel_count());
+            count += map_metric_summary(stream, summary.total_summary(), summary.channel_count());
+            count += map_read_summary(stream, summary.begin(), summary.end(), summary.channel_count());
             return count;
         }
 
@@ -71,54 +72,89 @@ namespace illumina{ namespace interop{ namespace io {
         static std::streamsize map_header(Stream& stream, Header& header)
         {
             std::streamsize count = 0;
+            count += stream_map< size_t >(stream, header.m_surface_count);
             count += stream_map< size_t >(stream, header.m_read_count);
             count += stream_map< size_t >(stream, header.m_lane_count);
+            count += stream_map< ::uint8_t  >(stream, header.m_channel_count);
             return count;
         }
     private:
         template<class Stream, class ReadSummaryIterator>
-        static std::streamsize map_read_summary(Stream& stream, ReadSummaryIterator read_beg, ReadSummaryIterator read_end)
+        static std::streamsize map_read_summary(Stream& stream,
+                                                ReadSummaryIterator read_beg,
+                                                ReadSummaryIterator read_end,
+                                                const size_t channel_count)
         {
             std::streamsize count = 0;
             for(;read_beg != read_end;++read_beg)
             {
                 count += map_read(stream, read_beg->m_read);
-                count += map_metric_summary(stream, read_beg->m_metric_summary);
-                count += map_lane_summary(stream, read_beg->begin(), read_beg->end());
+                count += map_metric_summary(stream, read_beg->m_metric_summary, channel_count);
+                count += map_lane_summary(stream, read_beg->begin(), read_beg->end(), channel_count);
             }
             return count;
         }
         template<class Stream, class LaneSummaryIterator>
-        static std::streamsize map_lane_summary(Stream& stream, LaneSummaryIterator lane_beg, LaneSummaryIterator lane_end)
+        static std::streamsize map_lane_summary(Stream& stream,
+                                                LaneSummaryIterator lane_beg,
+                                                LaneSummaryIterator lane_end,
+                                                const size_t channel_count)
         {
             std::streamsize count = 0;
             for(;lane_beg != lane_end;++lane_beg)
             {
                 count += stream_map< size_t >(stream, lane_beg->m_lane);
                 count += stream_map< size_t >(stream, lane_beg->m_tile_count);
-                count += stream_map< float >(stream, lane_beg->m_percent_gt_q30);
-                count += stream_map< float >(stream, lane_beg->m_yield_g);
-                count += stream_map< float >(stream, lane_beg->m_projected_yield_g);
-                count += stream_map< float >(stream, lane_beg->m_reads);
-                count += stream_map< float >(stream, lane_beg->m_reads_pf);
-                count += map_metric_stat(stream, lane_beg->m_density);
-                count += map_metric_stat(stream, lane_beg->m_density_pf);
-                count += map_metric_stat(stream, lane_beg->m_cluster_count);
-                count += map_metric_stat(stream, lane_beg->m_cluster_count_pf);
-                count += map_metric_stat(stream, lane_beg->m_percent_pf);
-                count += map_metric_stat(stream, lane_beg->m_phasing);
-                count += map_metric_stat(stream, lane_beg->m_prephasing);
-                count += map_metric_stat(stream, lane_beg->m_percent_aligned);
-                count += map_metric_stat(stream, lane_beg->m_error_rate);
-                count += map_metric_stat(stream, lane_beg->m_error_rate_35);
-                count += map_metric_stat(stream, lane_beg->m_error_rate_50);
-                count += map_metric_stat(stream, lane_beg->m_error_rate_75);
-                count += map_metric_stat(stream, lane_beg->m_error_rate_100);
-                count += map_metric_stat(stream, lane_beg->m_first_cycle_intensity);
+                count += map_summary_stat(stream, *lane_beg, channel_count);
                 count += map_cycle_state(stream, lane_beg->m_cycle_state);
+                count += map_surface_summary(stream, lane_beg->begin(), lane_beg->end(), channel_count);
             }
             return count;
         }
+        template<class Stream, class SurfaceSummaryIterator>
+        static std::streamsize map_surface_summary(Stream& stream,
+                                                   SurfaceSummaryIterator surface_beg,
+                                                   SurfaceSummaryIterator surface_end,
+                                                   const size_t channel_count)
+        {
+            std::streamsize count = 0;
+            for(;surface_beg != surface_end;++surface_beg)
+            {
+                count += stream_map< size_t >(stream, surface_beg->m_surface);
+                count += stream_map< size_t >(stream, surface_beg->m_tile_count);
+                count += map_summary_stat(stream, *surface_beg, channel_count);
+            }
+            return count;
+        }
+        template<class Stream, class SummaryStat>
+        static std::streamsize map_summary_stat(Stream& stream, SummaryStat& stat, const size_t /*channel_count*/)
+        {
+            std::streamsize count = 0;
+
+            count += stream_map< float >(stream, stat.m_percent_gt_q30);
+            count += stream_map< float >(stream, stat.m_yield_g);
+            count += stream_map< float >(stream, stat.m_projected_yield_g);
+            count += stream_map< float >(stream, stat.m_reads);
+            count += stream_map< float >(stream, stat.m_reads_pf);
+
+            count += map_metric_stat(stream, stat.m_density);
+            count += map_metric_stat(stream, stat.m_density_pf);
+            count += map_metric_stat(stream, stat.m_cluster_count);
+            count += map_metric_stat(stream, stat.m_cluster_count_pf);
+            count += map_metric_stat(stream, stat.m_percent_pf);
+            count += map_metric_stat(stream, stat.m_phasing);
+            count += map_metric_stat(stream, stat.m_prephasing);
+            count += map_metric_stat(stream, stat.m_percent_aligned);
+            count += map_metric_stat(stream, stat.m_error_rate);
+            count += map_metric_stat(stream, stat.m_error_rate_35);
+            count += map_metric_stat(stream, stat.m_error_rate_50);
+            count += map_metric_stat(stream, stat.m_error_rate_75);
+            count += map_metric_stat(stream, stat.m_error_rate_100);
+            count += map_metric_stat(stream, stat.m_first_cycle_intensity);
+
+            return count;
+        }
+
         template<class Stream, class MetricStat>
         static std::streamsize map_metric_stat(Stream& stream, MetricStat& stat)
         {
@@ -156,7 +192,9 @@ namespace illumina{ namespace interop{ namespace io {
             return count;
         }
         template<class Stream, class MetricSummary>
-        static std::streamsize map_metric_summary(Stream& stream, MetricSummary& metric_summary)
+        static std::streamsize map_metric_summary(Stream& stream,
+                                                  MetricSummary& metric_summary,
+                                                  const size_t /*channel_count*/)
         {
             std::streamsize count = 0;
 

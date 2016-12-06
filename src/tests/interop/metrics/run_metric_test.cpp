@@ -24,7 +24,7 @@ struct run_metric_test : public ::testing::Test, public TestSetup
     /** Constructor */
     run_metric_test()
     {
-        TestSetup::create_metric_set(expected.template get<metric_set_t>());
+        TestSetup::create_expected(expected.template get<metric_set_t>());
     }
     /** Expected metric set */
     model::metrics::run_metrics expected;
@@ -39,7 +39,7 @@ TYPED_TEST_P(run_metric_test, test_clear)
     metric_set_t& metric_set = TestFixture::expected.template get<metric_set_t>();
     size_t cnt = metric_set.size();
     TestFixture::expected.clear();
-    TypeParam::create_metric_set(metric_set);
+    TypeParam::create_expected(metric_set);
     EXPECT_EQ(cnt, metric_set.size());
 }
 
@@ -73,6 +73,7 @@ TYPED_TEST_P(run_metric_test, test_expected_get_metric)
         ASSERT_EQ(keys[i], metric_set.get_metric(keys[i]).id());
     }
 }
+
 
 REGISTER_TYPED_TEST_CASE_P(run_metric_test,
                            test_clear,

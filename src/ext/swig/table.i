@@ -4,6 +4,7 @@
 %include <std_string.i>
 %include <stdint.i>
 %include <std_vector.i>
+%include <std_map.i>
 %include "util/operator_overload.i"
 
 //////////////////////////////////////////////
@@ -28,17 +29,18 @@ using Illumina.InterOp.Metrics;
 using Illumina.InterOp.Run;
 %}
 
+%pragma(java) jniclasscode=%{
+  static {
+    System.loadLibrary("interop_table");
+  }
+%}
 
 // This imports the metrics
 WRAP_METRICS(IMPORT_METRIC_WRAPPER)
 // This allows exceptions to be imported, but not belong to the module
 EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 
-#if defined(HAVE_UINT64_SIZE_T) && defined(SWIGPYTHON) // Python workaround
-    %template(map_id_offset) std::map<uint64_t, uint64_t>;
-#else
-    %template(map_id_offset) std::map<uint64_t, size_t>;
-#endif
+%template(map_id_offset) std::map<uint64_t, uint64_t>;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Imaging model

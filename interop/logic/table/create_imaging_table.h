@@ -10,9 +10,14 @@
 #include "interop/model/run_metrics.h"
 #include "interop/model/table/imaging_column.h"
 #include "interop/model/table/imaging_table.h"
+#include "interop/logic/table/table_util.h"
 
 namespace illumina { namespace interop { namespace logic { namespace table
 {
+    // TODO: Make unordered? - need to sort later
+    // Workaround for SWIG not understanding the macro
+    /** Define a row offset map */
+    typedef std::map<model::metric_base::base_metric::id_t, ::uint64_t> row_offset_map_t;
     /** Populate the imaging table with all the metrics in the run
      *
      * @param metrics collection of all run metrics
@@ -23,7 +28,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
      */
     void populate_imaging_table_data(const model::metrics::run_metrics& metrics,
                                      const std::vector<model::table::imaging_column>& columns,
-                                     const std::map<model::metric_base::base_metric::id_t, size_t>& row_offset,
+                                     const row_offset_map_t& row_offset,
                                      float* data_beg, const size_t n);
     /** Count the number of rows in the imaging table and setup an ordering
      *
@@ -31,7 +36,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
      * @param row_offset ordering for the rows
      */
     void count_table_rows(const model::metrics::run_metrics& metrics,
-                            std::map<model::metric_base::base_metric::id_t, size_t>& row_offset);
+                          row_offset_map_t& row_offset);
     /** Count the total number of columns for the data table
      *
      * @param columns vector of table column descriptions
@@ -43,7 +48,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
      * @param metrics source run metrics
      * @param table destination imaging table
      */
-    void create_imaging_table(const model::metrics::run_metrics& metrics, model::table::imaging_table& table)
+    void create_imaging_table(model::metrics::run_metrics& metrics, model::table::imaging_table& table)
     throw(model::invalid_column_type, model::index_out_of_bounds_exception);
 
     /** List the required on demand metrics

@@ -32,7 +32,7 @@ namespace illumina{ namespace interop{ namespace io {
      *      2. Version: 2
      */
     template<>
-    struct generic_layout<q_collapsed_metric, 2> : public default_layout<2, 1 /*Tmp hack */>
+    struct generic_layout<q_collapsed_metric, 2> : public default_layout<2>
     {
         /** @page q_collapsed_v2 Collapsed Q-Metrics Version 2
          *
@@ -46,7 +46,7 @@ namespace illumina{ namespace interop{ namespace io {
          *
          *  illumina::interop::io::read_metrics (Function that parses this information)
          *
-         *          byte 0: version number
+         *          byte 0: version number (2)
          *          byte 1: record size (can take two different values)
          *
          *  @b n-Records
@@ -65,7 +65,7 @@ namespace illumina{ namespace interop{ namespace io {
          *          4 bytes: Median score (uint32)
          */
         /** Metric ID type */
-        typedef layout::base_cycle_metric metric_id_t;
+        typedef layout::base_cycle_metric< ::uint16_t > metric_id_t;
         /** Histogram count type */
         typedef ::uint32_t count_t;
         /** Histogram count type */
@@ -225,7 +225,7 @@ namespace illumina{ namespace interop{ namespace io {
          *
          *  illumina::interop::io::read_metrics (Function that parses this information)
          *
-         *          byte 0: version number
+         *          byte 0: version number (3)
          *          byte 1: record size
          *
          *  @b n-Records
@@ -273,7 +273,7 @@ namespace illumina{ namespace interop{ namespace io {
          *
          *  illumina::interop::io::read_metrics (Function that parses this information)
          *
-         *          byte 0: version number
+         *          byte 0: version number (4)
          *          byte 1: record size
          *
          *  @b n-Records
@@ -321,7 +321,7 @@ namespace illumina{ namespace interop{ namespace io {
          *
          *  illumina::interop::io::read_metrics (Function that parses this information)
          *
-         *          byte 0: version number
+         *          byte 0: version number (5)
          *          byte 1: record size
          *
          *  @b Extended Header
@@ -353,7 +353,7 @@ namespace illumina{ namespace interop{ namespace io {
          *          4 bytes: Median score (uint32)
          */
         /** Metric ID type */
-        typedef layout::base_cycle_metric metric_id_t;
+        typedef layout::base_cycle_metric< ::uint16_t > metric_id_t;
         /** Histogram count type */
         typedef ::uint32_t count_t;
         /** Histogram count type */
@@ -448,6 +448,7 @@ namespace illumina{ namespace interop{ namespace io {
             INTEROP_ASSERTMSG(bin_count>0, VERSION);
             bin_t tmp[q_metric::MAX_Q_BINS];
             count+=stream_map< bin_t >(stream, tmp, bin_count*3);
+            map_resize(header.m_qscore_bins, bin_count);
 
             return count;
         }
@@ -455,9 +456,15 @@ namespace illumina{ namespace interop{ namespace io {
          *
          * @return header size
          */
-        static record_size_t compute_header_size(const q_collapsed_metric::header_type&)
+        static record_size_t compute_header_size(const q_collapsed_metric::header_type& header)
         {
-            return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t) + sizeof(bool_t));
+            if (header.bin_count() == 0)
+                return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t) + sizeof(bool_t));
+            return static_cast<record_size_t>(sizeof(record_size_t) +
+                                              sizeof(version_t) + // version
+                                              sizeof(bool_t) + // has bins
+                                              sizeof(bin_count_t) + // number of bins
+                                              header.bin_count() * 3 * sizeof(bin_t));
         }
         /** Does not read/write record size, this is done in `map_stream_for_header`
          *
@@ -527,8 +534,8 @@ namespace illumina{ namespace interop{ namespace io {
          *
          *  illumina::interop::io::read_metrics (Function that parses this information)
          *
-         *          byte 0: version number
-         *          byte 1: record size
+         *          byte 0: version number (6)
+         *          byte 1: record size (22)
          *
          *  @b Extended Header
          *

@@ -1,6 +1,13 @@
 
 function(add_application _target _source_files)
-    add_executable(${_target} ${_source_files} inc/application.h inc/plot_options.h)
+
+    if(MSVC)
+        set(SWIG_VERSION_INFO "${CMAKE_CURRENT_BINARY_DIR}/${_target}_version.rc")
+        set(LIB_NAME "${_target}") # Used to configure the version info file
+        configure_file(${CMAKE_SOURCE_DIR}/cmake/version.rc.in ${SWIG_VERSION_INFO} @ONLY) # Requires: LIB_NAME, VERSION_LIST and VERSION
+    endif()
+
+    add_executable(${_target} ${_source_files} inc/application.h inc/plot_options.h ${SWIG_VERSION_INFO})
     target_link_libraries(${_target} ${INTEROP_LIB})
 
     if(COMPILER_IS_GNUCC_OR_CLANG)
@@ -20,6 +27,8 @@ function(add_application _target _source_files)
                 COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE_DIR:${INTEROP_LIB}> ${CMAKE_CURRENT_BINARY_DIR})
     endif()
 endfunction()
+
+set(SWIG_VERSION_INFO "")
 
 add_application(interop2csv interop2csv.cpp)
 add_application(cyclesim cyclesim.cpp)

@@ -27,6 +27,11 @@ using Illumina.InterOp.Metrics;
 using Illumina.InterOp.Run;
 %}
 
+%pragma(java) jniclasscode=%{
+  static {
+    System.loadLibrary("interop_summary");
+  }
+%}
 
 // This imports the metrics
 WRAP_METRICS(IMPORT_METRIC_WRAPPER)
@@ -65,11 +70,15 @@ WRAP_VECTOR(illumina::interop::model::summary::run_summary);
 //
 // Setup typemaps for summary metrics
 //
+
+%ignore illumina::interop::model::summary::lane_summary::at(const size_type) const;
+%ignore illumina::interop::model::summary::read_summary::at(const size_type) const;
 WRAP_AS_VECTOR(illumina::interop::model::summary::surface_summary);
 WRAP_AS_VECTOR(illumina::interop::model::summary::lane_summary);
 WRAP_AS_VECTOR(illumina::interop::model::summary::read_summary);
 
-%template(lane_summary_vector) std::vector<illumina::interop::model::summary::surface_summary>;
+
+%template(surface_summary_vector) std::vector<illumina::interop::model::summary::surface_summary>;
 %template(lane_summary_vector) std::vector<illumina::interop::model::summary::lane_summary>;
 %template(read_summary_vector) std::vector<illumina::interop::model::summary::read_summary>;
 

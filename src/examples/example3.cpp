@@ -32,15 +32,22 @@ int main(int argc, char** argv)
 
     if((ret = read_interop_file(argv[1], extraction_metric_set)) != 0) return ret;
 
-    std::time_t t = static_cast<std::time_t>(extraction_metric_set.metrics()[0].date_time());
-    std::tm* tm = std::gmtime(&t);
-    if(tm != 0)
+    try
     {
-        char buffer[80];
-        std::strftime(buffer, 80, "%m/%d/%Y %r", tm);
-        std::cout << "Time: " << buffer << std::endl;
+        std::time_t t = static_cast<std::time_t>(extraction_metric_set.at(0).date_time());
+        std::tm *tm = std::gmtime(&t);
+        if (tm != 0)
+        {
+            char buffer[80];
+            std::strftime(buffer, 80, "%m/%d/%Y %r", tm);
+            std::cout << "Time: " << buffer << std::endl;
+        } else std::cout << "Invalid time" << std::endl;
     }
-    else std::cout << "Invalid time" << std::endl;
+    catch(const std::exception& ex)
+    {
+        std::cerr << ex.what() << std::endl;
+        return 1;
+    }
 
     return 0;
 }

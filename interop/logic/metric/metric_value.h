@@ -207,9 +207,19 @@ namespace illumina { namespace interop { namespace logic { namespace metric
                 case constants::BasePercent:
                     return metric.percent_base(base);
                 case constants::CorrectedIntensity:
-                    return metric.corrected_int_all(base);
+                {
+                    const ::uint16_t corrected_int_all = metric.corrected_int_all(base);
+                    if (corrected_int_all == std::numeric_limits< ::uint16_t>::max())
+                        return std::numeric_limits<float>::quiet_NaN();
+                    return static_cast<float>(corrected_int_all);
+                }
                 case constants::CalledIntensity:
-                    return metric.corrected_int_called(base);
+                {
+                    const ::uint16_t corrected_int_called = metric.corrected_int_called(base);
+                    if (corrected_int_called == std::numeric_limits< ::uint16_t>::max())
+                        return std::numeric_limits<float>::quiet_NaN();
+                    return static_cast<float>(corrected_int_called);
+                }
                 case constants::SignalToNoise:
                     return metric.signal_to_noise();
                 case constants::PercentNoCall:
@@ -221,6 +231,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
     private:
         const constants::dna_bases base;
     };
+
 
 
     /** Specialization for model::metrics::tile_metric

@@ -19,7 +19,7 @@ class Example3
 		if ((ret = Helper.ReadInterop (args [0], extraction_metric_set)) != 0)
 			return ret;
 
-		Console.WriteLine("Time: {0}", DateTime.FromBinary((Int64)extraction_metric_set.AllMetrics.ToList()[0].date_time_csharp().value));
+		Console.WriteLine("Time: {0}", DateTime.FromBinary((Int64)extraction_metric_set.at(0).date_time_csharp().value));
 		return 0;
 	}
 }

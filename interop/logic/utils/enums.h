@@ -312,6 +312,46 @@ namespace illumina { namespace interop {  namespace constants
         }
     };
 
+    /** Specialization that maps distortion curve types to a string
+     */
+    template<>
+    class enumeration_string_mapping< plot_types >
+    {
+        typedef std::pair<std::string, plot_types > name_type_pair_t;
+    public:
+        /** Pass an array of string, enum pairs and its length to the given function
+         *
+         * @param func pointer to a function that takes an array of string/enum pairs as a parameter
+         * @return the value returned by the given function (in the case of `parse` and `to_string` the return value is a singleton)
+         */
+        template<typename R, typename F>
+        static R setup(F func)
+        {
+            static const name_type_pair_t name_types[] = {INTEROP_ENUM_PLOT_TYPES};
+            return func(name_types, util::length_of(name_types));
+        }
+    };
+
+    /** Specialization that maps metric base types to a string
+     */
+    template<>
+    class enumeration_string_mapping< metric_base_type >
+    {
+        typedef std::pair<std::string, metric_base_type > name_type_pair_t;
+    public:
+        /** Pass an array of string, enum pairs and its length to the given function
+         *
+         * @param func pointer to a function that takes an array of string/enum pairs as a parameter
+         * @return the value returned by the given function (in the case of `parse` and `to_string` the return value is a singleton)
+         */
+        template<typename R, typename F>
+        static R setup(F func)
+        {
+            static const name_type_pair_t name_types[] = {INTEROP_ENUM_METRIC_BASE_TYPES};
+            return func(name_types, util::length_of(name_types));
+        }
+    };
+
 }}}
 
 #undef INTEROP_TUPLE1

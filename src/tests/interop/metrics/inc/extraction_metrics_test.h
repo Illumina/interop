@@ -27,7 +27,7 @@ namespace illumina{ namespace interop { namespace unittest
          *
          * @param metrics destination metric set
          */
-        static void create_metric_set(metric_set_t& metrics)
+        static void create_expected(metric_set_t& metrics)
         {
             metrics = metric_set_t(VERSION);
 
@@ -66,10 +66,11 @@ namespace illumina{ namespace interop { namespace unittest
         {
             const size_t lane_count = 1;
             const size_t surface_count = 2;
+            const size_t channel_count = 2;
             const model::run::read_info reads[]={
                     model::run::read_info(1, 1, 2, false)
             };
-            summary.initialize(to_vector(reads), lane_count, surface_count);
+            summary.initialize(to_vector(reads), lane_count, surface_count, channel_count);
             summary[0][0].lane(7);
             summary[0][0].first_cycle_intensity(model::summary::metric_stat(321, 24.75883674621582f, 312));
             summary[0][0][0].tile_count(2);

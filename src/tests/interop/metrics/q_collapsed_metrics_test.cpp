@@ -29,9 +29,15 @@ struct q_collapsed_metrics_tests : public generic_test_fixture< q_collapsed_metr
 
 
 q_collapsed_metrics_tests::generator_type q_collapsed_unit_test_generators[] = {
-        wrap(new hardcoded_metric_generator< q_collapsed_metric_v2 >) ,
+        wrap(new hardcoded_metric_generator< q_collapsed_metric_v2 >),
         wrap(new write_read_metric_generator< q_collapsed_metric_v2 >),
-        wrap(new hardcoded_metric_generator< q_collapsed_metric_v6 >) ,
+        wrap(new hardcoded_metric_generator< q_collapsed_metric_v3 >),
+        wrap(new write_read_metric_generator< q_collapsed_metric_v3 >),
+        wrap(new hardcoded_metric_generator< q_collapsed_metric_v4 >),
+        wrap(new write_read_metric_generator< q_collapsed_metric_v4 >),
+        wrap(new hardcoded_metric_generator< q_collapsed_metric_v5 >),
+        wrap(new write_read_metric_generator< q_collapsed_metric_v5 >),
+        wrap(new hardcoded_metric_generator< q_collapsed_metric_v6 >),
         wrap(new write_read_metric_generator< q_collapsed_metric_v6 >)
 };
 
@@ -50,7 +56,8 @@ INSTANTIATE_TEST_CASE_P(q_collapsed_metric_unit_test,
 TEST_P(q_collapsed_metrics_tests, test_read_write)
 {
     typedef q_collapsed_metric_set::const_iterator const_iterator;
-    if(!test) return;// Disable test for rebaseline
+    if(skip_test) return;
+    ASSERT_TRUE(fixture_test_result);
     EXPECT_EQ(actual.version(), expected.version());
     ASSERT_EQ(actual.size(), expected.size());
     EXPECT_EQ(actual.max_cycle(), expected.max_cycle());
@@ -109,7 +116,7 @@ TEST(q_collapsed_metrics_test, test_convert_write_read)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Setup regression test
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-regression_test_metric_generator<q_collapsed_metric_set> q_collapsed_regression_gen("metrics");
+regression_test_metric_generator<q_collapsed_metric_set> q_collapsed_regression_gen;
 INSTANTIATE_TEST_CASE_P(q_collapsed_metric_regression_test,
                         q_collapsed_metrics_tests,
                         ProxyValuesIn(q_collapsed_regression_gen, regression_test_data::instance().files()));

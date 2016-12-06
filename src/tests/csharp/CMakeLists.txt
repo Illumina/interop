@@ -31,6 +31,7 @@ set(TEST_SRCS
         logic/PlotQScoreHistogram.cs
         logic/PlotDataByLaneTest.cs
         logic/PlotDataByCycleTest.cs
+        metrics/RunMetricsTest.cs
         metrics/ErrorMetricsTest.cs
         metrics/CorrectedIntensityMetricsTest.cs
         metrics/ExtractionMetricsTest.cs
@@ -38,6 +39,8 @@ set(TEST_SRCS
         metrics/IndexMetricsTest.cs
         metrics/QMetricsTest.cs
         metrics/TileMetricsTest.cs
+        run/RunInfoTest.cs
+        run/RunParametersTest.cs
         )
 set(csharp_files)
 foreach(SRC ${TEST_SRCS})

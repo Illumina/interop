@@ -7,6 +7,7 @@
  */
 #pragma once
 #include "interop/util/lexical_cast.h"
+#include "interop/util/math.h"
 
 
 namespace illumina { namespace interop { namespace io {  namespace  table
@@ -31,6 +32,103 @@ namespace illumina { namespace interop { namespace io {  namespace  table
             else values.push_back(util::lexical_cast<T>(cell));
         }
     }
+    /** Read delimited value from the input stream and cast to proper destination type
+     *
+     * @param in input stream
+     * @param value string value
+     * @param delim deliminator
+     * @return destintion value
+     */
+    template<typename T>
+    T read_value(std::istream& in, std::string& buf, const char delim=',')
+    {
+        std::getline(in, buf, delim);
+        return util::lexical_cast<T>(buf);
+    }
+    /** Read delimited value from the input stream and cast to proper destination type
+     *
+     * @param in input stream
+     * @param dest destination type
+     * @param value string value
+     * @param delim deliminator
+     */
+    template<typename T>
+    void read_value(std::istream& in, T& dest, std::string& buf, const char delim=',')
+    {
+        std::getline(in, buf, delim);
+        dest = util::lexical_cast<T>(buf);
+    }
+    /** Read a csv values into a preallocated buffer
+     *
+     * @param in input stream
+     * @param beg start of the buffer
+     * @param end end of the buffer
+     * @param delim deliminator
+     */
+    template<typename I>
+    void read_csv(std::istream& in, I beg, I end, const char delim=',')
+    {
+        std::string buf;
+        for(;beg != end;++beg)
+        {
+            read_value(in, *beg, buf, delim);
+        }
+    }
+    /** Ignore non-float values
+     *
+     * @todo: Make this work for any floating point type
+     * @param val non-float value
+     * @return value
+     */
+    template<class T>
+    inline const T& handle_nan(const T& val)
+    {
+        return val;
+    }
+    /** Ensure we get consistent NaNs
+     *
+     * @param val float value
+     * @return float value
+     */
+    inline float handle_nan(const float val)
+    {
+        if(std::isnan(val)) return std::numeric_limits<float>::quiet_NaN();
+        return val;
+    }
+    /** Ensure we get consistent NaNs
+     *
+     * @param val float value
+     * @return float value
+     */
+    inline double handle_nan(const double val)
+    {
+        if(std::isnan(val)) return std::numeric_limits<double>::quiet_NaN();
+        return val;
+    }
+    /** Write a vector of values as a single in a CSV file
+     *
+     * @param out output stream
+     * @param values source vector of values
+     * @param beg start column offset
+     * @param last last column offset
+     */
+    template<typename I>
+    void write_csv(std::ostream& out, I beg, I end, const char eol, const size_t precision=10)
+    {
+        if(beg == end) return;
+        std::ios::fmtflags previous_state( out.flags() );
+        out << handle_nan(*beg);
+        ++beg;
+        for(;beg != end;++beg)
+        {
+            if(precision>0)
+                out << "," << std::setprecision(precision) << handle_nan(*beg);
+            else
+                out << "," << handle_nan(*beg);
+        }
+        if(eol != '\0') out << eol;
+        out.flags(previous_state);
+    }
     /** Write a vector of values as a single in a CSV file
      *
      * @param out output stream
@@ -44,13 +142,8 @@ namespace illumina { namespace interop { namespace io {  namespace  table
         if(values.empty())return;
         if(last == 0) last = values.size();
         INTEROP_ASSERT(beg < values.size());
-        out << values[beg];
         INTEROP_ASSERT(last <= values.size());
-        for(typename std::vector<T>::const_iterator it=values.begin()+beg+1, end=values.begin()+last;it != end;++it)
-        {
-            out << "," << *it;
-        }
-        out << "\n";
+        write_csv(out, values.begin()+beg, values.begin()+std::min(last, values.size()), '\n');
     }
 
 }}}}

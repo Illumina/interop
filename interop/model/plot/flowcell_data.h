@@ -7,8 +7,10 @@
  */
 #pragma once
 
+#include <cstring>
 #include "interop/util/exception.h"
 #include "interop/util/assert.h"
+#include "interop/util/cstdint.h"
 #include "interop/model/plot/series.h"
 #include "interop/model/plot/axes.h"
 #include "interop/model/plot/heatmap_data.h"
@@ -82,6 +84,19 @@ namespace illumina { namespace interop { namespace model { namespace plot
             m_tile_count = 0;
         }
 
+        /** Get tile id at index
+         *
+         * @param index index of id
+         * @return tile id
+         */
+        ::uint32_t tile_at(const size_t index)const
+        {
+            INTEROP_ASSERTMSG(m_data != 0, "length: " << length());
+            if (index >= length())
+                INTEROP_THROW(model::index_out_of_bounds_exception, "Tile index out of bounds");
+            return m_data[index];
+        }
+
         /** Set data at given location in the flowcell
          *
          * @param lane_idx lane index
@@ -108,6 +123,23 @@ namespace illumina { namespace interop { namespace model { namespace plot
          * @return tile id
          */
         ::uint32_t tile_id(const size_t lane_idx, const size_t loc) const throw(model::index_out_of_bounds_exception)
+        {
+            if (lane_idx >= lane_count())
+                INTEROP_THROW(model::index_out_of_bounds_exception, "Lane index out of bounds");
+            if (loc >= column_count())
+                INTEROP_THROW(model::index_out_of_bounds_exception, "Location index out of bounds");
+            INTEROP_ASSERT(index_of(lane_idx, loc) < length());
+            INTEROP_ASSERT(m_data != 0);
+            return m_data[index_of(lane_idx, loc)];
+        }
+
+        /** Get the tile id associated with the location
+         *
+         * @param lane_idx
+         * @param loc
+         * @return tile id
+         */
+        ::uint32_t& tile_id(const size_t lane_idx, const size_t loc) throw(model::index_out_of_bounds_exception)
         {
             if (lane_idx >= lane_count())
                 INTEROP_THROW(model::index_out_of_bounds_exception, "Lane index out of bounds");
@@ -253,6 +285,33 @@ namespace illumina { namespace interop { namespace model { namespace plot
             m_data = new ::uint32_t[heatmap_data::length()];
             std::memset(reinterpret_cast<char *>(m_data), 0, sizeof(::uint32_t) * heatmap_data::length());
             m_free = true;
+        }
+        friend std::ostream& operator<<(std::ostream& out, const flowcell_data& data)
+        {
+            out << static_cast<const heatmap_data&>(data);
+            out << data.m_subtitle << ",";
+            out << data.m_swath_count << ",";
+            out << data.m_tile_count << ",";
+            for(size_t i=0, n=data.length();i<n;++i)
+                out << data.m_data[i] << ",";
+            return out;
+        }
+        friend std::istream& operator>>(std::istream& in, flowcell_data& data)
+        {
+            in >> static_cast<heatmap_data&>(data);
+            std::string tmp;
+            std::getline(in, data.m_subtitle, ',');
+            std::getline(in, tmp, ',');
+            const size_t swath_count = util::lexical_cast<size_t>(tmp);
+            std::getline(in, tmp, ',');
+            const size_t tile_count = util::lexical_cast<size_t>(tmp);
+            data.resize(swath_count, tile_count);
+            for(size_t i=0, n=data.length();i<n;++i)
+            {
+                std::getline(in, tmp, ',');
+                data.m_data[i] = util::lexical_cast< ::uint32_t >(tmp);
+            }
+            return in;
         }
 
 protected:

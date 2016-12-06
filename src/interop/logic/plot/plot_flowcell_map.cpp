@@ -74,8 +74,11 @@ namespace illumina { namespace interop { namespace logic { namespace plot
     model::invalid_metric_type,
     model::index_out_of_bounds_exception)
     {
-        const model::run::flowcell_layout& layout = metrics.run_info().flowcell();
         data.clear();
+        if(metrics.is_group_empty(logic::utils::to_group(type))) return;
+        options.validate(type, metrics.run_info());
+
+        const model::run::flowcell_layout& layout = metrics.run_info().flowcell();
         if(buffer == 0 || tile_buffer==0)
             data.resize(layout.lane_count(),
                         layout.total_swaths(layout.surface_count() > 1 && !options.is_specific_surface()),
@@ -89,7 +92,6 @@ namespace illumina { namespace interop { namespace logic { namespace plot
         std::vector<float> values_for_scaling;
         values_for_scaling.reserve(data.length());
 
-        options.validate(type, metrics.run_info());
 
         if(utils::is_cycle_metric(type) && options.all_cycles())
             INTEROP_THROW( model::invalid_filter_option, "All cycles is unsupported");
@@ -101,7 +103,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
             {
                 typedef model::metrics::tile_metric metric_t;
                 typedef model::metric_base::metric_set<metric_t> metric_set_t;
-                const metric_set_t& metric_set = metrics.get_set<metric_t>();
+                const metric_set_t& metric_set = metrics.get<metric_t>();
                 metric::metric_value<metric_t> proxy(options.read());
                 populate_flowcell_map(metric_set.begin(), metric_set.end(), proxy, type, layout, options, data,
                                       values_for_scaling);
@@ -111,7 +113,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
             {
                 typedef model::metrics::extraction_metric metric_t;
                 typedef model::metric_base::metric_set<metric_t> metric_set_t;
-                const metric_set_t& metric_set = metrics.get_set<metric_t>();
+                const metric_set_t& metric_set = metrics.get<metric_t>();
                 const size_t channel = options.channel();
                 if(options.all_channels(type))
                     INTEROP_THROW(model::invalid_filter_option, "All channels is unsupported");
@@ -124,7 +126,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
             {
                 typedef model::metrics::corrected_intensity_metric metric_t;
                 typedef model::metric_base::metric_set<metric_t> metric_set_t;
-                const metric_set_t& metric_set = metrics.get_set<metric_t>();
+                const metric_set_t& metric_set = metrics.get<metric_t>();
                 const constants::dna_bases base = options.dna_base();
                 if(options.all_bases(type))
                     INTEROP_THROW( model::invalid_filter_option, "All bases is unsupported");
@@ -137,10 +139,10 @@ namespace illumina { namespace interop { namespace logic { namespace plot
             {
                 typedef model::metrics::q_collapsed_metric metric_t;
                 typedef model::metric_base::metric_set<metric_t> metric_set_t;
-                metric_set_t &metric_set = metrics.get_set<metric_t>();
+                metric_set_t &metric_set = metrics.get<metric_t>();
                 if(0 == metric_set.size())
                 {
-                    logic::metric::create_collapse_q_metrics(metrics.get_set<model::metrics::q_metric>(), metric_set);
+                    logic::metric::create_collapse_q_metrics(metrics.get<model::metrics::q_metric>(), metric_set);
                     if(type == constants::AccumPercentQ20 || type == constants::AccumPercentQ30)
                         logic::metric::populate_cumulative_distribution(metric_set);
                 }
@@ -153,7 +155,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
             {
                 typedef model::metrics::error_metric metric_t;
                 typedef model::metric_base::metric_set<metric_t> metric_set_t;
-                const metric_set_t& metric_set = metrics.get_set<metric_t>();
+                const metric_set_t& metric_set = metrics.get<metric_t>();
                 metric::metric_value<metric_t> proxy;
                 populate_flowcell_map(metric_set.begin(), metric_set.end(), proxy, type, layout, options, data,
                                       values_for_scaling);

@@ -153,8 +153,17 @@ namespace illumina { namespace interop { namespace logic { namespace plot
     model::invalid_filter_option)
     {
         typedef model::plot::bar_point Point;
-        options.validate(constants::QScore, metrics.run_info());
         data.clear();
+        if(options.is_specific_surface())
+        {
+            if(metrics.get< model::metrics::q_metric >().empty())return;
+        }
+        else
+        {
+            if(metrics.get< model::metrics::q_metric >().empty() &&
+               metrics.get< model::metrics::q_by_lane_metric >().empty()   )return;
+        }
+        options.validate(constants::QScore, metrics.run_info());
         const size_t first_cycle = options.all_reads() ? 1 : metrics.run_info().read(options.read()).first_cycle();
 
         data.push_back(model::plot::series<Point>("Q Score", "Blue", model::plot::series<Point>::Bar));
@@ -178,23 +187,19 @@ namespace illumina { namespace interop { namespace logic { namespace plot
             typedef model::metrics::q_metric metric_t;
             const size_t last_cycle = get_last_filtered_cycle(metrics.run_info(),
                                                               options,
-                                                              metrics.get_set<metric_t>().max_cycle());
-            if(metrics.get_set<metric_t>().size() == 0)
-            {
-                //data.clear(); // TODO: Add this back?
-                return;
-            }
+                                                              metrics.get<metric_t>().max_cycle());
+            if(metrics.get<metric_t>().size() == 0) return;
             populate_distribution(
-                    metrics.get_set<metric_t>().begin(),
-                    metrics.get_set<metric_t>().end(),
+                    metrics.get<metric_t>().begin(),
+                    metrics.get<metric_t>().end(),
                     options,
                     first_cycle,
                     last_cycle,
                     histogram);
             axis_scale = scale_histogram(histogram);
-            if(!metrics.get_set<metric_t>().bins().empty())
-                max_x_value=plot_binned_histogram(metrics.get_set<metric_t>().bins().begin(),
-                                                  metrics.get_set<metric_t>().bins().end(),
+            if(!metrics.get<metric_t>().bins().empty())
+                max_x_value=plot_binned_histogram(metrics.get<metric_t>().bins().begin(),
+                                                  metrics.get<metric_t>().bins().end(),
                                                   histogram,
                                                   data[0]);
             else max_x_value=plot_unbinned_histogram(histogram, data[0]);
@@ -202,29 +207,25 @@ namespace illumina { namespace interop { namespace logic { namespace plot
         else
         {
             typedef model::metrics::q_by_lane_metric metric_t;
-            if(0 == metrics.get_set<metric_t>().size())
-                logic::metric::create_q_metrics_by_lane(metrics.get_set<model::metrics::q_metric>(),
-                                                        metrics.get_set<metric_t>());
-            if(0 == metrics.get_set<metric_t>().size())
-            {
-                //data.clear(); // TODO: Add this back?
-                return;
-            }
+            if(0 == metrics.get<metric_t>().size())
+                logic::metric::create_q_metrics_by_lane(metrics.get<model::metrics::q_metric>(),
+                                                        metrics.get<metric_t>());
+            if(0 == metrics.get<metric_t>().size()) return;
             const size_t last_cycle = get_last_filtered_cycle(metrics.run_info(),
                                                               options,
-                                                              metrics.get_set<metric_t>().max_cycle());
-            INTEROP_ASSERT(0 != metrics.get_set<metric_t>().size());
+                                                              metrics.get<metric_t>().max_cycle());
+            INTEROP_ASSERT(0 != metrics.get<metric_t>().size());
             populate_distribution(
-                    metrics.get_set<metric_t>().begin(),
-                    metrics.get_set<metric_t>().end(),
+                    metrics.get<metric_t>().begin(),
+                    metrics.get<metric_t>().end(),
                     options,
                     first_cycle,
                     last_cycle,
                     histogram);
             axis_scale = scale_histogram(histogram);
-            if(!metrics.get_set<metric_t>().bins().empty())
-                max_x_value=plot_binned_histogram(metrics.get_set<metric_t>().bins().begin(),
-                                                  metrics.get_set<metric_t>().bins().end(),
+            if(!metrics.get<metric_t>().bins().empty())
+                max_x_value=plot_binned_histogram(metrics.get<metric_t>().bins().begin(),
+                                                  metrics.get<metric_t>().bins().end(),
                                                   histogram,
                                                   data[0]);
             else max_x_value=plot_unbinned_histogram(histogram, data[0]);

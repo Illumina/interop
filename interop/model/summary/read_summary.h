@@ -41,9 +41,10 @@ namespace illumina { namespace interop { namespace model { namespace summary
         /** Constructor
          *
          * @param read read information
+         * @param channel_count number of channels
          */
-        read_summary(const run::read_info &read = run::read_info()) :
-                m_read(read)
+        read_summary(const run::read_info &read = run::read_info(), const size_t channel_count=0) :
+                m_read(read), m_metric_summary(channel_count)
         {
         }
 

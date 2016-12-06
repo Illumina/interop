@@ -24,6 +24,17 @@ namespace illumina { namespace interop { namespace io
      * @return proper os-dependent file path
      */
     std::string combine(const std::string& path, const std::string& name);
+    /** Combine two directories or a directory and a filename into a file path
+     *
+     * This function provides a platform independent way to generate a file path. It currently supports most
+     * operating systems include Mac OSX, Windows and Linux/Unix.
+     *
+     * @param path1 string representing a file path 1
+     * @param path2 string representing a file path 2
+     * @param path3 string representing a file path 3
+     * @return proper os-dependent file path
+     */
+    std::string combine(const std::string& path1, const std::string& path2, const std::string& path3);
     /** Get the file name from a file path
      *
      * @param source full file path

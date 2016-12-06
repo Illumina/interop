@@ -23,12 +23,12 @@ namespace illumina { namespace interop { namespace logic { namespace summary
      * @param skip_median skip the median calculation
      */
     template<class TileVector>
-    void update_tile_summary_from_cache(std::vector<TileVector> &tile_data,
-                                        model::summary::stat_summary &stat_summary,
+    void update_tile_summary_from_cache(std::vector<TileVector>& tile_data,
+                                        model::summary::stat_summary& stat_summary,
                                         const bool skip_median)
     {
         model::summary::metric_stat stat;
-        summarize(tile_data.begin(),
+        nan_summarize(tile_data.begin(),
                   tile_data.end(),
                   stat,
                   util::op::const_member_function(&model::metrics::tile_metric::cluster_density),
@@ -36,7 +36,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                   skip_median);
         stat_summary.density(stat);
         stat.clear();
-        summarize(tile_data.begin(),
+        nan_summarize(tile_data.begin(),
                   tile_data.end(),
                   stat,
                   util::op::const_member_function(&model::metrics::tile_metric::cluster_density_pf),
@@ -44,7 +44,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                   skip_median);
         stat_summary.density_pf(stat);
         stat.clear();
-        summarize(tile_data.begin(),
+        nan_summarize(tile_data.begin(),
                   tile_data.end(),
                   stat,
                   util::op::const_member_function(&model::metrics::tile_metric::cluster_count),
@@ -52,7 +52,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                   skip_median);
         stat_summary.cluster_count(stat);
         stat.clear();
-        summarize(tile_data.begin(),
+        nan_summarize(tile_data.begin(),
                   tile_data.end(),
                   stat,
                   util::op::const_member_function(&model::metrics::tile_metric::cluster_count_pf),
@@ -60,7 +60,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                   skip_median);
         stat_summary.cluster_count_pf(stat);
         stat.clear();
-        summarize(tile_data.begin(),
+        nan_summarize(tile_data.begin(),
                   tile_data.end(),
                   stat,
                   util::op::const_member_function(&model::metrics::tile_metric::percent_pf),
@@ -78,7 +78,6 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                                               util::op::const_member_function(
                                                       &model::metrics::tile_metric::cluster_count_pf)));
     }
-
     /** Update the stat summary with cached read metrics
      *
      * @param read_data_cache read metric cache
@@ -86,9 +85,9 @@ namespace illumina { namespace interop { namespace logic { namespace summary
      * @param skip_median skip the median calculation
      * @return number of non-NaN aligned entries
      */
-    inline size_t update_read_summary(summary_by_lane_read<model::metrics::read_metric>::vector_t &read_data_cache,
-                                      model::summary::stat_summary &stat_summary,
-                                      const bool skip_median)
+    inline size_t update_read_summary(summary_by_lane_read<model::metrics::read_metric>::vector_t& read_data_cache,
+                               model::summary::stat_summary& stat_summary,
+                               const bool skip_median)
     {
         model::summary::metric_stat stat;
         const size_t non_nan = nan_summarize(read_data_cache.begin(),
@@ -118,7 +117,6 @@ namespace illumina { namespace interop { namespace logic { namespace summary
         stat_summary.phasing(stat);
         return non_nan;
     }
-
     /** Summarize a collection tile metrics
     *
     * @sa model::summary::lane_summary::density
@@ -146,8 +144,8 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                                 I end,
                                 const constants::tile_naming_method naming_method,
                                 model::summary::run_summary &run,
-                                const bool skip_median = false)
-    throw(model::index_out_of_bounds_exception)
+                                const bool skip_median=false)
+                                    throw(model::index_out_of_bounds_exception)
     {
         typedef typename model::metrics::tile_metric::read_metric_vector read_metric_vector_t;
         typedef typename read_metric_vector_t::const_iterator const_read_metric_iterator;
@@ -161,7 +159,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
 
         tile_by_lane_vector_t tile_data_by_lane(run.lane_count());
         reserve(tile_data_by_lane.begin(), tile_data_by_lane.end(), n);
-        tile_by_lane_vector_t tile_data_by_lane_surface(run.lane_count() * surface_count);
+        tile_by_lane_vector_t tile_data_by_lane_surface(run.lane_count()*surface_count);
         reserve(tile_data_by_lane_surface.begin(), tile_data_by_lane_surface.end(), n);
 
         summary_by_lane_read<model::metrics::read_metric> read_data_by_lane_read(run, n);
@@ -180,13 +178,15 @@ namespace illumina { namespace interop { namespace logic { namespace summary
             {
                 const size_t read = rb->read() - 1;
                 if (read >= read_data_by_lane_read.read_count())
-                    INTEROP_THROW(model::index_out_of_bounds_exception, "Read exceeds read count in RunInfo.xml");
-                read_data_by_lane_read(rb->read() - 1, beg->lane() - 1).push_back(*rb);
-                if (surface_count < 2) continue;
-                read_data_by_surface_lane_read(rb->read() - 1, beg->lane() - 1, surface - 1).push_back(*rb);
+                    INTEROP_THROW(model::index_out_of_bounds_exception,
+                                  "Read exceeds read count in RunInfo.xml: "
+                                          << read << " >= " << read_data_by_lane_read.read_count());
+                read_data_by_lane_read(read, lane).push_back(*rb);
+                if(surface_count < 2) continue;
+                read_data_by_surface_lane_read(read, lane, surface-1).push_back(*rb);
             }
-            if (surface_count < 2) continue;
-            const size_t index = (beg->lane() - 1) * surface_count + (surface - 1);
+            if(surface_count < 2) continue;
+            const size_t index = lane*surface_count+(surface-1);
             tile_data_by_lane_surface[index].push_back(*beg);// TODO: make more efficient by copying only tile data
         }
 
@@ -212,8 +212,8 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                 run[read][lane].reads(run[0][lane].reads());
                 run[read][lane].reads_pf(run[0][lane].reads_pf());
             }
-            if (surface_count < 2) continue;
-            for (size_t surface = 0; surface < surface_count; ++surface)
+            if(surface_count < 2) continue;
+            for(size_t surface=0;surface<surface_count;++surface)
             {
 
                 update_tile_summary_from_cache(tile_data_by_lane_surface[lane * surface_count + surface],
@@ -249,12 +249,12 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                 INTEROP_ASSERT(!std::isnan(run[read][lane].percent_aligned().mean()));
                 percent_aligned_by_read += run[read][lane].percent_aligned().mean() * non_nan;
                 total_by_read += non_nan;
-                if (surface_count < 2) continue;
-                for (size_t surface = 0; surface < surface_count; ++surface)
+                if(surface_count < 2) continue;
+                for(size_t surface=0;surface<surface_count;++surface)
                 {
                     update_read_summary(read_data_by_surface_lane_read(read, lane, surface),
-                                        run[read][lane][surface],
-                                        skip_median);
+                                     run[read][lane][surface],
+                                     skip_median);
                 }
             }
             run[read].summary().percent_aligned(divide(percent_aligned_by_read, float(total_by_read)));

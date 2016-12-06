@@ -22,10 +22,11 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     {
     public:
         enum {
+
             /** Unique type code for metric */
             TYPE = constants::QByLane,
-            /** Tells the reader to include any records that have 0 for tile */
-            CHECK_TILE_ID = 0
+            /** Latest version of the InterOp format */
+            LATEST_VERSION = 6
         };
         /** Define the base type */
         typedef constants::base_lane_t base_t;

@@ -45,7 +45,8 @@ INSTANTIATE_TEST_CASE_P(extraction_metric_unit_test,
 TEST_P(extraction_metrics_tests, test_read_write)
 {
     typedef extraction_metric_set::const_iterator const_iterator;
-    if(!test) return;// Disable test for rebaseline
+    if(skip_test) return;
+    ASSERT_TRUE(fixture_test_result);
     const float tol = 1e-7f;
     EXPECT_EQ(actual.version(), expected.version());
     ASSERT_EQ(actual.size(), expected.size());
@@ -78,7 +79,7 @@ TEST_P(extraction_metrics_tests, test_read_write)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Setup regression test
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-regression_test_metric_generator<extraction_metric_set> extraction_regression_gen("metrics");
+regression_test_metric_generator<extraction_metric_set> extraction_regression_gen;
 INSTANTIATE_TEST_CASE_P(extraction_metric_regression_test,
                         extraction_metrics_tests,
                         ProxyValuesIn(extraction_regression_gen, regression_test_data::instance().files()));

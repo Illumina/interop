@@ -14,6 +14,7 @@
 #include <cstring>
 #include <fstream>
 #include <map>
+#include "interop/util/math.h"
 #include "interop/io/format/generic_layout.h"
 #include "interop/io/layout/base_metric.h"
 #include "interop/model/metric_base/base_cycle_metric.h"
@@ -34,16 +35,16 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @param read read number
          * @param percent_aligned percent of PhiX aligned in read
          * @param percent_phasing percent phasing
-         * @param percent_prePhasing percent pre-phasing
+         * @param percent_prephasing percent pre-phasing
          */
         read_metric(const uint_t read = 0,
                     const float percent_aligned = std::numeric_limits<float>::quiet_NaN(),
                     const float percent_phasing = std::numeric_limits<float>::quiet_NaN(),
-                    const float percent_prePhasing = std::numeric_limits<float>::quiet_NaN()) :
+                    const float percent_prephasing = std::numeric_limits<float>::quiet_NaN()) :
                 m_read(read),
                 m_percent_aligned(percent_aligned),
                 m_percent_phasing(percent_phasing),
-                m_percent_prephasing(percent_prePhasing)
+                m_percent_prephasing(percent_prephasing)
         {
         }
 
@@ -113,6 +114,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         float m_percent_aligned;
         float m_percent_phasing;
         float m_percent_prephasing;
+        template<class MetricType, int Version>
+        friend struct io::generic_layout;
     };
 
     /** Tile metrics
@@ -134,25 +137,26 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         typedef std::vector<read_metric> read_metric_vector;
         /** Define a const read iterator */
         typedef read_metric_vector::const_iterator const_iterator;
-        /** Read metric type
-         */
+        /** Read metric type */
         typedef read_metric read_metric_type;
+    private:
+        typedef read_metric_vector::iterator read_iterator;
     public:
         /** Constructor
          */
         tile_metric() : metric_base::base_metric(0, 0),
-                        m_cluster_density(0),
-                        m_cluster_density_pf(0),
-                        m_cluster_count(0),
-                        m_cluster_count_pf(0)
+                        m_cluster_density(std::numeric_limits<float>::quiet_NaN()),
+                        m_cluster_density_pf(std::numeric_limits<float>::quiet_NaN()),
+                        m_cluster_count(std::numeric_limits<float>::quiet_NaN()),
+                        m_cluster_count_pf(std::numeric_limits<float>::quiet_NaN())
         { }
         /** Constructor
          */
         tile_metric(const header_type&) : metric_base::base_metric(0, 0),
-                m_cluster_density(0),
-                m_cluster_density_pf(0),
-                m_cluster_count(0),
-                m_cluster_count_pf(0)
+                m_cluster_density(std::numeric_limits<float>::quiet_NaN()),
+                m_cluster_density_pf(std::numeric_limits<float>::quiet_NaN()),
+                m_cluster_count(std::numeric_limits<float>::quiet_NaN()),
+                m_cluster_count_pf(std::numeric_limits<float>::quiet_NaN())
         { }
 
         /** Constructor
@@ -389,6 +393,34 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             return m_read_metrics.size();
         }
         /* @} */
+        /** Update the phasing/prephasing slope if they don't exist
+         *
+         * @param number read number
+         * @param phasing phasing slope
+         * @param prephasing prephasing slope
+         */
+        void update_phasing_if_missing(const size_t number, const float phasing, const float prephasing)
+        {
+            for (read_iterator b = m_read_metrics.begin(); b != m_read_metrics.end(); ++b)
+            {
+                if (b->read() == static_cast<uint_t>(number))
+                {
+                    if(std::isnan(b->percent_phasing()))
+                    {
+                        b->percent_phasing(phasing);
+                    }
+                    if(std::isnan(b->percent_prephasing()))
+                    {
+                        b->percent_prephasing(prephasing);
+                    }
+                    return;
+                }
+            }
+            m_read_metrics.push_back(read_metric(static_cast<uint_t>(number),
+                                                 std::numeric_limits<float>::quiet_NaN(),
+                                                 phasing,
+                                                 prephasing));
+        }
         /** Density of clusters for each tile (in clusters per mm2)
          *
          * @deprecated Will be removed in 1.1.x (use cluster_density instead)

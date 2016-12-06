@@ -8,6 +8,7 @@
 #pragma once
 
 #include <vector>
+#include "interop/util/map.h"
 #include "interop/util/exception.h"
 #include "interop/util/length_of.h"
 #include "interop/model/model_exceptions.h"
@@ -47,7 +48,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
         typedef std::vector<size_t> cycle_vector_t;
         typedef std::pair<size_t, size_t> key_t;
         typedef std::pair<float, float> value_t;
-        typedef std::map<key_t, value_t> error_tile_t;
+        typedef INTEROP_ORDERED_MAP(key_t, value_t) error_tile_t;
         typedef std::vector<error_tile_t> error_by_read_tile_t;
         error_by_read_tile_t tmp(read_lane_cache.size());
         cycle_vector_t max_error_cycle(read_lane_cache.size(), 0);
@@ -66,7 +67,9 @@ namespace illumina { namespace interop { namespace logic { namespace summary
             INTEROP_ASSERTMSG(read_number < tmp.size(),
                               read.number << " " << read.cycle_within_read << ", " << beg->cycle());
             if (tmp[read_number].find(key) == tmp[read_number].end())
-                tmp[read_number][key] = std::make_pair(0.0f, 0.0f);
+            {
+                tmp[read_number].insert(std::make_pair(key, std::make_pair(0.0f, 0.0f)));
+            }
             tmp[read_number][key].first += beg->error_rate();
             tmp[read_number][key].second += 1;
         }
