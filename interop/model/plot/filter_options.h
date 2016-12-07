@@ -128,10 +128,10 @@ namespace illumina { namespace interop { namespace model { namespace plot
                 INTEROP_THROW(model::invalid_filter_option,
                               "Swath number exceeds total number of swaths: "
                                       << m_swath << " > " << run_info.flowcell().swath_count());
-            if(!all_sections() && m_section > run_info.flowcell().sections_per_lane())
+            if(!all_sections() && m_section > run_info.flowcell().total_number_of_sections())
                 INTEROP_THROW(model::invalid_filter_option,
                               "Section number exceeds total number of sections: "
-                                      << m_section << " > " << run_info.flowcell().sections_per_lane());
+                                      << m_section << " > " << run_info.flowcell().total_number_of_sections());
             if(logic::utils::is_base_metric(type))
             {
                 if(!all_bases() && (m_base >= static_cast<dna_base_t>(constants::NUM_OF_BASES) || m_base < 0))
@@ -658,6 +658,9 @@ namespace illumina { namespace interop { namespace model { namespace plot
             const id_t swath_beg = static_cast<id_t>(ALL_IDS);
             const id_t swath_end = !supports_swath(plot_type) ? static_cast<id_t>(ALL_IDS) :
                                    static_cast<id_t>(info.flowcell().swath_count()+1);
+            const id_t section_beg = static_cast<id_t>(ALL_IDS);
+            const id_t section_end = !supports_section(plot_type, info) ? static_cast<id_t>(ALL_IDS) :
+                                   static_cast<id_t>(info.flowcell().total_number_of_sections()+1);
             const id_t tile_beg = static_cast<id_t>(ALL_IDS);
             const id_t tile_end = !supports_tile(plot_type) ? static_cast<id_t>(ALL_IDS) :
                                    static_cast<id_t>(info.flowcell().tile_count()+1);
@@ -670,12 +673,25 @@ namespace illumina { namespace interop { namespace model { namespace plot
                 new util::indirect_range_iterator<id_t>(m_read, read_beg, read_end, !keep_state),
                 new util::indirect_range_iterator<id_t>(m_cycle, cycle_beg, cycle_end, !keep_state),
                 new util::indirect_range_iterator<id_t>(m_swath, swath_beg, swath_end, !keep_state),
+                new util::indirect_range_iterator<id_t>(m_section, section_beg, section_end, !keep_state),
                 new util::indirect_range_iterator<id_t>(m_tile_number, tile_beg, tile_end, !keep_state)
             };
             return util::chain_range_iterator(iterators);
         }
 
     public:
+
+        /** Test if the combination of the plot and run info support filtering by section
+         *
+         * param plot_type type of plot
+         * @param info run info
+         * @return true if metric supports filtering by swath
+         */
+        bool supports_section(const constants::plot_types /*plot_type*/, const model::run::info& info)const
+        {
+            if(info.flowcell().naming_method() != constants::FiveDigit) return false;
+            return false;
+        }
         /** Test if plot supports filtering by swath
          *
          * param plot_type type of plot
@@ -830,6 +846,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
             if(!options.all_reads()) out << "Read_" << options.m_read << "_";
             if(!options.all_cycles()) out << "Cycle_" << options.m_cycle << "_";
             if(!options.all_swaths()) out << "Swath_" << options.m_swath << "_";
+            if(!options.all_sections()) out << "Section_" << options.m_section << "_";
             if(!options.all_tile_numbers()) out << "Tile_" << options.m_tile_number << "_";
             out << "_";
             return out;

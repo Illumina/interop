@@ -34,8 +34,8 @@ namespace illumina { namespace interop { namespace model { namespace run
          * @param surface_count number of surfaces
          * @param swath_count number of swaths
          * @param tile_count number of tiles
-         * @param sections_per_lane number of sections per lane
-         * @param lanes_per_section number of lanes per section
+         * @param sections_per_lane number of sections per lane (number of cameras per lane)
+         * @param lanes_per_section number of lanes per section (number of lanes a camera covers)
          * @param tiles vector of tile names
          * @param naming_method tile naming method
          * @param barcode flowcell barcode
@@ -94,6 +94,7 @@ namespace illumina { namespace interop { namespace model { namespace run
 
         /** Get number of sections per lane
          *
+         * @note number of cameras per lane
          * @return number of sections per lane
          */
         uint_t sections_per_lane() const
@@ -101,10 +102,22 @@ namespace illumina { namespace interop { namespace model { namespace run
 
         /** Get number of lanes per section
          *
+         * @note number of lanes a camera covers
          * @return number of lanes per section
          */
         uint_t lanes_per_section() const
         { return m_lanes_per_section; }
+
+        /** Get total number of sections
+         *
+         * @return total number of sections
+         */
+        uint_t total_number_of_sections() const
+        {
+            if(m_naming_method == constants::FiveDigit)
+                return m_lane_count/m_lanes_per_section * m_sections_per_lane;
+            return 0;
+        }
 
         /** Get the tile naming convention
          *
@@ -179,6 +192,18 @@ namespace illumina { namespace interop { namespace model { namespace run
          */
         void tile_count(const uint_t tile_count)
         { m_tile_count = tile_count; }
+        /** Set number of sections per lane
+         *
+         * @param count number of sections per lane
+         */
+        void sections_per_lane(const uint_t count)
+        { m_sections_per_lane = count; }
+        /** Set number of lanes per section
+         *
+         * @param count number of lanes per section
+         */
+        void lanes_per_section(const uint_t count)
+        { m_lanes_per_section = count; }
 
     private:
         tile_naming_method_t m_naming_method;

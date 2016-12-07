@@ -135,6 +135,11 @@ if(BUILD_NUMBER)
 else()
     set(INTEROP_VERSION_STR ${VERSION_SHORT})
 endif()
+if("${CMAKE_HOST_SYSTEM}" MATCHES ".*Windows.*")
+    set(SHARED_LIB_SEARCH_STR "\\*${CMAKE_SHARED_LIBRARY_SUFFIX}")
+else()
+    set(SHARED_LIB_SEARCH_STR "/*${CMAKE_SHARED_LIBRARY_SUFFIX}")
+endif()
 # This creates the nuspec file in the proper directory
 add_custom_target(nuspec
         COMMENT "Creating package.nuspec"
@@ -148,7 +153,7 @@ add_custom_target(nuspec
         -DINTEROP_VERSION=${INTEROP_VERSION_STR}
         -DPLATFORM=${NUGET_SYS_ID}
         -DCONFIG="${CONFIG_DIR}"
-        -DSHARED_EXT="${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        -DSHARED_LIB_SEARCH="${SHARED_LIB_SEARCH_STR}"
         -DCONFIG_INPUT_FILE=${CMAKE_SOURCE_DIR}/cmake/package.nuspec.in
         -DCONFIG_OUTPUT_FILE=$<TARGET_FILE_DIR:${SWIG_MODULE_c_csharp_${MODULE}_REAL_NAME}>/../package.nuspec
         -P ${CMAKE_SOURCE_DIR}/cmake/ConfigureFile.cmake
