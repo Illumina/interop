@@ -226,7 +226,7 @@ namespace illumina { namespace interop { namespace model { namespace run
         if(surface > m_flowcell.surface_count())
             INTEROP_THROW(invalid_run_info_exception, "Surface number exceeds number of surfaces");
         const ::uint32_t section = logic::metric::section(tile, m_flowcell.naming_method());
-        if(section > m_flowcell.sections_per_lane() * m_flowcell.lanes_per_section())
+        if(m_flowcell.m_naming_method == constants::FiveDigit && section > m_flowcell.total_number_of_sections())
             INTEROP_THROW(invalid_run_info_exception, "Section number exceeds number of sections");
     }
 

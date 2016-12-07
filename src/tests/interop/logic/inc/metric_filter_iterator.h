@@ -172,9 +172,11 @@ namespace illumina { namespace interop { namespace unittest
 
             // Reduce the number of filters!
             model::run::flowcell_layout layout = run_info.flowcell();
-            layout.lane_count(1);
+            layout.lane_count(1); // TODO: increase to test filtering?
             layout.swath_count(1);
             layout.tile_count(1);
+            layout.sections_per_lane(1);
+            layout.lanes_per_section(1);
             m_run_info.flowcell(layout);
             std::string channels[] = {"Red", "Green"};
             m_run_info.channels(util::to_vector(channels));
