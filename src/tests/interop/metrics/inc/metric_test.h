@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 #include "interop/model/metric_base/metric_set.h"
+#include "interop/model/run/info.h"
 #include "interop/io/metric_file_stream.h"
 #include "interop/util/length_of.h"
 

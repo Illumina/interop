@@ -32,7 +32,7 @@ namespace illumina{ namespace interop { namespace unittest
          *
          * @param metrics destination metric set
          */
-        static void create_expected(metric_set_t& metrics)
+        static void create_expected(metric_set_t& metrics, const model::run::info=model::run::info())
         {
             metrics = metric_set_t(parent_t::VERSION);
             metrics.insert(metric_t(1,1105,1,2447414,2334829,2566750,33));
@@ -100,7 +100,7 @@ namespace illumina{ namespace interop { namespace unittest
          *
          * @param metrics destination metric set
          */
-        static void create_expected(metric_set_t& metrics)
+        static void create_expected(metric_set_t& metrics, const model::run::info=model::run::info())
         {
             typedef typename metric_set_t::header_type header_t;
             typedef typename header_t::qscore_bin_vector_type qscore_bin_vector_type;

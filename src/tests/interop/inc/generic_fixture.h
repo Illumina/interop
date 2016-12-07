@@ -38,6 +38,8 @@ namespace illumina{ namespace interop { namespace unittest {
          *
          * @param expected expected object
          * @param actual actual object
+         * @param skip_test flag to set if the test should be skipped
+         * @return success if the results should be tested
          */
         virtual ::testing::AssertionResult generate(T& expected, T& actual, bool* skip_test)const=0;
         /** Advance to the next type
@@ -99,7 +101,7 @@ namespace illumina{ namespace interop { namespace unittest {
         }
         /** Clone the concrete implementation TODO: Remove
          *
-         * @param name run folder
+         * @param parameter parameter value
          * @return copy of this object
          */
         base_type operator()(const parameter_type& parameter)const
@@ -212,7 +214,7 @@ namespace illumina{ namespace interop { namespace unittest {
         }
         /** Copy operator
          *
-         * @param other source object to copy
+         * @param ptr source object to copy
          * @return this
          */
         generator_ptr& operator=(abstract_generator<T>* ptr)

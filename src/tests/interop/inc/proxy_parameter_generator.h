@@ -63,8 +63,12 @@ namespace illumina{ namespace interop { namespace unittest
          * @param obj object-like functor
          * @param base generator base
          * @param it iterator to std::vector
+         * @param it_end iterator to end of std::vector
          */
-        proxy_argument_iterator(T& obj, const proxy_argument_generator<T,Proxy>& base, const_iterator it, const_iterator it_end) :
+        proxy_argument_iterator(T& obj,
+                                const proxy_argument_generator<T,Proxy>& base,
+                                const_iterator it,
+                                const_iterator it_end) :
                 m_base(base), m_begin(it), m_current(it), m_end(it_end), m_object(obj)
         {
             static_assert(!is_pointer<T>::value, "This class does not free memory and should not take a pointer");

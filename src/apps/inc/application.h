@@ -37,6 +37,7 @@ enum exit_codes
  *
  * @param filename run folder containing RunInfo.xml and InterOps
  * @param metrics run metrics
+ * @param check_empty if true return an error if the metrics are empty
  * @return exit code
  */
 inline int read_run_metrics(const char* filename,
@@ -83,6 +84,7 @@ inline int read_run_metrics(const char* filename,
  * @param filename run folder containing RunInfo.xml and InterOps
  * @param metrics run metrics
  * @param valid_to_load list of metrics that are valid to load
+ * @param check_empty if true return an error if the metrics are empty
  * @return exit code
  */
 inline int read_run_metrics(const char* filename,

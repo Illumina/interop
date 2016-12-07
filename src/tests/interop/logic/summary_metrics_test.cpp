@@ -11,6 +11,7 @@
 #include <gtest/gtest.h>
 #include "interop/util/math.h"
 #include "interop/logic/summary/run_summary.h"
+#include "interop/logic/utils/channel.h"
 #include "src/tests/interop/metrics/inc/corrected_intensity_metrics_test.h"
 #include "src/tests/interop/metrics/inc/error_metrics_test.h"
 #include "src/tests/interop/metrics/inc/extraction_metrics_test.h"
@@ -91,6 +92,7 @@ struct run_summary_tests : public generic_test_fixture<model::summary::run_summa
     }
     if(expected.last_cycle() != actual.last_cycle())
     {
+        if(test_failed) msg << " | ";
         msg << "Last Cycle Expected: " << expected.last_cycle() << " == Actual: " << actual.last_cycle();
         test_failed = true;
     }
@@ -349,8 +351,8 @@ TEST(summary_metrics_test, cycle_35_cycle_34_tile)
     const size_t surface_count = 2;
     const size_t swath_count = 4;
     const size_t tile_count = 99;
-    const size_t sections_per_lane = 6;
-    const size_t lanes_per_section = 6;
+    const size_t sections_per_lane = 1;
+    const size_t lanes_per_section = 1;
     std::vector<std::string> channels;
     channels.push_back("Red");
     channels.push_back("Green");
@@ -415,8 +417,8 @@ TEST(summary_metrics_test, clear_run_metrics) // TODO Expand to catch everything
     const size_t surface_count = 2;
     const size_t swath_count = 4;
     const size_t tile_count = 99;
-    const size_t sections_per_lane = 6;
-    const size_t lanes_per_section = 6;
+    const size_t sections_per_lane = 1;
+    const size_t lanes_per_section = 1;
     std::vector<std::string> channels;
     channels.push_back("Red");
     channels.push_back("Green");
@@ -439,7 +441,7 @@ TEST(summary_metrics_test, clear_run_metrics) // TODO Expand to catch everything
     run_info.set_naming_method(constants::FourDigit);
 
     model::metrics::run_metrics full_metrics(run_info);
-    tile_metric_v2::create_expected(full_metrics.get<tile_metric>());
+    tile_metric_v2::create_expected(full_metrics.get<tile_metric>(), run_info);
     model::summary::run_summary summary;
     logic::summary::summarize_run_metrics(full_metrics, summary);
     INTEROP_EXPECT_NEAR(summary.total_summary().percent_aligned(), 2.5863409042358398f, tol);
@@ -465,8 +467,6 @@ TEST(summary_metrics_test, empty_run_metrics)
     INTEROP_EXPECT_NEAR(summary.total_summary().percent_aligned(), 0, tol);
     EXPECT_EQ(summary.size(), 0u);
 }
-
-
 
 //---------------------------------------------------------------------------------------------------------------------
 // Unit test section
@@ -515,20 +515,21 @@ public:
                                         model::summary::run_summary &actual,
                                         bool*) const
     {
+        typedef model::run::flowcell_layout::uint_t  uint_t;
         expected.clear();
         actual.clear();
-        const size_t lane_count = 8;
-        const size_t surface_count = 2;
-        const size_t swath_count = 4;
-        const size_t tile_count = 99;
-        const size_t sections_per_lane = 6;
-        const size_t lanes_per_section = 6;
+        const uint_t swath_count = 4;
+        const uint_t tile_count = 99;
+        const uint_t sections_per_lane = 1;
+        const uint_t lanes_per_section = 1;
         Gen::create_summary(expected);
+        const uint_t lane_count = 8;//expected.max_lane();
+        const uint_t surface_count = static_cast<uint_t>(expected.surface_count());
         std::vector<model::run::read_info> reads;
         expected.copy_reads(reads);
         std::vector<std::string> channels;
-        channels.push_back("Red");
-        channels.push_back("Green");
+        logic::utils::update_channel_from_instrument_type(
+                expected.channel_count() == 2 ? constants::NextSeq : constants::HiSeq, channels );
         actual = model::summary::run_summary(reads.begin(), reads.end(), lane_count, surface_count, channels.size());
         model::run::info run_info("XX",
                                   "",
@@ -542,9 +543,9 @@ public:
                                   channels,
                                   model::run::image_dimensions(),
                                   reads);
-        run_info.set_naming_method(constants::FourDigit);
+        run_info.set_naming_method(constants::FourDigit); // TODO: Set from metrics?
         model::metrics::run_metrics metrics(run_info);
-        Gen::create_expected(metrics.get<typename Gen::metric_t>());
+        Gen::create_expected(metrics.get<typename Gen::metric_t>(), run_info);
         metrics.finalize_after_load();
         SummaryLogic summary_logic;
         summary_logic(metrics, actual);
@@ -618,6 +619,9 @@ run_summary_tests::generator_type run_summary_unit_test_generators[] = {
         new run_summary_generator<tile_metric_v2, summary_logic>(),
         new run_summary_generator<corrected_intensity_metric_v2, summary_logic>(),
         new run_summary_generator<corrected_intensity_metric_v3, summary_logic>(),
+
+        // Requirements testing
+        new run_summary_generator<q_metric_requirements, summary_logic>(),
 
         // Write/read
         wrap(new standard_parameter_generator<model::summary::run_summary, summary_write_read_generator>(0))

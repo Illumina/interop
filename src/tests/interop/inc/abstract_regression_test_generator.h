@@ -66,7 +66,8 @@ namespace illumina{ namespace interop { namespace unittest
          *
          * @param expected expected metric set
          * @param actual actual metric set
-         * @return true if the results should be tested (false if rebaselining)
+         * @param skip_test flag to set if the test should be skipped
+         * @return success if the results should be tested
          */
         ::testing::AssertionResult generate(Model& expected, Model& actual, bool* skip_test)const
         {
