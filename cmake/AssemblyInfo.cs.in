@@ -1,0 +1,9 @@
+using System.Reflection;
+
+[assembly: AssemblyTitle("Illumina.InterOp")]
+[assembly: AssemblyCompany("Illumina")]
+[assembly: AssemblyProduct("Illumina.InterOp")]
+[assembly: AssemblyCopyright("Copyright © Illumina 2015")]
+[assembly: AssemblyVersion("@VERSION_SHORT@")]
+[assembly: AssemblyFileVersion("@VERSION_SHORT@")]
+

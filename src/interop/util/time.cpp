@@ -60,7 +60,7 @@ namespace illumina { namespace interop { namespace util
      */
     ::uint64_t csharp_date_time::to_unix(const ::uint64_t val)
     {
-        static_assert(sizeof(uint64_t) == 8, "Int64 has the wrong size");
+        static_assert(sizeof( ::uint64_t ) == 8, "Int64 has the wrong size");
         int64_t ticks = static_cast<int64_t>(val) & INTEROP_UTIL_TICKS_MASK;
         if (ticks > INTEROP_UTIL_TICKS_THRESHOLD)
             ticks -= INTEROP_UTIL_TICKS_OFFSET;
@@ -69,7 +69,7 @@ namespace illumina { namespace interop { namespace util
         {
             ticks += INTEROP_UTIL_TICKS_NEG_OFFSET;
         }
-        return static_cast<uint64_t>( (ticks - ticks_to_1970()) / ticks_per_second() );
+        return static_cast< ::uint64_t >( (ticks - ticks_to_1970()) / ticks_per_second() );
     }
     /** Convert to seconds with fractions
      *
@@ -146,7 +146,7 @@ namespace illumina { namespace interop { namespace util
     std::istream& operator>>(std::istream& in, csharp_date_time& date_time)
     {
         // TODO: read in nice string representation
-        uint64_t val;
+        ::uint64_t val;
         in >> val;
         date_time = csharp_date_time(val);
         return in;

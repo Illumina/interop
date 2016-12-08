@@ -99,6 +99,10 @@ namespace illumina { namespace interop
             value = false
         };
     };
+    /** Test if type is a raw pointer */
+    template<typename T> struct is_pointer : false_type {};
+    /** Test if type is a raw pointer */
+    template<typename T> struct is_pointer<T*> : true_type {};
     /** Test if type has a const qualifier */
     template<typename T> struct is_const : false_type {};
     /** Test if type has a const qualifier */

@@ -79,9 +79,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         corrected_intensity_metric() :
                 metric_base::base_cycle_metric(0, 0, 0),
                 m_average_cycle_intensity(0),
-                m_corrected_int_all(constants::NUM_OF_BASES, 0),
-                m_corrected_int_called(constants::NUM_OF_BASES, 0),
-                m_called_counts(constants::NUM_OF_BASES_AND_NC, 0),
+                m_corrected_int_all(constants::NUM_OF_BASES, std::numeric_limits<ushort_t>::max()),
+                m_corrected_int_called(constants::NUM_OF_BASES, std::numeric_limits<ushort_t>::max()),
+                m_called_counts(constants::NUM_OF_BASES_AND_NC, std::numeric_limits<uint_t>::max()),
                 m_signal_to_noise(std::numeric_limits<float>::quiet_NaN())
         { }
         /** Constructor
@@ -89,9 +89,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         corrected_intensity_metric(const header_type&) :
                 metric_base::base_cycle_metric(0, 0, 0),
                 m_average_cycle_intensity(0),
-                m_corrected_int_all(constants::NUM_OF_BASES, 0),
-                m_corrected_int_called(constants::NUM_OF_BASES, 0),
-                m_called_counts(constants::NUM_OF_BASES_AND_NC, 0),
+                m_corrected_int_all(constants::NUM_OF_BASES, std::numeric_limits<ushort_t>::max()),
+                m_corrected_int_called(constants::NUM_OF_BASES, std::numeric_limits<ushort_t>::max()),
+                m_called_counts(constants::NUM_OF_BASES_AND_NC, std::numeric_limits<uint_t>::max()),
                 m_signal_to_noise(std::numeric_limits<float>::quiet_NaN())
         { }
 
@@ -175,7 +175,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                                    const uint_array_t &called_counts) :
                 metric_base::base_cycle_metric(lane, tile, cycle),
                 m_average_cycle_intensity(std::numeric_limits<ushort_t>::max()),
-                m_corrected_int_all(constants::NUM_OF_BASES, 0),
+                m_corrected_int_all(constants::NUM_OF_BASES, std::numeric_limits<ushort_t>::max()),
                 m_corrected_int_called(corrected_int_called),
                 m_called_counts(called_counts),
                 m_signal_to_noise(std::numeric_limits<float>::quiet_NaN())
@@ -200,7 +200,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                                    const uint_pointer_t called_counts) :
                 metric_base::base_cycle_metric(lane, tile, cycle),
                 m_average_cycle_intensity(std::numeric_limits<ushort_t>::max()),
-                m_corrected_int_all(constants::NUM_OF_BASES, 0),
+                m_corrected_int_all(constants::NUM_OF_BASES, std::numeric_limits<ushort_t>::max()),
                 m_corrected_int_called(corrected_int_called, corrected_int_called + constants::NUM_OF_BASES),
                 m_called_counts(called_counts, called_counts + constants::NUM_OF_BASES_AND_NC),
                 m_signal_to_noise(std::numeric_limits<float>::quiet_NaN())

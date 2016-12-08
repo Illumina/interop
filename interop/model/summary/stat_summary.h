@@ -28,13 +28,16 @@ namespace illumina { namespace interop { namespace model { namespace summary
         typedef metric_stat metric_stat_t;
     public:
         /** Constructor
+         *
+         * param channel_count number of channels
          */
-        stat_summary() :
+        stat_summary(const size_t /*channel_count*/) :
                 m_percent_gt_q30(std::numeric_limits<float>::quiet_NaN()),
-                m_yield_g(0),
-                m_projected_yield_g(0),
-                m_reads(0),
-                m_reads_pf(0)
+                m_yield_g(0), // TODO: Update logic to allow this to be NaN!
+                m_projected_yield_g(0), // TODO: Update logic to allow this to be NaN!
+                m_reads(std::numeric_limits<float>::quiet_NaN()),
+                m_reads_pf(std::numeric_limits<float>::quiet_NaN())
+
         {
         }
 
@@ -373,6 +376,13 @@ namespace illumina { namespace interop { namespace model { namespace summary
         void first_cycle_intensity(const metric_stat_t & stat)
         {
             m_first_cycle_intensity=stat;
+        }
+
+    public:
+        /** Resize the underlying data
+         */
+        void resize_stat(const size_t)
+        {
         }
 
     private:

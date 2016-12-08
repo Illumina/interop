@@ -67,7 +67,8 @@ INSTANTIATE_TEST_CASE_P(corrected_intensity_metric_unit_test,
 TEST_P(corrected_intensity_metrics_tests, test_metric_io_fidelity)
 {
     typedef corrected_intensity_metric_set::const_iterator const_iterator;
-    if(!test) return;// Disable test for rebaseline
+    if(skip_test) return;
+    ASSERT_TRUE(fixture_test_result);
     const float tol = 1e-3f;
     EXPECT_EQ(actual.version(), expected.version());
     ASSERT_EQ(actual.size(), expected.size());
@@ -87,8 +88,7 @@ TEST_P(corrected_intensity_metrics_tests, test_metric_io_fidelity)
         }
         if(expected.version() == 2)
         {
-            if (!std::isnan(it_expected->signal_to_noise()) || !std::isnan(it_actual->signal_to_noise()))
-                EXPECT_NEAR(it_expected->signal_to_noise(), it_actual->signal_to_noise(), tol);
+            INTEROP_ASSERT_NEAR(it_expected->signal_to_noise(), it_actual->signal_to_noise(), tol);
         }
         for(ptrdiff_t i=-1;i<constants::NUM_OF_BASES;i++)
             EXPECT_EQ(it_expected->called_counts(static_cast<constants::dna_bases>(i)),
@@ -120,7 +120,7 @@ TEST(corrected_intensity_metrics_test, test_percent_base_nan)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Use the sub folder `metrics` in the baseline folder to contain all the baseline data
-regression_test_metric_generator<corrected_intensity_metric_set> corrected_intensity_regression_gen("metrics");
+regression_test_metric_generator<corrected_intensity_metric_set> corrected_intensity_regression_gen;
 
 /**
  * This method populates the regression test with run folders specified on the command line. The run folders

@@ -117,19 +117,19 @@ namespace illumina { namespace interop { namespace model { namespace run
     xml::xml_parse_exception)
     {
 
-        if (run_folder.find("RunParameters.xml") != std::string::npos ||
-            run_folder.find("runParameters.xml") != std::string::npos)
+        if (run_folder.find(io::paths::run_parameters()) != std::string::npos ||
+            run_folder.find(io::paths::run_parameters(true)) != std::string::npos)
         {
             read_file(run_folder);
             return;
         }
         try
         {
-            read_file(io::combine(run_folder, "runParameters.xml"));
+            read_file(io::paths::run_parameters(run_folder, true));
         }
         catch (const xml_file_not_found_exception &)
         {
-            read_file(io::combine(run_folder, "RunParameters.xml"));
+            read_file(io::paths::run_parameters(run_folder));
         }
 
     }

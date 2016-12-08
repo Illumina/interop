@@ -24,7 +24,6 @@ namespace Illumina.InterOp.Interop.UnitTest
 		/// </summary>
 		protected vector_image_metrics expected_metrics = new vector_image_metrics();
 	    base_image_metrics actual_metric_set = new base_image_metrics();
-	    vector_image_metrics actual_metrics;
 	    byte[] expected_binary_data;
 		/// <summary>
 		/// The setup should be overridden by the specific version of the format
@@ -44,7 +43,6 @@ namespace Illumina.InterOp.Interop.UnitTest
 	        for(int i=0;i<expected_binary_data.Length;i++) expected_binary_data[i] = (byte)tmp[i];
 			expected_metric_set = new base_image_metrics(expected_metrics, version, new image_metric_header(channelCount));
 	        c_csharp_comm.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, actual_metric_set);
-	        actual_metrics = actual_metric_set.metrics();
 	        //actual_binary_data = write_metrics(actual_metric_set);
 	    }
 		/// <summary>
@@ -57,16 +55,16 @@ namespace Illumina.InterOp.Interop.UnitTest
 	        Assert.AreEqual(expected_metric_set.size(),  actual_metric_set.size());
 	        Assert.AreEqual(expected_metric_set.channel_count(),  actual_metric_set.channel_count());
 
-	        for(int i=0;i<Math.Min(expected_metrics.Count, actual_metrics.Count);i++)
+	        for(uint i=0;i<Math.Min(expected_metric_set.size(), actual_metric_set.size());i++)
 	        {
-	            Assert.AreEqual(expected_metrics[i].lane(), actual_metrics[i].lane());
-	            Assert.AreEqual(expected_metrics[i].tile(), actual_metrics[i].tile());
-	            Assert.AreEqual(expected_metrics[i].cycle(), actual_metrics[i].cycle());
-	            Assert.AreEqual(expected_metrics[i].channel_count(), actual_metrics[i].channel_count());
-	            for(uint j=0;j<Math.Min(expected_metrics[i].channel_count(), actual_metrics[i].channel_count());j++)
+	            Assert.AreEqual(expected_metric_set.at(i).lane(), actual_metric_set.at(i).lane());
+	            Assert.AreEqual(expected_metric_set.at(i).tile(), actual_metric_set.at(i).tile());
+	            Assert.AreEqual(expected_metric_set.at(i).cycle(), actual_metric_set.at(i).cycle());
+	            Assert.AreEqual(expected_metric_set.at(i).channel_count(), actual_metric_set.at(i).channel_count());
+	            for(uint j=0;j<Math.Min(expected_metric_set.at(i).channel_count(), actual_metric_set.at(i).channel_count());j++)
 	            {
-	                Assert.AreEqual(expected_metrics[i].min_contrast(j), actual_metrics[i].min_contrast(j));
-	                Assert.AreEqual(expected_metrics[i].max_contrast(j), actual_metrics[i].max_contrast(j));
+	                Assert.AreEqual(expected_metric_set.at(i).min_contrast(j), actual_metric_set.at(i).min_contrast(j));
+	                Assert.AreEqual(expected_metric_set.at(i).max_contrast(j), actual_metric_set.at(i).max_contrast(j));
 	            }
 	        }
 	    }

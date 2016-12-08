@@ -51,11 +51,20 @@ namespace std {
 
 #elif defined(SWIGPYTHON)
 
+%pythoncode %{
+ class exceptionMetaclass(type):
+
+    def __new__(self, name, bases, classdict):
+        if Exception not in bases:
+            return type(name, (Exception, )+bases, classdict)
+        return type(name, bases, classdict)
+%}
     %define WRAP_EXCEPTION_IMPORT(NAMESPACE, EXCEPTION_CPLUS_PLUS, EXCEPTION_CSHARP)
     %enddef
 
     %define WRAP_EXCEPTION(NAMESPACE, EXCEPTION_CPLUS_PLUS, EXCEPTION_CSHARP)
         %extend NAMESPACE EXCEPTION_CPLUS_PLUS {
+            %pythoncode { __metaclass__ = exceptionMetaclass }
             std::string __str__()const{return self->what();}
         }
     %enddef

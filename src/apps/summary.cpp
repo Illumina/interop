@@ -36,6 +36,7 @@
 #include <iostream>
 #include <iomanip>
 #include "interop/util/math.h"
+#include "interop/util/length_of.h"
 #include "interop/io/metric_file_stream.h"
 #include "interop/logic/summary/run_summary.h"
 #include "interop/version.h"
@@ -127,15 +128,6 @@ void print_array(std::ostream& out, I beg, I end, const size_t width, const char
     out.flags(f);
     out << std::endl;
 }
-/** Get number of elements in stack array
- *
- * @return number of elements
- */
-template<size_t N>
-size_t size_of(const char*(&)[N])
-{
-    return N;
-}
 /** Take a array of strings and print them using a fixed width
  *
  * @param out output stream
@@ -210,22 +202,23 @@ std::string format(const model::run::cycle_range& rng)
 }
 void summarize(const metric_summary& summary, std::vector<std::string>& values)
 {
-    INTEROP_ASSERT(values.size() >= 7);
     // format(value, width in spaces, number of values after decimal, multiplier)
-    values[1] = util::format(summary.yield_g(), 3, 2);
-    values[2] = util::format(summary.projected_yield_g(), 3, 2);
-    values[3] = util::format(summary.percent_aligned(), 3, 2);
-    values[4] = util::format(summary.error_rate(), 3, 2);
-    values[5] = util::lexical_cast<std::string>(long(summary.first_cycle_intensity()+0.5));
-    values[6] = util::format(summary.percent_gt_q30(), 3, 2);
+    size_t i=1;
+    values[i++] = util::format(summary.yield_g(), 3, 2);
+    values[i++] = util::format(summary.projected_yield_g(), 3, 2);
+    values[i++] = util::format(summary.percent_aligned(), 3, 2);
+    values[i++] = util::format(summary.error_rate(), 3, 2);
+    values[i++] = util::lexical_cast<std::string>(long(summary.first_cycle_intensity()+0.5));
+    values[i++] = util::format(summary.percent_gt_q30(), 3, 2);
+    if(i != values.size()) INTEROP_THROW(std::runtime_error, "There is a bug in the program, columns do not match header");
 }
-void summarize(const surface_summary& summary, std::vector<std::string>& values)
+void summarize(const surface_summary& summary, std::vector<std::string>& values, const size_t lane)
 {
-    INTEROP_ASSERT(values.size() >= 16);
     size_t i=0;
-    values[i++] = "-";
+    values[i++] = util::lexical_cast<std::string>(lane);
     values[i++] = util::lexical_cast<std::string>(summary.surface());
     values[i++] = util::lexical_cast<std::string>(summary.tile_count());
+
     // format(value, width in spaces, number of values after decimal, multiplier)
     values[i++] = format(summary.density(), 0, 0, 1e3);
     values[i++] = format(summary.percent_pf(), 0, 2);
@@ -241,14 +234,16 @@ void summarize(const surface_summary& summary, std::vector<std::string>& values)
     values[i++] = format(summary.error_rate_75(), 0, 2);
     values[i++] = format(summary.error_rate_100(), 0, 2);
     values[i++] = format(summary.first_cycle_intensity(), 0, 0);
+    INTEROP_ASSERT(i==values.size());
+    if(i != values.size()) INTEROP_THROW(std::runtime_error, "There is a bug in the program, columns do not match header");
 }
 void summarize(const lane_summary& summary, std::vector<std::string>& values)
 {
-    INTEROP_ASSERT(values.size() >= 16);
     size_t i=0;
     values[i++] = util::lexical_cast<std::string>(summary.lane());
     values[i++] = "-";
     values[i++] = util::lexical_cast<std::string>(summary.tile_count());
+
     // format(value, width in spaces, number of values after decimal, multiplier)
     values[i++] = format(summary.density(), 0, 0, 1e3);
     values[i++] = format(summary.percent_pf(), 0, 2);
@@ -264,6 +259,8 @@ void summarize(const lane_summary& summary, std::vector<std::string>& values)
     values[i++] = format(summary.error_rate_75(), 0, 2);
     values[i++] = format(summary.error_rate_100(), 0, 2);
     values[i++] = format(summary.first_cycle_intensity(), 0, 0);
+    INTEROP_ASSERT(i==values.size());
+    if(i != values.size()) INTEROP_THROW(std::runtime_error, "There is a bug in the program, columns do not match header");
 }
 std::string format_read(const run::read_info& read)
 {
@@ -275,7 +272,7 @@ void print_summary(std::ostream& out, const run_summary& summary)
     const size_t width=15;
     const char* read_header[] = {"Level", "Yield", "Projected Yield", "Aligned", "Error Rate", "Intensity C1", "%>=Q30"};
     print_array(out, read_header, width);
-    std::vector<std::string> values(size_of(read_header));
+    std::vector<std::string> values(util::length_of(read_header));
     INTEROP_ASSERT(values.size()>=1);
     for(size_t read=0;read<summary.size();++read)
     {
@@ -294,7 +291,7 @@ void print_summary(std::ostream& out, const run_summary& summary)
     const char* lane_header[] = {"Lane", "Surface", "Tiles", "Density", "Cluster PF", "Phas/Prephas", "Reads",
                                  "Reads PF", "%>=Q30", "Yield", "Cycles Error", "Aligned", "Error",
                                  "Error (35)", "Error (75)", "Error (100)", "Intensity C1" };
-    values.resize(size_of(lane_header));
+    values.resize(util::length_of(lane_header));
     for(size_t read=0;read<summary.size();++read)
     {
         out << format_read(summary[read].read()) << std::endl;
@@ -308,7 +305,7 @@ void print_summary(std::ostream& out, const run_summary& summary)
             {
                 for (size_t surface = 0; surface < summary.surface_count(); ++surface)
                 {
-                    summarize(summary[read][lane][surface], values);
+                    summarize(summary[read][lane][surface], values, summary[read][lane].lane());
                     print_array(out, values, width);
                 }
             }

@@ -105,13 +105,18 @@ namespace illumina{ namespace interop { namespace unittest
          */
         void finalize()
         {
+            if(!m_rebaseline) return;
             io::mkdir(m_baseline);
-            for(std::vector <std::string>::const_iterator it = m_sub_dirs.begin();it != m_sub_dirs.end();++it)
+            for(std::vector <std::string>::const_iterator fit = m_files.begin();fit != m_files.end();++fit)
             {
-                io::mkdir(io::combine(m_baseline, *it));
+                const std::string run_folder = io::combine(m_baseline, io::basename(*fit));
+                io::mkdir(run_folder);
+                for (std::vector<std::string>::const_iterator sit = m_sub_dirs.begin(); sit != m_sub_dirs.end(); ++sit)
+                {
+                    io::mkdir(io::combine(run_folder, *sit));
+                }
             }
         }
-
 
     private:
         std::string m_baseline;

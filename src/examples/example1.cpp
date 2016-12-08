@@ -40,7 +40,7 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    std::cout << "Tile metric set contains " << tile_metric_set.metrics().size() << " metrics" << std::endl;
+    std::cout << "Tile metric set contains " << tile_metric_set.size() << " metrics" << std::endl;
 
     return 0;
 }

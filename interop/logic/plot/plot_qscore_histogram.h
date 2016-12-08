@@ -5,6 +5,7 @@
  *  @version 1.0
  *  @copyright GNU Public License.
  */
+#pragma once
 
 #include "interop/model/run_metrics.h"
 #include "interop/model/plot/filter_options.h"

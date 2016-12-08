@@ -10,6 +10,7 @@
 #include "interop/util/exception.h"
 #include "interop/util/assert.h"
 #include "interop/model/model_exceptions.h"
+#include "interop/io/format/generic_layout.h"
 #include "interop/model/summary/index_lane_summary.h"
 
 namespace illumina { namespace interop { namespace model { namespace summary
@@ -142,9 +143,22 @@ namespace illumina { namespace interop { namespace model { namespace summary
             for(iterator b = begin(), e=end();b != e;++b)
                 b->sort();
         }
+        /** Clear the lane info
+         */
+        void clear()
+        {
+            m_lane_summaries.clear();
+        }
+
+        friend std::ostream& operator<<(std::ostream& out, const index_flowcell_summary& summary);
+        friend std::istream& operator>>(std::istream& in, index_flowcell_summary& summary);
 
     private:
         lane_summary_vector_t m_lane_summaries;
+
+
+        template<class MetricType, int Version>
+        friend struct io::generic_layout;
     };
 
 }}}}

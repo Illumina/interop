@@ -38,6 +38,7 @@ namespace illumina { namespace interop { namespace model { namespace plot {
         void clear()
         {
             m_series.clear();
+            chart_data::clear();
         }
         /** Resize collection to given size
          *
@@ -105,6 +106,14 @@ namespace illumina { namespace interop { namespace model { namespace plot {
         {
             return m_series.size();
         }
+        /** Check if object has points
+         *
+         * @return true if plot has points
+         */
+        bool empty()const
+        {
+            return size()==0;
+        }
 
     public:
         /** Get iterator to start of collection
@@ -122,6 +131,25 @@ namespace illumina { namespace interop { namespace model { namespace plot {
         const_iterator end()const
         {
             return m_series.end();
+        }
+        friend std::ostream& operator<<(std::ostream& out, const plot_data& data)
+        {
+            out << static_cast<const chart_data&>(data);
+            out << data.m_series.size() << ",";
+            for(size_t i=0;i<data.m_series.size();++i)
+                out << data.m_series[i];
+            return out;
+        }
+        friend std::istream& operator>>(std::istream& in, plot_data& data)
+        {
+            std::string tmp;
+            in >> static_cast<chart_data&>(data);
+            std::getline(in, tmp, ',');
+            size_t n = util::lexical_cast<size_t>(tmp);
+            data.m_series.resize(n);
+            for(size_t i=0;i<data.m_series.size();++i)
+                in >> data.m_series[i];
+            return in;
         }
 
     private:

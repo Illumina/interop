@@ -160,7 +160,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
      */
     inline size_t count_qvals(const model::metric_base::metric_set<model::metrics::q_metric>& q_metric_set)
     {
-        return q_metric_set.size() > 0 ? q_metric_set.metrics()[0].size() : 0;
+        return q_metric_set.size() > 0 ? q_metric_set.at(0).size() : 0;
     }
     /** Test whether the q-values are compressed
      *
@@ -169,7 +169,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
      */
     inline size_t count_qvals( const model::metric_base::metric_set<model::metrics::q_by_lane_metric>& q_metric_set)
     {
-        return q_metric_set.size() > 0 ? q_metric_set.metrics()[0].size() : 0;
+        return q_metric_set.size() > 0 ? q_metric_set.at(0).size() : 0;
     }
     /** Test whether the q-values are compressed
      *
@@ -218,7 +218,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
     inline size_t max_qval(
             const model::metric_base::metric_set<model::metrics::q_metric>& q_metric_set)
     {
-        return is_compressed(q_metric_set) ? q_metric_set.bins().back().upper() : count_qvals(q_metric_set);
+        return is_compressed(q_metric_set) ? q_metric_set.get_bins().back().upper() : count_qvals(q_metric_set);
     }
     /** Determine the maximum Q-value
      *
@@ -227,7 +227,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
      */
     inline size_t max_qval(const model::metric_base::metric_set<model::metrics::q_by_lane_metric>& q_metric_set)
     {
-        return is_compressed(q_metric_set) ? q_metric_set.bins().back().upper() : count_qvals(q_metric_set);
+        return is_compressed(q_metric_set) ? q_metric_set.get_bins().back().upper() : count_qvals(q_metric_set);
     }
     /** Determine the maximum Q-value
      *
@@ -237,7 +237,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
     inline size_t max_qval(const model::metric_base::metric_set<model::metrics::q_collapsed_metric>& q_metric_set)
     {
         return is_compressed(q_metric_set) ?
-               static_cast<size_t>(q_metric_set.bins().back().upper()) : count_qvals(q_metric_set);
+               static_cast<size_t>(q_metric_set.get_bins().back().upper()) : count_qvals(q_metric_set);
     }
     /** Get the index for the given q-value
      *

@@ -39,7 +39,12 @@ namespace illumina { namespace interop { namespace model { namespace summary
     public:
         /** Constructor
          */
-        run_summary() : m_surface_count(0), m_lane_count(0), m_read_count(0)
+        run_summary() : m_surface_count(0),
+                        m_lane_count(0),
+                        m_read_count(0),
+                        m_channel_count(0),
+                        m_total_summary(0),
+                        m_nonindex_summary(0)
         {
         }
 
@@ -49,12 +54,16 @@ namespace illumina { namespace interop { namespace model { namespace summary
          * @param end iterator to end of read collection
          * @param lane_count number of lanes on flowcell
          * @param surface_count number of surfaces on flowcell
+         * @param channel_count number of channels
          */
         template<typename I>
-        run_summary(I beg, I end, const size_t lane_count, const size_t surface_count) :
+        run_summary(I beg, I end, const size_t lane_count, const size_t surface_count, const size_t channel_count) :
                 m_surface_count(surface_count),
                 m_lane_count(lane_count),
                 m_read_count(static_cast<size_t>(std::distance(beg, end))),
+                m_channel_count(channel_count),
+                m_total_summary(channel_count),
+                m_nonindex_summary(channel_count),
                 m_summary_by_read(beg, end)
         {
             preallocate_memory();
@@ -65,11 +74,18 @@ namespace illumina { namespace interop { namespace model { namespace summary
          * @param reads read info vector
          * @param lane_count number of lanes on flowcell
          * @param surface_count number of surfaces on flowcell
+         * @param channel_count number of channels
          */
-        run_summary(const std::vector<run::read_info> &reads, const size_t lane_count, const size_t surface_count) :
+        run_summary(const std::vector<run::read_info> &reads,
+                    const size_t lane_count,
+                    const size_t surface_count,
+                    const size_t channel_count) :
                 m_surface_count(surface_count),
                 m_lane_count(lane_count),
                 m_read_count(reads.size()),
+                m_channel_count(channel_count),
+                m_total_summary(channel_count),
+                m_nonindex_summary(channel_count),
                 m_summary_by_read(reads.begin(), reads.end())
         {
             preallocate_memory();
@@ -82,23 +98,31 @@ namespace illumina { namespace interop { namespace model { namespace summary
          */
         void initialize(const run::info& run_info)
         {
-            initialize(run_info.reads(), run_info.flowcell().lane_count(), run_info.flowcell().surface_count());
+            initialize(run_info.reads(), run_info.flowcell().lane_count(), run_info.flowcell().surface_count(), run_info.channels().size());
         }
         /** Initialize the run summary with the number of reads and lanes
          *
          * @param reads vector of reads
          * @param lane_count number of lanes
          * @param surface_count number of surfaces on flowcell
+         * @param channel_count number of channels
          */
-        void initialize(const std::vector<run::read_info> &reads, const size_t lane_count, const size_t surface_count)
+        void initialize(const std::vector<run::read_info> &reads,
+                        const size_t lane_count,
+                        const size_t surface_count,
+                        const size_t channel_count)
         {
+            m_total_summary = metric_summary(channel_count);
+            m_nonindex_summary = metric_summary(channel_count);
+            m_cycle_state = cycle_state_summary();
+            m_channel_count = channel_count;
             m_read_count = reads.size();
             m_summary_by_read.clear();
             m_summary_by_read.reserve(reads.size());
             for (size_t read = 0; read < reads.size(); ++read)
-                m_summary_by_read.push_back(read_summary(reads[read]));
+                m_summary_by_read.push_back(read_summary(reads[read], channel_count));
             m_lane_count = lane_count;
-            m_surface_count=surface_count;
+            m_surface_count = surface_count;
             preallocate_memory();
         }
         /** Copy reads to destination vector
@@ -114,18 +138,24 @@ namespace illumina { namespace interop { namespace model { namespace summary
     private:
         void preallocate_memory()
         {
+            m_total_summary = metric_summary(m_channel_count);
+            m_nonindex_summary = metric_summary(m_channel_count);
+            m_cycle_state = cycle_state_summary();
             for (iterator b = m_summary_by_read.begin(), e = m_summary_by_read.end(); b != e; ++b)
             {
                 b->resize(m_lane_count);
+                b->summary().resize(m_channel_count);
                 for (size_t lane = 0; lane < m_lane_count; ++lane)
                 {
                     b->at(lane).lane(lane + 1);
+                    b->at(lane).resize_stat(m_channel_count);
                     if(m_surface_count > 1)
                     {
                         b->at(lane).resize(m_surface_count);
                         for (size_t surface = 0; surface < m_surface_count; ++surface)
                         {
                             b->at(lane).at(surface).surface(surface + 1);
+                            b->at(lane).at(surface).resize_stat(m_channel_count);
                         }
                     }
                 }
@@ -233,14 +263,6 @@ namespace illumina { namespace interop { namespace model { namespace summary
         {
             return m_summary_by_read.end();
         }
-        /** Clear the contents of the summary
-         */
-        void clear()
-        {
-            m_summary_by_read.clear();
-            m_lane_count = 0;
-            m_read_count = 0;
-        }
 
     public:
         /** Get number of lanes
@@ -267,6 +289,14 @@ namespace illumina { namespace interop { namespace model { namespace summary
         size_t surface_count() const
         {
             return m_surface_count;
+        }
+        /** Get number of channels
+         *
+         * @return number of channels
+         */
+        size_t channel_count() const
+        {
+            return m_channel_count;
         }
 
         /** Set number of surfaces
@@ -353,6 +383,19 @@ namespace illumina { namespace interop { namespace model { namespace summary
             return m_cycle_state;
         }
         /** @} */
+        /** Clear the contents of the summary
+         */
+        void clear()
+        {
+            m_summary_by_read.clear();
+            m_lane_count = 0;
+            m_read_count = 0;
+            m_surface_count = 0;
+            m_channel_count = 0;
+            m_total_summary = metric_summary(0);
+            m_nonindex_summary = metric_summary(0);
+            m_cycle_state = cycle_state_summary();
+        }
 
     private:
         /** Resize the run summary with the number of reads and lanes
@@ -364,10 +407,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
         {
             m_summary_by_read.clear();
             m_summary_by_read.resize(m_read_count);
-            for (iterator b = m_summary_by_read.begin(), e = m_summary_by_read.end(); b != e; ++b)
-            {
-                b->resize(m_lane_count);
-            }
+            preallocate_memory();
         }
 
         friend std::ostream& operator<<(std::ostream& out, const run_summary& summary);
@@ -377,6 +417,8 @@ namespace illumina { namespace interop { namespace model { namespace summary
         size_t m_surface_count;
         size_t m_lane_count;
         size_t m_read_count;
+        size_t m_channel_count;
+
     private:
         metric_summary m_total_summary;
         metric_summary m_nonindex_summary;

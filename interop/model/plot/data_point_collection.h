@@ -10,6 +10,7 @@
 #include <vector>
 #include "interop/util/exception.h"
 #include "interop/util/assert.h"
+#include "interop/model/model_exceptions.h"
 
 namespace illumina { namespace interop { namespace model { namespace plot
 {

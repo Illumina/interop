@@ -8,16 +8,16 @@
 #pragma once
 
 #ifdef _MSC_VER
-#pragma warning(push)
 #pragma warning(disable:4290)// MSVC warns that it ignores the exception specification.
 #endif
-
 #include "interop/model/metric_base/base_metric.h"
+#include "interop/util/indirect_range_iterator.h"
 #include "interop/util/lexical_cast.h"
 #include "interop/constants/enums.h"
 #include "interop/logic/utils/metric_type_ext.h"
 #include "interop/logic/utils/channel.h"
 #include "interop/model/run/info.h"
+
 
 namespace illumina { namespace interop { namespace model { namespace plot
 {
@@ -39,11 +39,11 @@ namespace illumina { namespace interop { namespace model { namespace plot
         enum UseAll
         {
             /** All sentinel for id types */
-                    ALL_IDS = 0,
+            ALL_IDS = 0,
             /** All sentinel for channel types */
-                    ALL_CHANNELS = -1,
+            ALL_CHANNELS = -1,
             /** All sentinel for base types */
-                    ALL_BASES = -1
+            ALL_BASES = -1
         };
 
     public:
@@ -63,7 +63,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
         filter_options(const constants::tile_naming_method naming_method,
                        const id_t lane = ALL_IDS,
                        const channel_t channel = ALL_CHANNELS,// Order based on RunInfo.xml
-                       const dna_base_t base = (dna_base_t) ALL_BASES,
+                       const dna_base_t base = static_cast<dna_base_t>(ALL_BASES),
                        const id_t surface = ALL_IDS,
                        const id_t read = ALL_IDS,
                        const id_t cycle = ALL_IDS,
@@ -83,6 +83,22 @@ namespace illumina { namespace interop { namespace model { namespace plot
         { }
 
     public:
+        /** Reset all options to default values (except naming_method)
+         */
+        void reset()
+        {
+            m_lane = ALL_IDS;
+            m_channel = ALL_CHANNELS;
+            m_base =  static_cast<dna_base_t>(ALL_BASES);
+            m_surface = ALL_IDS;
+            m_read = ALL_IDS;
+            m_cycle = ALL_IDS;
+            m_tile_number = ALL_IDS;
+            m_swath = ALL_IDS;
+            m_section = ALL_IDS;
+        }
+
+    public:
         /** Test if the filter options are valid, if not throw an exception
          */
         void validate(const constants::metric_type type,
@@ -97,15 +113,25 @@ namespace illumina { namespace interop { namespace model { namespace plot
                 INTEROP_THROW(model::invalid_filter_option, "Invalid tile naming method: does not match RunInfo.xml");
 
             if(!all_lanes() && m_lane > run_info.flowcell().lane_count())
-                INTEROP_THROW(model::invalid_filter_option, "Lane number exceeds total number of lanes" << m_lane << " > " << run_info.flowcell().lane_count());
+                INTEROP_THROW(model::invalid_filter_option,
+                              "Lane number exceeds total number of lanes: "
+                                      << m_lane << " > " << run_info.flowcell().lane_count());
             if(is_specific_surface() && m_surface > run_info.flowcell().surface_count())
-                INTEROP_THROW(model::invalid_filter_option, "Surface number exceeds total number of surfaces" << m_surface << " > " << run_info.flowcell().surface_count());
+                INTEROP_THROW(model::invalid_filter_option,
+                              "Surface number exceeds total number of surfaces: "
+                                      << m_surface << " > " << run_info.flowcell().surface_count());
             if(!all_tile_numbers() && m_tile_number > run_info.flowcell().tile_count())
-                INTEROP_THROW(model::invalid_filter_option, "Tile number exceeds total number of tile numbers" << m_tile_number << " > " << run_info.flowcell().tile_count());
+                INTEROP_THROW(model::invalid_filter_option,
+                              "Tile number exceeds total number of tile numbers: "
+                                      << m_tile_number << " > " << run_info.flowcell().tile_count());
             if(!all_swaths() && m_swath > run_info.flowcell().swath_count())
-                INTEROP_THROW(model::invalid_filter_option, "Swath number exceeds total number of swaths" << m_swath << " > " << run_info.flowcell().swath_count());
-            if(!all_sections() && m_section > run_info.flowcell().sections_per_lane())
-                INTEROP_THROW(model::invalid_filter_option, "Section number exceeds total number of sections" << m_section << " > " << run_info.flowcell().sections_per_lane());
+                INTEROP_THROW(model::invalid_filter_option,
+                              "Swath number exceeds total number of swaths: "
+                                      << m_swath << " > " << run_info.flowcell().swath_count());
+            if(!all_sections() && m_section > run_info.flowcell().total_number_of_sections())
+                INTEROP_THROW(model::invalid_filter_option,
+                              "Section number exceeds total number of sections: "
+                                      << m_section << " > " << run_info.flowcell().total_number_of_sections());
             if(logic::utils::is_base_metric(type))
             {
                 if(!all_bases() && (m_base >= static_cast<dna_base_t>(constants::NUM_OF_BASES) || m_base < 0))
@@ -114,27 +140,38 @@ namespace illumina { namespace interop { namespace model { namespace plot
             if(logic::utils::is_cycle_metric(type))
             {
                 if(!all_cycles() && m_cycle > run_info.total_cycles())
-                    INTEROP_THROW(model::invalid_filter_option, "Cycle number exceeds total number of cycles" << m_cycle << " > " << run_info.total_cycles());
+                    INTEROP_THROW(model::invalid_filter_option,
+                                  "Cycle number exceeds total number of cycles: "
+                                          << m_cycle << " > " << run_info.total_cycles()
+                                          << " reads: " << run_info.reads().size());
             }
             if(logic::utils::is_read_metric(type))
             {
                 if(!all_reads() && m_read > run_info.reads().size())
-                    INTEROP_THROW(model::invalid_filter_option, "Read number exceeds total number of reads" << m_read << " > " << run_info.reads().size());
+                    INTEROP_THROW(model::invalid_filter_option,
+                                  "Read number exceeds total number of reads: "
+                                          << m_read << " > " << run_info.reads().size());
             }
             if(logic::utils::is_channel_metric(type))
             {
                 if(!all_channels() && static_cast<size_t>(m_channel) >= run_info.channels().size())
-                    INTEROP_THROW(model::invalid_filter_option, "Channel number exceeds total number of channels" << m_channel << " > " << run_info.channels().size());
+                    INTEROP_THROW(model::invalid_filter_option,
+                                  "Channel number exceeds total number of channels: "
+                                          << m_channel << " > " << run_info.channels().size());
             }
             if(!check_ignored) return;
             if(!logic::utils::is_base_metric(type) && !all_bases())
-                INTEROP_THROW(model::invalid_filter_option, "Invalid filter option base for metric " << constants::to_string(type));
+                INTEROP_THROW(model::invalid_filter_option,
+                              "Invalid filter option base for metric " << constants::to_string(type));
             if(!logic::utils::is_cycle_metric(type) && !all_cycles())
-                INTEROP_THROW(model::invalid_filter_option, "Invalid filter option cycle for metric " << constants::to_string(type));
+                INTEROP_THROW(model::invalid_filter_option,
+                              "Invalid filter option cycle for metric " << constants::to_string(type));
             if(!logic::utils::is_read_metric(type) && !all_reads())
-                INTEROP_THROW(model::invalid_filter_option, "Invalid filter option read for metric " << constants::to_string(type));
+                INTEROP_THROW(model::invalid_filter_option,
+                              "Invalid filter option read for metric " << constants::to_string(type));
             if(!logic::utils::is_channel_metric(type) && !all_channels())
-                INTEROP_THROW(model::invalid_filter_option, "Invalid filter option channel for metric " << constants::to_string(type));
+                INTEROP_THROW(model::invalid_filter_option,
+                              "Invalid filter option channel for metric " << constants::to_string(type));
             //all_cycles
         }
         /** Test if metric is a valid tile
@@ -503,6 +540,15 @@ namespace illumina { namespace interop { namespace model { namespace plot
             return m_cycle;
         }
 
+        /** Get surface to display
+         *
+         * @return cycle
+         */
+        id_t surface() const
+        {
+            return m_surface;
+        }
+
         /** Get a description for the cycle filter option
          *
          * @return description for the cycle filter option
@@ -559,6 +605,217 @@ namespace illumina { namespace interop { namespace model { namespace plot
         {
             return all_reads() ? "All Reads" : "Read " + util::lexical_cast<std::string>(m_read);
         }
+        /** Get the tile naming convention
+         *
+         * @return tile naming convention
+         */
+        constants::tile_naming_method naming_method()const
+        {
+            return m_naming_method;
+        }
+
+    public:
+        /** Create an iterator that updates the current object
+         *
+         * flowcell - does not support lanes
+         *
+         *
+         * @param info run info
+         * @param metric_type metric type
+         * @param plot_type type of the plot
+         * @param keep_state keep the current state of the options
+         * @return iterator
+         */
+        util::chain_range_iterator option_iterator(const model::run::info& info,
+                                                   const constants::metric_type metric_type,
+                                                   const constants::plot_types plot_type,
+                                                   const bool keep_state=false)
+        {
+            const id_t lane_beg = !supports_lane(plot_type) || supports_all_lanes(plot_type) ?
+                                  static_cast<id_t>(ALL_IDS) : 1;
+            const id_t lane_end = !supports_lane(plot_type) ?
+                                  static_cast<id_t>(ALL_IDS) : static_cast<id_t>(info.flowcell().lane_count()+1);
+            const channel_t channel_beg = !supports_channel(metric_type) || supports_all_channels(plot_type) ?
+                                          static_cast<channel_t>(ALL_CHANNELS) : 0;
+            const channel_t channel_end = !supports_channel(metric_type) ?
+                                          static_cast<channel_t>(ALL_CHANNELS) :
+                                          static_cast<channel_t>(info.channels().size());
+            const dna_base_t base_beg = !supports_base(metric_type) || supports_all_bases(plot_type) ?
+                                        static_cast<dna_base_t>(ALL_BASES) : constants::A;
+            const dna_base_t base_end = !supports_base(metric_type) ?
+                                        static_cast<dna_base_t>(ALL_BASES) : constants::NUM_OF_BASES;
+            const id_t surface_beg = static_cast<id_t>(ALL_IDS); // All surfaces is always supported
+            const id_t surface_end = !supports_surface(metric_type, info) ?
+                                     static_cast<id_t>(ALL_IDS) : info.flowcell().surface_count()+1;
+            const id_t read_beg = !supports_read(metric_type, plot_type) || supports_all_reads(plot_type) ?
+                                  static_cast<id_t>(ALL_IDS) : 1;
+            const id_t read_end = !supports_read(metric_type, plot_type) ?
+                                  static_cast<id_t>(ALL_IDS) : static_cast<id_t>(info.reads().size()+1);
+            const id_t cycle_beg = !supports_cycle(metric_type, plot_type) || supports_all_cycles(plot_type) ?
+                                   static_cast<id_t>(ALL_IDS) : 1u;
+            const id_t cycle_end = !supports_cycle(metric_type, plot_type) ?
+                                   static_cast<id_t>(ALL_IDS) : static_cast<id_t>(info.total_cycles()+1);
+            const id_t swath_beg = static_cast<id_t>(ALL_IDS);
+            const id_t swath_end = !supports_swath(plot_type) ? static_cast<id_t>(ALL_IDS) :
+                                   static_cast<id_t>(info.flowcell().swath_count()+1);
+            const id_t section_beg = static_cast<id_t>(ALL_IDS);
+            const id_t section_end = !supports_section(plot_type, info) ? static_cast<id_t>(ALL_IDS) :
+                                   static_cast<id_t>(info.flowcell().total_number_of_sections()+1);
+            const id_t tile_beg = static_cast<id_t>(ALL_IDS);
+            const id_t tile_end = !supports_tile(plot_type) ? static_cast<id_t>(ALL_IDS) :
+                                   static_cast<id_t>(info.flowcell().tile_count()+1);
+            util::abstract_range_iterator* iterators[] =
+            {
+                new util::indirect_range_iterator<id_t>(m_lane, lane_beg, lane_end, !keep_state),
+                new util::indirect_range_iterator<channel_t>(m_channel, channel_beg, channel_end, !keep_state),
+                new util::indirect_range_iterator<dna_base_t, int>(m_base, base_beg, base_end, !keep_state),
+                new util::indirect_range_iterator<id_t>(m_surface,  surface_beg, surface_end, !keep_state),
+                new util::indirect_range_iterator<id_t>(m_read, read_beg, read_end, !keep_state),
+                new util::indirect_range_iterator<id_t>(m_cycle, cycle_beg, cycle_end, !keep_state),
+                new util::indirect_range_iterator<id_t>(m_swath, swath_beg, swath_end, !keep_state),
+                new util::indirect_range_iterator<id_t>(m_section, section_beg, section_end, !keep_state),
+                new util::indirect_range_iterator<id_t>(m_tile_number, tile_beg, tile_end, !keep_state)
+            };
+            return util::chain_range_iterator(iterators);
+        }
+
+    public:
+
+        /** Test if the combination of the plot and run info support filtering by section
+         *
+         * param plot_type type of plot
+         * @param info run info
+         * @return true if metric supports filtering by swath
+         */
+        bool supports_section(const constants::plot_types /*plot_type*/, const model::run::info& info)const
+        {
+            if(info.flowcell().naming_method() != constants::FiveDigit) return false;
+            return false;
+        }
+        /** Test if plot supports filtering by swath
+         *
+         * param plot_type type of plot
+         * @return true if metric supports filtering by swath
+         */
+        bool supports_swath(const constants::plot_types /*plot_type*/)const
+        {
+            return false;
+        }
+        /**  Test if plot supports filtering by tile
+         *
+         * param plot_type type of plot
+         * @return true if metric supports filtering by tile
+         */
+        bool supports_tile(const constants::plot_types /*plot_type*/)const
+        {
+            return false;
+        }
+        /** Test if plot supports filtering by all lanes
+         *
+         * @param plot_type type of plot
+         * @return true if metric supports filtering by all lanes
+         */
+        bool supports_all_lanes(const constants::plot_types plot_type)const
+        {
+            return plot_type != constants::SampleQCPlot;
+        }
+        /** Test if plot supports filtering by lane
+         *
+         * @param plot_type type of plot
+         * @return true if metric supports filtering by lane
+         */
+        bool supports_lane(const constants::plot_types plot_type)const
+        {
+            return plot_type != constants::FlowcellPlot &&
+                   plot_type != constants::ByLanePlot;
+        }
+        /** Test if plot supports filtering by all bases
+         *
+         * @param plot_type plot type
+         * @return true if plot supports filtering by base
+         */
+        bool supports_all_bases(const constants::plot_types plot_type)const
+        {
+            return plot_type == constants::ByCyclePlot;
+        }
+        /** Test if metric supports filtering by base
+         *
+         * @param metric_type metric type
+         * @return true if metric supports filtering by base
+         */
+        bool supports_base(const constants::metric_type metric_type)const
+        {
+            return logic::utils::is_base_metric(metric_type);
+        }
+        /** Test if plot supports filtering by all channels
+         *
+         * @param plot_type plot type
+         * @return true if plot supports filtering all channels
+         */
+        bool supports_all_channels(const constants::plot_types plot_type)const
+        {
+            return plot_type == constants::ByCyclePlot;
+        }
+        /** Test if metric supports filtering by channel
+         *
+         * @param metric_type metric type
+         * @return true if metric supports filtering by channel
+         */
+        bool supports_channel(const constants::metric_type metric_type)const
+        {
+            return logic::utils::is_channel_metric(metric_type);
+        }
+        /** Test if plot supports filtering by all cycles
+         *
+         * @param plot_type plot type
+         * @return true if plot supports filtering by all cycles
+         */
+        bool supports_all_cycles(const constants::plot_types plot_type)const
+        {
+            return plot_type == constants::QHistogramPlot;
+        }
+        /** Test if metric and plot combination supports filtering by cycle
+         *
+         * @param metric_type metric type
+         * @return true if metric supports filtering by cycle
+         */
+        bool supports_cycle(const constants::metric_type metric_type, const constants::plot_types plot_type)const
+        {
+            return logic::utils::is_cycle_metric(metric_type) &&
+                    plot_type != constants::ByCyclePlot &&
+                    plot_type != constants::QHeatmapPlot;
+        }
+        /** Test if plot supports filtering by all reads
+         *
+         * @param plot_type plot type
+         * @return true if plot supports filtering by all reads
+         */
+        bool supports_all_reads(const constants::plot_types plot_type)const
+        {
+            return plot_type == constants::QHistogramPlot;
+        }
+        /** Test if metric and plot combination supports filtering by read
+         *
+         * @param metric_type metric type
+         * @param plot_type type of plot
+         * @return true if metric supports filtering by read
+         */
+        bool supports_read(const constants::metric_type metric_type, const constants::plot_types plot_type)const
+        {
+            return logic::utils::is_read_metric(metric_type) || plot_type == constants::QHistogramPlot;
+        }
+        /** Test if metric and run info combination supports filtering by surface
+         *
+         * @param metric_type metric type
+         * @param info run info
+         * @return true if metric supports filtering by surface
+         */
+        bool supports_surface(const constants::metric_type metric_type, const model::run::info& info)const
+        {
+            if(metric_type == constants::UnknownMetricType) return false;
+            const size_t surface_count = info.flowcell().surface_count();
+            return surface_count > 1;
+        }
 
     private:
         template<class Metric>
@@ -579,6 +836,22 @@ namespace illumina { namespace interop { namespace model { namespace plot
         bool valid_read(const Metric &, const void*) const
         { return true; }
 
+        friend std::ostream& operator <<(std::ostream& out, const filter_options& options)
+        {
+            out << "Selected_filters_";
+            if(!options.all_lanes()) out << "Lane_" << options.m_lane << "_";
+            if(!options.all_channels()) out << "Channel_" << options.m_channel << "_";
+            if(!options.all_bases()) out << "Base_" << options.m_base << "_";
+            if(options.is_specific_surface()) out << "Surface_" << options.m_surface << "_";
+            if(!options.all_reads()) out << "Read_" << options.m_read << "_";
+            if(!options.all_cycles()) out << "Cycle_" << options.m_cycle << "_";
+            if(!options.all_swaths()) out << "Swath_" << options.m_swath << "_";
+            if(!options.all_sections()) out << "Section_" << options.m_section << "_";
+            if(!options.all_tile_numbers()) out << "Tile_" << options.m_tile_number << "_";
+            out << "_";
+            return out;
+        }
+
 
     private:
         id_t m_lane;
@@ -596,6 +869,4 @@ namespace illumina { namespace interop { namespace model { namespace plot
 
 
 }}}}
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif
+

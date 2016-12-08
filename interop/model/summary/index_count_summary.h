@@ -8,6 +8,7 @@
 #pragma once
 #include <string>
 #include "interop/util/math.h"
+#include "interop/io/format/generic_layout.h"
 
 namespace illumina { namespace interop { namespace model { namespace summary {
 
@@ -31,12 +32,12 @@ namespace illumina { namespace interop { namespace model { namespace summary {
                             const std::string& index2="",
                             const std::string& sample_id="",
                             const std::string& project_name="",
-                            const size_t count=0,
+                            const ::uint64_t count=0,
                             const float fraction_mapped=0.0f) : m_id(id),
                                                                   m_index1(index1),
                                                                   m_index2(index2),
                                                                   m_fraction_mapped(fraction_mapped),
-                                                                  m_count(count),
+                                                                  m_cluster_count(count),
                                                                   m_sample_id(sample_id),
                                                                   m_project_name(project_name)
         {}
@@ -86,9 +87,9 @@ namespace illumina { namespace interop { namespace model { namespace summary {
          *
          * @return cluster count
          */
-        size_t count()const
+        ::uint64_t cluster_count()const
         {
-            return m_count;
+            return m_cluster_count;
         }
         /** Sample id
          *
@@ -110,12 +111,12 @@ namespace illumina { namespace interop { namespace model { namespace summary {
     public:
         /** Update the count
          *
-         * @param count count to add
+         * @param cluster_count count to add
          * @return reference to this object
          */
-        index_count_summary& operator+=(const size_t count)
+        index_count_summary& operator+=(const ::uint64_t cluster_count)
         {
-            m_count += count;
+            m_cluster_count += cluster_count;
             return *this;
         }
         /** Update the fraction mapped from the total PF cluster count
@@ -125,7 +126,7 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         void update_fraction_mapped(const double total_pf_cluster_count)
         {
             if(total_pf_cluster_count != 0.0f)
-                m_fraction_mapped = roundf(static_cast<float>(m_count / total_pf_cluster_count * 100.0)*10000)/10000;
+                m_fraction_mapped = roundf(static_cast<float>(m_cluster_count / total_pf_cluster_count * 100.0)*10000)/10000;
         }
         /** Compare two index count summaries by their ids
          *
@@ -142,9 +143,13 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         std::string m_index1;
         std::string m_index2;
         float m_fraction_mapped;
-        size_t m_count;
+        ::uint64_t m_cluster_count;
         std::string m_sample_id;
         std::string m_project_name;
+
+
+        template<class MetricType, int Version>
+        friend struct io::generic_layout;
     };
 
 }}}}

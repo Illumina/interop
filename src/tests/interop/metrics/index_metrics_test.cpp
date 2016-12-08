@@ -25,7 +25,7 @@ typedef metric_set< index_metric > index_metric_set;
 struct index_metrics_tests : public generic_test_fixture< index_metric_set > {};
 
 index_metrics_tests::generator_type index_unit_test_generators[] = {
-        wrap(new hardcoded_metric_generator< index_metric_v1 >) ,
+        wrap(new hardcoded_metric_generator< index_metric_v1 >),
         wrap(new write_read_metric_generator< index_metric_v1 >)
 };
 
@@ -42,7 +42,8 @@ INSTANTIATE_TEST_CASE_P(index_metric_unit_test,
 TEST_P(index_metrics_tests, test_read_write)
 {
     typedef index_metric_set::const_iterator const_iterator;
-    if(!test) return;// Disable test for rebaseline
+    if(skip_test) return;
+    ASSERT_TRUE(fixture_test_result);
     EXPECT_EQ(actual.version(), expected.version());
     ASSERT_EQ(actual.size(), expected.size());
 
@@ -59,7 +60,7 @@ TEST_P(index_metrics_tests, test_read_write)
             EXPECT_EQ(it_expected->indices(i).index_seq(), it_actual->indices(i).index_seq());
             EXPECT_EQ(it_expected->indices(i).sample_id(), it_actual->indices(i).sample_id());
             EXPECT_EQ(it_expected->indices(i).sample_proj(), it_actual->indices(i).sample_proj());
-            EXPECT_EQ(it_expected->indices(i).count(), it_actual->indices(i).count());
+            EXPECT_EQ(it_expected->indices(i).cluster_count(), it_actual->indices(i).cluster_count());
         }
     }
 }
@@ -68,7 +69,7 @@ TEST_P(index_metrics_tests, test_read_write)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Setup regression test
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-regression_test_metric_generator<index_metric_set> index_regression_gen("metrics");
+regression_test_metric_generator<index_metric_set> index_regression_gen;
 INSTANTIATE_TEST_CASE_P(index_metric_regression_test,
                         index_metrics_tests,
                         ProxyValuesIn(index_regression_gen, regression_test_data::instance().files()));

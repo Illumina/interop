@@ -130,6 +130,34 @@ namespace illumina { namespace interop { namespace model { namespace plot
         {
             return m_data_point_count;
         }
+        friend std::ostream& operator<<(std::ostream& out, const candle_stick_point& data)
+        {
+            const size_t precision = 10;
+            out << static_cast< const data_point<float, float>& > (data);
+            out << std::setprecision(precision) << io::table::handle_nan(data.m_p25) << ",";
+            out << std::setprecision(precision) << io::table::handle_nan(data.m_p75) << ",";
+            out << std::setprecision(precision) << io::table::handle_nan(data.m_lower) << ",";
+            out << std::setprecision(precision) << io::table::handle_nan(data.m_upper) << ",";
+            out << data.m_data_point_count << ",";
+            out << data.m_outliers.size() << ",";
+            io::table::write_csv(out, data.m_outliers.begin(), data.m_outliers.end(), ',');
+            return out;
+        }
+        friend std::istream& operator>>(std::istream& in, candle_stick_point& data)
+        {
+            in >> static_cast< data_point<float, float>& > (data);
+            std::string tmp;
+
+            io::table::read_value(in, data.m_p25, tmp);
+            io::table::read_value(in, data.m_p75, tmp);
+            io::table::read_value(in, data.m_lower, tmp);
+            io::table::read_value(in, data.m_upper, tmp);
+            io::table::read_value(in, data.m_data_point_count, tmp);
+            const size_t num_outliers = io::table::read_value<size_t>(in, tmp);
+            data.m_outliers.resize(num_outliers);
+            io::table::read_csv(in, data.m_outliers.begin(), data.m_outliers.end());
+            return in;
+        }
 
     private:
         y_type m_p25;

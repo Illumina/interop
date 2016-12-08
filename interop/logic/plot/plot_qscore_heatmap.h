@@ -25,7 +25,8 @@ namespace illumina { namespace interop { namespace logic { namespace plot
     void plot_qscore_heatmap(model::metrics::run_metrics& metrics,
                                     const model::plot::filter_options& options,
                                     model::plot::heatmap_data& data,
-                                    float* buffer=0)
+                                    float* buffer=0,
+                                    const size_t buffer_size=0)
                                     throw(model::index_out_of_bounds_exception,
                                     model::invalid_filter_option);
     /** Count number of rows for the heat map

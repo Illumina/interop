@@ -16,7 +16,6 @@ namespace Illumina.InterOp.Interop.UnitTest
 		base_tile_metrics expected_metric_set;
 		base_tile_metrics actual_metric_set = new base_tile_metrics();
 		vector_tile_metrics expected_metrics = new vector_tile_metrics();
-		vector_tile_metrics actual_metrics;
 		byte[] expected_binary_data;
 
 		/// <summary>
@@ -63,7 +62,6 @@ namespace Illumina.InterOp.Interop.UnitTest
 			for(int i=0;i<expected_binary_data.Length;i++) expected_binary_data[i] = (byte)tmp[i];
 			expected_metric_set = new base_tile_metrics(expected_metrics, Version, new base_metric_header());
 			c_csharp_comm.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, actual_metric_set);
-			actual_metrics = actual_metric_set.metrics();
 		}
 
 		/// <summary>
@@ -76,21 +74,21 @@ namespace Illumina.InterOp.Interop.UnitTest
 			Assert.AreEqual(expected_metric_set.version(),  actual_metric_set.version());
 			Assert.AreEqual(expected_metric_set.size(),  actual_metric_set.size());
 
-			for(int i=0;i<Math.Min(expected_metrics.Count, actual_metrics.Count);i++)
+			for(uint i=0;i<Math.Min(expected_metric_set.size(), actual_metric_set.size());i++)
 			{
-				Assert.AreEqual(expected_metrics[i].lane(), actual_metrics[i].lane());
-				Assert.AreEqual(expected_metrics[i].tile(), actual_metrics[i].tile());
-				Assert.AreEqual(expected_metrics[i].clusterDensity(), actual_metrics[i].clusterDensity());
-				Assert.AreEqual(expected_metrics[i].clusterDensityPf(), actual_metrics[i].clusterDensityPf());
-				Assert.AreEqual(expected_metrics[i].clusterCount(), actual_metrics[i].clusterCount());
-				Assert.AreEqual(expected_metrics[i].clusterCountPf(), actual_metrics[i].clusterCountPf());
-				Assert.AreEqual(expected_metrics[i].read_metrics().Count, actual_metrics[i].read_metrics().Count);
-				for(int j=0;j<Math.Min(expected_metrics[i].read_metrics().Count, actual_metrics[i].read_metrics().Count);j++)
+				Assert.AreEqual(expected_metric_set.at(i).lane(), actual_metric_set.at(i).lane());
+				Assert.AreEqual(expected_metric_set.at(i).tile(), actual_metric_set.at(i).tile());
+				Assert.AreEqual(expected_metric_set.at(i).clusterDensity(), actual_metric_set.at(i).clusterDensity());
+				Assert.AreEqual(expected_metric_set.at(i).clusterDensityPf(), actual_metric_set.at(i).clusterDensityPf());
+				Assert.AreEqual(expected_metric_set.at(i).clusterCount(), actual_metric_set.at(i).clusterCount());
+				Assert.AreEqual(expected_metric_set.at(i).clusterCountPf(), actual_metric_set.at(i).clusterCountPf());
+				Assert.AreEqual(expected_metric_set.at(i).read_metrics().Count, actual_metric_set.at(i).read_metrics().Count);
+				for(int j=0;j<Math.Min(expected_metric_set.at(i).read_metrics().Count, actual_metric_set.at(i).read_metrics().Count);j++)
 				{
-					Assert.AreEqual(expected_metrics[i].read_metrics()[j].read(), actual_metrics[i].read_metrics()[j].read());
-					Assert.AreEqual(expected_metrics[i].read_metrics()[j].percent_aligned(), actual_metrics[i].read_metrics()[j].percent_aligned(), 1e-7);
-					Assert.AreEqual(expected_metrics[i].read_metrics()[j].percent_phasing(), actual_metrics[i].read_metrics()[j].percent_phasing(), 1e-7);
-					Assert.AreEqual(expected_metrics[i].read_metrics()[j].percent_prephasing(), actual_metrics[i].read_metrics()[j].percent_prephasing(), 1e-7);
+					Assert.AreEqual(expected_metric_set.at(i).read_metrics()[j].read(), actual_metric_set.at(i).read_metrics()[j].read());
+					Assert.AreEqual(expected_metric_set.at(i).read_metrics()[j].percent_aligned(), actual_metric_set.at(i).read_metrics()[j].percent_aligned(), 1e-7);
+					Assert.AreEqual(expected_metric_set.at(i).read_metrics()[j].percent_phasing(), actual_metric_set.at(i).read_metrics()[j].percent_phasing(), 1e-7);
+					Assert.AreEqual(expected_metric_set.at(i).read_metrics()[j].percent_prephasing(), actual_metric_set.at(i).read_metrics()[j].percent_prephasing(), 1e-7);
                 }
 			}
 		}

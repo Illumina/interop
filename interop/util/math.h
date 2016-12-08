@@ -11,7 +11,7 @@
 #pragma once
 
 #include <cmath>
-#if !defined(HAVE_STD_ISNAN)
+#if defined(HAVE_NO_STD_ISNAN)
 #   if defined(HAVE_ISNAN)
 #       include <math.h>
     #elif defined(HAVE___ISNAN)

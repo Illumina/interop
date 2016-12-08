@@ -27,13 +27,36 @@ TEST(enum_parsing_test, list_enums_intensity)
     EXPECT_EQ(types[0], constants::Intensity);
 }
 
+/* Tests to ensure that each metric group is accurately represented by at least 1 member of the group */
 TEST(enum_parsing_test, metric_type_to_string)
 {
     EXPECT_EQ(constants::to_string(constants::Intensity), std::string("Intensity"));
 }
 
-TEST(enum_parsing_test, metric_type_to_group)
+TEST(enum_parsing_test, metric_type_to_group_Intensity)
 {
     EXPECT_EQ(logic::utils::to_group(constants::Intensity), constants::Extraction);
 }
+
+TEST(enum_parsing_test, metric_type_to_group_Q20Percent)
+{
+    EXPECT_EQ(logic::utils::to_group(constants::Q20Percent), constants::Q);
+}
+
+TEST(enum_parsing_test, metric_type_to_group_PercentBase)
+{
+    EXPECT_EQ(logic::utils::to_group(constants::BasePercent), constants::CorrectedInt);
+}
+
+TEST(enum_parsing_test, metric_type_to_group_Clusters)
+{
+    EXPECT_EQ(logic::utils::to_group(constants::Clusters), constants::Tile);
+}
+
+TEST(enum_parsing_test, metric_type_to_group_ErrorRate)
+{
+    EXPECT_EQ(logic::utils::to_group(constants::ErrorRate), constants::Error);
+}
+
+
 
