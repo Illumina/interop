@@ -4,6 +4,7 @@
 
 Date       | Description
 ---------- | -----------
+2016-12-08 | Added admonition to avoid using MSVC 12 (2013) with C# bindings
 2016-12-08 | Added support for absolute tile naming
 2016-12-08 | Added ability to do section filtering
 2016-12-05 | Added regression tests for imaging

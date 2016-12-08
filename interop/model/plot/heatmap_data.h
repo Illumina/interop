@@ -227,8 +227,9 @@ namespace illumina { namespace interop { namespace model { namespace plot
         {
             in >> static_cast<chart_data&>(data);
             std::string tmp;
-            const size_t col_count = io::table::read_value<size_t>(in, tmp);
-            const size_t row_count = io::table::read_value<size_t>(in, tmp);
+            size_t col_count, row_count;
+            io::table::read_value<size_t>(in, col_count, tmp);
+            io::table::read_value<size_t>(in, row_count, tmp);
             data.resize(row_count, col_count);
             io::table::read_csv(in, data.m_data, data.m_data+data.length());
             return in;
