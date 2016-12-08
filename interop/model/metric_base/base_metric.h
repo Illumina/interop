@@ -269,7 +269,9 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         {
             if (method == constants::FiveDigit)
                 return (m_tile / 10000);
-            return m_tile / 1000;
+            if (method == constants::FourDigit)
+                return m_tile / 1000;
+            return 1;
         }
 
         /** Swath number
@@ -284,7 +286,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
                 return (m_tile / 1000) % 10;
             if (method == constants::FourDigit)
                 return (m_tile / 100) % 10;
-            return 0;
+            return 1;
         }
 
         /** Index of the physical location of tile within the flowcell

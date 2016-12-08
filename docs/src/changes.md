@@ -4,6 +4,8 @@
 
 Date       | Description
 ---------- | -----------
+2016-12-08 | Added support for absolute tile naming
+2016-12-08 | Added ability to do section filtering
 2016-12-05 | Added regression tests for imaging
 2016-12-05 | Added unit tests for format coverage
 2016-11-17 | Improved performance of InterOp calculations for C++11 enabled version

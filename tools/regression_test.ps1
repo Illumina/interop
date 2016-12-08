@@ -54,6 +54,8 @@ if ($test_code -ne 0)
     exit $test_code
 }
 
+$baseline_path = $baseline_path + "_master"
+
 $datasets = Get-ChildItem $data_path | foreach {$_.fullname}
 if($rebaseline)
 {

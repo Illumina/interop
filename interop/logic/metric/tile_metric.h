@@ -49,6 +49,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
     {
         if( metric.tile() > 9999) return constants::FiveDigit;
         if( metric.tile() > 999) return constants::FourDigit;
+        if( metric.tile() <= 99) return constants::Absolute;
         return constants::UnknownTileNamingMethod;
     }
     /** Determine the tile naming method from a metric set
@@ -92,7 +93,8 @@ namespace illumina { namespace interop { namespace logic { namespace metric
     inline ::uint32_t surface(const ::uint32_t tile_id, const constants::tile_naming_method method)
     {
         if(method == constants::FiveDigit) return (tile_id / 10000);
-        return tile_id / 1000;
+        if(method == constants::FourDigit) return tile_id / 1000;
+        return 1;
     }
     /** Swath number
      *
@@ -104,7 +106,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
     {
         if(method == constants::FiveDigit) return (tile_id / 1000) % 10;
         if(method == constants::FourDigit) return (tile_id / 100) % 10;
-        return 0;
+        return 1;
     }
     /** Determine the physical location (in terms of its column number) of the tile on the flow cell
      *
@@ -119,7 +121,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
                                                const ::uint32_t swath_count,
                                                const bool all_surfaces)
     {
-        if(!(method == constants::FiveDigit||method == constants::FourDigit)) return 0;
+        if(!(method == constants::FiveDigit || method == constants::FourDigit)) return 0;
         ::uint32_t col = swath(tile_id, method);
         if(all_surfaces && surface(tile_id, method)==2) col += swath_count;
         return col-1;
