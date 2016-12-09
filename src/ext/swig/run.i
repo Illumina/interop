@@ -15,6 +15,8 @@
   }
 %}
 
+%ignore operator enum_t;
+
 %{
 #include "interop/interop.h"
 #include "interop/model/run/cycle_range.h"

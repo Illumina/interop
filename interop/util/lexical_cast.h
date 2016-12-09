@@ -78,12 +78,8 @@ namespace illumina { namespace interop { namespace util
         }
         static bool is_string_nan(const std::string &str)
         {
-            if (str.length() == 3 && ::tolower(str[0]) =='n' && ::tolower(str[1]) == 'a' && ::tolower(str[2]) == 'n')
-            {
-                return true;
-            }
-            if (str.length() == 4 && str[0] =='-' && ::tolower(str[1]) =='n' && ::tolower(str[2]) == 'a' &&
-                    ::tolower(str[3]) == 'n')
+            const size_t n = str.length();
+            if(n >= 3 && ::tolower(str[n-3]) =='n' && ::tolower(str[n-2]) == 'a' && ::tolower(str[n-1]) == 'n')
             {
                 return true;
             }

@@ -70,6 +70,7 @@ EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
     using namespace illumina::interop::model::metrics;
     namespace metric_base = illumina::interop::model::metric_base;
 
+    %ignore illumina::interop::model::metric_base::metric_set<metric_t>::at(const size_t)const;
     %ignore illumina::interop::model::metric_base::metric_set<metric_t>::populate_tile_numbers_for_lane;
     %ignore illumina::interop::model::metric_base::metric_set<metric_t>::populate_tile_numbers_for_lane_surface;
     %ignore illumina::interop::model::metric_base::metric_set<metric_t>::offset_map;
@@ -134,6 +135,7 @@ WRAP_METRICS(IMPORT_METRIC_WRAPPER)
 %template(cycle_metric_map) std::map< uint64_t, illumina::interop::model::metric_base::base_cycle_metric >;
 %template(read_metric_vector) std::vector< illumina::interop::model::metrics::read_metric >;
 %template(q_score_bin_vector) std::vector< illumina::interop::model::metrics::q_score_bin >;
+
 
 %template(metric_type_name_pair) std::pair< illumina::interop::constants::metric_type, std::string>;
 %template(metric_type_description) illumina::interop::constants::enum_description< illumina::interop::constants::metric_type>;

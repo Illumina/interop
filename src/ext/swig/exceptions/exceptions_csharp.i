@@ -16,7 +16,7 @@
 
   // Note that SWIG detects any method calls named starting with
   // SWIG_CSharpSetPendingException for warning 845
-  static void SWIG_CSharpSetPendingExceptionCustom_##EXCEPTION_CPLUS_PLUS##_##ENTRY_POINT(const char *msg) {
+  static void SWIGUNUSED SWIG_CSharpSetPendingExceptionCustom_##EXCEPTION_CPLUS_PLUS##_##ENTRY_POINT(const char *msg) {
     customExceptionCallback_##EXCEPTION_CPLUS_PLUS(msg);
   }
 %}
@@ -28,12 +28,12 @@
     static CustomExceptionDelegate customDelegate =
                                    new CustomExceptionDelegate(SetPendingCustomException);
 
-    [System.Runtime.InteropServices.DllImport("$dllimport", EntryPoint=#ENTRY_POINT)]
+    [global::System.Runtime.InteropServices.DllImport("$dllimport", EntryPoint=#ENTRY_POINT)]
     public static extern
            void ENTRY_POINT(CustomExceptionDelegate customCallback);
 
     static void SetPendingCustomException(string message) {
-      SWIGPendingException.Set(new Illumina.InterOp.Run.EXCEPTION_CSHARP(message));
+      SWIGPendingException.Set(new Illumina.InterOp.Run.EXCEPTION_CSHARP(message, SWIGPendingException.Retrieve()));
     }
 
     static CustomExceptionHelper_##EXCEPTION_CPLUS_PLUS() {
@@ -57,12 +57,13 @@ WRAP_EXCEPTION_IMPORT1(NAMESPACE, EXCEPTION_CPLUS_PLUS, EXCEPTION_CSHARP, ENTRY_
 
 %ignore EXCEPTION_CPLUS_PLUS(const std::string &mesg);
 %typemap(csinterfaces) NAMESPACE EXCEPTION_CPLUS_PLUS ""
-%typemap(csbase, replace="1") NAMESPACE EXCEPTION_CPLUS_PLUS "System.ApplicationException"
+%typemap(csbase, replace="1") NAMESPACE EXCEPTION_CPLUS_PLUS "global::System.ApplicationException"
 %typemap(csbody) NAMESPACE EXCEPTION_CPLUS_PLUS ""
 %typemap(csdestruct) NAMESPACE EXCEPTION_CPLUS_PLUS ""
 %typemap(csfinalize) NAMESPACE EXCEPTION_CPLUS_PLUS ""
 %typemap(cscode) NAMESPACE EXCEPTION_CPLUS_PLUS %{
     public $csclassname(string mesg) : base(mesg){}
+    public $csclassname(string mesg, global::System.Exception inner) : base(mesg, inner){}
 %}
 
 %enddef
