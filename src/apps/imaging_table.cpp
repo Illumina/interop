@@ -42,6 +42,7 @@ int main(int argc, char** argv)
     std::cout << "# Version: " << INTEROP_VERSION << std::endl;
 
     std::vector<unsigned char> valid_to_load;
+
     logic::table::list_imaging_table_metrics_to_load(valid_to_load);
     for (int i = 1; i < argc; i++)
     {
@@ -50,6 +51,7 @@ int main(int argc, char** argv)
         int ret = read_run_metrics(argv[i], run, valid_to_load);
         if (ret != SUCCESS) return ret;
         model::table::imaging_table table;
+
         try
         {
             logic::table::create_imaging_table(run, table);

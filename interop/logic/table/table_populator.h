@@ -40,6 +40,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
          * @param read read number, cycle within read
          * @param q20_idx index of the q20 value
          * @param q30_idx index of the q30 value
+         * @param cluster_count_k cluster count in kilobases
          * @param naming_method tile naming method enum
          * @param columns vector of table columns
          * @param data_it iterator to current row of table data
@@ -50,6 +51,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
                                 const summary::read_cycle &read,
                                 const size_t q20_idx,
                                 const size_t q30_idx,
+                                const float cluster_count_k,
                                 const constants::tile_naming_method naming_method,
                                 const std::vector <size_t> &columns,
                                 OutputIterator data_it, OutputIterator data_end)
@@ -58,6 +60,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
                      read.number,
                      q20_idx,
                      q30_idx,
+                     cluster_count_k,
                      naming_method,
                      columns,
                      data_it,
@@ -66,6 +69,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
                      read.number,
                      q20_idx,
                      q30_idx,
+                     cluster_count_k,
                      naming_method,
                      columns,
                      data_it,
@@ -81,6 +85,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
          * @param read read number, cycle within read
          * @param q20_idx index of the q20 value
          * @param q30_idx index of the q30 value
+         * @param cluster_count_k cluster count in kilobases
          * @param naming_method tile naming method enum
          * @param columns vector of table columns
          * @param data_it iterator to current row of table data
@@ -91,6 +96,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
                              const size_t read,
                              const size_t q20_idx,
                              const size_t q30_idx,
+                             const float cluster_count_k,
                              const constants::tile_naming_method naming_method,
                              const std::vector <size_t> &columns,
                              OutputIterator data_it, OutputIterator data_end)
@@ -104,7 +110,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
              * update_laneVoid(metric, q20_idx, q30_idx, naming_convention);
              */
 #           define INTEROP_TUPLE7(Ignore1, Ignore2, Method, Param, Ignore4, Ignore5, Ignored6) \
-                    populate_##Method##Param(metric, read, static_cast<uint_t>(q20_idx), static_cast<uint_t>(q30_idx), naming_method, columns, data_it, data_end);
+                    populate_##Method##Param(metric, read, static_cast<uint_t>(q20_idx), static_cast<uint_t>(q30_idx), cluster_count_k, naming_method, columns, data_it, data_end);
             INTEROP_IMAGING_COLUMN_TYPES
 #           undef INTEROP_TUPLE7 // Reuse this for another conversion
         }
@@ -128,20 +134,23 @@ namespace illumina { namespace interop { namespace logic { namespace table
                                                      const size_t Read,\
                                                      const uint_t Q20,\
                                                      const uint_t Q30,\
+                                                     const float ClusterCountK,\
                                                      const constants::tile_naming_method NamingConvention,\
                                                      const std::vector<size_t>& columns,\
                                                      OutputIterator data_it, OutputIterator data_end)\
                 {\
+                    INTEROP_ASSERT( model::table:: Id##Column < columns.size() ); \
                     const size_t index = columns[model::table:: Id##Column];\
-                    if(index == std::numeric_limits<size_t>::max()) return; /*Missing column */ \
+                    if(!is_valid(index)) return; /*Missing column */ \
                     copy_to(data_it+index, data_end, call_adapter(metric, Param, &model:: Metric::Method), Round);\
-                    (void)Q20;(void)Q30;(void)NamingConvention;(void)Read;\
+                    (void)Q20;(void)Q30;(void)NamingConvention;(void)Read;(void)ClusterCountK;\
                 }\
                 template<class MetricType, typename OutputIterator>\
                 static void populate_##Method##Param(const MetricType&,\
                                                      const size_t,\
                                                      const uint_t,\
                                                      const uint_t,\
+                                                     const float,\
                                                      const constants::tile_naming_method,\
                                                      const std::vector<size_t>&,\
                                                      OutputIterator,OutputIterator){}
@@ -160,7 +169,8 @@ namespace illumina { namespace interop { namespace logic { namespace table
         static void assign(T &destination, const U source, const size_t num_digits = 0)
         {
             //INTEROP_ASSERTMSG(std::isnan(destination), destination);
-            destination = static_cast<T>(roundto(source, num_digits));
+            if(is_valid(source))
+                destination = static_cast<T>(roundto(source, num_digits));
         }
 
     private:
@@ -229,9 +239,9 @@ namespace illumina { namespace interop { namespace logic { namespace table
          * @return true
          */
         template<typename T>
-        static bool is_valid(const T)
+        static bool is_valid(const T val)
         {
-            return true;
+            return val < std::numeric_limits<T>::max();
         }
 
         /** Test if a metric type is valid

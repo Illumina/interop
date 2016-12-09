@@ -59,18 +59,19 @@ namespace illumina { namespace interop { namespace io
          *
          *          2 bytes: index name length (indexNameLength) (uint16)
          *          indexNameLength bytes: index name
-         *          4 bytes: index count (uint32)
+         *          4 bytes: index cluster count (uint32)
          *          2 bytes: sample name length (sampleNameLength) (uint16)
          *          sampleNameLength bytes: sample name
          *          2 bytes: project name length (projectNameLength) (uint16)
          *          projectNameLength bytes: project name
          */
         /** Metric ID type */
-        typedef layout::base_read_metric metric_id_t;
+        typedef layout::base_read_metric< ::uint16_t > metric_id_t;
         /** Defines an empty header */
         typedef void *header_t;
         /** No record size is required for this stream */
         //typedef fixed_record_size<sizeof(metric_id_t)> record_size_t;
+        typedef ::uint32_t cluster_count_t;
         enum
         {
             BYTE_COUNT = 1, RECORD_SIZE = sizeof(metric_id_t) + BYTE_COUNT
@@ -86,27 +87,27 @@ namespace illumina { namespace interop { namespace io
         static std::streamsize map_stream(std::istream &in, Metric &metric, Header &, const bool)
         {
             std::string index_name;
-            ::uint32_t count;
+            cluster_count_t count;
             std::string sample_name;
             std::string project_name;
 
-            read_binary(in, index_name);
+            read_binary(in, index_name, "NA");
             if (in.fail())
                 INTEROP_THROW(incomplete_file_exception, "No more data after index name");
             read_binary(in, count);
             if (in.fail())
                 INTEROP_THROW(incomplete_file_exception, "No more data after count");
-            read_binary(in, sample_name);
+            read_binary(in, sample_name, "NA");
             if (in.fail())
                 INTEROP_THROW(incomplete_file_exception, "No more data after sample name");
-            read_binary(in, project_name);
+            read_binary(in, project_name, "NA");
             index_metric::index_array_t::iterator beg = metric.m_indices.begin(), end = metric.m_indices.end();
             for (; beg != end; ++beg) if (beg->index_seq() == sample_name) break;
             if (beg == end)
             {
                 metric.m_indices.push_back(index_info(index_name, sample_name, project_name, count));
             }
-            else beg->m_count += count;
+            else beg->m_cluster_count += count;
 
             return BYTE_COUNT;
         }
@@ -132,7 +133,7 @@ namespace illumina { namespace interop { namespace io
             {
                 if (beg != metric.indices().begin()) write_binary(out, metric_id);
                 write_binary(out, beg->index_seq());
-                write_binary(out, static_cast< ::uint32_t >(beg->count()));
+                write_binary(out, static_cast< cluster_count_t >(beg->cluster_count()));
                 write_binary(out, beg->sample_id());
                 write_binary(out, beg->sample_proj());
             }

@@ -53,15 +53,19 @@ endif( )
 
 
 if( CSHARP_DOTNET_FOUND )
-  if(CMAKE_SIZEOF_VOID_P EQUAL "4")
+  if(CMAKE_SIZEOF_VOID_P EQUAL "4" OR FORCE_X86)
     set( CSHARP_PLATFORM "x86" CACHE STRING "C# target platform: x86, x64, anycpu, or itanium" )
   elseif( CMAKE_SIZEOF_VOID_P EQUAL "8" )
     set( CSHARP_PLATFORM "x64" CACHE STRING "C# target platform: x86, x64, anycpu, or itanium" )
   else()
-    message(FATAL_ERROR "Only 32-bit and 64-bit are supported")
+    message(FATAL_ERROR "Only 32-bit and 64-bit are supported: ${CMAKE_SIZEOF_VOID_P}")
   endif()
 elseif( CSHARP_MONO_FOUND )
-  set( CSHARP_PLATFORM "anycpu" CACHE STRING "C# target platform: x86, x64, anycpu, or itanium" )
+  if(CMAKE_SIZEOF_VOID_P EQUAL "4" OR FORCE_X86)
+    set( CSHARP_PLATFORM "x86" CACHE STRING "C# target platform: x86, x64, anycpu, or itanium" )
+  else()
+    set( CSHARP_PLATFORM "anycpu" CACHE STRING "C# target platform: x86, x64, anycpu, or itanium" )
+  endif()
 endif()
 
 

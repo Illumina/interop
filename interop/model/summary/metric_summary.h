@@ -18,17 +18,16 @@ namespace illumina { namespace interop { namespace model { namespace summary {
     {
     public:
         /** Constructor
-         *
          */
-        metric_summary() :
-                m_error_rate(0),
-                m_percent_aligned(0),
-                m_first_cycle_intensity(0),
-                m_percent_gt_q30(0),
-                m_yield_g(0),
-                m_projected_yield_g(0)
-        {
-        }
+        metric_summary(const size_t /*channel_count*/) :
+                m_error_rate(std::numeric_limits<float>::quiet_NaN()),
+                m_percent_aligned(0), // TODO: Update logic to allow this to be NaN!
+                m_first_cycle_intensity(std::numeric_limits<float>::quiet_NaN()),
+                m_percent_gt_q30(std::numeric_limits<float>::quiet_NaN()),
+                m_yield_g(0), // TODO: Update logic to allow this to be NaN!
+                m_projected_yield_g(0) // TODO: Update logic to allow this to be NaN!
+
+        {}
     public:
         /** @defgroup metric_summary Metric summary
          *
@@ -78,6 +77,7 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         {
             return m_yield_g;
         }
+
         /** Get the projected yield of teh run in gigabases
          *
          * @return projected yield of teh run in gigabases
@@ -119,6 +119,7 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         {
             m_percent_gt_q30 = val;
         }
+
         /** Set the yield of the run in gigabases
          *
          * @param val yield of the run in gigabases
@@ -134,6 +135,12 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         void projected_yield_g(const float val)
         {
             m_projected_yield_g = val;
+        }
+
+        /** Resize the underlying data
+         */
+        void resize(const size_t)
+        {
         }
 
     private:

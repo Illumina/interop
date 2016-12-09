@@ -134,8 +134,9 @@ namespace illumina { namespace interop { namespace io
      *
      * @param in input stream
      * @param str string buffer
+     * @param default_val default value for an empty string
      */
-    inline void read_binary(std::istream &in, std::string &str)
+    inline void read_binary(std::istream &in, std::string &str, const std::string& default_val)
     {
         const size_t length = read_binary< ::uint16_t >(in);
         if (in.fail()) INTEROP_THROW(incomplete_file_exception, "No more data after length");
@@ -144,7 +145,7 @@ namespace illumina { namespace interop { namespace io
             str.assign(length, ' ');
             read_binary(in, const_cast<char *>(str.c_str()), length);
         }
-        else str = "NA";
+        else str = default_val;
     }
 
     /** Write an array of data to an output stream

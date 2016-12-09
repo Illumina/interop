@@ -1,5 +1,24 @@
 # Changes                                               {#changes}
 
+## v1.0.14
+
+Date       | Description
+---------- | -----------
+2016-12-08 | Added admonition to avoid using MSVC 12 (2013) with C# bindings
+2016-12-08 | Added support for absolute tile naming
+2016-12-08 | Added ability to do section filtering
+2016-12-05 | Added regression tests for imaging
+2016-12-05 | Added unit tests for format coverage
+2016-11-17 | Improved performance of InterOp calculations for C++11 enabled version
+2016-11-14 | Added version to Windows DLLs
+2016-11-14 | Added regression tests for indexing
+2016-11-09 | Added unit tests for clearing logic
+2016-11-07 | Added regression tests for analysis plots
+2016-11-01 | Improved performance of InterOp loading
+2016-10-26 | Added path class to handle RTA output filenames
+2016-09-22 | Added regression tests for summary
+
+
 ## v1.0.13
 
 Date       | Description

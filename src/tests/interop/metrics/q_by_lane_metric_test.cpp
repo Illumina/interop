@@ -77,7 +77,7 @@ TEST(run_metrics_q_by_lane_test, test_is_group_empty)
     std::string data;
     q_metric_v4::create_binary_data(data);
     io::read_interop_from_string(data,
-                                 metrics.get_set<q_metric>());
-    logic::metric::create_q_metrics_by_lane(metrics.get_set<q_metric>(), metrics.get_set<q_by_lane_metric>());
+                                 metrics.get<q_metric>());
+    logic::metric::create_q_metrics_by_lane(metrics.get<q_metric>(), metrics.get<q_by_lane_metric>());
     EXPECT_FALSE(metrics.is_group_empty(constants::QByLane));
 }

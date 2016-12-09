@@ -6,6 +6,7 @@ include(${PROJECT_SOURCE_DIR}/cmake/Modules/UseGitVersion.cmake)
 include(${PROJECT_SOURCE_DIR}/cmake/InternalUtils.cmake)
 set(ARCHIVE_VERSION "v1.0.13-src")
 
+
 if (NOT CMAKE_BUILD_TYPE)
     message(STATUS "No build type selected, default to Release")
     set(CMAKE_BUILD_TYPE "Release")
@@ -34,6 +35,7 @@ option(ENABLE_CSHARP "Build C# language bindings" ON)
 # Options to control integration builds
 set(PACKAGE_SUFFIX "" CACHE STRING "Suffix added to the output packages")
 set(BUILD_NUMBER "" CACHE STRING "Build number used for select packing scripts")
+mark_as_advanced(PACKAGE_SUFFIX BUILD_NUMBER)
 
 include_directories(.)
 add_version_target(version ${CMAKE_SOURCE_DIR}/interop/version.h INTEROP_VERSION ${ARCHIVE_VERSION})
@@ -89,7 +91,7 @@ find_package(Git)
 if(GIT_FOUND)
     string(REGEX REPLACE "[^v]*(v[0-9]+.[0-9]+.[0-9]+)-.*" "\\1" TAG ${INTEROP_VERSION})
     add_custom_target(history
-        COMMAND ${GIT_EXECUTABLE};--no-pager;log;${TAG}..HEAD;--date=short;--format='%ad | %B'
+        COMMAND ${GIT_EXECUTABLE};log;${TAG}..HEAD;-m;--first-parent;--date=short;--format='%ad | %b'
         COMMENT "List all commits from last tag - ${TAG}"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 endif()

@@ -21,7 +21,8 @@ namespace illumina{ namespace interop { namespace unittest
     class abstract_regression_test_generator : public abstract_generator< Model >
     {
     public:
-        typedef typename abstract_generator< Model >::base_type base_type;
+        /** Define the abstract base type */
+        typedef typename abstract_generator< Model >::parent_type base_t;
     public:
         /** Constructor
          *
@@ -45,58 +46,78 @@ namespace illumina{ namespace interop { namespace unittest
                 abstract_generator< Model >(test_modifier), m_run_folder(run_folder), m_test_dir(test_dir)
         {
         }
-        /** Clone the concret implementation
+        /** Clone the concrete implementation
          *
          * @param name run folder
          * @return copy of this object
          */
-        base_type operator()(const std::string& name)const
+        base_t operator()(const std::string& name)const
         {
             m_run_folder=name;
-            return clone();
+            return clone(name);
         }
+        /** Clone the concrete implementation
+         *
+         * @param name run folder
+         * @return copy of this object
+         */
+        virtual base_t clone(const std::string& name)const=0;
         /** Generate the expected and actual metric sets
          *
          * @param expected expected metric set
          * @param actual actual metric set
          * @return true if the results should be tested (false if rebaselining)
          */
-        bool generate(Model& expected, Model& actual)const
+        ::testing::AssertionResult generate(Model& expected, Model& actual, bool* skip_test)const
         {
             const regression_test_data& data = regression_test_data::instance();
             const std::string baseline_file = baseline();
+            ::testing::Message msg;
             if(!data.rebaseline())
             {
-                if(io::is_file_readable(baseline_file))
+                const bool expected_found = read_expected(baseline_file, expected);
+                const bool actual_generated = generate_actual(m_run_folder, actual);
+                if(expected_found == actual_generated)
                 {
-                    read_expected(baseline_file, expected);
-                    generate_actual(m_run_folder, actual);
-                    return true;
+                    *skip_test = !expected_found;
+                    return ::testing::AssertionSuccess();
                 }
-                else EXPECT_TRUE(false) << "Failed to find baseline: " << baseline_file;
+                if(!expected_found)
+                    return ::testing::AssertionFailure()  << "Failed to find baseline: " << baseline_file;
+                return ::testing::AssertionFailure()  << "Failed to generate data for baseline: " << baseline_file;
             }
             else
             {
-                std::cout << "[          ] Rebaseline: " << *this << std::endl;
                 try
                 {
-                    generate_actual(m_run_folder, actual);
-                    EXPECT_TRUE(write_actual(baseline_file, actual)) << "Failed to write baseline: " << baseline_file;
+                    if(generate_actual(m_run_folder, actual))
+                    {
+                        msg << "[          ] Rebaseline: " << *this;
+                        if(!write_actual(baseline_file, actual))
+                            return ::testing::AssertionFailure() << "Failed to write baseline: " << baseline_file;
+                    }
+                    else
+                    {
+                        msg << "[          ] Skipped: " << *this;
+                    }
+                    *skip_test = true;
                 }
                 catch(const std::exception& ex)
                 {
-                    EXPECT_TRUE(false)<< "Failed to generate baseline: " << baseline_file << " " << ex.what();
+                    std::cerr << "Failed to generate baseline: " << baseline_file << " " << ex.what() << std::endl;
+                    std::exit(1);
+                    //return ::testing::AssertionFailure()  << "Failed to generate baseline: " << baseline_file << " " << ex.what();
                 }
             }
-            return false;
+            return ::testing::AssertionFailure(msg);
         }
         /** Get the full path of the baseline output file
          *
          * @return full path
          */
-        std::string baseline()const
+        virtual std::string baseline()const
         {
-            return io::combine(io::combine(regression_test_data::instance().baseline(), m_test_dir), io::basename(m_run_folder));
+            return io::combine(io::combine(io::combine(regression_test_data::instance().baseline(), io::basename(m_run_folder)), m_test_dir), "baseline");
         }
 
     protected:
@@ -104,14 +125,16 @@ namespace illumina{ namespace interop { namespace unittest
          *
          * @param baseline_file baseline file
          * @param expected expected model data
+         * @return true if the file was found, and the read completed without failure
          */
-        virtual void read_expected(const std::string& baseline_file, Model& expected)const=0;
+        virtual bool read_expected(const std::string& baseline_file, Model& expected)const=0;
         /** Read the actual data from the run folder
          *
          * @param run_folder run folder
          * @param actual actual model data
+         * @return true if data was generated
          */
-        virtual void generate_actual(const std::string& run_folder, Model& actual)const=0;
+        virtual bool generate_actual(const std::string& run_folder, Model& actual)const=0;
         /** Write the actual data to the run folder
          *
          * @param baseline_file baseline file
@@ -122,7 +145,7 @@ namespace illumina{ namespace interop { namespace unittest
          *
          * @return pointer to copy
          */
-        virtual base_type clone()const=0;
+        virtual base_t clone()const=0;
 
     protected:
         /** Run Folder name */

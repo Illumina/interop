@@ -39,7 +39,9 @@ enum exit_codes
  * @param metrics run metrics
  * @return exit code
  */
-inline int read_run_metrics(const char* filename, illumina::interop::model::metrics::run_metrics& metrics)
+inline int read_run_metrics(const char* filename,
+                            illumina::interop::model::metrics::run_metrics& metrics,
+                            const bool check_empty=true)
 {
     using namespace illumina::interop;
     using namespace illumina::interop::model;
@@ -67,7 +69,7 @@ inline int read_run_metrics(const char* filename, illumina::interop::model::metr
         std::cerr << ex.what() << std::endl;
         return UNEXPECTED_EXCEPTION;
     }
-    if(metrics.empty())
+    if(check_empty && metrics.empty())
     {
         std::cerr << "No InterOp files found" << std::endl;
         return EMPTY_INTEROP;
@@ -85,7 +87,8 @@ inline int read_run_metrics(const char* filename, illumina::interop::model::metr
  */
 inline int read_run_metrics(const char* filename,
                             illumina::interop::model::metrics::run_metrics& metrics,
-                            const std::vector<unsigned char>& valid_to_load)
+                            const std::vector<unsigned char>& valid_to_load,
+                            const bool check_empty=true)
 {
     using namespace illumina::interop;
     using namespace illumina::interop::model;
@@ -113,7 +116,7 @@ inline int read_run_metrics(const char* filename,
         std::cerr << ex.what() << std::endl;
         return UNEXPECTED_EXCEPTION;
     }
-    if(metrics.empty())
+    if(check_empty && metrics.empty())
     {
         std::cerr << "No InterOp files found" << std::endl;
         return EMPTY_INTEROP;

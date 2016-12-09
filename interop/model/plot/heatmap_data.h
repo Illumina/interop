@@ -12,6 +12,7 @@
 #include "interop/model/plot/series.h"
 #include "interop/model/plot/axes.h"
 #include "interop/model/plot/chart_data.h"
+#include "interop/io/table/csv_format.h"
 
 namespace illumina { namespace interop { namespace model { namespace plot
 {
@@ -96,6 +97,20 @@ namespace illumina { namespace interop { namespace model { namespace plot
             if (col >= m_num_columns)
                 INTEROP_THROW(model::index_out_of_bounds_exception, "Column index out of bounds (at): " << col << " >= " << m_num_columns);
             const size_t idx = index_of(row, col);
+            INTEROP_ASSERT(idx < m_num_rows*m_num_columns);
+            INTEROP_ASSERT(m_data != 0);
+            return m_data[idx];
+        }
+
+        /** Get value at given index
+         *
+         * @param idx index
+         * @return value
+         */
+        float at(const size_t idx) const throw(model::index_out_of_bounds_exception)
+        {
+            if (idx >= length())
+                INTEROP_THROW(model::index_out_of_bounds_exception, "Index out of bounds");
             INTEROP_ASSERT(idx < m_num_rows*m_num_columns);
             INTEROP_ASSERT(m_data != 0);
             return m_data[idx];
@@ -188,6 +203,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
             }
             m_num_columns = 0;
             m_num_rows = 0;
+            chart_data::clear();
         }
         /** Get the index of the row and column in the array
          *
@@ -198,6 +214,25 @@ namespace illumina { namespace interop { namespace model { namespace plot
         size_t index_of(const size_t row, const size_t col) const
         {
             return row * m_num_columns + col;
+        }
+        friend std::ostream& operator<<(std::ostream& out, const heatmap_data& data)
+        {
+            out << static_cast<const chart_data&>(data);
+            out << data.m_num_columns << ",";
+            out << data.m_num_rows << ",";
+            io::table::write_csv(out, data.m_data, data.m_data+data.length(), ',');
+            return out;
+        }
+        friend std::istream& operator>>(std::istream& in, heatmap_data& data)
+        {
+            in >> static_cast<chart_data&>(data);
+            std::string tmp;
+            size_t col_count, row_count;
+            io::table::read_value<size_t>(in, col_count, tmp);
+            io::table::read_value<size_t>(in, row_count, tmp);
+            data.resize(row_count, col_count);
+            io::table::read_csv(in, data.m_data, data.m_data+data.length());
+            return in;
         }
 
     private:

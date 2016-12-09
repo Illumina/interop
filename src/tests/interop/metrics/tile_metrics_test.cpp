@@ -26,6 +26,53 @@ using namespace illumina::interop::unittest;
 using namespace illumina;
 
 
+/** Generate the actual metric set by reading in from hardcoded binary buffer
+ *
+ * The expected metric set is provided by the generator.
+ */
+template<class Gen>
+class write_metric_generator : public abstract_generator< typename Gen::metric_set_t >
+{
+    typedef typename Gen::metric_set_t metric_set_t;
+    typedef typename abstract_generator<metric_set_t>::parent_type parent_t;
+public:
+    /** Generate the expected and actual metric sets
+     *
+     * @param expected expected metric set
+     * @param actual actual metric set
+     */
+    ::testing::AssertionResult generate(metric_set_t& expected, metric_set_t& actual, bool*)const
+    {
+        expected.clear();
+        tile_metric expected_metric(1,1101);
+        expected.set_version(Gen::VERSION);
+        expected.insert(expected_metric);
+
+        std::ostringstream fout;
+        illumina::interop::io::write_metrics(fout, expected);
+        actual.clear();
+
+        try{
+            io::read_interop_from_string(fout.str(), actual);
+        }catch(const io::incomplete_file_exception&){}
+        return ::testing::AssertionSuccess();
+    }
+    /** Create a copy of this object
+     *
+     * @return pointer to copy
+     */
+    parent_t clone()const{return new write_metric_generator<Gen>;}
+    /** Write generator info to output stream
+     *
+     * @param out output stream
+     */
+    void write(std::ostream& out)const
+    {
+        out << "write_metric_generator<" << Gen::name() << ">";
+    }
+
+};
+
 typedef metric_set< tile_metric > tile_metric_set;
 /** Setup for tests that compare two tile metric sets */
 struct tile_metrics_tests : public generic_test_fixture< tile_metric_set > {};
@@ -33,7 +80,8 @@ struct tile_metrics_tests : public generic_test_fixture< tile_metric_set > {};
 
 tile_metrics_tests::generator_type tile_unit_test_generators[] = {
         wrap(new hardcoded_metric_generator< tile_metric_v2 >) ,
-        wrap(new write_read_metric_generator< tile_metric_v2 >)
+        wrap(new write_read_metric_generator< tile_metric_v2 >),
+        wrap(new write_metric_generator< tile_metric_v2 >)
 };
 
 // Setup unit tests for tile_metrics_tests
@@ -50,7 +98,8 @@ TEST_P(tile_metrics_tests, test_read_write)
 {
     typedef tile_metric_set::const_iterator const_iterator;
     typedef tile_metric_set::metric_type metric_t;
-    if(!test) return;// Disable test for rebaseline
+    if(skip_test) return;
+    ASSERT_TRUE(fixture_test_result);
     const float scale = (test_modifier==2) ? 0.01f : ( (test_modifier==1) ? 100.0f : 1.0f);
     ASSERT_EQ(actual.version(), expected.version());
     ASSERT_EQ(actual.size(), expected.size());
@@ -63,10 +112,10 @@ TEST_P(tile_metrics_tests, test_read_write)
         EXPECT_EQ(it_expected->lane(), it_actual->lane());
         EXPECT_EQ(it_expected->tile(), it_actual->tile());
 
-        EXPECT_NEAR(it_expected->cluster_density(), it_actual->cluster_density(), tol);
-        EXPECT_NEAR(it_expected->cluster_density_pf(), it_actual->cluster_density_pf(), tol);
-        EXPECT_NEAR(it_expected->cluster_count(), it_actual->cluster_count(), tol);
-        EXPECT_NEAR(it_expected->cluster_count_pf(), it_actual->cluster_count_pf(), tol);
+        INTEROP_EXPECT_NEAR(it_expected->cluster_density(), it_actual->cluster_density(), tol);
+        INTEROP_EXPECT_NEAR(it_expected->cluster_density_pf(), it_actual->cluster_density_pf(), tol);
+        INTEROP_EXPECT_NEAR(it_expected->cluster_count(), it_actual->cluster_count(), tol);
+        INTEROP_EXPECT_NEAR(it_expected->cluster_count_pf(), it_actual->cluster_count_pf(), tol);
         EXPECT_EQ(it_expected->read_metrics().size(), it_actual->read_metrics().size());
         for(metric_t::read_metric_vector::const_iterator it_read_expected = it_expected->read_metrics().begin(),
                         it_read_actual = it_actual->read_metrics().begin();
@@ -74,15 +123,13 @@ TEST_P(tile_metrics_tests, test_read_write)
                         it_read_actual != it_actual->read_metrics().end(); it_read_expected++, it_read_actual++)
         {
             EXPECT_EQ(it_read_expected->read(), it_read_actual->read());
-            if(!std::isnan(it_read_expected->percent_aligned()) || !std::isnan(it_read_actual->percent_aligned()))
-                EXPECT_NEAR(it_read_expected->percent_aligned(), it_read_actual->percent_aligned(), tol);
-            if(!std::isnan(it_read_expected->percent_phasing()) || !std::isnan(it_read_actual->percent_phasing()))
-                EXPECT_NEAR(it_read_expected->percent_phasing()*scale, it_read_actual->percent_phasing(), tol);
-            if(!std::isnan(it_read_expected->percent_prephasing()) || !std::isnan(it_read_actual->percent_prephasing()))
-                EXPECT_NEAR(it_read_expected->percent_prephasing()*scale, it_read_actual->percent_prephasing(), tol);
+            INTEROP_ASSERT_NEAR(it_read_expected->percent_aligned(), it_read_actual->percent_aligned(), tol);
+            INTEROP_ASSERT_NEAR(it_read_expected->percent_phasing()*scale, it_read_actual->percent_phasing(), tol);
+            INTEROP_ASSERT_NEAR(it_read_expected->percent_prephasing()*scale, it_read_actual->percent_prephasing(), tol);
         }
     }
 }
+
 
 TEST(tile_metrics_test, test_unique_id_four_digit)
 {
@@ -159,7 +206,7 @@ TEST(tile_metrics_test, test_tile_metric_for_lane)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Setup regression test
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-regression_test_metric_generator<tile_metric_set> tile_regression_gen("metrics");
+regression_test_metric_generator<tile_metric_set> tile_regression_gen;
 INSTANTIATE_TEST_CASE_P(tile_metric_regression_test,
                         tile_metrics_tests,
                         ProxyValuesIn(tile_regression_gen, regression_test_data::instance().files()));

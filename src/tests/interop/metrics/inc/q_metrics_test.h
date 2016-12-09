@@ -27,7 +27,7 @@ namespace illumina{ namespace interop { namespace unittest
          *
          * @param metrics destination metric set
          */
-        static void create_metric_set(metric_set_t& metrics)
+        static void create_expected(metric_set_t& metrics)
         {
             metrics = metric_set_t(VERSION);
 
@@ -76,10 +76,11 @@ namespace illumina{ namespace interop { namespace unittest
         {
             const size_t lane_count = 1;
             const size_t surface_count = 2;
+            const size_t channel_count = 2;
             const model::run::read_info reads[]={
                     model::run::read_info(1, 1, 3, false)
             };
-            summary.initialize(to_vector(reads), lane_count, surface_count);
+            summary.initialize(to_vector(reads), lane_count, surface_count, channel_count);
             summary[0][0].tile_count(2);
             summary[0][0].projected_yield_g(0.0098816361278295517);
             summary[0][0].yield_g(0.0074112270958721638f);
@@ -113,7 +114,7 @@ namespace illumina{ namespace interop { namespace unittest
          *
          * @param metrics destination metric set
          */
-        static void create_metric_set(metric_set_t& metrics)
+        static void create_expected(metric_set_t& metrics)
         {
             typedef header_t::qscore_bin_vector_type qscore_bin_vector_type;
             typedef header_t::bin_t bin_t;
@@ -175,10 +176,11 @@ namespace illumina{ namespace interop { namespace unittest
         {
             const size_t lane_count = 1;
             const size_t surface_count = 2;
+            const size_t channel_count = 2;
             const model::run::read_info reads[]={
                     model::run::read_info(1, 1, 2, false)
             };
-            summary.initialize(to_vector(reads), lane_count, surface_count);
+            summary.initialize(to_vector(reads), lane_count, surface_count, channel_count);
             summary[0][0].tile_count(3);
             summary[0][0].projected_yield_g(0.0056276721879839897f);
             summary[0][0].yield_g(0.0056276721879839897f);
@@ -212,7 +214,7 @@ namespace illumina{ namespace interop { namespace unittest
          *
          * @param metrics destination metric set
          */
-        static void create_metric_set(metric_set_t& metrics)
+        static void create_expected(metric_set_t& metrics)
         {
             typedef header_t::qscore_bin_vector_type qscore_bin_vector_type;
             typedef header_t::bin_t bin_t;
@@ -232,7 +234,6 @@ namespace illumina{ namespace interop { namespace unittest
             const uint_t hist_all1[] = {0, 267962, 118703, 4284, 2796110, 0, 0};
             const uint_t hist_all2[] = {0,241483, 44960, 1100, 2899568, 0 ,0};
             const uint_t hist_all3[] = {0,212144, 53942, 427, 2920598, 0, 0};
-            std::vector<uint_t> hist_tmp(50, 0);
 
             metrics.insert(metric_t(7, 1114, 1, to_vector(hist_all1)));
             metrics.insert(metric_t(7, 1114, 2, to_vector(hist_all2)));
@@ -261,10 +262,11 @@ namespace illumina{ namespace interop { namespace unittest
         {
             const size_t lane_count = 1;
             const size_t surface_count = 2;
+            const size_t channel_count = 2;
             const model::run::read_info reads[]={
                     model::run::read_info(1, 1, 4, false)
             };
-            summary.initialize(to_vector(reads), lane_count, surface_count);
+            summary.initialize(to_vector(reads), lane_count, surface_count, channel_count);
             summary[0][0].lane(7);
             summary[0][0].tile_count(1);
             summary[0][0].projected_yield_g(0.0095612816512584686f);
@@ -298,12 +300,12 @@ namespace illumina{ namespace interop { namespace unittest
          *
          * @param metrics destination metric set
          */
-        static void create_metric_set(metric_set_t& metrics)
+        static void create_expected(metric_set_t& metrics)
         {
             metrics = metric_set_t(VERSION);
             typedef metric_t::uint_t uint_t;
 
-            std::vector<uint_t> hist_tmp(50, 0);
+            std::vector<uint_t> hist_tmp(model::metrics::q_metric::MAX_Q_BINS, 0);
 
             metrics.insert(metric_t(1, 1110, 1, hist_tmp));
             metrics.insert(metric_t(1, 1110, 2, hist_tmp));

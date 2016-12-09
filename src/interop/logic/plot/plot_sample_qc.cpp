@@ -7,8 +7,8 @@
  */
 #include "interop/logic/plot/plot_sample_qc.h"
 
-#include "interop/util/math.h"
 #include "interop/logic/utils/enums.h"
+#include "interop/logic/utils/metric_type_ext.h"
 
 namespace illumina { namespace interop { namespace logic { namespace plot {
 
@@ -26,25 +26,25 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                                     model::plot::data_point_collection<Point>& points)
     {
         typedef model::metric_base::metric_set<model::metrics::index_metric> index_metric_set_t;
-        typedef std::map<std::string, size_t> index_count_map_t;
+        typedef INTEROP_UNORDERED_MAP(std::string, ::uint64_t) index_count_map_t;
         typedef typename index_count_map_t::iterator map_iterator;
         typedef typename index_count_map_t::const_iterator const_map_iterator;
         typedef typename model::metrics::index_metric::const_iterator const_index_iterator;
 
         index_count_map_t index_count_map;
-        float pf_cluster_count_total = 0;
+        ::uint64_t pf_cluster_count_total = 0;
         for(typename index_metric_set_t::const_iterator b = index_metrics.begin(), e = index_metrics.end();b != e;++b)
         {
             if(lane != b->lane()) continue;
             try
             {
                 const model::metrics::tile_metric &tile_metric = tile_metrics.get_metric(b->lane(), b->tile());
-                pf_cluster_count_total += tile_metric.cluster_count_pf();
+                pf_cluster_count_total += static_cast< ::uint64_t >( tile_metric.cluster_count_pf());
                 for(const_index_iterator ib = b->indices().begin(), ie =  b->indices().end();ib != ie;++ib)
                 {
                     map_iterator found_index = index_count_map.find(ib->index_seq());
-                    if(found_index == index_count_map.end()) index_count_map[ib->index_seq()] = ib->count();
-                    else found_index->second += ib->count();
+                    if(found_index == index_count_map.end()) index_count_map[ib->index_seq()] = ib->cluster_count();
+                    else found_index->second += ib->cluster_count();
                 }
             }
             catch(const model::index_out_of_bounds_exception&){continue;} // TODO: check better?
@@ -61,7 +61,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
         std::stable_sort(keys.begin(), keys.end());
         for(typename std::vector<std::string>::const_iterator b = keys.begin(), e = keys.end();b != e;++b,++i)
         {
-            const float height = (pf_cluster_count_total==0) ? 0 : index_count_map[*b] / pf_cluster_count_total * 100.0f;
+            const float height = (pf_cluster_count_total==0) ? 0.0f : 100.0f * index_count_map[*b] / pf_cluster_count_total;
             points[i].set(i+1.0f, height, 1.0f);
             max_height = std::max(max_height, height);
         }
@@ -81,12 +81,15 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                                 throw(model::index_out_of_bounds_exception)
     {
         typedef model::plot::series<model::plot::bar_point> bar_series_t;
+        data.clear();
+        if(metrics.is_group_empty(constants::Tile) ||
+                metrics.is_group_empty(constants::Index)) return;
         data.set_xlabel("Index Number");
         data.set_ylabel("% Reads Identified (PF)");
         data.assign(1, bar_series_t("% reads", "Green", bar_series_t::Bar));
         data[0].add_option(constants::to_string(constants::Centered));
 
-        if(metrics.get_set<model::metrics::index_metric>().size() == 0)
+        if(metrics.get<model::metrics::index_metric>().size() == 0)
         {
             if(metrics.run_info().is_indexed())
             {
@@ -100,8 +103,8 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
             return;
         }
 
-        const float max_height = populate_reads_identified(metrics.get_set<model::metrics::index_metric>(),
-                                                           metrics.get_set<model::metrics::tile_metric>(),
+        const float max_height = populate_reads_identified(metrics.get<model::metrics::index_metric>(),
+                                                           metrics.get<model::metrics::tile_metric>(),
                                                            lane,
                                                            data[0]);
         auto_scale(data);

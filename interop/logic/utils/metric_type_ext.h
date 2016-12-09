@@ -8,6 +8,7 @@
 #pragma once
 #include "interop/util/constant_mapping.h"
 #include "interop/constants/enums.h"
+#include "interop/constants/enum_description.h"
 #include "interop/logic/utils/enums.h"
 
 namespace illumina { namespace interop {  namespace logic { namespace utils
@@ -72,6 +73,7 @@ namespace illumina { namespace interop {  namespace logic { namespace utils
 #       undef INTEROP_TUPLE4
         return util::constant_mapping_get(name_types, type, UnknownMetricFeature);
     }
+
     /** Test if metric type is indexed by DNA base
      *
      * @param type metric type

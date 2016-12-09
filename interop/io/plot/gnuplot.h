@@ -12,6 +12,7 @@
 #include "interop/model/plot/bar_point.h"
 #include "interop/model/plot/candle_stick_point.h"
 #include "interop/model/plot/plot_data.h"
+#include "interop/io/table/csv_format.h"
 
 namespace illumina { namespace interop { namespace io { namespace plot
 {
@@ -37,21 +38,24 @@ namespace illumina { namespace interop { namespace io { namespace plot
             out << "unset key\n";
             out << "unset tics\n";
             out << "unset border\n";
+            out << "set cbtics border in scale 0,0 mirror norotate autojustify\n";
             out << "set cbrange [" << data.saxis().min() << ":" << data.saxis().max() << "]\n";
             out <<
-            "set palette defined (0 \"blueviolet\", 0.143 \"blue\", 0.286 \"aqua\", 0.429 \"lightgreen\", 0.572 \"limegreen\", 0.715 \"lime\", 0.858 \"yellow\", 1 \"orange\")\n";
+            "set palette defined (0 \"#8A2BE2\", 0.143 \"blue\", 0.286 \"cyan\", 0.429 \"light-green\", 0.572 \"#32CD32\", 0.715 \"#00FF00\", 0.858 \"yellow\", 1 \"orange\")\n";
             out << "set autoscale fix\n";
             out << "set size ratio 2\n";
+            out << "set yrange[:] reverse\n";
             out << "plot \"-\" matrix with image" << "\n";
             const size_t swath_count = data.column_count() / data.tile_count();
-            for (size_t y = 0; y < data.tile_count(); ++y)
+            for (size_t y = 0; y < data.tile_count(); ++y) // Rows
             {
-                for (size_t x = 0; x < data.row_count(); ++x)
+                for (size_t x = 0; x < data.row_count(); ++x) // Column groups
                 {
-                    for (size_t s = 0; s < swath_count; ++s)
+                    for (size_t s = 0; s < swath_count; ++s) // Columns
                     {
-                        out << " " << data.at(x, y + s * data.tile_count());
+                        out << " " << table::handle_nan(data.at(x, y + s * data.tile_count()));
                     }
+                    out << " nan";
                 }
                 out << "\n";
             }
@@ -108,7 +112,7 @@ namespace illumina { namespace interop { namespace io { namespace plot
                 out << data.at(0, y);
                 for (size_t x = 1; x < data.row_count(); ++x)
                 {
-                    out << " " << data.at(x, y);
+                    out << " " << table::handle_nan(data.at(x, y));
                 }
                 out << "\n";
             }
@@ -204,7 +208,8 @@ namespace illumina { namespace interop { namespace io { namespace plot
          */
         void write_axis(std::ostream &out, const model::plot::axis &axis, const char axis_label)
         {
-            out << "set " << axis_label << "range [" << axis.min() << " : " << axis.max() << " ]\n";
+            out << "set " << axis_label << "range ["
+                << table::handle_nan(axis.min()) << " : " << table::handle_nan(axis.max()) << " ]\n";
             if (axis.label() != "") out << "set " << axis_label << "label \"" << axis.label() << "\"\n";
         }
 
@@ -246,12 +251,12 @@ namespace illumina { namespace interop { namespace io { namespace plot
             {
                 for (size_t i = 0; i < series.size(); ++i)
                 {
-                    out << series[i].x() << "\t";
-                    out << series[i].lower() << "\t";
-                    out << series[i].p25() << "\t";
-                    out << series[i].p50() << "\t";
-                    out << series[i].p75() << "\t";
-                    out << series[i].upper();
+                    out << table::handle_nan(series[i].x()) << "\t";
+                    out << table::handle_nan(series[i].lower()) << "\t";
+                    out << table::handle_nan(series[i].p25()) << "\t";
+                    out << table::handle_nan(series[i].p50()) << "\t";
+                    out << table::handle_nan(series[i].p75()) << "\t";
+                    out << table::handle_nan(series[i].upper());
                     out << std::endl;
                 }
             }
@@ -268,7 +273,7 @@ namespace illumina { namespace interop { namespace io { namespace plot
         {
             for (size_t i = 0; i < series.size(); ++i)
             {
-                out << series[i].x() << "\t" << series[i].y() << std::endl;
+                out << table::handle_nan(series[i].x()) << "\t" << table::handle_nan(series[i].y()) << std::endl;
             }
         }
 
@@ -292,7 +297,9 @@ namespace illumina { namespace interop { namespace io { namespace plot
         {
             for (size_t i = 0; i < series.size(); ++i)
             {
-                out << series[i].x() << "\t" << series[i].y() << "\t" << series[i].width() << std::endl;
+                out << table::handle_nan(series[i].x()) << "\t"
+                    << table::handle_nan(series[i].y()) << "\t"
+                    << table::handle_nan(series[i].width()) << std::endl;
             }
         }
 

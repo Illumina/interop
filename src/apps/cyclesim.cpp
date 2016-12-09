@@ -43,14 +43,15 @@
 #include "inc/application.h"
 
 using namespace illumina::interop::model::metrics;
+using namespace illumina::interop::model::metric_base;
 using namespace illumina::interop;
 
-typedef model::metrics::run_metrics::corrected_intensity_metric_set_t corrected_intensity_metric_set_t;
-typedef model::metrics::run_metrics::tile_metric_set_t tile_metric_set_t;
-typedef model::metrics::run_metrics::error_metric_set_t error_metric_set_t;
-typedef model::metrics::run_metrics::extraction_metric_set_t extraction_metric_set_t;
-typedef model::metrics::run_metrics::q_metric_set_t q_metric_set_t;
-typedef model::metrics::run_metrics::image_metric_set_t image_metric_set_t;
+typedef metric_set< corrected_intensity_metric > corrected_intensity_metric_set_t;
+typedef metric_set< tile_metric > tile_metric_set_t;
+typedef metric_set< error_metric > error_metric_set_t;
+typedef metric_set< extraction_metric > extraction_metric_set_t;
+typedef metric_set< q_metric > q_metric_set_t;
+typedef metric_set< image_metric > image_metric_set_t;
 
 /** Write a help message to the output stream
  *
@@ -205,7 +206,7 @@ int copy_tile_metrics(const std::string& input, const std::string& output, const
 
     metric_array_t subset;
 
-    for(const_iterator beg = metrics.metrics().begin(), end=metrics.metrics().end();beg != end;++beg)
+    for(const_iterator beg = metrics.begin(), end=metrics.end();beg != end;++beg)
     {
         read_metric_vector reads;
         for(const_read_iterator rbeg = beg->read_metrics().begin(), rend=beg->read_metrics().end();rbeg != rend;++rbeg)
@@ -255,7 +256,7 @@ int copy_cycle_metrics(const std::string& input, const std::string& output, cons
 
     metric_array_t subset;
 
-    for(const_iterator beg = metrics.metrics().begin(), end=metrics.metrics().end();beg != end;++beg)
+    for(const_iterator beg = metrics.begin(), end=metrics.end();beg != end;++beg)
     {
         if(beg->tile()%2==0 && max_cycle > 1)
         {

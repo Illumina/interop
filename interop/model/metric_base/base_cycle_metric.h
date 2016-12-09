@@ -98,6 +98,16 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
     public:
         /** Set id
          *
+         * @note This is only supported to enable easier unit testing, this should not be used.
+         * @param lane lane number
+         * @param tile tile number
+         */
+        void set_base(const uint_t lane, const uint_t tile)
+        {
+            base_metric::set_base(lane, tile);
+        }
+        /** Set id
+         *
          * @param lane lane number
          * @param tile tile number
          * @param cycle cycle number
@@ -133,6 +143,14 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         {
             return create_id(lane(), tile(), m_cycle);
         }
+        /** Unique id created from the lane, tile and cycle
+         *
+         * @return unique id
+         */
+        id_t cycle_hash() const
+        {
+            return create_id(lane(), tile(), m_cycle);
+        }
         /** Get the cycle from the unique lane/tile/cycle id
          *
          * @param id unique lane/tile/cycle id
@@ -140,8 +158,20 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         static id_t cycle_from_id(const id_t id)
         {
-            // Mask tile hash (lane + tile)
-            return id & ~((~static_cast<id_t>(0)) << TILE_BIT_SHIFT);
+            // 1. Shift off lane and tile bits
+            // 2. Shift back, while shifting off reserved bits
+            return (id << (LANE_BIT_COUNT+TILE_BIT_COUNT)) >> (LANE_BIT_COUNT+TILE_BIT_COUNT+RESERVED_BIT_COUNT);
+        }
+        /** Get the reserved number from the unique lane/tile/cycle id
+         *
+         * @param id unique lane/tile/cycle id
+         * @return reserved number
+         */
+        static id_t reserved_from_id(const id_t id)
+        {
+            // 1. Shift off lane, tile and cycle bits
+            // 2. Shift back
+            return (id << (LANE_BIT_COUNT+TILE_BIT_COUNT+CYCLE_BIT_COUNT)) >> (LANE_BIT_COUNT+TILE_BIT_COUNT+CYCLE_BIT_COUNT);
         }
 
         /** Create unique id from the lane, tile and cycle
@@ -153,7 +183,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         static id_t create_id(const id_t lane, const id_t tile, const id_t cycle)
         {
-            return base_metric::create_id(lane, tile) | cycle;
+            return base_metric::create_id(lane, tile) | (cycle << CYCLE_BIT_SHIFT);
         }
 
     private:

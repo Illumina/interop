@@ -54,6 +54,30 @@ namespace illumina { namespace interop { namespace io
             stream_map<RecordSize>(stream, record_size);
             return record_size;
         }
+        /** Skip inserting this metric into the metric set
+         *
+         * This function was originally added to skip control records in tile metrics.
+         *
+         * @param metric metric to check
+         * @return true, if the metric id is 0
+         */
+        template<class Metric>
+        static bool skip_metric(const Metric& metric)
+        {
+            return metric.id() == 0;
+        }
+        /** Skip inserting this metric into the metric set
+         *
+         * This function was originally added to skip control records in tile metrics.
+         *
+         * @param metric metric to check
+         * @return true, if the metric id is 0
+         */
+        template<class LayoutId>
+        static bool is_valid(const LayoutId& id)
+        {
+            return id.is_valid();
+        }
     };
 }}}
 

@@ -11,6 +11,7 @@
 #include "interop/util/object_list.h"
 #include "interop/model/metric_base/metric_set.h"
 #include "interop/io/stream_exceptions.h"
+#include "interop/io/metric_file_stream.h"
 #include "interop/model/run/info.h"
 #include "interop/model/run/parameters.h"
 
@@ -65,24 +66,6 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     public:
         /** Define an id type */
         typedef metric_base::base_metric::id_t id_t;
-        /** Define corrected intensity metric set */
-        typedef metric_base::metric_set<corrected_intensity_metric> corrected_intensity_metric_set_t;
-        /** Define error metric set */
-        typedef metric_base::metric_set<error_metric> error_metric_set_t;
-        /** Define extraction metric set */
-        typedef metric_base::metric_set<extraction_metric> extraction_metric_set_t;
-        /** Define image metric set */
-        typedef metric_base::metric_set<image_metric> image_metric_set_t;
-        /** Define index metric set */
-        typedef metric_base::metric_set<index_metric> index_metric_set_t;
-        /** Define q-metric set */
-        typedef metric_base::metric_set<q_metric> q_metric_set_t;
-        /** Define tile metric set */
-        typedef metric_base::metric_set<tile_metric> tile_metric_set_t;
-        /** Define collapsed q-metric set */
-        typedef metric_base::metric_set<q_collapsed_metric> q_collapsed_metric_set_t;
-        /** Define by lane q-metric set */
-        typedef metric_base::metric_set<q_by_lane_metric> q_by_lane_metric_set_t;
         /** Define a map of ids to a base metric */
         typedef std::map<id_t, metric_base::base_metric> tile_metric_map_t;
         /** Define a map of ids to a base cycle metric */
@@ -90,8 +73,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
 
     public:
         /** Define set of ids */
-        typedef error_metric_set_t::id_set_t id_set_t;
-
+        typedef metric_base::metric_set<error_metric>::id_set_t id_set_t;
 
     public:
         /** Constructor
@@ -215,169 +197,6 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         void set_naming_method(const constants::tile_naming_method naming_method);
 
     public:
-        /** Get the set of corrected intensity metrics
-         *
-         * @return set of corrected intensity metrics
-         */
-        corrected_intensity_metric_set_t &corrected_intensity_metric_set()
-        {
-            return get_set<corrected_intensity_metric>();
-        }
-
-        /** Get the set of error metrics
-         *
-         * @return set of error metrics
-         */
-        error_metric_set_t &error_metric_set()
-        {
-            return get_set<error_metric>();
-        }
-
-        /** Get the set of extraction metrics
-         *
-         * @return set of extraction metrics
-         */
-        extraction_metric_set_t &extraction_metric_set()
-        {
-            return get_set<extraction_metric>();
-        }
-
-        /** Get the set of image metrics
-         *
-         * @return set of image metrics
-         */
-        image_metric_set_t &image_metric_set()
-        {
-            return get_set<image_metric>();
-        }
-
-        /** Get the set of index metrics
-         *
-         * @return set of index metrics
-         */
-        index_metric_set_t &index_metric_set()
-        {
-            return get_set<index_metric>();
-        }
-
-        /** Get the set of quality metrics
-         *
-         * @return set of quality metrics
-         */
-        q_metric_set_t &q_metric_set()
-        {
-            return get_set<q_metric>();
-        }
-
-        /** Get the set of collapsed quality metrics
-         *
-         * @return set of collapsed quality metrics
-         */
-        q_collapsed_metric_set_t &q_collapsed_metric_set()
-        {
-            return get_set<q_collapsed_metric>();
-        }
-
-        /** Get the set of by lane quality metrics
-         *
-         * @return set of by lane quality metrics
-         */
-        q_by_lane_metric_set_t &q_by_lane_metric_set()
-        {
-            return get_set<q_by_lane_metric>();
-        }
-
-        /** Get the set of tile metrics
-         *
-         * @return set of tile metrics
-         */
-        tile_metric_set_t &tile_metric_set()
-        {
-            return get_set<tile_metric>();
-        }
-
-        /** Set the set of tile metrics
-         *
-         * @param set set of tile metrics
-         */
-        void tile_metric_set(const tile_metric_set_t &set)
-        {
-            get_set<tile_metric>() = set;
-        }
-
-        /** Set the set of collapsed q-metrics
-         *
-         * @param set set of collapsed q-metrics
-         */
-        void q_collapsed_metric_set(const q_collapsed_metric_set_t &set)
-        {
-            get_set<q_collapsed_metric>() = set;
-        }
-
-        /** Set the set of by lane q-metrics
-         *
-         * @param set set of by lane q-metrics
-         */
-        void q_by_lane_metric_set(const q_by_lane_metric_set_t &set)
-        {
-            get_set<q_by_lane_metric>() = set;
-        }
-
-        /** Set the set of q-metrics
-         *
-         * @param set set of q-metrics
-         */
-        void q_metric_set(const q_metric_set_t &set)
-        {
-            get_set<q_metric>() = set;
-        }
-
-        /** Set the set of index metrics
-         *
-         * @param set set of index metrics
-         */
-        void index_metric_set(const index_metric_set_t &set)
-        {
-            get_set<index_metric>() = set;
-        }
-
-        /** Set the set of image metrics
-         *
-         * @param set set of image metrics
-         */
-        void image_metric_set(const image_metric_set_t &set)
-        {
-            get_set<image_metric>() = set;
-        }
-
-        /** Set the set of extraction metrics
-         *
-         * @param set set of extraction metrics
-         */
-        void extraction_metric_set(const extraction_metric_set_t &set)
-        {
-            get_set<extraction_metric>() = set;
-        }
-
-        /** Set the set of error metrics
-         *
-         * @param set set of error metrics
-         */
-        void error_metric_set(const error_metric_set_t &set)
-        {
-            get_set<error_metric>() = set;
-        }
-
-        /** Set the set of corrected intensity metrics
-         *
-         * @param set set of corrected intensity metrics
-         */
-        void corrected_intensity_metric_set(const corrected_intensity_metric_set_t &set)
-        {
-            get_set<corrected_intensity_metric>() = set;
-        }
-
-    public:
         /** Get information about the run
          *
          * @return run info
@@ -414,15 +233,41 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             m_run_parameters = param;
         }
 
+        /** List all filenames for a specific metric
+         *
+         * @param files destination interop file names
+         * @param run_folder run folder location
+         */
+        template<class T>
+        void list_filenames(std::vector<std::string>& files, const std::string& run_folder)
+        throw(invalid_run_info_exception)
+        {
+            typedef typename metric_base::metric_set_helper<T>::metric_set_t metric_set_t;
+            const size_t last_cycle = run_info().total_cycles();
+            if( last_cycle == 0 ) INTEROP_THROW(invalid_run_info_exception, "RunInfo is empty");
+            io::list_interop_filenames< metric_set_t >(files, run_folder);
+        }
+
     public:
+        /** Set a given metric set
+         *
+         * @param metrics metric set
+         */
+        template<class T>
+        void set(const T& metrics)
+        {
+            //static_assert( )
+            m_metrics.get< T >() = metrics;
+        }
         /** Get a metric set
          *
          * @return metric set
          */
         template<class T>
-        T &get()
+        typename metric_base::metric_set_helper<T>::metric_set_t &get()
         {
-            return m_metrics.get<T>();
+            typedef typename metric_base::metric_set_helper<T>::metric_set_t metric_set_t;
+            return m_metrics.get< metric_set_t >();
         }
 
         /** Get a metric set
@@ -430,27 +275,19 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @return metric set
          */
         template<class T>
-        const T &get() const
+        const typename metric_base::metric_set_helper<T>::metric_set_t &get() const
         {
-            return m_metrics.get<T>();
+            typedef typename metric_base::metric_set_helper<T>::metric_set_t metric_set_t;
+            return m_metrics.get< metric_set_t >();
         }
 
         /** Get a metric set given a metric type
          *
+         * @todo Remove. This is used by the SWIG binding because it is hard to wrap the return type of get<>()
          * @return metric set
          */
         template<class T>
-        metric_base::metric_set<T> &get_set()
-        {
-            return m_metrics.get<metric_base::metric_set<T> >();
-        }
-
-        /** Get a metric set given a metric type
-         *
-         * @return metric set
-         */
-        template<class T>
-        const metric_base::metric_set<T> &get_set() const
+        metric_base::metric_set<T> &get_metric_set()
         {
             return m_metrics.get<metric_base::metric_set<T> >();
         }
@@ -484,7 +321,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          *  - Missing RunParameters.xml for non-legacy run folders
          *
          * @param run_folder run folder path
-         * @param valid_to_load list of metrics to load
+         * @param valid_to_load boolean vector indicating which files to load
          */
         void read_metrics(const std::string &run_folder, const std::vector<unsigned char>& valid_to_load) throw(
         io::file_not_found_exception,
@@ -547,7 +384,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
 
         /** Populate a map of valid tiles and cycles
          *
-         * @param map mapping between tile has and base_metric
+         * @param map mapping between tile has and base_cycle_metric
          */
         void populate_id_map(cycle_metric_map_t &map) const;
         /** Sort the metrics by id

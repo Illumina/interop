@@ -23,22 +23,25 @@ namespace illumina{ namespace interop { namespace unittest
 
 
     typedef ::testing::Types
-    <
-    corrected_intensity_metric_v2,
-    corrected_intensity_metric_v3,
-    error_metric_v3,
-    extraction_metric_v2,
-    image_metric_v1,
-    image_metric_v2,
-    index_metric_v1,
-    q_collapsed_metric_v2,
-    q_collapsed_metric_v6,
-    q_metric_v4,
-    q_metric_v5,
-    q_metric_v6,
-    q_metric_v6_unbinned,
-    tile_metric_v2
-    > PublicFormats;
+            <
+                    corrected_intensity_metric_v2,
+                    corrected_intensity_metric_v3,
+                    error_metric_v3,
+                    extraction_metric_v2,
+                    image_metric_v1,
+                    image_metric_v2,
+                    index_metric_v1,
+                    q_collapsed_metric_v2,
+                    q_collapsed_metric_v3,
+                    q_collapsed_metric_v4,
+                    q_collapsed_metric_v5,
+                    q_collapsed_metric_v6,
+                    q_metric_v4,
+                    q_metric_v5,
+                    q_metric_v6,
+                    q_metric_v6_unbinned,
+                    tile_metric_v2
+            > PublicFormats;
 
 
 }}}

@@ -124,7 +124,7 @@ CSHARP_ARRAYS_FIXED2(float, float)
 
 %apply float FIXED[] {float *}
 
-%apply byte {unsigned char};
+//%apply byte {unsigned char};
 
 
 

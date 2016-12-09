@@ -117,7 +117,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
     {
         // 0 is a sentinel that indicates legacy binning is not required
         if(q_metric_set.version() > 4) return 0;     // Version 5 and later do not require legacy binning
-        if(!q_metric_set.bins().empty()) return 0;   // If the metrics already have a header they do not require binning
+        if(!q_metric_set.get_bins().empty()) return 0;   // If the metrics already have a header they do not require binning
 
         const size_t max_bin_count = 7;
         model::metric_base::metric_set<model::metrics::q_metric>::const_iterator beg = q_metric_set.begin(),
@@ -222,13 +222,13 @@ namespace illumina { namespace interop { namespace logic { namespace metric
         const uint_t q20_idx = static_cast<uint_t>(index_for_q_value(metric_set, 20));
         const uint_t q30_idx = static_cast<uint_t>(index_for_q_value(metric_set, 30));
 
-        collapsed.set_version(metric_set.version());
+        collapsed.set_version(model::metrics::q_collapsed_metric::LATEST_VERSION);
         for(const_iterator beg = metric_set.begin(), end = metric_set.end();beg != end;++beg)
         {
             const uint_t q20 = beg->total_over_qscore(q20_idx);
             const uint_t q30 = beg->total_over_qscore(q30_idx);
             const uint_t total = beg->sum_qscore();
-            const uint_t median = beg->median(metric_set.bins());
+            const uint_t median = beg->median(metric_set.get_bins());
             collapsed.insert(model::metrics::q_collapsed_metric(beg->lane(),
                                                                 beg->tile(),
                                                                 beg->cycle(),
@@ -254,7 +254,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
         typedef model::metric_base::base_cycle_metric::id_t id_t;
 
         bylane = static_cast<const header_type&>(metric_set);
-        bylane.set_version(metric_set.version());
+        bylane.set_version(model::metrics::q_by_lane_metric::LATEST_VERSION);
         for(const_iterator beg = metric_set.begin(), end = metric_set.end();beg != end;++beg)
         {
             const id_t id = model::metric_base::base_cycle_metric::create_id(beg->lane(), 0, beg->cycle());

@@ -26,9 +26,12 @@ set(SRCS
         logic/table/create_imaging_table.cpp
         util/time.cpp
         util/filesystem.cpp
-        logic/utils/metrics_to_load.cpp)
+        logic/utils/metrics_to_load.cpp
+        model/summary/index_summary.cpp
+        )
 
 set(HEADERS
+        ../../interop/io/paths.h
         ../../interop/model/summary/cycle_state_summary.h
         ../../interop/model/summary/lane_summary.h
         ../../interop/model/summary/metric_stat.h
@@ -141,7 +144,13 @@ set(HEADERS
         ../../interop/logic/utils/metrics_to_load.h
         ../../interop/io/format/default_layout.h
         ../../interop/io/format/stream_membuf.h
-        ../../interop/model/summary/surface_summary.h ../../interop/model/summary/stat_summary.h)
+        ../../interop/model/summary/surface_summary.h
+        ../../interop/model/summary/stat_summary.h
+        ../../interop/util/indirect_range_iterator.h
+        ../../interop/util/map.h
+        ../../interop/util/timer.h
+        ../../interop/constants/enum_description.h
+        )
 
 set(INTEROP_HEADERS ${HEADERS} PARENT_SCOPE)
 if(COMPILER_IS_GNUCC_OR_CLANG)
@@ -158,8 +167,16 @@ elseif(MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS  -D_SCL_SECURE_NO_WARNINGS)
 endif()
 
-add_library(${INTEROP_LIB} ${LIBRARY_TYPE} ${SRCS} ${HEADERS})
-add_library(${INTEROP_DL_LIB} ${LIBRARY_TYPE} ${SRCS} ${HEADERS} )
+# Shared libraries on windows are currently not supported, but we may in the future.
+set(SWIG_VERSION_INFO "")
+if(MSVC AND "${LIBRARY_TYPE}" STREQUAL "SHARED")
+    set(SWIG_VERSION_INFO ${CMAKE_CURRENT_BINARY_DIR}/interop_lib_version.rc)
+    set(LIB_NAME "Core C++ InterOp Library") # Used to configure the version info file
+    configure_file(${CMAKE_SOURCE_DIR}/cmake/version.rc.in ${SWIG_VERSION_INFO} @ONLY) # Requires: LIB_NAME, VERSION_LIST and VERSION
+endif()
+
+add_library(${INTEROP_LIB} ${LIBRARY_TYPE} ${SRCS} ${HEADERS} ${SWIG_VERSION_INFO})
+add_library(${INTEROP_DL_LIB} ${LIBRARY_TYPE} ${SRCS} ${HEADERS}  ${SWIG_VERSION_INFO} )
 add_dependencies(${INTEROP_LIB} version)
 add_dependencies(${INTEROP_DL_LIB} version)
 

@@ -73,12 +73,14 @@ namespace illumina { namespace interop { namespace logic { namespace plot
     model::invalid_metric_type,
     model::invalid_filter_option)
     {
+        data.clear();
+        if(metrics.is_group_empty(logic::utils::to_group(type))) return;
         if(utils::is_cycle_metric(type))
-            INTEROP_THROW(model::invalid_metric_type, "Cycle metrics are unsupported");
+            INTEROP_THROW(model::invalid_metric_type, "Cycle metrics are unsupported: " << constants::to_string(type));
         options.validate(type, metrics.run_info());
         data.assign(1, model::plot::series<Point>(utils::to_description(type), "Blue"));
         metric::metric_value<model::metrics::tile_metric> proxy3(options.read());
-        populate_candle_stick_by_lane(metrics.get_set<model::metrics::tile_metric>(), proxy3, options, type,
+        populate_candle_stick_by_lane(metrics.get<model::metrics::tile_metric>(), proxy3, options, type,
                                       data[0]);
 
         const size_t read_count = metrics.run_info().reads().size();
@@ -91,7 +93,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
             const constants::metric_type second_type =
                     (type==constants::Clusters ? constants::ClustersPF : constants::ClusterCountPF);
             //(type==constants::Density ? constants::DensityPF : constants::ClusterCountPF);
-            populate_candle_stick_by_lane(metrics.get_set<model::metrics::tile_metric>(), proxy3, options, second_type,
+            populate_candle_stick_by_lane(metrics.get<model::metrics::tile_metric>(), proxy3, options, second_type,
                                           data[1]);
         }
 

@@ -80,7 +80,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                  const size_t surface=0)
         {
             INTEROP_ASSERT(read_number < m_read_lane_cache.size());
-            const size_t lane_surface_index = lane*m_surface_count+surface;
+            const size_t lane_surface_index = index_of(lane, surface);
             INTEROP_ASSERT(lane_surface_index < m_read_lane_cache[read_number].size());
             m_read_lane_cache[read_number][lane_surface_index].above_qval+=metric.q30();
             m_read_lane_cache[read_number][lane_surface_index].total += metric.total();

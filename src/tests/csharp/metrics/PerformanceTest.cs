@@ -54,7 +54,7 @@ namespace Illumina.InterOp.UnitTest
 		    timer.Start();
 		    double sum = 0.0;
 		    for(uint i=0;i<extraction_metric_set.size();i++)
-		        sum += extraction_metric_set.at(i).focusScore(0);
+		        sum += extraction_metric_set.at(i).focus_score(0);
 		    timer.Stop();
 		    System.Console.WriteLine("At - Sum focus: " + timer.Elapsed.Hours +" : " + timer.Elapsed.Minutes +" : " + timer.Elapsed.Seconds);
 		}
@@ -73,8 +73,8 @@ namespace Illumina.InterOp.UnitTest
 		        {
 		            for(int cycle = 1;cycle <=318;cycle++)
 		            {
-		                extraction_metric metric = extraction_metric_set.GetMetric(lane, tile, cycle);
-		                sum += metric.focusScore(0);
+		                extraction_metric metric = extraction_metric_set.get_metric((uint)lane, (uint)tile, (uint)cycle);
+		                sum += metric.focus_score(0);
 		            }
                 }
             }

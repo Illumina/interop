@@ -77,6 +77,29 @@ namespace illumina { namespace interop { namespace io
         return sizeof(ReadType);
     }
 
+    /** Read a string from the given input stream
+     *
+     * @param in input stream
+     * @param val destination string
+     * @return number of characters read
+     */
+    inline std::streamsize stream_map(std::istream &in, std::string &val)
+    {
+        read_binary(in, val, "");
+        return in.gcount();
+    }
+    /** Read a string from the given input stream
+     *
+     * @param in input stream
+     * @param val destination string
+     * @return number of characters read
+     */
+    inline std::streamsize stream_map(char*& in, std::string &val)
+    {
+        read_binary(in, val);
+        return val.size();
+    }
+
     /** Helper to read an array
      */
     template<typename ReadType, typename ValueType, bool SameSize=sizeof(ReadType)==sizeof(ValueType)>
@@ -278,6 +301,20 @@ namespace illumina { namespace interop { namespace io
         return out.tellp();
     }
 
+    /** Write a string to the given output stream
+     *
+     * TODO: create more efficient buffered version
+     *
+     * @param out output stream
+     * @param str source string
+     * @return number of bytes written to the stream
+     */
+    inline std::streamsize stream_map(std::ostream &out, const std::string &str)
+    {
+        write_binary(out, str);
+        return out.tellp();
+    }
+
     /** Write an array of values of type ReadType to the given output stream
      *
      * TODO: create more efficient buffered version
@@ -290,6 +327,9 @@ namespace illumina { namespace interop { namespace io
     template<typename WriteType, typename ValueType>
     std::streamsize stream_map(std::ostream &out, const ValueType &vals, const size_t n)
     {
+        INTEROP_ASSERT(util::length_of(vals) >= n);
+        if(util::length_of(vals) < n)
+            INTEROP_THROW(bad_format_exception, "Write bug: Number of values is less than expected!");
         for (size_t i = 0; i < n; i++)
         {
             WriteType write_val = static_cast<WriteType>(vals[i]);
@@ -311,6 +351,9 @@ namespace illumina { namespace interop { namespace io
     template<typename WriteType, typename ValueType>
     std::streamsize stream_map(std::ostream &out, const ValueType &vals, const size_t offset, const size_t n)
     {
+        INTEROP_ASSERT(util::length_of(vals) >= (offset+n));
+        if(util::length_of(vals) < (offset+n))
+            INTEROP_THROW(bad_format_exception, "Write bug: Number of values is less than expected!");
         for (size_t i = 0; i < n; i++)
         {
             WriteType write_val = static_cast<WriteType>(vals[offset + i]);
@@ -322,7 +365,7 @@ namespace illumina { namespace interop { namespace io
     /** Placeholder that does nothing
      */
     template<typename Layout>
-    void map_resize(const std::vector<Layout> &, size_t)
+    void map_resize(const Layout &, size_t)
     {
     }
 
@@ -332,7 +375,7 @@ namespace illumina { namespace interop { namespace io
      * @param n number of elements
      */
     template<typename Layout>
-    void map_resize(std::vector<Layout> &layout, const size_t n)
+    void map_resize(Layout &layout, const size_t n)
     {
         layout.resize(n);
     }
