@@ -32,11 +32,8 @@ namespace illumina{ namespace interop{ namespace io {
     {
       /** @page summary_v1 Run Summary v1
        *
-       * This class provides an interface to reading the image metric file:
-       *  - InterOp/RunSummary.bin
-       *
-       *  The file format for run_summary is as follows:
-       *
+       * This class provides an interface to reading/writing a binary summary, and is only supported
+       * for regression testing.
        */
 
 

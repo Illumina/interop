@@ -28,7 +28,7 @@ namespace illumina { namespace interop { namespace unittest
          *
          * @param metrics destination metric set
          */
-        static void create_expected(metric_set_t &metrics)
+        static void create_expected(metric_set_t &metrics, const model::run::info=model::run::info())
         {
             metrics = metric_set_t(VERSION);
             metrics.insert(metric_t(7, 1114, 1, 0.450100899f));

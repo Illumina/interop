@@ -176,7 +176,7 @@ namespace illumina { namespace interop { namespace model { namespace run
         { m_lane_count = lane_count; }
         /** Set number of surfaces
          *
-         * @param lane_count number of surfaces
+         * @param surface_count number of surfaces
          */
         void surface_count(const uint_t surface_count)
         { m_surface_count = surface_count; }

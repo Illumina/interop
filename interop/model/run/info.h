@@ -202,6 +202,17 @@ namespace illumina { namespace interop { namespace model { namespace run
                 if (b->is_index()) return true;
             return false;
         }
+        /** Test if cycle is last cycle of a read
+         *
+         * @param cycle cycle number to test
+         * @return true if the cycle number equals the last cycle of a read
+         */
+        bool is_last_cycle_of_read(const size_t cycle)const
+        {
+            for (read_vector_t::const_iterator b = m_reads.begin(), e = m_reads.end(); b != e; ++b)
+                if (b->last_cycle() == cycle) return true;
+            return false;
+        }
 
         /** Get read with given number
          *

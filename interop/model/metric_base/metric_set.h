@@ -189,7 +189,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         }
         /** Trim the set to the proper number of metrics
          *
-         * @param map proper number of metrics
+         * @param n actual size of the metric set
          */
         void trim(const size_t n)
         {

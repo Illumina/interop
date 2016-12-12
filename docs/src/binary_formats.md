@@ -1,7 +1,7 @@
 InterOp Format      {#binary_formats}
 ==============
 
-This pages describes the binary format for an InterOp file. The formats are broken down into two parts: (1) the
+This page describes the binary format for an InterOp file. The formats are broken down into two parts: (1) the
 header, which is written first, a single time for the file and (2) n-Records, which are written next, many times
 composing the rest of the file.
 
@@ -29,4 +29,8 @@ The documentation for the model notes when an attribute is only populated by a s
  - @subpage q_collapsed_v5 "Collapsed Q-Metrics Version 5"
  - @subpage q_collapsed_v6 "Collapsed Q-Metrics Version 6"
  
-
+ The following are binary formats used only for testing purposes and are not officially supported:
+ 
+ - @subpage index_summary_v1 "Index Summary v1"
+ - @subpage summary_v1 "Run Summary v1"
+ 

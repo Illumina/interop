@@ -167,7 +167,7 @@ namespace illumina { namespace interop { namespace io
     }
     /** Test whether the format support multi-records
      *
-     * @param metric_set header for metric
+     * @param header header for metric
      * @param version version of the format
      * @return true if the format supports multiple records
      */

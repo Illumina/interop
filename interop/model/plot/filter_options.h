@@ -777,6 +777,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
         /** Test if metric and plot combination supports filtering by cycle
          *
          * @param metric_type metric type
+         * @param plot_type plot type
          * @return true if metric supports filtering by cycle
          */
         bool supports_cycle(const constants::metric_type metric_type, const constants::plot_types plot_type)const

@@ -70,7 +70,7 @@ namespace illumina { namespace interop { namespace io
          *
          * This function was originally added to skip control records in tile metrics.
          *
-         * @param metric metric to check
+         * @param id metric to check
          * @return true, if the metric id is 0
          */
         template<class LayoutId>

@@ -31,13 +31,10 @@ namespace illumina{ namespace interop{ namespace io {
     template<>
     struct generic_layout<index_flowcell_summary, 1> : public default_layout<1>
     {
-      /** @page summary_v1 Index Summary v1
+      /** @page index_summary_v1 Index Summary v1
        *
-       * This class provides an interface to reading the image metric file:
-       *  - InterOp/IndexSummary.bin
-       *
-       *  The file format for index_flowcell_summary is as follows:
-       *
+       * This class provides an interface to reading/writing a binary index flowcell summary, and is only supported
+       * for regression testing.
        */
 
         /** Map reading/writing a summary to a stream
