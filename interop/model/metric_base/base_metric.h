@@ -26,6 +26,10 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
     // Forward declaration
     class base_metric;
 
+    /** Get attributes of the metric */
+    template<class Metric>
+    struct metric_attributes : public Metric{};
+
     /** Defines default base header for metric */
     class base_metric_header : public empty_header
     {
@@ -92,7 +96,6 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         typedef constants::base_tile_t base_t;
         enum
         {
-            TYPE=constants::UnknownMetricType,
             //Compress Lane, Tile and cycle into a 64-bit Integer
             // Bit order: LTCR or Lane, Tile, Cycle/Read, Reserved
             // Reserved: Bits 0-16
@@ -106,13 +109,8 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
             RESERVED_BIT_COUNT = 16, // Support up to 65535 values
             READ_BIT_SHIFT = RESERVED_BIT_COUNT,
             CYCLE_BIT_SHIFT = RESERVED_BIT_COUNT,
-            EVENT_BIT_SHIFT = 0,
             TILE_BIT_SHIFT = CYCLE_BIT_SHIFT+CYCLE_BIT_COUNT,
-            LANE_BIT_SHIFT = TILE_BIT_SHIFT+TILE_BIT_COUNT, // Supports up to 63 lanes
-            /** Base for records written out once for each tile */
-            BASE_TYPE = constants::BaseTileType,
-            /** Latest version is sentinel*/
-            LATEST_VERSION=0
+            LANE_BIT_SHIFT = TILE_BIT_SHIFT+TILE_BIT_COUNT // Supports up to 63 lanes=
         };
     public:
         /** Constructor
@@ -135,12 +133,6 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
             m_lane = lane;
             m_tile = tile;
         }
-        /** Get the metric name suffix
-         *
-         * @return empty string
-         */
-        static const char *suffix()
-        { return ""; }
 
         /** Set the base metric identifiers
          *
@@ -424,16 +416,51 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
                     return m_tile - 1;
             }
         }
+        /** Get the metric name suffix
+         *
+         * @return empty string
+         */
+        static const char *suffix()
+        {
+            return "";
+        }
+
+    private:
+        uint_t m_lane;
+        uint_t m_tile;
+    };
+
+
+    /** Specialization for base_metric providing sentinel values*/
+    template<>
+    struct metric_attributes<base_metric>
+    {
+        enum
+        {
+            /** Metric type identifier
+             * @sa illumina::interop::constants::metric_group
+             */
+            TYPE = constants::UnknownMetricType,
+            /** Latest version of the metric format*/
+            LATEST_VERSION=0
+        };
 
         /** Empty prefix string
          *
          * @return empty string
          */
-        static const char *prefix() { return ""; }
-
-    private:
-        uint_t m_lane;
-        uint_t m_tile;
+        static const char *prefix()
+        {
+            return "";
+        }
+        /** Get the metric name suffix
+         *
+         * @return empty string
+         */
+        static const char *suffix()
+        {
+            return "";
+        }
     };
 
 

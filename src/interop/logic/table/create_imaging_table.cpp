@@ -323,10 +323,11 @@ namespace illumina { namespace interop { namespace logic { namespace table
         using namespace constants;
         using namespace model::table;
         using namespace model;
+        using namespace model::metric_base;
         // TODO: This can be reduced to a single macro define
         typedef std::pair<column_id, metric_group > mapped_t;
 #       define INTEROP_TUPLE7(Id, Metric, Ignore2, Ignore3, Ignore4, Ignore5, Ignored6) \
-        mapped_t(Id##Column,static_cast<metric_group>(Metric::TYPE)),
+        mapped_t(Id##Column,static_cast<metric_group>(metric_attributes<Metric>::TYPE)),
         static const mapped_t name_types[] = {INTEROP_IMAGING_COLUMN_TYPES mapped_t(ImagingColumnCount, UnknownMetricGroup)};
 #       undef INTEROP_TUPLE7
         return util::constant_mapping_get(name_types, type, UnknownMetricGroup);
