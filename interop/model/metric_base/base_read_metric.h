@@ -57,12 +57,9 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
      *
      * These classes define both a lane, tile and read identifier.
      */
-    class base_read_metric : public base_metric {
+    class base_read_metric : public base_metric
+    {
     public:
-        enum {
-            /** Base for records written out once for each tile/read */
-            BASE_TYPE = constants::BaseReadType
-        };
         /** A read metric_set header
          */
         typedef base_read_metric_header header_type;
@@ -153,6 +150,12 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
     private:
         uint_t m_read;
     };
+
+    /** Specialization for base_cycle_metric providing sentinel values*/
+    template<>
+    struct metric_attributes<base_read_metric> : public metric_attributes<base_metric>{};
+
+
 }}}}
 
 

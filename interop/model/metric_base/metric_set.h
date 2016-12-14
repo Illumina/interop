@@ -71,11 +71,12 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         typedef typename metric_array_t::const_iterator const_iterator;
         /** Metric iterator */
         typedef typename metric_array_t::iterator iterator;
-        enum {
+        enum
+        {
             /** Group type enum */
-            TYPE=T::TYPE,
+            TYPE=metric_attributes<T>::TYPE,
             /** Latest version of the format */
-            LATEST_VERSION=T::LATEST_VERSION
+            LATEST_VERSION=metric_attributes<T>::LATEST_VERSION
         };
 
     public:
@@ -551,14 +552,14 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          * @return prefix
          */
         static const char *prefix()
-        { return T::prefix(); }
+        { return metric_attributes<T>::prefix(); }
 
         /** Get the suffix of the InterOp filename
          *
          * @return suffix
          */
         static const char *suffix()
-        { return T::suffix(); }
+        { return metric_attributes<T>::suffix(); }
 
     public:
         /** Get metric for lane, tile and cycle
