@@ -147,6 +147,7 @@ add_custom_target(nuspec
         ${CMAKE_SOURCE_DIR}/cmake/package.targets
         $<TARGET_FILE_DIR:${SWIG_MODULE_c_csharp_${MODULE}_REAL_NAME}>/../illumina_interop_${CSHARP_TYPE}_${NUGET_SYS_ID}.targets
         COMMAND ${CMAKE_COMMAND}
+        -DCOMPILER_INFO="${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}"
         -DCMAKE_CURRENT_BINARY_DIR=${CMAKE_CURRENT_BINARY_DIR}
         -DCSHARP_TYPE=${CSHARP_TYPE}
         -DCSHARP_VERSION=${CSHARP_VERSION}
