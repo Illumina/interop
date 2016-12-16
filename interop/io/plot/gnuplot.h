@@ -53,7 +53,7 @@ namespace illumina { namespace interop { namespace io { namespace plot
                 {
                     for (size_t s = 0; s < swath_count; ++s) // Columns
                     {
-                        out << " " << table::handle_nan(data.at(x, y + s * data.tile_count()));
+                        out << " " << table::handle_nan(data(x, y + s * data.tile_count()));
                     }
                     out << " nan";
                 }
@@ -109,10 +109,10 @@ namespace illumina { namespace interop { namespace io { namespace plot
             out << "plot \"-\" matrix with image" << "\n";
             for (size_t y = 0; y < data.column_count(); ++y)
             {
-                out << data.at(0, y);
+                out << data(0, y);
                 for (size_t x = 1; x < data.row_count(); ++x)
                 {
-                    out << " " << table::handle_nan(data.at(x, y));
+                    out << " " << table::handle_nan(data(x, y));
                 }
                 out << "\n";
             }

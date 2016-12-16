@@ -57,7 +57,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
          * @param n index
          * @return reference to lane summary
          */
-        reference operator[](const size_type n) throw( model::index_out_of_bounds_exception )
+        index_lane_summary& operator[](const size_t n) throw( model::index_out_of_bounds_exception )
         {
             if(n >= m_lane_summaries.size())
                 INTEROP_THROW(index_out_of_bounds_exception, "Lane index exceeds lane count");
@@ -68,7 +68,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
          * @param n index
          * @return constant reference to lane summary
          */
-        const_reference operator[](const size_type n)const throw( model::index_out_of_bounds_exception )
+        const index_lane_summary& operator[](const size_t n)const throw( model::index_out_of_bounds_exception )
         {
             if(n >= m_lane_summaries.size())
                 INTEROP_THROW(index_out_of_bounds_exception, "Lane index exceeds lane count");
@@ -76,10 +76,11 @@ namespace illumina { namespace interop { namespace model { namespace summary
         }
         /** Get reference to lane summary at given index
          *
+         * @deprecated Will be removed in next feature version (use operator[] instead for C++ Code)
          * @param n index
          * @return reference to lane summary
          */
-        index_lane_summary& at(const size_type n) throw( model::index_out_of_bounds_exception )
+        index_lane_summary& at(const size_t n) throw( model::index_out_of_bounds_exception )
         {
             if(n >= m_lane_summaries.size())
                 INTEROP_THROW(index_out_of_bounds_exception, "Lane index exceeds lane count");
@@ -87,6 +88,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
         }
         /** Get constant reference to lane summary at given index
          *
+         * @deprecated Will be removed in next feature version (use operator[] instead for C++ Code)
          * @param n index
          * @return constant reference to lane summary
          */

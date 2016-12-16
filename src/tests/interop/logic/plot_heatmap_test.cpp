@@ -44,7 +44,7 @@ TEST_P(heatmap_plot_tests, plot_data)
     ASSERT_EQ(actual.column_count(), expected.column_count());
     for(size_t i=0, n=actual.length();i<n;++i)
     {
-        INTEROP_ASSERT_NEAR(actual.at(i), expected.at(i), tol);
+        INTEROP_ASSERT_NEAR(actual[i], expected[i], tol);
     }
 }
 

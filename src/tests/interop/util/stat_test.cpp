@@ -99,7 +99,7 @@ TEST(stat_test, standard_deviation_vec)
     const float tol = 1e-7f / 0.01f;
     const size_t read = 0;
     std::vector<float> percent_aligned_vec(expected.size());
-    for (size_t i = 0; i < expected.size(); ++i) percent_aligned_vec[i] = expected.at(i).percent_aligned(read);
+    for (size_t i = 0; i < expected.size(); ++i) percent_aligned_vec[i] = expected[i].percent_aligned(read);
     float expected_percent_aligned_std = std::sqrt(interop::util::variance<float>(percent_aligned_vec.begin(),
                                                                                   percent_aligned_vec.end()));
     EXPECT_NEAR(expected_percent_aligned_std, 0.074578315019607544, tol);

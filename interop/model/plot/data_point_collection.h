@@ -46,7 +46,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          * @param index index of point
          * @return data point
          */
-        const Point &at(const size_type index) const throw(model::index_out_of_bounds_exception)
+        const Point & operator[](const size_t index) const throw(model::index_out_of_bounds_exception)
         {
             if(index >= m_points.size())
                 INTEROP_THROW(model::index_out_of_bounds_exception, "Index out of bounds");
@@ -58,22 +58,23 @@ namespace illumina { namespace interop { namespace model { namespace plot
          * @param index index of point
          * @return data point
          */
-        const_reference operator[](const size_type index) const throw(model::index_out_of_bounds_exception)
-        {
-            if(index >= m_points.size())
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Index out of bounds");
-            return m_points[index];
-        }
-
-        /** Get point at index
-         *
-         * @param index index of point
-         * @return data point
-         */
-        reference operator[](const size_type index) throw(model::index_out_of_bounds_exception)
+        Point & operator[](const size_t index) throw(model::index_out_of_bounds_exception)
         {
             if(index >= m_points.size())
                 INTEROP_THROW( model::index_out_of_bounds_exception, "Index out of bounds");
+            return m_points[index];
+        }
+
+        /** Get point at index
+         *
+         * @deprecated Will be removed in next feature version (use operator[] instead for C++ Code)
+         * @param index index of point
+         * @return data point
+         */
+        const Point &at(const size_t index) const throw(model::index_out_of_bounds_exception)
+        {
+            if(index >= m_points.size())
+                INTEROP_THROW(model::index_out_of_bounds_exception, "Index out of bounds");
             return m_points[index];
         }
 
@@ -81,7 +82,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          *
          * @return number of points in the collection
          */
-        size_type size() const
+        size_t size() const
         {
             return m_points.size();
         }
@@ -91,7 +92,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          * @param n number of times to assign
          * @param val value
          */
-        void assign(const size_type n, const Point &val)
+        void assign(const size_t n, const Point &val)
         {
             m_points.assign(n, val);
         }
@@ -100,7 +101,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          *
          * @param n given size
          */
-        void resize(const size_type n)
+        void resize(const size_t n)
         {
             m_points.resize(n);
         }

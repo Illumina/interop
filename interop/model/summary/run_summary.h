@@ -147,15 +147,15 @@ namespace illumina { namespace interop { namespace model { namespace summary
                 b->summary().resize(m_channel_count);
                 for (size_t lane = 0; lane < m_lane_count; ++lane)
                 {
-                    b->at(lane).lane(lane + 1);
-                    b->at(lane).resize_stat(m_channel_count);
+                    b->operator[](lane).lane(lane + 1);
+                    b->operator[](lane).resize_stat(m_channel_count);
                     if(m_surface_count > 1)
                     {
-                        b->at(lane).resize(m_surface_count);
+                        b->operator[](lane).resize(m_surface_count);
                         for (size_t surface = 0; surface < m_surface_count; ++surface)
                         {
-                            b->at(lane).at(surface).surface(surface + 1);
-                            b->at(lane).at(surface).resize_stat(m_channel_count);
+                            b->operator[](lane)[surface].surface(surface + 1);
+                            b->operator[](lane)[surface].resize_stat(m_channel_count);
                         }
                     }
                 }
@@ -176,7 +176,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
          * @param n index
          * @return reference to read_summary
          */
-        reference operator[](const size_type n) throw(model::index_out_of_bounds_exception)
+        read_summary & operator[](const size_t n) throw(model::index_out_of_bounds_exception)
         {
             if (n >= m_summary_by_read.size())
                 INTEROP_THROW(index_out_of_bounds_exception, "Read index exceeds read count");
@@ -188,7 +188,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
          * @param n index
          * @return constant reference to read_summary
          */
-        const_reference operator[](const size_type n) const throw(model::index_out_of_bounds_exception)
+        const read_summary & operator[](const size_t n) const throw(model::index_out_of_bounds_exception)
         {
             if (n >= m_summary_by_read.size())
                 INTEROP_THROW(index_out_of_bounds_exception, "Read index exceeds read count");
@@ -197,10 +197,11 @@ namespace illumina { namespace interop { namespace model { namespace summary
 
         /** Get reference to read_summary at given index
          *
+         * @deprecated Will be removed in next feature version (use operator[] instead for C++ Code)
          * @param n index
          * @return reference to read_summary
          */
-        read_summary &at(const size_type n) throw(model::index_out_of_bounds_exception)
+        read_summary &at(const size_t n) throw(model::index_out_of_bounds_exception)
         {
             if (n >= m_summary_by_read.size())
                 INTEROP_THROW(index_out_of_bounds_exception, "Read index exceeds read count");
@@ -209,6 +210,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
 
         /** Get constant reference to read_summary at given index
          *
+         * @deprecated Will be removed in next feature version (use operator[] instead for C++ Code)
          * @param n index
          * @return constant reference to read_summary
          */

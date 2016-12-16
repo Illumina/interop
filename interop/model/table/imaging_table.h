@@ -59,14 +59,14 @@ namespace illumina { namespace interop { namespace model { namespace table
          * @param subcol sub column offset
          * @return cell value
          */
-        float operator()(const size_t r, const column_id c, const size_t subcol=0)const
+        float operator()(const size_t r, const column_id c, const size_t subcol=0)const throw(model::index_out_of_bounds_exception)
         {
             if(static_cast<size_t>(c) >= m_enum_to_index.size())
                 INTEROP_THROW(model::index_out_of_bounds_exception, "Invalid enum id for column");
             const size_t col = m_enum_to_index[static_cast<size_t>(c)];
             if(col >= m_enum_to_index.size())
                 INTEROP_THROW(model::index_out_of_bounds_exception, "Invalid enum - column not filled");
-            return at(r, col, subcol);
+            return operator()(r, col, subcol);
         }
         /** Get a reference to a row
          *
@@ -75,12 +75,19 @@ namespace illumina { namespace interop { namespace model { namespace table
          * @param subcol sub column offset
          * @return cell value
          */
-        float operator()(const size_t r, const size_t c, const size_t subcol=0)const
+        float operator()(const size_t r, const size_t c, const size_t subcol=0)const throw(model::index_out_of_bounds_exception)
         {
-            return at(r, c, subcol);
+            if(r >=m_row_count) INTEROP_THROW(model::index_out_of_bounds_exception, "Row out of bounds");
+            if(c >=m_columns.size()) INTEROP_THROW(model::index_out_of_bounds_exception, "Column out of bounds");
+            const size_t col = m_columns[c].offset()+subcol;
+            if(col >=m_col_count) INTEROP_THROW(model::index_out_of_bounds_exception, "Column data offset out of bounds");
+            const size_t index = r*m_col_count+col;
+            INTEROP_ASSERT(index < m_data.size());
+            return m_data[index];
         }
         /** Get a reference to a row
          *
+         * @deprecated Will be removed in next feature version (use operator() instead for C++ Code)
          * @param r row row index
          * @param c col column index
          * @param subcol sub column offset

@@ -129,6 +129,27 @@ TEST(index_summary_test, lane_summary)
     }
 }
 
+TEST(index_summary_test, lane_summary_cluster_count)
+{
+    const ::uint64_t cluster_count = static_cast< ::uint64_t >(std::numeric_limits< ::int64_t >::max() );
+    model::metrics::run_metrics metrics;
+    std::vector< model::metrics::index_info > indices;
+    indices.reserve(2);
+    indices.push_back(model::metrics::index_info("TTGC", "Unknown", "Unknown", cluster_count));
+    indices.push_back(model::metrics::index_info("AATG", "Unknown", "Unknown", cluster_count));
+
+    metrics.get<model::metrics::index_metric>().insert(model::metrics::index_metric(7, 1114, 1, indices));
+    metrics.get<model::metrics::index_metric>().insert(model::metrics::index_metric(7, 1115, 1, indices));
+
+    metrics.get<model::metrics::tile_metric>().insert(model::metrics::tile_metric(7, 1114, 10000, 10000, 10000, 10000));
+    metrics.get<model::metrics::tile_metric>().insert(model::metrics::tile_metric(7, 1115, 10000, 10000, 10000, 10000));
+
+    index_lane_summary summary;
+    logic::summary::summarize_index_metrics(metrics, 7, summary);
+    ASSERT_EQ(2u, summary.size());
+    EXPECT_EQ(cluster_count*2u, summary[0].cluster_count());
+}
+
 //---------------------------------------------------------------------------------------------------------------------
 // Unit test section
 //---------------------------------------------------------------------------------------------------------------------
