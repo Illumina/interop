@@ -213,6 +213,17 @@ namespace illumina { namespace interop { namespace model { namespace run
                 if (b->last_cycle() == cycle) return true;
             return false;
         }
+        /** Get the cycle number within a read (0 is returned for invalid cycles)
+         *
+         * @param cycle cycle number to test
+         * @return cycle number within read
+         */
+        size_t cycle_within_read(const size_t cycle)const
+        {
+            for (read_vector_t::const_iterator b = m_reads.begin(), e = m_reads.end(); b != e; ++b)
+                if ( cycle <= b->last_cycle()) return cycle-b->first_cycle() + 1;
+            return 0;
+        }
 
         /** Get read with given number
          *

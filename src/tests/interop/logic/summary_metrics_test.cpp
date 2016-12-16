@@ -42,31 +42,22 @@ struct run_summary_tests : public generic_test_fixture<model::summary::run_summa
 {
     ::testing::Message msg;
     bool test_failed = false;
-    if(!std::isnan(expected.mean()) || !std::isnan(actual.mean()))
+    if(!is_float_near(expected.mean(), actual.mean(), tol))
     {
-        if(std::abs(expected.mean()-actual.mean()) >= tol)
-        {
-            msg << "Mean Expected: " << expected.mean() << " == Actual: " << actual.mean();
-            test_failed=true;
-        }
+        msg << "Mean Expected: " << expected.mean() << " == Actual: " << actual.mean();
+        test_failed=true;
     }
-    if(!std::isnan(expected.stddev()) || !std::isnan(actual.stddev()))
+    if(!is_float_near(expected.stddev(), actual.stddev(), tol))
     {
-        if(std::abs(expected.stddev()-actual.stddev()) >= tol)
-        {
-            if(test_failed) msg << " | ";
-            msg << "StdDev Expected: " << expected.stddev() << " == Actual: " << actual.stddev();
-            test_failed=true;
-        }
+        if(test_failed) msg << " | ";
+        msg << "StdDev Expected: " << expected.stddev() << " == Actual: " << actual.stddev();
+        test_failed=true;
     }
-    if(!std::isnan(expected.median()) || !std::isnan(actual.median()))
+    if(!is_float_near(expected.median(), actual.median(), tol))
     {
-        if(std::abs(expected.median()-actual.median()) >= tol)
-        {
-            if(test_failed) msg << " | ";
-            msg << "Median Expected: " << expected.median() << " == Actual: " << actual.median();
-            test_failed=true;
-        }
+        if(test_failed) msg << " | ";
+        msg << "Median Expected: " << expected.median() << " == Actual: " << actual.median();
+        test_failed=true;
     }
     if(test_failed) return ::testing::AssertionFailure(msg << " Tol: " << tol);
     return ::testing::AssertionSuccess();
@@ -161,7 +152,9 @@ TEST_P(run_summary_tests, read_summary)
         SCOPED_TRACE(trace_message);
         EXPECT_EQ(actual_read_summary.size(), expected_read_summary.size());
         EXPECT_EQ(actual_read_summary.lane_count(), expected_read_summary.lane_count());
-        INTEROP_EXPECT_NEAR(actual_read_summary.summary().error_rate(), expected_read_summary.summary().error_rate(), tol);
+        INTEROP_EXPECT_NEAR(actual_read_summary.summary().error_rate(),
+                            expected_read_summary.summary().error_rate(),
+                            tol);
         INTEROP_EXPECT_NEAR(actual_read_summary.summary().percent_aligned(),
                     expected_read_summary.summary().percent_aligned(), tol);
         INTEROP_EXPECT_NEAR(actual_read_summary.summary().first_cycle_intensity(),
@@ -201,10 +194,12 @@ TEST_P(run_summary_tests, lane_summary)
         for (size_t lane = 0; lane < expected[read].size(); ++lane)
         {
             ::testing::Message trace_message;
-            trace_message << "Read Index: " << read << " - Lane Index: " << lane;
-            SCOPED_TRACE(trace_message);
             const model::summary::lane_summary &actual_lane_summary = actual[read][lane];
             const model::summary::lane_summary &expected_lane_summary = expected[read][lane];
+            trace_message << "Read Index: " << read
+                          << " - Lane Index: " << lane
+                          << " - Lane Number: " << expected_lane_summary.lane();
+            SCOPED_TRACE(trace_message);
             EXPECT_EQ(actual_lane_summary.lane(), expected_lane_summary.lane());
             EXPECT_GT(actual_lane_summary.lane(), 0u);
             EXPECT_EQ(actual_lane_summary.tile_count(),
@@ -622,6 +617,7 @@ run_summary_tests::generator_type run_summary_unit_test_generators[] = {
 
         // Requirements testing
         new run_summary_generator<q_metric_requirements, summary_logic>(),
+        new run_summary_generator<error_metric_requirements, summary_logic>(),
 
         // Write/read
         wrap(new standard_parameter_generator<model::summary::run_summary, summary_write_read_generator>(0))

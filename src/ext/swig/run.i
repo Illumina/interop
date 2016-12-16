@@ -7,7 +7,12 @@
 %include "src/ext/swig/exceptions/exceptions_impl.i"
 %include "util/operator_overload.i"
 
-%rename(to_int) operator uint64_t;
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Ignore methods that should not be wrapped
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+%ignore illumina::interop::model::metrics::q_score_bin::operator=;
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 %pragma(java) jniclasscode=%{
   static {
@@ -15,7 +20,6 @@
   }
 %}
 
-%ignore operator enum_t;
 
 %{
 #include "interop/interop.h"
@@ -28,6 +32,8 @@
 #include "interop/logic/metric/q_metric.h"
 #include "interop/logic/utils/enums.h"
 %}
+
+
 
 // Primitive array types
 %template(string_vector) std::vector< std::string  >;
