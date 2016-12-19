@@ -1,0 +1,61 @@
+# Configuration for Travis CI Continuous Integration Service
+#
+# Build status: https://travis-ci.org/Illumina/interop
+#
+# Tested configurations:
+#
+#   Linux Clang 3.7
+#     - Release/Debug
+#   Linux GCC
+#     - Release/Debug
+#     - 4.6/4.9
+#   OSX Clang
+#     - Release/Debug
+#
+# No support for 32-bit Linux
+#
+
+language: cpp
+sudo: required
+
+env:
+  global:
+    - secure: "oALD7yjwurT4h4x/iATz8zP+q9y1bOG8l9wFucmM8HTIdThN+37YZDmLnhlRWKDZNt6NwBRom1vHmTZAmLGO0RohPxRV8RrceQGq5Jjq0gmXQafxjhbZetKxFbXKJ5/4RdUM0yxPCmYCscHEJG/1gk+F6y7hFiRPO8A5z8AhNabCZ8BMwaLaWpko7mHO1HqEs/MWExj32IF0DVQtzWyJeyO4RYkYKtBGfsGZMHfhsis3Nhfql5shN64AmlAxJewxApJg0wbnf5fbXyLYqZS92MW0GbPph+grdpEGEgGVgyGRV0Ys9EAj0CQs5ukmi+JP6TL2BbBnmreAOwiWMQDGzAKgwipOH3Phmcor4bFo5TU0vTBhP1RCxnPa/zyTrwI94KH96b+j2WT/6wDkXrixhVAeJntuWEhbJvklN/lC8/nlGnbRfyEB5Ists5yFzERxqIWd3x+qtknJO8/wcetbavBFUPcgEZdTXVv1zTquzLeUNlavseT9egFFQ7cDnGwg8b9LWb+sQeqiTjT3p6WQ/4+tw/EVn+xCfqkw746Gy8aXFdviJU3mcYeR7gvgYO84HXaoS0Mv7mxmJeWfoNopkv0U7cPNS3eXU3XZ2bg0WZl90i2LLXcQgtm8nz3NVEhGfpgjlQ+WBQcVOYG93vBcOa4powoCHojgzZn55T/J3nQ="
+
+addons:
+  apt:
+    sources:
+    - george-edison55-precise-backports
+    - sourceline: 'ppa:teward/swig3.0'
+    packages:
+    - cmake
+    - cmake-data
+    - libicu-dev
+    - swig3.0
+    - doxygen
+    - graphviz
+    - mono-complete
+    - libgtest-dev
+  coverity_scan:
+    project:
+      name: "Illumina/interop"
+      description: "InterOp Libraries for Illumina Sequencers"
+    build_command_prepend: "git checkout -b master --track origin/master && cmake .. -DENABLE_SWIG=OFF -DENABLE_DOCS=OFF"
+    build_command: "cmake --build ."
+    notification_email: ezralanglois+coverity@gmail.com
+    branch_pattern: coverity_scan
+
+before_script:
+- rm -fr build
+- mkdir -p build
+- cd build
+- export CC="${CC}${COMPILER_VERSION}"
+- export CXX="${CXX}${COMPILER_VERSION}"
+- git remote set-branches --add origin master
+- git remote -v
+- git branch -a
+- git fetch origin
+
+script: cat /home/travis/build/Illumina/interop/build/cov-int/scm_log.txt
+
+
