@@ -4,6 +4,8 @@
  * the data as a special type of CSV (common separated format) file. The program takes the run folder as an input
  * and then writes the data as plain text to the console. This data can then be redirected to a file.
  *
+ * @warning This program is deprecated and will be removed. Use dumptext instead
+ *
  * ### Running the Program
  *
  * The program runs as follows:
@@ -694,7 +696,7 @@ int write_index_metrics(std::ostream& out, const std::string& filename)
     if(res != 0) return res;
 
     write_header(out, metrics);
-    out << "Lane,Tile,Read,Sequence,Sample,Project,Count\n";
+    out << "Lane,Tile,Read,Sequence,Sample,Project,ClusterCount\n";
     for(index_metric_set::metric_array_t::const_iterator beg = metrics.begin(), end = vec_end(metrics);beg != end;++beg)
     {
         const index_metric& metric = *beg;

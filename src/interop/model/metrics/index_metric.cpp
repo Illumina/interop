@@ -10,8 +10,10 @@
 #include <string>
 #include "interop/model/metrics/index_metric.h"
 #include "interop/io/format/metric_format_factory.h"
+#include "interop/io/format/text_format_factory.h"
 #include "interop/io/format/default_layout.h"
 #include "interop/io/format/metric_format.h"
+#include "interop/io/format/text_format.h"
 
 using namespace illumina::interop::model::metrics;
 
@@ -172,9 +174,73 @@ namespace illumina { namespace interop { namespace io
     };
 
 #pragma pack()
+    /** Tile Metric CSV text format
+     *
+     * This class provide an interface for writing the tile metrics to a CSV file:
+     *
+     *  - TileMetrics.csv
+     */
+    template<>
+    struct text_layout< index_metric, 1 >
+    {
+        /** Define a header type */
+        typedef index_metric::header_type header_type;
+        /** Write header to the output stream
+         *
+         * @param out output stream
+         * @param sep column separator
+         * @param eol row separator
+         * @return number of column headers
+         */
+        static size_t write_header(std::ostream& out,
+                                   const header_type&,
+                                   const std::vector<std::string>&,
+                                   const char sep,
+                                   const char eol)
+        {
+            const char* headers[] =
+            {
+                "Lane", "Tile", "Read", "Sequence", "Sample", "Project", "ClusterCount"
+            };
+            out << "# Column Count: " << util::length_of(headers) << eol;
+            out << headers[0];
+            for(size_t i=1;i<util::length_of(headers);++i)
+                out << sep << headers[i];
+            out << eol;
+            return util::length_of(headers);
+        }
+        /** Write a tile metric to the output stream
+         *
+         * @param out output stream
+         * @param metric tile metric
+         * @param sep column separator
+         * @param eol row separator
+         * @return number of columns written
+         */
+        static size_t write_metric(std::ostream& out,
+                                   const index_metric& metric,
+                                   const header_type&,
+                                   const char sep,
+                                   const char eol,
+                                   const char)
+        {
+            typedef index_metric::index_array_t::const_iterator const_iterator;
+            for(const_iterator index_beg=metric.indices().begin();index_beg != metric.indices().end();++index_beg)
+            {
+                out << metric.lane() << sep << metric.tile() << sep << metric.read() << sep;
+                out << index_beg->index_seq() << sep << index_beg->sample_id();
+                out << sep << index_beg->sample_proj() << sep << index_beg->cluster_count() << eol;
+            }
+            return 0;
+        }
+    };
 }}}
 
 INTEROP_FORCE_LINK_DEF(index_metric)
 
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(index_metric, 1)
+
+
+// Text formats
+INTEROP_REGISTER_METRIC_TEXT_LAYOUT(index_metric, 1)
 

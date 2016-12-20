@@ -11,14 +11,15 @@
 #include "interop/util/math.h"
 #include "interop/model/metrics/tile_metric.h"
 #include "interop/io/format/metric_format_factory.h"
+#include "interop/io/format/text_format_factory.h"
 #include "interop/io/format/default_layout.h"
 #include "interop/io/format/metric_format.h"
+#include "interop/io/format/text_format.h"
 
 using namespace illumina::interop::model::metrics;
 
 namespace illumina { namespace interop { namespace io
 {
-
 #pragma pack(1)
 
     /** Tile Metric Record Layout Version 2
@@ -266,8 +267,86 @@ namespace illumina { namespace interop { namespace io
 
 
 #pragma pack()
+    /** Tile Metric CSV text format
+     *
+     * This class provide an interface for writing the tile metrics to a CSV file:
+     *
+     *  - TileMetrics.csv
+     */
+    template<>
+    struct text_layout< tile_metric, 1 >
+    {
+        /** Define a header type */
+        typedef tile_metric::header_type header_type;
+        /** Write header to the output stream
+         *
+         * @param out output stream
+         * @param sep column separator
+         * @param eol row separator
+         * @return number of column headers
+         */
+        static size_t write_header(std::ostream& out,
+                                   const header_type&,
+                                   const std::vector<std::string>&,
+                                   const char sep,
+                                   const char eol)
+        {
+            const char* headers[] =
+            {
+                "Lane", "Tile", "Read",
+                "ClusterCount", "ClusterCountPF", "Density", "DensityPF", "Aligned", "Prephasing", "Phasing"
+            };
+            out << "# Column Count: " << util::length_of(headers) << eol;
+            out << headers[0];
+            for(size_t i=1;i<util::length_of(headers);++i)
+                out << sep << headers[i];
+            out << eol;
+            return util::length_of(headers);
+        }
+        /** Write a tile metric to the output stream
+         *
+         * @param out output stream
+         * @param metric tile metric
+         * @param sep column separator
+         * @param eol row separator
+         * @param missing missing value indicator
+         * @return number of columns written
+         */
+        static size_t write_metric(std::ostream& out,
+                                   const tile_metric& metric,
+                                   const header_type&,
+                                   const char sep,
+                                   const char eol,
+                                   const char missing)
+        {
+            if(metric.read_metrics().empty())
+            {
+                out << metric.lane() << sep << metric.tile() << sep << missing << sep;
+                out << metric.cluster_count() <<  sep << metric.cluster_count_pf() << sep;
+                out << metric.cluster_density() <<  sep<< metric.cluster_density_pf() << sep;
+                out << missing << sep << missing <<sep << missing;
+                out << eol;
+            }
+            else
+            {
+                for(tile_metric::read_metric_vector::const_iterator rbeg = metric.read_metrics().begin(),
+                            rend = metric.read_metrics().end();rbeg != rend;++rbeg)
+                {
+                    out << metric.lane() << sep << metric.tile() << sep << rbeg->read() << sep;
+                    out << metric.cluster_count() << sep << metric.cluster_count_pf() << sep;
+                    out << metric.cluster_density() << sep << metric.cluster_density_pf() << sep;
+                    out << rbeg->percent_aligned() << sep << rbeg->percent_prephasing()
+                        << sep << rbeg->percent_phasing();
+                    out << eol;
+                }
+            }
+            return 0;
+        }
+    };
 }}}
 
 INTEROP_FORCE_LINK_DEF(tile_metric)
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(tile_metric, 2)
 
+// Text formats
+INTEROP_REGISTER_METRIC_TEXT_LAYOUT(tile_metric, 1)

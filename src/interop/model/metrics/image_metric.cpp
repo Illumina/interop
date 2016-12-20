@@ -11,8 +11,10 @@
 #include <algorithm>
 #include "interop/model/metrics/image_metric.h"
 #include "interop/io/format/metric_format_factory.h"
+#include "interop/io/format/text_format_factory.h"
 #include "interop/io/format/default_layout.h"
 #include "interop/io/format/metric_format.h"
+#include "interop/io/format/text_format.h"
 
 using namespace illumina::interop::model::metrics;
 
@@ -264,10 +266,87 @@ namespace illumina { namespace interop { namespace io
 
 
 #pragma pack() // DO NOT MOVE
+    /** Image Metric CSV text format
+     *
+     * This class provide an interface for writing the image metrics to a CSV file:
+     *
+     *  - ImageMetrics.csv
+     */
+    template<>
+    struct text_layout< image_metric, 1 >
+    {
+        /** Define a header type */
+        typedef image_metric::header_type header_type;
+        /** Write header to the output stream
+         *
+         * @param out output stream
+         * @param header image metric header
+         * @param channel_names list of channel names
+         * @param sep column separator
+         * @param eol row separator
+         * @return number of column headers
+         */
+        static size_t write_header(std::ostream& out,
+                                   const header_type& header,
+                                   const std::vector<std::string>& channel_names,
+                                   const char sep,
+                                   const char eol)
+        {
+            if( static_cast<size_t>(header.channel_count()) != channel_names.size() )
+                INTEROP_THROW(bad_format_exception, "Header and channel names count mismatch");
+            const char* headers[] =
+            {
+                "Lane", "Tile", "Cycle"
+            };
+            out << "# Column Count: " << util::length_of(headers)+header.channel_count()*2 << eol;
+            out << "# Channel Count: " << header.channel_count() << eol;
+            out << headers[0];
+            for(size_t i=1;i<util::length_of(headers);++i)
+                out << sep << headers[i];
+            const std::string min_contrast = "MinContrast";
+            for(size_t i=0;i<static_cast<size_t>(header.channel_count());++i)
+                out << sep << min_contrast << "_" << channel_names[i];
+            const std::string max_contrast = "MaxContrast";
+            for(size_t i=0;i<static_cast<size_t>(header.channel_count());++i)
+                out << sep << max_contrast << "_" << channel_names[i];
+            out << eol;
+            return util::length_of(headers);
+        }
+        /** Write a image metric to the output stream
+         *
+         * @param out output stream
+         * @param metric image metric
+         * @param header image metric header
+         * @param sep column separator
+         * @param eol row separator
+         * @return number of columns written
+         */
+        static size_t write_metric(std::ostream& out,
+                                   const image_metric& metric,
+                                   const header_type& header,
+                                   const char sep,
+                                   const char eol,
+                                   const char)
+        {
+            if( header.channel_count() != metric.channel_count() )
+                INTEROP_THROW(bad_format_exception, "Header and metric channel count mismatch");
+            out << metric.lane() << sep << metric.tile() << sep << metric.cycle() << sep;
+            for(size_t i=0;i<static_cast<size_t>(header.channel_count());i++)
+                out << sep << metric.min_contrast(i);
+            for(size_t i=0;i<static_cast<size_t>(header.channel_count());i++)
+                out << sep << metric.max_contrast(i);
+            out << eol;
+            return 0;
+        }
+    };
 }}}
 
 INTEROP_FORCE_LINK_DEF(image_metric)
 
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(image_metric, 1)
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(image_metric, 2)
+
+
+// Text formats
+INTEROP_REGISTER_METRIC_TEXT_LAYOUT(image_metric, 1)
 

@@ -9,8 +9,10 @@
  */
 #include "interop/model/metrics/error_metric.h"
 #include "interop/io/format/metric_format_factory.h"
+#include "interop/io/format/text_format_factory.h"
 #include "interop/io/format/default_layout.h"
 #include "interop/io/format/metric_format.h"
+#include "interop/io/format/text_format.h"
 
 using namespace illumina::interop::model::metrics;
 
@@ -110,8 +112,66 @@ namespace illumina{ namespace interop{ namespace io
 
 
 #pragma pack()
+    /** Error Metric CSV text format
+     *
+     * This class provide an interface for writing the error metrics to a CSV file:
+     *
+     *  - ErrorMetrics.csv
+     */
+    template<>
+    struct text_layout< error_metric, 1 >
+    {
+        /** Define a header type */
+        typedef error_metric::header_type header_type;
+        /** Write header to the output stream
+         *
+         * @param out output stream
+         * @param sep column separator
+         * @param eol row separator
+         * @return number of column headers
+         */
+        static size_t write_header(std::ostream& out,
+                                   const header_type&,
+                                   const std::vector<std::string>&,
+                                   const char sep,
+                                   const char eol)
+        {
+            const char* headers[] =
+            {
+                "Lane", "Tile", "Cycle", "ErrorRate"
+            };
+            out << "# Column Count: " << util::length_of(headers) << eol;
+            out << headers[0];
+            for(size_t i=1;i<util::length_of(headers);++i)
+                out << sep << headers[i];
+            out << eol;
+            return util::length_of(headers);
+        }
+        /** Write a error metric to the output stream
+         *
+         * @param out output stream
+         * @param metric error metric
+         * @param sep column separator
+         * @param eol row separator
+         * @return number of columns written
+         */
+        static size_t write_metric(std::ostream& out,
+                                   const error_metric& metric,
+                                   const header_type&,
+                                   const char sep,
+                                   const char eol,
+                                   const char)
+        {
+            out << metric.lane() << sep << metric.tile() << sep << metric.cycle() << sep;
+            out << metric.error_rate() << eol;
+            return 0;
+        }
+    };
 }}}
 
 INTEROP_FORCE_LINK_DEF(error_metric)
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(error_metric, 3 )
 
+
+// Text formats
+INTEROP_REGISTER_METRIC_TEXT_LAYOUT(error_metric, 1)

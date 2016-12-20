@@ -14,8 +14,10 @@
 #include "interop/model/metrics/q_metric.h"
 #include "interop/model/metrics/q_by_lane_metric.h"
 #include "interop/io/format/metric_format_factory.h"
+#include "interop/io/format/text_format_factory.h"
 #include "interop/io/format/default_layout.h"
 #include "interop/io/format/metric_format.h"
+#include "interop/io/format/text_format.h"
 
 using namespace illumina::interop::model::metrics;
 
@@ -740,6 +742,103 @@ namespace illumina { namespace interop { namespace io
     };
 
 #pragma pack()// DO NOT MOVE
+    /** Tile Metric CSV text format
+     *
+     * This class provide an interface for writing the tile metrics to a CSV file:
+     *
+     *  - TileMetrics.csv
+     */
+    template<>
+    struct text_layout< q_metric, 1 >
+    {
+        /** Define a header type */
+        typedef q_metric::header_type header_type;
+        /** Write header to the output stream
+         *
+         * @param out output stream
+         * @param header q-metric header
+         * @param sep column separator
+         * @param eol row separator
+         * @return number of column headers
+         */
+        static size_t write_header(std::ostream& out,
+                                   const header_type& header,
+                                   const std::vector<std::string>&,
+                                   const char sep,
+                                   const char eol)
+        {
+            const char* headers[] =
+            {
+                "Lane", "Tile", "Cycle"
+            };
+            out << "# Bin Count: " << header.q_val_count() << eol;
+            if(header.bin_count() > 0)
+            {
+                const char* bin_headers[] =
+                {
+                    "Lower", "Value", "Upper"
+                };
+                out << "# Column Count: " << util::length_of(bin_headers) << eol;
+                out << bin_headers[0];
+                for(size_t i=1;i<util::length_of(bin_headers);++i)
+                    out << sep << bin_headers[i];
+                out << eol;
+                for(size_t i=0;i<header.bin_count();++i)
+                {
+                    out << header.bin_at(i).lower() << sep;
+                    out << header.bin_at(i).value() << sep;
+                    out << header.bin_at(i).upper() << eol;
+                }
+            }
+
+            out << "# Column Count: " << util::length_of(headers)+header.q_val_count() << eol;
+
+            out << headers[0];
+            for(size_t i=1;i<util::length_of(headers);++i)
+                out << sep << headers[i];
+            for(size_t i=0;i<header.q_val_count();++i)
+                out << sep << "Bin_" << (i+1);
+            out << eol;
+            return util::length_of(headers)+header.q_val_count();
+        }
+        /** Write a tile metric to the output stream
+         *
+         * @param out output stream
+         * @param metric q-metric metric
+         * @param header q-metric header
+         * @param sep column separator
+         * @param eol row separator
+         * @return number of columns written
+         */
+        static size_t write_metric(std::ostream& out,
+                                   const q_metric& metric,
+                                   const header_type& header,
+                                   const char sep,
+                                   const char eol,
+                                   const char)
+        {
+            if( static_cast<size_t>(header.q_val_count()) != metric.size() )
+                INTEROP_THROW(bad_format_exception, "Header and metric bin count mismatch: "
+                        << header.q_val_count() << " != " << metric.size());
+            out << metric.lane() << sep << metric.tile() << sep << metric.cycle();
+            for(size_t i=0;i<header.q_val_count();++i)
+            {
+                out << sep << metric.qscore_hist()[i];
+            }
+            out << eol;
+            return 0;
+        }
+    };
+    /** Tile Metric CSV text format
+     *
+     * This class provide an interface for writing the tile metrics to a CSV file:
+     *
+     *  - TileMetrics.csv
+     */
+    template<>
+    struct text_layout< q_by_lane_metric, 1 > : public text_layout< q_metric, 1 >
+    {
+    };
 }}}
 
 INTEROP_FORCE_LINK_DEF(q_metric)
@@ -753,3 +852,6 @@ INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(q_by_lane_metric, 4)
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(q_by_lane_metric, 5)
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(q_by_lane_metric, 6)
 
+// Text formats
+INTEROP_REGISTER_METRIC_TEXT_LAYOUT(q_metric, 1)
+INTEROP_REGISTER_METRIC_TEXT_LAYOUT(q_by_lane_metric, 1)

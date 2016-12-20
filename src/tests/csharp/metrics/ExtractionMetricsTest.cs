@@ -24,7 +24,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		[SetUp]
 		protected void SetUp()
 		{
-	        base_cycle_metric_header header = new base_cycle_metric_header();
+	        extraction_metric_header header = new extraction_metric_header(2);
             float[] focus1 = new float[]{2.24664021f, 2.1896739f, 0, 0};
             ushort[] p90_1  = new ushort[]{302, 273, 0, 0};
 			expected_metrics.Add(new extraction_metric(7, 1114, 1, new csharp_date_time(9859129975844165472ul), (p90_1), (focus1), 4));
