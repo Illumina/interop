@@ -113,7 +113,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         io::file_not_found_exception,
         io::bad_format_exception,
         io::incomplete_file_exception,
-        io::format_exception,
+        model::invalid_channel_exception,
         model::index_out_of_bounds_exception,
         model::invalid_tile_naming_method,
         model::invalid_run_info_exception);
@@ -131,7 +131,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         io::file_not_found_exception,
         io::bad_format_exception,
         io::incomplete_file_exception,
-        io::format_exception,
+        model::invalid_channel_exception,
         model::index_out_of_bounds_exception,
         model::invalid_tile_naming_method,
         model::invalid_run_info_exception,
@@ -173,7 +173,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          *
          * @param count number of bins for legacy q-metrics
          */
-        void finalize_after_load(size_t count = std::numeric_limits<size_t>::max()) throw(io::format_exception,
+        void finalize_after_load(size_t count = std::numeric_limits<size_t>::max()) throw(model::invalid_channel_exception,
         model::invalid_tile_naming_method,
         model::index_out_of_bounds_exception,
         model::invalid_run_info_exception);
@@ -195,6 +195,20 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @param naming_method tile naming method
          */
         void set_naming_method(const constants::tile_naming_method naming_method);
+        /** Get number of legacy bins
+         *
+         * @param legacy_bin_count known number of bins
+         * @return number of legacy bins
+         */
+        size_t count_legacy_bins(const size_t legacy_bin_count=std::numeric_limits<size_t>::max())const;
+        /** Test whether run parameters must be loaded
+         *
+         * This is used to determine channel count and legacy q-score bins
+         *
+         * @param legacy_bin_count known number of bins
+         * @return true if run parameters is required
+         */
+         bool is_run_parameters_required(const size_t legacy_bin_count=std::numeric_limits<size_t>::max())const;
 
     public:
         /** Get information about the run

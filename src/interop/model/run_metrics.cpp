@@ -317,7 +317,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     io::file_not_found_exception,
     io::bad_format_exception,
     io::incomplete_file_exception,
-    io::format_exception,
+    model::invalid_channel_exception,
     model::index_out_of_bounds_exception,
     model::invalid_tile_naming_method,
     model::invalid_run_info_exception)
@@ -341,15 +341,16 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     io::file_not_found_exception,
     io::bad_format_exception,
     io::incomplete_file_exception,
-    io::format_exception,
+    model::invalid_channel_exception,
     model::index_out_of_bounds_exception,
     model::invalid_tile_naming_method,
     model::invalid_run_info_exception,
     invalid_parameter)
     {
         clear();
-        const size_t count = read_xml(run_folder);
+        read_run_info(run_folder);
         read_metrics(run_folder, valid_to_load);
+        const size_t count = read_run_parameters(run_folder);
         finalize_after_load(count);
         check_for_data_sources(run_folder);
     }
@@ -395,10 +396,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     xml::missing_xml_element_exception,
     xml::xml_parse_exception)
     {
-        const size_t count = logic::metric::count_legacy_q_score_bins(get<q_metric>());
+        const size_t count = count_legacy_bins();
         if (m_run_info.channels().empty() || logic::metric::requires_legacy_bins(count))
         {
-
             try
             {
                 m_run_parameters.read(run_folder);
@@ -415,13 +415,42 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         }
         return count;
     }
+    /** Test whether run parameters must be loaded
+     *
+     * This is used to determine channel count and legacy q-score bins
+     *
+     * @param legacy_bin_count known number of bins
+     * @return true if run parameters is required
+     */
+    bool run_metrics::is_run_parameters_required(const size_t legacy_bin_count)const
+    {
+        return m_run_info.channels().empty() || logic::metric::requires_legacy_bins(count_legacy_bins(legacy_bin_count));
+    }
+    /** Get number of legacy bins
+     *
+     * @param legacy_bin_count known number of bins
+     * @return number of legacy bins
+     */
+    size_t run_metrics::count_legacy_bins(const size_t legacy_bin_count)const
+    {
+        if( legacy_bin_count < std::numeric_limits<size_t>::max() ) return legacy_bin_count;
+        if( !get<q_metric>().empty() )
+        {
+            return logic::metric::count_legacy_q_score_bins(get<q_metric>());
+        }
+        else if( !get<q_by_lane_metric>().empty() )
+        {
+            return logic::metric::count_legacy_q_score_bins(get<q_by_lane_metric>());
+        }
+        return std::numeric_limits<size_t>::max();
+    }
 
     /** Finalize the metric sets after loading from disk
      *
      * @param count number of bins for legacy q-metrics
      */
     void run_metrics::finalize_after_load(size_t count)
-    throw(io::format_exception,
+    throw(model::invalid_channel_exception,
     model::invalid_tile_naming_method,
     model::index_out_of_bounds_exception,
     model::invalid_run_info_exception)
@@ -434,13 +463,18 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         }
         if (count == std::numeric_limits<size_t>::max())
         {
-            if (get<q_metric>().size() > 0)
-                count = logic::metric::count_legacy_q_score_bins(get<q_metric>());
-            else if (get<q_by_lane_metric>().size())
-                count = logic::metric::count_legacy_q_score_bins(get<q_by_lane_metric>());
+            count = count_legacy_bins();
         }
-        logic::metric::populate_legacy_q_score_bins(get<q_metric>().bins(), m_run_parameters.instrument_type(),
-                                                    count);
+        if(logic::metric::requires_legacy_bins(count))
+        {
+            logic::metric::populate_legacy_q_score_bins(get<q_metric>().bins(), m_run_parameters.instrument_type(),
+                                                        count);
+            logic::metric::populate_legacy_q_score_bins(get<q_by_lane_metric>().bins(),
+                                                        m_run_parameters.instrument_type(),
+                                                        count);
+            logic::metric::compress_q_metrics(get<q_metric>());
+            logic::metric::compress_q_metrics(get<q_by_lane_metric>());
+        }
         if (get<q_metric>().size() > 0 && get<q_collapsed_metric>().size() == 0)
         {
             logic::metric::create_collapse_q_metrics(get<q_metric>(), get<q_collapsed_metric>());
@@ -459,7 +493,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         {
             legacy_channel_update(m_run_parameters.instrument_type());
             if (m_run_info.channels().empty())
-                INTEROP_THROW(io::format_exception,
+                INTEROP_THROW(model::invalid_channel_exception,
                               "Channel names are missing from the RunInfo.xml, and RunParameters.xml does not contain sufficient information on the instrument run.");
         }
         if (!empty())
