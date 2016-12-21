@@ -86,6 +86,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          *
          * TODO: This should thrown an exception if wrong
          *
+         * @deprecated Will be removed in next feature version (use operator() instead for C++ Code)
          * @param row row index
          * @param col column index
          * @return value
@@ -104,6 +105,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
 
         /** Get value at given index
          *
+         * @deprecated Will be removed in next feature version (use operator[] instead for C++ Code)
          * @param idx index
          * @return value
          */
@@ -115,22 +117,15 @@ namespace illumina { namespace interop { namespace model { namespace plot
             INTEROP_ASSERT(m_data != 0);
             return m_data[idx];
         }
-
-        /** Get value at given row and column
+        /** Get value at given index
          *
-         * TODO: This should thrown an exception if wrong
-         *
-         * @param row row index
-         * @param col column index
+         * @param idx index
          * @return value
          */
-        float &operator()(const size_t row, const size_t col) throw(model::index_out_of_bounds_exception)
+        float operator[](const size_t idx) const throw(model::index_out_of_bounds_exception)
         {
-            if (row >= m_num_rows)
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Row index out of bounds");
-            if (col >= m_num_columns)
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Column index out of bounds (operator): " << col << " >= " << m_num_columns);
-            const size_t idx = index_of(row, col);
+            if (idx >= length())
+                INTEROP_THROW(model::index_out_of_bounds_exception, "Index out of bounds");
             INTEROP_ASSERT(idx < m_num_rows*m_num_columns);
             INTEROP_ASSERT(m_data != 0);
             return m_data[idx];
@@ -150,6 +145,26 @@ namespace illumina { namespace interop { namespace model { namespace plot
                 INTEROP_THROW(model::index_out_of_bounds_exception, "Row index out of bounds");
             if (col >= m_num_columns)
                 INTEROP_THROW(model::index_out_of_bounds_exception, "Column index out of bounds (operator const): " << col << " >= " << m_num_columns);
+            const size_t idx = index_of(row, col);
+            INTEROP_ASSERT(idx < m_num_rows*m_num_columns);
+            INTEROP_ASSERT(m_data != 0);
+            return m_data[idx];
+        }
+
+        /** Get value at given row and column
+         *
+         * TODO: This should thrown an exception if wrong
+         *
+         * @param row row index
+         * @param col column index
+         * @return value
+         */
+        float &operator()(const size_t row, const size_t col) throw(model::index_out_of_bounds_exception)
+        {
+            if (row >= m_num_rows)
+                INTEROP_THROW(model::index_out_of_bounds_exception, "Row index out of bounds");
+            if (col >= m_num_columns)
+                INTEROP_THROW(model::index_out_of_bounds_exception, "Column index out of bounds (operator): " << col << " >= " << m_num_columns);
             const size_t idx = index_of(row, col);
             INTEROP_ASSERT(idx < m_num_rows*m_num_columns);
             INTEROP_ASSERT(m_data != 0);

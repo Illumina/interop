@@ -70,7 +70,7 @@ set(SWIG_GEN_CSHARP_SOURCE_FILES ${CMAKE_SWIG_OUTDIR}/*.cs CACHE INTERNAL "C# so
 
 set(ASSEMBLY_INFO ${CMAKE_CURRENT_BINARY_DIR}/AssemblyInfo.cs)
 configure_file(${CMAKE_SOURCE_DIR}/cmake/AssemblyInfo.cs.in ${ASSEMBLY_INFO} @ONLY)
-csharp_add_library(csharp_interop ${CMAKE_SWIG_OUTDIR}/*.cs ${ASSEMBLY_INFO})
+csharp_add_library(csharp_interop ${CMAKE_SWIG_OUTDIR}/*.cs)
 add_dependencies(csharp_interop ${SWIG_MODULE_LIST})
 foreach(SRC ${SWIG_SRCS})
     get_filename_component(MODULE ${SRC} NAME_WE)
@@ -147,6 +147,7 @@ add_custom_target(nuspec
         ${CMAKE_SOURCE_DIR}/cmake/package.targets
         $<TARGET_FILE_DIR:${SWIG_MODULE_c_csharp_${MODULE}_REAL_NAME}>/../illumina_interop_${CSHARP_TYPE}_${NUGET_SYS_ID}.targets
         COMMAND ${CMAKE_COMMAND}
+        -DCOMPILER_INFO="${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}"
         -DCMAKE_CURRENT_BINARY_DIR=${CMAKE_CURRENT_BINARY_DIR}
         -DCSHARP_TYPE=${CSHARP_TYPE}
         -DCSHARP_VERSION=${CSHARP_VERSION}

@@ -56,79 +56,12 @@ namespace illumina { namespace interop { namespace model { namespace summary
         }
 
     public:
-        /** @defgroup lane_summary Read/Lane summary
-         *
-         * Summary of key metrics in each read/lane
-         *
-         * @ingroup read_summary
-         * @ref illumina::interop::model::summary::lane_summary "See full class description"
-         * @ref illumina::interop::model::summary::stat_summary "See full class description"
-         * @{
-         */
-        /** Get constant reference to lane_summary at given index
-         *
-         * @param n index
-         * @return constant reference to lane_summary
-         */
-        const_reference operator[](const size_type n) const throw(model::index_out_of_bounds_exception)
-        {
-            if (n >= m_summary_by_surface.size())
-                INTEROP_THROW( index_out_of_bounds_exception, "Surface index exceeds surface count");
-            return m_summary_by_surface[n];
-        }
-
-        /** Get constant reference to lane_summary at given index
-         *
-         * @param n index
-         * @return constant reference to lane_summary
-         */
-        const_reference at(const size_type n) const throw(model::index_out_of_bounds_exception)
-        {
-            if (n >= m_summary_by_surface.size())
-                INTEROP_THROW( index_out_of_bounds_exception, "Surface index exceeds surface count");
-            return m_summary_by_surface[n];
-        }
-        /** Get lane number
-         *
-         * @return lane number
-         */
-        size_t lane() const
-        {
-            return m_lane;
-        }
-        /** Get number of tiles in the lane
-         *
-         * @return number of tiles in the lane
-         */
-        size_t tile_count() const
-        {
-            return m_tile_count;
-        }
-        /** Get statistics summarizing the cycle of each RTA state of tiles in the lane
-         *
-         * @return statistics summarizing the cycle of each RTA state of tiles in the lane
-         */
-        const cycle_state_summary &cycle_state() const
-        {
-            return m_cycle_state;
-        }
-        /** Get number of summaries by surface
-         *
-         * @return number of summaries by surface
-         */
-        size_t size() const
-        {
-            return m_summary_by_surface.size();
-        }
-        /** @} */
-
-    public:
         /** Get reference to lane_summary at given index
          *
          * @param n index
          * @return reference to lane_summary
          */
-        reference operator[](const size_type n) throw(model::index_out_of_bounds_exception)
+        surface_summary & operator[](const size_t n) throw(model::index_out_of_bounds_exception)
         {
             if (n >= m_summary_by_surface.size())
                 INTEROP_THROW( index_out_of_bounds_exception, "Surface index exceeds surface count");
@@ -137,10 +70,11 @@ namespace illumina { namespace interop { namespace model { namespace summary
 
         /** Get reference to lane_summary at given index
          *
+         * @deprecated Will be removed in next feature version (use operator[] instead for C++ Code)
          * @param n index
          * @return reference to lane_summary
          */
-        surface_summary &at(const size_type n) throw(model::index_out_of_bounds_exception)
+        surface_summary &at(const size_t n) throw(model::index_out_of_bounds_exception)
         {
             if (n >= m_summary_by_surface.size())
                 INTEROP_THROW( index_out_of_bounds_exception, "Surface index exceeds surface count");
@@ -215,6 +149,74 @@ namespace illumina { namespace interop { namespace model { namespace summary
         {
             return m_cycle_state;
         }
+
+    public:
+        /** @defgroup lane_summary Read/Lane summary
+         *
+         * Summary of key metrics in each read/lane
+         *
+         * @ingroup read_summary
+         * @ref illumina::interop::model::summary::lane_summary "See full class description"
+         * @ref illumina::interop::model::summary::stat_summary "See full class description"
+         * @{
+         */
+        /** Get constant reference to lane_summary at given index
+         *
+         * @param n index
+         * @return constant reference to lane_summary
+         */
+        const surface_summary& operator[](const size_t n) const throw(model::index_out_of_bounds_exception)
+        {
+            if (n >= m_summary_by_surface.size())
+                INTEROP_THROW( index_out_of_bounds_exception, "Surface index exceeds surface count");
+            return m_summary_by_surface[n];
+        }
+
+        /** Get constant reference to lane_summary at given index
+         *
+         * @deprecated Will be removed in next feature version (use operator[] instead for C++ Code)
+         * @param n index
+         * @return constant reference to lane_summary
+         */
+        const_reference at(const size_type n) const throw(model::index_out_of_bounds_exception)
+        {
+            if (n >= m_summary_by_surface.size())
+                INTEROP_THROW( index_out_of_bounds_exception, "Surface index exceeds surface count");
+            return m_summary_by_surface[n];
+        }
+        /** Get lane number
+         *
+         * @return lane number
+         */
+        size_t lane() const
+        {
+            return m_lane;
+        }
+        /** Get number of tiles in the lane
+         *
+         * @return number of tiles in the lane
+         */
+        size_t tile_count() const
+        {
+            return m_tile_count;
+        }
+        /** Get statistics summarizing the cycle of each RTA state of tiles in the lane
+         *
+         * @return statistics summarizing the cycle of each RTA state of tiles in the lane
+         */
+        const cycle_state_summary &cycle_state() const
+        {
+            return m_cycle_state;
+        }
+        /** Get number of summaries by surface
+         *
+         * @return number of summaries by surface
+         */
+        size_t size() const
+        {
+            return m_summary_by_surface.size();
+        }
+        /** @} */
 
     private:
         size_t m_lane;

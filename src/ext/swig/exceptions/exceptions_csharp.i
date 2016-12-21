@@ -40,7 +40,9 @@
       ENTRY_POINT(customDelegate);
     }
   }
+  #pragma warning disable 0414 // Need to keep a reference to this object
   static CustomExceptionHelper_##EXCEPTION_CPLUS_PLUS exceptionHelper_##EXCEPTION_CPLUS_PLUS = new CustomExceptionHelper_##EXCEPTION_CPLUS_PLUS();
+  #pragma warning restore 0414
 %}
 
 

@@ -73,12 +73,6 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
     class base_cycle_metric : public base_metric
     {
     public:
-        enum
-        {
-            /** Base for records written out once for each tile/cycle */
-            BASE_TYPE = constants::BaseCycleType
-        };
-    public:
         /** A cycle metric_set header
          */
         typedef base_cycle_metric_header header_type;
@@ -189,6 +183,13 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
     private:
         uint_t m_cycle;
     };
+
+
+
+    /** Specialization for base_cycle_metric providing sentinel values*/
+    template<>
+    struct metric_attributes<base_cycle_metric> : public metric_attributes<base_metric>{};
+
 }}}}
 
 

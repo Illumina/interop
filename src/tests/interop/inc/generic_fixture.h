@@ -38,6 +38,8 @@ namespace illumina{ namespace interop { namespace unittest {
          *
          * @param expected expected object
          * @param actual actual object
+         * @param skip_test flag to set if the test should be skipped
+         * @return success if the results should be tested
          */
         virtual ::testing::AssertionResult generate(T& expected, T& actual, bool* skip_test)const=0;
         /** Advance to the next type
@@ -99,7 +101,7 @@ namespace illumina{ namespace interop { namespace unittest {
         }
         /** Clone the concrete implementation TODO: Remove
          *
-         * @param name run folder
+         * @param parameter parameter value
          * @return copy of this object
          */
         base_type operator()(const parameter_type& parameter)const
@@ -212,7 +214,7 @@ namespace illumina{ namespace interop { namespace unittest {
         }
         /** Copy operator
          *
-         * @param other source object to copy
+         * @param ptr source object to copy
          * @return this
          */
         generator_ptr& operator=(abstract_generator<T>* ptr)
@@ -345,6 +347,20 @@ namespace illumina{ namespace interop { namespace unittest {
         const ::testing::AssertionResult fixture_test_result;
     };
 
+    /** Test if two floats are nearly the same If both are NaN, then this check succeeds
+     *
+     * @param expected expected float
+     * @param actual  actual float
+     * @param tol tolerance
+     * @return rue if both numbers hold the same value, or their difference is less than tolerance
+     */
+    inline bool is_float_near(const float expected, const float actual, const float tol)
+    {
+        if(std::isnan(expected) && std::isnan(actual)) return true;
+        if(std::isnan(expected) || std::isnan(actual)) return false;
+        return std::abs(expected-actual) < tol;
+    }
+
     /** Check if two floats are nearly the same. If both are NaN, then this check succeeds
      *
      * @todo Use this everywhere
@@ -356,10 +372,7 @@ namespace illumina{ namespace interop { namespace unittest {
      */
     inline ::testing::AssertionResult AreFloatsNear(const float expected, const float actual, const float tol)
     {
-        if(std::isnan(expected) && std::isnan(actual)) return ::testing::AssertionSuccess();
-        if(std::isnan(expected) || std::isnan(actual))
-            return ::testing::AssertionFailure() << "Abs(" << expected << " - " << actual << ") >= " << tol;
-        if(std::abs(expected-actual) < tol) return ::testing::AssertionSuccess();
+        if(is_float_near(expected, actual, tol)) return ::testing::AssertionSuccess();
         return ::testing::AssertionFailure() << "Abs(" << expected << " - " << actual << ") >= " << tol;
     }
 
@@ -384,8 +397,7 @@ namespace illumina{ namespace interop { namespace unittest {
         }
         for(size_t i=0;i<expected.size();++i)
         {
-            if(std::isnan(expected[i]) && std::isnan(actual[i])) continue;
-            if(std::isnan(expected[i]) || std::isnan(actual[i]) || std::abs(expected[i]-actual[i]) >= tol)
+            if(!is_float_near(expected[i], actual[i], tol))
             {
                 if(test_failed) msg << " | ";
                 msg << "Value("<< i << ") Expected: " << expected[i] << " == Actual: " << actual[i];

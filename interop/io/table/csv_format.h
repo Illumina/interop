@@ -35,7 +35,7 @@ namespace illumina { namespace interop { namespace io {  namespace  table
     /** Read delimited value from the input stream and cast to proper destination type
      *
      * @param in input stream
-     * @param value string value
+     * @param buf reusable buffer
      * @param delim deliminator
      * @return destintion value
      */
@@ -49,7 +49,7 @@ namespace illumina { namespace interop { namespace io {  namespace  table
      *
      * @param in input stream
      * @param dest destination type
-     * @param value string value
+     * @param buf reusable buffer
      * @param delim deliminator
      */
     template<typename T>
@@ -108,9 +108,10 @@ namespace illumina { namespace interop { namespace io {  namespace  table
     /** Write a vector of values as a single in a CSV file
      *
      * @param out output stream
-     * @param values source vector of values
-     * @param beg start column offset
-     * @param last last column offset
+     * @param beg iterator to start of collection
+     * @param end iterator to end of collection
+     * @param eol end of line terminator character
+     * @param precision number of digits for floating point number
      */
     template<typename I>
     void write_csv(std::ostream& out, I beg, I end, const char eol, const size_t precision=10)

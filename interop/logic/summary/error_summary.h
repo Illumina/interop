@@ -22,6 +22,62 @@
 
 namespace illumina { namespace interop { namespace logic { namespace summary
 {
+    /** Cache data structure for error metrics
+     *
+     */
+     class error_cache_element
+     {
+     public:
+         /** Constructor */
+         error_cache_element() : m_error_sum(0.0f), m_error_count(0), m_max_cycle(0) {}
+         /** Update the cache element
+          *
+          * @param error_rate error rate
+          */
+         void update_error(const float error_rate)
+         {
+             if(std::isnan(error_rate)) return;
+             m_error_sum += error_rate;
+             m_error_count++;
+         }
+         /** Update the cache element
+          *
+          * @param cycle_within_read cycle within read
+          */
+         void update_cycle(const size_t cycle_within_read)
+         {
+             m_max_cycle = std::max(m_max_cycle, cycle_within_read);
+         }
+         /** Average error rate
+          *
+          * @return average
+          */
+         float average()const
+         {
+             return divide(m_error_sum, static_cast<float>(m_error_count));
+         }
+         /** Get the maximum cycle apart of the average
+          *
+          * @return maximum cycle
+          */
+         size_t max_cycle()const
+         {
+             return m_max_cycle;
+         }
+         /** Test if there are no error values
+          *
+          * @return true if no values have been averaged
+          */
+         bool is_empty()const
+         {
+             return m_error_count == 0;
+         }
+
+     private:
+         float m_error_sum;
+         size_t m_error_count;
+         size_t m_max_cycle;
+     };
 
     /** Cache errors for all tiles up to a give max cycle
      *
@@ -45,13 +101,10 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                                   summary_by_lane_read<float> &read_lane_surface_cache)
     throw(model::index_out_of_bounds_exception)
     {
-        typedef std::vector<size_t> cycle_vector_t;
         typedef std::pair<size_t, size_t> key_t;
-        typedef std::pair<float, float> value_t;
-        typedef INTEROP_ORDERED_MAP(key_t, value_t) error_tile_t;
+        typedef INTEROP_ORDERED_MAP(key_t, error_cache_element) error_tile_t;
         typedef std::vector<error_tile_t> error_by_read_tile_t;
         error_by_read_tile_t tmp(read_lane_cache.size());
-        cycle_vector_t max_error_cycle(read_lane_cache.size(), 0);
         for (; beg != end; ++beg)
         {
             INTEROP_ASSERT(beg->cycle() > 0);
@@ -59,19 +112,13 @@ namespace illumina { namespace interop { namespace logic { namespace summary
             if ((beg->cycle() - 1) >= cycle_to_read.size())
                 INTEROP_THROW(model::index_out_of_bounds_exception, "Cycle exceeds total cycles from Reads in the RunInfo.xml");
             const read_cycle &read = cycle_to_read[beg->cycle() - 1];
-            if (read.cycle_within_read > max_cycle || read.is_last_cycle_in_read) continue;
             const key_t key = std::make_pair(beg->lane(), beg->tile());
             const size_t read_number = read.number - 1;
-            max_error_cycle[read_number] = std::max(max_error_cycle[read_number],
-                                                    static_cast<size_t>(read.cycle_within_read));
             INTEROP_ASSERTMSG(read_number < tmp.size(),
                               read.number << " " << read.cycle_within_read << ", " << beg->cycle());
-            if (tmp[read_number].find(key) == tmp[read_number].end())
-            {
-                tmp[read_number].insert(std::make_pair(key, std::make_pair(0.0f, 0.0f)));
-            }
-            tmp[read_number][key].first += beg->error_rate();
-            tmp[read_number][key].second += 1;
+            tmp[read_number][key].update_cycle(read.cycle_within_read);
+            if (read.cycle_within_read > max_cycle || read.is_last_cycle_in_read) continue;
+            tmp[read_number][key].update_error(beg->error_rate());
         }
         for (size_t read = 0; read < tmp.size(); ++read)
         {
@@ -82,8 +129,9 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                 const size_t lane = ebeg->first.first - 1;
                 if (lane >= read_lane_cache.lane_count())
                     INTEROP_THROW(model::index_out_of_bounds_exception, "Lane exceeds number of lanes in RunInfo.xml");
-                if(max_cycle < std::numeric_limits<size_t>::max() && ebeg->second.second < max_cycle) continue;
-                const float err_avg = divide(ebeg->second.first, ebeg->second.second);
+                if(max_cycle < std::numeric_limits<size_t>::max() && ebeg->second.max_cycle() < max_cycle) continue;
+                if(ebeg->second.is_empty()) continue;
+                const float err_avg = ebeg->second.average();
                 read_lane_cache(read, lane).push_back(err_avg);
                 if(read_lane_surface_cache.surface_count() < 2) continue;
                 const ::uint32_t surface = logic::metric::surface(static_cast< ::uint32_t >(ebeg->first.second), naming_method);

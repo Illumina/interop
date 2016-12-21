@@ -98,7 +98,7 @@ namespace Illumina.InterOp.Interop.UnitTest
             imaging_table table = new imaging_table();
             c_csharp_table.create_imaging_table(run, table);
             Assert.AreEqual(table.row_count(), 3);
-            Assert.AreEqual(table.at(0, 0), 7);
+            Assert.AreEqual(table.at(0u, 0u), 7);
 
 		}
 		[Test]

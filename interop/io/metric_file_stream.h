@@ -219,7 +219,6 @@ namespace illumina { namespace interop { namespace io
      *
      * @param files destination list of files
      * @param run_directory file path to the run directory
-     * @param last_cycle last cycle to check
      * @param use_out use the copied version
      */
     template<class MetricSet>

@@ -115,10 +115,11 @@ TYPED_TEST_P(metric_stream_error_test, test_hardcoded_read)
 TEST(metric_stream_error_test, image_metric_out_of_bounds)
 {
     typedef model::metrics::image_metric::ushort_t ushort_t;
-    model::metric_base::metric_set<model::metrics::image_metric> metric_set(
-            model::metrics::image_metric_header(2));
     const ushort_t min_vals[] = {100, 200, 300};
-    metric_set.insert( model::metrics::image_metric(1, 1101, 1, 2, util::to_vector(min_vals), util::to_vector(min_vals)) );
+    model::metric_base::metric_set<model::metrics::image_metric> metric_set( // Force an out of bounds condition
+            model::metrics::image_metric_header(static_cast<ushort_t>(util::length_of(min_vals)-1)));
+    metric_set.insert(
+            model::metrics::image_metric(1, 1101, 1, 2, util::to_vector(min_vals), util::to_vector(min_vals)));
     std::ostringstream fout;
     EXPECT_THROW(io::write_metrics(fout, metric_set), io::bad_format_exception);
 }

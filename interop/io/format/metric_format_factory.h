@@ -10,6 +10,7 @@
 #include <vector>
 #include "interop/util/map.h"
 #include "interop/util/assert.h"
+#include "interop/util/self_registration.h"
 #include "interop/io/format/abstract_metric_format.h"
 #include "interop/util/unique_ptr.h"
 #include "interop/io/stream_exceptions.h"
@@ -33,19 +34,6 @@
     illumina::interop::io::metric_format_factory< Proxy >  \
     illumina_interop_io_##Type##Proxy##Version(new illumina::interop::io::metric_format<Proxy, illumina::interop::io::generic_layout<Metric, Version> >);
 
-/** Ensure that static libraries are properly linked
- *  This must be used in a function that will definitely be linked.
- *
- *  Tested for Microsoft Visual C++, GCC and CLang
- */
-#define INTEROP_FORCE_LINK_USE(X) void force_link_metric_format(X*);  force_link_metric_format(0);
-/** Ensure that static libraries are properly linked
- *  This must be used in a file that may not be linked.
- *
- *  Tested for Microsoft Visual C++, GCC and CLang
- */
-#define INTEROP_FORCE_LINK_DEF(X) namespace illumina{namespace interop{namespace io{ void force_link_metric_format(X*){} }}} \
-    void force_link_metric_format(X*){} // For Microsoft Visual C++
 
 namespace illumina { namespace interop { namespace io
 {

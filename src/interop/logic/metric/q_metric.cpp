@@ -36,7 +36,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
                 const uint_t tile_id = *tile_beg;
                 size_t prev_idx = metric_set.find(lane_id, tile_id, 1);
                 if(prev_idx >= metric_set.size()) continue;
-                QMetric& metric = metric_set.at(prev_idx);
+                QMetric& metric = metric_set[prev_idx];
                 metric.accumulate(metric);
                 const uint_t second_cycle_start = 2; // We have to accumulate the first cycle with itself, and every
                 // subsequent with the previous cycle.
@@ -46,7 +46,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
                     const size_t cur_idx = metric_set.find(lane_id, tile_id, cycle);
                     if(cur_idx>=metric_set.size() || prev_idx>=metric_set.size())
                         continue;// TODO: if this happens zero out following q-scores
-                    metric_set.at(cur_idx).accumulate(metric_set.at(prev_idx));
+                    metric_set[cur_idx].accumulate(metric_set[prev_idx]);
                     prev_idx=cur_idx;
                 }
             }
@@ -70,7 +70,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
         {
             size_t prev_idx = q_metric_set.find(*lane_beg, tile_id, 1);
             if(prev_idx >= q_metric_set.size()) continue;
-            q_by_lane_metric& metric = q_metric_set.at(prev_idx);
+            q_by_lane_metric& metric = q_metric_set[prev_idx];
             metric.accumulate(metric);
             const uint_t second_cycle_start = 2; // We have to accumulate the first cycle with itself, and every
             // subsequent with the previous cycle.
@@ -80,7 +80,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
                 const size_t cur_idx = q_metric_set.find(*lane_beg, tile_id, cycle);
                 if(cur_idx>=q_metric_set.size() || prev_idx>=q_metric_set.size())
                     continue;// TODO: if this happens zero out following q-scores
-                q_metric_set.at(cur_idx).accumulate(q_metric_set.at(prev_idx));
+                q_metric_set[cur_idx].accumulate(q_metric_set[prev_idx]);
                 prev_idx=cur_idx;
             }
         }
@@ -147,6 +147,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
                                       const size_t count)
     {
         typedef model::metrics::q_score_bin q_score_bin;
+        if(!q_score_bins.empty())return;
         if(!requires_legacy_bins(count)) return;
         q_score_bins.reserve(count);
         if(instrument == constants::NextSeq)
@@ -263,6 +264,39 @@ namespace illumina { namespace interop { namespace logic { namespace metric
             else
                 bylane.insert(model::metrics::q_by_lane_metric(beg->lane(), 0, beg->cycle(), beg->qscore_hist()));
         }
+    }
+
+    /** Compress the q-metric set using the bins in the header
+     *
+     * @param q_metric_set q-metric set
+     */
+    template<class QMetric>
+    void compress_q_metrics_t(model::metric_base::metric_set<QMetric>& q_metric_set)
+    {
+        typedef model::metric_base::metric_set<QMetric> metric_set_t;
+        if(q_metric_set.empty()) return;
+        if(logic::metric::is_compressed(q_metric_set) || q_metric_set.bin_count() == 0 ) return;
+        for(typename metric_set_t::iterator it = q_metric_set.begin();it != q_metric_set.end();++it)
+        {
+            it->compress(q_metric_set);
+        }
+    }
+
+    /** Compress the q-metric set using the bins in the header
+     *
+     * @param q_metric_set q-metric set
+     */
+    void compress_q_metrics(model::metric_base::metric_set<model::metrics::q_metric>& q_metric_set)
+    {
+        compress_q_metrics_t(q_metric_set);
+    }
+    /** Compress the q-metric set using the bins in the header
+     *
+     * @param q_metric_set q-metric set
+     */
+    void compress_q_metrics(model::metric_base::metric_set<model::metrics::q_by_lane_metric>& q_metric_set)
+    {
+        compress_q_metrics_t(q_metric_set);
     }
 
 }}}}

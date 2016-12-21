@@ -1,8 +1,8 @@
 using System.Reflection;
 
-[assembly: AssemblyTitle("Illumina.InterOp")]
+[assembly: AssemblyTitle("Illumina.InterOp with @CMAKE_CXX_COMPILER_ID@ @CMAKE_CXX_COMPILER_VERSION@")]
 [assembly: AssemblyCompany("Illumina")]
-[assembly: AssemblyProduct("Illumina.InterOp")]
+[assembly: AssemblyProduct("Illumina.InterOp - @VERSION@ ")]
 [assembly: AssemblyCopyright("Copyright © Illumina 2015")]
 [assembly: AssemblyVersion("@VERSION_SHORT@")]
 [assembly: AssemblyFileVersion("@VERSION_SHORT@")]

@@ -50,7 +50,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
         {
             const id_t id = beg->cycle_hash();
             typename row_offset_map_t::const_iterator row_it = row_offset.find(id);
-            const size_t row = row_it->second;
+            const ::uint64_t row = row_it->second;
             const summary::read_cycle& read = cycle_to_read[beg->cycle()-1];
             if(data_beg[row*column_count]==0)
             {
@@ -83,7 +83,8 @@ namespace illumina { namespace interop { namespace logic { namespace table
                                       0,
                                       naming_method,
                                       columns,
-                                      data_beg+row*column_count, data_end);
+                                      data_beg+row*column_count,
+                                      data_end);
         }
     }
     /** Populate the imaging table with a by cycle InterOp metric set
@@ -217,7 +218,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
             const id_t tid = model::metric_base::base_cycle_metric::tile_hash_from_id(it->first);
             if (!tile_metrics.has_metric(tid)) continue;
             const id_t cycle = model::metric_base::base_cycle_metric::cycle_from_id(it->first);
-            const size_t row = it->second;
+            const ::uint64_t row = it->second;
             INTEROP_ASSERTMSG(cycle <= cycle_to_read.size(),
                               cycle << " <= " << cycle_to_read.size()
                                     <<  " tile: " << model::metric_base::base_cycle_metric::tile_from_id(it->first));
@@ -277,7 +278,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
         cycle_metric_map_t hash_set;
         metrics.populate_id_map(hash_set);
         row_offset.clear();
-        size_t row = 0;
+        ::uint64_t row = 0;
         for(cycle_metric_map_t::const_iterator it = hash_set.begin();it != hash_set.end();++it,++row)
             row_offset[it->first]=row;
     }
@@ -323,10 +324,11 @@ namespace illumina { namespace interop { namespace logic { namespace table
         using namespace constants;
         using namespace model::table;
         using namespace model;
+        using namespace model::metric_base;
         // TODO: This can be reduced to a single macro define
         typedef std::pair<column_id, metric_group > mapped_t;
 #       define INTEROP_TUPLE7(Id, Metric, Ignore2, Ignore3, Ignore4, Ignore5, Ignored6) \
-        mapped_t(Id##Column,static_cast<metric_group>(Metric::TYPE)),
+        mapped_t(Id##Column,static_cast<metric_group>(metric_attributes<Metric>::TYPE)),
         static const mapped_t name_types[] = {INTEROP_IMAGING_COLUMN_TYPES mapped_t(ImagingColumnCount, UnknownMetricGroup)};
 #       undef INTEROP_TUPLE7
         return util::constant_mapping_get(name_types, type, UnknownMetricGroup);

@@ -20,6 +20,7 @@ namespace illumina { namespace interop { namespace io
     public:
         /** Get the path to the RTA configuration file
          *
+         * @param run_directory run directory
          * @param version version of RTA
          * @return config filename
          */
@@ -37,6 +38,7 @@ namespace illumina { namespace interop { namespace io
         }
         /** Get the path of the RunParameters
          *
+         * @param run_directory run directory
          * @param alternate return alternate filename
          * @return path/to/RunParameters.xml
          */

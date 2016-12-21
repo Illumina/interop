@@ -171,6 +171,12 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         size_t bin_count() const
         { return m_qscore_bins.size(); }
+        /** Get the number of bins in header
+         *
+         * @return number of bins in header
+         */
+        size_t q_val_count() const
+        { return m_qscore_bins.empty() ? static_cast<size_t>(MAX_Q_BINS) : m_qscore_bins.size(); }
 
         /** Get the index for the given q-value
          *
@@ -582,6 +588,19 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             {
                 (*it) += (*cur);
             }
+        }
+        /** Compress bins
+         *
+         * @param header binned header
+         */
+        void compress(const header_type& header)
+        {
+            if(size() == header.bin_count() || header.bin_count() == 0) return;
+            for(size_t i=0;i<header.bin_count();++i)
+            {
+                m_qscore_hist[i] = m_qscore_hist[static_cast<size_t>(header.bin_at(i).value()-1)];
+            }
+            m_qscore_hist.resize(header.bin_count());
         }
 
         /** Q-score value of the histogram

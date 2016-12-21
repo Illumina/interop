@@ -42,7 +42,7 @@ environment:
 #      config_type: win32
     - generator: "Visual Studio 12 2013 Win64"
       BUILD: msvc12_win64
-      config_type: win64
+      config_type: win64_not_supported
 #    - generator: "Visual Studio 12 2013"
 #      BUILD: msvc12_win32
 #      config_type: win32

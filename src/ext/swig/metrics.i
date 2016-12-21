@@ -1,4 +1,4 @@
-/** Metrics model and logic
+/** Metrics model and metric logic
  */
 %include <std_vector.i>
 %include <stdint.i>
@@ -36,12 +36,6 @@ using Illumina.InterOp.Run;
 EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 
 
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Ignore methods
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Wrap the base metrics
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -70,15 +64,12 @@ EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
     using namespace illumina::interop::model::metrics;
     namespace metric_base = illumina::interop::model::metric_base;
 
-    %ignore illumina::interop::model::metric_base::metric_set<metric_t>::at(const size_t)const;
     %ignore illumina::interop::model::metric_base::metric_set<metric_t>::populate_tile_numbers_for_lane;
     %ignore illumina::interop::model::metric_base::metric_set<metric_t>::populate_tile_numbers_for_lane_surface;
     %ignore illumina::interop::model::metric_base::metric_set<metric_t>::offset_map;
-    //%ignore illumina::interop::model::metric_base::metric_set<metric_t>::offset_map; TODO Ignore functions that take set are argument
 
     %apply size_t { std::map< std::size_t, metric_t >::size_type };
     %apply uint64_t { metric_base::metric_set<metric_t>::id_t };
-    WRAP_VECTOR(illumina::interop::model::metric_base::metric_set<metric_t>);
 
 %enddef
 
@@ -129,6 +120,7 @@ WRAP_METRICS(IMPORT_METRIC_WRAPPER)
 // Wrap vectors
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
 %template(index_info_vector) std::vector< illumina::interop::model::metrics::index_info  >;
 
 %template(tile_metric_map) std::map< uint64_t, illumina::interop::model::metric_base::base_metric >;
@@ -159,6 +151,8 @@ WRAP_METRICS(WRAP_TYPES)
 
 
 WRAP_METRICS(WRAP_METRIC_SET)
+
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

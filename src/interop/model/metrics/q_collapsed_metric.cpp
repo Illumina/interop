@@ -13,8 +13,10 @@
 #include "interop/util/assert.h"
 #include "interop/model/metrics/q_collapsed_metric.h"
 #include "interop/io/format/metric_format_factory.h"
+#include "interop/io/format/text_format_factory.h"
 #include "interop/io/format/default_layout.h"
 #include "interop/io/format/metric_format.h"
+#include "interop/io/format/text_format.h"
 
 using namespace illumina::interop::model::metrics;
 
@@ -567,6 +569,62 @@ namespace illumina{ namespace interop{ namespace io {
          */
         enum{/**Version of the format */VERSION=6};
     };
+    /** Tile Metric CSV text format
+     *
+     * This class provide an interface for writing the tile metrics to a CSV file:
+     *
+     *  - TileMetrics.csv
+     */
+    template<>
+    struct text_layout< q_collapsed_metric, 1 >
+    {
+        /** Define a header type */
+        typedef q_collapsed_metric::header_type header_type;
+        /** Write header to the output stream
+         *
+         * @param out output stream
+         * @param sep column separator
+         * @param eol row separator
+         * @return number of column headers
+         */
+        static size_t write_header(std::ostream& out,
+                                   const header_type&,
+                                   const std::vector<std::string>&,
+                                   const char sep,
+                                   const char eol)
+        {
+            const char* headers[] =
+            {
+                "Lane", "Tile", "Cycle",
+                "Q20", "Q30", "Total", "MedianQScore"
+            };
+            out << "# Column Count: " << util::length_of(headers) << eol;
+            out << headers[0];
+            for(size_t i=1;i<util::length_of(headers);++i)
+                out << sep << headers[i];
+            out << eol;
+            return util::length_of(headers);
+        }
+        /** Write a tile metric to the output stream
+         *
+         * @param out output stream
+         * @param metric tile metric
+         * @param sep column separator
+         * @param eol row separator
+         * @return number of columns written
+         */
+        static size_t write_metric(std::ostream& out,
+                                   const q_collapsed_metric& metric,
+                                   const header_type&,
+                                   const char sep,
+                                   const char eol,
+                                   const char)
+        {
+            out << metric.lane() << sep << metric.tile() << sep << metric.cycle() << sep;
+            out << metric.q20() << sep << metric.q30() << sep << metric.total() << sep << metric.median_qscore() << eol;
+            return 0;
+        }
+    };
 }}}
 INTEROP_FORCE_LINK_DEF(q_collapsed_metric)
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(q_collapsed_metric, 2 )
@@ -574,4 +632,8 @@ INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(q_collapsed_metric, 3 )
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(q_collapsed_metric, 4 )
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(q_collapsed_metric, 5 )
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(q_collapsed_metric, 6 )
+
+
+// Text formats
+INTEROP_REGISTER_METRIC_TEXT_LAYOUT(q_collapsed_metric, 1)
 

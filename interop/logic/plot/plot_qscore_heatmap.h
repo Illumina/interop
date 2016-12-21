@@ -21,6 +21,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
      * @param options options to filter the data
      * @param data output heat map data
      * @param buffer optional buffer of preallocated memory (for SWIG)
+     * @param buffer_size number of elements in buffer
      */
     void plot_qscore_heatmap(model::metrics::run_metrics& metrics,
                                     const model::plot::filter_options& options,

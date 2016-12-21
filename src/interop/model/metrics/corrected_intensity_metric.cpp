@@ -10,8 +10,11 @@
 
 #include "interop/model/metrics/corrected_intensity_metric.h"
 #include "interop/io/format/metric_format_factory.h"
+#include "interop/io/format/text_format_factory.h"
 #include "interop/io/format/default_layout.h"
 #include "interop/io/format/metric_format.h"
+#include "interop/io/format/text_format.h"
+#include "interop/logic/utils/enums.h"
 
 
 using namespace illumina::interop::model::metrics;
@@ -219,10 +222,93 @@ namespace illumina{ namespace interop{ namespace io
     };
 
 #pragma pack()
+
+
+    /** Corrected intensity Metric CSV text format
+     *
+     * This class provide an interface for writing the corrected intensity metrics to a CSV file:
+     *
+     *  - CorrectedIntMetrics.csv
+     */
+    template<>
+    struct text_layout< corrected_intensity_metric, 1 >
+    {
+        /** Define a header type */
+        typedef corrected_intensity_metric::header_type header_type;
+        /** Write header to the output stream
+         *
+         * @param out output stream
+         * @param sep column separator
+         * @param eol row separator
+         * @return number of column headers
+         */
+        static size_t write_header(std::ostream& out,
+                                   const header_type&,
+                                   const std::vector<std::string>&,
+                                   const char sep,
+                                   const char eol)
+        {
+            const char* column_headers[] =
+            {
+                "Lane", "Tile", "Cycle", "AverageCycleIntensity", "SignalToNoise"
+            };
+            const char* subcolumn_headers[] =
+            {
+                "CalledCount", "CalledIntensity", "AllIntensity"
+            };
+            std::vector<std::string> bases;
+            constants::list_enum_names<constants::dna_bases>(bases);
+            std::vector<std::string> headers;
+            headers.reserve(util::length_of(column_headers)+util::length_of(subcolumn_headers)*5);
+            for(size_t i=0;i<util::length_of(column_headers);++i)
+                headers.push_back(column_headers[i]);
+            for(size_t i=0;i<static_cast<size_t>(constants::NUM_OF_BASES_AND_NC);++i)
+                headers.push_back(std::string()+subcolumn_headers[0]+"_"+bases[i]);
+            for(size_t i=1;i<util::length_of(column_headers);++i)
+            {
+                for(size_t j=1;j<static_cast<size_t>(constants::NUM_OF_BASES_AND_NC);++j)
+                    headers.push_back(std::string()+subcolumn_headers[i]+"_"+bases[j]);
+            }
+            out << "# Column Count: " << util::length_of(headers) << eol;
+            out << headers[0];
+            for(size_t i=1;i<util::length_of(headers);++i)
+                out << sep << headers[i];
+            out << eol;
+            return util::length_of(headers);
+        }
+        /** Write a corrected intensity metric to the output stream
+         *
+         * @param out output stream
+         * @param metric corrected intensity metric
+         * @param sep column separator
+         * @param eol row separator
+         * @return number of columns written
+         */
+        static size_t write_metric(std::ostream& out,
+                                   const corrected_intensity_metric& metric,
+                                   const header_type&,
+                                   const char sep,
+                                   const char eol,
+                                   const char)
+        {
+            out << metric.lane() << sep << metric.tile() << sep << metric.cycle() << sep;
+            out << metric.average_cycle_intensity() << sep << metric.signal_to_noise();
+            for(int i=-1;i<constants::NUM_OF_BASES;i++)
+                out << sep << metric.called_counts(static_cast<constants::dna_bases>(i));
+            for(size_t i=0;i<constants::NUM_OF_BASES;i++)
+                out << sep << metric.corrected_int_called(static_cast<constants::dna_bases>(i));
+            for(size_t i=0;i<constants::NUM_OF_BASES;i++)
+                out << sep << metric.corrected_int_all(static_cast<constants::dna_bases>(i));
+            out << eol;
+            return 0;
+        }
+    };
 }}}
 
+INTEROP_FORCE_LINK_DEF(corrected_intensity_metric)
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(corrected_intensity_metric, 2 )
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(corrected_intensity_metric, 3 )
-INTEROP_FORCE_LINK_DEF(corrected_intensity_metric)
 
+// Text formats
+INTEROP_REGISTER_METRIC_TEXT_LAYOUT(corrected_intensity_metric, 1)
 

@@ -39,7 +39,7 @@ namespace illumina { namespace interop { namespace unittest
         }
         /** Clone the concrete implementation TODO: Remove
          *
-         * @param name run folder
+         * @param plot_type type of plot
          * @return copy of this object
          */
         base_type operator()(const constants::plot_types plot_type)const
