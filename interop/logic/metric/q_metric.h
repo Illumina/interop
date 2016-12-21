@@ -105,6 +105,16 @@ namespace illumina { namespace interop { namespace logic { namespace metric
     void populate_legacy_q_score_bins(std::vector<model::metrics::q_score_bin>& q_score_bins,
                                              const constants::instrument_type instrument,
                                              const size_t count);
+    /** Compress the q-metric set using the bins in the header
+     *
+     * @param q_metric_set q-metric set
+     */
+    void compress_q_metrics(model::metric_base::metric_set<model::metrics::q_metric>& q_metric_set);
+    /** Compress the q-metric set using the bins in the header
+     *
+     * @param q_metric_set q-metric set
+     */
+    void compress_q_metrics(model::metric_base::metric_set<model::metrics::q_by_lane_metric>& q_metric_set);
     /** Populate the q-score header bins from the data
      *
      * This only for legacy platforms that use older q-metric formats, which do not include bin information
