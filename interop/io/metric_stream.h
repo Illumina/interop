@@ -11,6 +11,7 @@
 #include "interop/util/exception.h"
 #include "interop/model/model_exceptions.h"
 #include "interop/io/format/metric_format_factory.h"
+#include "interop/io/format/text_format_factory.h"
 #include "interop/io/paths.h"
 #include "interop/util/filesystem.h"
 #include "interop/util/assert.h"
@@ -273,7 +274,7 @@ namespace illumina { namespace interop { namespace io
         format_map[version]->write_metric_header(out, header);
     }
 
-    /** Write a metric header to a binary Interop output stream
+    /** Write a set of metrics to a binary Interop output stream
      *
      * @param out output stream
      * @param metrics set of metrics
@@ -299,6 +300,44 @@ namespace illumina { namespace interop { namespace io
         for (typename MetricSet::const_iterator it = metrics.begin();
              it != metrics.end(); it++)
             format_map[version]->write_metric(out, *it, metrics);
+    }
+    /** Write a set of metrics to a text output stream
+     *
+     * @param out output stream
+     * @param metrics set of metrics
+     * @param channel_names list of channel names
+     * @param version version of the InterOp to write (if less than 0, get from metric set)
+     * @param sep column separator
+     * @param eol row separator
+     * @param missing missing value indicator
+     */
+    template<class MetricSet>
+    static void write_text(std::ostream &out,
+                           const MetricSet &metrics,
+                           const std::vector<std::string>& channel_names,
+                           ::int16_t version = -1,
+                           const char sep=',',
+                           const char eol='\n',
+                           const char missing='-')
+    {
+        typedef typename MetricSet::metric_type metric_type;
+        typedef text_format_factory<metric_type> factory_type;
+        typedef typename factory_type::abstract_text_format_t* abstract_text_format_pointer_t;
+
+        factory_type &factory = factory_type::instance();
+        abstract_text_format_pointer_t format = factory.find(version);
+        if (format == 0)
+            INTEROP_THROW(bad_format_exception,
+                          "No format found to write file with version: "
+                                  << version <<  " of " << factory.size()
+                                  << " for " << metric_type::prefix() << "" << metric_type::suffix()
+                                  << " with " << metrics.size() << " metrics");
+        INTEROP_ASSERT(format);
+        format->write_header(out, metrics, channel_names, sep, eol);
+        for (typename MetricSet::const_iterator it = metrics.begin();
+             it != metrics.end(); it++)
+            format->write_metric(out, *it, metrics, sep, eol, missing);
+
     }
 }}}
 

@@ -4,6 +4,18 @@
 
 Date       | Description
 ---------- | -----------
+2016-12-21 | Replace interop2csv with dumptext
+2016-12-20 | IPA-5923: Fix bug in legacy q-metric binning
+2016-12-19 | Removes the coverity run from the build matrix for every pull request
+2016-12-16 | IPA-5885: Ensure error summary matches requirements
+2016-12-14 | Enhance C# version information
+2016-12-14 | Clean up unused enum types
+2016-12-12 | IPA-5153: Ensure Summary tab calculations are consistent with Docs
+2016-12-09 | IPA-5883: Fix possible memory issue in MSVC12
+2016-12-08 | IPA-4674: Add support for absolute naming convention
+2016-12-07 | IPA-5869: Add section filtering
+2016-12-06 | IPA-5734: Synchronize master
+2016-12-02 | Add Google Analytics tracking to documentation
 2016-12-08 | Added admonition to avoid using MSVC 12 (2013) with C# bindings
 2016-12-08 | Added support for absolute tile naming
 2016-12-08 | Added ability to do section filtering

@@ -23,6 +23,13 @@ namespace illumina { namespace interop { namespace io
     template<class MetricType, int Version>
     struct generic_layout;
 
+    /** Define a text layout of the metric
+     *
+     * This is currently only used for writing metrics
+     */
+    template<class MetricType, int Version>
+    struct text_layout;
+
 
 }}}
 

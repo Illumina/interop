@@ -171,6 +171,12 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         size_t bin_count() const
         { return m_qscore_bins.size(); }
+        /** Get the number of bins in header
+         *
+         * @return number of bins in header
+         */
+        size_t q_val_count() const
+        { return m_qscore_bins.empty() ? static_cast<size_t>(MAX_Q_BINS) : m_qscore_bins.size(); }
 
         /** Get the index for the given q-value
          *

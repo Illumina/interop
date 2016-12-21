@@ -150,6 +150,10 @@ set(HEADERS
         ../../interop/util/map.h
         ../../interop/util/timer.h
         ../../interop/constants/enum_description.h
+        ../../interop/io/format/abstract_text_format.h
+        ../../interop/io/format/text_format.h
+        ../../interop/util/self_registration.h
+        ../../interop/io/format/text_format_factory.h
         )
 
 set(INTEROP_HEADERS ${HEADERS} PARENT_SCOPE)

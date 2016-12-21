@@ -21,7 +21,7 @@ namespace Illumina.InterOp.UnitTest
 		[SetUp]
 		protected void SetUp()
 		{
-	        base_cycle_metric_header header = new base_cycle_metric_header();
+	        extraction_metric_header header = new extraction_metric_header(2);
 		    if(metrics.Count == 0)
 		    {
                 System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
