@@ -61,7 +61,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
     constants::tile_naming_method tile_naming_method_from_metric(const model::metric_base::metric_set<Metric>& metric_set)
     {
         if(metric_set.size() == 0 ) return constants::UnknownTileNamingMethod;
-        return tile_naming_method_from_metric(metric_set.at(0));
+        return tile_naming_method_from_metric(metric_set[0]);
     }
     /** Tile number
      *
@@ -81,7 +81,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
      */
     inline ::uint32_t section(const ::uint32_t tile_id, const constants::tile_naming_method method)
     {
-        if(method == constants::FiveDigit) return (tile_id / 100) % 10;
+        if( method == constants::FiveDigit ) return (tile_id / 100) % 10;
         return std::numeric_limits< ::uint32_t >::min();
     }
     /** Surface number

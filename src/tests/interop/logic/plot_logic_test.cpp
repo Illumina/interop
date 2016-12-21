@@ -358,7 +358,7 @@ TEST(plot_logic, q_score_heatmap_buffer)
     {
         for (size_t col = 0; col < data2.column_count(); col++)
         {
-            INTEROP_ASSERT_NEAR(buffer[row * data2.column_count() + col], data1.at(row, col), tol) << data1.at(row, col);
+            INTEROP_ASSERT_NEAR(buffer[row * data2.column_count() + col], data1(row, col), tol) << data1(row, col);
 
         }
     }
@@ -405,10 +405,10 @@ TEST(plot_logic, flowcell_map)
     {
         for (size_t j = 0; j < data.column_count(); j++)
         {
-            if (!std::isnan(data.at(i, j)))
+            if (!std::isnan(data(i, j)))
             {
-                actual_values[i * data.column_count() + j] = data.at(i, j);
-                EXPECT_NEAR(expected_vals[k], data.at(i, j), tol);
+                actual_values[i * data.column_count() + j] = data(i, j);
+                EXPECT_NEAR(expected_vals[k], data(i, j), tol);
                 k++;
             }
         }

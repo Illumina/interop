@@ -170,7 +170,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
      */
     inline size_t count_qvals(const model::metric_base::metric_set<model::metrics::q_metric>& q_metric_set)
     {
-        return q_metric_set.size() > 0 ? q_metric_set.at(0).size() : 0;
+        return q_metric_set.size() > 0 ? q_metric_set[0].size() : 0;
     }
     /** Test whether the q-values are compressed
      *
@@ -179,7 +179,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
      */
     inline size_t count_qvals( const model::metric_base::metric_set<model::metrics::q_by_lane_metric>& q_metric_set)
     {
-        return q_metric_set.size() > 0 ? q_metric_set.at(0).size() : 0;
+        return q_metric_set.size() > 0 ? q_metric_set[0].size() : 0;
     }
     /** Test whether the q-values are compressed
      *

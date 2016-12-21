@@ -18,7 +18,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
         typedef model::metric_base::metric_set<model::metrics::extraction_metric>::const_iterator const_iterator;
         if(metrics.size()==0)return;
         if(n < metrics.size()) INTEROP_THROW(model::invalid_parameter, "Buffer size too small for metric set");
-        if(channel >= metrics.at(0).channel_count())
+        if(channel >= metrics[0].channel_count())
             INTEROP_THROW(model::invalid_parameter, "Channel exceeds channel count");
         for (const_iterator it = metrics.begin(); it != metrics.end(); ++it, ++focus_scores)
             *focus_scores = it->focus_score(channel);

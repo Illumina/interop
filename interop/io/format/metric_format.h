@@ -247,10 +247,10 @@ namespace illumina { namespace interop { namespace io
                 {
                     const size_t offset = metric_offset_map.size();
                     if(offset>= metric_set.size()) metric_set.resize(offset+1);
-                    metric_set.at(offset).set_base(id);
-                    count += Layout::map_stream(in, metric_set.at(offset), metric_set, true);
+                    metric_set[offset].set_base(id);
+                    count += Layout::map_stream(in, metric_set[offset], metric_set, true);
                     if(!test_stream(in, metric_offset_map, count, record_size)) return;
-                    if(Layout::skip_metric(metric_set.at(offset)))//Avoid adding control lanes in tile metrics
+                    if(Layout::skip_metric(metric_set[offset]))//Avoid adding control lanes in tile metrics
                     {
                         metric_set.resize(offset);
                     }
@@ -259,9 +259,9 @@ namespace illumina { namespace interop { namespace io
                 else
                 {
                     const size_t offset = metric_offset_map[metric.id()];
-                    INTEROP_ASSERTMSG(metric_set.at(offset).lane() != 0, offset);
-                    count += Layout::map_stream(in, metric_set.at(offset), metric_set, false);
-                    INTEROP_ASSERT(metric_set.at(offset).id()>0);
+                    INTEROP_ASSERTMSG(metric_set[offset].lane() != 0, offset);
+                    count += Layout::map_stream(in, metric_set[offset], metric_set, false);
+                    INTEROP_ASSERT(metric_set[offset].id()>0);
                 }
             }
             else

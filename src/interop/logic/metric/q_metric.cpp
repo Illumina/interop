@@ -36,7 +36,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
                 const uint_t tile_id = *tile_beg;
                 size_t prev_idx = metric_set.find(lane_id, tile_id, 1);
                 if(prev_idx >= metric_set.size()) continue;
-                QMetric& metric = metric_set.at(prev_idx);
+                QMetric& metric = metric_set[prev_idx];
                 metric.accumulate(metric);
                 const uint_t second_cycle_start = 2; // We have to accumulate the first cycle with itself, and every
                 // subsequent with the previous cycle.
@@ -46,7 +46,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
                     const size_t cur_idx = metric_set.find(lane_id, tile_id, cycle);
                     if(cur_idx>=metric_set.size() || prev_idx>=metric_set.size())
                         continue;// TODO: if this happens zero out following q-scores
-                    metric_set.at(cur_idx).accumulate(metric_set.at(prev_idx));
+                    metric_set[cur_idx].accumulate(metric_set[prev_idx]);
                     prev_idx=cur_idx;
                 }
             }
@@ -70,7 +70,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
         {
             size_t prev_idx = q_metric_set.find(*lane_beg, tile_id, 1);
             if(prev_idx >= q_metric_set.size()) continue;
-            q_by_lane_metric& metric = q_metric_set.at(prev_idx);
+            q_by_lane_metric& metric = q_metric_set[prev_idx];
             metric.accumulate(metric);
             const uint_t second_cycle_start = 2; // We have to accumulate the first cycle with itself, and every
             // subsequent with the previous cycle.
@@ -80,7 +80,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
                 const size_t cur_idx = q_metric_set.find(*lane_beg, tile_id, cycle);
                 if(cur_idx>=q_metric_set.size() || prev_idx>=q_metric_set.size())
                     continue;// TODO: if this happens zero out following q-scores
-                q_metric_set.at(cur_idx).accumulate(q_metric_set.at(prev_idx));
+                q_metric_set[cur_idx].accumulate(q_metric_set[prev_idx]);
                 prev_idx=cur_idx;
             }
         }

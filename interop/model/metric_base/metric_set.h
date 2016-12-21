@@ -314,10 +314,10 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          * @param n index
          * @return metric
          */
-        metric_type &at(const size_t n) throw(index_out_of_bounds_exception)
+        metric_type &operator[](const size_t n) throw(index_out_of_bounds_exception)
         {
             if(n >= m_data.size()) INTEROP_THROW(index_out_of_bounds_exception, "Index out of bounds");
-            return m_data.at(n);
+            return m_data[n];
         }
 
         /** Get a metric at the given index
@@ -325,10 +325,34 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          * @param n index
          * @return metric
          */
+        const metric_type &operator[](const size_t n)const throw(index_out_of_bounds_exception)
+        {
+            if(n >= m_data.size()) INTEROP_THROW(index_out_of_bounds_exception, "Index out of bounds");
+            return m_data[n];
+        }
+
+        /** Get a metric at the given index
+         *
+         * @deprecated Will be removed in next feature version (use operator[] instead for C++ Code)
+         * @param n index
+         * @return metric
+         */
+        metric_type &at(const size_t n) throw(index_out_of_bounds_exception)
+        {
+            if(n >= m_data.size()) INTEROP_THROW(index_out_of_bounds_exception, "Index out of bounds");
+            return m_data[n];
+        }
+
+        /** Get a metric at the given index
+         *
+         * @deprecated Will be removed in next feature version (use operator[] instead for C++ Code)
+         * @param n index
+         * @return metric
+         */
         const metric_type &at(const size_t n)const throw(index_out_of_bounds_exception)
         {
             if(n >= m_data.size()) INTEROP_THROW(index_out_of_bounds_exception, "Index out of bounds");
-            return m_data.at(n);
+            return m_data[n];
         }
 
         /** Set the version of the InterOp file

@@ -119,7 +119,7 @@ struct subset_copier
         const size_t total = std::min(m_total, metrics.size());
 
         for(size_t i=0;i<total;++i)
-            m_run.get<MetricSet>().insert(metrics.at(i));
+            m_run.get<MetricSet>().insert(metrics[i]);
     }
 private:
     run_metrics& m_run;

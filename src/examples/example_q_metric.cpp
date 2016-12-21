@@ -57,14 +57,14 @@ int main(int argc, char** argv)
     {
 // @ [Calculating Total >= Q30]
 
-        q_metric &metric0 = q_metric_set.at(0);
+        q_metric &metric0 = q_metric_set[0];
         std::cout << "Total >= Q30: " << metric0.total_over_qscore(30, q_metric_set.bins()) << std::endl;
 
 // @ [Calculating Total >= Q30]
 
 // @ [Calculating Percent >= Q30]
 
-        q_metric &metric1 = q_metric_set.at(0);
+        q_metric &metric1 = q_metric_set[0];
         std::cout << "Percent >= Q30: " << metric1.percent_over_qscore(30, q_metric_set.bins()) << std::endl;
 
 // @ [Calculating Percent >= Q30]

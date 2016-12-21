@@ -34,7 +34,7 @@ int main(int argc, char** argv)
 
     try
     {
-        std::time_t t = static_cast<std::time_t>(extraction_metric_set.at(0).date_time());
+        std::time_t t = static_cast<std::time_t>(extraction_metric_set[0].date_time());
         std::tm *tm = std::gmtime(&t);
         if (tm != 0)
         {
