@@ -11,7 +11,6 @@
 #include "interop/io/metric_stream.h"
 #include "src/tests/interop/metrics/inc/metric_generator.h"
 #include "src/tests/interop/metrics/inc/metric_format_fixtures.h"
-#include "src/tests/interop/metrics/inc/format_registry.h"
 
 #ifdef _MSC_VER
 #pragma warning(disable:4127) // MSVC warns about using constants in conditional statements, for template constants

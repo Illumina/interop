@@ -27,7 +27,7 @@ namespace illumina{ namespace interop { namespace unittest
          *
          * @param metrics destination metric set
          */
-        static void create_expected(metric_set_t& metrics, const model::run::info=model::run::info())
+        static void create_expected(metric_set_t& metrics, const model::run::info& =model::run::info())
         {
             metrics = metric_set_t(VERSION);
 
@@ -131,7 +131,7 @@ namespace illumina{ namespace interop { namespace unittest
          *
          * @param metrics destination metric set
          */
-        static void create_expected(metric_set_t& metrics, const model::run::info=model::run::info())
+        static void create_expected(metric_set_t& metrics, const model::run::info& =model::run::info())
         {
             typedef header_t::qscore_bin_vector_type qscore_bin_vector_type;
             typedef header_t::bin_t bin_t;
@@ -231,7 +231,7 @@ namespace illumina{ namespace interop { namespace unittest
          *
          * @param metrics destination metric set
          */
-        static void create_expected(metric_set_t& metrics, const model::run::info=model::run::info())
+        static void create_expected(metric_set_t& metrics, const model::run::info& =model::run::info())
         {
             typedef header_t::qscore_bin_vector_type qscore_bin_vector_type;
             typedef header_t::bin_t bin_t;
@@ -317,7 +317,7 @@ namespace illumina{ namespace interop { namespace unittest
          *
          * @param metrics destination metric set
          */
-        static void create_expected(metric_set_t& metrics, const model::run::info=model::run::info())
+        static void create_expected(metric_set_t& metrics, const model::run::info& =model::run::info())
         {
             metrics = metric_set_t(VERSION);
             typedef metric_t::uint_t uint_t;

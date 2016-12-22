@@ -28,7 +28,7 @@ namespace illumina { namespace interop { namespace unittest
          *
          * @param metrics destination metric set
          */
-        static void create_expected(metric_set_t &metrics, const model::run::info=model::run::info())
+        static void create_expected(metric_set_t &metrics, const model::run::info& =model::run::info())
         {
             metrics = metric_set_t(VERSION);
             metrics.insert(metric_t(7, 1114, 1, 0.450100899f));
@@ -174,7 +174,7 @@ namespace illumina { namespace interop { namespace unittest
          * @param metrics destination metric set
          * @param run_info run info
          */
-        static void create_expected(metric_set_t &metrics, const model::run::info &run_info)
+        static void create_expected(metric_set_t &metrics, const model::run::info& run_info)
         {
             metrics = metric_set_t(VERSION);
 
@@ -194,6 +194,7 @@ namespace illumina { namespace interop { namespace unittest
                 metrics.insert(metric_t(7, 1113, cycle_id, kMissingValue));
                 if( cycle_within_read <= 5 )
                 {
+                    //Doing nothing is the same as adding a record with the missing value sentinel
                     //metrics.insert(metric_t(7, 1114, cycle, kMissingValue));
                 }
                 else if( cycle_within_read <= 35 )

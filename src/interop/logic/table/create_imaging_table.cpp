@@ -7,14 +7,11 @@
  */
 #include "interop/logic/table/create_imaging_table.h"
 
-#include "interop/logic/table/table_util.h"
 #include "interop/logic/summary/map_cycle_to_read.h"
 #include "interop/logic/table/create_imaging_table_columns.h"
 #include "interop/logic/table/table_populator.h"
 #include "interop/logic/metric/q_metric.h"
 #include "interop/logic/utils/metric_type_ext.h"
-#include "interop/logic/utils/enums.h"
-#include "interop/model/metric_base/base_metric.h"
 
 namespace illumina { namespace interop { namespace logic { namespace table
 {

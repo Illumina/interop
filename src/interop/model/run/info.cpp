@@ -16,7 +16,6 @@
 #include <cctype>
 #include "interop/logic/utils/channel.h" // todo remove thiss
 #include "interop/model/run/info.h"
-#include "interop/util/lexical_cast.h"
 #include "interop/util/xml_parser.h"
 #include "interop/io/metric_stream.h"
 #include "interop/logic/utils/enums.h"

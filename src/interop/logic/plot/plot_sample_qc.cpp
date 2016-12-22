@@ -8,7 +8,6 @@
 #include "interop/logic/plot/plot_sample_qc.h"
 
 #include "interop/logic/utils/enums.h"
-#include "interop/logic/utils/metric_type_ext.h"
 
 namespace illumina { namespace interop { namespace logic { namespace plot {
 
