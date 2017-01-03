@@ -8,7 +8,6 @@
 #include "interop/logic/table/create_imaging_table_columns.h"
 
 
-#include "interop/logic/table/table_util.h"
 #include "interop/logic/summary/map_cycle_to_read.h"
 #include "interop/logic/table/check_imaging_table_column.h"
 #include "interop/logic/metric/q_metric.h"

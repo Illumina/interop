@@ -264,7 +264,7 @@ namespace illumina{ namespace interop{ namespace io
                 headers.push_back(column_headers[i]);
             for(size_t i=0;i<static_cast<size_t>(constants::NUM_OF_BASES_AND_NC);++i)
                 headers.push_back(std::string()+subcolumn_headers[0]+"_"+bases[i]);
-            for(size_t i=1;i<util::length_of(column_headers);++i)
+            for(size_t i=1;i<util::length_of(subcolumn_headers);++i)
             {
                 for(size_t j=1;j<static_cast<size_t>(constants::NUM_OF_BASES_AND_NC);++j)
                     headers.push_back(std::string()+subcolumn_headers[i]+"_"+bases[j]);

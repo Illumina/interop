@@ -12,7 +12,6 @@
 #include "interop/model/metrics/q_metric.h"
 #include "interop/io/metric_file_stream.h"
 #include "interop/util/statistics.h"
-#include "interop/constants/enums.h"
 
 using namespace illumina::interop::model::metric_base;
 using namespace illumina::interop::model::metrics;

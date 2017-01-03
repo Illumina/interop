@@ -61,7 +61,7 @@ namespace illumina { namespace interop {  namespace logic { namespace utils
     /** Convert metric type to metric group
      *
      * @param type metric type
-     * @return metric group
+     * @return metric feature type
      */
     inline constants::metric_feature_type to_feature(const constants::metric_type type)
     {
