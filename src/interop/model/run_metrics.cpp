@@ -6,7 +6,6 @@
  *  @copyright GNU Public License.
  */
 #include "interop/model/run_metrics.h"
-#include "interop/io/metric_file_stream.h"
 
 #include "interop/logic/metric/q_metric.h"
 #include "interop/logic/metric/tile_metric.h"

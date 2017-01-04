@@ -7,7 +7,6 @@
  *  @copyright GNU Public License.
  */
 
-#include <limits>
 #include <gtest/gtest.h>
 #include "src/tests/interop/metrics/inc/image_metrics_test.h"
 #include "src/tests/interop/inc/generic_fixture.h"

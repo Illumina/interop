@@ -7,16 +7,11 @@
  */
 #pragma once
 #include <vector>
-#include <string>
 #include "interop/util/exception.h"
 #include "interop/util/constant_mapping.h"
-#include "interop/util/string.h"
-#include "interop/util/length_of.h"
 #include "interop/constants/enums.h"
 #include "interop/model/run_metrics.h"
 #include "interop/model/model_exceptions.h"
-#include "interop/model/table/imaging_column.h"
-#include "interop/model/table/imaging_table.h"
 #include "interop/logic/utils/enums.h"
 #include "interop/logic/table/table_util.h"
 #include "interop/logic/summary/map_cycle_to_read.h"

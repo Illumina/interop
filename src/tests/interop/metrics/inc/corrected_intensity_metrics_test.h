@@ -25,7 +25,7 @@ namespace illumina{ namespace interop { namespace unittest
          *
          * @param metrics destination metric set
          */
-        static void create_expected(metric_set_t& metrics, const model::run::info=model::run::info())
+        static void create_expected(metric_set_t& metrics, const model::run::info& =model::run::info())
         {
             typedef metric_t::uint_t uint_t;
             typedef metric_t::ushort_t ushort_t;
@@ -95,7 +95,7 @@ namespace illumina{ namespace interop { namespace unittest
          *
          * @param metrics destination metric set
          */
-        static void create_expected(metric_set_t& metrics, const model::run::info=model::run::info())
+        static void create_expected(metric_set_t& metrics, const model::run::info& =model::run::info())
         {
             typedef metric_t::uint_t uint_t;
             typedef metric_t::ushort_t ushort_t;

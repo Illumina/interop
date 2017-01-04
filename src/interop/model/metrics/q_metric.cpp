@@ -13,7 +13,6 @@
 #include "interop/util/assert.h"
 #include "interop/model/metrics/q_metric.h"
 #include "interop/model/metrics/q_by_lane_metric.h"
-#include "interop/io/format/metric_format_factory.h"
 #include "interop/io/format/text_format_factory.h"
 #include "interop/io/format/default_layout.h"
 #include "interop/io/format/metric_format.h"
