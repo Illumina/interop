@@ -1,6 +1,7 @@
 using System;
 using NUnit.Framework;
 using System.IO;
+using Illumina.InterOp.RunMetrics;
 using Illumina.InterOp.Plot;
 using Illumina.InterOp.Metrics;
 using Illumina.InterOp.Run;

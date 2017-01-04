@@ -8,7 +8,7 @@ rem     1. Build Configuration: Debug or Release
 rem     2. Path to third party binaries: E.g. GTest, NUnit
 rem
 rem Example Running script (from source directory)
-rem     .\tools\build_test.bat Debug c:\external
+rem     .\tools\build_test.bat Debug c:\external msvc
 rem
 rem Note, you must already have CMake, MinGW and Visual Studio installed and on your path.
 rem
@@ -21,6 +21,7 @@ rem ----------------------------------------------------------------------------
 set SOURCE_DIR=..\
 set BUILD_PARAM=
 set BUILD_TYPE=Debug
+set COMPILER=msvc
 if NOT "%1" == "" (
 set BUILD_TYPE=%1
 )
@@ -33,7 +34,13 @@ set BUILD_PATH=%3%
 if NOT "%3" == "" (
 set BUILD_PARAM=%BUILD_PARAM% -DBUILD_NUMBER=%3%
 )
+if NOT "%4" == "" (
+set COMPILER=%4%
+)
 
+echo %COMPILER%
+
+if "%COMPILER%" == "mingw" (
 
 echo ##teamcity[blockOpened name='Configure %BUILD_TYPE% MinGW']
 mkdir build_mingw_%BUILD_TYPE%
@@ -60,9 +67,13 @@ echo ##teamcity[blockClosed name='Install %BUILD_TYPE% MinGW']
 
 cd ..
 
+)
+
 rem --------------------------------------------------------------------------------------------------------------------
 rem Visual Studio 14 2015 Build Test Script
 rem --------------------------------------------------------------------------------------------------------------------
+
+if "%COMPILER%" == "msvc" (
 
 echo ##teamcity[blockOpened name='Configure %BUILD_TYPE% Visual Studio 2015 Win64']
 mkdir build_vs2015_x64_%BUILD_TYPE%
@@ -88,3 +99,4 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 echo ##teamcity[blockClosed name='NuSpec Release Visual Studio 2015 Win64']
 
 cd ..
+)

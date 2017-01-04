@@ -4,6 +4,7 @@ using System.IO;
 using Illumina.InterOp.Table;
 using Illumina.InterOp.Metrics;
 using Illumina.InterOp.Run;
+using Illumina.InterOp.RunMetrics;
 using Illumina.InterOp.Comm;
 
 namespace Illumina.InterOp.Interop.UnitTest
@@ -105,7 +106,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		public void IsBaseMetric()
 		{
 		    var metricType = metric_type.BasePercent;
-		    Assert.IsTrue(c_csharp_metrics.is_base_metric(metricType));
+		    Assert.IsTrue(c_csharp_run_metrics.is_base_metric(metricType));
 		}
 	}
 

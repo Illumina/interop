@@ -14,9 +14,11 @@
 %include "src/ext/swig/arrays/arrays_impl.i"
 %import "src/ext/swig/run.i"
 %import "src/ext/swig/metrics.i"
+%import "src/ext/swig/run_metrics.i"
 
 // Ensure all the modules import the shared namespace
 %pragma(csharp) moduleimports=%{
+using Illumina.InterOp.RunMetrics;
 using Illumina.InterOp.Metrics;
 using Illumina.InterOp.Run;
 %}
@@ -27,6 +29,7 @@ using System;
 using System.Runtime.InteropServices;
 using Illumina.InterOp.Metrics;
 using Illumina.InterOp.Run;
+using Illumina.InterOp.RunMetrics;
 %}
 
 // Ensure the C++ shared library is loaded by the Java interface file

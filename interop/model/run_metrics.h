@@ -162,7 +162,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          *
          * @param run_folder run folder path
          */
-        size_t read_run_parameters(const std::string &run_folder) throw(io::file_not_found_exception,
+        size_t read_run_parameters(const std::string &run_folder) throw(
+        io::file_not_found_exception,
         xml::xml_file_not_found_exception,
         xml::bad_xml_format_exception,
         xml::empty_xml_format_exception,
@@ -173,7 +174,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          *
          * @param count number of bins for legacy q-metrics
          */
-        void finalize_after_load(size_t count = std::numeric_limits<size_t>::max()) throw(model::invalid_channel_exception,
+        void finalize_after_load(size_t count = std::numeric_limits<size_t>::max()) throw(
+        model::invalid_channel_exception,
         model::invalid_tile_naming_method,
         model::index_out_of_bounds_exception,
         model::invalid_run_info_exception);

@@ -7,6 +7,7 @@ using Illumina.InterOp.Plot;
 using Illumina.InterOp.Table;
 using Illumina.InterOp.Comm;
 using Illumina.InterOp.Summary;
+using Illumina.InterOp.RunMetrics;
 
 namespace Illumina.InterOp.Interop.UnitTest
 {
