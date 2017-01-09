@@ -14,22 +14,24 @@
 #include "interop/util/cstdint.h"
 
 /** Sentinel for an unknown enum type */
-#define INTEROP_UNKNOWN 0x100
+#define INTEROP_UNKNOWN 0x200
 
 
 /** Enumeration of specific features that can belong to a metric
  *
- * @note This macro requires the macro INTEROP_TUPLE2 to be defined before use
+ * @note This macro requires the macro INTEROP_TUPLE_ASSIGN to be defined before use
+ * @note This macro requires the macro INTEROP_TUPLE1 to be defined before use
  * @see illumina::interop::constants::metric_feature_type
  */
 #define INTEROP_ENUM_METRIC_FEATURE_TYPE \
-        INTEROP_TUPLE2(TileFeature, 0x01), \
-        INTEROP_TUPLE2(CycleFeature, 0x02), \
-        INTEROP_TUPLE2(ReadFeature, 0x04), \
-        INTEROP_TUPLE2(BaseFeature, 0x08), \
-        INTEROP_TUPLE2(ChannelFeature, 0x10), \
+        INTEROP_TUPLE_ASSIGN(TileFeature, 0x01), \
+        INTEROP_TUPLE_ASSIGN(CycleFeature, 0x02), \
+        INTEROP_TUPLE_ASSIGN(ReadFeature, 0x04), \
+        INTEROP_TUPLE_ASSIGN(BaseFeature, 0x08), \
+        INTEROP_TUPLE_ASSIGN(ChannelFeature, 0x10), \
+        INTEROP_TUPLE_ASSIGN(LaneFeature, 0x20), \
         INTEROP_TUPLE1(UnknownMetricFeature)
-
+//NOTE: if we add any more features above, we should update the unknown metric value below
 
 /** Enumeration of each metric type
  *
@@ -68,19 +70,20 @@
 
 /** Enumeration of each metric group
  *
+ * @note This macro requires the macro INTEROP_TUPLE2 to be defined before use
  * @note This macro requires the macro INTEROP_TUPLE1 to be defined before use
  * @see illumina::interop::constants::metric_group
  */
 #define INTEROP_ENUM_METRIC_GROUPS \
-        INTEROP_TUPLE1(CorrectedInt),\
-        INTEROP_TUPLE1(Error),\
-        INTEROP_TUPLE1(Extraction),\
-        INTEROP_TUPLE1(Image),\
-        INTEROP_TUPLE1(Index),\
-        INTEROP_TUPLE1(Q),\
-        INTEROP_TUPLE1(Tile),\
-        INTEROP_TUPLE1(QByLane),\
-        INTEROP_TUPLE1(QCollapsed),\
+        INTEROP_TUPLE2(CorrectedInt, CycleFeature|BaseFeature),\
+        INTEROP_TUPLE2(Error, CycleFeature),\
+        INTEROP_TUPLE2(Extraction, CycleFeature|ChannelFeature),\
+        INTEROP_TUPLE2(Image, CycleFeature|ChannelFeature),\
+        INTEROP_TUPLE2(Index, ReadFeature),\
+        INTEROP_TUPLE2(Q, CycleFeature),\
+        INTEROP_TUPLE2(Tile, TileFeature),\
+        INTEROP_TUPLE2(QByLane, LaneFeature),\
+        INTEROP_TUPLE2(QCollapsed, CycleFeature),\
         INTEROP_TUPLE1(MetricCount),\
         INTEROP_TUPLE1(UnknownMetricGroup)
 
@@ -118,12 +121,12 @@
 /** Enumeration of DNA bases
  *
  * @note This macro requires the macro INTEROP_TUPLE1 to be defined before use
- * @note This macro requires the macro INTEROP_TUPLE2 to be defined before use
+ * @note This macro requires the macro INTEROP_TUPLE_ASSIGN to be defined before use
  * @see illumina::interop::constants::dna_bases
  */
 #define INTEROP_ENUM_DNA_BASE_TYPES \
         /** No calls */ \
-        INTEROP_TUPLE2(NC, -1), \
+        INTEROP_TUPLE_ASSIGN(NC, -1), \
         /** DNA base adenine */ \
         INTEROP_TUPLE1(A), \
         /** DNA base cytosine */ \
@@ -244,7 +247,9 @@
 /** This temp macro converts an enum to an enum */
 #define INTEROP_TUPLE1(X) X
 /** This temp macro converts an enum/value pair to an enum */
-#define INTEROP_TUPLE2(X, V) X=V
+#define INTEROP_TUPLE2(X, V) X
+/** This temp macro converts an enum/value pair to an enum */
+#define INTEROP_TUPLE_ASSIGN(X, V) X=V
 
 
 
@@ -322,5 +327,6 @@ namespace illumina { namespace interop { namespace constants
 #undef INTEROP_TUPLE2
 #undef INTEROP_TUPLE3
 #undef INTEROP_TUPLE4
+#undef INTEROP_TUPLE_ASSIGN
 
 

@@ -154,6 +154,7 @@ set(HEADERS
         ../../interop/io/format/text_format.h
         ../../interop/util/self_registration.h
         ../../interop/io/format/text_format_factory.h
+        ../../interop/model/summary/metric_average.h
         )
 
 set(INTEROP_HEADERS ${HEADERS} PARENT_SCOPE)

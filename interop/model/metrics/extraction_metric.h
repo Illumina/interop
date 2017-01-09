@@ -380,6 +380,20 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             m_date_time_csharp = util::csharp_date_time::to_csharp(time);
         }
 
+        /** Determine if any channel's P90 value is 0
+         *
+         * @return true if any channel's P90 value is 0
+         */
+        bool is_any_p90_zero() const
+        {
+            for(size_t channel = 0; channel < channel_count(); ++channel)
+            {
+                if(max_intensity(channel) == 0)
+                    return true;
+            }
+            return false;
+        }
+
     public:
         /** Get the prefix of the InterOp filename
          *

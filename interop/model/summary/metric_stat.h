@@ -10,7 +10,6 @@
 
 namespace illumina { namespace interop { namespace model { namespace summary
 {
-
     /** Simple statistics describing a set of metrics
      *
      */
@@ -34,11 +33,13 @@ namespace illumina { namespace interop { namespace model { namespace summary
 
     public:
         /** Clear the stat variables
+         *
+         * @param set_nan clear to NaN
          */
-        void clear()
+        void clear(const bool set_nan=false)
         {
-            m_mean = 0;
-            m_stddev = 0;
+            m_mean = set_nan ? std::numeric_limits<float>::quiet_NaN() : 0;
+            m_stddev = set_nan ? std::numeric_limits<float>::quiet_NaN() : 0;
             m_median = std::numeric_limits<float>::quiet_NaN();
         }
 
@@ -104,6 +105,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
             return m_median;
         }
         /** @} */
+
     protected:
         /** Mean value */
         float m_mean;

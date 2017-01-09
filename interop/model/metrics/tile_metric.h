@@ -392,6 +392,16 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         {
             return m_read_metrics.size();
         }
+
+        /** Determine if the tile has no raw or PF clusters
+         *
+         * @return true if the tile has no raw or PF clusters
+         */
+        bool is_dead_tile() const
+        {
+            return (cluster_count() == 0) || (cluster_count_pf() == 0);
+        }
+
         /* @} */
         /** Update the phasing/prephasing slope if they don't exist
          *

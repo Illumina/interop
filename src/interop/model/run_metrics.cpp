@@ -111,6 +111,10 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         template<class MetricSet>
         int operator()(MetricSet &metrics) const
         {
+            if(m_load_metric_check == 0 || m_load_metric_check[MetricSet::TYPE] != 0)
+            {
+                metrics.clear();
+            }
             // If the m_load_metric_check is not set, read in the metric
             // Otherwise, check if the metric should be read and that it is not empty
             // This logic is for SAV OnDemand (TM) loading
@@ -346,7 +350,6 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     model::invalid_run_info_exception,
     invalid_parameter)
     {
-        clear();
         read_run_info(run_folder);
         read_metrics(run_folder, valid_to_load);
         const size_t count = read_run_parameters(run_folder);

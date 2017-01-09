@@ -28,6 +28,7 @@ using Illumina.InterOp.Metrics;
 using Illumina.InterOp.Run;
 %}
 
+// Ensure the C++ shared library is loaded by the Java interface file
 %pragma(java) jniclasscode=%{
   static {
     System.loadLibrary("interop_comm");
@@ -44,11 +45,10 @@ EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 #include "interop/io/paths.h"
 %}
 
-
 %include "interop/io/metric_file_stream.h"
 %include "interop/io/paths.h"
 
-
+// Wrap all the interface functions
 %define WRAP_METRIC_IO(metric_t)
     %template(compute_buffer_size ) illumina::interop::io::compute_buffer_size< metric_base::metric_set<metric_t> >;
     %template(write_interop_to_buffer ) illumina::interop::io::write_interop_to_buffer< metric_base::metric_set<metric_t> >;
@@ -56,7 +56,6 @@ EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
     %template(read_interop )  illumina::interop::io::read_interop< metric_base::metric_set<metric_t> >;
     %template(write_interop )  illumina::interop::io::write_interop< metric_base::metric_set<metric_t> >;
 %enddef
-
 
 WRAP_METRICS(WRAP_METRIC_IO)
 

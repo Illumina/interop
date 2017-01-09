@@ -33,6 +33,19 @@ TYPED_TEST_CASE_P(run_metric_test);
 
 /** Confirm the clear function works
  */
+TYPED_TEST_P(run_metric_test, on_demand_not_clear)
+{
+    typedef typename TestFixture::metric_set_t metric_set_t;
+    metric_set_t& metric_set = TestFixture::expected.template get<metric_set_t>();
+    try{
+        std::vector<unsigned char> valid_to_load;
+        TestFixture::expected.read("/File/not/found.aaa", valid_to_load);
+    }catch(const xml::xml_file_not_found_exception&){}
+    EXPECT_FALSE(metric_set.empty());
+}
+
+/** Confirm the clear function works
+ */
 TYPED_TEST_P(run_metric_test, test_clear)
 {
     typedef typename TestFixture::metric_set_t metric_set_t;
@@ -79,7 +92,8 @@ REGISTER_TYPED_TEST_CASE_P(run_metric_test,
                            test_clear,
                            is_group_empty_true,
                            is_group_empty_false,
-                           test_expected_get_metric
+                           test_expected_get_metric,
+                           on_demand_not_clear
 );
 
 

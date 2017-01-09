@@ -519,7 +519,7 @@ namespace illumina { namespace interop { namespace util
             sum += val;
             ++n;
         }
-        if (n == 0)return 0;
+        if (n == 0)return std::numeric_limits<R>::quiet_NaN();
         return sum / n;
     }
 
@@ -551,7 +551,7 @@ namespace illumina { namespace interop { namespace util
             sum3 += val;
             ++n;
         }
-        if (n <= 1) return 0;
+        if (n <= 1) return std::numeric_limits<R>::quiet_NaN();
         return (sum2 - sum3 * sum3 / n) / (n - 1);
     }
 

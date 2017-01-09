@@ -1,5 +1,12 @@
 # Changes                                               {#changes}
 
+## v1.0.15
+
+Date       | Description
+---------- | -----------
+2017-01-04 | Update summary app to support levels of verbosity
+2017-01-03 | Fixes to documentation and text writing
+
 ## v1.0.14
 
 Date       | Description

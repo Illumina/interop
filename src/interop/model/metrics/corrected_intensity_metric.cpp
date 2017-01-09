@@ -222,8 +222,6 @@ namespace illumina{ namespace interop{ namespace io
     };
 
 #pragma pack()
-
-
     /** Corrected intensity Metric CSV text format
      *
      * This class provide an interface for writing the corrected intensity metrics to a CSV file:
@@ -296,7 +294,7 @@ namespace illumina{ namespace interop{ namespace io
             for(int i=-1;i<constants::NUM_OF_BASES;i++)
                 out << sep << metric.called_counts(static_cast<constants::dna_bases>(i));
             for(size_t i=0;i<constants::NUM_OF_BASES;i++)
-                out << sep << metric.corrected_int_called(static_cast<constants::dna_bases>(i));
+                out << sep << metric.corrected_int_called(static_cast<constants::dna_bases>(i));// TODO: use missing for deprecated fields
             for(size_t i=0;i<constants::NUM_OF_BASES;i++)
                 out << sep << metric.corrected_int_all(static_cast<constants::dna_bases>(i));
             out << eol;

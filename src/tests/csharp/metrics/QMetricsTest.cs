@@ -3,6 +3,7 @@ using NUnit.Framework;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using Illumina.InterOp.RunMetrics;
 using Illumina.InterOp.Metrics;
 using Illumina.InterOp.Comm;
 
@@ -55,7 +56,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 	        Assert.AreEqual(expected_metric_set.version(),  actual_metric_set.version());
 	        Assert.AreEqual(expected_metric_set.size(),  actual_metric_set.size());
 
-	        Assert.AreEqual(c_csharp_metrics.count_q_metric_bins(expected_metric_set),  c_csharp_metrics.count_q_metric_bins(actual_metric_set));
+	        Assert.AreEqual(c_csharp_run_metrics.count_q_metric_bins(expected_metric_set),  c_csharp_run_metrics.count_q_metric_bins(actual_metric_set));
 	        Assert.AreEqual(expected_metric_set.bin_count(),  actual_metric_set.bin_count());
 
 	        for(uint i=0;i<Math.Min(expected_metric_set.size(), actual_metric_set.size());i++)

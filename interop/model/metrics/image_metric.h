@@ -232,6 +232,21 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         {
             return m_channel_count;
         }
+
+        /** Determine if any channel's contrast values are 0
+         *
+         * @return true if any channel's contrast values are 0
+         */
+        bool is_any_channel_blank() const
+        {
+            for(size_t channel = 0; channel < channel_count(); ++channel)
+            {
+                if(max_contrast(channel) == 0 && min_contrast(channel) == 0)
+                    return true;
+            }
+            return false;
+        }
+
         /** @} */
         /** Minimum contrast intensity
          *

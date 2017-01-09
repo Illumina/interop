@@ -3,6 +3,7 @@
 using System;
 using Illumina.InterOp.Run;
 using Illumina.InterOp.Metrics;
+using Illumina.InterOp.RunMetrics;
 using Illumina.InterOp.Comm;
 using Illumina.InterOp.Summary;
 
