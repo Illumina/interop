@@ -22,6 +22,8 @@ set SOURCE_DIR=..\
 set BUILD_PARAM=
 set BUILD_TYPE=Debug
 set COMPILER=msvc
+set INSTALL=nuspec
+set MT=/M
 if NOT "%1" == "" (
 set BUILD_TYPE=%1
 )
@@ -38,65 +40,43 @@ if NOT "%4" == "" (
 set COMPILER=%4%
 )
 
-echo %COMPILER%
-
 if "%COMPILER%" == "mingw" (
-
 echo ##teamcity[blockOpened name='Configure %BUILD_TYPE% MinGW']
 mkdir build_mingw_%BUILD_TYPE%
 cd build_mingw_%BUILD_TYPE%
 echo cmake %SOURCE_DIR% -G"MinGW Makefiles" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% %BUILD_PARAM%
 cmake %SOURCE_DIR% -G"MinGW Makefiles" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% %BUILD_PARAM% -DCMAKE_INSTALL_PREFIX=../usr
-if %errorlevel% neq 0 exit /b %errorlevel%
+if !errorlevel! neq 0 exit /b !errorlevel!
 echo ##teamcity[blockClosed name='Configure %BUILD_TYPE% MinGW']
-
-echo ##teamcity[blockOpened name='Build %BUILD_TYPE% MinGW']
-cmake --build . -- -j8
-if %errorlevel% neq 0 exit /b %errorlevel%
-echo ##teamcity[blockClosed name='Build %BUILD_TYPE% MinGW']
-
-echo ##teamcity[blockOpened name='Test %BUILD_TYPE% MinGW']
-cmake --build . --target check -- -j8
-if %errorlevel% neq 0 exit /b %errorlevel%
-echo ##teamcity[blockClosed name='Test %BUILD_TYPE% MinGW']
-
-echo ##teamcity[blockOpened name='Install %BUILD_TYPE% MinGW']
-cmake --build . --target install -- -j8
-if %errorlevel% neq 0 exit /b %errorlevel%
-echo ##teamcity[blockClosed name='Install %BUILD_TYPE% MinGW']
-
-cd ..
-
+set MT=-j8
+set INSTALL=install
 )
-
-rem --------------------------------------------------------------------------------------------------------------------
-rem Visual Studio 14 2015 Build Test Script
-rem --------------------------------------------------------------------------------------------------------------------
-
 if "%COMPILER%" == "msvc" (
-
 echo ##teamcity[blockOpened name='Configure %BUILD_TYPE% Visual Studio 2015 Win64']
 mkdir build_vs2015_x64_%BUILD_TYPE%
 cd build_vs2015_x64_%BUILD_TYPE%
 echo cmake %SOURCE_DIR% -G"Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=%BUILD_TYPE%  %BUILD_PARAM%
 cmake %SOURCE_DIR% -G"Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=%BUILD_TYPE%  %BUILD_PARAM%
-if %errorlevel% neq 0 exit /b %errorlevel%
+if !errorlevel! neq 0 exit /b !errorlevel!
 echo ##teamcity[blockClosed name='Configure %BUILD_TYPE% Visual Studio 2015 Win64']
+)
 
-echo ##teamcity[blockOpened name='Build %BUILD_TYPE% Visual Studio 2015 Win64']
-cmake --build . --config %BUILD_TYPE% -- /M
-if %errorlevel% neq 0 exit /b %errorlevel%
-echo ##teamcity[blockClosed name='Build %BUILD_TYPE% Visual Studio 2015 Win64']
 
-echo ##teamcity[blockOpened name='Test %BUILD_TYPE% Visual Studio 2015 Win64']
-cmake --build . --target check --config %BUILD_TYPE% -- /M
+echo ##teamcity[blockOpened name='Build %BUILD_TYPE% %COMPILER%']
+cmake --build . --config %BUILD_TYPE% -- %MT%
 if %errorlevel% neq 0 exit /b %errorlevel%
-echo ##teamcity[blockClosed name='Test %BUILD_TYPE% Visual Studio 2015 Win64']
+echo ##teamcity[blockClosed name='Build %BUILD_TYPE% %COMPILER%']
 
-echo ##teamcity[blockOpened name='NuSpec Release Visual Studio 2015 Win64']
-cmake --build . --target nuspec --config Release -- /M
+echo ##teamcity[blockOpened name='Test %BUILD_TYPE% MinGW']
+cmake --build . --config %BUILD_TYPE% --target check -- %MT%
 if %errorlevel% neq 0 exit /b %errorlevel%
-echo ##teamcity[blockClosed name='NuSpec Release Visual Studio 2015 Win64']
+echo ##teamcity[blockClosed name='Test %BUILD_TYPE% MinGW']
+
+echo ##teamcity[blockOpened name='Install %BUILD_TYPE% MinGW']
+cmake --build . --config Release --target %INSTALL% -- %MT%
+if %errorlevel% neq 0 exit /b %errorlevel%
+echo ##teamcity[blockClosed name='Install %BUILD_TYPE% MinGW']
 
 cd ..
-)
+
+
