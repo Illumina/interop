@@ -39,6 +39,7 @@ Write-Host "##teamcity[blockClosed name='Configure $config $generator']"
 if ($test_code -ne 0)
 {
     cd ..
+    Write-Host "##teamcity[buildStatus status='FAILURE' text='Configure Failed!']"
     exit $test_code
 }
 
@@ -51,7 +52,8 @@ Write-Host "##teamcity[blockClosed name='Build $config $generator']"
 if ($test_code -ne 0)
 {
     cd ..
-    exit $test_code
+    Write-Host "##teamcity[buildStatus status='FAILURE' text='Build Failed!']"
+    exit 1
 }
 
 $baseline_path = $baseline_path + "_master"
