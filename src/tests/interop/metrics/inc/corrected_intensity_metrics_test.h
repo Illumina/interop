@@ -143,5 +143,48 @@ namespace illumina{ namespace interop { namespace unittest
         }
     };
 
+    /** This test compares byte values taken from an InterOp file for three records produced by RTA 2.7.x
+     * to the values displayed in SAV.
+     *
+     * Regression Test: Regression_Win_150925_SF-0128_0466_AH23HLCFXX_Indexed-Six-Digit
+     * @see model::metrics::corrected_intensity_metric
+     * @note Version 4
+     */
+    struct corrected_intensity_metric_v4 : metric_test<model::metrics::corrected_intensity_metric, 4>
+    {
+        /** Create the expected metric set
+         *
+         * @param metrics destination metric set
+         */
+        static void create_expected(metric_set_t& metrics, const model::run::info& =model::run::info())
+        {
+            typedef metric_t::uint_t uint_t;
+            metrics = metric_set_t(VERSION);
+            uint_t called_counts1[] = {0,111617,71352,57947,104195};
+            uint_t called_counts2[] = {0,109387,64466,66598,104660};
+            uint_t called_counts3[] = {0,106933,68530,65092,104556};
+
+            metrics.insert(metric_t(3, 211011, 1, to_vector(called_counts1)));
+            metrics.insert(metric_t(3, 211011, 2, to_vector(called_counts2)));
+            metrics.insert(metric_t(3, 211011, 3, to_vector(called_counts3)));
+        }
+        /** Get the expected binary data
+         *
+         * @param buffer binary data string
+         */
+        template<class Collection>
+        static void create_binary_data(Collection& buffer)
+        {
+            const int tmp[] =
+                    {
+                            4,28,3,0,67,56,3,0,1,0,0,0,0,0,1,-76,1,0,-72,22,1,0,91,-30
+                            ,0,0,3,-105,1,0,3,0,67,56,3,0,2,0,0,0,0,0,75,-85,1,0,-46
+                            ,-5,0,0,38,4,1,0,-44,-104,1,0,3,0,67,56,3,0,3,0,0,0,0,0
+                            ,-75,-95,1,0,-78,11,1,0,68,-2,0,0,108,-104,1,0
+                    };
+            buffer.assign(tmp, tmp+util::length_of(tmp));
+        }
+    };
+
 }}}
 

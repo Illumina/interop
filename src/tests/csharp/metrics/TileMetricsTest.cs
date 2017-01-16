@@ -60,7 +60,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 			};
 			expected_binary_data = new byte[tmp.Length];
 			for(int i=0;i<expected_binary_data.Length;i++) expected_binary_data[i] = (byte)tmp[i];
-			expected_metric_set = new base_tile_metrics(expected_metrics, Version, new base_metric_header());
+			expected_metric_set = new base_tile_metrics(expected_metrics, Version, new tile_metric_header(0));
 			c_csharp_comm.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, actual_metric_set);
 		}
 

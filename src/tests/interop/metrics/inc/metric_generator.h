@@ -21,6 +21,10 @@ namespace illumina{ namespace interop { namespace unittest
     class write_read_metric_generator;
     /** Write-read metric registry */
     typedef registry_factory<write_read_metric_generator> write_read_metric_registry_t;
+    template<class Gen>
+    class by_cycle_metric_generator;
+    /** By cycle metric registry */
+    typedef registry_factory<by_cycle_metric_generator> by_cycle_metric_registry_t;
     /** Generate the actual metric set by reading in from hardcoded binary buffer
      *
      * The expected metric set is provided by the generator.
@@ -124,7 +128,80 @@ namespace illumina{ namespace interop { namespace unittest
             out << std::endl;
         }
     };
+    /** Generate the actual metric set writing out the expected and reading it back in again
+     *
+     * The expected metric set is provided by the generator.
+     */
+    template<class Gen>
+    class by_cycle_metric_generator : public abstract_generator< typename Gen::metric_set_t >
+    {
+        typedef typename Gen::metric_set_t metric_set_t;
+        typedef typename Gen::metric_t metric_t;
+        typedef typename abstract_generator<metric_set_t>::parent_type parent_t;
+    public:
+        /** Constructor */
+        by_cycle_metric_generator()
+        {
+            by_cycle_metric_registry_t::instance()(metric_t(), Gen::VERSION);
+        }
+        /** Generate the expected and actual metric sets
+         *
+         * @param expected expected metric set
+         * @param actual actual metric set
+         */
+        ::testing::AssertionResult generate(metric_set_t& expected, metric_set_t& actual, bool*)const
+        {
+            typedef typename metric_set_t::metric_type metric_t;
+            typedef typename metric_t::uint_t uint_t;
 
+            std::string expected_data;
+            {
+                // Write out expected metrics
+                std::ostringstream fout;
+                Gen::create_expected(expected);
+                io::write_metrics(fout, expected);
+                expected_data = fout.str();
+            }
+            std::string expected_binary_data2;
+            {
+                // Insert additional metrics and write them to another buffer
+                std::ostringstream fout;
+                metric_set_t expected_metric_set2(expected, Gen::VERSION);
+                uint_t max_tile_id=0;
+
+                metric_t tmp = expected[0];
+                const size_t n = expected.size();
+                for(size_t i=0;i<n;++i)
+                    max_tile_id = std::max(expected[i].tile(), max_tile_id);
+                for(uint_t i=0;i<n;++i)
+                {
+                    tmp.set_base(tmp.lane(), max_tile_id+1+i);
+                    expected.insert(tmp);
+                    expected_metric_set2.insert(tmp);
+                }
+                io::write_metrics(fout, expected_metric_set2, Gen::VERSION);
+                expected_binary_data2 = fout.str();
+            }
+
+            io::read_interop_from_string(expected_data,actual, false);
+            io::read_interop_from_string(expected_binary_data2,actual);
+
+            return ::testing::AssertionSuccess();
+        }
+        /** Create a copy of this object
+         *
+         * @return pointer to copy
+         */
+        parent_t clone()const{return new by_cycle_metric_generator<Gen>;}
+        /** Write generator info to output stream
+         *
+         * @param out output stream
+         */
+        void write(std::ostream& out)const
+        {
+            out << "by_cycle_metric_generator<" << Gen::name() << ">";
+        }
+    };
     /** Generate the actual metric set writing out the expected and reading it back in again
      *
      * The expected metric set is provided by the generator.
@@ -167,9 +244,9 @@ namespace illumina{ namespace interop { namespace unittest
             {
                 illumina::interop::io::read_interop(baseline_file, expected);
             }
-            // Should never have an incomplete file in baseline, set sentinel to detect
+                // Should never have an incomplete file in baseline, set sentinel to detect
             catch(const io::incomplete_file_exception&){expected.set_version(INCOMPLETE);return true;}
-            // Ensure missing file is expected
+                // Ensure missing file is expected
             catch(const io::file_not_found_exception&){expected.set_version(NOT_FOUND); return false;}
             return true;
         }
@@ -185,9 +262,9 @@ namespace illumina{ namespace interop { namespace unittest
             {
                 illumina::interop::io::read_interop(run_folder, actual);
             }
-            // Ensure missing file is expected
+                // Ensure missing file is expected
             catch(const io::incomplete_file_exception&){if(actual.empty()) actual.set_version(NOT_FOUND);}
-            // Ensure file is missing
+                // Ensure file is missing
             catch(const io::file_not_found_exception&){actual.set_version(NOT_FOUND);}
             return !actual.empty();
         }
@@ -224,7 +301,7 @@ namespace illumina{ namespace interop { namespace unittest
         void write(std::ostream& out)const
         {
             out << "regression_test_metric_generator< "<< metric_set_t::prefix() << metric_set_t::suffix() << "> - "
-                    << io::basename(parent_t::m_run_folder);
+                << io::basename(parent_t::m_run_folder);
         }
         /** Get the full path of the baseline output file
          *

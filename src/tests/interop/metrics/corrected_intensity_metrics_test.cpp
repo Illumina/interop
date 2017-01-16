@@ -8,7 +8,7 @@
  */
 
 #ifdef _MSC_VER
-    #pragma warning(disable:4127) // MSVC warns about using constants in conditional statements, for template constants
+#pragma warning(disable:4127) // MSVC warns about using constants in conditional statements, for template constants
 #endif
 
 #include <gtest/gtest.h>
@@ -43,7 +43,12 @@ corrected_intensity_metrics_tests::generator_type corrected_intensity_unit_test_
         wrap(new hardcoded_metric_generator< corrected_intensity_metric_v2 >) ,
         wrap(new write_read_metric_generator< corrected_intensity_metric_v2 >),
         wrap(new hardcoded_metric_generator< corrected_intensity_metric_v3 >),
-        wrap(new write_read_metric_generator< corrected_intensity_metric_v3 >)
+        wrap(new write_read_metric_generator< corrected_intensity_metric_v3 >),
+        wrap(new hardcoded_metric_generator< corrected_intensity_metric_v4 >),
+        wrap(new write_read_metric_generator< corrected_intensity_metric_v4 >),
+        wrap(new by_cycle_metric_generator< corrected_intensity_metric_v2 >),
+        wrap(new by_cycle_metric_generator< corrected_intensity_metric_v3 >),
+        wrap(new by_cycle_metric_generator< corrected_intensity_metric_v4 >)
 };
 
 // Specificy the fixtures used for corrected_intensity_metrics_tests TEST_P functions

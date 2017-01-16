@@ -147,6 +147,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
     {
         typedef typename model::metrics::run_metrics::id_t id_t;
         typedef model::metric_base::metric_set< model::metrics::tile_metric > tile_metric_set_t;
+        typedef model::metric_base::metric_set< model::metrics::dynamic_phasing_metric > dynamic_phasing_metric_set_t;
 
         if(columns.empty())return;
         const size_t column_count = columns.back().column_count();
@@ -209,6 +210,16 @@ namespace illumina { namespace interop { namespace logic { namespace table
                                              row_offset,
                                              column_count,
                                              data_beg, data_end);
+        populate_imaging_table_data_by_cycle(metrics.get<model::metrics::phasing_metric>(),
+                                             q20_idx,
+                                             q30_idx,
+                                             naming_method,
+                                             cycle_to_read,
+                                             cmap,
+                                             row_offset,
+                                             column_count,
+                                             data_beg, data_end);
+
         const tile_metric_set_t& tile_metrics = metrics.get<model::metrics::tile_metric>();
         for(typename row_offset_map_t::const_iterator it = row_offset.begin();it != row_offset.end();++it)
         {
@@ -228,6 +239,26 @@ namespace illumina { namespace interop { namespace logic { namespace table
                                       naming_method,
                                       cmap,
                                       data_beg+row*column_count, data_end);
+        }
+        const dynamic_phasing_metric_set_t& dynamic_phasing_metrics =
+                metrics.get<model::metrics::dynamic_phasing_metric>();
+        for(typename row_offset_map_t::const_iterator it = row_offset.begin();it != row_offset.end();++it)
+        {
+            const id_t lane = model::metric_base::base_read_metric::lane_from_id(it->first);
+            const id_t tile = model::metric_base::base_read_metric::tile_from_id(it->first);
+            const id_t cycle = model::metric_base::base_cycle_metric::cycle_from_id(it->first);
+            const ::uint64_t row = it->second;
+            const summary::read_cycle& read = cycle_to_read[static_cast<size_t>(cycle-1)];
+            if (!dynamic_phasing_metrics.has_metric(static_cast<uint32_t>(lane), static_cast<uint32_t>(tile), static_cast<uint32_t>(read.number))) continue;
+            table_populator::populate(dynamic_phasing_metrics.get_metric(static_cast<uint32_t>(lane), static_cast<uint32_t>(tile), static_cast<uint32_t>(read.number)),
+                                      read.number,
+                                      q20_idx,
+                                      q30_idx,
+                                      0,
+                                      naming_method,
+                                      cmap,
+                                      data_beg+row*column_count,
+                                      data_end);
         }
     }
     /** Populate the imaging table with all the metrics in the run

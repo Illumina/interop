@@ -161,6 +161,49 @@ namespace illumina { namespace interop { namespace io
         {
             return "C" + util::lexical_cast<std::string>(cycle)+".1";
         }
+
+    public:
+        /** Generate a file name from a run directory and the InterOp name for by cycle InterOps
+         *
+         * @note The 'Out' suffix is appended when we read the file. We excluded the Out in certain conditions
+         * when writing the file.
+         *
+         * @param run_directory file path to the run directory
+         * @param prefix prefix name of the interop file
+         * @param suffix suffix name of the interop file
+         * @param cycle cycle id for by cycle InterOp
+         * @param use_out if true, append "Out" to the end of the filename
+         * @return file path to the InterOp directory
+         */
+        static std::string interop_filename(const std::string &run_directory,
+                                            const std::string &prefix,
+                                            const std::string &suffix,
+                                            const size_t cycle,
+                                            const bool use_out = true)
+        {
+            if (io::basename(run_directory) == interop_basename(prefix, suffix, use_out))
+                return run_directory;
+            if (io::basename(run_directory) == "InterOp")
+                return io::combine(io::combine(run_directory, cycle_folder(cycle)), interop_basename(prefix, suffix, use_out));
+            return io::combine(io::combine(interop_directory_name(run_directory), cycle_folder(cycle)), interop_basename(prefix, suffix, use_out));
+        }
+
+        /** Generate a file name from a run directory and the metric type for by cycle InterOps
+         *
+         * @note The 'Out' suffix is appended when we read the file. We excluded the Out in certain conditions
+         * when writing the file.
+         *
+         * @param run_directory file path to the run directory
+         * @param cycle current cycle
+         * @param use_out if true, append "Out" to the end of the filename
+         * @return file path to the InterOp directory
+         */
+        template<class MetricType>
+        static std::string interop_filename(const std::string &run_directory, const size_t cycle, bool use_out = true)
+        {
+            return interop_filename(run_directory, MetricType::prefix(), MetricType::suffix(), cycle, use_out);
+        }
+
     };
 
 }}}

@@ -164,6 +164,52 @@ namespace illumina{ namespace interop { namespace unittest
     };
 
 
+    /** This test writes three records of an InterOp files, then reads them back in and compares
+     * each value to ensure they did not change.
+     *
+     * @see model::metrics::tile_metric
+     * @note Version 3
+     */
+    struct tile_metric_v3 : metric_test<model::metrics::tile_metric, 3>
+    {
+        /** Create the expected metric set
+         *
+         * @param metrics destination metric set
+         */
+        static void create_expected(metric_set_t &metrics, const model::run::info& =model::run::info())
+        {
+            metrics = metric_set_t(header_t(2.7476099f), VERSION);
+            metric_t::read_metric_vector reads1;
+            reads1.push_back(metric_t::read_metric_type(1, 2.61630869f));
+            reads1.push_back(metric_t::read_metric_type(2, 2.61630869f));
+
+            metrics.insert(metric_t(7, 111014, 2355119.25f,1158081.50f,6470949,3181956,reads1));
+            metrics.insert(metric_t(7, 121014, 2355119.25f,1174757.75f,6470949,3227776,
+                                    metric_t::read_metric_vector(1, metric_t::read_metric_type(1, 2.62243795f))));
+            metrics.insert(metric_t(7, 211014, 2355119.25f,1211592.38f,6470949,3328983,
+                                    metric_t::read_metric_vector(1, metric_t::read_metric_type(1, 2.490309f))));
+
+        }
+        /** Get the expected binary data
+         *
+         * @param buffer binary data string
+         */
+        template<class Collection>
+        static void create_binary_data(Collection &buffer)
+        {
+            const int tmp[] =
+                    {
+                            3,15,-41,-40,47,64,7,0,-90,-79,1,0,116,74,122,-59,74,16,54,66
+                            ,74,7,0,-90,-79,1,0,114,1,0,0,0,-102,113,39,64,7,0,-90,-79,1
+                            ,0,114,2,0,0,0,-102,113,39,64,7,0,-74,-40,1,0,116,74,122,-59
+                            ,74,0,2,69,74,7,0,-74,-40,1,0,114,1,0,0,0,6,-42,39,64,7,0
+                            ,70,56,3,0,116,74,122,-59,74,92,47,75,74,7,0,70,56,3,0,114,1
+                            ,0,0,0,57,97,31,64
+                    };
+            buffer.assign(tmp, tmp+util::length_of(tmp));
+        }
+    };
+
 }}}
 
 

@@ -10,6 +10,7 @@
 #include "interop/logic/metric/q_metric.h"
 #include "interop/logic/metric/tile_metric.h"
 #include "interop/logic/utils/channel.h"
+#include "interop/logic/metric/dynamic_phasing_metric.h"
 
 namespace illumina { namespace interop { namespace model { namespace metrics
 {
@@ -297,14 +298,43 @@ namespace illumina { namespace interop { namespace model { namespace metrics
 
     struct check_for_each_data_source
     {
-        check_for_each_data_source(const std::string &f) : m_run_folder(f)
+        check_for_each_data_source(const std::string &f, const size_t last_cycle) :
+                m_run_folder(f), m_last_cycle(last_cycle)
         {}
         template<class MetricSet>
         void operator()(MetricSet &metrics)const
         {
-            metrics.data_source_exists(io::interop_exists(m_run_folder, metrics));
+            metrics.data_source_exists(io::interop_exists(m_run_folder, metrics, m_last_cycle));
         }
         std::string m_run_folder;
+        size_t m_last_cycle;
+    };
+
+    struct read_by_cycle_func
+    {
+        typedef const unsigned char* bool_pointer;
+
+        read_by_cycle_func(const std::string &f, const size_t last_cycle, bool_pointer load_metric_check=0) :
+                m_run_folder(f), m_last_cycle(last_cycle), m_load_metric_check(load_metric_check)
+        {}
+
+        template<class MetricSet>
+        int operator()(MetricSet &metrics) const
+        {
+            // If the m_load_metric_check is not set, read in the metric
+            // Otherwise, check if the metric should be read and that it is not empty
+            // This logic is for SAV OnDemand (TM) loading
+            if(m_load_metric_check != 0 && (m_load_metric_check[MetricSet::TYPE] == 0 || !metrics.empty()))
+            {
+                return 0;
+            }
+            io::read_interop_by_cycle(m_run_folder, metrics, m_last_cycle);
+            return 0;
+        }
+
+        std::string m_run_folder;
+        size_t m_last_cycle;
+        bool_pointer m_load_metric_check;
     };
 
     /** Read binary metrics and XML files from the run folder
@@ -327,7 +357,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     {
         clear();
         const size_t count = read_xml(run_folder);
-        read_metrics(run_folder);
+        read_metrics(run_folder, run_info().total_cycles());
         finalize_after_load(count);
     }
     /** Read binary metrics and XML files from the run folder
@@ -351,10 +381,10 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     invalid_parameter)
     {
         read_run_info(run_folder);
-        read_metrics(run_folder, valid_to_load);
+        read_metrics(run_folder, run_info().total_cycles(), valid_to_load);
         const size_t count = read_run_parameters(run_folder);
         finalize_after_load(count);
-        check_for_data_sources(run_folder);
+        check_for_data_sources(run_folder, run_info().total_cycles());
     }
 
     /** Read XML files: RunInfo.xml and possibly RunParameters.xml
@@ -557,13 +587,19 @@ namespace illumina { namespace interop { namespace model { namespace metrics
      *  - Missing RunParameters.xml for non-legacy run folders
      *
      * @param run_folder run folder path
+     * @param last_cycle last cycle to search for by cycle interops
      */
-    void run_metrics::read_metrics(const std::string &run_folder) throw(
+    void run_metrics::read_metrics(const std::string &run_folder, const size_t last_cycle) throw(
     io::file_not_found_exception,
     io::bad_format_exception,
     io::incomplete_file_exception)
     {
-        m_metrics.apply(read_func(run_folder));
+        read_func read_functor(run_folder);
+        m_metrics.apply(read_functor);
+        if (read_functor.are_all_files_missing())
+        {
+            m_metrics.apply(read_by_cycle_func(run_folder, last_cycle));
+        }
     }
 
     /** Read binary metrics from the run folder
@@ -574,9 +610,10 @@ namespace illumina { namespace interop { namespace model { namespace metrics
      *  - Missing RunParameters.xml for non-legacy run folders
      *
      * @param run_folder run folder path
+     * @param last_cycle last cycle to search for by cycle interops
      * @param valid_to_load list of metrics to load
      */
-    void run_metrics::read_metrics(const std::string &run_folder, const std::vector<unsigned char>& valid_to_load)
+    void run_metrics::read_metrics(const std::string &run_folder, const size_t last_cycle, const std::vector<unsigned char>& valid_to_load)
     throw(io::file_not_found_exception,
     io::bad_format_exception,
     io::incomplete_file_exception,
@@ -586,7 +623,13 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         if(valid_to_load.size() != constants::MetricCount)
             INTEROP_THROW(invalid_parameter, "Boolean array valid_to_load does not match expected number of metrics: "
                     << valid_to_load.size() << " != " << constants::MetricCount);
-        m_metrics.apply(read_func(run_folder, &valid_to_load.front()));
+
+        read_func read_functor(run_folder, &valid_to_load.front());
+        m_metrics.apply(read_functor);
+        if (read_functor.are_all_files_missing())
+        {
+            m_metrics.apply(read_by_cycle_func(run_folder, last_cycle, &valid_to_load.front()));
+        }
     }
 
     /** Write binary metrics to the run folder
@@ -653,10 +696,11 @@ namespace illumina { namespace interop { namespace model { namespace metrics
      *
      * This will set the `metric_set::data_source_exists` flag.
      * @param run_folder run folder path
+     * @param last_cycle last cycle to search for by cycle interops
      */
-    void run_metrics::check_for_data_sources(const std::string &run_folder)
+    void run_metrics::check_for_data_sources(const std::string &run_folder, const size_t last_cycle)
     {
-        m_metrics.apply(check_for_each_data_source(run_folder));
+        m_metrics.apply(check_for_each_data_source(run_folder, last_cycle));
     }
     /** Validate whether the RunInfo.xml matches the InterOp files
      *

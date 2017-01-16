@@ -85,7 +85,51 @@ namespace illumina{ namespace interop { namespace unittest
             summary.cycle_state().extracted_cycle_range(model::run::cycle_range(1, 1));
         }
     };
-    
+
+    /** This test writes three records of an InterOp files, then reads them back in and compares
+     * each value to ensure they did not change.
+     *
+     * @see model::metrics::extraction_metric
+     * @note Version 3
+     */
+    struct extraction_metric_v3 : metric_test<model::metrics::extraction_metric, 3>
+    {
+        /** Create the expected metric set
+         *
+         * @param metrics destination metric set
+         */
+        static void create_expected(metric_set_t &metrics, const model::run::info& =model::run::info())
+        {
+            metrics = metric_set_t(header_t(2), VERSION);
+            typedef metric_t::ushort_t ushort_t;
+
+            const ushort_t p90_1[]  = {877,518};
+            const float focus1[] = {2.14784f,2.12109f};
+            const ushort_t p90_2[]  = {862,508};
+            const float focus2[] = {2.1639f,2.08307f};
+            const ushort_t p90_3[]  = {887,519};
+            const float focus3[] = {2.15751f,2.09462f};
+
+            metrics.insert(metric_t(3,211011,1, to_vector(p90_1), to_vector(focus1)));
+            metrics.insert(metric_t(3,211012,1, to_vector(p90_2), to_vector(focus2)));
+            metrics.insert(metric_t(3,211013,1, to_vector(p90_3), to_vector(focus3)));
+        }
+        /** Get the expected binary data
+         *
+         * @param buffer binary data string
+         */
+        template<class Collection>
+        static void create_binary_data(Collection &buffer)
+        {
+            const int tmp[] =
+                    {
+                            3,20,2,3,0,67,56,3,0,1,0,54,118,9,64,-16,-65,7,64,109,3,6,2
+                            ,3,0,68,56,3,0,1,0,86,125,10,64,5,81,5,64,94,3,-4,1,3,0,69
+                            ,56,3,0,1,0,-91,20,10,64,65,14,6,64,119,3,7,2
+                    };
+            buffer.assign(tmp, tmp+util::length_of(tmp));
+        }
+    };
 
 }}}
 

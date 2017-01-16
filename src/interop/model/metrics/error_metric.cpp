@@ -95,8 +95,8 @@ namespace illumina{ namespace interop{ namespace io
         static record_size_t compute_size(const error_metric::header_type&)
         {
             return static_cast<record_size_t>(sizeof(metric_id_t)+
-                    sizeof(error_t)+                                  // m_error_rate
-                    sizeof(count_t)*error_metric::MAX_MISMATCH   // m_mismatch_cluster_count
+                                              sizeof(error_t)+                                  // m_error_rate
+                                              sizeof(count_t)*error_metric::MAX_MISMATCH   // m_mismatch_cluster_count
             );
         }
         /** Compute header size
@@ -110,7 +110,86 @@ namespace illumina{ namespace interop{ namespace io
 
     };
 
+    /** Error Metric Record Layout Version 4
+     *
+     * This class provides an interface to reading the error metric file:
+     *  - InterOp/ErrorMetrics.bin
+     *  - InterOp/ErrorMetricsOut.bin
+     *
+     * The class takes two template arguments:
+     *
+     *      1. Metric Type: error_metric
+     *      2. Version: 4
+     */
+    template<>
+    struct generic_layout<error_metric, 4> : public default_layout<4>
+    {
+        /** @page error_v4 Error Version 4
+         *
+         * This class provides an interface to reading the error metric file:
+         *  - InterOp/ErrorMetrics.bin
+         *  - InterOp/ErrorMetricsOut.bin
+         *
+         *  The file format for error metrics is as follows:
+         *
+         *  @b Header
+         *
+         *  illumina::interop::io::read_metrics (Function that parses this information)
+         *
+         *          byte 0: version number (4)
+         *          byte 1: record size (12)
+         *
+         *  @b n-Records
+         *
+         *  illumina::interop::io::layout::base_cycle_metric (Class that parses this information)
+         *
+         *          2 bytes: lane number (uint16)
+         *          4 bytes: tile number (uint32)
+         *          2 bytes: cycle number (uint16)
+         *
+         *  illumina::interop::io::generic_layout<error_metric, 4> (Class that parses this information)
+         *
+         *          4 bytes: error rate (float32)
+         */
+        /** Metric ID type */
+        typedef layout::base_cycle_metric< ::uint32_t > metric_id_t;
+        /** Error type */
+        typedef float error_t;
+        /** Map reading/writing to stream
+         *
+         * Reading and writing are symmetric operations, map it once
+         *
+         * @param stream input/output stream
+         * @param metric source/destination metric
+         * @return number of bytes read or total number of bytes written
+         */
+        template<class Stream, class Metric, class Header>
+        static std::streamsize map_stream(Stream& stream, Metric& metric, Header&, const bool)
+        {
+            std::streamsize count = 0;
+            count += stream_map< error_t >(stream, metric.m_error_rate);
+            return count;
+        }
+        /** Compute the layout size
+         *
+         * @return size of the record
+         */
+        static record_size_t compute_size(const error_metric::header_type&)
+        {
+            return static_cast<record_size_t>(sizeof(metric_id_t)+
+                                              sizeof(error_t)        // m_errorRate
+            );
+        }
+        /** Compute header size
+         *
+         * @return header size
+         */
+        static record_size_t compute_header_size(const error_metric::header_type&)
+        {
+            return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t));
+        }
 
+    };
 #pragma pack()
     /** Error Metric CSV text format
      *
@@ -137,9 +216,9 @@ namespace illumina{ namespace interop{ namespace io
                                    const char eol)
         {
             const char* headers[] =
-            {
-                "Lane", "Tile", "Cycle", "ErrorRate"
-            };
+                    {
+                            "Lane", "Tile", "Cycle", "ErrorRate"
+                    };
             out << "# Column Count: " << util::length_of(headers) << eol;
             out << headers[0];
             for(size_t i=1;i<util::length_of(headers);++i)
@@ -171,6 +250,7 @@ namespace illumina{ namespace interop{ namespace io
 
 INTEROP_FORCE_LINK_DEF(error_metric)
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(error_metric, 3 )
+INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(error_metric, 4 )
 
 
 // Text formats

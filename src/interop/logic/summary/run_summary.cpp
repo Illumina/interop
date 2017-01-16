@@ -12,6 +12,8 @@
 #include "interop/logic/summary/quality_summary.h"
 #include "interop/logic/utils/channel.h"
 #include "interop/logic/metric/q_metric.h"
+#include "interop/logic/summary/phasing_summary.h"
+#include "interop/logic/metric/dynamic_phasing_metric.h"
 
 
 namespace illumina { namespace interop { namespace logic { namespace summary
@@ -48,6 +50,10 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                                                                              lane+1,
                                                                              surface+1,
                                                                              naming_convention);
+                metrics.get<phasing_metric>().populate_tile_numbers_for_lane_surface(tile_count_set,
+                                                                                     lane+1,
+                                                                                     surface+1,
+                                                                                     naming_convention);
 
                 if(surface_count > 1)
                 {
@@ -163,6 +169,15 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                               cycle_to_read,
                               &model::summary::cycle_state_summary::called_cycle_range,
                               summary);
+        if(0 == metrics.get<dynamic_phasing_metric>().size())
+            logic::metric::populate_dynamic_phasing_metrics(metrics.get<model::metrics::phasing_metric>(),
+                                                            cycle_to_read,
+                                                            metrics.get<model::metrics::dynamic_phasing_metric>(),
+                                                            metrics.get<model::metrics::tile_metric>());
+        summarize_phasing_metrics(metrics.get<dynamic_phasing_metric>().begin(),
+                                  metrics.get<dynamic_phasing_metric>().end(),
+                                  summary,
+                                  skip_median);
 
         if(trim)
         {

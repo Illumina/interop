@@ -29,7 +29,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
      *
      * This class defines all the information that describes an index within a sequencing run.
      *
-     * @note Supported versions: 1
+     * @note Supported versions: 1, 2
      */
     class index_info
     {
@@ -155,7 +155,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
      *
      * The index metric holds string information describing the indexes used in the run.
      *
-     * @note Supported versions: 1
+     * @note Supported versions: 1 and 2
      */
     class index_metric : public metric_base::base_read_metric
     {
@@ -163,9 +163,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         enum
         {
             /** Unique type code for metric */
-            TYPE = constants::Index,
+                    TYPE = constants::Index,
             /** Latest version of the InterOp format */
-            LATEST_VERSION = 1
+                    LATEST_VERSION = 2
         };
         /** Define a index array using an underlying vector */
         typedef std::vector<index_info> index_array_t;
@@ -256,4 +256,3 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         struct io::generic_layout;
     };
 }}}}
-
