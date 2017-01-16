@@ -30,7 +30,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         enum
         {
             /** Maximum number of channels supported **/
-            MAX_CHANNELS = 4
+                    MAX_CHANNELS = 4
         };
         /** Unsigned int16_t
          */
@@ -84,7 +84,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
      *
      * Per tile per cycle per channel percentiles of pixel values used to autocontrast thumbnail images
      *
-     * @note Supported versions: 1 and 2
+     * @note Supported versions: 1, 2 and 3
      */
     class image_metric : public metric_base::base_cycle_metric
     {
@@ -92,11 +92,11 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         enum
         {
             /** Maximum number of channels supported **/
-            MAX_CHANNELS = image_metric_header::MAX_CHANNELS,
+                    MAX_CHANNELS = image_metric_header::MAX_CHANNELS,
             /** Unique type code for metric */
-            TYPE = constants::Image,
+                    TYPE = constants::Image,
             /** Latest version of the InterOp format */
-            LATEST_VERSION = 2
+                    LATEST_VERSION = 3
         };
         /** Image metric header
          */

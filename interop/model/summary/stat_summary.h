@@ -222,6 +222,39 @@ namespace illumina { namespace interop { namespace model { namespace summary
         {
             return m_first_cycle_intensity;
         }
+        /** Get statistics summarizing the phasing slope
+         *
+         * @return statistics summarizing the slope of the best fit line of phasing weight vs cycle
+         */
+        const metric_stat_t &phasing_slope() const
+        {
+            return m_phasing_slope;
+        }
+        /** Get statistics summarizing the phasing offset
+         *
+         * @return statistics summarizing the offset of the best fit line of phasing weight vs cycle
+         */
+        const metric_stat_t &phasing_offset() const
+        {
+            return m_phasing_offset;
+        }
+        /** Get statistics summarizing the prephasing slope
+         *
+         * @return statistics summarizing the slope of the best fit line of prephasing weight vs cycle
+         */
+        const metric_stat_t &prephasing_slope() const
+        {
+            return m_prephasing_slope;
+        }
+        /** Get statistics summarizing the prephasing offset
+         *
+         * @return statistics summarizing the offset of the best fit line of prephasing weight vs cycle
+         */
+        const metric_stat_t &prephasing_offset() const
+        {
+            return m_prephasing_offset;
+        }
+
         /** @} */
 
     public:
@@ -377,6 +410,38 @@ namespace illumina { namespace interop { namespace model { namespace summary
         {
             m_first_cycle_intensity=stat;
         }
+        /** Set statistics summarizing the phasing slope
+         *
+         * @param stat statistics summarizing the slope of the best fit line of phasing weight vs cycle
+         */
+        void phasing_slope(const metric_stat_t& stat)
+        {
+            m_phasing_slope = stat;
+        }
+        /** Set statistics summarizing the phasing offset
+         *
+         * @param stat statistics summarizing the offset of the best fit line of phasing weight vs cycle
+         */
+        void phasing_offset(const metric_stat_t& stat)
+        {
+            m_phasing_offset = stat;
+        }
+        /** Set statistics summarizing the prephasing slope
+         *
+         * @param stat statistics summarizing the slope of the best fit line of prephasing weight vs cycle
+         */
+        void prephasing_slope(const metric_stat_t& stat)
+        {
+            m_prephasing_slope = stat;
+        }
+        /** Set statistics summarizing the prephasing offset
+         *
+         * @param stat statistics summarizing the offset of the best fit line of prephasing weight vs cycle
+         */
+        void prephasing_offset(const metric_stat_t& stat)
+        {
+            m_prephasing_offset = stat;
+        }
 
     public:
         /** Resize the underlying data
@@ -407,6 +472,10 @@ namespace illumina { namespace interop { namespace model { namespace summary
         metric_stat_t m_error_rate_75;
         metric_stat_t m_error_rate_100;
         metric_stat_t m_first_cycle_intensity;
+        metric_stat_t m_phasing_slope;
+        metric_stat_t m_phasing_offset;
+        metric_stat_t m_prephasing_slope;
+        metric_stat_t m_prephasing_offset;
         template<class MetricType, int Version>
         friend struct io::generic_layout;
     };

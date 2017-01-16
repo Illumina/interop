@@ -16,6 +16,7 @@
 #include "interop/model/metrics/q_metric.h"
 #include "interop/model/metrics/error_metric.h"
 #include "interop/model/metrics/corrected_intensity_metric.h"
+#include "interop/model/metrics/phasing_metric.h"
 
 
 namespace illumina { namespace interop { namespace logic { namespace metric
@@ -318,6 +319,34 @@ namespace illumina { namespace interop { namespace logic { namespace metric
         const size_t m_read;
     };
 
+    /** Specialization for model::metrics::phasing_metric
+     *
+     * Supports enums: Phasing, PrePhasing
+     */
+    template<>
+    class metric_value<model::metrics::phasing_metric>
+    {
+    public:
+        /** Get the metric value corresponding to the enum value represented by type
+         *
+         * @param metric phasing metric to extract data from
+         * @param type field we want to extract from the metric
+         * @return float value representing the field value in the metric
+         */
+        float operator()(const model::metrics::phasing_metric& metric,
+                         const constants::metric_type type)const
+        {
+            switch(type)
+            {
+                case constants::Phasing:
+                    return metric.phasing_weight();
+                case constants::PrePhasing:
+                    return metric.prephasing_weight();
+                default:
+                    INTEROP_THROW(model::invalid_metric_type, "Unknown metric type " << constants::to_string(type));
+            }
+        }
+    };
 }}}}
 
 

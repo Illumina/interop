@@ -5,7 +5,7 @@
  *  - InterOp/CorrectedIntMetricsOut.bin
  *
  * Corrected intensities are generated once phasing and prephasing are calculated. Note, the software generates
- * phasing/prephasing estimates after cycle 25 (for most platforms).
+ * phasing/prephasing estimates after cycle 25 (for most platforms).
  *
  * For 4-dye systems, the intensity corrected for cross-talk between the color channels and phasing and prephasing
  *
@@ -38,12 +38,12 @@ namespace illumina { namespace interop { namespace model { namespace metrics
      *
      * For 4-dye systems, the intensity corrected for cross-talk between the color channels and phasing
      * and prephasing. These are used in base calling. Note, the software generates phasing/prephasing
-     * estimates after cycle 25 (for most platforms).
+     * estimates after cycle 25 (for most platforms).
      *
      * For 2-dye systems, the values are calculated is another way and aid in accessing the progress
      * of the run.
      *
-     * @note Supported versions: 2 and 3
+     * @note Supported versions: 2, 3 and 4
      */
     class corrected_intensity_metric : public metric_base::base_cycle_metric
     {
@@ -51,9 +51,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         enum
         {
             /** Unique type code for metric */
-            TYPE = constants::CorrectedInt,
+                    TYPE = constants::CorrectedInt,
             /** Latest version of the InterOp format */
-            LATEST_VERSION = 3
+                    LATEST_VERSION = 4
         };
         /** Define a diffference type
          */
@@ -208,6 +208,44 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             INTEROP_ASSERT(m_corrected_int_called.size() == constants::NUM_OF_BASES);
             INTEROP_ASSERT(m_called_counts.size() == constants::NUM_OF_BASES_AND_NC);
         }
+        /** Constructor
+         *
+         * @note Version 4
+         * @param lane lane number
+         * @param tile tile number
+         * @param cycle cycle number
+         * @param called_counts number of clusters called per base
+         */
+        corrected_intensity_metric(const uint_t lane,
+                                   const uint_t tile,
+                                   const uint_t cycle,
+                                   const uint_array_t& called_counts) :
+                metric_base::base_cycle_metric(lane, tile, cycle),
+                m_average_cycle_intensity(std::numeric_limits<ushort_t>::max()),
+                m_corrected_int_all(constants::NUM_OF_BASES, std::numeric_limits<ushort_t>::max()),
+                m_corrected_int_called(constants::NUM_OF_BASES, std::numeric_limits<ushort_t>::max()),
+                m_called_counts(called_counts),
+                m_signal_to_noise(std::numeric_limits<float>::quiet_NaN())
+        {
+            INTEROP_ASSERT(called_counts.size() == constants::NUM_OF_BASES_AND_NC);
+        }
+
+    public:
+        /** Setter
+         *
+         * @param lane lane number
+         * @param tile tile number
+         * @param cycle cycle number
+         * @param called_counts called base counts
+         */
+        void set(const uint_t lane,
+                 const uint_t tile,
+                 const uint_t cycle,
+                 const uint_array_t& called_counts)
+        {
+            metric_base::base_cycle_metric::set_base(lane, tile, cycle);
+            m_called_counts = called_counts;
+        }
 
     public:
         /** @defgroup corrected_intensity Corrected Intensity Metrics
@@ -243,7 +281,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
 
         /** Average corrected intensity for only base called clusters: A, C, G and T
          *
-         * @note Supported by all versions
+         * @note Supported by versions 2 and 3, not later
          * @param index index of the base (A=0, C=1, G=2, T=3)
          * @return average corrected intensity over only base called clusters
          */
@@ -263,6 +301,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
 
         /** Average corrected intensity for only base called clusters: A, C, G and T
          *
+         * @note Supported by versions 2 and 3, not later
          * @return vector of corrected called intensities
          */
         const ushort_array_t &corrected_int_called_array() const
@@ -339,7 +378,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
 
         /** Get the total summed intensity for only called clusters
          *
-         * @note Supported by all versions
+         * @note Supported by versions 2 and 3, not later
          * @return total summed intensity
          */
         uint_t total_called_intensity() const

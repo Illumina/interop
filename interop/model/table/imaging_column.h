@@ -68,6 +68,12 @@
         INTEROP_TUPLE7(Corrected,             metrics::corrected_intensity_metric,corrected_int_all_array,    Void, UShort, BaseArray, 0)\
         INTEROP_TUPLE7(Called,                metrics::corrected_intensity_metric,corrected_int_called_array, Void, UShort, BaseArray, 0)\
         INTEROP_TUPLE7(SignalToNoise,         metrics::corrected_intensity_metric,signal_to_noise,            Void, Float, ValueType, 2)\
+        INTEROP_TUPLE7(PercentPhasingWeight,   metrics::phasing_metric,            phasing_weight,             Void, Float, ValueType, 3)\
+        INTEROP_TUPLE7(PercentPrephasingWeight,metrics::phasing_metric,            prephasing_weight,          Void, Float, ValueType, 3)\
+        INTEROP_TUPLE7(PhasingSlope,           metrics::dynamic_phasing_metric,    phasing_slope,              Void, Float, ValueType, 3)\
+        INTEROP_TUPLE7(PhasingOffset,          metrics::dynamic_phasing_metric,    phasing_offset,             Void, Float, ValueType, 3)\
+        INTEROP_TUPLE7(PrephasingSlope,        metrics::dynamic_phasing_metric,    prephasing_slope,           Void, Float, ValueType, 3)\
+        INTEROP_TUPLE7(PrephasingOffset,       metrics::dynamic_phasing_metric,    prephasing_offset,          Void, Float, ValueType, 3)\
         INTEROP_TUPLE7(MinimumContrast,       metrics::image_metric,              min_contrast_array,         Void, UShort, ChannelArray, 0)\
         INTEROP_TUPLE7(MaximumContrast,       metrics::image_metric,              max_contrast_array,         Void, UShort, ChannelArray, 0)\
         INTEROP_TUPLE7(Surface,               metric_base::base_metric,           surface,                    NamingConvention, UInt, IdType, 0)\

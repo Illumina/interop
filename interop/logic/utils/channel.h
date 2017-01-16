@@ -180,6 +180,7 @@ namespace illumina { namespace interop { namespace logic { namespace utils
         {
             case constants::MiniSeq:
             case constants::NextSeq:
+            case constants::NovaSeq:
                 channels.clear();
                 channels.reserve(2);
                 channels.push_back("Red");

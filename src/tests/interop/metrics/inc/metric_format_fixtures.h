@@ -14,6 +14,7 @@
 #include "src/tests/interop/metrics/inc/extraction_metrics_test.h"
 #include "src/tests/interop/metrics/inc/image_metrics_test.h"
 #include "src/tests/interop/metrics/inc/index_metrics_test.h"
+#include "src/tests/interop/metrics/inc/phasing_metrics_test.h"
 #include "src/tests/interop/metrics/inc/q_collapsed_metrics_test.h"
 #include "src/tests/interop/metrics/inc/q_metrics_test.h"
 #include "src/tests/interop/metrics/inc/tile_metrics_test.h"
@@ -26,11 +27,18 @@ namespace illumina{ namespace interop { namespace unittest
             <
                     corrected_intensity_metric_v2,
                     corrected_intensity_metric_v3,
+                    corrected_intensity_metric_v4,
                     error_metric_v3,
+                    error_metric_v4,
                     extraction_metric_v2,
+                    extraction_metric_v3,
                     image_metric_v1,
                     image_metric_v2,
+                    image_metric_v3,
                     index_metric_v1,
+                    index_metric_v2,
+                    phasing_metric_v1,
+                    phasing_metric_v2,
                     q_collapsed_metric_v2,
                     q_collapsed_metric_v3,
                     q_collapsed_metric_v4,
@@ -40,7 +48,9 @@ namespace illumina{ namespace interop { namespace unittest
                     q_metric_v5,
                     q_metric_v6,
                     q_metric_v6_unbinned,
-                    tile_metric_v2
+                    q_metric_v7,
+                    tile_metric_v2,
+                    tile_metric_v3
             > PublicFormats;
 
 

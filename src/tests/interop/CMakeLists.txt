@@ -15,6 +15,7 @@ set(SRCS
         metrics/extraction_metrics_test.cpp
         metrics/index_metrics_test.cpp
         metrics/image_metrics_test.cpp
+        metrics/phasing_metrics_test.cpp
         metrics/q_metrics_test.cpp
         metrics/tile_metrics_test.cpp
         metrics/q_by_lane_metric_test.cpp
@@ -45,6 +46,7 @@ set(HEADERS
         metrics/inc/extraction_metrics_test.h
         metrics/inc/image_metrics_test.h
         metrics/inc/index_metrics_test.h
+        metrics/inc/phasing_metrics_test.h
         metrics/inc/q_metrics_test.h
         metrics/inc/tile_metrics_test.h
         metrics/inc/q_collapsed_metrics_test.h
@@ -60,7 +62,7 @@ set(HEADERS
         logic/inc/empty_plot_test_generator.h
         logic/inc/plot_regression_test_generator.h
         metrics/inc/format_registry.h
-        )
+        metrics/phasing_metrics_test.cpp)
 
 
 add_executable(interop_gtests ${SRCS} ${HEADERS})

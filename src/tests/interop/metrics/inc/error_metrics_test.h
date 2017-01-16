@@ -283,5 +283,39 @@ namespace illumina { namespace interop { namespace unittest
         }
     };
 
+    /** This test writes three records of an InterOp files, then reads them back in and compares
+     * each value to ensure they did not change.
+     *
+     * @see model::metrics::error_metric
+     * @note Version 4
+     */
+    struct error_metric_v4 : metric_test<model::metrics::error_metric, 4>
+    {
+        /** Create the expected metric set
+         *
+         * @param metrics destination metric set
+         */
+        static void create_expected(metric_set_t &metrics, const model::run::info& =model::run::info())
+        {
+            metrics = metric_set_t(VERSION);
+            metrics.insert(metric_t(3, 211011, 1, 0.608985f));
+            metrics.insert(metric_t(3, 211011, 2, 0.298748f));
+            metrics.insert(metric_t(3, 211011, 3, 0.287257f));
+        }
+        /** Get the expected binary data
+         *
+         * @param buffer binary data string
+         */
+        template<class Collection>
+        static void create_binary_data(Collection &buffer)
+        {
+            const int tmp[] =
+                    {4
+                            ,12,3,0,67,56,3,0,1,0,113,-26,27,63,3,0,67,56,3,0,2
+                            ,0,127,-11,-104,62,3,0,67,56,3,0,3,0,89,19,-109,62
+                    };
+            buffer.assign(tmp, tmp+util::length_of(tmp));
+        }
+    };
 }}}
 

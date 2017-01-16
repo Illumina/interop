@@ -249,6 +249,20 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                         data[0]);
                 break;
             }
+            case constants::EmpiricalPhasing:
+            {
+                data.assign(1, model::plot::series<Point>());
+
+                typedef model::metrics::phasing_metric metric_t;
+                metric::metric_value<metric_t> proxy4;
+                max_cycle = populate_candle_stick_by_cycle(
+                        metrics.get<metric_t>(),
+                        proxy4,
+                        options,
+                        type,
+                        data[0]);
+                break;
+            }
             default:
                 INTEROP_THROW(model::invalid_metric_type, "Invalid metric group");
         }

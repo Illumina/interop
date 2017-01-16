@@ -62,6 +62,8 @@
         INTEROP_TUPLE4(PercentPhasing, "% Phasing", Tile, ReadFeature),\
         INTEROP_TUPLE4(PercentPrephasing, "% Prephasing", Tile, ReadFeature),\
         INTEROP_TUPLE4(PercentAligned, "% Aligned", Tile, ReadFeature),\
+        INTEROP_TUPLE4(Phasing, "Phasing", EmpiricalPhasing, CycleFeature),\
+        INTEROP_TUPLE4(PrePhasing, "PrePhasing", EmpiricalPhasing, CycleFeature),\
         INTEROP_TUPLE4(CorrectedIntensity, "Corrected Int", CorrectedInt, CycleFeature|BaseFeature),\
         INTEROP_TUPLE4(CalledIntensity, "Called Int", CorrectedInt, CycleFeature|BaseFeature),\
         INTEROP_TUPLE4(SignalToNoise, "Signal to Noise", CorrectedInt, CycleFeature),\
@@ -84,6 +86,8 @@
         INTEROP_TUPLE2(Tile, TileFeature),\
         INTEROP_TUPLE2(QByLane, LaneFeature),\
         INTEROP_TUPLE2(QCollapsed, CycleFeature),\
+        INTEROP_TUPLE2(EmpiricalPhasing, CycleFeature),\
+        INTEROP_TUPLE2(DynamicPhasing, CycleFeature),\
         INTEROP_TUPLE1(MetricCount),\
         INTEROP_TUPLE1(UnknownMetricGroup)
 
@@ -165,6 +169,7 @@
         INTEROP_TUPLE1(MiSeq),\
         INTEROP_TUPLE1(NextSeq),\
         INTEROP_TUPLE1(MiniSeq), \
+        INTEROP_TUPLE1(NovaSeq), \
         INTEROP_TUPLE1(InstrumentCount), \
         INTEROP_TUPLE1(UnknownInstrument)
 

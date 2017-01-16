@@ -22,6 +22,42 @@
 
 namespace illumina { namespace interop { namespace model { namespace metrics
 {
+    /** Header information for writing an tile metric set
+     */
+    class tile_metric_header : public metric_base::base_metric::header_type
+    {
+    public:
+        /** Constructor
+         *
+         * @param density density of clusters
+         */
+        tile_metric_header(const float density) : m_density(density) {}
+        /** Get the cluster density
+         *
+         * @note Supported by version 3 and later
+         * @return density of clusters
+         */
+        float density()const{return m_density;}
+        /** Generate a default header
+         *
+         * @return default header
+         */
+        static tile_metric_header default_header()
+        {
+            return tile_metric_header(std::numeric_limits<float>::quiet_NaN());
+        }
+        /** Clear the data
+         */
+        void clear()
+        {
+            m_density=0;
+            metric_base::base_metric::header_type::clear();
+        }
+    private:
+        float m_density;
+        template<class MetricType, int Version>
+        friend struct io::generic_layout;
+    };
     /** Read metrics
      */
     class read_metric
@@ -76,6 +112,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
 
         /** Percent phasing for read
          *
+         * @note Supported only in version 2
          * @return percent phasing
          */
         float percent_phasing() const
@@ -83,6 +120,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
 
         /** Percent prephasing for read
          *
+         * @note Supported only in version 2
          * @return percent prephasing
          */
         float percent_prephasing() const
@@ -97,6 +135,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
 
         /** Set percent phasing for read
          *
+         * @note Supported only in version 2
          * @param val percent phasing
          */
         void percent_phasing(const float val)
@@ -104,6 +143,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
 
         /** Set percent prephasing for read
          *
+         * @note Supported only in version 2
          * @param val percent prephasing
          */
         void percent_prephasing(const float val)
@@ -120,7 +160,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
 
     /** Tile metrics
      *
-     * @note Supported versions: 2
+     * @note Supported versions: 2 and 3
      */
     class tile_metric : public metric_base::base_metric
     {
@@ -128,9 +168,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         enum
         {
             /** Unique type code for metric */
-            TYPE = constants::Tile,
+                    TYPE = constants::Tile,
             /** Latest version of the InterOp format */
-            LATEST_VERSION = 2
+                    LATEST_VERSION = 3
         };
         /** Define map between read ids and read metrics
          */
@@ -139,6 +179,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         typedef read_metric_vector::const_iterator const_iterator;
         /** Read metric type */
         typedef read_metric read_metric_type;
+        /** Define header for metric set */
+        typedef tile_metric_header header_type;
     private:
         typedef read_metric_vector::iterator read_iterator;
     public:
@@ -153,10 +195,10 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         /** Constructor
          */
         tile_metric(const header_type&) : metric_base::base_metric(0, 0),
-                m_cluster_density(std::numeric_limits<float>::quiet_NaN()),
-                m_cluster_density_pf(std::numeric_limits<float>::quiet_NaN()),
-                m_cluster_count(std::numeric_limits<float>::quiet_NaN()),
-                m_cluster_count_pf(std::numeric_limits<float>::quiet_NaN())
+                                          m_cluster_density(std::numeric_limits<float>::quiet_NaN()),
+                                          m_cluster_density_pf(std::numeric_limits<float>::quiet_NaN()),
+                                          m_cluster_count(std::numeric_limits<float>::quiet_NaN()),
+                                          m_cluster_count_pf(std::numeric_limits<float>::quiet_NaN())
         { }
 
         /** Constructor
@@ -217,6 +259,27 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                 m_cluster_count_pf(metric.m_cluster_count_pf),
                 m_read_metrics(read_metrics.size() > 0 ? read_metrics : metric.read_metrics())
         { }
+        /** Constructor
+         *
+         * @note Version 3, used for writing
+         * @param lane lane number
+         * @param tile tile number
+         * @param cluster_count number of clusters for each tile
+         * @param cluster_count_pf number of clusters passing filter for each tile
+         * @param read_metrics vector of metrics for each read on the tile
+         */
+        tile_metric(const uint_t lane,
+                    const uint_t tile,
+                    const float cluster_count,
+                    const float cluster_count_pf,
+                    const read_metric_vector & read_metrics=read_metric_vector()) :
+                metric_base::base_metric(lane,tile),
+                m_cluster_density(std::numeric_limits<float>::quiet_NaN()),
+                m_cluster_density_pf(std::numeric_limits<float>::quiet_NaN()),
+                m_cluster_count(cluster_count),
+                m_cluster_count_pf(cluster_count_pf),
+                m_read_metrics(read_metrics)
+        {}
 
     public:
         /** @defgroup tile_metric Tile Metrics
@@ -324,6 +387,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
 
         /** Percent phasing for read at specified index
          *
+         * @note Supported only in version 2
          * @param n index of read
          * @return percent phasing (or NaN is out of bounds)
          */
@@ -336,6 +400,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
 
         /** Percent prephasing for read at specified index
          *
+         * @note Supported only in version 2
          * @param n index of read
          * @return percent prephasing (or NaN is out of bounds)
          */
@@ -362,6 +427,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
 
         /** Percent phasing for read read number
          *
+         * @note Supported only in version 2
          * @param number number of read
          * @return percent phasing (or NaN is out of bounds)
          */
@@ -374,6 +440,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
 
         /** Percent prephasing for read number
          *
+         * @note Supported only in version 2
          * @param number number of read
          * @return percent prephasing (or NaN is out of bounds)
          */

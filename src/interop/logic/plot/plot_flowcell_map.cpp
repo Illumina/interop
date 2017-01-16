@@ -160,6 +160,16 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                                       values_for_scaling);
                 break;
             }
+            case constants::EmpiricalPhasing:
+            {
+                typedef model::metrics::phasing_metric metric_t;
+                typedef model::metric_base::metric_set<metric_t> metric_set_t;
+                const metric_set_t& metric_set = metrics.get<metric_t>();
+                metric::metric_value<metric_t> proxy;
+                populate_flowcell_map(metric_set.begin(), metric_set.end(), proxy, type, layout, options, data,
+                                      values_for_scaling);
+                break;
+            }
             default:
                 INTEROP_THROW( model::invalid_metric_type, "Unsupported metric type: " << constants::to_string(type));
         };
