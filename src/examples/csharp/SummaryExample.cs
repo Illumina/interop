@@ -21,7 +21,11 @@ class SummaryExample
 		}
 
 		run_metrics metrics = new run_metrics();
-		metrics.read(args[0]);
+		uchar_vector interopsToLoad = new uchar_vector();
+
+		// Load only the metrics required by summary
+		c_csharp_run_metrics.list_summary_metrics_to_load(interopsToLoad);
+		metrics.read(args[0], interopsToLoad);
 
 
         run_summary summary = new run_summary();
@@ -32,4 +36,4 @@ class SummaryExample
 		return 0;
 	}
 }
-// @ [Reading a binary InterOp file in CSharp]
+// @ [Create Summary Model from Run Folder]
