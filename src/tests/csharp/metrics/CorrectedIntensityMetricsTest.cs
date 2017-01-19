@@ -94,7 +94,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		{
 
 			ushort[] correctedIntAll1 = new ushort[]{1213, 966, 960, 1095};
-			ushort[] correctedIntCalled1 = new ushort[]{4070, 4074, 4029, 3972};
+			float[] correctedIntCalled1 = new float[]{4070, 4074, 4029, 3972};
 			uint[] calledCounts1 = new uint[]{0, 698433, 548189, 548712, 646638};
 			expected_metrics.Clear();
 			expected_metrics.Add(
@@ -102,13 +102,13 @@ namespace Illumina.InterOp.Interop.UnitTest
 					calledCounts1));
 			ushort[] correctedIntAll2 = (new ushort[]{1558, 1151, 1158, 1293});
 			uint[] calledCounts2 = (new uint[]{10938, 733661, 537957, 543912, 615504});
-			ushort[] correctedIntCalled2 = (new ushort[]{5013, 4983, 4915, 4932});
+			float[] correctedIntCalled2 = (new float[]{5013, 4983, 4915, 4932});
 			expected_metrics.Add(
 				new corrected_intensity_metric(1, 1104, 1, 1295, 13.3051805f, correctedIntCalled2, correctedIntAll2,
 					calledCounts2));
 			ushort[] correctedIntAll3 = (new ushort[]{1171, 932, 912, 1069});
 			uint[] calledCounts3 = (new uint[]{0, 706987, 556441, 556067, 653959});
-			ushort[] correctedIntCalled3 = (new ushort[]{3931, 3931, 3923, 3878});
+			float[] correctedIntCalled3 = (new float[]{3931, 3931, 3923, 3878});
 			expected_metrics.Add(
 				new corrected_intensity_metric(1, 1105, 25, 1025, 11.7396259f, correctedIntCalled3, correctedIntAll3,
 					calledCounts3));
@@ -138,14 +138,14 @@ namespace Illumina.InterOp.Interop.UnitTest
 		protected override void SetUp()
 		{
 			uint_vector calledCounts1 = new uint_vector(new uint[]{52, 1049523, 654071, 500476, 982989});
-			ushort_vector correctedIntCalled1 = new ushort_vector(new ushort[]{245, 252, 61, 235});
+			float_vector correctedIntCalled1 = new float_vector(new float[]{245, 252, 61, 235});
 			expected_metrics.Clear();
 			expected_metrics.Add(new corrected_intensity_metric(7, 1114, 1, correctedIntCalled1, (calledCounts1)));
 			uint_vector calledCounts2 = new uint_vector(new uint[]{0, 1063708, 582243, 588028, 953132});
-			ushort_vector correctedIntCalled2 = new ushort_vector(new ushort[]{232, 257, 68, 228});
+			float_vector correctedIntCalled2 = new float_vector(new float[]{232, 257, 68, 228});
 			expected_metrics.Add(new corrected_intensity_metric(7, 1114, 2, (correctedIntCalled2), (calledCounts2)));
 			uint_vector calledCounts3 = new uint_vector(new uint[]{0, 1022928, 617523, 594836, 951825});
-			ushort_vector correctedIntCalled3 = new ushort_vector(new ushort[]{227, 268, 68, 229});
+			float_vector correctedIntCalled3 = new float_vector(new float[]{227, 268, 68, 229});
 			expected_metrics.Add(new corrected_intensity_metric(7, 1114, 3, (correctedIntCalled3), (calledCounts3)));
 
 			int[] tmp = new int[]{3, 34, 7, 0, 90, 4, 1, 0, -11, 0, -4, 0, 61, 0, -21, 0, 52, 0, 0, 0, -77, 3, 16, 0, -9, -6, 9, 0,

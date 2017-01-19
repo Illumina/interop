@@ -330,13 +330,13 @@ namespace illumina{ namespace interop{ namespace io
                                    const char eol)
         {
             const char* column_headers[] =
-                    {
-                            "Lane", "Tile", "Cycle", "AverageCycleIntensity", "SignalToNoise"
-                    };
+            {
+                "Lane", "Tile", "Cycle", "AverageCycleIntensity", "SignalToNoise"
+            };
             const char* subcolumn_headers[] =
-                    {
-                            "CalledCount", "CalledIntensity", "AllIntensity"
-                    };
+            {
+                "CalledCount", "CalledIntensity", "AllIntensity"
+            };
             std::vector<std::string> bases;
             constants::list_enum_names<constants::dna_bases>(bases);
             std::vector<std::string> headers;
@@ -393,3 +393,4 @@ INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(corrected_intensity_metric, 4 )
 
 // Text formats
 INTEROP_REGISTER_METRIC_TEXT_LAYOUT(corrected_intensity_metric, 1)
+

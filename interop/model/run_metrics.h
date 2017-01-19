@@ -127,8 +127,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          *
          * @param run_folder run folder path
          * @param valid_to_load list of metrics to load
+         * @param skip_loaded skip metrics that are already loaded
          */
-        void read(const std::string &run_folder, const std::vector<unsigned char>& valid_to_load)
+        void read(const std::string &run_folder, const std::vector<unsigned char>& valid_to_load, const bool skip_loaded=false)
         throw(xml::xml_file_not_found_exception,
         xml::bad_xml_format_exception,
         xml::empty_xml_format_exception,
@@ -257,7 +258,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
 
         /** List all filenames for a specific metric
          *
-         * @param files destination interop file names
+         * @param files destination interop file names (first one is legacy, all subsequent are by cycle)
          * @param run_folder run folder location
          */
         template<class T>
@@ -267,7 +268,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             typedef typename metric_base::metric_set_helper<T>::metric_set_t metric_set_t;
             const size_t last_cycle = run_info().total_cycles();
             if( last_cycle == 0 ) INTEROP_THROW(invalid_run_info_exception, "RunInfo is empty");
-            io::list_interop_filenames< metric_set_t >(files, run_folder);
+            io::list_interop_filenames< metric_set_t >(files, run_folder, last_cycle);
         }
 
     public:
@@ -347,8 +348,12 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @param run_folder run folder path
          * @param last_cycle last cycle of run
          * @param valid_to_load boolean vector indicating which files to load
+         * @param skip_loaded skip metrics that are already loaded
          */
-        void read_metrics(const std::string &run_folder, const size_t last_cycle, const std::vector<unsigned char>& valid_to_load) throw(
+        void read_metrics(const std::string &run_folder,
+                          const size_t last_cycle,
+                          const std::vector<unsigned char>& valid_to_load,
+                          const bool skip_loaded=false) throw(
         io::file_not_found_exception,
         io::bad_format_exception,
         io::incomplete_file_exception,

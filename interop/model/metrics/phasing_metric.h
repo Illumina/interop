@@ -29,9 +29,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         enum
         {
             /** Unique type code for metric */
-                    TYPE = constants::EmpiricalPhasing,
+            TYPE = constants::EmpiricalPhasing,
             /** Latest version of the InterOp format */
-                    LATEST_VERSION = 2
+            LATEST_VERSION = 2
         };
     public:
         /** Constructor
@@ -110,3 +110,4 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         struct io::generic_layout;
     };
 }}}}
+

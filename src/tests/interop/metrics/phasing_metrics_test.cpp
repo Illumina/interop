@@ -35,8 +35,8 @@ phasing_metrics_tests::generator_type phasing_unit_test_generators[] = {
 
 // Setup unit tests for phasing_metrics_tests
 INSTANTIATE_TEST_CASE_P(phasing_metric_unit_test,
-        phasing_metrics_tests,
-        ::testing::ValuesIn(phasing_unit_test_generators));
+                        phasing_metrics_tests,
+                        ::testing::ValuesIn(phasing_unit_test_generators));
 /**
  * @class illumina::interop::model::metrics::phasing_metric
  * @test Confirm version 1 of the metric can be written to and read from a stream
@@ -44,22 +44,22 @@ INSTANTIATE_TEST_CASE_P(phasing_metric_unit_test,
  */
 TEST_P(phasing_metrics_tests, test_read_write)
 {
-typedef phasing_metric_set::const_iterator const_iterator;
-if(skip_test) return;
-ASSERT_TRUE(fixture_test_result);
-EXPECT_EQ(actual.version(), expected.version());
-EXPECT_EQ(actual.size(), expected.size());
+    typedef phasing_metric_set::const_iterator const_iterator;
+    if(skip_test) return;
+    ASSERT_TRUE(fixture_test_result);
+    EXPECT_EQ(actual.version(), expected.version());
+    EXPECT_EQ(actual.size(), expected.size());
 
-for(const_iterator it_expected=expected.begin(), it_actual = actual.begin();
-it_expected != expected.end() && it_actual != actual.end();
-it_expected++,it_actual++)
-{
-EXPECT_EQ(it_expected->lane(), it_actual->lane());
-EXPECT_EQ(it_expected->tile(), it_actual->tile());
-EXPECT_EQ(it_expected->cycle(), it_actual->cycle());
-EXPECT_NEAR(it_expected->prephasing_weight(), it_actual->prephasing_weight(), 1e-7);
-EXPECT_NEAR(it_expected->phasing_weight(), it_actual->phasing_weight(), 1e-7);
-}
+    for(const_iterator it_expected=expected.begin(), it_actual = actual.begin();
+        it_expected != expected.end() && it_actual != actual.end();
+        it_expected++,it_actual++)
+    {
+        EXPECT_EQ(it_expected->lane(), it_actual->lane());
+        EXPECT_EQ(it_expected->tile(), it_actual->tile());
+        EXPECT_EQ(it_expected->cycle(), it_actual->cycle());
+        EXPECT_NEAR(it_expected->prephasing_weight(), it_actual->prephasing_weight(), 1e-7);
+        EXPECT_NEAR(it_expected->phasing_weight(), it_actual->phasing_weight(), 1e-7);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -67,5 +67,6 @@ EXPECT_NEAR(it_expected->phasing_weight(), it_actual->phasing_weight(), 1e-7);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 regression_test_metric_generator<phasing_metric_set> phasing_regression_gen;
 INSTANTIATE_TEST_CASE_P(phasing_metric_regression_test,
-        phasing_metrics_tests,
-        ProxyValuesIn(phasing_regression_gen, regression_test_data::instance().files()));
+                        phasing_metrics_tests,
+                        ProxyValuesIn(phasing_regression_gen, regression_test_data::instance().files()));
+

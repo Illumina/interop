@@ -310,10 +310,10 @@ namespace illumina { namespace interop { namespace unittest
         static void create_binary_data(Collection &buffer)
         {
             const int tmp[] =
-                    {4
-                            ,12,3,0,67,56,3,0,1,0,113,-26,27,63,3,0,67,56,3,0,2
-                            ,0,127,-11,-104,62,3,0,67,56,3,0,3,0,89,19,-109,62
-                    };
+            {4
+            ,12,3,0,67,56,3,0,1,0,113,-26,27,63,3,0,67,56,3,0,2
+            ,0,127,-11,-104,62,3,0,67,56,3,0,3,0,89,19,-109,62
+            };
             buffer.assign(tmp, tmp+util::length_of(tmp));
         }
     };

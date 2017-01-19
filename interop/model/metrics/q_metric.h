@@ -108,7 +108,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         enum
         {
             /** Maximum number of q-score bins */
-                    MAX_Q_BINS = 50
+            MAX_Q_BINS = 50
         };
         /** Vector of q-scores type */
         typedef std::vector<q_score_bin> qscore_bin_vector_type;

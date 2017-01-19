@@ -5,7 +5,7 @@
  *  - InterOp/CorrectedIntMetricsOut.bin
  *
  * Corrected intensities are generated once phasing and prephasing are calculated. Note, the software generates
- * phasing/prephasing estimates after cycle 25 (for most platforms).
+ * phasing/prephasing estimates after cycle 25 (for most platforms).
  *
  * For 4-dye systems, the intensity corrected for cross-talk between the color channels and phasing and prephasing
  *
@@ -38,7 +38,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
      *
      * For 4-dye systems, the intensity corrected for cross-talk between the color channels and phasing
      * and prephasing. These are used in base calling. Note, the software generates phasing/prephasing
-     * estimates after cycle 25 (for most platforms).
+     * estimates after cycle 25 (for most platforms).
      *
      * For 2-dye systems, the values are calculated is another way and aid in accessing the progress
      * of the run.
@@ -51,9 +51,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         enum
         {
             /** Unique type code for metric */
-                    TYPE = constants::CorrectedInt,
+            TYPE = constants::CorrectedInt,
             /** Latest version of the InterOp format */
-                    LATEST_VERSION = 4
+            LATEST_VERSION = 4
         };
         /** Define a diffference type
          */
@@ -73,6 +73,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         /** Define a uint pointer to a uint array
          */
         typedef ::uint32_t *uint_pointer_t;
+        /** Define a float pointer to a float array
+         */
+        typedef float* float_pointer_t;
     public:
         /** Constructor
          */
@@ -80,7 +83,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                 metric_base::base_cycle_metric(0, 0, 0),
                 m_average_cycle_intensity(0),
                 m_corrected_int_all(constants::NUM_OF_BASES, std::numeric_limits<ushort_t>::max()),
-                m_corrected_int_called(constants::NUM_OF_BASES, std::numeric_limits<ushort_t>::max()),
+                m_corrected_int_called(constants::NUM_OF_BASES, std::numeric_limits<float>::quiet_NaN()),
                 m_called_counts(constants::NUM_OF_BASES_AND_NC, std::numeric_limits<uint_t>::max()),
                 m_signal_to_noise(std::numeric_limits<float>::quiet_NaN())
         { }
@@ -90,7 +93,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                 metric_base::base_cycle_metric(0, 0, 0),
                 m_average_cycle_intensity(0),
                 m_corrected_int_all(constants::NUM_OF_BASES, std::numeric_limits<ushort_t>::max()),
-                m_corrected_int_called(constants::NUM_OF_BASES, std::numeric_limits<ushort_t>::max()),
+                m_corrected_int_called(constants::NUM_OF_BASES, std::numeric_limits<float>::quiet_NaN()),
                 m_called_counts(constants::NUM_OF_BASES_AND_NC, std::numeric_limits<uint_t>::max()),
                 m_signal_to_noise(std::numeric_limits<float>::quiet_NaN())
         { }
@@ -112,7 +115,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                                    const uint_t cycle,
                                    const ushort_t average_cycle_intensity,
                                    const float signal_to_noise,
-                                   const ushort_array_t &corrected_int_called,
+                                   const float_array_t &corrected_int_called,
                                    const ushort_array_t &corrected_int_all,
                                    const uint_array_t &called_counts) :
                 metric_base::base_cycle_metric(lane, tile, cycle),
@@ -144,7 +147,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                                    const uint_t cycle,
                                    const ushort_t average_cycle_intensity,
                                    const float signal_to_noise,
-                                   const ushort_pointer_t corrected_int_called,
+                                   const float_pointer_t corrected_int_called,
                                    const ushort_pointer_t corrected_int_all,
                                    const uint_pointer_t called_counts) :
                 metric_base::base_cycle_metric(lane, tile, cycle),
@@ -171,7 +174,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         corrected_intensity_metric(const uint_t lane,
                                    const uint_t tile,
                                    const uint_t cycle,
-                                   const ushort_array_t &corrected_int_called,
+                                   const float_array_t &corrected_int_called,
                                    const uint_array_t &called_counts) :
                 metric_base::base_cycle_metric(lane, tile, cycle),
                 m_average_cycle_intensity(std::numeric_limits<ushort_t>::max()),
@@ -223,7 +226,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                 metric_base::base_cycle_metric(lane, tile, cycle),
                 m_average_cycle_intensity(std::numeric_limits<ushort_t>::max()),
                 m_corrected_int_all(constants::NUM_OF_BASES, std::numeric_limits<ushort_t>::max()),
-                m_corrected_int_called(constants::NUM_OF_BASES, std::numeric_limits<ushort_t>::max()),
+                m_corrected_int_called(constants::NUM_OF_BASES, std::numeric_limits<float>::quiet_NaN()),
                 m_called_counts(called_counts),
                 m_signal_to_noise(std::numeric_limits<float>::quiet_NaN())
         {
@@ -285,7 +288,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @param index index of the base (A=0, C=1, G=2, T=3)
          * @return average corrected intensity over only base called clusters
          */
-        ushort_t corrected_int_called(const constants::dna_bases index) const throw(index_out_of_bounds_exception)
+        float corrected_int_called(const constants::dna_bases index) const throw(index_out_of_bounds_exception)
         {
             if(index >= static_cast<constants::dna_bases>(m_corrected_int_called.size()))
                 INTEROP_THROW(index_out_of_bounds_exception, "Base out of bounds");
@@ -304,7 +307,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @note Supported by versions 2 and 3, not later
          * @return vector of corrected called intensities
          */
-        const ushort_array_t &corrected_int_called_array() const
+        const float_array_t &corrected_int_called_array() const
         { return m_corrected_int_called; }
 
         /** Average corrected intensity for each type of base: A, C, G and T
@@ -381,9 +384,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @note Supported by versions 2 and 3, not later
          * @return total summed intensity
          */
-        uint_t total_called_intensity() const
+        float total_called_intensity() const
         {
-            return std::accumulate(m_corrected_int_called.begin(), m_corrected_int_called.end(), 0);
+            return std::accumulate(m_corrected_int_called.begin(), m_corrected_int_called.end(), 0.0f);
         }
 
         /** Get the percentage per base
@@ -425,6 +428,26 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             return percent_base(constants::NC);
         }
         /** @} */
+        /** Average corrected intensity for only base called clusters: A, C, G and T
+         *
+         * @param vals vector of corrected called intensities
+         */
+        void corrected_int_called_array(const float_array_t & vals)
+        {
+            m_corrected_int_called = vals;
+        }
+
+        //--------------------------------------------------------------------------------------------------------------
+        /** Check if there is a valid value in the called intensity array
+         *
+         * @return check if there is any non-nan
+         */
+        bool any_valid_called_int()const
+        {
+            for(size_t i=0;i<m_corrected_int_called.size();++i)
+                if(!std::isnan(m_corrected_int_called[i])) return true;
+            return false;
+        }
         /** Average intensity over all clusters
          *
          * @deprecated Will be removed in 1.1.x (use average_cycle_intensity instead)
@@ -456,7 +479,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @param index index of the base (A=0, C=1, G=2, T=3)
          * @return average corrected intensity over only base called clusters
          */
-        ushort_t correctedIntCalled(size_t index) const
+        float correctedIntCalled(size_t index) const
         {
             INTEROP_ASSERT(index < static_cast<size_t>(constants::NUM_OF_BASES));
             return m_corrected_int_called[index];
@@ -467,7 +490,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @deprecated Will be removed in 1.1.x (use corrected_int_called_array instead)
          * @return vector of corrected called intensities
          */
-        const ushort_array_t &correctedIntCalled() const
+        const float_array_t &correctedIntCalled() const
         { return m_corrected_int_called; }
 
         /** Average corrected intensity for each type of base: A, C, G and T
@@ -561,7 +584,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         uint_t totalIntensity() const
         {
-            return std::accumulate(m_corrected_int_all.begin(), m_corrected_int_all.end(), 0);
+            return std::accumulate(m_corrected_int_all.begin(), m_corrected_int_all.end(), 0u);
         }
 
         /** Get the total summed intensity for only called clusters
@@ -570,9 +593,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @note Supported by all versions
          * @return total summed intensity
          */
-        uint_t totalCalledIntensity() const
+        float totalCalledIntensity() const
         {
-            return std::accumulate(m_corrected_int_called.begin(), m_corrected_int_called.end(), 0);
+            return std::accumulate(m_corrected_int_called.begin(), m_corrected_int_called.end(), 0.0f);
         }
 
         /** Get the percentage of intensity over all clusters
@@ -598,9 +621,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         float percentCalledIntensity(const size_t index) const
         {
-            uint_t total = totalCalledIntensity();
+            float total = totalCalledIntensity();
             if (total == 0) return std::numeric_limits<float>::quiet_NaN();
-            return correctedIntCalled(index) / static_cast<float>(total) * 100;
+            return correctedIntCalled(index) / total * 100;
         }
 
     public:
@@ -614,7 +637,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     private:
         ushort_t m_average_cycle_intensity; // Version 1 & 2
         ushort_array_t m_corrected_int_all; // Version 1 & 2
-        ushort_array_t m_corrected_int_called;
+        float_array_t m_corrected_int_called;
         // All
         uint_array_t m_called_counts; // All
         float m_signal_to_noise; // Version 2

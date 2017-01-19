@@ -177,5 +177,31 @@ namespace Illumina.InterOp.Interop.UnitTest
             bar_plot_data points = new bar_plot_data();
             System.Console.WriteLine(points.at(0));
 		}
+		[Test]
+		public void TestToFeatureForMetricType()
+		{
+            var metricType = metric_type.Intensity;
+            Assert.AreEqual((int)c_csharp_run_metrics.to_feature(metricType), 18);
+		}
+		[Test]
+		public void TestDispose()
+		{
+            run_metrics tmp = new run_metrics();
+            using(var set = tmp.extraction_metric_set())
+            {
+                ushort_vector tmp1 = new ushort_vector();
+                float_vector tmp2 = new float_vector();
+                set.insert(new extraction_metric(1,1,1, tmp1, tmp2));
+            }
+            using(var set = tmp.extraction_metric_set())
+            {
+                Assert.AreEqual((int)set.size(), 1);
+            }
+            using(var set = tmp.extraction_metric_set())
+            {
+                Assert.AreEqual((int)set.at(0).lane(), 1);
+            }
+		}
+
 	}
 }

@@ -163,7 +163,6 @@ namespace illumina{ namespace interop { namespace unittest
         }
     };
 
-
     /** This test writes three records of an InterOp files, then reads them back in and compares
      * each value to ensure they did not change.
      *
@@ -185,9 +184,9 @@ namespace illumina{ namespace interop { namespace unittest
 
             metrics.insert(metric_t(7, 111014, 2355119.25f,1158081.50f,6470949,3181956,reads1));
             metrics.insert(metric_t(7, 121014, 2355119.25f,1174757.75f,6470949,3227776,
-                                    metric_t::read_metric_vector(1, metric_t::read_metric_type(1, 2.62243795f))));
+                                 metric_t::read_metric_vector(1, metric_t::read_metric_type(1, 2.62243795f))));
             metrics.insert(metric_t(7, 211014, 2355119.25f,1211592.38f,6470949,3328983,
-                                    metric_t::read_metric_vector(1, metric_t::read_metric_type(1, 2.490309f))));
+                                  metric_t::read_metric_vector(1, metric_t::read_metric_type(1, 2.490309f))));
 
         }
         /** Get the expected binary data
@@ -198,14 +197,14 @@ namespace illumina{ namespace interop { namespace unittest
         static void create_binary_data(Collection &buffer)
         {
             const int tmp[] =
-                    {
-                            3,15,-41,-40,47,64,7,0,-90,-79,1,0,116,74,122,-59,74,16,54,66
-                            ,74,7,0,-90,-79,1,0,114,1,0,0,0,-102,113,39,64,7,0,-90,-79,1
-                            ,0,114,2,0,0,0,-102,113,39,64,7,0,-74,-40,1,0,116,74,122,-59
-                            ,74,0,2,69,74,7,0,-74,-40,1,0,114,1,0,0,0,6,-42,39,64,7,0
-                            ,70,56,3,0,116,74,122,-59,74,92,47,75,74,7,0,70,56,3,0,114,1
-                            ,0,0,0,57,97,31,64
-                    };
+            {
+                    3,15,-41,-40,47,64,7,0,-90,-79,1,0,116,74,122,-59,74,16,54,66
+                    ,74,7,0,-90,-79,1,0,114,1,0,0,0,-102,113,39,64,7,0,-90,-79,1
+                    ,0,114,2,0,0,0,-102,113,39,64,7,0,-74,-40,1,0,116,74,122,-59
+                    ,74,0,2,69,74,7,0,-74,-40,1,0,114,1,0,0,0,6,-42,39,64,7,0
+                    ,70,56,3,0,116,74,122,-59,74,92,47,75,74,7,0,70,56,3,0,114,1
+                    ,0,0,0,57,97,31,64
+            };
             buffer.assign(tmp, tmp+util::length_of(tmp));
         }
     };

@@ -29,8 +29,8 @@ image_metrics_tests::generator_type image_unit_test_generators[] = {
         wrap(new hardcoded_metric_generator< image_metric_v1 >),
         wrap(new write_read_metric_generator< image_metric_v1 >),
         wrap(new hardcoded_metric_generator< image_metric_v2 >) ,
-        wrap(new write_read_metric_generator< image_metric_v2 >),
-        wrap(new hardcoded_metric_generator< image_metric_v3 >),
+        wrap(new write_read_metric_generator< image_metric_v2 >)
+        ,wrap(new hardcoded_metric_generator< image_metric_v3 >),
         wrap(new write_read_metric_generator< image_metric_v3 >),
         wrap(new by_cycle_metric_generator< image_metric_v1 >),
         wrap(new by_cycle_metric_generator< image_metric_v2 >),

@@ -213,9 +213,9 @@ namespace illumina { namespace interop { namespace io
                                    const char eol)
         {
             const char* headers[] =
-                    {
-                            "Lane", "Tile", "Cycle", "Phasing", "Prephasing"
-                    };
+            {
+                "Lane", "Tile", "Cycle", "Phasing", "Prephasing"
+            };
             out << "# Column Count: " << util::length_of(headers) << eol;
             out << headers[0];
             for(size_t i=1;i<util::length_of(headers);++i)
@@ -253,3 +253,4 @@ INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(phasing_metric, 2)
 
 // Text formats
 INTEROP_REGISTER_METRIC_TEXT_LAYOUT(phasing_metric, 1)
+

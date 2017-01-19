@@ -50,6 +50,10 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                                                                              lane+1,
                                                                              surface+1,
                                                                              naming_convention);
+                metrics.get<corrected_intensity_metric>().populate_tile_numbers_for_lane_surface(tile_count_set,
+                                                                               lane+1,
+                                                                               surface+1,
+                                                                               naming_convention);
                 metrics.get<phasing_metric>().populate_tile_numbers_for_lane_surface(tile_count_set,
                                                                                      lane+1,
                                                                                      surface+1,
@@ -105,7 +109,8 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                                const bool skip_median,
                                const bool trim)
     throw( model::index_out_of_bounds_exception,
-    model::invalid_channel_exception )
+    model::invalid_channel_exception,
+    model::invalid_run_info_exception )
     {
         using namespace model::metrics;
         if(metrics.empty())
@@ -177,6 +182,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
         summarize_phasing_metrics(metrics.get<dynamic_phasing_metric>().begin(),
                                   metrics.get<dynamic_phasing_metric>().end(),
                                   summary,
+                                  naming_method,
                                   skip_median);
 
         if(trim)

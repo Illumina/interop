@@ -36,11 +36,11 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         enum
         {
             /** Maximum number of mismatches */
-                    MAX_MISMATCH = 5,
+            MAX_MISMATCH = 5,
             /** Unique type code for metric */
-                    TYPE = constants::Error,
+            TYPE = constants::Error,
             /** Latest version of the InterOp format */
-                    LATEST_VERSION = 4
+            LATEST_VERSION = 4
         };
         /** Define a uint array using an underlying vector
          */
@@ -168,3 +168,4 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         struct io::generic_layout;
     };
 }}}}
+

@@ -10,6 +10,8 @@
 
 #include <gtest/gtest.h>
 #include "src/tests/interop/metrics/inc/metric_format_fixtures.h"
+#include "interop/logic/utils/metrics_to_load.h"
+#include "interop/logic/table/create_imaging_table.h"
 
 
 using namespace illumina::interop;
@@ -84,6 +86,20 @@ TYPED_TEST_P(run_metric_test, test_expected_get_metric)
     for (size_t i = 0; i < keys.size(); i++)
     {
         ASSERT_EQ(keys[i], metric_set.get_metric(keys[i]).id());
+    }
+}
+
+TEST(run_metric_test, summary_subset_of_imaging)
+{
+    std::vector<unsigned char> load_summary;
+    std::vector<unsigned char> load_imaging;
+    logic::utils::list_summary_metrics_to_load(load_summary);
+    logic::table::list_imaging_table_metrics_to_load(load_imaging);
+    ASSERT_EQ(load_imaging.size(), load_summary.size());
+    for(size_t i=0;i<load_summary.size();++i)
+    {
+        EXPECT_TRUE(load_summary[i] == 0 || load_summary[i] == load_imaging[i])
+                            << constants::to_string(static_cast<constants::metric_group>(i));
     }
 }
 

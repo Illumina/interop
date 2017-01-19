@@ -83,8 +83,8 @@ by_cycle_metric_generator< tile_metric_v2 > tile_dummy_v2; // TODO: Why does thi
 tile_metrics_tests::generator_type tile_unit_test_generators[] = {
         wrap(new hardcoded_metric_generator< tile_metric_v2 >) ,
         wrap(new write_read_metric_generator< tile_metric_v2 >),
-        wrap(new write_metric_generator< tile_metric_v2 >),
-        wrap(new hardcoded_metric_generator< tile_metric_v3 >),
+        wrap(new write_metric_generator< tile_metric_v2 >)
+        ,wrap(new hardcoded_metric_generator< tile_metric_v3 >),
         wrap(new write_read_metric_generator< tile_metric_v3 >),
         wrap(new by_cycle_metric_generator< tile_metric_v3 >),
         wrap(new write_metric_generator<tile_metric_v3>)
@@ -124,9 +124,9 @@ TEST_P(tile_metrics_tests, test_read_write)
         INTEROP_EXPECT_NEAR(it_expected->cluster_count_pf(), it_actual->cluster_count_pf(), tol);
         EXPECT_EQ(it_expected->read_metrics().size(), it_actual->read_metrics().size());
         for(metric_t::read_metric_vector::const_iterator it_read_expected = it_expected->read_metrics().begin(),
-                    it_read_actual = it_actual->read_metrics().begin();
-            it_read_expected != it_expected->read_metrics().end() &&
-            it_read_actual != it_actual->read_metrics().end(); it_read_expected++, it_read_actual++)
+                        it_read_actual = it_actual->read_metrics().begin();
+                        it_read_expected != it_expected->read_metrics().end() &&
+                        it_read_actual != it_actual->read_metrics().end(); it_read_expected++, it_read_actual++)
         {
             EXPECT_EQ(it_read_expected->read(), it_read_actual->read());
             INTEROP_ASSERT_NEAR(it_read_expected->percent_aligned(), it_read_actual->percent_aligned(), tol);
@@ -198,8 +198,8 @@ TEST(tile_metrics_test, test_tile_metric_for_lane)
 {
     metric_set<tile_metric> metrics;
     tile_metric expected_metric(7, 1114, 2355119.25f,1158081.50f,6470949,3181956,
-                                tile_metric::read_metric_vector(1,
-                                                                tile_metric::read_metric_type(3, 2.61630869f, 0.0797112584f/100, 0.119908921f/100)));
+                tile_metric::read_metric_vector(1,
+                tile_metric::read_metric_type(3, 2.61630869f, 0.0797112584f/100, 0.119908921f/100)));
     metrics.insert(expected_metric.id(), expected_metric);
     metric_set<tile_metric>::metric_array_t tile_lane_metrics = metrics.metrics_for_lane(7);
     tile_metric& actual_metric = tile_lane_metrics[0];

@@ -31,9 +31,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         enum
         {
             /** Unique type code for metric */
-                    TYPE = constants::DynamicPhasing,
+            TYPE = constants::DynamicPhasing,
             /** Latest version of the InterOp format */
-                    LATEST_VERSION = 1
+            LATEST_VERSION = 1
         };
     public:
         /** Constructor

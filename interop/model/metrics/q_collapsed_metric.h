@@ -61,9 +61,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics {
     public:
         enum{
             /** Unique type code for metric */
-                    TYPE=constants::QCollapsed,
+            TYPE=constants::QCollapsed,
             /** Latest version of the InterOp format */
-                    LATEST_VERSION=6
+            LATEST_VERSION=6
         };
         /** Define a unsigned long type */
         typedef ::uint64_t ulong_t;

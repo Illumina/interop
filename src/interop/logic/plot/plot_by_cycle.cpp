@@ -36,7 +36,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
         {
             if(!options.valid_tile(*b)) continue;
             const float val = proxy(*b, type);
-            if(std::isnan(val)) continue;
+            if(std::isnan(val) || std::isinf(val)) continue;
             points[b->cycle()-1].add(dummy_x, val);
         }
         size_t index = 0;
@@ -77,7 +77,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
         {
             if(!options.valid_tile(*b)) continue;
             const float val = proxy(*b, type);
-            if(std::isnan(val)) continue;
+            if(std::isnan(val) || std::isinf(val)) continue;
             tile_by_cycle[b->cycle()-1].push_back(val);
         }
         points.resize(max_cycle);

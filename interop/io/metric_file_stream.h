@@ -236,20 +236,20 @@ namespace illumina { namespace interop { namespace io
         }
     }
     /** Read the binary InterOp file into the given metric set
- *
- * @snippet src/examples/example1.cpp Reading a binary InterOp file
- *
- * @note The 'Out' suffix (parameter: use_out) is appended when we read the file. We excluded the Out in certain
- * conditions when writing the file.
- *
- * @param run_directory file path to the run directory
- * @param metrics metric set
- * @param last_cycle last cycle to check
- * @param use_out use the copied version
- * @throw file_not_found_exception
- * @throw bad_format_exception
- * @throw incomplete_file_exception
- */
+     *
+     * @snippet src/examples/example1.cpp Reading a binary InterOp file
+     *
+     * @note The 'Out' suffix (parameter: use_out) is appended when we read the file. We excluded the Out in certain
+     * conditions when writing the file.
+     *
+     * @param run_directory file path to the run directory
+     * @param metrics metric set
+     * @param last_cycle last cycle to check
+     * @param use_out use the copied version
+     * @throw file_not_found_exception
+     * @throw bad_format_exception
+     * @throw incomplete_file_exception
+     */
     template<class MetricSet>
     void read_interop_by_cycle(const std::string& run_directory,
                                MetricSet& metrics,

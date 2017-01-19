@@ -30,7 +30,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         enum
         {
             /** Maximum number of channels supported **/
-                    MAX_CHANNELS = 4
+            MAX_CHANNELS = 4
         };
         /** Unsigned int16_t
          */
@@ -56,6 +56,14 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         ushort_t channel_count() const
         { return m_channel_count; }
+        /** Trim channel count
+         *
+         * @param channel_count number of channels
+         */
+        void channel_count(const size_t channel_count)
+        {
+            m_channel_count = static_cast<ushort_t>(channel_count);
+        }
 
         /** Generate a default header
          *
@@ -92,11 +100,11 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         enum
         {
             /** Maximum number of channels supported **/
-                    MAX_CHANNELS = image_metric_header::MAX_CHANNELS,
+            MAX_CHANNELS = image_metric_header::MAX_CHANNELS,
             /** Unique type code for metric */
-                    TYPE = constants::Image,
+            TYPE = constants::Image,
             /** Latest version of the InterOp format */
-                    LATEST_VERSION = 3
+            LATEST_VERSION = 3
         };
         /** Image metric header
          */
@@ -248,6 +256,16 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         }
 
         /** @} */
+        /** Trim unused channel values
+         *
+         * @param channel_count actual number of channels
+         */
+        void trim(const size_t channel_count)
+        {
+            m_channel_count = static_cast<ushort_t>(channel_count);
+            m_max_contrast.resize(channel_count);
+            m_min_contrast.resize(channel_count);
+        }
         /** Minimum contrast intensity
          *
          * @deprecated Will be removed in 1.1.x (use min_contrast instead)

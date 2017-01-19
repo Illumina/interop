@@ -216,10 +216,11 @@ namespace illumina { namespace interop { namespace logic { namespace metric
                 }
                 case constants::CalledIntensity:
                 {
-                    const ::uint16_t corrected_int_called = metric.corrected_int_called(base);
-                    if (corrected_int_called == std::numeric_limits< ::uint16_t>::max())
+                    const float corrected_int_called = metric.corrected_int_called(base);
+                    if (corrected_int_called == std::numeric_limits< ::uint16_t>::max() ||
+                            std::isnan(corrected_int_called))
                         return std::numeric_limits<float>::quiet_NaN();
-                    return static_cast<float>(corrected_int_called);
+                    return corrected_int_called;
                 }
                 case constants::SignalToNoise:
                     return metric.signal_to_noise();
@@ -318,6 +319,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
     private:
         const size_t m_read;
     };
+
 
     /** Specialization for model::metrics::phasing_metric
      *
