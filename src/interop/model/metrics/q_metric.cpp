@@ -899,16 +899,16 @@ namespace illumina { namespace interop { namespace io
                                    const char eol)
         {
             const char* headers[] =
-                    {
-                            "Lane", "Tile", "Cycle"
-                    };
+            {
+                "Lane", "Tile", "Cycle"
+            };
             out << "# Bin Count: " << header.q_val_count() << eol;
             if(header.bin_count() > 0)
             {
                 const char* bin_headers[] =
-                        {
-                                "Lower", "Value", "Upper"
-                        };
+                {
+                    "Lower", "Value", "Upper"
+                };
                 out << "# Column Count: " << util::length_of(bin_headers) << eol;
                 out << bin_headers[0];
                 for(size_t i=1;i<util::length_of(bin_headers);++i)

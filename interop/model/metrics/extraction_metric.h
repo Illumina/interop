@@ -32,7 +32,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     public:
         enum{
             /** Maximum number of channels supported **/
-                    MAX_CHANNELS=4
+            MAX_CHANNELS=4
         };
         /** Unsigned int16_t
          */
@@ -48,6 +48,14 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @return number of channels
          */
         ushort_t channel_count()const{return m_channel_count;}
+        /** Trim channel count
+         *
+         * @param channel_count number of channels
+         */
+        void channel_count(const size_t channel_count)
+        {
+            m_channel_count = static_cast<ushort_t>(channel_count);
+        }
         /** Generate a default header
          *
          * @return default header
@@ -80,11 +88,11 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         enum
         {
             /** Maximum number of channels */
-                    MAX_CHANNELS = 4,
+            MAX_CHANNELS = 4,
             /** Unique type code for metric */
-                    TYPE = constants::Extraction,
+            TYPE = constants::Extraction,
             /** Latest version of the InterOp format */
-                    LATEST_VERSION = 3
+            LATEST_VERSION = 3
         };
         /** Extraction metric header */
         typedef extraction_metric_header header_type;

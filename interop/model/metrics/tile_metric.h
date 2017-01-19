@@ -168,9 +168,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         enum
         {
             /** Unique type code for metric */
-                    TYPE = constants::Tile,
+            TYPE = constants::Tile,
             /** Latest version of the InterOp format */
-                    LATEST_VERSION = 3
+            LATEST_VERSION = 3
         };
         /** Define map between read ids and read metrics
          */

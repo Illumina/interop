@@ -93,11 +93,19 @@ namespace illumina { namespace interop { namespace io
         static std::streamsize map_stream(Stream &stream, Metric &metric, Header &, const bool)
         {
             std::streamsize count = 0;
-            count += stream_map<focus_t>(stream, metric.m_focus_scores, extraction_metric::MAX_CHANNELS);
+            const focus_t pad_focus = std::numeric_limits<focus_t>::quiet_NaN();
+            const intensity_t pad_intensity = std::numeric_limits<intensity_t>::max();
+            count += padded_stream_map<focus_t>(stream,
+                                                metric.m_focus_scores,
+                                                extraction_metric::MAX_CHANNELS,
+                                                pad_focus);
             if (stream)
                 set_nan_to_zero(stream, metric.m_focus_scores);// TODO: Remove and rebaseline regression tests
             else return count;
-            count += stream_map<intensity_t>(stream, metric.m_max_intensity_values, extraction_metric::MAX_CHANNELS);
+            count += padded_stream_map<intensity_t>(stream,
+                                                    metric.m_max_intensity_values,
+                                                    extraction_metric::MAX_CHANNELS,
+                                                    pad_intensity);
             count += stream_map<datetime_t>(stream, metric.m_date_time_csharp.value);
             convert_datetime(stream, metric);
             return count;
@@ -305,9 +313,9 @@ namespace illumina { namespace interop { namespace io
             if( static_cast<size_t>(header.channel_count()) != channel_names.size() )
                 INTEROP_THROW(bad_format_exception, "Header and channel names count mismatch");
             const char* headers[] =
-                    {
-                            "Lane", "Tile", "Cycle", "TimeStamp"
-                    };
+            {
+                "Lane", "Tile", "Cycle", "TimeStamp"
+            };
             out << "# Column Count: " << util::length_of(headers)+header.channel_count()*2 << eol;
             out << "# Channel Count: " << header.channel_count() << eol;
             out << headers[0];
@@ -338,7 +346,7 @@ namespace illumina { namespace interop { namespace io
                                    const char eol,
                                    const char)
         {
-            if( header.channel_count() != metric.channel_count() )
+            if( header.channel_count() > metric.channel_count() )
                 INTEROP_THROW(bad_format_exception, "Header and metric channel count mismatch");
             out << metric.lane() << sep << metric.tile() << sep << metric.cycle() << sep;
             out << metric.date_time(); // TODO: Format date/time

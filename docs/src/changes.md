@@ -1,5 +1,13 @@
 # Changes                                               {#changes}
 
+## v1.0.16
+
+Date       | Description
+---------- | -----------
+2017-01-19 | Fixed bugs in dumptext and dumpbin and update new phasing tests
+2017-01-17 | Ensure empirical phasing loads with tile
+2017-01-16 | NovaSeq changes
+
 ## v1.0.15
 
 Date       | Description

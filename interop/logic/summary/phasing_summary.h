@@ -30,21 +30,29 @@ namespace illumina { namespace interop { namespace logic { namespace summary
      * @param beg iterator to start of a collection of dynamic phasing metrics
      * @param end iterator to end of a collection of dynamic phasing metrics
      * @param run destination run summary
-    * @param skip_median skip the median calculation
+     * @param naming_method tile naming convention
+     * @param skip_median skip the median calculation
      */
     template<typename I>
     void summarize_phasing_metrics(I beg,
                                    I end,
                                    model::summary::run_summary &run,
+                                   const constants::tile_naming_method naming_method,
                                    const bool skip_median=false) throw(model::index_out_of_bounds_exception)
     {
         typedef summary_by_lane_read<float> summary_by_lane_read_t;
         if (beg == end) return;
         if (run.size() == 0)return;
+        const size_t surface_count = run.surface_count();
         summary_by_lane_read_t phasing_slope(run, std::distance(beg, end));
         summary_by_lane_read_t phasing_offset(run, std::distance(beg, end));
         summary_by_lane_read_t prephasing_slope(run, std::distance(beg, end));
         summary_by_lane_read_t prephasing_offset(run, std::distance(beg, end));
+
+        summary_by_lane_read_t phasing_slope_surface(run, std::distance(beg, end), surface_count);
+        summary_by_lane_read_t phasing_offset_surface(run, std::distance(beg, end), surface_count);
+        summary_by_lane_read_t prephasing_slope_surface(run, std::distance(beg, end), surface_count);
+        summary_by_lane_read_t prephasing_offset_surface(run, std::distance(beg, end), surface_count);
 
         for (; beg != end; ++beg)
         {
@@ -57,6 +65,13 @@ namespace illumina { namespace interop { namespace logic { namespace summary
             phasing_offset(read, lane).push_back(beg->phasing_offset());
             prephasing_slope(read, lane).push_back(beg->prephasing_slope());
             prephasing_offset(read, lane).push_back(beg->prephasing_offset());
+
+            if(surface_count < 2) continue;
+            const size_t surface = beg->surface(naming_method);
+            phasing_slope_surface(read, lane, surface-1).push_back(beg->phasing_slope());
+            phasing_offset_surface(read, lane, surface-1).push_back(beg->phasing_offset());
+            prephasing_slope_surface(read, lane, surface-1).push_back(beg->prephasing_slope());
+            prephasing_offset_surface(read, lane, surface-1).push_back(beg->prephasing_offset());
         }
 
         for (size_t read = 0; read < run.size(); ++read)
@@ -68,7 +83,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                 INTEROP_ASSERT(lane < phasing_slope.lane_count());
                 INTEROP_ASSERT(lane < run[read].size());
                 model::summary::metric_stat phasing_stat;
-                summarize(phasing_slope(read, lane).begin(), phasing_slope(read, lane).end(), phasing_stat,skip_median);
+                summarize(phasing_slope(read, lane).begin(), phasing_slope(read, lane).end(), phasing_stat, skip_median);
                 run[read][lane].phasing_slope(phasing_stat);
                 summarize(phasing_offset(read, lane).begin(), phasing_offset(read, lane).end(), phasing_stat,skip_median);
                 run[read][lane].phasing_offset(phasing_stat);
@@ -76,6 +91,18 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                 run[read][lane].prephasing_slope(phasing_stat);
                 summarize(prephasing_offset(read, lane).begin(), prephasing_offset(read, lane).end(), phasing_stat,skip_median);
                 run[read][lane].prephasing_offset(phasing_stat);
+                if(surface_count < 2) continue;
+                for(size_t surface=0;surface<surface_count;++surface)
+                {
+                    summarize(phasing_slope_surface(read, lane,surface).begin(), phasing_slope_surface(read, lane,surface).end(), phasing_stat, skip_median);
+                    run[read][lane][surface].phasing_slope(phasing_stat);
+                    summarize(phasing_offset_surface(read, lane,surface).begin(), phasing_offset_surface(read, lane,surface).end(), phasing_stat,skip_median);
+                    run[read][lane][surface].phasing_offset(phasing_stat);
+                    summarize(prephasing_slope_surface(read, lane,surface).begin(), prephasing_slope_surface(read, lane,surface).end(), phasing_stat,skip_median);
+                    run[read][lane][surface].prephasing_slope(phasing_stat);
+                    summarize(prephasing_offset_surface(read, lane,surface).begin(), prephasing_offset_surface(read, lane,surface).end(), phasing_stat,skip_median);
+                    run[read][lane][surface].prephasing_offset(phasing_stat);
+                }
             }
         }
     }

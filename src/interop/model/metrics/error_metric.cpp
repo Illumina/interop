@@ -216,9 +216,9 @@ namespace illumina{ namespace interop{ namespace io
                                    const char eol)
         {
             const char* headers[] =
-                    {
-                            "Lane", "Tile", "Cycle", "ErrorRate"
-                    };
+            {
+                "Lane", "Tile", "Cycle", "ErrorRate"
+            };
             out << "# Column Count: " << util::length_of(headers) << eol;
             out << headers[0];
             for(size_t i=1;i<util::length_of(headers);++i)

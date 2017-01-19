@@ -34,8 +34,8 @@ q_metrics_tests::generator_type q_unit_test_generators[] = {
         wrap(new hardcoded_metric_generator< q_metric_v6 >),
         wrap(new write_read_metric_generator< q_metric_v6 >),
         wrap(new hardcoded_metric_generator< q_metric_v6_unbinned>),
-        wrap(new write_read_metric_generator< q_metric_v6_unbinned>),
-        wrap(new hardcoded_metric_generator< q_metric_v7>),
+        wrap(new write_read_metric_generator< q_metric_v6_unbinned>)
+        ,wrap(new hardcoded_metric_generator< q_metric_v7>),
         wrap(new write_read_metric_generator< q_metric_v7>),
         wrap(new by_cycle_metric_generator< q_metric_v5 >),
         wrap(new by_cycle_metric_generator< q_metric_v6 >),

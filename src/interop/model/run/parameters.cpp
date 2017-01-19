@@ -55,13 +55,19 @@ namespace illumina { namespace interop { namespace model { namespace run
         std::string application_name;
         std::string multi_surface;
         m_instrument_type = constants::UnknownInstrument;
+        for (xml_node_ptr p_node = p_root->first_node(); p_node; p_node = p_node->next_sibling())
+        {
+            set_data(p_node, "Application", application_name);
+        }
 
         xml_node_ptr p_setup = p_root->first_node("Setup");
-        if (p_setup == 0) INTEROP_THROW(bad_xml_format_exception, "Setup not found");
-        for (xml_node_ptr p_node = p_setup->first_node(); p_node; p_node = p_node->next_sibling())
+        if (p_setup != 0)
         {
-            set_data(p_node, "ApplicationName", application_name);
-            set_data(p_node, "SupportMultipleSurfacesInUI", multi_surface);
+            for (xml_node_ptr p_node = p_setup->first_node(); p_node; p_node = p_node->next_sibling())
+            {
+                set_data(p_node, "ApplicationName", application_name);
+                set_data(p_node, "SupportMultipleSurfacesInUI", multi_surface);
+            }
         }
         set_instrument_id(application_name, multi_surface);
 

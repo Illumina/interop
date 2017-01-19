@@ -408,9 +408,9 @@ namespace illumina { namespace interop { namespace io
             if( static_cast<size_t>(header.channel_count()) != channel_names.size() )
                 INTEROP_THROW(bad_format_exception, "Header and channel names count mismatch");
             const char* headers[] =
-                    {
-                            "Lane", "Tile", "Cycle"
-                    };
+            {
+                "Lane", "Tile", "Cycle"
+            };
             out << "# Column Count: " << util::length_of(headers)+header.channel_count()*2 << eol;
             out << "# Channel Count: " << header.channel_count() << eol;
             out << headers[0];

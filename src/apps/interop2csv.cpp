@@ -6,6 +6,14 @@
  *
  * @warning This program is deprecated and will be removed. Use dumptext instead
  *
+ * ## NOTE: This program is a debug utility for library maintenence not currently supported.
+ *
+ * It does not properly handle:
+ * - Channel names
+ * - Versioning of the output format
+ * - All the inteorp metrics
+ * - Ability to down select
+ *
  * ### Running the Program
  *
  * The program runs as follows:

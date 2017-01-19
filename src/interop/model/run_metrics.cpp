@@ -105,17 +105,16 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     struct read_func
     {
         typedef const unsigned char* bool_pointer;
-        read_func(const std::string &f, bool_pointer load_metric_check=0) :
-                m_run_folder(f), m_load_metric_check(load_metric_check), m_are_all_files_missing(true)
+        read_func(const std::string &f, bool_pointer load_metric_check=0, const bool skip_loaded=false) :
+                m_run_folder(f),
+                m_load_metric_check(load_metric_check),
+                m_are_all_files_missing(true),
+                m_skip_loaded(skip_loaded)
         {}
 
         template<class MetricSet>
         int operator()(MetricSet &metrics) const
         {
-            if(m_load_metric_check == 0 || m_load_metric_check[MetricSet::TYPE] != 0)
-            {
-                metrics.clear();
-            }
             // If the m_load_metric_check is not set, read in the metric
             // Otherwise, check if the metric should be read and that it is not empty
             // This logic is for SAV OnDemand (TM) loading
@@ -123,6 +122,14 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             if(m_load_metric_check != 0 && (m_load_metric_check[MetricSet::TYPE] == 0 || !metrics.empty()))
             {
                 return 0;
+            }
+            else if(m_skip_loaded && !metrics.empty())
+            {
+                return 0;
+            }
+            else if (m_load_metric_check == 0 || m_load_metric_check[MetricSet::TYPE] != 0)
+            {
+                metrics.clear();
             }
             try
             {
@@ -149,6 +156,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         std::string m_run_folder;
         bool_pointer m_load_metric_check;
         mutable bool m_are_all_files_missing;
+        bool m_skip_loaded;
     };
 
     struct write_func
@@ -362,10 +370,14 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     }
     /** Read binary metrics and XML files from the run folder
      *
+     * @note This function does not clear
      * @param run_folder run folder path
      * @param valid_to_load list of metrics to load
+     * @param skip_loaded skip metrics that are already loaded
      */
-    void run_metrics::read(const std::string &run_folder, const std::vector<unsigned char>& valid_to_load)
+    void run_metrics::read(const std::string &run_folder,
+                           const std::vector<unsigned char>& valid_to_load,
+                           const bool skip_loaded)
     throw(xml::xml_file_not_found_exception,
     xml::bad_xml_format_exception,
     xml::empty_xml_format_exception,
@@ -381,7 +393,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     invalid_parameter)
     {
         read_run_info(run_folder);
-        read_metrics(run_folder, run_info().total_cycles(), valid_to_load);
+        read_metrics(run_folder, run_info().total_cycles(), valid_to_load, skip_loaded);
         const size_t count = read_run_parameters(run_folder);
         finalize_after_load(count);
         check_for_data_sources(run_folder, run_info().total_cycles());
@@ -521,6 +533,18 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         logic::metric::populate_cumulative_distribution(get<q_by_lane_metric>());
         logic::metric::populate_cumulative_distribution(get<q_collapsed_metric>());
 
+        if(!get<model::metrics::phasing_metric>().empty())
+        {
+            logic::summary::read_cycle_vector_t cycle_to_read;
+            logic::summary::map_read_to_cycle_number(run_info().reads().begin(),
+                                                     run_info().reads().end(),
+                                                     cycle_to_read);
+            logic::metric::populate_dynamic_phasing_metrics(get<model::metrics::phasing_metric>(),
+                                                            cycle_to_read,
+                                                            get<model::metrics::dynamic_phasing_metric>(),
+                                                            get<model::metrics::tile_metric>());
+        }
+
         if (m_run_info.channels().empty())
         {
             legacy_channel_update(m_run_parameters.instrument_type());
@@ -538,8 +562,17 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         typedef metric_base::metric_set< extraction_metric > extraction_metric_set_t;
         extraction_metric_set_t &extraction_metrics = get<extraction_metric>();
         // Trim excess channel data for imaging table
+        extraction_metrics.channel_count(run_info().channels().size());
         for (extraction_metric_set_t::iterator it = extraction_metrics.begin(); it != extraction_metrics.end(); ++it)
             it->trim(run_info().channels().size());
+        typedef metric_base::metric_set<image_metric> image_metric_set_t;
+        image_metric_set_t &image_metrics = get<image_metric>();
+        if(run_info().channels().size() < image_metrics.channel_count())
+        {
+            image_metrics.channel_count(run_info().channels().size());
+            for (image_metric_set_t::iterator it = image_metrics.begin(); it != image_metrics.end(); ++it)
+                it->trim(run_info().channels().size());
+        }
     }
 
     /** Test if all metrics are empty
@@ -612,8 +645,12 @@ namespace illumina { namespace interop { namespace model { namespace metrics
      * @param run_folder run folder path
      * @param last_cycle last cycle to search for by cycle interops
      * @param valid_to_load list of metrics to load
+     * @param skip_loaded skip metrics that are already loaded
      */
-    void run_metrics::read_metrics(const std::string &run_folder, const size_t last_cycle, const std::vector<unsigned char>& valid_to_load)
+    void run_metrics::read_metrics(const std::string &run_folder,
+                                   const size_t last_cycle,
+                                   const std::vector<unsigned char>& valid_to_load,
+                                   const bool skip_loaded)
     throw(io::file_not_found_exception,
     io::bad_format_exception,
     io::incomplete_file_exception,
@@ -624,7 +661,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             INTEROP_THROW(invalid_parameter, "Boolean array valid_to_load does not match expected number of metrics: "
                     << valid_to_load.size() << " != " << constants::MetricCount);
 
-        read_func read_functor(run_folder, &valid_to_load.front());
+        read_func read_functor(run_folder, &valid_to_load.front(), skip_loaded);
         m_metrics.apply(read_functor);
         if (read_functor.are_all_files_missing())
         {

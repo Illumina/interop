@@ -163,9 +163,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         enum
         {
             /** Unique type code for metric */
-                    TYPE = constants::Index,
+            TYPE = constants::Index,
             /** Latest version of the InterOp format */
-                    LATEST_VERSION = 2
+            LATEST_VERSION = 2
         };
         /** Define a index array using an underlying vector */
         typedef std::vector<index_info> index_array_t;
@@ -256,3 +256,4 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         struct io::generic_layout;
     };
 }}}}
+

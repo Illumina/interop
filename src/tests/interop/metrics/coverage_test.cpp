@@ -83,7 +83,8 @@ struct format_coverage_test : public ::testing::Test
 };
 typedef ::testing::Types<
         hardcoded_metric_registry_t,
-        write_read_metric_registry_t
+        write_read_metric_registry_t,
+        by_cycle_metric_registry_t
 > generators_t;
 TYPED_TEST_CASE(format_coverage_test, generators_t);
 

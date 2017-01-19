@@ -244,9 +244,9 @@ namespace illumina{ namespace interop { namespace unittest
             {
                 illumina::interop::io::read_interop(baseline_file, expected);
             }
-                // Should never have an incomplete file in baseline, set sentinel to detect
+            // Should never have an incomplete file in baseline, set sentinel to detect
             catch(const io::incomplete_file_exception&){expected.set_version(INCOMPLETE);return true;}
-                // Ensure missing file is expected
+            // Ensure missing file is expected
             catch(const io::file_not_found_exception&){expected.set_version(NOT_FOUND); return false;}
             return true;
         }
@@ -262,9 +262,9 @@ namespace illumina{ namespace interop { namespace unittest
             {
                 illumina::interop::io::read_interop(run_folder, actual);
             }
-                // Ensure missing file is expected
+            // Ensure missing file is expected
             catch(const io::incomplete_file_exception&){if(actual.empty()) actual.set_version(NOT_FOUND);}
-                // Ensure file is missing
+            // Ensure file is missing
             catch(const io::file_not_found_exception&){actual.set_version(NOT_FOUND);}
             return !actual.empty();
         }
@@ -301,7 +301,7 @@ namespace illumina{ namespace interop { namespace unittest
         void write(std::ostream& out)const
         {
             out << "regression_test_metric_generator< "<< metric_set_t::prefix() << metric_set_t::suffix() << "> - "
-                << io::basename(parent_t::m_run_folder);
+                    << io::basename(parent_t::m_run_folder);
         }
         /** Get the full path of the baseline output file
          *
