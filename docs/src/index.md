@@ -9,6 +9,11 @@ metric files are binary files produced during a run providing detailed statistic
 metric files are produced after a run during secondary analysis (index metrics) or for faster display of a subset of 
 the original data (collapsed quality scores).
 
+***
+>  We are happy to announce support for Illumina's newest sequencer: NovaSeq. This includes support for new InterOp
+>  formats, per cycle InterOp files, and per cycle phasing weights (EmpiricalPhasingMetricsOut.bin).
+***
+
 Compatibility
 -------------
 
@@ -38,17 +43,18 @@ Table of Contents
 List of InterOp Metric Files
 ----------------------------
 
-| Filename                      | Description                                                                                                                                                   |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [CorrectedIntMetricsOut.bin]  | Per tile per cycle per channel average intensity values                                                                                                       |
-| [ErrorMetricsOut.bin]         | Per tile per cycle (after alignment cycle, e.g. 25) percentages of incorrect calls for aligned clusters                                                       |
-| [ExtractionMetricsOut.bin]    | Per tile per cycle per channel 90th percentile of intensity and FWHM values                                                                                   |
-| [ImageMetricsOut.bin]         | Per tile per cycle per channel percentiles of pixel values used to autocontrast thumbnail images                                                              |
-| [QMetricsOut.bin]             | Per tile per cycle subsampled basecall quality score histogram, also contains QScore Binning information in header as of version 5                            |
-| [TileMetricsOut.bin]          | Per tile information about raw density, cluster count, cluster density passed filter, cluster count passed filter, percent aligned, phasing and prephasing    |
-| [IndexMetricsOut.bin]         | Per tile per lane index sequence information                                                                                                                  |
-| [QMetrics2030Out.bin]         | Per tile per cycle Q20/Q30 scores                                                                                                                             |
-| [QMetricsByLaneOut.bin]       | Per tile per cycle Q-score histogram per lane                                                                                                                 |
+| Filename                         | Description                                                                                                                                                   |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [CorrectedIntMetricsOut.bin]     | Per tile per cycle per channel average intensity values                                                                                                       |
+| [ErrorMetricsOut.bin]            | Per tile per cycle (after alignment cycle, e.g. 25) percentages of incorrect calls for aligned clusters                                                       |
+| [ExtractionMetricsOut.bin]       | Per tile per cycle per channel 90th percentile of intensity and FWHM values                                                                                   |
+| [ImageMetricsOut.bin]            | Per tile per cycle per channel percentiles of pixel values used to autocontrast thumbnail images                                                              |
+| [QMetricsOut.bin]                | Per tile per cycle subsampled basecall quality score histogram, also contains QScore Binning information in header as of version 5                            |
+| [TileMetricsOut.bin]             | Per tile information about raw density, cluster count, cluster density passed filter, cluster count passed filter, percent aligned, phasing and prephasing    |
+| [IndexMetricsOut.bin]            | Per tile per lane index sequence information                                                                                                                  |
+| [QMetrics2030Out.bin]            | Per tile per cycle Q20/Q30 scores                                                                                                                             |
+| [QMetricsByLaneOut.bin]          | Per tile per cycle Q-score histogram per lane                                                                                                                 |
+| [EmpiricalPhasingMetricsOut.bin] | Phasing weights per tile per cycle 
 
 [CorrectedIntMetricsOut.bin]: @ref corrected_intensity "CorrectedIntMetricsOut.bin"
 [ErrorMetricsOut.bin]: @ref error_metric "ErrorMetricsOut.bin"
@@ -59,6 +65,7 @@ List of InterOp Metric Files
 [IndexMetricsOut.bin]: @ref index_metric "IndexMetricsOut.bin"
 [QMetrics2030Out.bin]: @ref q_collapsed_metric "QMetrics2030Out.bin"
 [QMetricsByLaneOut.bin]: @ref q_metric_by_lane "QMetricsByLaneOut.bin"
+[EmpiricalPhasingMetricsOut.bin]: @ref phasing_metric "EmpiricalPhasingMetricOut.bin"
 
 
 Known Limitations
