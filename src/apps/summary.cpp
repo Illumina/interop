@@ -54,6 +54,7 @@ using namespace illumina::interop;
  *
  * @param out output stream
  * @param summary summary metrics
+ * @param information_level level of information to print
  */
 void print_summary(std::ostream& out, const run_summary& summary, const size_t information_level);
 
