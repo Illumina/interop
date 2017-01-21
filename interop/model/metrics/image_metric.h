@@ -56,6 +56,14 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         ushort_t channel_count() const
         { return m_channel_count; }
+        /** Trim channel count
+         *
+         * @param channel_count number of channels
+         */
+        void channel_count(const size_t channel_count)
+        {
+            m_channel_count = static_cast<ushort_t>(channel_count);
+        }
 
         /** Generate a default header
          *
@@ -84,7 +92,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
      *
      * Per tile per cycle per channel percentiles of pixel values used to autocontrast thumbnail images
      *
-     * @note Supported versions: 1 and 2
+     * @note Supported versions: 1, 2 and 3
      */
     class image_metric : public metric_base::base_cycle_metric
     {
@@ -96,7 +104,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             /** Unique type code for metric */
             TYPE = constants::Image,
             /** Latest version of the InterOp format */
-            LATEST_VERSION = 2
+            LATEST_VERSION = 3
         };
         /** Image metric header
          */
@@ -232,7 +240,32 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         {
             return m_channel_count;
         }
+
+        /** Determine if any channel's contrast values are 0
+         *
+         * @return true if any channel's contrast values are 0
+         */
+        bool is_any_channel_blank() const
+        {
+            for(size_t channel = 0; channel < channel_count(); ++channel)
+            {
+                if(max_contrast(channel) == 0 && min_contrast(channel) == 0)
+                    return true;
+            }
+            return false;
+        }
+
         /** @} */
+        /** Trim unused channel values
+         *
+         * @param channel_count actual number of channels
+         */
+        void trim(const size_t channel_count)
+        {
+            m_channel_count = static_cast<ushort_t>(channel_count);
+            m_max_contrast.resize(channel_count);
+            m_min_contrast.resize(channel_count);
+        }
         /** Minimum contrast intensity
          *
          * @deprecated Will be removed in 1.1.x (use min_contrast instead)

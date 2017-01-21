@@ -39,6 +39,24 @@
             return val != val;
 #endif
         }
+        /** Test if a floating point number is infinity (INF)
+         *
+         * @param val floating point number
+         * @return true if floating point is infinity
+         */
+        template<typename T>
+        bool isinf(const T val)
+        {
+#   if defined(HAVE_ISNAN)
+            return ::isinf(val);
+#   elif defined(HAVE___ISNAN)
+            return __isinf(val);
+#   elif defined(HAVE_FLOAT_H_ISNAN)
+            return _isinf(val);
+#   else
+            return !isnan(val) && isnan(val-val);
+#endif
+        }
     }
 #endif
 

@@ -49,9 +49,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @param qscore_hist q-score histogram
          */
         q_by_lane_metric(const uint_t lane,
-                 const uint_t tile,
-                 const uint_t cycle,
-                 const uint32_vector& qscore_hist) : q_metric(lane, tile, cycle, qscore_hist){}
+                         const uint_t tile,
+                         const uint_t cycle,
+                         const uint32_vector& qscore_hist) : q_metric(lane, tile, cycle, qscore_hist){}
 
         /** @defgroup q_metric_by_lane Quality Metrics By Lane
          *

@@ -2,6 +2,7 @@ using System;
 using NUnit.Framework;
 using System.IO;
 using Illumina.InterOp.Run;
+using Illumina.InterOp.RunMetrics;
 using Illumina.InterOp.Metrics;
 using Illumina.InterOp.Plot;
 using Illumina.InterOp.Table;
@@ -54,7 +55,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		{
             run_metrics metrics = new run_metrics();
             filter_options options = new filter_options(tile_naming_method.FourDigit);
-            metrics.extraction_metric_set().insert(new extraction_metric(1,1101,1, 0L, new ushort_vector(), new float_vector()));
+            metrics.extraction_metric_set().insert(new extraction_metric(1,1101,1, new ushort_vector(), new float_vector()));
             candle_stick_plot_data data = new candle_stick_plot_data();
             options.cycle(1);
             c_csharp_plot.plot_by_cycle(metrics, metric_type.Intensity, options, data);

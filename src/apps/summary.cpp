@@ -39,6 +39,7 @@
 #include "interop/util/length_of.h"
 #include "interop/io/metric_file_stream.h"
 #include "interop/logic/summary/run_summary.h"
+#include "interop/util/option_parser.h"
 #include "interop/version.h"
 #include "inc/application.h"
 
@@ -53,16 +54,38 @@ using namespace illumina::interop;
  *
  * @param out output stream
  * @param summary summary metrics
+ * @param information_level level of information to print
  */
-void print_summary(std::ostream& out, const run_summary& summary);
+void print_summary(std::ostream& out, const run_summary& summary, const size_t information_level);
 
-int main(int argc, char** argv)
+int main(int argc, const char** argv)
 {
     const bool skip_median_calculation=true;
     if(argc == 0)
     {
         std::cerr << "No arguments specified!" << std::endl;
         //print_help(std::cout);
+        return INVALID_ARGUMENTS;
+    }
+
+    size_t information_level=5;
+    util::option_parser description;
+    description
+            (information_level, "level", "Level of summary information: 0: total, 1: non-index, 2: Read, 3: Lane, 4: Surface");
+    if(description.is_help_requested(argc, argv))
+    {
+        std::cout << "Usage: " << io::basename(argv[0]) << " run_folder [--option1=value1] [--option2=value2]" << std::endl;
+        description.display_help(std::cout);
+        return SUCCESS;
+    }
+    try
+    {
+        description.parse(argc, argv);
+        description.check_for_unknown_options(argc, argv);
+    }
+    catch(const util::option_exception& ex)
+    {
+        std::cerr << ex.what() << std::endl;
         return INVALID_ARGUMENTS;
     }
 
@@ -74,8 +97,12 @@ int main(int argc, char** argv)
     {
         run_metrics run;
 
+        std::cout << io::basename(argv[i]) << std::endl;
         int ret = read_run_metrics(argv[i], run, valid_to_load);
-        if(ret != SUCCESS) return ret;
+        if(ret != SUCCESS)
+        {
+            continue;
+        }
         run_summary summary;
         try
         {
@@ -84,11 +111,11 @@ int main(int argc, char** argv)
         catch(const std::exception& ex)
         {
             std::cerr << ex.what() << std::endl;
-            return UNEXPECTED_EXCEPTION;
+            continue;
         }
         try
         {
-            print_summary(std::cout, summary);
+            print_summary(std::cout, summary, information_level);
         }
         catch(const std::exception& ex)
         {
@@ -223,6 +250,8 @@ void summarize(const surface_summary& summary, std::vector<std::string>& values,
     values[i++] = format(summary.density(), 0, 0, 1e3);
     values[i++] = format(summary.percent_pf(), 0, 2);
     values[i++] = util::format(summary.phasing().mean(), 3, 3) + " / " + util::format(summary.prephasing().mean(), 3, 3);
+
+
     values[i++] = format(summary.reads(), 0, 2, 1e6);
     values[i++] = format(summary.reads_pf(), 0, 2, 1e6);
     values[i++] = format(summary.percent_gt_q30(), 0, 2);
@@ -248,6 +277,7 @@ void summarize(const lane_summary& summary, std::vector<std::string>& values)
     values[i++] = format(summary.density(), 0, 0, 1e3);
     values[i++] = format(summary.percent_pf(), 0, 2);
     values[i++] = util::format(summary.phasing().mean(), 3, 3) + " / " + util::format(summary.prephasing().mean(), 3, 3);
+
     values[i++] = format(summary.reads(), 0, 2, 1e6);
     values[i++] = format(summary.reads_pf(), 0, 2, 1e6);
     values[i++] = format(summary.percent_gt_q30(), 0, 2);
@@ -267,52 +297,64 @@ std::string format_read(const run::read_info& read)
     return "Read "+util::lexical_cast<std::string>(read.number()) + (read.is_index() ? " (I)" : "");
 }
 
-void print_summary(std::ostream& out, const run_summary& summary)
+void print_summary(std::ostream& out, const run_summary& summary, const size_t information_level)
 {
     const size_t width=15;
     const char* read_header[] = {"Level", "Yield", "Projected Yield", "Aligned", "Error Rate", "Intensity C1", "%>=Q30"};
     print_array(out, read_header, width);
     std::vector<std::string> values(util::length_of(read_header));
     INTEROP_ASSERT(values.size()>=1);
-    for(size_t read=0;read<summary.size();++read)
+    if( information_level >= 2)
     {
-        values[0] = format_read(summary[read].read());
-        summarize(summary[read].summary(), values);
+        for (size_t read = 0; read < summary.size(); ++read)
+        {
+            values[0] = format_read(summary[read].read());
+            summarize(summary[read].summary(), values);
+            print_array(out, values, width);
+        }
+    }
+    if( information_level >= 1)
+    {
+        values[0] = "Non-indexed";
+        summarize(summary.nonindex_summary(), values);
         print_array(out, values, width);
     }
-    values[0]="Non-indexed";
-    summarize(summary.nonindex_summary(), values);
-    print_array(out, values, width);
     values[0]="Total";
     summarize(summary.total_summary(), values);
     print_array(out, values, width);
     out<< "\n\n";
 
-    const char* lane_header[] = {"Lane", "Surface", "Tiles", "Density", "Cluster PF", "Phas/Prephas", "Reads",
-                                 "Reads PF", "%>=Q30", "Yield", "Cycles Error", "Aligned", "Error",
-                                 "Error (35)", "Error (75)", "Error (100)", "Intensity C1" };
-    values.resize(util::length_of(lane_header));
-    for(size_t read=0;read<summary.size();++read)
+    if( information_level >= 3)
     {
-        out << format_read(summary[read].read()) << std::endl;
-        print_array(out, lane_header, width);
-        for(size_t lane=0;lane<summary.lane_count();++lane)
+        const char *lane_header[] = {"Lane", "Surface", "Tiles", "Density", "Cluster PF", "Phas/Prephas",
+                                     "Reads", "Reads PF", "%>=Q30", "Yield", "Cycles Error", "Aligned", "Error",
+                                     "Error (35)", "Error (75)", "Error (100)", "Intensity C1"};
+        values.resize(util::length_of(lane_header));
+        for (size_t read = 0; read < summary.size(); ++read)
         {
-            INTEROP_ASSERT(summary[read][lane].tile_count() > 0);
-            summarize(summary[read][lane], values);
-            print_array(out, values, width);
-            if(summary.surface_count() > 1)
+            out << format_read(summary[read].read()) << std::endl;
+            print_array(out, lane_header, width);
+            for (size_t lane = 0; lane < summary.lane_count(); ++lane)
             {
-                for (size_t surface = 0; surface < summary.surface_count(); ++surface)
+                INTEROP_ASSERT(summary[read][lane].tile_count() > 0);
+                summarize(summary[read][lane], values);
+                print_array(out, values, width);
+                if (summary.surface_count() > 1 && information_level >= 4)
                 {
-                    summarize(summary[read][lane][surface], values, summary[read][lane].lane());
-                    print_array(out, values, width);
+                    for (size_t surface = 0; surface < summary.surface_count(); ++surface)
+                    {
+                        summarize(summary[read][lane][surface], values, summary[read][lane].lane());
+                        print_array(out, values, width);
+                    }
                 }
             }
         }
     }
-    out << "Extracted: " << format(summary.cycle_state().extracted_cycle_range()) << "\n";
-    out << "Called: " << format(summary.cycle_state().called_cycle_range()) << "\n";
-    out << "Scored: " << format(summary.cycle_state().qscored_cycle_range()) << "\n";
+    if( information_level >= 5)
+    {
+        out << "Extracted: " << format(summary.cycle_state().extracted_cycle_range()) << "\n";
+        out << "Called: " << format(summary.cycle_state().called_cycle_range()) << "\n";
+        out << "Scored: " << format(summary.cycle_state().qscored_cycle_range()) << "\n";
+    }
 }
 

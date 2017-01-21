@@ -148,6 +148,10 @@ namespace illumina{ namespace interop{ namespace io {
             count += map_metric_stat(stream, stat.m_error_rate_75);
             count += map_metric_stat(stream, stat.m_error_rate_100);
             count += map_metric_stat(stream, stat.m_first_cycle_intensity);
+            count += map_metric_stat(stream, stat.m_phasing_slope);
+            count += map_metric_stat(stream, stat.m_phasing_offset);
+            count += map_metric_stat(stream, stat.m_prephasing_slope);
+            count += map_metric_stat(stream, stat.m_prephasing_offset);
 
             return count;
         }

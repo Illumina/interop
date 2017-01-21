@@ -264,7 +264,211 @@ namespace illumina { namespace interop { namespace io
         }
     };
 
+    /** Tile Metric Record Layout Version 3
+     *
+     * This class provides an interface to reading the tile metric file:
+     *  - InterOp/TileMetrics.bin
+     *  - InterOp/TileMetricsOut.bin
+     *
+     * The class takes two template arguments:
+     *
+     *      1. Metric Type: tile_metric
+     *      2. Version: 3
+     */
+    template<>
+    struct generic_layout<tile_metric, 3> : public default_layout<3, 1 /*Multi record */>
+    {
+        /** @page tile_v3 Image Version 3
+         *
+         * This class provides an interface to reading the tile metric file:
+         *  - InterOp/TileMetrics.bin
+         *  - InterOp/TileMetricsOut.bin
+         *
+         *  The file format for tile metrics is as follows:
+         *
+         *  @b Header
+         *
+         *  illumina::interop::io::read_metrics (Function that parses this information)
+         *
+         *          byte 0: version number (3)
+         *          byte 1: record size (15)
+         *
+         *  @b Extended Header
+         *
+         *  illumina::interop::io::generic_layout<tile_metric, 3>  (Class that parses this information)
+         *
+         *          4 bytes: density (float)
+         *
+         *  @b n-Records
+         *
+         *  illumina::interop::io::layout::base_metric (Class that parses this information)
+         *
+         *          2 bytes: lane number (uint16)
+         *          4 bytes: tile number (uint32)
+         *
+         *  illumina::interop::io::generic_layout<tile_metric, 3> (Class that parses this information)
+         *
+         *          1 byte: code (char)
+         *          if code == 't'
+         *              4 bytes: cluster count (float32)
+         *              4 bytes: pf cluster count (float32)
+         *          if code == 'r'
+         *              4 bytes: read number (uint32)
+         *              4 bytes: percent aligned (float32)
+         */
+        /** Metric ID type */
+        typedef layout::base_metric< ::uint32_t > metric_id_t;
 
+        /** Map reading/writing a metric to a stream
+         *
+         * Reading and writing are symmetric operations, map it once
+         *
+         * @param stream input stream
+         * @param metric source/destination metric
+         * @param header metric header layout
+         * @return number of bytes read or total number of bytes written
+         */
+        template<class Metric, class Header>
+        static std::streamsize map_stream(std::istream &stream, Metric &metric, Header &header, const bool)
+        {
+            std::streamsize count = 0;
+            ::uint8_t code = '\0';
+            count += stream_map< ::uint8_t >(stream, code);
+            if (stream.fail()) return count;
+            if (code == 'r')
+            {
+                model::metrics::read_metric read_metric;
+                count += map_stream_read(stream, read_metric);
+                metric.m_read_metrics.push_back(read_metric);
+            }
+            else if (code == 't')
+            {
+                count += map_stream_tile(stream, metric);
+                if (header.m_density == 0 || std::isnan(header.m_density))
+                {
+                    const float NaN = std::numeric_limits<float>::quiet_NaN();
+                    metric.m_cluster_density = NaN;
+                    metric.m_cluster_density_pf = NaN;
+                }
+                else
+                {
+                    metric.m_cluster_density = metric.m_cluster_count / header.m_density;
+                    metric.m_cluster_density_pf = metric.m_cluster_count_pf / header.m_density;
+                }
+            }
+            else if(code == '\0') // Empty record, everything inside the record should be zero
+            {
+                size_t skip_size = compute_size(header) - 1 - sizeof(metric_id_t);
+                for(size_t i=0;i<skip_size;++i)
+                {
+                    if (stream.get() != '\0') INTEROP_THROW(bad_format_exception, "Skipped byte not zero");
+                    if (stream.fail()) return count+i;
+                }
+                return count+skip_size;
+            }
+            else
+                INTEROP_THROW(bad_format_exception, std::string("Unexpected code: ") +
+                                           util::lexical_cast<std::string>(int(code)) + " -> " +
+                                           util::lexical_cast<std::string>(int(count)));
+            return count;
+        }
+
+        /** Map reading/writing a metric to a stream
+         *
+         * Reading and writing are symmetric operations, map it once
+         *
+         * @param stream output stream
+         * @param metric source/destination metric
+         * @return number of bytes read or total number of bytes written
+         */
+        template<class Metric, class Header>
+        static std::streamsize map_stream(std::ostream &stream, Metric &metric, Header &, const bool)
+        {
+            metric_id_t metric_id;
+            metric_id.set(metric);
+            std::streamsize count = 0;
+            bool write_id = false;
+            if (!std::isnan(metric.m_cluster_density) ||
+                !std::isnan(metric.m_cluster_density_pf)  ||
+                !std::isnan(metric.m_cluster_count) ||
+                !std::isnan(metric.m_cluster_count_pf))
+            {
+                const ::uint8_t code = 't';
+                if (write_id) write_binary(stream, metric_id);
+                else write_id = true;
+                count += stream_map< ::uint8_t >(stream, code);
+                count += map_stream_tile(stream, metric);
+            }
+            typedef tile_metric::read_metric_vector::const_iterator const_iterator;
+            for (const_iterator beg = metric.read_metrics().begin(); beg != metric.read_metrics().end(); ++beg)
+            {
+                const ::uint8_t code = 'r';
+                if (write_id) write_binary(stream, metric_id);
+                else write_id = true;
+                count += stream_map< ::uint8_t >(stream, code);
+                count += map_stream_read(stream, *beg);
+            }
+            return count;
+        }
+        /** Throws an unimplemented error
+         */
+        template<class Metric, class Header>
+        static std::streamsize map_stream(const char*, const Metric &, const Header &, const bool)
+        {
+            INTEROP_THROW(std::runtime_error, "Function not implemented");
+        }
+
+        /** Compute the layout size
+         *
+         * @return size of the record
+         */
+        static record_size_t compute_size(const tile_metric::header_type &)
+        {
+            return static_cast<record_size_t>(sizeof(metric_id_t) + sizeof(float) * 2 + sizeof(::uint8_t));
+        }
+
+        /** Map reading/writing a header to a stream
+         *
+         * Reading and writing are symmetric operations, map it once
+         *
+         * @param stream input/output stream
+         * @param header source/destination header
+         * @return number of bytes read or total number of bytes written
+         */
+        template<class Stream, class Header>
+        static std::streamsize map_stream_for_header(Stream &stream, Header &header)
+        {
+            return stream_map<float>(stream, header.m_density);
+        }
+
+        /** Compute header size
+         *
+         * @return header size
+         */
+        static record_size_t compute_header_size(const tile_metric::header_type &)
+        {
+            return static_cast<record_size_t>(sizeof(::uint8_t) + sizeof(record_size_t) + sizeof(float));
+        }
+
+    private:
+        template<class Stream, class Metric>
+        static std::streamsize map_stream_read(Stream &stream, Metric &metric)
+        {
+            std::streamsize count = 0;
+            count += stream_map< ::uint32_t >(stream, metric.m_read);
+            count += stream_map<float>(stream, metric.m_percent_aligned);
+            return count;
+        }
+
+        template<class Stream, class Metric>
+        static std::streamsize map_stream_tile(Stream &stream, Metric &metric)
+        {
+            std::streamsize count = 0;
+            count += stream_map<float>(stream, metric.m_cluster_count);
+            count += stream_map<float>(stream, metric.m_cluster_count_pf);
+            return count;
+        }
+    };
 
 #pragma pack()
     /** Tile Metric CSV text format
@@ -347,6 +551,8 @@ namespace illumina { namespace interop { namespace io
 
 INTEROP_FORCE_LINK_DEF(tile_metric)
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(tile_metric, 2)
+INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(tile_metric, 3)
+
 
 // Text formats
 INTEROP_REGISTER_METRIC_TEXT_LAYOUT(tile_metric, 1)

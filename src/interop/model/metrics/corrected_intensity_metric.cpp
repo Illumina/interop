@@ -111,11 +111,11 @@ namespace illumina{ namespace interop{ namespace io
         {
             return static_cast<record_size_t>(
                     sizeof(metric_id_t)+
-                            sizeof(intensity_t) +                                // m_average_cycle_intensity
-                            sizeof(intensity_t)*constants::NUM_OF_BASES +        // m_corrected_int_all
-                            sizeof(intensity_t)*constants::NUM_OF_BASES +        // m_corrected_int_called
-                            sizeof(count_t)*constants::NUM_OF_BASES_AND_NC + // m_called_counts
-                            sizeof(float)                                       // m_signal_to_noise
+                    sizeof(intensity_t) +                                // m_average_cycle_intensity
+                    sizeof(intensity_t)*constants::NUM_OF_BASES +        // m_corrected_int_all
+                    sizeof(intensity_t)*constants::NUM_OF_BASES +        // m_corrected_int_called
+                    sizeof(count_t)*constants::NUM_OF_BASES_AND_NC + // m_called_counts
+                    sizeof(float)                                       // m_signal_to_noise
             );
         }
         /** Compute header size
@@ -220,10 +220,91 @@ namespace illumina{ namespace interop{ namespace io
             return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t));
         }
     };
-
+    /** Corrected Intensity Metric Record Layout Version 4
+     *
+     * This class provides an interface to reading the corrected intensity metric file:
+     *  - InterOp/CorrectedIntMetrics.bin
+     *  - InterOp/CorrectedIntMetricsOut.bin
+     *
+     * The class takes two template arguments:
+     *
+     *      1. Metric Type: corrected_intensity_metric
+     *      2. Version: 4
+     */
+    template<>
+    struct generic_layout<corrected_intensity_metric, 4> : public default_layout<4>
+    {
+        /** @page corrected_v4 Corrected Intensity Version 4
+         *
+         * This class provides an interface to reading the corrected intensity metric file:
+         *  - InterOp/CorrectedIntMetrics.bin
+         *  - InterOp/CorrectedIntMetricsOut.bin
+         *
+         *  The file format for corrected intensity metrics is as follows:
+         *
+         *  @b Header
+         *
+         *  illumina::interop::io::read_metrics (Function that parses this information)
+         *
+         *          byte 0: version number (4)
+         *          byte 1: record size (28)
+         *
+         *  @b n-Records
+         *
+         *  illumina::interop::io::layout::base_cycle_metric (Class that parses this information)
+         *
+         *          2 bytes: lane number (uint16)
+         *          4 bytes: tile number (uint32)
+         *          2 bytes: cycle number (uint16)
+         *
+         *  illumina::interop::io::generic_layout<corrected_intensity_metric, 4> (Class that parses this information)
+         *
+         *          4 bytes: number of base calls for No Call (uint32)
+         *          4 bytes: number of base calls for base A (uint32)
+         *          4 bytes: number of base calls for base C (uint32)
+         *          4 bytes: number of base calls for base G (uint32)
+         *          4 bytes: number of base calls for base T (uint32)
+         */
+        /** Metric ID type */
+        typedef layout::base_cycle_metric< ::uint32_t > metric_id_t;
+        /** Count type */
+        typedef ::uint32_t count_t;
+        /** Map reading/writing to stream
+         *
+         * Reading and writing are symmetric operations, map it once
+         *
+         * @param stream input/output stream
+         * @param metric source/destination metric
+         * @return number of bytes read or total number of bytes written
+         */
+        template<class Stream, class Metric, class Header>
+        static std::streamsize map_stream(Stream& stream, Metric& metric, Header&, const bool)
+        {
+            std::streamsize count = 0;
+            count += stream_map< count_t >(stream, metric.m_called_counts, constants::NUM_OF_BASES_AND_NC);
+            return count;
+        }
+        /** Compute the layout size
+         *
+         * @return size of the record
+         */
+        static record_size_t compute_size(const corrected_intensity_metric::header_type&)
+        {
+            return static_cast<record_size_t>(
+                    sizeof(metric_id_t)+
+                    sizeof(count_t)*constants::NUM_OF_BASES_AND_NC   // m_called_counts
+            );
+        }
+        /** Compute header size
+         *
+         * @return header size
+         */
+        static record_size_t compute_header_size(const corrected_intensity_metric::header_type&)
+        {
+            return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t));
+        }
+    };
 #pragma pack()
-
-
     /** Corrected intensity Metric CSV text format
      *
      * This class provide an interface for writing the corrected intensity metrics to a CSV file:
@@ -296,7 +377,7 @@ namespace illumina{ namespace interop{ namespace io
             for(int i=-1;i<constants::NUM_OF_BASES;i++)
                 out << sep << metric.called_counts(static_cast<constants::dna_bases>(i));
             for(size_t i=0;i<constants::NUM_OF_BASES;i++)
-                out << sep << metric.corrected_int_called(static_cast<constants::dna_bases>(i));
+                out << sep << metric.corrected_int_called(static_cast<constants::dna_bases>(i));// TODO: use missing for deprecated fields
             for(size_t i=0;i<constants::NUM_OF_BASES;i++)
                 out << sep << metric.corrected_int_all(static_cast<constants::dna_bases>(i));
             out << eol;
@@ -308,6 +389,7 @@ namespace illumina{ namespace interop{ namespace io
 INTEROP_FORCE_LINK_DEF(corrected_intensity_metric)
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(corrected_intensity_metric, 2 )
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(corrected_intensity_metric, 3 )
+INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(corrected_intensity_metric, 4 )
 
 // Text formats
 INTEROP_REGISTER_METRIC_TEXT_LAYOUT(corrected_intensity_metric, 1)

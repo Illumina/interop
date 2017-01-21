@@ -96,6 +96,59 @@ namespace illumina{ namespace interop { namespace unittest
         }
     };
 
+    /** This generator creates an expected metric set and the corresponding binary data
+     *
+     * @see model::metrics::index_metric
+     * @note Version 2
+     */
+    struct index_metric_v2 : metric_test<model::metrics::index_metric, 2>
+    {
+        enum{
+            /** Do not check record size (does not have it)*/
+            disable_check_record_size=true,
+            /** Do not check the expected binary data size */
+            disable_binary_data_size=true
+        };
+        /** Create the expected metric set
+         *
+         * @param metrics destination metric set
+         */
+        static void create_expected(metric_set_t& metrics, const model::run::info& =model::run::info())
+        {
+            typedef metric_t::index_info_t index_info_t;
+            metrics = metric_set_t(VERSION);
+            metric_t::index_array_t indices1;
+            indices1.push_back(index_info_t("ATCACGAC-AAGGTTCA", "1", "TSCAIndexes", 4570));
+            metric_t::index_array_t indices2;
+            indices2.push_back(index_info_t("ACAGTGGT-AAGGTTCA", "2", "TSCAIndexes", 4477));
+            metric_t::index_array_t indices3;
+            indices3.push_back(index_info_t("CAGATCCA-AAGGTTCA", "3", "TSCAIndexes", 4578));
+            metrics.insert(metric_t(1, 121106, 3, indices1));
+            metrics.insert(metric_t(2, 121106, 3, indices2));
+            metrics.insert(metric_t(3, 121106, 3, indices3));
+        }
+        /** Get the expected binary data
+         *
+         * @param buffer binary data string
+         */
+        template<class Collection>
+        static void create_binary_data(Collection& buffer)
+        {
+            const int tmp[] =
+            {
+                    2
+                    ,1,0,18,-39,1,0,3,0,17,0,65,84,67,65,67,71,65,67,45,65
+                    ,65,71,71,84,84,67,65,-38,17,0,0,0,0,0,0,1,0,49,11,0
+                    ,84,83,67,65,73,110,100,101,120,101,115,2,0,18,-39,1,0,3,0,17
+                    ,0,65,67,65,71,84,71,71,84,45,65,65,71,71,84,84,67,65,125,17
+                    ,0,0,0,0,0,0,1,0,50,11,0,84,83,67,65,73,110,100,101,120
+                    ,101,115,3,0,18,-39,1,0,3,0,17,0,67,65,71,65,84,67,67,65
+                    ,45,65,65,71,71,84,84,67,65,-30,17,0,0,0,0,0,0,1,0,51
+                    ,11,0,84,83,67,65,73,110,100,101,120,101,115
+            };
+            buffer.assign(tmp, tmp+util::length_of(tmp));
+        }
+    };
 
 }}}
 

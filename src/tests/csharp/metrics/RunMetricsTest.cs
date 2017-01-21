@@ -2,6 +2,7 @@ using System;
 using NUnit.Framework;
 using System.IO;
 using Illumina.InterOp.Run;
+using Illumina.InterOp.RunMetrics;
 using Illumina.InterOp.Metrics;
 using Illumina.InterOp.Comm;
 
@@ -37,8 +38,11 @@ namespace Illumina.InterOp.Interop.UnitTest
 
             string_vector filenames = new string_vector();
             run.list_error_metric_filenames(filenames, "RunFolder");
-            Assert.AreEqual(filenames.Count, 1);
+            Assert.AreEqual(filenames.Count, 4);
             Assert.AreEqual(filenames[0], Path.Combine("RunFolder", "InterOp", "ErrorMetricsOut.bin"));
+            Assert.AreEqual(filenames[1], Path.Combine("RunFolder", "InterOp", "C1.1", "ErrorMetricsOut.bin"));
+            Assert.AreEqual(filenames[2], Path.Combine("RunFolder", "InterOp", "C2.1", "ErrorMetricsOut.bin"));
+            Assert.AreEqual(filenames[3], Path.Combine("RunFolder", "InterOp", "C3.1", "ErrorMetricsOut.bin"));
 
 		}
 		[Test]

@@ -38,6 +38,7 @@ namespace illumina { namespace interop { namespace io { namespace plot
             out << "unset key\n";
             out << "unset tics\n";
             out << "unset border\n";
+            out << "set datafile missing \"nan\"\n";
             out << "set cbtics border in scale 0,0 mirror norotate autojustify\n";
             out << "set cbrange [" << data.saxis().min() << ":" << data.saxis().max() << "]\n";
             out <<

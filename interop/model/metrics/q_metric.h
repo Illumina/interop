@@ -243,7 +243,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
      *  bins with a quality value of 30 or greater divided by the total non-N basecalls (sum of the population over
      *  all bins times) 100.
      *
-     * @note Supported versions: 4, 5 and 6
+     * @note Supported versions: 4, 5, 6 and 7
      */
     class q_metric : public metric_base::base_cycle_metric
     {
@@ -251,15 +251,15 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         enum
         {
             /** Unique type code for metric */
-            TYPE = constants::Q,
+                    TYPE = constants::Q,
             /** Latest version of the InterOp format */
-            LATEST_VERSION = 6
+                    LATEST_VERSION = 7
         };
     public:
         enum
         {
             /** Maximum number of q-score bins */
-            MAX_Q_BINS = q_score_header::MAX_Q_BINS
+                    MAX_Q_BINS = q_score_header::MAX_Q_BINS
         };
         /** Q-score metric header */
         typedef q_score_header header_type;
@@ -324,6 +324,24 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                 metric_base::base_cycle_metric(lane, tile, cycle),
                 m_qscore_hist(qscore_hist, qscore_hist + count)
         {
+        }
+
+    public:
+        /** Setter
+         *
+         * @param lane lane number
+         * @param tile tile number
+         * @param cycle cycle number
+         * @param qscore_hist Q-score histogram
+         */
+        void set(const uint_t lane,
+                 const uint_t tile,
+                 const uint_t cycle,
+                 const uint32_vector& qscore_hist)
+        {
+            metric_base::base_cycle_metric::set_base(lane, tile, cycle);
+            m_qscore_hist = qscore_hist;
+            m_qscore_hist_cumulative.resize(qscore_hist.size(), 0);
         }
 
     public:
@@ -431,7 +449,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @return total of clusters over the given q-score
          */
         ::uint64_t total_over_qscore_cumulative(const uint_t qscore,
-                                            const qscore_bin_vector_type &bins = qscore_bin_vector_type()) const
+                                                const qscore_bin_vector_type &bins = qscore_bin_vector_type()) const
         {
             INTEROP_ASSERT(m_qscore_hist_cumulative.size() > 0);
             ::uint64_t total_count = 0;
@@ -439,8 +457,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             {
                 INTEROP_ASSERT(qscore > 0);
                 if(qscore <= m_qscore_hist_cumulative.size())
-                total_count = std::accumulate(m_qscore_hist_cumulative.begin() + qscore, m_qscore_hist_cumulative.end(),
-                                             static_cast< ::uint64_t >(0));
+                    total_count = std::accumulate(m_qscore_hist_cumulative.begin() + qscore, m_qscore_hist_cumulative.end(),
+                                                  static_cast< ::uint64_t >(0));
             }
             else
             {

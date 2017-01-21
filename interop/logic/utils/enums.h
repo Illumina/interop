@@ -14,6 +14,8 @@
 /** This macro maps an enum to a string/enum pair */
 #define INTEROP_TUPLE1(X) name_type_pair_t(#X,X)
 /** This temp macro converts an enum/value pair to an enum */
+#define INTEROP_TUPLE_ASSIGN(X, IGNORED_1) name_type_pair_t(#X,X)
+/** This macro maps an enum description to a string/enum pair */
 #define INTEROP_TUPLE2(X, IGNORED_1) name_type_pair_t(#X,X)
 /** This macro maps an enum description to a string/enum pair */
 #define INTEROP_TUPLE3(X, IGNORED_1, IGNORED_2) name_type_pair_t(#X,X)

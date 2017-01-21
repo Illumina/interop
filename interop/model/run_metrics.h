@@ -17,10 +17,12 @@
 
 //Metrics
 #include "interop/model/metrics/corrected_intensity_metric.h"
+#include "interop/model/metrics/dynamic_phasing_metric.h"
 #include "interop/model/metrics/error_metric.h"
 #include "interop/model/metrics/extraction_metric.h"
 #include "interop/model/metrics/image_metric.h"
 #include "interop/model/metrics/index_metric.h"
+#include "interop/model/metrics/phasing_metric.h"
 #include "interop/model/metrics/q_metric.h"
 #include "interop/model/metrics/q_by_lane_metric.h"
 #include "interop/model/metrics/q_collapsed_metric.h"
@@ -33,10 +35,12 @@ namespace illumina { namespace interop { namespace model { namespace metrics
      *
      * @ingroup run_metrics
      * @see corrected_intensity_metrics
+     * @see dynamic_phasing_metric
      * @see error_metrics
      * @see extraction_metrics
      * @see image_metrics
      * @see index_metrics
+     * @see phasing_metric
      * @see q_metrics
      * @see tile_metrics
      * @see q_by_lane_metric
@@ -46,10 +50,12 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     {
         typedef make_type_list<
                 corrected_intensity_metric,
+                dynamic_phasing_metric,
                 error_metric,
                 extraction_metric,
                 image_metric,
                 index_metric,
+                phasing_metric,
                 q_metric,
                 q_by_lane_metric,
                 q_collapsed_metric,
@@ -121,8 +127,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          *
          * @param run_folder run folder path
          * @param valid_to_load list of metrics to load
+         * @param skip_loaded skip metrics that are already loaded
          */
-        void read(const std::string &run_folder, const std::vector<unsigned char>& valid_to_load)
+        void read(const std::string &run_folder, const std::vector<unsigned char>& valid_to_load, const bool skip_loaded=false)
         throw(xml::xml_file_not_found_exception,
         xml::bad_xml_format_exception,
         xml::empty_xml_format_exception,
@@ -162,7 +169,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          *
          * @param run_folder run folder path
          */
-        size_t read_run_parameters(const std::string &run_folder) throw(io::file_not_found_exception,
+        size_t read_run_parameters(const std::string &run_folder) throw(
+        io::file_not_found_exception,
         xml::xml_file_not_found_exception,
         xml::bad_xml_format_exception,
         xml::empty_xml_format_exception,
@@ -173,7 +181,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          *
          * @param count number of bins for legacy q-metrics
          */
-        void finalize_after_load(size_t count = std::numeric_limits<size_t>::max()) throw(model::invalid_channel_exception,
+        void finalize_after_load(size_t count = std::numeric_limits<size_t>::max()) throw(
+        model::invalid_channel_exception,
         model::invalid_tile_naming_method,
         model::index_out_of_bounds_exception,
         model::invalid_run_info_exception);
@@ -249,7 +258,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
 
         /** List all filenames for a specific metric
          *
-         * @param files destination interop file names
+         * @param files destination interop file names (first one is legacy, all subsequent are by cycle)
          * @param run_folder run folder location
          */
         template<class T>
@@ -259,7 +268,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             typedef typename metric_base::metric_set_helper<T>::metric_set_t metric_set_t;
             const size_t last_cycle = run_info().total_cycles();
             if( last_cycle == 0 ) INTEROP_THROW(invalid_run_info_exception, "RunInfo is empty");
-            io::list_interop_filenames< metric_set_t >(files, run_folder);
+            io::list_interop_filenames< metric_set_t >(files, run_folder, last_cycle);
         }
 
     public:
@@ -312,8 +321,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * This will set the `metric_set::data_source_exists` flag.
          *
          * @param run_folder run folder path
+         * @param last_cycle last cycle to search for by cycle interops
          */
-        void check_for_data_sources(const std::string &run_folder);
+        void check_for_data_sources(const std::string &run_folder, const size_t last_cycle);
         /** Read binary metrics from the run folder
          *
          * This function ignores:
@@ -322,8 +332,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          *  - Missing RunParameters.xml for non-legacy run folders
          *
          * @param run_folder run folder path
+         * @param last_cycle last cycle of run
          */
-        void read_metrics(const std::string &run_folder) throw(
+        void read_metrics(const std::string &run_folder, const size_t last_cycle) throw(
         io::file_not_found_exception,
         io::bad_format_exception,
         io::incomplete_file_exception);
@@ -335,9 +346,14 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          *  - Missing RunParameters.xml for non-legacy run folders
          *
          * @param run_folder run folder path
+         * @param last_cycle last cycle of run
          * @param valid_to_load boolean vector indicating which files to load
+         * @param skip_loaded skip metrics that are already loaded
          */
-        void read_metrics(const std::string &run_folder, const std::vector<unsigned char>& valid_to_load) throw(
+        void read_metrics(const std::string &run_folder,
+                          const size_t last_cycle,
+                          const std::vector<unsigned char>& valid_to_load,
+                          const bool skip_loaded=false) throw(
         io::file_not_found_exception,
         io::bad_format_exception,
         io::incomplete_file_exception,

@@ -84,9 +84,12 @@ TYPED_TEST_P(metric_stream_test, test_read_data_size)
 TEST(metric_stream_test, list_filenames)
 {
     std::vector<std::string> error_metric_files;
-    io::list_interop_filenames< model::metrics::error_metric >(error_metric_files, "");
-    ASSERT_EQ(error_metric_files.size(), 1u);
+    io::list_interop_filenames< model::metrics::error_metric >(error_metric_files, "", 3);
+    ASSERT_EQ(error_metric_files.size(), 4u);
     EXPECT_EQ(error_metric_files[0], io::combine("InterOp", "ErrorMetricsOut.bin"));
+    EXPECT_EQ(error_metric_files[1], io::combine("InterOp", "C1.1", "ErrorMetricsOut.bin"));
+    EXPECT_EQ(error_metric_files[2], io::combine("InterOp", "C2.1", "ErrorMetricsOut.bin"));
+    EXPECT_EQ(error_metric_files[3], io::combine("InterOp", "C3.1", "ErrorMetricsOut.bin"));
 }
 
 

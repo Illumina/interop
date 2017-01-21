@@ -57,4 +57,5 @@ add_csharp_example(csharp_example1 Example1.cs)
 add_csharp_example(csharp_example2 Example2.cs)
 add_csharp_example(csharp_example3 Example3.cs)
 add_csharp_example(csharp_summary SummaryExample.cs)
+add_csharp_example(csharp_imaging ImagingExample.cs)
 

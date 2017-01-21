@@ -2,6 +2,7 @@ using System;
 using NUnit.Framework;
 using System.IO;
 using Illumina.InterOp.Metrics;
+using Illumina.InterOp.RunMetrics;
 
 namespace Illumina.InterOp.UnitTest
 {
@@ -90,7 +91,7 @@ namespace Illumina.InterOp.UnitTest
 		    System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
 		    timer.Start();
 		    float[] focusVals = new float[extraction_metric_set.size()];
-            c_csharp_metrics.copy_focus(extraction_metric_set, focusVals, 0, (uint)focusVals.Length);
+            c_csharp_run_metrics.copy_focus(extraction_metric_set, focusVals, 0, (uint)focusVals.Length);
 		    double sum = 0.0;
 		    for(int i=0;i<focusVals.Length;i++) sum+=focusVals[i];
 		    timer.Stop();

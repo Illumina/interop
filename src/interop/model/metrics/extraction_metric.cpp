@@ -93,11 +93,19 @@ namespace illumina { namespace interop { namespace io
         static std::streamsize map_stream(Stream &stream, Metric &metric, Header &, const bool)
         {
             std::streamsize count = 0;
-            count += stream_map<focus_t>(stream, metric.m_focus_scores, extraction_metric::MAX_CHANNELS);
+            const focus_t pad_focus = std::numeric_limits<focus_t>::quiet_NaN();
+            const intensity_t pad_intensity = std::numeric_limits<intensity_t>::max();
+            count += padded_stream_map<focus_t>(stream,
+                                                metric.m_focus_scores,
+                                                extraction_metric::MAX_CHANNELS,
+                                                pad_focus);
             if (stream)
                 set_nan_to_zero(stream, metric.m_focus_scores);// TODO: Remove and rebaseline regression tests
             else return count;
-            count += stream_map<intensity_t>(stream, metric.m_max_intensity_values, extraction_metric::MAX_CHANNELS);
+            count += padded_stream_map<intensity_t>(stream,
+                                                    metric.m_max_intensity_values,
+                                                    extraction_metric::MAX_CHANNELS,
+                                                    pad_intensity);
             count += stream_map<datetime_t>(stream, metric.m_date_time_csharp.value);
             convert_datetime(stream, metric);
             return count;
@@ -158,6 +166,122 @@ namespace illumina { namespace interop { namespace io
         }
     };
 
+    /** Extraction Metric Record Layout Version 3
+     *
+     * This class provides an interface to reading the extraction metric file:
+     *  - InterOp/ExtractionMetrics.bin
+     *  - InterOp/ExtractionMetricsOut.bin
+     *
+     * The class takes two template arguments:
+     *
+     *      1. Metric Type: extraction_metric
+     *      2. Version: 3
+     */
+    template<>
+    struct generic_layout<extraction_metric, 3> : public default_layout<3>
+    {
+        /** @page extraction_v3 Extraction Version 3
+         *
+         * This class provides an interface to reading the extraction metric file:
+         *  - InterOp/ExtractionMetrics.bin
+         *  - InterOp/ExtractionMetricsOut.bin
+         *
+         *  The file format for extraction metrics is as follows:
+         *
+         *  @b Header
+         *
+         *  illumina::interop::io::read_metrics (Function that parses this information)
+         *
+         *          byte 0: version number (3)
+         *          byte 1: record size ( 8 + channelCount*4 + channelCount*2 )
+         *
+         *  @b Extended Header
+         *
+         *  illumina::interop::io::generic_layout<extraction_metric, 3> (Class that parses this information)
+         *
+         *          byte 2: channel count (channelCount)
+         *
+         *  @b n-Records
+         *
+         *  illumina::interop::io::layout::base_cycle_metric (Class that parses this information)
+         *
+         *          2 bytes: lane number (uint16)
+         *          4 bytes: tile number (uint32)
+         *          2 bytes: cycle number (uint16)
+         *
+         *  illumina::interop::io::generic_layout<extraction_metric, 3> (Class that parses this information)
+         *
+         *          4 bytes * channel count: focus for each channel (float32)
+         *          2 bytes * channel count: max intensity for each channel (uint16)
+         */
+        /** Metric ID type */
+        typedef layout::base_cycle_metric< ::uint32_t > metric_id_t;
+        /** Focus type */
+        typedef float focus_t;
+        /** Intensity type */
+        typedef ::uint16_t intensity_t;
+        /** Contrast type */
+        typedef ::uint8_t channel_count_t;
+
+        /** Map reading/writing to stream
+         *
+         * Reading and writing are symmetric operations, map it once
+         *
+         * @param stream input/output stream
+         * @param metric source/destination metric
+         * @param header extraction metric header
+         * @return number of bytes read or total number of bytes written
+         */
+        template<class Stream, class Metric, class Header>
+        static std::streamsize map_stream(Stream &stream, Metric &metric, Header &header, const bool)
+        {
+            std::streamsize count = 0;
+            count += stream_map<focus_t>(stream, metric.m_focus_scores, header.channel_count());
+            count += stream_map<intensity_t>(stream, metric.m_max_intensity_values, header.channel_count());
+            return count;
+        }
+
+        /** Compute the layout size
+         *
+         * @param header extraction metric header
+         * @return size of the record
+         */
+        static record_size_t compute_size(const extraction_metric::header_type &header)
+        {
+            return static_cast<record_size_t>(
+                    sizeof(metric_id_t) +
+                    sizeof(focus_t) * header.channel_count() +     // m_focus_scores
+                    sizeof(intensity_t) * header.channel_count()   // m_max_intensity_values
+            );
+        }
+
+        /** Map reading/writing a header to a stream
+         *
+         * Reading and writing are symmetric operations, map it once
+         *
+         * @param stream input/output stream
+         * @param header source/destination header
+         * @return number of bytes read or total number of bytes written
+         */
+        template<class Stream, class Header>
+        static std::streamsize map_stream_for_header(Stream &stream, Header &header)
+        {
+            std::streamsize count = stream_map<channel_count_t>(stream, header.m_channel_count);
+            if(stream.fail())return count;
+            if(0==count)
+                INTEROP_THROW(bad_format_exception, "Format does not support 0 channels for extraction metric");
+            return count;
+        }
+
+        /** Compute header size
+         *
+         * @return header size
+         */
+        static record_size_t compute_header_size(const extraction_metric::header_type &)
+        {
+            return static_cast<record_size_t>(sizeof(channel_count_t) + sizeof(record_size_t) + sizeof(version_t));
+        }
+    };
 
 #pragma pack()
     /** Extraction Metric CSV text format
@@ -222,7 +346,7 @@ namespace illumina { namespace interop { namespace io
                                    const char eol,
                                    const char)
         {
-            if( header.channel_count() != metric.channel_count() )
+            if( header.channel_count() > metric.channel_count() )
                 INTEROP_THROW(bad_format_exception, "Header and metric channel count mismatch");
             out << metric.lane() << sep << metric.tile() << sep << metric.cycle() << sep;
             out << metric.date_time(); // TODO: Format date/time
@@ -239,6 +363,7 @@ namespace illumina { namespace interop { namespace io
 INTEROP_FORCE_LINK_DEF(extraction_metric)
 
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(extraction_metric, 2)
+INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(extraction_metric, 3)
 
 
 // Text formats

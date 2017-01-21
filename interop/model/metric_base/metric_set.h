@@ -180,13 +180,21 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
                 T::header_type::update_max_cycle(*b);
             }
         }
-        /** Resert the number of places in the metric vector
+        /** Resize the number of places in the metric vector
          *
          * @param n expected number of elements
          */
         void resize(const size_t n)
         {
             m_data.resize(n, metric_type(*this));
+        }
+        /** Reserve the number of places in the metric vector
+         *
+         * @param n maximum number of elements
+         */
+        void reserve(const size_t n)
+        {
+            m_data.reserve(n);
         }
         /** Trim the set to the proper number of metrics
          *

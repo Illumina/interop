@@ -59,7 +59,7 @@ namespace illumina{ namespace interop { namespace unittest
             // QByLane uses the same format as QMetrics
             // Neither of these is tested
             const constants::metric_group group = static_cast<constants::metric_group>(MetricSet::TYPE);
-            if(group == constants::QByLane)
+            if(group == constants::DynamicPhasing || group == constants::QByLane)
                 return;
             const std::string name = io::paths::interop_basename<metric_t>();
             if(m_format_map.find(name) == m_format_map.end())

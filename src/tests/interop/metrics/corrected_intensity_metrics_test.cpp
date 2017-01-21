@@ -44,6 +44,11 @@ corrected_intensity_metrics_tests::generator_type corrected_intensity_unit_test_
         wrap(new write_read_metric_generator< corrected_intensity_metric_v2 >),
         wrap(new hardcoded_metric_generator< corrected_intensity_metric_v3 >),
         wrap(new write_read_metric_generator< corrected_intensity_metric_v3 >)
+        ,wrap(new hardcoded_metric_generator< corrected_intensity_metric_v4 >),
+        wrap(new write_read_metric_generator< corrected_intensity_metric_v4 >),
+        wrap(new by_cycle_metric_generator< corrected_intensity_metric_v2 >),
+        wrap(new by_cycle_metric_generator< corrected_intensity_metric_v3 >),
+        wrap(new by_cycle_metric_generator< corrected_intensity_metric_v4 >)
 };
 
 // Specificy the fixtures used for corrected_intensity_metrics_tests TEST_P functions
@@ -95,8 +100,8 @@ TEST_P(corrected_intensity_metrics_tests, test_metric_io_fidelity)
                       it_actual->called_counts(static_cast<constants::dna_bases>(i)));
         for(size_t i=0;i<constants::NUM_OF_BASES;i++)
         {
-            EXPECT_EQ(it_expected->corrected_int_called(static_cast<constants::dna_bases>(i)),
-                      it_actual->corrected_int_called(static_cast<constants::dna_bases>(i)));
+            INTEROP_EXPECT_NEAR(it_expected->corrected_int_called(static_cast<constants::dna_bases>(i)),
+                      it_actual->corrected_int_called(static_cast<constants::dna_bases>(i)), tol);
             if(expected.version() < 3)
             {
                 EXPECT_EQ(it_expected->corrected_int_all(static_cast<constants::dna_bases>(i)),
@@ -108,9 +113,9 @@ TEST_P(corrected_intensity_metrics_tests, test_metric_io_fidelity)
 
 TEST(corrected_intensity_metrics_test, test_percent_base_nan)
 {
-    typedef corrected_intensity_metric::ushort_array_t ushort_array_t;
+    typedef corrected_intensity_metric::float_array_t float_array_t;
     typedef corrected_intensity_metric::uint_array_t uint_array_t;
-    corrected_intensity_metric metric(1, 1112, 1, ushort_array_t(4,0), uint_array_t(5,0));
+    corrected_intensity_metric metric(1, 1112, 1, float_array_t(4,0), uint_array_t(5,0));
     EXPECT_TRUE(std::isnan(metric.percent_bases()[0]));
 }
 

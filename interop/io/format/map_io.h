@@ -228,6 +228,43 @@ namespace illumina { namespace interop { namespace io
      *
      * @param in input stream
      * @param vals destination array of values
+     * @param n number of values to read
+     * @return number of bytes read from the stream
+     */
+    template<typename ReadType, typename ValueType>
+    std::streamsize padded_stream_map(std::istream &in, std::vector<ValueType>&vals, const size_t n, const ReadType)
+    {
+        vals.resize(n);
+        INTEROP_ASSERTMSG(!vals.empty(), "n="<<n);
+        return read_array_helper<ReadType,ValueType>::read_array_from_stream(in, &vals.front(), n);
+    }
+
+
+    /** Read an array of values of type ReadType from the given input stream
+     *
+     * TODO: create more efficient buffered version
+     *
+     * @param in input stream
+     * @param vals destination array of values
+     * @param n number of values to read
+     * @return number of bytes read from the stream
+     */
+    template<typename ReadType, typename ValueType>
+    std::streamsize padded_stream_map(char*& in, std::vector<ValueType>&vals, const size_t n, const ReadType)
+    {
+        vals.resize(n);
+        INTEROP_ASSERT(!vals.empty());
+        return read_array_helper<ReadType,ValueType>::read_array_from_stream(in, &vals.front(), n);
+    }
+
+
+
+    /** Read an array of values of type ReadType from the given input stream
+     *
+     * TODO: create more efficient buffered version
+     *
+     * @param in input stream
+     * @param vals destination array of values
      * @param offset starting index of values to copy to in vals
      * @param n number of values to read
      * @return number of bytes read from the stream
@@ -334,6 +371,31 @@ namespace illumina { namespace interop { namespace io
         {
             WriteType write_val = static_cast<WriteType>(vals[i]);
             write_binary(out, write_val);
+        }
+        return out.tellp();
+    }
+
+    /** Write an array of values of type ReadType to the given output stream
+     *
+     * TODO: create more efficient buffered version
+     *
+     * @param out output stream
+     * @param vals destination array of values
+     * @param n number of values in array
+     * @param pad default number of pad
+     * @return number of bytes written to the stream
+     */
+    template<typename WriteType, typename ValueType>
+    std::streamsize padded_stream_map(std::ostream &out, const ValueType &vals, const size_t n, const WriteType pad)
+    {
+        for (size_t i = 0; i < util::length_of(vals); i++)
+        {
+            WriteType write_val = static_cast<WriteType>(vals[i]);
+            write_binary(out, write_val);
+        }
+        for (size_t i = util::length_of(vals); i < n; i++)
+        {
+            write_binary(out, pad);
         }
         return out.tellp();
     }

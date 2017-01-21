@@ -18,6 +18,8 @@
 #include "src/tests/interop/metrics/inc/tile_metrics_test.h"
 #include "src/tests/interop/metrics/inc/q_metrics_test.h"
 #include "src/tests/interop/inc/abstract_regression_test_generator.h"
+
+#include "src/tests/interop/metrics/inc/phasing_metrics_test.h"
 using namespace illumina::interop::model::summary;
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::io;
@@ -169,7 +171,6 @@ TEST_P(run_summary_tests, read_summary)
         EXPECT_EQ(actual_read_summary.read().last_cycle(), expected_read_summary.read().last_cycle());
         EXPECT_EQ(actual_read_summary.read().number(), expected_read_summary.read().number());
         EXPECT_EQ(actual_read_summary.read().is_index(), expected_read_summary.read().is_index());
-
     }
 }
 /** Test if calculated lane summary matches actual lane summary
@@ -252,6 +253,19 @@ TEST_P(run_summary_tests, lane_summary)
             INTEROP_EXPECT_CYCLE_EQ(actual_cycle_summary.qscored_cycle_range(), expected_cycle_summary.qscored_cycle_range());
             INTEROP_EXPECT_CYCLE_EQ(actual_cycle_summary.error_cycle_range(), expected_cycle_summary.error_cycle_range());
 
+            // Phasing
+            INTEROP_EXPECT_STAT_NEAR(actual_lane_summary.phasing_offset(),
+                                     expected_lane_summary.phasing_offset(),
+                                     tol);
+            INTEROP_EXPECT_STAT_NEAR(actual_lane_summary.phasing_slope(),
+                                     expected_lane_summary.phasing_slope(),
+                                     tol);
+            INTEROP_EXPECT_STAT_NEAR(actual_lane_summary.prephasing_offset(),
+                                     expected_lane_summary.prephasing_offset(),
+                                     tol);
+            INTEROP_EXPECT_STAT_NEAR(actual_lane_summary.prephasing_slope(),
+                                     expected_lane_summary.prephasing_slope(),
+                                     tol);
         }
     }
 }
@@ -334,6 +348,19 @@ TEST_P(run_summary_tests, surface_summary)
                                          tol);
                 INTEROP_EXPECT_STAT_NEAR(actual_surface_summary.first_cycle_intensity(),
                                  expected_surface_summary.first_cycle_intensity(), tol);
+                // Phasing
+                INTEROP_EXPECT_STAT_NEAR(actual_surface_summary.phasing_offset(),
+                                         expected_surface_summary.phasing_offset(),
+                                         tol);
+                INTEROP_EXPECT_STAT_NEAR(actual_surface_summary.phasing_slope(),
+                                         expected_surface_summary.phasing_slope(),
+                                         tol);
+                INTEROP_EXPECT_STAT_NEAR(actual_surface_summary.prephasing_offset(),
+                                         expected_surface_summary.prephasing_offset(),
+                                         tol);
+                INTEROP_EXPECT_STAT_NEAR(actual_surface_summary.prephasing_slope(),
+                                         expected_surface_summary.prephasing_slope(),
+                                         tol);
 
             }
         }
@@ -588,6 +615,7 @@ public:
         q_metric_v4::create_summary(expected);
         tile_metric_v2::create_summary(expected);
         corrected_intensity_metric_v2::create_summary(expected);
+        phasing_metric_v1::create_summary(expected);
         std::ostringstream oss;
         oss << expected;
 
@@ -614,6 +642,7 @@ run_summary_tests::generator_type run_summary_unit_test_generators[] = {
         new run_summary_generator<tile_metric_v2, summary_logic>(),
         new run_summary_generator<corrected_intensity_metric_v2, summary_logic>(),
         new run_summary_generator<corrected_intensity_metric_v3, summary_logic>(),
+        new run_summary_generator<phasing_metric_v1, summary_logic>(),
 
         // Requirements testing
         new run_summary_generator<q_metric_requirements, summary_logic>(),

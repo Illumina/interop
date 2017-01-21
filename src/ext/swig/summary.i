@@ -12,11 +12,13 @@
 %import "src/ext/swig/exceptions/exceptions_impl.i"
 %import "src/ext/swig/run.i"
 %import "src/ext/swig/metrics.i"
+%import "src/ext/swig/run_metrics.i"
 
 // Ensure all the modules import the shared namespace
 %pragma(csharp) moduleimports=%{
 using Illumina.InterOp.Metrics;
 using Illumina.InterOp.Run;
+using Illumina.InterOp.RunMetrics;
 %}
 
 // Ensure each of the generated C# class import the shared code
@@ -25,6 +27,7 @@ using System;
 using System.Runtime.InteropServices;
 using Illumina.InterOp.Metrics;
 using Illumina.InterOp.Run;
+using Illumina.InterOp.RunMetrics;
 %}
 
 %pragma(java) jniclasscode=%{
