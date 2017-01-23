@@ -12,6 +12,9 @@
 # update variables in the function scope.
 macro(fix_default_compiler_settings_)
     if (MSVC)
+        if (NOT BUILD_SHARED_LIBS AND NOT FORCE_SHARED_CRT)
+            message(STATUS "Replacing MD with MT")
+        endif()
         # For MSVC, CMake sets certain flags to defaults we want to override.
         # This replacement code is taken from sample in the CMake Wiki at
         # http://www.cmake.org/Wiki/CMake_FAQ#Dynamic_Replace.
