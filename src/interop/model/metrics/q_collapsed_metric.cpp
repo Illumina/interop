@@ -104,10 +104,10 @@ namespace illumina{ namespace interop{ namespace io {
             }
             else
             {
-                if(count != TOTAL_RECORD_SIZE )
-                    INTEROP_THROW( incomplete_file_exception, "Insufficient data read from the file, got: "<<
-                            count << " != expected: " << TOTAL_RECORD_SIZE );
-                return ALT_RECORD_SIZE;
+                if(count != RECORD_SIZE )
+                    INTEROP_THROW( incomplete_file_exception, "Insufficient data read from the file, got: "
+                            << count << " != expected: " << RECORD_SIZE );
+                return RECORD_SIZE;
             }
             return count;
         }
@@ -116,11 +116,12 @@ namespace illumina{ namespace interop{ namespace io {
          *
          * @note The size of the record is not fixed for this format, the median q-score may more may not be there
          *
-         * @return 1
+         * @param header collapsed q metric header
+         * @return record size
          */
-        static record_size_t compute_size(const q_collapsed_metric::header_type&)
+        static record_size_t compute_size(const q_collapsed_metric::header_type& header)
         {
-            return static_cast<record_size_t>(ALT_RECORD_SIZE);
+            return static_cast<record_size_t>(header.m_record_size == 0 ? ALT_RECORD_SIZE : header.m_record_size);
         }
 
         /** Compute header size
@@ -309,7 +310,7 @@ namespace illumina{ namespace interop{ namespace io {
      *      2. Version: 5
      */
     template<>
-    struct generic_layout<q_collapsed_metric, 5> : public default_layout<5, 1 /*Tmp hack */>
+    struct generic_layout<q_collapsed_metric, 5> : public default_layout<5>
     {
         /** @page q_collapsed_v5 Collapsed Q-Metrics Version 5
          *
@@ -399,21 +400,22 @@ namespace illumina{ namespace interop{ namespace io {
             }
             else
             {
-                if (count != TOTAL_RECORD_SIZE)
+                if (count != RECORD_SIZE)
                     INTEROP_THROW(incomplete_file_exception, "Insufficient data read from the file, got: " <<
-                                                             count << " != expected: " << TOTAL_RECORD_SIZE);
-                return ALT_RECORD_SIZE;
+                                                             count << " != expected: " << RECORD_SIZE);
+                return RECORD_SIZE;
             }
             return count;
         }
 
         /** Compute the layout size
          *
+         * @param header collapsed q metric header
          * @return size of the record
          */
-        static record_size_t compute_size(const q_collapsed_metric::header_type &)
+        static record_size_t compute_size(const q_collapsed_metric::header_type & header)
         {
-            return static_cast<record_size_t>(ALT_RECORD_SIZE);
+            return static_cast<record_size_t>(header.m_record_size == 0 ? ALT_RECORD_SIZE : header.m_record_size);
         }
         /** Map reading/writing a header to a stream
          *
