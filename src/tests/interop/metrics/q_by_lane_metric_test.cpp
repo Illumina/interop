@@ -80,3 +80,49 @@ TEST(run_metrics_q_by_lane_test, test_is_group_empty)
     logic::metric::create_q_metrics_by_lane(metrics.get<q_metric>(), metrics.get<q_by_lane_metric>());
     EXPECT_FALSE(metrics.is_group_empty(constants::QByLane));
 }
+
+// Test that unsupported feature throws an exception
+TEST(run_metrics_q_by_lane_test, try_write_binned_as_unbinned)
+{
+    typedef model::run::flowcell_layout::uint_t  uint_t;
+    run_metrics metrics;
+
+
+    const uint_t swath_count = 4;
+    const uint_t tile_count = 99;
+    const uint_t sections_per_lane = 1;
+    const uint_t lanes_per_section = 1;
+    const uint_t lane_count = 8;//expected.max_lane();
+    const uint_t surface_count = 2;
+    const model::run::read_info read_array[]={
+            model::run::read_info(1, 1, 4, false)
+    };
+    std::vector<std::string> channels;
+    model::run::info run_info("XX",
+                              "",
+                              1,
+                              model::run::flowcell_layout(lane_count,
+                                                          surface_count,
+                                                          swath_count,
+                                                          tile_count,
+                                                          sections_per_lane,
+                                                          lanes_per_section),
+                              channels,
+                              model::run::image_dimensions(),
+                              util::to_vector(read_array));
+
+    q_metric_v6::create_expected(metrics.get<q_metric>());
+    metrics.run_info(run_info);
+    metrics.legacy_channel_update(constants::HiSeq);
+    metrics.finalize_after_load();
+
+    ASSERT_GT(metrics.get<q_by_lane_metric>().size(), 0u);
+
+    const size_t buffer_size = io::compute_buffer_size(metrics.get<q_by_lane_metric>());
+    ASSERT_GT(buffer_size, 0u);
+    std::vector< ::uint8_t > buffer(buffer_size);
+    metrics.get<q_by_lane_metric>().set_version(4);
+    EXPECT_THROW(io::write_interop_to_buffer(metrics.get<q_by_lane_metric>(), &buffer.front(), buffer.size()),
+                 io::bad_format_exception);
+
+}

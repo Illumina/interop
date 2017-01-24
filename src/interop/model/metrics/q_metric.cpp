@@ -82,6 +82,8 @@ namespace illumina { namespace interop { namespace io
         template<class Stream, class Metric, class Header>
         static std::streamsize map_stream(Stream &stream, Metric &metric, Header &, const bool)
         {
+            if(metric.size() < q_metric::MAX_Q_BINS)
+                INTEROP_THROW(bad_format_exception, "Cannot write out binned q-score histogram in an unbinned format");
             const std::streamsize count = stream_map<count_t>(stream, metric.m_qscore_hist, q_metric::MAX_Q_BINS);
             resize_accumulated(stream, metric);
             return count;
