@@ -38,12 +38,17 @@ q_collapsed_metrics_tests::generator_type q_collapsed_unit_test_generators[] = {
         wrap(new hardcoded_metric_generator< q_collapsed_metric_v5 >),
         wrap(new write_read_metric_generator< q_collapsed_metric_v5 >),
         wrap(new hardcoded_metric_generator< q_collapsed_metric_v6 >),
-        wrap(new write_read_metric_generator< q_collapsed_metric_v6 >)
-        ,wrap(new by_cycle_metric_generator< q_collapsed_metric_v5 >),
+        wrap(new write_read_metric_generator< q_collapsed_metric_v6 >),
+        wrap(new by_cycle_metric_generator< q_collapsed_metric_v5 >),
         wrap(new by_cycle_metric_generator< q_collapsed_metric_v4 >),
         wrap(new by_cycle_metric_generator< q_collapsed_metric_v3 >),
         wrap(new by_cycle_metric_generator< q_collapsed_metric_v2 >),
-        wrap(new by_cycle_metric_generator< q_collapsed_metric_v6 >)
+        wrap(new by_cycle_metric_generator< q_collapsed_metric_v6 >),
+        wrap(new hardcoded_metric_generator< q_collapsed_metric_no_median_v2 >),
+        wrap(new hardcoded_metric_generator< q_collapsed_metric_no_median_v5 >),
+        wrap(new write_read_metric_generator< q_collapsed_metric_no_median_v2 >),
+        wrap(new write_read_metric_generator< q_collapsed_metric_no_median_v5 >)
+
 };
 
 // Setup unit tests for q_collapsed_metrics_tests
@@ -114,6 +119,47 @@ TEST(q_collapsed_metrics_test, test_convert_write_read)
         EXPECT_EQ(it_expected->q30(), it_actual->q30());
         EXPECT_EQ(it_expected->median_qscore(), it_actual->median_qscore());
     }
+}
+
+TEST(q_collapsed_metrics_test, compute_buffer_size)
+{
+    typedef model::run::flowcell_layout::uint_t  uint_t;
+    run_metrics metrics;
+
+
+    const uint_t swath_count = 4;
+    const uint_t tile_count = 99;
+    const uint_t sections_per_lane = 1;
+    const uint_t lanes_per_section = 1;
+    const uint_t lane_count = 8;//expected.max_lane();
+    const uint_t surface_count = 2;
+    const model::run::read_info read_array[]={
+            model::run::read_info(1, 1, 4, false)
+    };
+    std::vector<std::string> channels;
+    model::run::info run_info("XX",
+                              "",
+                              1,
+                              model::run::flowcell_layout(lane_count,
+                                                          surface_count,
+                                                          swath_count,
+                                                          tile_count,
+                                                          sections_per_lane,
+                                                          lanes_per_section),
+                              channels,
+                              model::run::image_dimensions(),
+                              util::to_vector(read_array));
+
+    q_metric_v6::create_expected(metrics.get<q_metric>());
+    metrics.run_info(run_info);
+    metrics.legacy_channel_update(constants::HiSeq);
+    metrics.finalize_after_load();
+
+    EXPECT_GT(metrics.get<q_collapsed_metric>().size(), 0u);
+
+    const size_t buffer_size = io::compute_buffer_size(metrics.get<q_collapsed_metric>());
+    EXPECT_GT(buffer_size, 0u);
+
 }
 
 

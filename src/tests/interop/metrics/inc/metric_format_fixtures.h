@@ -44,6 +44,8 @@ namespace illumina{ namespace interop { namespace unittest
                     q_collapsed_metric_v4,
                     q_collapsed_metric_v5,
                     q_collapsed_metric_v6,
+                    q_collapsed_metric_no_median_v2,
+                    q_collapsed_metric_no_median_v5,
                     q_metric_v4,
                     q_metric_v5,
                     q_metric_v6,
