@@ -3,7 +3,6 @@ project(InterOp)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules)
 enable_testing()
 include(${PROJECT_SOURCE_DIR}/cmake/Modules/UseGitVersion.cmake)
-include(${PROJECT_SOURCE_DIR}/cmake/InternalUtils.cmake)
 set(ARCHIVE_VERSION "v1.0.13-src")
 
 
@@ -12,7 +11,6 @@ if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release")
 endif()
 
-interop_config_compiler_and_linker()
 # TODO: https://help.github.com/articles/creating-project-pages-manually/
 
 # TODO: Handle Windows Shared libs: https://cmake.org/Wiki/BuildingWinDLL
@@ -29,8 +27,11 @@ option(ENABLE_APPS "Build command line programs" ON)
 option(ENABLE_EXAMPLES "Build example programs" ON)
 option(ENABLE_STATIC "Build static libraries instead of dynamic" ON)
 option(FORCE_X86 "Force 32-bit libraries instead of platform default (Does nothing for Visual Studio)" OFF)
-option(FORCE_SHARED_CRT "Used the shared (DLL) run time lib" ON)
+option(FORCE_SHARED_CRT "Used the shared (DLL) run time lib (must be ON if compiling for C#)" ON)
 option(ENABLE_CSHARP "Build C# language bindings" ON)
+
+include(${PROJECT_SOURCE_DIR}/cmake/InternalUtils.cmake)
+interop_config_compiler_and_linker()
 
 # Options to control integration builds
 set(PACKAGE_SUFFIX "" CACHE STRING "Suffix added to the output packages")
@@ -77,8 +78,10 @@ include(CPack)
 
 if(ENABLE_STATIC)
     set(LIBRARY_TYPE STATIC)
+    set(BUILD_SHARED_LIBS OFF)
 else()
     set(LIBRARY_TYPE SHARED)
+    set(BUILD_SHARED_LIBS ON)
 endif()
 
 if(WIN32 AND ${LIBRARY_TYPE} STREQUAL "SHARED")

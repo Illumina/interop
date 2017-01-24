@@ -32,8 +32,8 @@ if($lib_path) { $build_param="-DGTEST_ROOT=$lib_path -DJUNIT_ROOT=$lib_path -DGM
 Write-Host "##teamcity[blockOpened name='Configure $config $generator']"
 new-item build_vs2015_x64_$config -itemtype directory
 set-location -path build_vs2015_x64_$config
-Write-Host "cmake $source_path -G $generator -DCMAKE_BUILD_TYPE=$config $build_param -DFORCE_SHARED_CRT=OFF"
-cmake $source_path -G $generator -DCMAKE_BUILD_TYPE=$config $build_param -DFORCE_SHARED_CRT=OFF
+Write-Host "cmake $source_path -G $generator -DCMAKE_BUILD_TYPE=$config $build_param"
+cmake $source_path -G $generator -DCMAKE_BUILD_TYPE=$config $build_param
 $test_code=$lastexitcode
 Write-Host "##teamcity[blockClosed name='Configure $config $generator']"
 if ($test_code -ne 0)
