@@ -26,6 +26,14 @@ namespace illumina { namespace interop { namespace logic { namespace utils
         {
             valid_to_load[group] = static_cast<unsigned char>(1);
         }
+        //we need to hack this in for the 25-cycle phasing estimate found in TileMetrics
+        //in newer platforms, we don't calculate this in RTA/TileMetrics
+        //it's calculated after the fact in SAV from the EmpiricalPhasingMetrics file and populated back into TileMetrics
+        //Hence when Tile is loaded on-demand, we must also load EmpiricalPhasing too
+        if(group == constants::Tile)
+        {
+            valid_to_load[constants::EmpiricalPhasing] = static_cast<unsigned char>(1);
+        }
     }
 
     /** List the required on demand metrics
@@ -101,7 +109,8 @@ namespace illumina { namespace interop { namespace logic { namespace utils
                 static_cast<constants::metric_group >(tile_metric::TYPE),
                 static_cast<constants::metric_group >(error_metric::TYPE),
                 static_cast<constants::metric_group >(extraction_metric::TYPE),
-                static_cast<constants::metric_group >(corrected_intensity_metric::TYPE)
+                static_cast<constants::metric_group >(corrected_intensity_metric::TYPE),
+                static_cast<constants::metric_group >(phasing_metric::TYPE)
         };
         groups.assign(group_set, group_set+util::length_of(group_set));
     }

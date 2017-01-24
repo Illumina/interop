@@ -1,6 +1,7 @@
 using System;
 using NUnit.Framework;
 using System.IO;
+using Illumina.InterOp.RunMetrics;
 using Illumina.InterOp.Plot;
 using Illumina.InterOp.Metrics;
 using Illumina.InterOp.Run;
@@ -101,7 +102,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		public void TestListFlowMetrics()
 		{
 		    var interopsToLoad = new uchar_vector();
-		    c_csharp_metrics.list_analysis_metrics_to_load(interopsToLoad);
+		    c_csharp_run_metrics.list_analysis_metrics_to_load(interopsToLoad);
 		}
 	}
 }

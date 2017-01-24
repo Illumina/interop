@@ -48,6 +48,14 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @return number of channels
          */
         ushort_t channel_count()const{return m_channel_count;}
+        /** Trim channel count
+         *
+         * @param channel_count number of channels
+         */
+        void channel_count(const size_t channel_count)
+        {
+            m_channel_count = static_cast<ushort_t>(channel_count);
+        }
         /** Generate a default header
          *
          * @return default header
@@ -72,7 +80,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
      *
      * The extraction metrics include the max intensity and the focus score for each color channel.
      *
-     * @note Supported versions: 2
+     * @note Supported versions: 2 and 3
      */
     class extraction_metric : public metric_base::base_cycle_metric
     {
@@ -84,7 +92,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             /** Unique type code for metric */
             TYPE = constants::Extraction,
             /** Latest version of the InterOp format */
-            LATEST_VERSION = 2
+            LATEST_VERSION = 3
         };
         /** Extraction metric header */
         typedef extraction_metric_header header_type;
@@ -232,6 +240,71 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                 m_focus_scores(focus_scores, focus_scores + channel_count)
         {
         }
+        /** Constructor
+         *
+         * @note Version 3
+         * @param lane lane number
+         * @param tile tile number
+         * @param cycle cycle number
+         * @param max_intensity_values 90th percentile of intensities for the given channel
+         * @param focus_scores focus score for the given channel
+         */
+        extraction_metric(const uint_t lane,
+                          const uint_t tile,
+                          const uint_t cycle,
+                          const ushort_array_t& max_intensity_values,
+                          const float_array_t& focus_scores) :
+                metric_base::base_cycle_metric(lane, tile, cycle),
+                m_date_time_csharp(0),
+                m_date_time(0),
+                m_max_intensity_values(max_intensity_values),
+                m_focus_scores(focus_scores)
+        {
+        }
+
+    public:
+        /** Setter
+         *
+         * @note Version 2
+         * @param lane lane number
+         * @param tile tile number
+         * @param cycle cycle number
+         * @param date_time time extraction was completed
+         * @param max_intensity_values 90th percentile of intensities for the given channel
+         * @param focus_scores focus score for the given channel
+         */
+        void set(const uint_t lane,
+                 const uint_t tile,
+                 const uint_t cycle,
+                 const ulong_t date_time,
+                 const ushort_array_t& max_intensity_values,
+                 const float_array_t& focus_scores)
+        {
+            metric_base::base_cycle_metric::set_base(lane, tile, cycle);
+            m_date_time_csharp = util::csharp_date_time::to_csharp(date_time);
+            m_date_time = date_time;
+            m_max_intensity_values.assign(max_intensity_values.begin(), max_intensity_values.end());
+            m_focus_scores.assign(focus_scores.begin(), focus_scores.end());
+        }
+        /** Setter
+         *
+         * @note Version 3
+         * @param lane lane number
+         * @param tile tile number
+         * @param cycle cycle number
+         * @param max_intensity_values 90th percentile of intensities for the given channel
+         * @param focus_scores focus score for the given channel
+         */
+        void set(const uint_t lane,
+                 const uint_t tile,
+                 const uint_t cycle,
+                 const ushort_array_t& max_intensity_values,
+                 const float_array_t& focus_scores)
+        {
+            metric_base::base_cycle_metric::set_base(lane, tile, cycle);
+            m_max_intensity_values.assign(max_intensity_values.begin(), max_intensity_values.end());
+            m_focus_scores.assign(focus_scores.begin(), focus_scores.end());
+        }
 
     public:
         /** @defgroup extraction_metric Extraction Metrics
@@ -378,6 +451,20 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         {
             m_date_time=time;
             m_date_time_csharp = util::csharp_date_time::to_csharp(time);
+        }
+
+        /** Determine if any channel's P90 value is 0
+         *
+         * @return true if any channel's P90 value is 0
+         */
+        bool is_any_p90_zero() const
+        {
+            for(size_t channel = 0; channel < channel_count(); ++channel)
+            {
+                if(max_intensity(channel) == 0)
+                    return true;
+            }
+            return false;
         }
 
     public:

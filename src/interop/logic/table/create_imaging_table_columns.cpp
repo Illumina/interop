@@ -11,6 +11,7 @@
 #include "interop/logic/summary/map_cycle_to_read.h"
 #include "interop/logic/table/check_imaging_table_column.h"
 #include "interop/logic/metric/q_metric.h"
+#include "interop/logic/metric/dynamic_phasing_metric.h"
 
 namespace illumina { namespace interop { namespace logic { namespace table
 {
@@ -31,6 +32,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
         check_imaging_table_column::set_filled_for_metric_set(metrics.get<model::metrics::image_metric>(), filled);
         check_imaging_table_column::set_filled_for_metric_set(metrics.get<model::metrics::corrected_intensity_metric>(), filled);
         check_imaging_table_column::set_filled_for_metric_set(metrics.get<model::metrics::q_metric>(), filled);
+        check_imaging_table_column::set_filled_for_metric_set(metrics.get<model::metrics::phasing_metric>(), filled);
 
         const model::metric_base::metric_set<model::metrics::tile_metric>& tile_metrics =
                 metrics.get<model::metrics::tile_metric>();
@@ -43,6 +45,36 @@ namespace illumina { namespace interop { namespace logic { namespace table
             for(model::run::info::const_read_iterator read_it = metrics.run_info().reads().begin();read_it != metrics.run_info().reads().end();++read_it)
             {
                 check_imaging_table_column::set_filled_for_metric(tile_metrics.get_metric(it->first),
+                                                                  read_it->number(),
+                                                                  q20_idx,
+                                                                  q30_idx,
+                                                                  0,
+                                                                  naming_method,
+                                                                  filled);
+            }
+        }
+
+        summary::read_cycle_vector_t cycle_to_read;
+        summary::map_read_to_cycle_number(metrics.run_info().reads().begin(),
+                                          metrics.run_info().reads().end(),
+                                          cycle_to_read);
+
+        if(metrics.get<model::metrics::dynamic_phasing_metric>().empty())
+        {
+            logic::metric::populate_dynamic_phasing_metrics(metrics.get<model::metrics::phasing_metric>(),
+                                                            cycle_to_read,
+                                                            metrics.get<model::metrics::dynamic_phasing_metric>(),
+                                                            metrics.get<model::metrics::tile_metric>());
+        }
+        const model::metric_base::metric_set<model::metrics::dynamic_phasing_metric>& dynamic_phasing_metrics =
+                metrics.get<model::metrics::dynamic_phasing_metric>();
+        for(tile_metric_map_t::const_iterator it = tile_hash.begin();it != tile_hash.end();++it)
+        {
+            for(model::run::info::const_read_iterator read_it = metrics.run_info().reads().begin();read_it != metrics.run_info().reads().end();++read_it)
+            {
+                const ::uint64_t tile_read_index = model::metric_base::base_read_metric::create_id(it->second.lane(), it->second.tile(), read_it->number());
+                if(!dynamic_phasing_metrics.has_metric(tile_read_index)) continue;
+                check_imaging_table_column::set_filled_for_metric(dynamic_phasing_metrics.get_metric(tile_read_index),
                                                                   read_it->number(),
                                                                   q20_idx,
                                                                   q30_idx,

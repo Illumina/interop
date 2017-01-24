@@ -27,6 +27,10 @@ struct index_metrics_tests : public generic_test_fixture< index_metric_set > {};
 index_metrics_tests::generator_type index_unit_test_generators[] = {
         wrap(new hardcoded_metric_generator< index_metric_v1 >),
         wrap(new write_read_metric_generator< index_metric_v1 >)
+        ,wrap(new hardcoded_metric_generator< index_metric_v2 >),
+        wrap(new write_read_metric_generator< index_metric_v2 >),
+        wrap(new by_cycle_metric_generator< index_metric_v1 >),
+        wrap(new by_cycle_metric_generator< index_metric_v2 >)
 };
 
 // Setup unit tests for index_metrics_tests

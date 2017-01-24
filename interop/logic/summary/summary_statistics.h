@@ -73,6 +73,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
          */
         vector_t &operator()(const size_t read, const size_t lane, const size_t surface=0)
         {
+            INTEROP_ASSERTMSG(surface < m_surface_count, surface << " < " << m_surface_count);
             INTEROP_ASSERTMSG(read < m_summary_by_lane_read.size(), read << " < " << m_summary_by_lane_read.size());
             const size_t offset = lane*m_surface_count+surface;
             INTEROP_ASSERTMSG(offset < m_summary_by_lane_read[read].size(),
@@ -179,12 +180,13 @@ namespace illumina { namespace interop { namespace logic { namespace summary
      * @param op unary/binary operator for getting a value in a complex object
      * @param comp comparison operator to compare a single value in a complex object
      * @param skip_median skip the median calculation
+     * @param reset_nan reset stat to NaN instead of 0
      * @return number of non-NaN elements
      */
     template<typename I, typename S, typename BinaryOp, typename Compare>
-    size_t nan_summarize(I beg, I end, S &stat, BinaryOp op, Compare comp, const bool skip_median)
+    size_t nan_summarize(I beg, I end, S &stat, BinaryOp op, Compare comp, const bool skip_median, const bool reset_nan=false)
     {
-        stat.clear();
+        stat.clear(reset_nan);
         if (beg == end) return 0;
         end = util::remove_nan(beg, end, op);
         if (beg == end) return 0;

@@ -148,7 +148,7 @@ namespace illumina{ namespace interop{ namespace io {
             if(stream.fail())
                 INTEROP_THROW(incomplete_file_exception, "Insufficient extended header data read from the file");
             if( (record_size != static_cast<record_size_t>(TOTAL_RECORD_SIZE )) &&
-                    (record_size != static_cast<record_size_t>(ALT_RECORD_SIZE)) )
+                (record_size != static_cast<record_size_t>(ALT_RECORD_SIZE)) )
             {
                 INTEROP_THROW( bad_format_exception, "QMetric2030 requires a record size of 3 or 4 uint32 values (" <<
                                            (TOTAL_RECORD_SIZE) << ", " <<

@@ -77,11 +77,17 @@ typedef metric_set< tile_metric > tile_metric_set;
 /** Setup for tests that compare two tile metric sets */
 struct tile_metrics_tests : public generic_test_fixture< tile_metric_set > {};
 
+/** Dummy registration for by cycle generator */
+by_cycle_metric_generator< tile_metric_v2 > tile_dummy_v2; // TODO: Why does this not work?
 
 tile_metrics_tests::generator_type tile_unit_test_generators[] = {
         wrap(new hardcoded_metric_generator< tile_metric_v2 >) ,
         wrap(new write_read_metric_generator< tile_metric_v2 >),
         wrap(new write_metric_generator< tile_metric_v2 >)
+        ,wrap(new hardcoded_metric_generator< tile_metric_v3 >),
+        wrap(new write_read_metric_generator< tile_metric_v3 >),
+        wrap(new by_cycle_metric_generator< tile_metric_v3 >),
+        wrap(new write_metric_generator<tile_metric_v3>)
 };
 
 // Setup unit tests for tile_metrics_tests

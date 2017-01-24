@@ -36,7 +36,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
         {
             if(!options.valid_tile(*b)) continue;
             const float val = proxy(*b, type);
-            if(std::isnan(val)) continue;
+            if(std::isnan(val) || std::isinf(val)) continue;
             points[b->cycle()-1].add(dummy_x, val);
         }
         size_t index = 0;
@@ -77,7 +77,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
         {
             if(!options.valid_tile(*b)) continue;
             const float val = proxy(*b, type);
-            if(std::isnan(val)) continue;
+            if(std::isnan(val) || std::isinf(val)) continue;
             tile_by_cycle[b->cycle()-1].push_back(val);
         }
         points.resize(max_cycle);
@@ -147,7 +147,6 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                        model::plot::plot_data<Point>& data)
     {
         data.clear();
-        if(metrics.is_group_empty(logic::utils::to_group(type))) return;
         if(!options.all_cycles())
             INTEROP_THROW(model::invalid_filter_option, "Filtering by cycle is not supported");// TODO: Remove this!
         if(!options.all_reads())
@@ -250,8 +249,27 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                         data[0]);
                 break;
             }
+            case constants::EmpiricalPhasing:
+            {
+                data.assign(1, model::plot::series<Point>());
+
+                typedef model::metrics::phasing_metric metric_t;
+                metric::metric_value<metric_t> proxy4;
+                max_cycle = populate_candle_stick_by_cycle(
+                        metrics.get<metric_t>(),
+                        proxy4,
+                        options,
+                        type,
+                        data[0]);
+                break;
+            }
             default:
                 INTEROP_THROW(model::invalid_metric_type, "Invalid metric group");
+        }
+        if(metrics.is_group_empty(logic::utils::to_group(type)))
+        {
+            data.clear();
+            return;
         }
         if(type != constants::FWHM)
         {

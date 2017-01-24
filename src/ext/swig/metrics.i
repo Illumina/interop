@@ -1,4 +1,4 @@
-/** Metrics model and metric logic
+/** Individual metrics model
  */
 %include <std_vector.i>
 %include <stdint.i>
@@ -13,6 +13,17 @@
 //////////////////////////////////////////////
 %import "src/ext/swig/exceptions/exceptions_impl.i"
 %import "src/ext/swig/run.i"
+
+
+
+// The SWIG Python binding does not support polymorphic functions
+#if defined(SWIGPYTHON)
+    %rename(to_group_feature) to_feature(const constants::metric_group);
+    %rename(list_metrics_to_load_by_type) list_metrics_to_load(const constants::metric_type, std::vector<unsigned char>&);
+    %rename(list_metrics_to_load_by_group) list_metrics_to_load(const constants::metric_group, std::vector<unsigned char>&);
+    %rename(list_metrics_to_load_by_groups) list_metrics_to_load(const std::vector<constants::metric_group>& groups, std::vector<unsigned char>& valid_to_load);
+    %rename(list_metrics_to_load_by_types) list_metrics_to_load(const std::vector<constants::metric_type>& types, std::vector<unsigned char>& valid_to_load);
+#endif
 
 
 // Ensure all the modules import the shared namespace
@@ -153,36 +164,3 @@ WRAP_METRICS(WRAP_TYPES)
 WRAP_METRICS(WRAP_METRIC_SET)
 
 
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Metric Logic
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-%{
-#include "interop/logic/metric/extraction_metric.h"
-#include "interop/logic/metric/q_metric.h"
-#include "interop/logic/utils/metric_type_ext.h"
-#include "interop/logic/utils/metrics_to_load.h"
-%}
-
-%include "interop/logic/metric/extraction_metric.h"
-%include "interop/logic/metric/q_metric.h"
-%include "interop/logic/utils/metric_type_ext.h"
-%include "interop/logic/utils/metrics_to_load.h"
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Run Metrics
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-%{
-#include "interop/model/run_metrics.h"
-%}
-%include "interop/model/run_metrics.h"
-
-%define WRAP_RUN_METRICS(metric_t)
-    %template(list_ ## metric_t ## _filenames) illumina::interop::model::metrics::run_metrics::list_filenames< metric_t >;
-    %template(set_ ## metric_t ## _set) illumina::interop::model::metrics::run_metrics::set< illumina::interop::model::metric_base::metric_set< metric_t> >;
-    %template(metric_t ## _set) illumina::interop::model::metrics::run_metrics::get_metric_set< metric_t >;
-%enddef
-WRAP_METRICS(WRAP_RUN_METRICS)

@@ -339,6 +339,22 @@ namespace illumina { namespace interop { namespace io
             format->write_metric(out, *it, metrics, sep, eol, missing);
 
     }
+
+    /** Generate a file name from a run directory and the metric type for by cycle InterOps
+     *
+     * @note The 'Out' suffix is appended when we read the file. We excluded the Out in certain conditions
+     * when writing the file.
+     *
+     * @param run_directory file path to the run directory
+     * @param cycle current cycle
+     * @param use_out if true, append "Out" to the end of the filename
+     * @return file path to the InterOp directory
+     */
+    template<class MetricType>
+    std::string interop_filename(const std::string &run_directory, const size_t cycle, bool use_out = true)
+    {
+        return paths::interop_filename<MetricType>(run_directory, cycle, use_out);
+    }
 }}}
 
 

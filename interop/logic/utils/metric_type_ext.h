@@ -58,7 +58,7 @@ namespace illumina { namespace interop {  namespace logic { namespace utils
 #       undef INTEROP_TUPLE4
         types.assign(name_types, name_types+util::length_of(name_types));
     }
-    /** Convert metric type to metric group
+    /** Convert metric type to metric feature type
      *
      * @param type metric type
      * @return metric feature type
@@ -71,6 +71,23 @@ namespace illumina { namespace interop {  namespace logic { namespace utils
 #       define INTEROP_TUPLE4(Metric, Description, Group, Feature) mapped_t(Metric,static_cast<metric_feature_type>(Feature))
         static const mapped_t name_types[] = {INTEROP_ENUM_METRIC_TYPES};
 #       undef INTEROP_TUPLE4
+        return util::constant_mapping_get(name_types, type, UnknownMetricFeature);
+    }
+    /** Convert group type to metric feature type
+     *
+     * @param type group type
+     * @return metric feature type
+     */
+    inline constants::metric_feature_type to_feature(const constants::metric_group type)
+    {
+        using namespace constants;
+        // TODO: This can be reduced to a single macro define
+        typedef std::pair<metric_group, metric_feature_type > mapped_t;
+#       define INTEROP_TUPLE2(Group, Feature) mapped_t(Group,static_cast<metric_feature_type>(Feature))
+#       define INTEROP_TUPLE1(Group) mapped_t(Group,UnknownMetricFeature)
+        static const mapped_t name_types[] = {INTEROP_ENUM_METRIC_GROUPS};
+#       undef INTEROP_TUPLE2
+#       undef INTEROP_TUPLE1
         return util::constant_mapping_get(name_types, type, UnknownMetricFeature);
     }
 

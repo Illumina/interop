@@ -74,7 +74,6 @@ namespace illumina { namespace interop { namespace logic { namespace plot
     model::index_out_of_bounds_exception)
     {
         data.clear();
-        if(metrics.is_group_empty(logic::utils::to_group(type))) return;
         options.validate(type, metrics.run_info());
 
         const model::run::flowcell_layout& layout = metrics.run_info().flowcell();
@@ -84,6 +83,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                         layout.tiles_per_lane());
         else
         {
+            if(metrics.is_group_empty(logic::utils::to_group(type))) return;
             data.set_buffer(buffer, tile_buffer, layout.lane_count(),
                             layout.total_swaths(layout.surface_count() > 1 && !options.is_specific_surface()),
                             layout.tiles_per_lane());
@@ -160,9 +160,24 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                                       values_for_scaling);
                 break;
             }
+            case constants::EmpiricalPhasing:
+            {
+                typedef model::metrics::phasing_metric metric_t;
+                typedef model::metric_base::metric_set<metric_t> metric_set_t;
+                const metric_set_t& metric_set = metrics.get<metric_t>();
+                metric::metric_value<metric_t> proxy;
+                populate_flowcell_map(metric_set.begin(), metric_set.end(), proxy, type, layout, options, data,
+                                      values_for_scaling);
+                break;
+            }
             default:
                 INTEROP_THROW( model::invalid_metric_type, "Unsupported metric type: " << constants::to_string(type));
         };
+        if(metrics.is_group_empty(logic::utils::to_group(type)))
+        {
+            data.clear();
+            return;
+        }
 
         if(!values_for_scaling.empty())
         {

@@ -117,5 +117,49 @@ namespace illumina{ namespace interop { namespace unittest
         }
     };
 
+    /** This generator creates an expected metric set and the corresponding binary data
+     *
+     * @see model::metrics::image_metric
+     * @note Version 3
+     */
+    struct image_metric_v3 : metric_test<model::metrics::image_metric, 3>
+    {
+        /** Create the expected metric set
+         *
+         * @param metrics destination metric set
+         */
+        static void create_expected(metric_set_t& metrics, const model::run::info& =model::run::info())
+        {
+            metrics = metric_set_t(header_t(2), VERSION);
+            typedef metric_t::ushort_t ushort_t;
+            const ushort_t channel_count = metrics.channel_count();
+            const ushort_t min_contrast1[]  = {231, 207};
+            const ushort_t min_contrast2[]  = {229, 205};
+            const ushort_t min_contrast3[]  = {231, 222};
+
+            const ushort_t max_contrast1[]  = {462, 387};
+            const ushort_t max_contrast2[]  = {457, 387};
+            const ushort_t max_contrast3[]  = {473, 416};
+            metrics.insert(metric_t(7, 111014, 1, channel_count, to_vector(min_contrast1), to_vector(max_contrast1)));
+            metrics.insert(metric_t(7, 121014, 1, channel_count, to_vector(min_contrast2), to_vector(max_contrast2)));
+            metrics.insert(metric_t(7, 211014, 1, channel_count, to_vector(min_contrast3), to_vector(max_contrast3)));
+
+        }
+        /** Get the expected binary data
+         *
+         * @param buffer binary data string
+         */
+        template<class Collection>
+        static void create_binary_data(Collection& buffer)
+        {
+            const int tmp[] =
+                    {3,16,2,7,0,-90,-79,1,0,1,0,-25,0,-49,0,-50,1,-125,1,7,0,-74
+                            ,-40,1,0,1,0,-27,0,-51,0,-55,1,-125,1,7,0,70,56,3,0,1,0,-25
+                            ,0,-34,0,-39,1,-96,1
+                    };
+            buffer.assign(tmp, tmp+util::length_of(tmp));
+        }
+    };
+
 }}}
 

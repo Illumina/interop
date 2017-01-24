@@ -6,15 +6,15 @@
 #
 #   Visual Studio 14 2015
 #     - Release/Debug
-#     - 32-bit/64-bit
+#     - 64-bit
 #   Visual Studio 12 2013
 #     - Release/Debug
-#     - 32-bit/64-bit
+#     - 64-bit
 #   MinGW
 #     - Release/Debug
 #     - 64-bit
 #
-# Removed support for 32-bit MinGW
+# Removed support for 32-bit compilers
 #
 # C# Compiler is always .NET v4.0.30319
 #
@@ -40,9 +40,9 @@ environment:
 #    - generator: "Visual Studio 14 2015"
 #      BUILD: msvc14_win32
 #      config_type: win32
-    - generator: "Visual Studio 12 2013 Win64"
-      BUILD: msvc12_win64
-      config_type: win64_not_supported
+#    - generator: "Visual Studio 12 2013 Win64"
+#      BUILD: msvc12_win64
+#      config_type: win64
 #    - generator: "Visual Studio 12 2013"
 #      BUILD: msvc12_win32
 #      config_type: win32
@@ -73,7 +73,7 @@ install:
 build_script:
   - set BUILD_PATH=%CD%\%BUILD%_%configuration%
   - cmake --version
-  - cmake ../ -G "%GENERATOR%" -H. -Bbuild -DCMAKE_BUILD_TYPE="%configuration%" -DCMAKE_INSTALL_PREFIX=%BUILD_PATH% -DFORCE_SHARED_CRT=OFF
+  - cmake ../ -G "%GENERATOR%" -H. -Bbuild -DCMAKE_BUILD_TYPE="%configuration%" -DCMAKE_INSTALL_PREFIX=%BUILD_PATH%
   - cmake --build build --config "%configuration%"
   - cmake --build build --config "%configuration%" --target install
 

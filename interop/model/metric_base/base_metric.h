@@ -325,7 +325,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          *
          * @deprecated Will be removed in 1.1.x (use phyiscal_location_row instead)
          * @param method the tile naming method
-         * @param section_per_lane number of sections per lane
+         * @param section_per_lane number of sections per lane (number of cameras that cover the lane)
          * @param tile_count number of tiles
          * @return row of the physical location within the flowcell
          */
@@ -352,7 +352,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         /** Index of the physical location of tile within the flowcell
          *
          * @param method the tile naming method
-         * @param section_per_lane number of sections per lane
+         * @param section_per_lane number of sections per lane (number of cameras that cover the lane)
          * @param tile_count number of tiles
          * @param swath_count number of swaths
          * @param all_surfaces layout all surfaces of the flowcell

@@ -96,6 +96,7 @@ inline int read_run_metrics(const char* filename,
     using namespace illumina::interop::model;
     try
     {
+        metrics.clear();
         metrics.read(filename, valid_to_load);
     }
     catch(const xml::xml_file_not_found_exception& ex)

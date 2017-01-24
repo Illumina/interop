@@ -230,7 +230,7 @@ namespace illumina { namespace interop { namespace model { namespace run
          * @param read_number number of the read
          * @return read
          */
-        const read_info &read(const size_t read_number) const
+        const read_info &read(const size_t read_number) const throw(invalid_read_exception)
         {
             for (read_vector_t::const_iterator b = m_reads.begin(), e = m_reads.end(); b != e; ++b)
                 if (b->number() == read_number) return *b;

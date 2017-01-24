@@ -100,7 +100,8 @@ namespace illumina { namespace interop { namespace util
          * @note No copy is performed! Data is moved!
          * @param other chain iterator to move data from
          */
-        chain_range_iterator(const chain_range_iterator& other) : m_iterator_1(other.m_iterator_1), m_iterator_2(other.m_iterator_2)
+        chain_range_iterator(const chain_range_iterator& other) :
+                abstract_range_iterator(), m_iterator_1(other.m_iterator_1), m_iterator_2(other.m_iterator_2)
         {
             other.m_iterator_1 = 0;
             other.m_iterator_2 = 0;

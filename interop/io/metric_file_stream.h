@@ -219,15 +219,96 @@ namespace illumina { namespace interop { namespace io
      *
      * @param files destination list of files
      * @param run_directory file path to the run directory
+     * @param last_cycle last cycle to check
      * @param use_out use the copied version
      */
     template<class MetricSet>
     void list_interop_filenames(std::vector<std::string>& files,
                                 const std::string& run_directory,
+                                const size_t last_cycle=0,
                                 const bool use_out=true)
     {
-        files.resize(1);
+        files.resize(last_cycle+1);
         files[0] = interop_filename<MetricSet>(run_directory, use_out);
+        for(size_t cycle=1;cycle <= last_cycle;++cycle)
+        {
+            files[cycle] = interop_filename<MetricSet>(run_directory, cycle, use_out);
+        }
+    }
+    /** Read the binary InterOp file into the given metric set
+     *
+     * @snippet src/examples/example1.cpp Reading a binary InterOp file
+     *
+     * @note The 'Out' suffix (parameter: use_out) is appended when we read the file. We excluded the Out in certain
+     * conditions when writing the file.
+     *
+     * @param run_directory file path to the run directory
+     * @param metrics metric set
+     * @param last_cycle last cycle to check
+     * @param use_out use the copied version
+     * @throw file_not_found_exception
+     * @throw bad_format_exception
+     * @throw incomplete_file_exception
+     */
+    template<class MetricSet>
+    void read_interop_by_cycle(const std::string& run_directory,
+                               MetricSet& metrics,
+                               const size_t last_cycle,
+                               const bool use_out=true)
+    throw(interop::io::file_not_found_exception,
+    interop::io::bad_format_exception,
+    interop::io::incomplete_file_exception,
+    model::index_out_of_bounds_exception)
+    {
+        std::string incomplete_file_message;
+        for(size_t cycle=1;cycle <= last_cycle;++cycle)
+        {
+            const std::string file_name = interop_filename<MetricSet>(run_directory, cycle, use_out);
+            const int64_t file_size_in_bytes = file_size(file_name);
+            if(file_size_in_bytes < 0) continue;
+            std::ifstream fin(file_name.c_str(), std::ios::binary);
+            if(fin.good())
+            {
+                try
+                {
+                    read_metrics(fin, metrics, static_cast<size_t>(file_size(file_name)), false);
+                }
+                catch(const incomplete_file_exception& ex)
+                {
+                    incomplete_file_message = ex.what();
+                }
+            }
+        }
+        metrics.rebuild_index();
+        if(incomplete_file_message != "")
+            throw incomplete_file_exception(incomplete_file_message);
+    }
+    /** Check for the existence of the binary InterOp file into the given metric set
+     *
+     * @note The 'Out' suffix (parameter: use_out) is appended when we read the file. We excluded the Out in certain
+     * conditions when writing the file.
+     *
+     * @param run_directory file path to the run directory
+     * @param last_cycle last cycle to check
+     * @param use_out use the copied version
+     */
+    template<class MetricSet>
+    bool interop_exists(const std::string& run_directory, MetricSet&, const size_t last_cycle, const bool use_out=true)
+    throw(file_not_found_exception,
+    bad_format_exception,
+    incomplete_file_exception,
+    model::index_out_of_bounds_exception)
+    {
+        std::string file_name = interop_filename<MetricSet>(run_directory, use_out);
+        std::ifstream fin(file_name.c_str(), std::ios::binary);
+        if(fin.good()) return true;
+        for(size_t cycle=1;cycle <= last_cycle;++cycle)
+        {
+            file_name = interop_filename<MetricSet>(run_directory, cycle, use_out);
+            fin.open(file_name.c_str(), std::ios::binary);
+            if(fin.good()) return true;
+        }
+        return false;
     }
     /** @} */
 

@@ -28,7 +28,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
      * The error metric is the calculated error rate, as determined by a spiked in PhiX control sample.
      * This metric is available for each lane and tile for every cycle.
      *
-     * @note Supported versions: 3
+     * @note Supported versions: 3 and 4
      */
     class error_metric : public metric_base::base_cycle_metric
     {
@@ -40,7 +40,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             /** Unique type code for metric */
             TYPE = constants::Error,
             /** Latest version of the InterOp format */
-            LATEST_VERSION = 3
+            LATEST_VERSION = 4
         };
         /** Define a uint array using an underlying vector
          */
@@ -106,7 +106,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * 1: 1 mismatch
          * etc.
          *
-         * @note Unsupported on most platforms, some older MiSeq and HiSeq support
+         * @note Suppored by version 3, really unsupported on most platforms, some older MiSeq and HiSeq support
          * @param n index of read
          * @return total number of errors
          */
@@ -119,7 +119,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
 
         /** Size of mismatch array
          *
-         * @note Unsupported on most platforms, some older MiSeq and HiSeq support
+         * @note Suppored by version 3, really unsupported on most platforms, some older MiSeq and HiSeq support
          * @return total number of errors
          */
         uint_t mismatch_count() const
@@ -133,7 +133,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * 1: 1 mismatch
          * etc.
          *
-         * @note Unsupported on most platforms, some older MiSeq and HiSeq support
+         * @note Suppored by version 3, really unsupported on most platforms, some older MiSeq and HiSeq support
          * @return vector of mismatch cluster counts
          */
         const uint_array_t &mismatch_cluster_counts() const

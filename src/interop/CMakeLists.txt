@@ -28,6 +28,9 @@ set(SRCS
         util/filesystem.cpp
         logic/utils/metrics_to_load.cpp
         model/summary/index_summary.cpp
+        model/metrics/phasing_metric.cpp
+        model/metrics/dynamic_phasing_metric.cpp
+        logic/metric/dynamic_phasing_metric.cpp
         )
 
 set(HEADERS
@@ -154,6 +157,11 @@ set(HEADERS
         ../../interop/io/format/text_format.h
         ../../interop/util/self_registration.h
         ../../interop/io/format/text_format_factory.h
+        ../../interop/model/summary/metric_average.h
+        ../../interop/model/metrics/phasing_metric.h
+        ../../interop/logic/summary/phasing_summary.h
+        ../../interop/model/metrics/dynamic_phasing_metric.h
+        ../../interop/logic/metric/dynamic_phasing_metric.h
         )
 
 set(INTEROP_HEADERS ${HEADERS} PARENT_SCOPE)
