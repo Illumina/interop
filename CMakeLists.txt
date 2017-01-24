@@ -3,7 +3,7 @@ project(InterOp)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules)
 enable_testing()
 include(${PROJECT_SOURCE_DIR}/cmake/Modules/UseGitVersion.cmake)
-set(ARCHIVE_VERSION "v1.0.13-src")
+set(ARCHIVE_VERSION "v1.0.16-src")
 
 
 if (NOT CMAKE_BUILD_TYPE)
