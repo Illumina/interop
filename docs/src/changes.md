@@ -1,5 +1,11 @@
 # Changes                                               {#changes}
 
+## Master
+
+Date       | Description
+---------- | -----------
+2017-01-24 | Update documentation, fixes for compressed q-metrics
+
 ## v1.0.16
 
 Date       | Description

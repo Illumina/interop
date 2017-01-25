@@ -9,6 +9,11 @@ The Illumina InterOp libraries are a set of common routines used for reading Int
 Illumina sequencers. These libraries are backwards compatible and capable of supporting prior releases of the software,
 with one exception: GA systems have been excluded.
 
+***
+>  We are happy to announce support for Illumina's newest sequencer: NovaSeq. This includes support for new InterOp
+>  formats, per cycle InterOp files, and per cycle phasing weights (EmpiricalPhasingMetricsOut.bin).
+***
+
 The InterOp files supported by this library include:
   - CorrectedIntMetricsOut.bin
   - ErrorMetricsOut.bin
@@ -19,6 +24,7 @@ The InterOp files supported by this library include:
   - IndexMetricsOut.bin
   - QMetrics2030Out.bin
   - QMetricsByLaneOut.bin
+  - EmpiricalPhasingMetricsOut.bin
 
 This library is written in C++98 and provides bindings for C# using the SWIG interface. This
 support includes examples and unit tests for both languages.
