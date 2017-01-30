@@ -335,10 +335,10 @@ namespace illumina{ namespace interop{ namespace io {
          *
          *     If byte 2 is true, then the following information is also in the header:
          *
-         *          byte 3:                         number of bins (uint8)
-         *          byte 4-binCount:                array of low ends for each bin (uint8)
-         *          byte 4+binCount-4+binCount*2:   array of high ends for each bin (uint8)
-         *          byte 4+2*binCount-4+binCount*3: array of values for each bin (uint8)
+         *          byte 3:                         number of bins, binCount (uint8)
+         *          byte 4+binCount*0-4+binCount*1: array of low ends for each bin (uint8)
+         *          byte 4+binCount*1-4+binCount*2: array of high ends for each bin (uint8)
+         *          byte 4+binCount*2-4+binCount*3: array of values for each bin (uint8)
          *
          *  @b n-Records
          *
@@ -549,10 +549,10 @@ namespace illumina{ namespace interop{ namespace io {
          *
          *     If byte 2 is true, then the following information is also in the header:
          *
-         *          byte 3:                         number of bins (uint8)
-         *          byte 4-binCount:                array of low ends for each bin (uint8)
-         *          byte 4+binCount-4+binCount*2:   array of high ends for each bin (uint8)
-         *          byte 4+2*binCount-4+binCount*3: array of values for each bin (uint8)
+         *          byte 3:                         number of bins, binCount (uint8)
+         *          byte 4+binCount*0-4+binCount*1: array of low ends for each bin (uint8)
+         *          byte 4+binCount*1-4+binCount*2: array of high ends for each bin (uint8)
+         *          byte 4+binCount*2-4+binCount*3: array of values for each bin (uint8)
          *
          *  @b n-Records
          *
