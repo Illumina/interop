@@ -67,15 +67,15 @@ cmake --build . --config %BUILD_TYPE% -- %MT%
 if %errorlevel% neq 0 exit /b %errorlevel%
 echo ##teamcity[blockClosed name='Build %BUILD_TYPE% %COMPILER%']
 
-echo ##teamcity[blockOpened name='Test %BUILD_TYPE% MinGW']
+echo ##teamcity[blockOpened name='Test %BUILD_TYPE% %COMPILER%']
 cmake --build . --config %BUILD_TYPE% --target check -- %MT%
 if %errorlevel% neq 0 exit /b %errorlevel%
-echo ##teamcity[blockClosed name='Test %BUILD_TYPE% MinGW']
+echo ##teamcity[blockClosed name='Test %BUILD_TYPE% %COMPILER%']
 
-echo ##teamcity[blockOpened name='Install %BUILD_TYPE% MinGW']
+echo ##teamcity[blockOpened name='Install %BUILD_TYPE% %COMPILER%']
 cmake --build . --config Release --target %INSTALL% -- %MT%
 if %errorlevel% neq 0 exit /b %errorlevel%
-echo ##teamcity[blockClosed name='Install %BUILD_TYPE% MinGW']
+echo ##teamcity[blockClosed name='Install %BUILD_TYPE% %COMPILER%']
 
 cd ..
 
