@@ -19,41 +19,56 @@ namespace illumina { namespace interop { namespace logic { namespace utils
      *
      * @param group specific metric group to load
      * @param valid_to_load list of metrics to load on demand
+     * @param instrument instrument type
      */
-    void list_metrics_to_load(const constants::metric_group group, std::vector<unsigned char>& valid_to_load);
+    void list_metrics_to_load(const constants::metric_group group,
+                              std::vector<unsigned char>& valid_to_load,
+                              const constants::instrument_type instrument=constants::NovaSeq);
     /** List the required on demand metrics
      *
      * @param type specific metric type to load
      * @param valid_to_load list of metrics to load on demand
+     * @param instrument instrument type
      */
-    void list_metrics_to_load(const constants::metric_type type, std::vector<unsigned char>& valid_to_load);
+    void list_metrics_to_load(const constants::metric_type type,
+                              std::vector<unsigned char>& valid_to_load,
+                              const constants::instrument_type instrument=constants::NovaSeq);
     /** List the required on demand metrics
      *
      * @param groups collection of specific metric groups to load
      * @param valid_to_load list of metrics to load on demand
+     * @param instrument instrument type
      */
     void list_metrics_to_load(const std::vector<constants::metric_group>& groups,
-                              std::vector<unsigned char>& valid_to_load);
+                              std::vector<unsigned char>& valid_to_load,
+                              const constants::instrument_type instrument=constants::NovaSeq);
     /** List the required on demand metrics
      *
      * @param types collection of specific metric types to load
      * @param valid_to_load list of metrics to load on demand
+     * @param instrument instrument type
      */
     void list_metrics_to_load(const std::vector<constants::metric_type>& types,
-                              std::vector<unsigned char>& valid_to_load);
+                              std::vector<unsigned char>& valid_to_load,
+                              const constants::instrument_type instrument=constants::NovaSeq);
     /** List the required on demand metrics
      *
      * @param metric_name name of metric value to load
      * @param valid_to_load list of metrics to load on demand
+     * @param instrument instrument type
      */
-    void list_metrics_to_load(const std::string& metric_name, std::vector<unsigned char>& valid_to_load)
+    void list_metrics_to_load(const std::string& metric_name,
+                              std::vector<unsigned char>& valid_to_load,
+                              const constants::instrument_type instrument=constants::NovaSeq)
     throw(model::invalid_metric_type);
 
     /** List all required metric groups
      *
      * @param groups destination group list
+     * @param instrument instrument type
      */
-    void list_summary_metric_groups(std::vector<constants::metric_group>& groups);
+    void list_summary_metric_groups(std::vector<constants::metric_group>& groups,
+                                    const constants::instrument_type instrument=constants::NovaSeq);
 
     /** List all required metric groups
      *
@@ -65,8 +80,10 @@ namespace illumina { namespace interop { namespace logic { namespace utils
     /** List all required metric groups for the summary tab
      *
      * @param valid_to_load list of metrics to load on demand
+     * @param instrument instrument type
      */
-    void list_summary_metrics_to_load(std::vector<unsigned char>& valid_to_load);
+    void list_summary_metrics_to_load(std::vector<unsigned char>& valid_to_load,
+                                      const constants::instrument_type instrument=constants::NovaSeq);
 
     /** List all required metric groups for the index tab
      *
@@ -77,8 +94,10 @@ namespace illumina { namespace interop { namespace logic { namespace utils
     /** List all required metric groups for the analysis tab
      *
      * @param valid_to_load list of metrics to load on demand
+     * @param instrument instrument type
      */
-    void list_analysis_metrics_to_load(std::vector<unsigned char>& valid_to_load);
+    void list_analysis_metrics_to_load(std::vector<unsigned char>& valid_to_load,
+                                       const constants::instrument_type instrument=constants::NovaSeq);
 
 
 }}}}
