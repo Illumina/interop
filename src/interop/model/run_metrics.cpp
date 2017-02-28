@@ -509,6 +509,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     /** Read RunParameters.xml if necessary
      *
      * @param run_folder run folder path
+     * @param force_load force loading of run parameters
      */
     size_t run_metrics::read_run_parameters(const std::string &run_folder, const bool force_load) throw(io::file_not_found_exception,
     xml::xml_file_not_found_exception,

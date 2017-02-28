@@ -21,11 +21,17 @@ set -e
 
 source_dir="../"
 build_param=""
+root_dir=${PWD}
+dist_dir="${PWD}/dist"
+build_dir="${PWD}/build"
 
 build_type="Linux"
 
 if [ ! -z $1 ] ; then
-    build_param="-DJUNIT_ROOT=$1 -DGTEST_ROOT=$1 -DGMOCK_ROOT=$1 -DNUNIT_ROOT=$1/NUnit-2.6.4"
+    pushd $1 > /dev/null
+    build_path=`pwd`
+    popd > /dev/null
+    build_param="-DGTEST_ROOT=$build_path -DGMOCK_ROOT=$build_path -DNUNIT_ROOT=$build_path/NUnit-2.6.4"
 fi
 
 if [ ! -z $2 ] ; then
@@ -36,6 +42,8 @@ if [ ! -z $3 ] ; then
     build_param="$build_param -DPACKAGE_SUFFIX=$3"
 fi
 
+build_param="$build_param -DCMAKE_BUILD_TYPE=Release -DPACKAGE_OUTPUT_FILE_PREFIX=$dist_dir"
+
 if [ -e /opt/rh/devtoolset-2/root/usr/bin/g++ ] ; then
     export CXX=/opt/rh/devtoolset-2/root/usr/bin/g++
     export CC=/opt/rh/devtoolset-2/root/usr/bin/gcc
@@ -43,10 +51,12 @@ if [ -e /opt/rh/devtoolset-2/root/usr/bin/g++ ] ; then
 fi
 
 echo "##teamcity[blockOpened name='Configure $build_type']"
-mkdir build_${build_type}
-cd build_${build_type}
-echo "cmake $source_dir -DCMAKE_BUILD_TYPE=Release $build_param"
-cmake $source_dir -DCMAKE_BUILD_TYPE=Release $build_param
+rm -fr $dist_dir
+rm -fr $build_dir
+mkdir $build_dir
+cd $build_dir
+echo "cmake $source_dir $build_param "
+cmake $source_dir $build_param
 echo "##teamcity[blockClosed name='Configure $build_type']"
 
 echo "##teamcity[blockOpened name='Test $build_type']"
@@ -65,8 +75,10 @@ echo "##teamcity[blockOpened name='NuSpec Creation $build_type']"
 cmake --build . --target nuspec -- -j 8
 echo "##teamcity[blockClosed name='NuSpec Creation $build_type']"
 
+cd $dist_dir
 echo "##teamcity[blockOpened name='NuPack $build_type']"
-nuget pack src/ext/csharp/package.nuspec
+nuget pack ${build_dir}/src/ext/csharp/package.nuspec
 echo "##teamcity[blockClosed name='NuPack $build_type']"
 
-cd ..
+cd $root_dir
+rm -fr $build_dir

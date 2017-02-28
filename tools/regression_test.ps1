@@ -26,20 +26,30 @@ param(
 )
 
 $build_param=""
-if($lib_path) { $build_param="-DGTEST_ROOT=$lib_path -DJUNIT_ROOT=$lib_path -DGMOCK_ROOT=$lib_path -DNUNIT_ROOT=$lib_path/NUnit-2.6.4"}
+if($lib_path)
+{
+$lib_path=(resolve-path $lib_path).path
+$build_param="-DGTEST_ROOT=$lib_path -DJUNIT_ROOT=$lib_path -DGMOCK_ROOT=$lib_path -DNUNIT_ROOT=$lib_path/NUnit-2.6.4"
+}
 
 # --------------------------------------------------------------------------------------------------------------------
 Write-Host "##teamcity[blockOpened name='Configure $config $generator']"
-new-item build_vs2015_x64_$config -itemtype directory
-set-location -path build_vs2015_x64_$config
+if(Test-Path -Path build){
+    Remove-Item build -Force -Recurse
+}
+new-item build -itemtype directory
+set-location -path build
 Write-Host "cmake $source_path -G $generator -DCMAKE_BUILD_TYPE=$config $build_param"
-cmake $source_path -G $generator -DCMAKE_BUILD_TYPE=$config $build_param
+cmake $source_path -G $generator -DCMAKE_BUILD_TYPE=$config $build_param.Split(" ")
 $test_code=$lastexitcode
 Write-Host "##teamcity[blockClosed name='Configure $config $generator']"
 if ($test_code -ne 0)
 {
     cd ..
     Write-Host "##teamcity[buildStatus status='FAILURE' text='Configure Failed!']"
+    if(Test-Path -Path build){
+        Remove-Item build -Force -Recurse
+    }
     exit $test_code
 }
 
@@ -53,6 +63,9 @@ if ($test_code -ne 0)
 {
     cd ..
     Write-Host "##teamcity[buildStatus status='FAILURE' text='Build Failed!']"
+    if(Test-Path -Path build){
+        Remove-Item build -Force -Recurse
+    }
     exit 1
 }
 
@@ -75,6 +88,9 @@ if($rebaseline)
     {
         cd ..
         Write-Host "##teamcity[buildStatus status='FAILURE' text='Rebaseline failed!']"
+        if(Test-Path -Path build){
+            Remove-Item build -Force -Recurse
+        }
         exit 1
     }
 }
@@ -87,9 +103,14 @@ if ($test_code -ne 0)
 {
     cd ..
     Write-Host "##teamcity[buildStatus status='FAILURE' text='Not all regression tests passed!']"
+    if(Test-Path -Path build){
+        Remove-Item build -Force -Recurse
+    }
     exit 1
 }
 
 cd ..
-
+if(Test-Path -Path build){
+    Remove-Item build -Force -Recurse
+}
 

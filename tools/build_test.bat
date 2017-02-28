@@ -18,7 +18,9 @@ rem ----------------------------------------------------------------------------
 rem MinGW Build Test Script
 rem --------------------------------------------------------------------------------------------------------------------
 
-set SOURCE_DIR=..\
+set SOURCE_DIR=%CD%
+set BUILD_DIR=%SOURCE_DIR%\build
+set DIST_DIR=%SOURCE_DIR%\dist
 set BUILD_PARAM=
 set BUILD_TYPE=Debug
 set COMPILER=msvc
@@ -28,11 +30,13 @@ if NOT "%1" == "" (
 set BUILD_TYPE=%1
 )
 set BUILD_PATH=%2%
+pushd %BUILD_PATH%
+set BUILD_PATH=%CD%
+popd
 if NOT "%2" == "" (
 set BUILD_PARAM=-DGTEST_ROOT=%BUILD_PATH% -DGMOCK_ROOT=%BUILD_PATH% -DNUNIT_ROOT=%BUILD_PATH%/NUnit-2.6.4
 )
 
-set BUILD_PATH=%3%
 if NOT "%3" == "" (
 set BUILD_PARAM=%BUILD_PARAM% -DBUILD_NUMBER=%3%
 )
@@ -40,12 +44,18 @@ if NOT "%4" == "" (
 set COMPILER=%4%
 )
 
+if exist %BUILD_DIR%  rd /s /q %BUILD_DIR%
+if exist %DIST_DIR%  rd /s /q %DIST_DIR%
+mkdir %BUILD_DIR%
+cd %BUILD_DIR%
+
+
+set BUILD_PARAM=%BUILD_PARAM% -DPACKAGE_OUTPUT_FILE_PREFIX=%DIST_DIR% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DCMAKE_INSTALL_PREFIX=%DIST_DIR%
+
 if "%COMPILER%" == "mingw" (
 echo ##teamcity[blockOpened name='Configure %BUILD_TYPE% MinGW']
-mkdir build_mingw_%BUILD_TYPE%
-cd build_mingw_%BUILD_TYPE%
-echo cmake %SOURCE_DIR% -G"MinGW Makefiles" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% %BUILD_PARAM%
-cmake %SOURCE_DIR% -G"MinGW Makefiles" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% %BUILD_PARAM% -DCMAKE_INSTALL_PREFIX=../usr
+echo cmake %SOURCE_DIR% -G"MinGW Makefiles" %BUILD_PARAM%
+cmake %SOURCE_DIR% -G"MinGW Makefiles" %BUILD_PARAM% -DENABLE_PYTHON=OFF
 if !errorlevel! neq 0 exit /b !errorlevel!
 echo ##teamcity[blockClosed name='Configure %BUILD_TYPE% MinGW']
 set MT=-j8
@@ -53,10 +63,8 @@ set INSTALL=install
 )
 if "%COMPILER%" == "msvc" (
 echo ##teamcity[blockOpened name='Configure %BUILD_TYPE% Visual Studio 2015 Win64']
-mkdir build_vs2015_x64_%BUILD_TYPE%
-cd build_vs2015_x64_%BUILD_TYPE%
-echo cmake %SOURCE_DIR% -G"Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=%BUILD_TYPE%  %BUILD_PARAM%
-cmake %SOURCE_DIR% -G"Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=%BUILD_TYPE%  %BUILD_PARAM%
+echo cmake %SOURCE_DIR% -G"Visual Studio 14 2015 Win64"  %BUILD_PARAM%
+cmake %SOURCE_DIR% -G"Visual Studio 14 2015 Win64" %BUILD_PARAM%
 if !errorlevel! neq 0 exit /b !errorlevel!
 echo ##teamcity[blockClosed name='Configure %BUILD_TYPE% Visual Studio 2015 Win64']
 )
@@ -77,6 +85,15 @@ cmake --build . --config Release --target %INSTALL% -- %MT%
 if %errorlevel% neq 0 exit /b %errorlevel%
 echo ##teamcity[blockClosed name='Install %BUILD_TYPE% %COMPILER%']
 
-cd ..
+if "%COMPILER%" == "msvc" (
+echo ##teamcity[blockOpened name='NuPack %BUILD_TYPE% %COMPILER%']
+echo %BUILD_PATH%\nuget pack %BUILD_DIR%\src\ext\csharp\package.nuspec
+%BUILD_PATH%\nuget pack %BUILD_DIR%\src\ext\csharp\package.nuspec -OutputDirectory %DIST_DIR%
+echo ##teamcity[blockClosed name='NuPack %BUILD_TYPE% %COMPILER%']
+
+)
+
+cd %SOURCE_DIR%
+rd /s /q %BUILD_DIR%
 
 

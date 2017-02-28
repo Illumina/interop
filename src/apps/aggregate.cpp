@@ -59,7 +59,7 @@ private:
 
         for(size_t i=0;i<metrics.size();++i)
         {
-            if(metrics[i].number(constants::FourDigit) > m_max_tile_number) continue;
+            if(metrics[i].number(m_run.run_info().flowcell().naming_method()) > m_max_tile_number) continue;
             m_run.get<MetricSet>().insert(metrics[i]);
         }
     }

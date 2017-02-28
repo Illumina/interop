@@ -44,7 +44,6 @@ namespace Illumina.InterOp.Interop.UnitTest
             run.finalize_after_load();
             run.q_metric_set().clear();
 
-            var layout = run.run_info().flowcell();
             uint flowcell_size = c_csharp_plot.calculate_flowcell_buffer_size(run, options);
             float[] data_buffer = new float[flowcell_size];
             uint[] tile_buffer  = new uint[flowcell_size];
