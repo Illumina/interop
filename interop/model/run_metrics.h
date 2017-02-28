@@ -110,8 +110,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         /** Read binary metrics and XML files from the run folder
          *
          * @param run_folder run folder path
+         * @param thread_count number of threads to use for network loading
          */
-        void read(const std::string &run_folder) throw(xml::xml_file_not_found_exception,
+        void read(const std::string &run_folder, const size_t thread_count=1) throw(xml::xml_file_not_found_exception,
         xml::bad_xml_format_exception,
         xml::empty_xml_format_exception,
         xml::missing_xml_element_exception,
@@ -127,9 +128,13 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          *
          * @param run_folder run folder path
          * @param valid_to_load list of metrics to load
+         * @param thread_count number of threads to use for network loading
          * @param skip_loaded skip metrics that are already loaded
          */
-        void read(const std::string &run_folder, const std::vector<unsigned char>& valid_to_load, const bool skip_loaded=false)
+        void read(const std::string &run_folder,
+                  const std::vector<unsigned char>& valid_to_load,
+                  const size_t thread_count=1,
+                  const bool skip_loaded=false)
         throw(xml::xml_file_not_found_exception,
         xml::bad_xml_format_exception,
         xml::empty_xml_format_exception,
@@ -168,8 +173,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         /** Read RunParameters.xml if necessary
          *
          * @param run_folder run folder path
+         * @param force_load force loading of run parameters
          */
-        size_t read_run_parameters(const std::string &run_folder) throw(
+        size_t read_run_parameters(const std::string &run_folder, const bool force_load=false) throw(
         io::file_not_found_exception,
         xml::xml_file_not_found_exception,
         xml::bad_xml_format_exception,
@@ -333,8 +339,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          *
          * @param run_folder run folder path
          * @param last_cycle last cycle of run
+         * @param thread_count number of threads to use for network loading
          */
-        void read_metrics(const std::string &run_folder, const size_t last_cycle) throw(
+        void read_metrics(const std::string &run_folder, const size_t last_cycle, const size_t thread_count) throw(
         io::file_not_found_exception,
         io::bad_format_exception,
         io::incomplete_file_exception);
@@ -348,11 +355,13 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @param run_folder run folder path
          * @param last_cycle last cycle of run
          * @param valid_to_load boolean vector indicating which files to load
+         * @param thread_count number of threads to use for network loading
          * @param skip_loaded skip metrics that are already loaded
          */
         void read_metrics(const std::string &run_folder,
                           const size_t last_cycle,
                           const std::vector<unsigned char>& valid_to_load,
+                          const size_t thread_count,
                           const bool skip_loaded=false) throw(
         io::file_not_found_exception,
         io::bad_format_exception,
@@ -390,6 +399,15 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         template<class Func>
         void metrics_callback(Func &func)
+        {
+            m_metrics.apply(func);
+        }
+        /** Read binary metrics from the run folder
+         *
+         * @param func call back for metric reading
+         */
+        template<class Func>
+        void metrics_callback(Func &func)const
         {
             m_metrics.apply(func);
         }

@@ -135,6 +135,7 @@ int main(int argc, char** argv)
         return INVALID_ARGUMENTS;
     }
     const size_t subset_count=3;
+    const size_t thread_count = 1;
 
     metric_writer write_metrics(std::cout);
     std::cout << "# Version: " << INTEROP_VERSION << std::endl;
@@ -143,7 +144,7 @@ int main(int argc, char** argv)
     {
         run_metrics run;
         run_metrics subset;
-        int ret = read_run_metrics(argv[i], run);
+        int ret = read_run_metrics(argv[i], run, thread_count);
         if(ret != SUCCESS) return ret;
         subset_copier copy_subset(subset, subset_count);
         try

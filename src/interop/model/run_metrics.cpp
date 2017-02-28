@@ -5,6 +5,10 @@
  *  @version 1.0
  *  @copyright GNU Public License.
  */
+#ifdef _OPENMP
+#include <omp.h>
+#endif
+
 #include "interop/model/run_metrics.h"
 
 #include "interop/logic/metric/q_metric.h"
@@ -348,8 +352,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     /** Read binary metrics and XML files from the run folder
      *
      * @param run_folder run folder path
+     * @param thread_count number of threads to use for network loading
      */
-    void run_metrics::read(const std::string &run_folder)
+    void run_metrics::read(const std::string &run_folder, const size_t thread_count)
     throw(xml::xml_file_not_found_exception,
     xml::bad_xml_format_exception,
     xml::empty_xml_format_exception,
@@ -365,7 +370,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     {
         clear();
         const size_t count = read_xml(run_folder);
-        read_metrics(run_folder, run_info().total_cycles());
+        read_metrics(run_folder, run_info().total_cycles(), thread_count);
         finalize_after_load(count);
     }
     /** Read binary metrics and XML files from the run folder
@@ -373,10 +378,12 @@ namespace illumina { namespace interop { namespace model { namespace metrics
      * @note This function does not clear
      * @param run_folder run folder path
      * @param valid_to_load list of metrics to load
+     * @param thread_count number of threads to use for network loading
      * @param skip_loaded skip metrics that are already loaded
      */
     void run_metrics::read(const std::string &run_folder,
                            const std::vector<unsigned char>& valid_to_load,
+                           const size_t thread_count,
                            const bool skip_loaded)
     throw(xml::xml_file_not_found_exception,
     xml::bad_xml_format_exception,
@@ -393,7 +400,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     invalid_parameter)
     {
         read_run_info(run_folder);
-        read_metrics(run_folder, run_info().total_cycles(), valid_to_load, skip_loaded);
+        read_metrics(run_folder, run_info().total_cycles(), valid_to_load, thread_count, skip_loaded);
         const size_t count = read_run_parameters(run_folder);
         finalize_after_load(count);
         check_for_data_sources(run_folder, run_info().total_cycles());
@@ -433,7 +440,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
      *
      * @param run_folder run folder path
      */
-    size_t run_metrics::read_run_parameters(const std::string &run_folder) throw(io::file_not_found_exception,
+    size_t run_metrics::read_run_parameters(const std::string &run_folder, const bool force_load) throw(io::file_not_found_exception,
     xml::xml_file_not_found_exception,
     xml::bad_xml_format_exception,
     xml::empty_xml_format_exception,
@@ -441,7 +448,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     xml::xml_parse_exception)
     {
         const size_t count = count_legacy_bins();
-        if (m_run_info.channels().empty() || logic::metric::requires_legacy_bins(count))
+        if (m_run_info.channels().empty() || logic::metric::requires_legacy_bins(count) || force_load)
         {
             try
             {
@@ -452,7 +459,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                 if (m_run_info.channels().empty())
                     INTEROP_THROW(io::file_not_found_exception,
                                   "RunParameters.xml required for legacy run folders with missing channel names");
-                else
+                else if(logic::metric::requires_legacy_bins(count))
                     INTEROP_THROW(io::file_not_found_exception,
                                   "RunParameters.xml required for legacy run folders and is missing");
             }
@@ -621,18 +628,31 @@ namespace illumina { namespace interop { namespace model { namespace metrics
      *
      * @param run_folder run folder path
      * @param last_cycle last cycle to search for by cycle interops
+     * @param thread_count number of threads to use for network loading
      */
-    void run_metrics::read_metrics(const std::string &run_folder, const size_t last_cycle) throw(
+    void run_metrics::read_metrics(const std::string &run_folder, const size_t last_cycle, const size_t thread_count)
+    throw(
     io::file_not_found_exception,
     io::bad_format_exception,
     io::incomplete_file_exception)
     {
-        read_func read_functor(run_folder);
-        m_metrics.apply(read_functor);
-        if (read_functor.are_all_files_missing())
+#ifdef _OPENMP
+        if(thread_count > 1)
         {
-            m_metrics.apply(read_by_cycle_func(run_folder, last_cycle));
+            std::vector<unsigned char> valid_to_load(constants::MetricCount, 1);
+            read_metrics(run_folder, last_cycle, valid_to_load, thread_count);
         }
+        else{
+#endif
+            read_func read_functor(run_folder);
+            m_metrics.apply(read_functor);
+            if (read_functor.are_all_files_missing())
+            {
+                m_metrics.apply(read_by_cycle_func(run_folder, last_cycle));
+            }
+#ifdef _OPENMP
+        }
+#endif
     }
 
     /** Read binary metrics from the run folder
@@ -645,11 +665,13 @@ namespace illumina { namespace interop { namespace model { namespace metrics
      * @param run_folder run folder path
      * @param last_cycle last cycle to search for by cycle interops
      * @param valid_to_load list of metrics to load
+     * @param thread_count number of threads to use for network loading
      * @param skip_loaded skip metrics that are already loaded
      */
     void run_metrics::read_metrics(const std::string &run_folder,
                                    const size_t last_cycle,
                                    const std::vector<unsigned char>& valid_to_load,
+                                   const size_t thread_count,
                                    const bool skip_loaded)
     throw(io::file_not_found_exception,
     io::bad_format_exception,
@@ -661,11 +683,92 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             INTEROP_THROW(invalid_parameter, "Boolean array valid_to_load does not match expected number of metrics: "
                     << valid_to_load.size() << " != " << constants::MetricCount);
 
-        read_func read_functor(run_folder, &valid_to_load.front(), skip_loaded);
-        m_metrics.apply(read_functor);
-        if (read_functor.are_all_files_missing())
+        bool all_files_are_missing = true;
+#ifdef _OPENMP
+        if(thread_count > 1)
         {
-            m_metrics.apply(read_by_cycle_func(run_folder, last_cycle, &valid_to_load.front()));
+            std::vector<bool> local_files_missing(thread_count, true);
+            std::vector<size_t> offset;
+            offset.reserve(valid_to_load.size());
+            for(size_t i=0;i<valid_to_load.size();++i)
+                if(valid_to_load[i]) offset.push_back(i);
+            std::vector< std::vector<unsigned char> > valid_to_load_local(thread_count, std::vector<unsigned char>(valid_to_load.size(), 0));
+            bool exception_thrown = false;
+            std::string exception_msg;
+#           pragma omp parallel for default(shared) num_threads(static_cast<int>(thread_count)) schedule(dynamic)
+            for(int i=0;i<static_cast<int>(offset.size());++i)
+            {
+#               pragma omp flush(exception_thrown)
+                if(exception_thrown) continue;
+                valid_to_load_local[ omp_get_thread_num() ][offset[i]] = 1;
+                read_func read_functor_l(run_folder, &valid_to_load_local[ omp_get_thread_num() ].front(), skip_loaded);
+                try{
+                    m_metrics.apply(read_functor_l);
+                }
+                catch(const std::exception& ex)
+                {
+#pragma             omp critical(SaveMessage)
+                    exception_msg = ex.what();
+
+                    exception_thrown = true;
+#pragma             omp flush(exception_thrown)
+                }
+                valid_to_load_local[ omp_get_thread_num() ][offset[i]] = 0;
+                local_files_missing[omp_get_thread_num()] = local_files_missing[omp_get_thread_num()] && read_functor_l.are_all_files_missing();
+            }
+            if(exception_thrown)
+                throw io::bad_format_exception(exception_msg);
+            for(size_t i=0;i<local_files_missing.size();++i)
+                all_files_are_missing = all_files_are_missing && local_files_missing[i];
+        }
+        else{
+#endif
+            read_func read_functor(run_folder, &valid_to_load.front(), skip_loaded);
+            m_metrics.apply(read_functor);
+            all_files_are_missing = read_functor.are_all_files_missing();
+#ifdef _OPENMP
+        }
+#endif
+        if (all_files_are_missing)
+        {
+#ifdef _OPENMP
+            if(thread_count > 1)
+            {
+                std::vector<size_t> offset;
+                offset.reserve(valid_to_load.size());
+                for(size_t i=0;i<valid_to_load.size();++i)
+                    if(valid_to_load[i]) offset.push_back(i);
+                std::vector< std::vector<unsigned char> > valid_to_load_local(thread_count, std::vector<unsigned char>(valid_to_load.size(), 0));
+                bool exception_thrown = false;
+                std::string exception_msg;
+#               pragma omp parallel for default(shared) num_threads(static_cast<int>(thread_count)) schedule(dynamic)
+                for(int i=0;i<static_cast<int>(offset.size());++i)
+                {
+#               pragma omp flush(exception_thrown)
+                    valid_to_load_local[ omp_get_thread_num() ][offset[i]] = 1;
+                    try{
+                        m_metrics.apply(read_by_cycle_func(run_folder, last_cycle, &valid_to_load_local[ omp_get_thread_num() ].front()));
+                    }
+                    catch(const std::exception& ex)
+                    {
+#pragma                 omp critical(SaveMessage)
+                        exception_msg = ex.what();
+
+                        exception_thrown = true;
+#pragma                 omp flush(exception_thrown)
+                    }
+                    valid_to_load_local[ omp_get_thread_num() ][offset[i]] = 0;
+                }
+                if(exception_thrown)
+                    throw io::bad_format_exception(exception_msg);
+            }
+            else
+            {
+#endif
+                m_metrics.apply(read_by_cycle_func(run_folder, last_cycle, &valid_to_load.front()));
+#ifdef _OPENMP
+            }
+#endif
         }
     }
 

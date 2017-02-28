@@ -185,6 +185,7 @@ int main(int argc, const char** argv)
         //print_help(std::cout);
         return INVALID_ARGUMENTS;
     }
+    const size_t thread_count = 1;
 
     const char eol = '\n';
 
@@ -213,7 +214,7 @@ int main(int argc, const char** argv)
     for(int i=1;i<argc;i++)
     {
         run_metrics run;
-        int ret = read_run_metrics(argv[i], run);
+        int ret = read_run_metrics(argv[i], run, thread_count);
         if(ret != SUCCESS) return ret;
         metric_writer write_metrics(std::cout, run.run_info().channels());
         if( subset_count > 0 )

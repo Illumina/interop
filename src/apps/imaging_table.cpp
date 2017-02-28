@@ -38,6 +38,7 @@ int main(int argc, char** argv)
         std::cerr << "No arguments specified!" << std::endl;
         return INVALID_ARGUMENTS;
     }
+    const size_t thread_count = 1;
 
     std::cout << "# Version: " << INTEROP_VERSION << std::endl;
 
@@ -48,7 +49,7 @@ int main(int argc, char** argv)
     {
         run_metrics run;
         std::cout << "# Run Folder: " << io::basename(argv[i]) << std::endl;
-        int ret = read_run_metrics(argv[i], run, valid_to_load);
+        int ret = read_run_metrics(argv[i], run, valid_to_load, thread_count);
         if (ret != SUCCESS) return ret;
         model::table::imaging_table table;
 

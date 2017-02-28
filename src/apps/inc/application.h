@@ -37,18 +37,20 @@ enum exit_codes
  *
  * @param filename run folder containing RunInfo.xml and InterOps
  * @param metrics run metrics
+ * @param thread_count number of threads to use for network loading
  * @param check_empty if true return an error if the metrics are empty
  * @return exit code
  */
 inline int read_run_metrics(const char* filename,
                             illumina::interop::model::metrics::run_metrics& metrics,
+                            const size_t thread_count,
                             const bool check_empty=true)
 {
     using namespace illumina::interop;
     using namespace illumina::interop::model;
     try
     {
-        metrics.read(filename);
+        metrics.read(filename, thread_count);
     }
     catch(const xml::xml_file_not_found_exception& ex)
     {
@@ -84,12 +86,14 @@ inline int read_run_metrics(const char* filename,
  * @param filename run folder containing RunInfo.xml and InterOps
  * @param metrics run metrics
  * @param valid_to_load list of metrics that are valid to load
+ * @param thread_count number of threads to use for network loading
  * @param check_empty if true return an error if the metrics are empty
  * @return exit code
  */
 inline int read_run_metrics(const char* filename,
                             illumina::interop::model::metrics::run_metrics& metrics,
                             const std::vector<unsigned char>& valid_to_load,
+                            const size_t thread_count,
                             const bool check_empty=true)
 {
     using namespace illumina::interop;
@@ -97,7 +101,7 @@ inline int read_run_metrics(const char* filename,
     try
     {
         metrics.clear();
-        metrics.read(filename, valid_to_load);
+        metrics.read(filename, valid_to_load, thread_count);
     }
     catch(const xml::xml_file_not_found_exception& ex)
     {
