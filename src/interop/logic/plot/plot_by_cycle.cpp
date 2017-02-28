@@ -155,6 +155,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
             INTEROP_THROW(model::invalid_filter_option, "Only cycle metrics are supported");
         options.validate(type, metrics.run_info()); // TODO: Check ignored?
         size_t max_cycle=0;
+        bool is_empty = true;
         switch(logic::utils::to_group(type))
         {
             case constants::Extraction:
@@ -186,6 +187,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                             type,
                             data[0]);
                 }
+                is_empty = metrics.get<model::metrics::extraction_metric>().empty();
                 break;
             }
             case constants::CorrectedInt:
@@ -218,6 +220,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                             type,
                             data[0]);
                 }
+                is_empty = metrics.get<model::metrics::corrected_intensity_metric>().empty();
                 break;
             }
             case constants::Q:
@@ -235,6 +238,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                         options,
                         type,
                         data[0]);
+                is_empty = metrics.get<metric_t>().empty();
                 break;
             }
             case constants::Error://TODO: skip last cycle of read for error metric
@@ -247,6 +251,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                         options,
                         type,
                         data[0]);
+                is_empty = metrics.get<model::metrics::error_metric>().empty();
                 break;
             }
             case constants::EmpiricalPhasing:
@@ -260,13 +265,14 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                         proxy4,
                         options,
                         type,
-                        data[0]);
+                        data[0])
+                is_empty = metrics.get<metric_t>().empty();
                 break;
             }
             default:
                 INTEROP_THROW(model::invalid_metric_type, "Invalid metric group");
         }
-        if(metrics.is_group_empty(logic::utils::to_group(type)))
+        if(is_empty)
         {
             data.clear();
             return;

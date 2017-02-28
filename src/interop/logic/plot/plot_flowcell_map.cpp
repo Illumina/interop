@@ -96,6 +96,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
             INTEROP_THROW( model::invalid_filter_option, "All cycles is unsupported");
         if(utils::is_read_metric(type) && options.all_reads() && metrics.run_info().reads().size() > 1)
             INTEROP_THROW( model::invalid_filter_option, "All reads is unsupported");
+        bool is_empty = true;
         switch(logic::utils::to_group(type))
         {
             case constants::Tile:
@@ -104,6 +105,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                 typedef model::metric_base::metric_set<metric_t> metric_set_t;
                 const metric_set_t& metric_set = metrics.get<metric_t>();
                 metric::metric_value<metric_t> proxy(options.read());
+                is_empty = metric_set.empty();
                 populate_flowcell_map(metric_set.begin(), metric_set.end(), proxy, type, layout, options, data,
                                       values_for_scaling);
                 break;
@@ -117,6 +119,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                 if(options.all_channels(type))
                     INTEROP_THROW(model::invalid_filter_option, "All channels is unsupported");
                 metric::metric_value<metric_t> proxy(channel);
+                is_empty = metric_set.empty();
                 populate_flowcell_map(metric_set.begin(), metric_set.end(), proxy, type, layout, options, data,
                                       values_for_scaling);
                 break;
@@ -130,6 +133,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                 if(options.all_bases(type))
                     INTEROP_THROW( model::invalid_filter_option, "All bases is unsupported");
                 metric::metric_value<metric_t> proxy(base);
+                is_empty = metric_set.empty();
                 populate_flowcell_map(metric_set.begin(), metric_set.end(), proxy, type, layout, options, data,
                                       values_for_scaling);
                 break;
@@ -146,6 +150,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                         logic::metric::populate_cumulative_distribution(metric_set);
                 }
                 metric::metric_value<metric_t> proxy;
+                is_empty = metric_set.empty();
                 populate_flowcell_map(metric_set.begin(), metric_set.end(), proxy, type, layout, options, data,
                                       values_for_scaling);
                 break;
@@ -156,6 +161,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                 typedef model::metric_base::metric_set<metric_t> metric_set_t;
                 const metric_set_t& metric_set = metrics.get<metric_t>();
                 metric::metric_value<metric_t> proxy;
+                is_empty = metric_set.empty();
                 populate_flowcell_map(metric_set.begin(), metric_set.end(), proxy, type, layout, options, data,
                                       values_for_scaling);
                 break;
@@ -166,6 +172,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                 typedef model::metric_base::metric_set<metric_t> metric_set_t;
                 const metric_set_t& metric_set = metrics.get<metric_t>();
                 metric::metric_value<metric_t> proxy;
+                is_empty = metric_set.empty();
                 populate_flowcell_map(metric_set.begin(), metric_set.end(), proxy, type, layout, options, data,
                                       values_for_scaling);
                 break;
@@ -173,7 +180,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
             default:
                 INTEROP_THROW( model::invalid_metric_type, "Unsupported metric type: " << constants::to_string(type));
         };
-        if(metrics.is_group_empty(logic::utils::to_group(type)))
+        if(is_empty)
         {
             data.clear();
             return;

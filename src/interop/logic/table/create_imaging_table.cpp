@@ -238,7 +238,8 @@ namespace illumina { namespace interop { namespace logic { namespace table
                                       0,
                                       naming_method,
                                       cmap,
-                                      data_beg+row*column_count, data_end);
+                                      data_beg+row*column_count,
+                                      data_end);
         }
         const dynamic_phasing_metric_set_t& dynamic_phasing_metrics =
                 metrics.get<model::metrics::dynamic_phasing_metric>();
@@ -376,6 +377,11 @@ namespace illumina { namespace interop { namespace logic { namespace table
             const constants::metric_group group = to_group(columns[i]);
             if(group >= constants::MetricCount)continue;
             valid_to_load[group] = static_cast<unsigned char>(1);
+            if(group == constants::Q)
+            {
+                valid_to_load[constants::QCollapsed] = static_cast<unsigned char>(1);
+                valid_to_load[constants::QByLane] = static_cast<unsigned char>(1);
+            }
         }
     }
 
