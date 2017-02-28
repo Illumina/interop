@@ -96,6 +96,7 @@ inline int read_run_metrics(const char* filename,
                             const size_t thread_count,
                             const bool check_empty=true)
 {
+// @ [Reading a subset of run metrics in C++]
     using namespace illumina::interop;
     using namespace illumina::interop::model;
     try
@@ -128,5 +129,6 @@ inline int read_run_metrics(const char* filename,
         std::cerr << "No InterOp files found" << std::endl;
         return EMPTY_INTEROP;
     }
+// @ [Reading a subset of run metrics in C++]
     return SUCCESS;
 }

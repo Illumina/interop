@@ -159,16 +159,14 @@ namespace illumina { namespace interop { namespace logic { namespace utils
     /** List all required metric groups for the analysis tab
      *
      * @param valid_to_load list of metrics to load on demand
-     * @param instrument instrument type
      */
-    void list_analysis_metrics_to_load(std::vector<unsigned char>& valid_to_load,
-                                       const constants::instrument_type instrument)
+    void list_analysis_metrics_to_load(std::vector<unsigned char>& valid_to_load)
     {
         typedef std::vector< metric_type_description_t > description_vector_t;
         description_vector_t types;
         logic::plot::list_flowcell_metrics(types);
         for(description_vector_t::const_iterator it = types.begin();it != types.end();++it)
-            list_metrics_to_load(*it, valid_to_load, instrument);
+            list_metrics_to_load(*it, valid_to_load, constants::UnknownInstrument);
     }
 
 

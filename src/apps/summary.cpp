@@ -54,6 +54,7 @@ using namespace illumina::interop;
  *
  * @param out output stream
  * @param summary summary metrics
+ * @param information_level level of information to print
  */
 void print_summary(std::ostream& out, const run_summary& summary, const size_t information_level);
 
@@ -89,6 +90,7 @@ int main(int argc, const char** argv)
         return INVALID_ARGUMENTS;
     }
 
+// @ [Reporting Summary Metrics in C++]
     std::vector<unsigned char> valid_to_load;
     logic::utils::list_summary_metrics_to_load(valid_to_load); // Only load the InterOp files required
 
@@ -123,6 +125,7 @@ int main(int argc, const char** argv)
             return UNEXPECTED_EXCEPTION;
         }
     }
+// @ [Reporting Summary Metrics in C++]
     return SUCCESS;
 }
 

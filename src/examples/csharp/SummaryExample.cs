@@ -1,5 +1,5 @@
 
-// @ [Create Summary Model from Run Folder]
+// @ [Reporting Summary Metrics in CSharp]
 using System;
 using Illumina.InterOp.Run;
 using Illumina.InterOp.Metrics;
@@ -32,4 +32,4 @@ class SummaryExample
 		return 0;
 	}
 }
-// @ [Reading a binary InterOp file in CSharp]
+// @ [Reporting Summary Metrics in CSharp]
