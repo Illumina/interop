@@ -12,6 +12,7 @@
 #include "interop/model/plot/flowcell_data.h"
 #include "interop/model/plot/filter_options.h"
 #include "src/tests/interop/logic/inc/empty_plot_test_generator.h"
+#include "src/tests/interop/logic/inc/collapsed_q_plot_test_generator.h"
 #include "src/tests/interop/logic/inc/plot_regression_test_generator.h"
 
 
@@ -62,6 +63,12 @@ std::vector<constants::plot_types> flowcell_gen_data(flowcell_types,
 INSTANTIATE_TEST_CASE_P(plot_flowcell_unit_test,
                         flowcell_plot_tests,
                         ProxyValuesIn(plot_flowcell_gen, flowcell_gen_data));
+
+
+collapsed_q_plot_test_generator<flowcell_data> plot_collpased_flowcell_gen;
+INSTANTIATE_TEST_CASE_P(plot_flowcell_collapsed_unit_test,
+                        flowcell_plot_tests,
+                        ProxyValuesIn(plot_collpased_flowcell_gen, flowcell_gen_data));
 
 class flowcell_write_read_generator
 {
@@ -121,6 +128,7 @@ flowcell_plot_tests::generator_type plot_flowcell_generators[] = {
 INSTANTIATE_TEST_CASE_P(flowcell_unit_tests,
                         flowcell_plot_tests,
                         ::testing::ValuesIn(plot_flowcell_generators));
+
 
 //---------------------------------------------------------------------------------------------------------------------
 // Regression test section

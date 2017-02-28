@@ -83,7 +83,10 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                         layout.tiles_per_lane());
         else
         {
-            if(metrics.is_group_empty(logic::utils::to_group(type))) return;
+            const size_t buffer_size = layout.lane_count()*
+                    layout.total_swaths(layout.surface_count() > 1 && !options.is_specific_surface()) *
+                    layout.tiles_per_lane();
+            if(buffer_size == 0) return;
             data.set_buffer(buffer, tile_buffer, layout.lane_count(),
                             layout.total_swaths(layout.surface_count() > 1 && !options.is_specific_surface()),
                             layout.tiles_per_lane());

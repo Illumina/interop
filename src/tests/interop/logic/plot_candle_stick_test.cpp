@@ -15,6 +15,7 @@
 #include "src/tests/interop/metrics/inc/error_metrics_test.h"
 #include "src/tests/interop/metrics/inc/extraction_metrics_test.h"
 #include "src/tests/interop/logic/inc/empty_plot_test_generator.h"
+#include "src/tests/interop/logic/inc/collapsed_q_plot_test_generator.h"
 #include "src/tests/interop/logic/inc/plot_regression_test_generator.h"
 #include "src/tests/interop/run/info_test.h"
 
@@ -101,6 +102,12 @@ std::vector<constants::plot_types> plot_by_cycle_gen_data(candle_stick_types,
 INSTANTIATE_TEST_CASE_P(candle_stick_unit_test,
                         candle_stick_tests,
         ProxyValuesIn(plot_by_cycle_gen, plot_by_cycle_gen_data));
+
+
+collapsed_q_plot_test_generator <candle_stick_plot_data> collapsed_plot_by_cycle_gen;
+INSTANTIATE_TEST_CASE_P(collapsed_candle_stick_unit_test,
+                        candle_stick_tests,
+                        ProxyValuesIn(collapsed_plot_by_cycle_gen, plot_by_cycle_gen_data));
 
 class candle_stick_read_generator
 {

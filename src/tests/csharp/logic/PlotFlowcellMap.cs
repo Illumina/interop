@@ -42,16 +42,16 @@ namespace Illumina.InterOp.Interop.UnitTest
             ));
             run.legacy_channel_update(instrument_type.HiSeq);
             run.finalize_after_load();
+            run.q_metric_set().clear();
 
             var layout = run.run_info().flowcell();
-            uint lane_count = layout.lane_count();
-            uint swath_count = layout.total_swaths(layout.surface_count() > 1 && !options.is_specific_surface());
-            uint tile_count = layout.tiles_per_lane();
-            float[] data_buffer = new float[lane_count*swath_count*tile_count];
-            uint[] tile_buffer  = new uint[lane_count*swath_count*tile_count];
+            uint flowcell_size = c_csharp_plot.calculate_flowcell_buffer_size(run, options);
+            float[] data_buffer = new float[flowcell_size];
+            uint[] tile_buffer  = new uint[flowcell_size];
             flowcell_data data = new flowcell_data();
-            c_csharp_plot.plot_flowcell_map(run,  metric_type.QScore, options, data, data_buffer, tile_buffer);
-            Assert.AreEqual(data.row_count(), 8);
+            c_csharp_plot.plot_flowcell_map(run,  metric_type.Q20Percent, options, data, data_buffer, tile_buffer);
+            Assert.AreEqual(1152, flowcell_size);
+            Assert.AreEqual(8, data.row_count());
 		}
 		/// <summary>
 		/// Test bad metric name exception

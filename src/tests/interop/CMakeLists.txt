@@ -40,6 +40,7 @@ set(SRCS
         )
 
 set(HEADERS
+        logic/inc/collapsed_q_plot_test_generator.h
         metrics/inc/corrected_intensity_metrics_test.h
         metrics/inc/error_metrics_test.h
         metrics/inc/metric_test.h
