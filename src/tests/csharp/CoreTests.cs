@@ -18,6 +18,30 @@ namespace Illumina.InterOp.Interop.UnitTest
 	public class CoreTests
 	{
 		/// <summary>
+		/// Test Enum parsing
+		/// </summary>
+		[Test]
+		public void ParseMetricTypeEnum()
+		{
+		    Assert.AreEqual(c_csharp_run.parse_metric_type("Intensity"), metric_type.Intensity);
+		}
+		/// <summary>
+		/// Test Enum parsing
+		/// </summary>
+		[Test]
+		public void ToStringMetricTypeEnum()
+		{
+		    Assert.AreEqual(c_csharp_run.to_string(metric_type.Intensity), "Intensity");
+		}
+		/// <summary>
+		/// Test Enum parsing
+		/// </summary>
+		[Test]
+		public void ToStringMetricGroupEnum()
+		{
+		    Assert.AreEqual(c_csharp_run.to_string(metric_group.Error), "Error");
+		}
+		/// <summary>
 		/// Test IndexOutOfBoundsException
 		/// </summary>
 		[Test]

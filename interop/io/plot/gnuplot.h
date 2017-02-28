@@ -46,6 +46,7 @@ namespace illumina { namespace interop { namespace io { namespace plot
             out << "set autoscale fix\n";
             out << "set size ratio 2\n";
             out << "set yrange[:] reverse\n";
+            out << "set datafile separator \",\"\n";
             out << "plot \"-\" matrix with image" << "\n";
             const size_t swath_count = data.column_count() / data.tile_count();
             for (size_t y = 0; y < data.tile_count(); ++y) // Rows
@@ -54,15 +55,18 @@ namespace illumina { namespace interop { namespace io { namespace plot
                 {
                     for (size_t s = 0; s < swath_count; ++s) // Columns
                     {
-                        out << " " << table::handle_nan(data(x, y + s * data.tile_count()));
+                        if(x > 0 || s > 0) out << ",";
+                        out << table::handle_nan(data(x, y + s * data.tile_count()));
                     }
-                    out << " nan";
+                    out << ",nan";
                 }
                 out << "\n";
             }
         }
 
         /** Write the flowcell heat map to the output stream using the GNUPlot format
+         *
+         * @note, not currently supported!
          *
          * @param out output stream
          * @param data flowcell heatmap data
@@ -107,13 +111,14 @@ namespace illumina { namespace interop { namespace io { namespace plot
             write_axes(out, data.xyaxes());
             out << "set view map\n";
             out << "set palette defined (0 \"white\", 0.333 \"green\", 0.667 \"yellow\", 1 \"red\")\n";
+            out << "set datafile separator \",\"\n";
             out << "plot \"-\" matrix with image" << "\n";
             for (size_t y = 0; y < data.column_count(); ++y)
             {
                 out << data(0, y);
                 for (size_t x = 1; x < data.row_count(); ++x)
                 {
-                    out << " " << table::handle_nan(data(x, y));
+                    out << "," << table::handle_nan(data(x, y));
                 }
                 out << "\n";
             }
@@ -164,6 +169,7 @@ namespace illumina { namespace interop { namespace io { namespace plot
         {
             if (data.size() == 0) return;
 
+            out << "set datafile separator \",\"\n";
             switch (data[0].series_type())
             {
                 case model::plot::series<Point>::Bar:
@@ -252,11 +258,11 @@ namespace illumina { namespace interop { namespace io { namespace plot
             {
                 for (size_t i = 0; i < series.size(); ++i)
                 {
-                    out << table::handle_nan(series[i].x()) << "\t";
-                    out << table::handle_nan(series[i].lower()) << "\t";
-                    out << table::handle_nan(series[i].p25()) << "\t";
-                    out << table::handle_nan(series[i].p50()) << "\t";
-                    out << table::handle_nan(series[i].p75()) << "\t";
+                    out << table::handle_nan(series[i].x()) << ",";
+                    out << table::handle_nan(series[i].lower()) << ",";
+                    out << table::handle_nan(series[i].p25()) << ",";
+                    out << table::handle_nan(series[i].p50()) << ",";
+                    out << table::handle_nan(series[i].p75()) << ",";
                     out << table::handle_nan(series[i].upper());
                     out << std::endl;
                 }
@@ -274,7 +280,7 @@ namespace illumina { namespace interop { namespace io { namespace plot
         {
             for (size_t i = 0; i < series.size(); ++i)
             {
-                out << table::handle_nan(series[i].x()) << "\t" << table::handle_nan(series[i].y()) << std::endl;
+                out << table::handle_nan(series[i].x()) << "," << table::handle_nan(series[i].y()) << std::endl;
             }
         }
 
@@ -298,8 +304,8 @@ namespace illumina { namespace interop { namespace io { namespace plot
         {
             for (size_t i = 0; i < series.size(); ++i)
             {
-                out << table::handle_nan(series[i].x()) << "\t"
-                    << table::handle_nan(series[i].y()) << "\t"
+                out << table::handle_nan(series[i].x()) << ","
+                    << table::handle_nan(series[i].y()) << ","
                     << table::handle_nan(series[i].width()) << std::endl;
             }
         }

@@ -65,6 +65,12 @@
 
 %define WRAP_ENUM(ENUM)
 %template(list_##ENUM) illumina::interop::constants::list_enum_names< illumina::interop::constants:: ENUM >;
+%template(parse_##ENUM) illumina::interop::constants::parse< illumina::interop::constants:: ENUM >;
+#if defined(SWIGPYTHON)
+%template(to_string_##ENUM) illumina::interop::constants::to_string< illumina::interop::constants:: ENUM >;
+#else
+%template(to_string) illumina::interop::constants::to_string< illumina::interop::constants:: ENUM >;
+#endif
 %enddef
 
 WRAP_ENUM(metric_type)
