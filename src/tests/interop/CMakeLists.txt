@@ -62,6 +62,7 @@ set(HEADERS
         logic/inc/empty_plot_test_generator.h
         logic/inc/plot_regression_test_generator.h
         metrics/inc/format_registry.h
+        run/info_test.h
         )
 
 

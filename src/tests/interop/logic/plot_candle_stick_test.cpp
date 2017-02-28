@@ -16,6 +16,7 @@
 #include "src/tests/interop/metrics/inc/extraction_metrics_test.h"
 #include "src/tests/interop/logic/inc/empty_plot_test_generator.h"
 #include "src/tests/interop/logic/inc/plot_regression_test_generator.h"
+#include "src/tests/interop/run/info_test.h"
 
 using namespace illumina::interop::model::metrics;
 using namespace illumina::interop::model::plot;
@@ -31,10 +32,12 @@ struct candle_stick_tests : public generic_test_fixture<candle_stick_plot_data> 
 /** Test that the filter iterator works */
 TEST(candle_stick_tests, test_filter_iterator_by_cycle)
 {
-    const std::string channels[] = {"Red", "Green"};
-    const model::run::read_info reads[] = {model::run::read_info(1, 3, false)};
-    model::run::info run_info(model::run::flowcell_layout(2, 2), util::to_vector(channels), util::to_vector(reads));
-    run_info.set_naming_method(constants::FourDigit);
+
+    model::run::info run_info;
+    const model::run::read_info read_array[]={
+            model::run::read_info(1, 1, 4, false)
+    };
+    hiseq4k_run_info::create_expected(run_info, util::to_vector(read_array));
     metric_filter_iterator metric_iterator;
     metric_iterator.reset(run_info, constants::ByCyclePlot);
     while(!metric_iterator.is_done())

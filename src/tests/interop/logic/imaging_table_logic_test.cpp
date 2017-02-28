@@ -12,6 +12,8 @@
 #include "interop/logic/table/create_imaging_table.h"
 #include "interop/io/table/imaging_table_csv.h"
 #include "src/tests/interop/metrics/inc/error_metrics_test.h"
+#include "src/tests/interop/logic/inc/plot_regression_test_generator.h"
+#include "src/tests/interop/run/info_test.h"
 
 using namespace illumina::interop;
 using namespace illumina::interop::unittest;
@@ -41,20 +43,9 @@ namespace illumina{ namespace interop {namespace model {namespace table
  */
 void simulate_read_error_metrics(model::metrics::run_metrics& metrics)
 {
-    std::vector<model::run::read_info> reads(2);
-    reads[0] = model::run::read_info(1, 1, 26);
-    reads[1] = model::run::read_info(2, 27, 76);
-    metrics.run_info(model::run::info(
-            "",
-            "",
-            1,
-            model::run::flowcell_layout(2, 2, 2, 16),
-            std::vector<std::string>(),
-            model::run::image_dimensions(),
-            reads
-    ));
-    metrics.legacy_channel_update(constants::HiSeq);
-    metrics.set_naming_method(constants::FourDigit);
+    model::run::info run_info;
+    hiseq4k_run_info::create_expected(run_info);
+    metrics.run_info(run_info);
 
     unittest::error_metric_v3::create_expected(metrics.get<model::metrics::error_metric>());
 }

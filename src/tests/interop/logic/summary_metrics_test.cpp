@@ -18,6 +18,7 @@
 #include "src/tests/interop/metrics/inc/tile_metrics_test.h"
 #include "src/tests/interop/metrics/inc/q_metrics_test.h"
 #include "src/tests/interop/inc/abstract_regression_test_generator.h"
+#include "src/tests/interop/run/info_test.h"
 
 #include "src/tests/interop/metrics/inc/phasing_metrics_test.h"
 using namespace illumina::interop::model::summary;
@@ -369,30 +370,10 @@ TEST_P(run_summary_tests, surface_summary)
 
 TEST(summary_metrics_test, cycle_35_cycle_34_tile)
 {
-    const size_t lane_count = 8;
-    const size_t surface_count = 2;
-    const size_t swath_count = 4;
-    const size_t tile_count = 99;
-    const size_t sections_per_lane = 1;
-    const size_t lanes_per_section = 1;
-    std::vector<std::string> channels;
-    channels.push_back("Red");
-    channels.push_back("Green");
-    std::vector<model::run::read_info> reads;
-    reads.push_back(model::run::read_info(1, 1, 36));
-    model::run::info run_info("XX",
-                              "",
-                              1,
-                              model::run::flowcell_layout(lane_count,
-                                                          surface_count,
-                                                          swath_count,
-                                                          tile_count,
-                                                          sections_per_lane,
-                                                          lanes_per_section),
-                              channels,
-                              model::run::image_dimensions(),
-                              reads);
-    run_info.set_naming_method(constants::FourDigit);
+
+    model::run::info run_info;
+    model::run::read_info reads[] = {model::run::read_info(1, 1, 36)};
+    hiseq4k_run_info::create_expected(run_info, util::to_vector(reads));
 
     model::metrics::run_metrics expected_run_metrics(run_info);
     model::metric_base::metric_set<model::metrics::error_metric> &expected_error_metrics =
@@ -435,32 +416,15 @@ TEST(summary_metrics_test, cycle_35_cycle_34_tile)
 TEST(summary_metrics_test, clear_run_metrics) // TODO Expand to catch everything: probably use a fixture and the methods above
 {
     const float tol = 1e-9f;
-    const size_t lane_count = 8;
-    const size_t surface_count = 2;
-    const size_t swath_count = 4;
-    const size_t tile_count = 99;
-    const size_t sections_per_lane = 1;
-    const size_t lanes_per_section = 1;
-    std::vector<std::string> channels;
-    channels.push_back("Red");
-    channels.push_back("Green");
-    std::vector<model::run::read_info> reads;
-    reads.push_back(model::run::read_info(1, 1, 36));
-    reads.push_back(model::run::read_info(2, 37, 42));
-    reads.push_back(model::run::read_info(3, 43, 80));
-    model::run::info run_info("XX",
-                              "",
-                              1,
-                              model::run::flowcell_layout(lane_count,
-                                                          surface_count,
-                                                          swath_count,
-                                                          tile_count,
-                                                          sections_per_lane,
-                                                          lanes_per_section),
-                              channels,
-                              model::run::image_dimensions(),
-                              reads);
-    run_info.set_naming_method(constants::FourDigit);
+
+
+    model::run::info run_info;
+    const model::run::read_info read_array[]={
+            model::run::read_info(1, 1, 36),
+            model::run::read_info(2, 37, 42),
+            model::run::read_info(3, 43, 80)
+    };
+    hiseq4k_run_info::create_expected(run_info, util::to_vector(read_array));
 
     model::metrics::run_metrics full_metrics(run_info);
     tile_metric_v2::create_expected(full_metrics.get<tile_metric>(), run_info);
@@ -553,18 +517,14 @@ public:
         logic::utils::update_channel_from_instrument_type(
                 expected.channel_count() == 2 ? constants::NextSeq : constants::HiSeq, channels );
         actual = model::summary::run_summary(reads.begin(), reads.end(), lane_count, surface_count, channels.size());
-        model::run::info run_info("XX",
-                                  "",
-                                  1,
-                                  model::run::flowcell_layout(lane_count,
+        model::run::info run_info(model::run::flowcell_layout(lane_count,
                                                               surface_count,
                                                               swath_count,
                                                               tile_count,
                                                               sections_per_lane,
                                                               lanes_per_section),
-                                  channels,
-                                  model::run::image_dimensions(),
-                                  reads);
+                                  reads,
+                                  channels);
         run_info.set_naming_method(constants::FourDigit); // TODO: Set from metrics?
         model::metrics::run_metrics metrics(run_info);
         Gen::create_expected(metrics.get<typename Gen::metric_t>(), run_info);

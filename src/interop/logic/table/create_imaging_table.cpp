@@ -52,7 +52,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
             if(data_beg[row*column_count]==0)
             {
                 if((beg->cycle()-1) >= cycle_to_read.size())
-                    INTEROP_THROW(model::index_out_of_bounds_exception, "Cycle exceeds total cycles from Reads in the RunInfo.xml");
+                    INTEROP_THROW(model::index_out_of_bounds_exception, "Cycle exceeds total cycles from Reads in the RunInfo.xml - " << (beg->cycle()-1) << "  >= " << cycle_to_read.size());
 
 
                 INTEROP_ASSERTMSG(row_it != row_offset.end(), "Bug with row offset");

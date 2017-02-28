@@ -19,6 +19,7 @@
 #include "src/tests/interop/metrics/inc/index_metrics_test.h"
 #include "src/tests/interop/inc/generic_fixture.h"
 #include "src/tests/interop/logic/inc/metric_filter_iterator.h"
+#include "src/tests/interop/run/info_test.h"
 
 using namespace illumina::interop;
 using namespace illumina::interop::unittest;
@@ -39,13 +40,11 @@ TEST(plot_logic, intensity_by_cycle)
     const size_t channel_count = 4;
     model::metrics::run_metrics metrics;
     model::plot::filter_options options(constants::FourDigit);
-    std::vector<model::run::read_info> reads(2);
-    reads[0] = model::run::read_info(1, 1, 26);
-    reads[1] = model::run::read_info(2, 27, 76);
-    metrics.run_info(model::run::info("", "", 1, model::run::flowcell_layout(2, 2, 2, 16),
-                                      std::vector<std::string>(), model::run::image_dimensions(), reads));
-    metrics.set_naming_method(constants::FourDigit);
-    metrics.legacy_channel_update(constants::HiSeq);
+
+
+    model::run::info run_info;
+    hiseq4k_run_info::create_expected(run_info);
+    metrics.run_info(run_info);
 
     unittest::extraction_metric_v2::create_expected(metrics.get<model::metrics::extraction_metric>());
 
@@ -78,13 +77,11 @@ TEST(plot_logic, intensity_by_cycle_empty_interop)
     const float tol = 1e-3f;
     model::metrics::run_metrics metrics;
     model::plot::filter_options options(constants::FourDigit);
-    std::vector<model::run::read_info> reads(2);
-    reads[0] = model::run::read_info(1, 1, 26);
-    reads[1] = model::run::read_info(2, 27, 76);
-    metrics.run_info(model::run::info("", "", 1, model::run::flowcell_layout(2, 2, 2, 16),
-                                      std::vector<std::string>(), model::run::image_dimensions(), reads));
-    metrics.set_naming_method(constants::FourDigit);
-    metrics.legacy_channel_update(constants::HiSeq);
+
+
+    model::run::info run_info;
+    hiseq4k_run_info::create_expected(run_info);
+    metrics.run_info(run_info);
 
     model::plot::plot_data<model::plot::candle_stick_point> data;
     logic::plot::plot_by_cycle(metrics, constants::Intensity, options, data);
@@ -104,20 +101,11 @@ TEST(plot_logic, pf_clusters_by_lane)
     const float tol = 1e-3f;
     model::metrics::run_metrics metrics;
     model::plot::filter_options options(constants::FourDigit);
-    std::vector<model::run::read_info> reads(2);
-    reads[0] = model::run::read_info(1, 1, 26);
-    reads[1] = model::run::read_info(2, 27, 76);
-    metrics.run_info(model::run::info(
-            "",
-            "",
-            1,
-            model::run::flowcell_layout(8, 2, 2, 16),
-            std::vector<std::string>(),
-            model::run::image_dimensions(),
-            reads
-    ));
-    metrics.set_naming_method(constants::FourDigit);
-    metrics.legacy_channel_update(constants::HiSeq);
+
+
+    model::run::info run_info;
+    hiseq4k_run_info::create_expected(run_info);
+    metrics.run_info(run_info);
 
     unittest::tile_metric_v2::create_expected(metrics.get<model::metrics::tile_metric>());
 
@@ -128,7 +116,7 @@ TEST(plot_logic, pf_clusters_by_lane)
     EXPECT_NEAR(expected_val, data[0][0].y(), tol);
     //data.size() refers to the number of series in the collection
     ASSERT_EQ(data.size(), 1u);
-    EXPECT_EQ(data.title(), "");
+    EXPECT_EQ(data.title(), "H7MF5BBXX");
     EXPECT_EQ(data.x_axis().label(), "Lane");
     EXPECT_EQ(data.y_axis().label(), "Clusters PF");
     EXPECT_NEAR(data.x_axis().min(), 0.0f, tol);
@@ -144,13 +132,11 @@ TEST(plot_logic, pf_clusters_by_lane_empty_interop)
     const float tol = 1e-3f;
     model::metrics::run_metrics metrics;
     model::plot::filter_options options(constants::FourDigit);
-    std::vector<model::run::read_info> reads(2);
-    reads[0] = model::run::read_info(1, 1, 26);
-    reads[1] = model::run::read_info(2, 27, 76);
-    metrics.run_info(model::run::info("", "", 1, model::run::flowcell_layout(8, 2, 2, 16),
-                                      std::vector<std::string>(), model::run::image_dimensions(), reads));
-    metrics.set_naming_method(constants::FourDigit);
-    metrics.legacy_channel_update(constants::HiSeq);
+
+
+    model::run::info run_info;
+    hiseq4k_run_info::create_expected(run_info);
+    metrics.run_info(run_info);
 
     model::plot::plot_data<model::plot::candle_stick_point> data;
     logic::plot::plot_by_lane(metrics, constants::ClusterCountPF, options, data);
@@ -173,13 +159,11 @@ TEST(plot_logic, q_score_histogram)
     const float tol = 1e-3f;
     model::metrics::run_metrics metrics;
     model::plot::filter_options options(constants::FourDigit);
-    std::vector<model::run::read_info> reads(2);
-    reads[0] = model::run::read_info(1, 1, 26);
-    reads[1] = model::run::read_info(2, 27, 76);
-    metrics.run_info(model::run::info("", "", 1, model::run::flowcell_layout(8, 2, 2, 16),
-                                      std::vector<std::string>(), model::run::image_dimensions(), reads));
-    metrics.legacy_channel_update(constants::HiSeq);
-    metrics.set_naming_method(constants::FourDigit);
+
+
+    model::run::info run_info;
+    hiseq4k_run_info::create_expected(run_info);
+    metrics.run_info(run_info);
 
     unittest::q_metric_v6::create_expected(metrics.get<model::metrics::q_metric>());
     metrics.finalize_after_load();
@@ -202,7 +186,7 @@ TEST(plot_logic, q_score_histogram)
         }
     }
 
-    EXPECT_EQ(data.title(), "All Lanes");
+    EXPECT_EQ(data.title(), "H7MF5BBXX All Lanes");
     EXPECT_EQ(data.x_axis().label(), "Q Score");
     EXPECT_EQ(data.y_axis().label(), "Total (million)");
     EXPECT_NEAR(data.x_axis().min(), 1.0f, tol);
@@ -217,13 +201,11 @@ TEST(plot_logic, q_score_histogram_empty_interop)
     const float tol = 1e-3f;
     model::metrics::run_metrics metrics;
     model::plot::filter_options options(constants::FourDigit);
-    std::vector<model::run::read_info> reads(2);
-    reads[0] = model::run::read_info(1, 1, 26);
-    reads[1] = model::run::read_info(2, 27, 76);
-    metrics.run_info(model::run::info("", "", 1, model::run::flowcell_layout(8, 2, 2, 16),
-                                      std::vector<std::string>(), model::run::image_dimensions(), reads));
-    metrics.legacy_channel_update(constants::HiSeq);
-    metrics.set_naming_method(constants::FourDigit);
+
+
+    model::run::info run_info;
+    hiseq4k_run_info::create_expected(run_info);
+    metrics.run_info(run_info);
 
     metrics.finalize_after_load();
 
@@ -247,13 +229,11 @@ TEST(plot_logic, q_score_heatmap)
     const float tol = 1e-3f;
     model::metrics::run_metrics metrics;
     model::plot::filter_options options(constants::FourDigit);
-    std::vector<model::run::read_info> reads(2);
-    reads[0] = model::run::read_info(1, 1, 26);
-    reads[1] = model::run::read_info(2, 27, 76);
-    metrics.run_info(model::run::info("", "", 1, model::run::flowcell_layout(8, 2, 2, 16),
-                                      std::vector<std::string>(), model::run::image_dimensions(), reads));
-    metrics.legacy_channel_update(constants::HiSeq);
-    metrics.set_naming_method(constants::FourDigit);
+
+
+    model::run::info run_info;
+    hiseq4k_run_info::create_expected(run_info);
+    metrics.run_info(run_info);
 
     unittest::q_metric_v6::create_expected(metrics.get<model::metrics::q_metric>());
     metrics.finalize_after_load();
@@ -262,7 +242,7 @@ TEST(plot_logic, q_score_heatmap)
     logic::plot::plot_qscore_heatmap(metrics, options, data);
     ASSERT_EQ(data.row_count(), 3u);
     ASSERT_EQ(data.column_count(), 40u);
-    EXPECT_EQ(data.title(), "All Lanes");
+    EXPECT_EQ(data.title(), "H7MF5BBXX All Lanes");
     EXPECT_EQ(data.x_axis().label(), "Cycle");
     EXPECT_EQ(data.y_axis().label(), "Q Score");
     EXPECT_NEAR(data.x_axis().min(), 0.0f, tol);
@@ -299,13 +279,11 @@ TEST(plot_logic, q_score_heatmap_empty_interop)
     const float tol = 1e-3f;
     model::metrics::run_metrics metrics;
     model::plot::filter_options options(constants::FourDigit);
-    std::vector<model::run::read_info> reads(2);
-    reads[0] = model::run::read_info(1, 1, 26);
-    reads[1] = model::run::read_info(2, 27, 76);
-    metrics.run_info(model::run::info("", "", 1, model::run::flowcell_layout(8, 2, 2, 16),
-                                      std::vector<std::string>(), model::run::image_dimensions(), reads));
-    metrics.legacy_channel_update(constants::HiSeq);
-    metrics.set_naming_method(constants::FourDigit);
+
+
+    model::run::info run_info;
+    hiseq4k_run_info::create_expected(run_info);
+    metrics.run_info(run_info);
 
     metrics.finalize_after_load();
 
@@ -327,20 +305,11 @@ TEST(plot_logic, q_score_heatmap_buffer)
     const float tol = 1e-5f;
     model::metrics::run_metrics metrics;
     model::plot::filter_options options(constants::FourDigit);
-    std::vector<model::run::read_info> reads(2);
-    reads[0] = model::run::read_info(1, 1, 26);
-    reads[1] = model::run::read_info(2, 27, 76);
-    metrics.run_info(model::run::info(
-            "",
-            "",
-            1,
-            model::run::flowcell_layout(8, 2, 2, 16),
-            std::vector<std::string>(),
-            model::run::image_dimensions(),
-            reads
-    ));
-    metrics.legacy_channel_update(constants::HiSeq);
-    metrics.set_naming_method(constants::FourDigit);
+
+
+    model::run::info run_info;
+    hiseq4k_run_info::create_expected(run_info);
+    metrics.run_info(run_info);
 
     unittest::q_metric_v6::create_expected(metrics.get<model::metrics::q_metric>());
     metrics.finalize_after_load();
@@ -371,20 +340,13 @@ TEST(plot_logic, flowcell_map)
     const float tol = 1e-3f;
     const size_t num_lanes = 8;
     model::metrics::run_metrics metrics;
-    std::vector<model::run::read_info> reads(2);
-    reads[0] = model::run::read_info(1, 1, 26);
-    reads[1] = model::run::read_info(2, 27, 76);
-    metrics.run_info(model::run::info(
-            "",
-            "",
-            1,
-            model::run::flowcell_layout(num_lanes, 2, 2, 36, 1, 1, std::vector<std::string>(), constants::FourDigit),
-            std::vector<std::string>(),
-            model::run::image_dimensions(),
-            reads
-    ));
+
+
+    model::run::info run_info;
+    hiseq4k_run_info::create_expected(run_info);
+    metrics.run_info(run_info);
+
     model::plot::filter_options options(constants::FourDigit, ALL_IDS, 0, constants::A, ALL_IDS, 1, 1);
-    metrics.legacy_channel_update(constants::HiSeq);
 
     unittest::extraction_metric_v2::create_expected(metrics.get<model::metrics::extraction_metric>());
     ASSERT_GT(metrics.get< model::metrics::extraction_metric >().size(), 0u);
@@ -398,8 +360,8 @@ TEST(plot_logic, flowcell_map)
         actual_values.push_back(std::numeric_limits<float>::quiet_NaN());
     }
     float expected_vals[] = {302, 312, 349};
-    std::pair<size_t, size_t> indices[] = {std::make_pair(13, 6), std::make_pair(49, 6),
-                                                      std::make_pair(85, 6)};
+    std::pair<size_t, size_t> indices[] = {std::make_pair(13, 6), std::make_pair(41, 6),
+                                                      std::make_pair(69, 6)};
     size_t k = 0;
     for (size_t i = 0; i < data.row_count(); i++)
     {
@@ -419,14 +381,14 @@ TEST(plot_logic, flowcell_map)
     {
         if (!std::isnan(actual_values[val]))
         {
-            ASSERT_EQ(val / data.column_count(), indices[m].second);
-            ASSERT_EQ(val % data.column_count(), indices[m].first);
+            EXPECT_EQ(val / data.column_count(), indices[m].second);
+            EXPECT_EQ(val % data.column_count(), indices[m].first);
             m++;
         }
     }
 
     ASSERT_EQ(data.row_count(), num_lanes);
-    EXPECT_EQ(data.title(), "Intensity");
+    EXPECT_EQ(data.title(), "H7MF5BBXX Intensity");
     EXPECT_EQ(data.saxis().label(), "Intensity");
     EXPECT_NEAR(data.saxis().min(), 302.0f, tol);
     EXPECT_NEAR(data.saxis().max(), 349.0f, tol);
@@ -437,22 +399,14 @@ TEST(plot_logic, flowcell_map_empty_interop)
 {
     const model::plot::filter_options::id_t ALL_IDS = model::plot::filter_options::ALL_IDS;
     const float tol = 1e-3f;
-    const size_t num_lanes = 8;
-    model::metrics::run_metrics metrics;
-    std::vector<model::run::read_info> reads(2);
-    reads[0] = model::run::read_info(1, 1, 26);
-    reads[1] = model::run::read_info(2, 27, 76);
-    metrics.run_info(model::run::info(
-            "",
-            "",
-            1,
-            model::run::flowcell_layout(num_lanes, 2, 2, 36, 1, 1, std::vector<std::string>(), constants::FourDigit),
-            std::vector<std::string>(),
-            model::run::image_dimensions(),
-            reads
-    ));
+    model::run::info run_info;
+    const model::run::read_info read_array[]={
+            model::run::read_info(1, 1, 26),
+            model::run::read_info(2, 27, 76)
+    };
+    hiseq4k_run_info::create_expected(run_info, util::to_vector(read_array));
+    model::metrics::run_metrics metrics(run_info);
     model::plot::filter_options options(constants::FourDigit, ALL_IDS, 0, constants::A, ALL_IDS, 1, 1);
-    metrics.legacy_channel_update(constants::HiSeq);
 
     model::plot::flowcell_data data;
     logic::plot::plot_flowcell_map(metrics, constants::Intensity, options, data);
@@ -469,14 +423,10 @@ TEST(plot_logic, sample_qc)
 {
     const float tol = 1e-3f;
     model::metrics::run_metrics metrics;
-    std::vector<model::run::read_info> reads(2);
-    reads[0] = model::run::read_info(1, 1, 26);
-    reads[1] = model::run::read_info(2, 27, 76);
-    metrics.run_info(
-            model::run::info("", "", 1, model::run::flowcell_layout(8, 2, 2, 36, 1, 1, std::vector<std::string>(),
-                                                                    constants::FourDigit),
-                             std::vector<std::string>(), model::run::image_dimensions(), reads));
-    metrics.legacy_channel_update(constants::HiSeq);
+
+    model::run::info run_info;
+    hiseq4k_run_info::create_expected(run_info);
+    metrics.run_info(run_info);
 
     unittest::index_metric_v1::create_expected(metrics.get<model::metrics::index_metric>());
     unittest::tile_metric_v2::create_expected(metrics.get<model::metrics::tile_metric>());
@@ -508,15 +458,12 @@ TEST(plot_logic, sample_qc_empty_interop)
 {
     const float tol = 1e-3f;
     model::metrics::run_metrics metrics;
-    std::vector<model::run::read_info> reads(2);
-    reads[0] = model::run::read_info(1, 1, 26);
-    reads[1] = model::run::read_info(2, 27, 76);
-    metrics.run_info(
-            model::run::info("", "", 1, model::run::flowcell_layout(8, 2, 2, 36, 1, 1, std::vector<std::string>(),
-                                                                    constants::FourDigit),
-                             std::vector<std::string>(), model::run::image_dimensions(), reads));
-    metrics.legacy_channel_update(constants::HiSeq);
 
+
+    model::run::info run_info;
+
+    hiseq4k_run_info::create_expected(run_info);
+    metrics.run_info(run_info);
     model::plot::plot_data<model::plot::bar_point> data;
     logic::plot::plot_sample_qc(metrics, 1, data);
     ASSERT_EQ(data.size(), 0u);
