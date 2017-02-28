@@ -122,10 +122,14 @@ namespace illumina.interop.csharp.unittest
 
             string Run_Id = "120705_M00903_0009_A000000000-A12V4";
             string Date = "120705";
+            string InstrumentName = "M00903";
+            uint RunNumber = 8;
             uint version = 2;
             image_dimensions ImageDimensions = new image_dimensions(/*Width*/ 0, /*Height*/ 0);
             expected_run_info = new info(Run_Id,
                                         Date,
+                                        InstrumentName,
+                                        RunNumber,
                                         version,
                                         FlowcellLayout,
                                         ImageChannels,

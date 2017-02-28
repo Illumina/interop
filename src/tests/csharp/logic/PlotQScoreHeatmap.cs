@@ -37,12 +37,7 @@ namespace Illumina.InterOp.Interop.UnitTest
             reads.Add(new read_info(1, 1, 26));
             reads.Add(new read_info(2, 27, 76));
             run.run_info(new info(
-                    "",
-                    "",
-                    1,
-                    new flowcell_layout(8, 2, 2, 36, 1, 1, new string_vector(), tile_naming_method.FourDigit),
-                    new string_vector(),
-                    new image_dimensions(),
+            new flowcell_layout(8, 2, 2, 36, 1, 1, new string_vector(), tile_naming_method.FourDigit),
                     reads
             ));
             run.legacy_channel_update(instrument_type.HiSeq);

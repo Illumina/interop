@@ -73,7 +73,6 @@ namespace illumina{ namespace interop { namespace unittest
         {
             const regression_test_data& data = regression_test_data::instance();
             const std::string baseline_file = baseline();
-            ::testing::Message msg;
             if(!data.rebaseline())
             {
                 const bool expected_found = read_expected(baseline_file, expected);
@@ -93,13 +92,8 @@ namespace illumina{ namespace interop { namespace unittest
                 {
                     if(generate_actual(m_run_folder, actual))
                     {
-                        msg << "[          ] Rebaseline: " << *this;
                         if(!write_actual(baseline_file, actual))
                             return ::testing::AssertionFailure() << "Failed to write baseline: " << baseline_file;
-                    }
-                    else
-                    {
-                        msg << "[          ] Skipped: " << *this;
                     }
                     *skip_test = true;
                 }
@@ -110,7 +104,7 @@ namespace illumina{ namespace interop { namespace unittest
                     //return ::testing::AssertionFailure()  << "Failed to generate baseline: " << baseline_file << " " << ex.what();
                 }
             }
-            return ::testing::AssertionFailure(msg);
+            return ::testing::AssertionSuccess();
         }
         /** Get the full path of the baseline output file
          *

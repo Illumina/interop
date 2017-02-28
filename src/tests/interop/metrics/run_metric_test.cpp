@@ -39,9 +39,10 @@ TYPED_TEST_P(run_metric_test, on_demand_not_clear)
 {
     typedef typename TestFixture::metric_set_t metric_set_t;
     metric_set_t& metric_set = TestFixture::expected.template get<metric_set_t>();
+    const size_t thread_count = 1;
     try{
         std::vector<unsigned char> valid_to_load;
-        TestFixture::expected.read("/File/not/found.aaa", valid_to_load);
+        TestFixture::expected.read("/File/not/found.aaa", valid_to_load, thread_count);
     }catch(const xml::xml_file_not_found_exception&){}
     EXPECT_FALSE(metric_set.empty());
 }

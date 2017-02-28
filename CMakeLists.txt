@@ -5,6 +5,12 @@ enable_testing()
 include(${PROJECT_SOURCE_DIR}/cmake/Modules/UseGitVersion.cmake)
 set(ARCHIVE_VERSION "v1.0.16-src")
 
+find_package(OpenMP)
+if(OPENMP_FOUND)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+endif()
+
 
 if (NOT CMAKE_BUILD_TYPE)
     message(STATUS "No build type selected, default to Release")
@@ -70,7 +76,12 @@ if(INTEROP_VERSION)
     set(CPACK_PACKAGE_VERSION_PATCH "${VERSION_PATCH}")
     set(CPACK_SYSTEM_NAME "${CMAKE_SYSTEM_NAME}-${CMAKE_CXX_COMPILER_ID}-${CMAKE_CXX_COMPILER_VERSION}${PACKAGE_SUFFIX}")
     set(CPACK_PACKAGE_INSTALL_DIRECTORY "interop_${VERSION_SHORT}")
-    set(CPACK_OUTPUT_FILE_PREFIX "interop/${VERSION}")
+    if(NOT PACKAGE_OUTPUT_FILE_PREFIX)
+        set(PACKAGE_OUTPUT_FILE_PREFIX ".")
+    else()
+        get_filename_component(PACKAGE_OUTPUT_FILE_PREFIX ${PACKAGE_OUTPUT_FILE_PREFIX} ABSOLUTE)
+    endif()
+    set(CPACK_OUTPUT_FILE_PREFIX "${PACKAGE_OUTPUT_FILE_PREFIX}/interop/${VERSION}")
 endif()
 
 #Adds the target "package"

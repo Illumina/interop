@@ -94,10 +94,8 @@ namespace illumina { namespace interop { namespace logic { namespace utils
     /** List all required metric groups for the analysis tab
      *
      * @param valid_to_load list of metrics to load on demand
-     * @param instrument instrument type
      */
-    void list_analysis_metrics_to_load(std::vector<unsigned char>& valid_to_load,
-                                       const constants::instrument_type instrument=constants::NovaSeq);
+    void list_analysis_metrics_to_load(std::vector<unsigned char>& valid_to_load);
 
 
 }}}}

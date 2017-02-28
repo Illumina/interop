@@ -54,7 +54,7 @@ List of InterOp Metric Files
 | [IndexMetricsOut.bin]            | Per tile per lane index sequence information                                                                                                                  |
 | [QMetrics2030Out.bin]            | Per tile per cycle Q20/Q30 scores                                                                                                                             |
 | [QMetricsByLaneOut.bin]          | Per tile per cycle Q-score histogram per lane                                                                                                                 |
-| [EmpiricalPhasingMetricsOut.bin] | Phasing weights per tile per cycle 
+| [EmpiricalPhasingMetricsOut.bin] | Phasing weights per tile per cycle                                                                                                                            |
 
 [CorrectedIntMetricsOut.bin]: @ref corrected_intensity "CorrectedIntMetricsOut.bin"
 [ErrorMetricsOut.bin]: @ref error_metric "ErrorMetricsOut.bin"

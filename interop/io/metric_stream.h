@@ -193,6 +193,30 @@ namespace illumina { namespace interop { namespace io
 
     /** Get the size of a metric file header
      *
+     * @param metric_set set of metrics
+     * @param version version of the format
+     * @return size of metric file header
+     */
+    template<class MetricSet>
+    size_t size_of_buffer(const MetricSet &metric_set,
+                          ::int16_t version=-1)
+    {
+        typedef typename MetricSet::metric_type metric_t;
+        typedef metric_format_factory<metric_t> factory_type;
+        typedef typename factory_type::metric_format_map metric_format_map;
+        if(version < 1) version = metric_set.version();
+        metric_format_map &format_map = factory_type::metric_formats();
+        if (format_map.find(version) == format_map.end())
+            INTEROP_THROW(bad_format_exception, "No format found to write file with version: "
+                    << version <<  " of " << format_map.size());
+
+        INTEROP_ASSERT(format_map[version]);
+        return format_map[version]->buffer_size(metric_set);
+    }
+
+
+    /** Get the size of a metric file header
+     *
      * @param header header for metric
      * @param version version of the format
      * @return size of metric file header

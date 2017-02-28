@@ -26,6 +26,8 @@ struct metric_stream_test : public ::testing::Test, public TestSetup
 {
     /** Type of metric set */
     typedef typename TestSetup::metric_set_t metric_set_t;
+    /** Type of metric */
+    typedef typename metric_set_t::metric_type metric_t;
     /** Constructor */
     metric_stream_test()
     {
@@ -72,13 +74,25 @@ TYPED_TEST_P(metric_stream_test, test_header_size)
  */
 TYPED_TEST_P(metric_stream_test, test_read_data_size)
 {
-    if (TypeParam::disable_binary_data_size || TypeParam::disable_binary_data) return;
+    typedef typename TestFixture::metric_t metric_t;
     std::string tmp = std::string(TestFixture::expected);
     typename TypeParam::metric_set_t metrics;
     io::read_interop_from_string(tmp, metrics);
-    if(io::is_multi_record(metrics)) return;
+    if(static_cast<constants::metric_group>(metric_t::TYPE) == constants::Tile && TypeParam::VERSION == 2)
+        return; // This contrived exampled is not supported, it includes things like control metrics, which are ignored
     const size_t expected_size = io::compute_buffer_size(metrics);
     EXPECT_EQ(tmp.size(), expected_size);
+}
+
+/** Confirm the header size matches what is read
+ */
+TYPED_TEST_P(metric_stream_test, test_write_data_size)
+{
+    typename TypeParam::metric_set_t metrics;
+    TypeParam::create_expected(metrics);
+    const size_t expected_size = io::compute_buffer_size(metrics);
+    std::vector< ::uint8_t > buffer(expected_size);
+    EXPECT_NO_THROW(io::write_interop_to_buffer(metrics, &buffer.front(), buffer.size()));
 }
 
 TEST(metric_stream_test, list_filenames)
@@ -97,7 +111,8 @@ TEST(metric_stream_test, list_filenames)
 REGISTER_TYPED_TEST_CASE_P(metric_stream_test,
                            test_read_data_size,
                            test_header_size,
-                           test_write_read_binary_data
+                           test_write_read_binary_data,
+                           test_write_data_size
 );
 
 

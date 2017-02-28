@@ -37,9 +37,10 @@ set(SRCS
         logic/index_summary_test.cpp
         metrics/coverage_test.cpp
         metrics/metric_stream_error_test.cpp
-        )
+        metrics/metric_regression_tests.cpp)
 
 set(HEADERS
+        logic/inc/collapsed_q_plot_test_generator.h
         metrics/inc/corrected_intensity_metrics_test.h
         metrics/inc/error_metrics_test.h
         metrics/inc/metric_test.h
@@ -62,6 +63,7 @@ set(HEADERS
         logic/inc/empty_plot_test_generator.h
         logic/inc/plot_regression_test_generator.h
         metrics/inc/format_registry.h
+        run/info_test.h
         )
 
 

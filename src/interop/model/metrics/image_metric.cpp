@@ -10,6 +10,7 @@
 #include <vector>
 #include <algorithm>
 #include "interop/model/metrics/image_metric.h"
+#include "interop/model/metric_base/metric_set.h"
 #include "interop/io/format/metric_format_factory.h"
 #include "interop/io/format/text_format_factory.h"
 #include "interop/io/format/default_layout.h"
@@ -148,6 +149,18 @@ namespace illumina { namespace interop { namespace io
         static record_size_t compute_header_size(const image_metric::header_type &)
         {
             return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t));
+        }
+
+        /** Compute the buffer size
+         *
+         * @param metric_set set of metrics
+         * @return buffer size for entire metric set
+         */
+        static size_t compute_buffer_size(const model::metric_base::metric_set<image_metric>& metric_set)
+        {
+            return compute_header_size(metric_set) + compute_size(metric_set)*
+                                                             metric_set.size()*
+                                                             metric_set.channel_count();
         }
     };
 

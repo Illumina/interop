@@ -1,9 +1,18 @@
 # Changes                                               {#changes}
 
-## Master
+## v1.0.17 (Master)
 
 Date       | Description
 ---------- | -----------
+2017-02-24 | IPA-6189: Fixed compute_buffer_size to handle mutli record format tile
+2017-02-20 | IPA-6178: Fix another bug in flowcell loading from collapsed-q
+2017-02-20 | IPA-6057: Simplify polymorphic functions
+2017-02-18 | IPA-6167: Fix bug in by cycle and flowcell plots for BaseSpace Collapsed Q Metrics
+2017-02-16 | IPA-6059: Fix windows regression tests
+2017-02-16 | IPA-6050: Add parse enum to SWIG binding
+2017-02-16 | IPA-6165: Add summary example
+2017-02-16 | IPA-6027: Support RunInfo writing
+2017-02-01 | IPA-6066: Threaded performance test for reading
 2017-01-24 | Update documentation, fixes for compressed q-metrics
 
 ## v1.0.16

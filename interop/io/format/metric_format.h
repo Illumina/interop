@@ -171,6 +171,15 @@ namespace illumina { namespace interop { namespace io
                                            Layout::VERSION);
             return layout_size;
         }
+        /** Calculate the size of a record
+         *
+         * @param metric_set source set of metrics
+         * @return size of buffer in bytes
+         */
+        size_t buffer_size(const model::metric_base::metric_set<Metric>& metric_set) const
+        {
+            return buffer_size(metric_set, int_constant_type<Layout::MULTI_RECORD>::null());
+        }
 
         /** Calculate the size of a record
          *
@@ -207,6 +216,18 @@ namespace illumina { namespace interop { namespace io
         bool is_multi_record() const
         {
             return Layout::MULTI_RECORD > 0;
+        }
+
+    private:
+        typedef typename int_constant_type<0>::pointer_t is_single_record_t;
+        typedef typename int_constant_type<1>::pointer_t is_multi_record_t;
+        size_t buffer_size(const model::metric_base::metric_set<Metric>& metric_set, is_single_record_t)const
+        {
+            return header_size(metric_set) + record_size(metric_set)*metric_set.size();
+        }
+        size_t buffer_size(const model::metric_base::metric_set<Metric>& metric_set, is_multi_record_t)const
+        {
+            return Layout::compute_buffer_size(metric_set);
         }
 
     private:

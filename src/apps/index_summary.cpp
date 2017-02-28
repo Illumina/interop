@@ -71,6 +71,7 @@ int main(int argc, char** argv)
         //print_help(std::cout);
         return INVALID_ARGUMENTS;
     }
+    const size_t thread_count = 1;
 
     std::vector<unsigned char> valid_to_load;
     logic::utils::list_index_metrics_to_load(valid_to_load); // Only load the InterOp files required
@@ -78,7 +79,7 @@ int main(int argc, char** argv)
     for(int i=1;i<argc;i++)
     {
         run_metrics run;
-        int ret = read_run_metrics(argv[i], run, valid_to_load);
+        int ret = read_run_metrics(argv[i], run, valid_to_load, thread_count);
         if (ret != SUCCESS) return ret;
         index_flowcell_summary summary;
         try

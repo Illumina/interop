@@ -68,12 +68,7 @@ namespace Illumina.InterOp.Interop.UnitTest
             reads.Add(new read_info(1, 1, 26));
             reads.Add(new read_info(2, 27, 76));
             run.run_info(new info(
-                    "",
-                    "",
-                    1,
-                    new flowcell_layout(2, 2, 2, 16),
-                    new string_vector(),
-                    new image_dimensions(),
+            new flowcell_layout(2, 2, 2, 16),
                     reads
             ));
             run.legacy_channel_update(instrument_type.HiSeq);

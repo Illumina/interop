@@ -34,7 +34,7 @@ namespace illumina { namespace interop { namespace io
      *      2. Version: 2
      */
     template<>
-    struct generic_layout<tile_metric, 2> : public default_layout<2, 1 /*Multi record */>
+    struct generic_layout<tile_metric, 2> : public default_layout<2, 1 /* Multi record */>
     {
         /** @page tile_v2 Tile Version 2
          *
@@ -103,7 +103,6 @@ namespace illumina { namespace interop { namespace io
             std::streamsize count = stream_map<record_t>(stream, rec);
             if (stream.fail()) return count;
             float val = rec.value;
-            if (val != val) val = 0; // TODO: Remove this after baseline
             switch (rec.code)
             {
                 case ControlLane:
@@ -161,13 +160,12 @@ namespace illumina { namespace interop { namespace io
             metric_id.set(metric);
             bool write_id = false;
 
-            // We always write this out, even if it is NaN
             // We always write out ID for the first record
             if (!std::isnan(metric.m_cluster_density))
             {
                 rec.value = metric.m_cluster_density;
                 rec.code = ClusterDensity;
-                if (write_id) write_binary(out, metric_id);
+                if (write_id) write_binary(out, metric_id); // This id is never written
                 write_id = true;
                 write_binary(out, rec);
             }
@@ -224,6 +222,12 @@ namespace illumina { namespace interop { namespace io
                     write_binary(out, rec);
                 }
             }
+            if (!write_id) // Write out something so the file is not incomplete
+            {
+                rec.value = metric.m_cluster_density;
+                rec.code = ClusterDensity;
+                write_binary(out, rec);
+            }
             return out.tellp();
         }
         /** Throws an unimplemented error
@@ -250,6 +254,35 @@ namespace illumina { namespace interop { namespace io
         static record_size_t compute_header_size(const tile_metric::header_type &)
         {
             return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t));
+        }
+
+        /** Compute the buffer size
+         *
+         * @param metric_set set of metrics
+         * @return buffer size for entire metric set
+         */
+        static size_t compute_buffer_size(const model::metric_base::metric_set<tile_metric>& metric_set)
+        {
+            typedef tile_metric::read_metric_vector::const_iterator const_read_iterator;
+            typedef model::metric_base::metric_set<tile_metric>::const_iterator const_tile_iterator;
+
+            size_t record_count = 0;
+            for(const_tile_iterator it = metric_set.begin();it != metric_set.end();++it)
+            {
+                if (!std::isnan(it->m_cluster_density)) ++record_count;
+                if (!std::isnan(it->m_cluster_density_pf)) ++record_count;
+                if (!std::isnan(it->m_cluster_count)) ++record_count;
+                if (!std::isnan(it->m_cluster_count_pf)) ++record_count;
+                for (const_read_iterator rit = it->read_metrics().begin(); rit != it->read_metrics().end(); ++rit)
+                {
+                    if (!std::isnan(rit->percent_prephasing())) ++record_count;
+                    if (!std::isnan(rit->percent_phasing())) ++record_count;
+                    if (!std::isnan(rit->percent_aligned())) ++record_count;
+                }
+            }
+
+            return compute_header_size(metric_set) + compute_size(metric_set)*
+                                                             record_count;
         }
 
     private:
@@ -388,9 +421,7 @@ namespace illumina { namespace interop { namespace io
             metric_id.set(metric);
             std::streamsize count = 0;
             bool write_id = false;
-            if (!std::isnan(metric.m_cluster_density) ||
-                !std::isnan(metric.m_cluster_density_pf)  ||
-                !std::isnan(metric.m_cluster_count) ||
+            if (!std::isnan(metric.m_cluster_count) ||
                 !std::isnan(metric.m_cluster_count_pf))
             {
                 const ::uint8_t code = 't';
@@ -407,6 +438,12 @@ namespace illumina { namespace interop { namespace io
                 else write_id = true;
                 count += stream_map< ::uint8_t >(stream, code);
                 count += map_stream_read(stream, *beg);
+            }
+            if(!write_id) // Write out something so the file is not incomplete
+            {
+                const ::uint8_t code = 't';
+                count += stream_map< ::uint8_t >(stream, code);
+                count += map_stream_tile(stream, metric);
             }
             return count;
         }
@@ -448,6 +485,27 @@ namespace illumina { namespace interop { namespace io
         static record_size_t compute_header_size(const tile_metric::header_type &)
         {
             return static_cast<record_size_t>(sizeof(::uint8_t) + sizeof(record_size_t) + sizeof(float));
+        }
+
+        /** Compute the buffer size
+         *
+         * @param metric_set set of metrics
+         * @return buffer size for entire metric set
+         */
+        static size_t compute_buffer_size(const model::metric_base::metric_set<tile_metric>& metric_set)
+        {
+            typedef model::metric_base::metric_set<tile_metric>::const_iterator const_tile_iterator;
+
+            size_t record_count = 0;
+            for(const_tile_iterator it = metric_set.begin();it != metric_set.end();++it)
+            {
+                if (!std::isnan(it->m_cluster_count) || !std::isnan(it->m_cluster_count_pf))
+                    ++record_count;
+                record_count += it->read_metrics().size();
+            }
+
+            return compute_header_size(metric_set) + compute_size(metric_set)*
+                                                     record_count;
         }
 
     private:
