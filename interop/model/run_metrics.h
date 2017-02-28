@@ -375,6 +375,40 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         io::file_not_found_exception,
         io::bad_format_exception);
 
+
+        /** Read a single metric set from a binary buffer
+         *
+         * @param group metric set to write
+         * @param buffer binary buffer
+         * @param buffer_size size of binary buffer
+         */
+        void read_metrics_from_buffer(const constants::metric_group group,
+                                     uint8_t* buffer,
+                                     const size_t buffer_size) throw(
+        io::file_not_found_exception,
+        io::bad_format_exception,
+        io::incomplete_file_exception,
+        model::index_out_of_bounds_exception);
+        /** Write a single metric set to a binary buffer
+         *
+         * @param group metric set to write
+         * @param buffer binary buffer
+         * @param buffer_size size of binary buffer
+         */
+        void write_metrics_to_buffer(const constants::metric_group group,
+                                     uint8_t* buffer,
+                                     const size_t buffer_size)const throw(
+        io::invalid_argument,
+        io::bad_format_exception,
+        io::incomplete_file_exception);
+        /** Calculate the required size of the buffer for writing
+         *
+         * @param group metric set to write
+         * @return required size of the binary buffer
+         */
+        size_t calculate_buffer_size(const constants::metric_group group)const throw(
+        io::invalid_argument, io::bad_format_exception);
+
         /** Validate whether the RunInfo.xml matches the InterOp files
          *
          * @throws invalid_run_info_exception

@@ -349,6 +349,76 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         bool_pointer m_load_metric_check;
     };
 
+    class read_metric_set_from_binary_buffer
+    {
+    public:
+        read_metric_set_from_binary_buffer(const constants::metric_group group,
+                                           uint8_t* buffer,
+                                           const size_t buffer_size) :
+                m_group(group),
+                m_buffer(buffer),
+                m_buffer_size(buffer_size){}
+        template<class MetricSet>
+        void operator()(MetricSet &metrics) const
+        {
+            if(m_group == static_cast<constants::metric_group>(MetricSet::TYPE))
+            {
+                io::read_interop_from_buffer(m_buffer, m_buffer_size, metrics);
+            }
+        }
+    private:
+        constants::metric_group m_group;
+        uint8_t* m_buffer;
+        size_t m_buffer_size;
+    };
+
+    class write_metric_set_to_binary_buffer
+    {
+    public:
+        write_metric_set_to_binary_buffer(const constants::metric_group group,
+                                          uint8_t* buffer,
+                                          const size_t buffer_size) :
+                m_group(group),
+                m_buffer(buffer),
+                m_buffer_size(buffer_size){}
+        template<class MetricSet>
+        void operator()(const MetricSet &metrics) const
+        {
+            if(m_group == static_cast<constants::metric_group>(MetricSet::TYPE))
+            {
+                io::write_interop_to_buffer(metrics, m_buffer, m_buffer_size);
+            }
+        }
+
+    private:
+        constants::metric_group m_group;
+        uint8_t* m_buffer;
+        size_t m_buffer_size;
+    };
+    class calculate_metric_set_buffer_size
+    {
+    public:
+        calculate_metric_set_buffer_size(const constants::metric_group group) :
+                m_group(group), m_buffer_size(0){}
+        template<class MetricSet>
+        void operator()(const MetricSet &metrics)
+        {
+            if(m_group == static_cast<constants::metric_group>(MetricSet::TYPE))
+            {
+                m_buffer_size = io::compute_buffer_size(metrics);
+            }
+        }
+        size_t buffer_size()const
+        {
+            return m_buffer_size;
+        }
+
+    private:
+        constants::metric_group m_group;
+        size_t m_buffer_size;
+    };
+
+
     /** Read binary metrics and XML files from the run folder
      *
      * @param run_folder run folder path
@@ -781,6 +851,50 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     io::bad_format_exception)
     {
         m_metrics.apply(write_func(run_folder));
+    }
+
+    /** Read a single metric set from a binary buffer
+     *
+     * @param group metric set to write
+     * @param buffer binary buffer
+     * @param buffer_size size of binary buffer
+     */
+    void run_metrics::read_metrics_from_buffer(const constants::metric_group group,
+                                               uint8_t* buffer,
+                                               const size_t buffer_size) throw(
+    io::file_not_found_exception,
+    io::bad_format_exception,
+    io::incomplete_file_exception,
+    model::index_out_of_bounds_exception)
+    {
+        m_metrics.apply(read_metric_set_from_binary_buffer(group, buffer, buffer_size));
+    }
+    /** Write a single metric set to a binary buffer
+     *
+     * @param group metric set to write
+     * @param buffer binary buffer
+     * @param buffer_size size of binary buffer
+     */
+    void run_metrics::write_metrics_to_buffer(const constants::metric_group group,
+                                              uint8_t* buffer,
+                                              const size_t buffer_size)const throw(
+    io::invalid_argument,
+    io::bad_format_exception,
+    io::incomplete_file_exception)
+    {
+        m_metrics.apply(write_metric_set_to_binary_buffer(group, buffer, buffer_size));
+    }
+    /** Calculate the required size of the buffer for writing
+     *
+     * @param group metric set to write
+     * @return required size of the binary buffer
+     */
+    size_t run_metrics::calculate_buffer_size(const constants::metric_group group)const throw(
+    io::invalid_argument, io::bad_format_exception)
+    {
+        calculate_metric_set_buffer_size calc(group);
+        m_metrics.apply(calc);
+        return calc.buffer_size();
     }
 
     /** Populate a map of valid tiles
