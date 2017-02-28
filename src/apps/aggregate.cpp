@@ -53,8 +53,6 @@ struct subset_copier
 
 private:
     template<class MetricSet>
-    void copy(const MetricSet&, const constants::base_run_t *)const{}
-    template<class MetricSet>
     void copy(const MetricSet& metrics, const void*)const
     {
         m_run.get<MetricSet>() = MetricSet(metrics, metrics.version());

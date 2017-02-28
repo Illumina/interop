@@ -54,7 +54,7 @@ TEST(plot_logic, intensity_by_cycle)
     ASSERT_EQ(data.size(), channel_count);
     EXPECT_EQ(data.x_axis().label(), "Cycle");
     EXPECT_EQ(data.y_axis().label(), "Intensity");
-    EXPECT_EQ(data.title(), "All Lanes All Channels");
+    EXPECT_EQ(data.title(), "H7MF5BBXX All Lanes All Channels");
     EXPECT_NEAR(data.x_axis().min(), 0.0f, tol);
     EXPECT_NEAR(data.y_axis().min(), 0.0f, tol);
     EXPECT_NEAR(data.x_axis().max(), 3.0f, tol);

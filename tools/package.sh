@@ -39,6 +39,7 @@ fi
 if [ -e /opt/rh/devtoolset-2/root/usr/bin/g++ ] ; then
     export CXX=/opt/rh/devtoolset-2/root/usr/bin/g++
     export CC=/opt/rh/devtoolset-2/root/usr/bin/gcc
+    echo "Found GCC4.8 dev"
 fi
 
 echo "##teamcity[blockOpened name='Configure $build_type']"

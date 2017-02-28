@@ -4,7 +4,7 @@
  *  @file
  *  @date 11/3/16
  *  @version 1.0
- *  @copyright Illumina Use Only
+ *  @copyright GNU Public License.
  */
 #pragma once
 #include <vector>

@@ -19,22 +19,22 @@ set -e
 
 
 source_dir="../"
-build_type="Debug"
+build_type="Release"
 build_param=""
 
 if [ ! -z $1 ] ; then
     build_type=$1
 fi
-
 if [ ! -z $2 ] ; then
     build_param="-DGTEST_ROOT=$2 -DGMOCK_ROOT=$2 -DNUNIT_ROOT=$2/NUnit-2.6.4"
 fi
 
-
 if [ -e /opt/rh/devtoolset-2/root/usr/bin/g++ ] ; then
-    export CXX=/usr/bin/g++
-    export CC=/usr/bin/gcc
+    export CXX=/opt/rh/devtoolset-2/root/usr/bin/g++
+    export CC=/opt/rh/devtoolset-2/root/usr/bin/gcc
+    echo "Found GCC4.8 dev"
 fi
+
 
 echo "##teamcity[blockOpened name='Configure $build_type']"
 mkdir build_${build_type}

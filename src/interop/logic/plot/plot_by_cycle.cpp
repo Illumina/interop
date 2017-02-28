@@ -265,7 +265,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                         proxy4,
                         options,
                         type,
-                        data[0])
+                        data[0]);
                 is_empty = metrics.get<metric_t>().empty();
                 break;
             }

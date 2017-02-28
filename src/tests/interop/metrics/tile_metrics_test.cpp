@@ -51,10 +51,7 @@ public:
         std::ostringstream fout;
         illumina::interop::io::write_metrics(fout, expected);
         actual.clear();
-
-        try{
-            io::read_interop_from_string(fout.str(), actual);
-        }catch(const io::incomplete_file_exception&){}
+        io::read_interop_from_string(fout.str(), actual);
         return ::testing::AssertionSuccess();
     }
     /** Create a copy of this object

@@ -251,15 +251,15 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         enum
         {
             /** Unique type code for metric */
-                    TYPE = constants::Q,
+            TYPE = constants::Q,
             /** Latest version of the InterOp format */
-                    LATEST_VERSION = 7
+            LATEST_VERSION = 7
         };
     public:
         enum
         {
             /** Maximum number of q-score bins */
-                    MAX_Q_BINS = q_score_header::MAX_Q_BINS
+            MAX_Q_BINS = q_score_header::MAX_Q_BINS
         };
         /** Q-score metric header */
         typedef q_score_header header_type;
