@@ -264,18 +264,14 @@ namespace illumina { namespace interop { namespace model { namespace metrics
 
         /** List all filenames for a specific metric
          *
+         * @param group metric group type
          * @param files destination interop file names (first one is legacy, all subsequent are by cycle)
          * @param run_folder run folder location
          */
-        template<class T>
-        void list_filenames(std::vector<std::string>& files, const std::string& run_folder)
-        throw(invalid_run_info_exception)
-        {
-            typedef typename metric_base::metric_set_helper<T>::metric_set_t metric_set_t;
-            const size_t last_cycle = run_info().total_cycles();
-            if( last_cycle == 0 ) INTEROP_THROW(invalid_run_info_exception, "RunInfo is empty");
-            io::list_interop_filenames< metric_set_t >(files, run_folder, last_cycle);
-        }
+        void list_filenames(const constants::metric_group group,
+                            std::vector<std::string>& files,
+                            const std::string& run_folder)
+        throw(invalid_run_info_exception);
 
     public:
         /** Set a given metric set
