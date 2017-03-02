@@ -417,6 +417,33 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         constants::metric_group m_group;
         size_t m_buffer_size;
     };
+    class list_interop_filenames
+    {
+    public:
+        list_interop_filenames(const constants::metric_group group,
+                               std::vector<std::string>& files,
+                               const std::string& run_folder,
+                               const size_t last_cycle) :
+                m_group(group),
+                m_files(files),
+                m_run_folder(run_folder),
+                m_last_cycle(last_cycle)
+        {}
+        template<class MetricSet>
+        void operator()(const MetricSet &) const
+        {
+            if(m_group == static_cast<constants::metric_group>(MetricSet::TYPE))
+            {
+                io::list_interop_filenames< MetricSet >(m_files, m_run_folder, m_last_cycle);
+            }
+        }
+
+    private:
+        constants::metric_group m_group;
+        std::vector<std::string>& m_files;
+        std::string m_run_folder;
+        size_t m_last_cycle;
+    };
 
 
     /** Read binary metrics and XML files from the run folder
@@ -884,6 +911,22 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     io::incomplete_file_exception)
     {
         m_metrics.apply(write_metric_set_to_binary_buffer(group, buffer, buffer_size));
+    }
+
+    /** List all filenames for a specific metric
+     *
+     * @param group metric group type
+     * @param files destination interop file names (first one is legacy, all subsequent are by cycle)
+     * @param run_folder run folder location
+     */
+    void run_metrics::list_filenames(const constants::metric_group group,
+                                     std::vector<std::string>& files,
+                                     const std::string& run_folder)
+    throw(invalid_run_info_exception)
+    {
+        const size_t last_cycle = run_info().total_cycles();
+        if( last_cycle == 0 ) INTEROP_THROW(invalid_run_info_exception, "RunInfo is empty");
+        m_metrics.apply(list_interop_filenames(group, files, run_folder, last_cycle));
     }
     /** Calculate the required size of the buffer for writing
      *

@@ -31,7 +31,7 @@ namespace Illumina.InterOp.Interop.UnitTest
             run.legacy_channel_update(instrument_type.HiSeq);
 
             string_vector filenames = new string_vector();
-            run.list_error_metric_filenames(filenames, "RunFolder");
+            run.list_filenames(metric_group.Error, filenames, "RunFolder");
             Assert.AreEqual(filenames.Count, 4);
             Assert.AreEqual(filenames[0], Path.Combine("RunFolder", "InterOp", "ErrorMetricsOut.bin"));
             Assert.AreEqual(filenames[1], Path.Combine("RunFolder", "InterOp", "C1.1", "ErrorMetricsOut.bin"));
