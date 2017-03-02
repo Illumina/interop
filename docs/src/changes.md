@@ -4,6 +4,7 @@
 
 Date       | Description
 ---------- | -----------
+2017-03-02 | IPA-6235: Add is_pair_end to run_info
 2017-03-02 | IPA-6233: Release new non-polymorphic template function interface 
 2017-02-24 | IPA-6189: Fixed compute_buffer_size to handle mutli record format tile
 2017-02-20 | IPA-6178: Fix another bug in flowcell loading from collapsed-q
