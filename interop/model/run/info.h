@@ -232,6 +232,21 @@ namespace illumina { namespace interop { namespace model { namespace run
                 if (b->is_index()) return true;
             return false;
         }
+        /** Check if the run is a paired end read
+         *
+         * @return true if there is more than one non-index read
+         */
+        bool is_paired_end()const
+        {
+            size_t non_index_read_count = 0;
+
+            for (read_vector_t::const_iterator b = m_reads.begin(), e = m_reads.end(); b != e; ++b)
+            {
+                if (b->is_index()) continue;
+                ++non_index_read_count;
+            }
+            return non_index_read_count > 1;
+        }
         /** Test if cycle is last cycle of a read
          *
          * @param cycle cycle number to test
