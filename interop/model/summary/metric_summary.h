@@ -37,9 +37,11 @@ namespace illumina { namespace interop { namespace model { namespace summary {
          * @ref illumina::interop::model::summary::metric_summary "See full class description"
          * @{
          */
-        /** Get the error rate of PHIX for the run
+        /** Get the error rate of PHIX for the run over all "usable cycles".
          *
-         * @return error rate of PHIX for run
+         * A "usable cycle" is a cycle that is fully corrected, so the last cycle of a read is excluded.
+         *
+         * @return error rate of PHIX for run over all "usable cycles".
          */
         float error_rate()const
         {
@@ -61,26 +63,32 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         {
             return m_first_cycle_intensity;
         }
-        /** Get the percent of bases greater than Q30
+        /** Get the percent of bases greater than or equal to Q30 over all "usable cycles"
          *
-         * @return percent of bases greater than Q30
+         * A "usable cycle" is a cycle that is fully corrected, so the last cycle of a read is excluded.
+         *
+         * @return percent of bases greater than or equal to Q30 over all "usable cycles"
          */
         float percent_gt_q30()const
         {
             return m_percent_gt_q30;
         }
-        /** Get the yield of the run in gigabases
+        /** Get the yield of the run in gigabases over all "usable cycles"
          *
-         * @return yield of the run in gigabases
+         * A "usable cycle" is a cycle that is fully corrected, so the last cycle of a read is excluded.
+         *
+         * @return yield of the run in gigabases over all "usable cycles"
          */
         float yield_g()const
         {
             return m_yield_g;
         }
 
-        /** Get the projected yield of teh run in gigabases
+        /** Get the projected yield of the run in gigabases over all "usable cycles"
          *
-         * @return projected yield of teh run in gigabases
+         * A "usable cycle" is a cycle that is fully corrected, so the last cycle of a read is excluded.
+         *
+         * @return projected yield of the run in gigabases over all "usable cycles"
          */
         float projected_yield_g()const
         {
@@ -111,9 +119,9 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         {
             m_percent_aligned = val;
         }
-        /** Set the percent of bases greater than Q30
+        /** Set the percent of bases greater than or equal to Q30
          *
-         * @param val percent of bases greater than Q30
+         * @param val percent of bases greater than or equal to Q30
          */
         void percent_gt_q30(const float val)
         {
@@ -128,9 +136,9 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         {
             m_yield_g = val;
         }
-        /** Set the projected yield of teh run in gigabases
+        /** Set the projected yield of the run in gigabases
          *
-         * @param val projected yield of teh run in gigabases
+         * @param val projected yield of the run in gigabases
          */
         void projected_yield_g(const float val)
         {

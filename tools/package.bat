@@ -71,3 +71,4 @@ echo "##teamcity[blockClosed name='NuPack Visual Studio 2015 Win64']"
 
 cd %SOURCE_DIR%
 rd /s /q %BUILD_DIR%
+if exist %BUILD_DIR% rd /s /q %BUILD_DIR%
