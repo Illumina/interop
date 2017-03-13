@@ -1,9 +1,15 @@
 # Changes                                               {#changes}
 
-## v1.0.17 (Master)
+## v1.0.18 (Master)
 
 Date       | Description
 ---------- | -----------
+
+## v1.0.17
+
+Date       | Description
+---------- | -----------
+2017-03-13 | Update documents to clarify calculations
 2017-03-02 | IPA-6235: Add is_pair_end to run_info
 2017-03-02 | IPA-6233: Release new non-polymorphic template function interface 
 2017-02-24 | IPA-6189: Fixed compute_buffer_size to handle mutli record format tile
