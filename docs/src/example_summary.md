@@ -12,7 +12,6 @@ The primary functions used below are:
 
  - `run_metrics::read`: read the InterOp files from disk
  - `summarize_run_metrics`: summarize the SAV run metrics
- - `summarize_compass_run_metrics`: summarize additional Compass metrics
 
 C#
 ---
