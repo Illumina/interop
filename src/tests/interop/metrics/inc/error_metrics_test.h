@@ -97,7 +97,8 @@ namespace illumina { namespace interop { namespace unittest
      * a given tile, it is excluded from the averaging. If no tiles have any error statistics for a given read, a
      * value of 0 is returned. Note that the base unit for this is the error rate for a single tile - in other words,
      * we average the per-cycle error rate across all the relevant cycles for a tile before calculating these
-     * statistics.
+     * statistics. This is calculated only over "usable cycles". If a read has less than 35 cycles, then the last cycle
+     * is dropped.
      *
      * @section error_metrics_requirement_50_lane % Error After 50 Cycles Per Lane
      *
@@ -106,7 +107,8 @@ namespace illumina { namespace interop { namespace unittest
      * a given tile, it is excluded from the averaging. If no tiles have any error statistics for a given read, a
      * value of 0 is returned. Note that the base unit for this is the error rate for a single tile - in other words,
      * we average the per-cycle error rate across all the relevant cycles for a tile before calculating these
-     * statistics.
+     * statistics. This is calculated only over "usable cycles". If a read has less than 50 cycles, then the last cycle
+     * is dropped.
      *
      * @section error_metrics_requirement_75_lane % Error After 75 Cycles Per Lane
      *
@@ -115,7 +117,8 @@ namespace illumina { namespace interop { namespace unittest
      * a given tile, it is excluded from the averaging. If no tiles have any error statistics for a given read, a
      * value of 0 is returned. Note that the base unit for this is the error rate for a single tile - in other words,
      * we average the per-cycle error rate across all the relevant cycles for a tile before calculating these
-     * statistics.
+     * statistics. This is calculated only over "usable cycles". If a read has less than 75 cycles, then the last cycle
+     * is dropped.
      *
      * @section error_metrics_requirement_100_lane % Error After 100 Cycles Per Lane
      *
@@ -124,7 +127,8 @@ namespace illumina { namespace interop { namespace unittest
      * a given tile, it is excluded from the averaging. If no tiles have any error statistics for a given read, a
      * value of 0 is returned. Note that the base unit for this is the error rate for a single tile - in other words,
      * we average the per-cycle error rate across all the relevant cycles for a tile before calculating these
-     * statistics.
+     * statistics. This is calculated only over "usable cycles". If a read has less than 100 cycles, then the last cycle
+     * is dropped.
      *
      * @section error_metrics_requirement_error % Error
      *
@@ -134,7 +138,8 @@ namespace illumina { namespace interop { namespace unittest
      * an error rate value is not present for any cycles in the read for a given tile, it is excluded from the
      * averaging. If no tiles have any error statistics for a given read, a value of 0 is returned. Note that the
      * base unit for this is the error rate for a single tile - in other words, we average the per-cycle error
-     * rate across all the relevant cycles for a tile before calculating these statistics
+     * rate across all the relevant cycles for a tile before calculating these statistics. This is calculated only over
+     * "usable cycles", so the last cycle is not included.
      *
      * @subsection error_metrics_requirement_error_read Read
      *
@@ -142,7 +147,8 @@ namespace illumina { namespace interop { namespace unittest
      * not present for any cycles in the read for a given tile, it is excluded from the averaging. If no tiles have
      * any error statistics for a given read, a value of 0 is returned. Note that the base unit for this is the error
      * rate for a single tile - in other words, we average the per-cycle error rate across all the relevant cycles for
-     * a tile before calculating these statistics
+     * a tile before calculating these statistics. This is calculated only over "usable cycles", so the last cycle is
+     * not included.
      *
      * @subsection error_metrics_requirement_error_non_index Non-Indexed Total
      *
@@ -150,7 +156,8 @@ namespace illumina { namespace interop { namespace unittest
      * present for any cycles in the read for a given tile, it is excluded from the averaging. If no tiles have any
      * error statistics for any non-indexed read, a value of 0 is returned. Note that the base unit for this is the
      * error rate for a single tile - in other words, we average the per-cycle error rate across all the relevant
-     * cycles for a tile before calculating these statistics
+     * cycles for a tile before calculating these statistics.  This is calculated only over "usable cycles", so the
+     * last cycle is not included.
      *
      * @subsection error_metrics_requirement_error_total Total
      *
@@ -158,7 +165,8 @@ namespace illumina { namespace interop { namespace unittest
      * any cycles in the read for a given tile, it is excluded from the averaging. If no tiles have any error
      * statistics for any read, a value of 0 is returned. Note that the base unit for this is the error rate for
      * a single tile - in other words, we average the per-cycle error rate across all the relevant cycles for a
-     * tile before calculating these statistics
+     * tile before calculating these statistics.  This is calculated only over "usable cycles", so the
+     * last cycle is not included.
      *
      */
 

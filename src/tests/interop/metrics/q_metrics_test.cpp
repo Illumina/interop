@@ -136,6 +136,41 @@ TEST(q_metrics_test, test_cumulative)
     EXPECT_EQ(q_metric_set.get_metric(7, 1114, 3).sum_qscore_cumulative(), qsum);
 }
 
+TEST(q_metrics_test, test_percent_over_q30_unbinned)
+{
+    q_score_header header;
+    q_metric::uint32_vector data(50);
+    data[28] = 10;
+    data[29] = 5; // Q30
+    data[30] = 5;
+    q_metric metric(1, 1, 1, data);
+
+    EXPECT_EQ(metric.percent_over_qscore(header.index_for_q_value(30)), 50);
+}
+
+TEST(q_metrics_test, test_percent_over_q30_binned)
+{
+    q_score_bin rbins[] = {
+            q_score_bin(0,   9,  6),
+            q_score_bin(10, 19, 15),
+            q_score_bin(20, 24, 22),
+            q_score_bin(25, 29, 27),
+            q_score_bin(30, 34, 33),
+            q_score_bin(35, 39, 37),
+            q_score_bin(40, 49, 40)
+    };
+    q_metric::qscore_bin_vector_type bins(util::to_vector(rbins));
+    q_score_header header(bins);
+
+    q_metric::uint32_vector data(bins.size());
+    data[3] = 10;
+    data[4] = 5;
+    data[5] = 5;
+    q_metric metric(1, 1, 1, data);
+
+    EXPECT_EQ(metric.percent_over_qscore(header.index_for_q_value(30)), 50);
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Setup regression test
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -51,27 +51,33 @@ namespace illumina { namespace interop { namespace model { namespace summary
          * @ref illumina::interop::model::summary::surface_summary "See full class description"
          * @{
          */
-        /** Get the percent of bases greater than Q30
+        /** Get the percent of bases greater than or equal to Q30 over all usable cycles
          *
-         * @return percent of bases greater than Q30
+         * A "usable cycle" is a cycle that is fully corrected, so the last cycle of a read is excluded.
+         *
+         * @return percent of bases greater than or equal to  Q30  over all usable cycles
          */
         float percent_gt_q30() const
         {
             return m_percent_gt_q30;
         }
 
-        /** Get the yield of the run in gigabases
+        /** Get the yield of the run in gigabases over all usable cycles
          *
-         * @return yield of the run in gigabases
+         * A "usable cycle" is a cycle that is fully corrected, so the last cycle of a read is excluded.
+         *
+         * @return yield of the run in gigabases  over all usable cycles
          */
         float yield_g() const
         {
             return m_yield_g;
         }
 
-        /** Get the projected yield of the run in gigabases
+        /** Get the projected yield of the run in gigabases over all usable cycles
          *
-         * @return projected yield of the run in gigabases
+         * A "usable cycle" is a cycle that is fully corrected, so the last cycle of a read is excluded.
+         *
+         * @return projected yield of the run in gigabases  over all usable cycles
          */
         float projected_yield_g() const
         {
@@ -169,45 +175,55 @@ namespace illumina { namespace interop { namespace model { namespace summary
             return m_percent_aligned;
         }
 
-        /** Get statistics summarizing the PhiX error rate of tiles in the lane
+        /** Get statistics summarizing the PhiX error rate of tiles in the lane over all usable cycles
          *
-         * @return statistics summarizing the PhiX error rate of tiles in the lane
+         * A "usable cycle" is a cycle that is fully corrected, so the last cycle of a read is excluded.
+         *
+         * @return statistics summarizing the PhiX error rate of tiles in the lane  over all usable cycles
          */
         const metric_stat_t &error_rate() const
         {
             return m_error_rate;
         }
 
-        /** Get statistics summarizing the PhiX error rate over the first 35 cycles of tiles in the lane
+        /** Get statistics summarizing the PhiX error rate over the first 35 usable cycles of tiles in the lane
          *
-         * @return statistics summarizing the PhiX error rate over the first 35 cycles of tiles in the lane
+         * A "usable cycle" is a cycle that is fully corrected, so the last cycle of a read is excluded.
+         *
+         * @return statistics summarizing the PhiX error rate over the first 35 usable cycles of tiles in the lane
          */
         const metric_stat_t &error_rate_35() const
         {
             return m_error_rate_35;
         }
 
-        /** Get statistics summarizing the PhiX error rate over the first 50 cycles of tiles in the lane
+        /** Get statistics summarizing the PhiX error rate over the first 50 usable cycles of tiles in the lane
          *
-         * @return statistics summarizing the PhiX error rate over the first 50 cycles of tiles in the lane
+         * A "usable cycle" is a cycle that is fully corrected, so the last cycle of a read is excluded.
+         *
+         * @return statistics summarizing the PhiX error rate over the first 50 usable cycles of tiles in the lane
          */
         const metric_stat_t &error_rate_50() const
         {
             return m_error_rate_50;
         }
 
-        /** Get statistics summarizing the PhiX error rate over the first 75 cycles of tiles in the lane
+        /** Get statistics summarizing the PhiX error rate over the first 75 usable cycles of tiles in the lane
          *
-         * @return statistics summarizing the PhiX error rate over the first 75 cycles of tiles in the lane
+         * A "usable cycle" is a cycle that is fully corrected, so the last cycle of a read is excluded.
+         *
+         * @return statistics summarizing the PhiX error rate over the first 75 usable cycles of tiles in the lane
          */
         const metric_stat_t &error_rate_75() const
         {
             return m_error_rate_75;
         }
 
-        /** Get statistics summarizing the PhiX error rate over the first 100 cycles  of tiles in the lane
+        /** Get statistics summarizing the PhiX error rate over the first 100 usable cycles  of tiles in the lane
          *
-         * @return statistics summarizing the PhiX error rate over the first 100 cycles  of tiles in the lane
+         * A "usable cycle" is a cycle that is fully corrected, so the last cycle of a read is excluded.
+         *
+         * @return statistics summarizing the PhiX error rate over the first 100 usable cycles  of tiles in the lane
          */
         const metric_stat_t &error_rate_100() const
         {
@@ -258,9 +274,9 @@ namespace illumina { namespace interop { namespace model { namespace summary
         /** @} */
 
     public:
-        /** Set the percent of bases greater than Q30
+        /** Set the percent of bases greater than or equal to Q30
          *
-         * @param val percent of bases greater than Q30
+         * @param val percent of bases greater than or equal to Q30
          */
         void percent_gt_q30(const float val)
         {
@@ -394,9 +410,9 @@ namespace illumina { namespace interop { namespace model { namespace summary
         {
             m_error_rate_75 = stat;
         }
-        /** Set statistics summarizing the PhiX error rate over the first 100 cycles  of tiles in the lane
+        /** Set statistics summarizing the PhiX error rate over the first 100 usable cycles of tiles in the lane
          *
-         * @param stat statistics summarizing the PhiX error rate over the first 100 cycles  of tiles in the lane
+         * @param stat statistics summarizing the PhiX error rate over the first 100 usable cycles of tiles in the lane
          */
         void error_rate_100(const metric_stat_t& stat)
         {

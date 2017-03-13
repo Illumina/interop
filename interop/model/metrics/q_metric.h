@@ -412,29 +412,99 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          *
          * @snippet src/examples/example_q_metric.cpp Calculating Total >= Q30
          *
-         * @sa q_score_header::bins()
+         * @sa q_score_header::index_for_q_value
+         * @deprecated This function is deprecated in future versions
          * @param qscore percentage of clusters over the given q-score value
          * @param bins q-score histogram bins
          * @return total of clusters over the given q-score
          */
         uint_t total_over_qscore(const uint_t qscore,
-                                 const qscore_bin_vector_type &bins = qscore_bin_vector_type()) const
+                                 const qscore_bin_vector_type &bins) const
         {
             uint_t total_count = 0;
-            if (bins.size() == 0)
+            for (size_t i = 0; i < bins.size(); i++)
             {
-                if(qscore <= m_qscore_hist.size())
-                    total_count = std::accumulate(m_qscore_hist.begin() + qscore, m_qscore_hist.end(), 0);
-            }
-            else
-            {
-                for (size_t i = 0; i < bins.size(); i++)
-                {
-                    if (bins[i].value() >= qscore)
-                        total_count += m_qscore_hist[i];
-                }
+                if (bins[i].value() >= qscore)
+                    total_count += m_qscore_hist[i];
             }
             return total_count;
+        }
+
+        /** Number of clusters over the given q-score
+         *
+         * This calculates over the local histogram. This function takes an index corresponding to
+         * the q-value of interest. This index is provided by the `index_for_q_value` in the metric header.
+         *
+         * @snippet src/examples/example_q_metric.cpp Calculating Total >= Q30
+         *
+         * @sa q_score_header::index_for_q_value
+         * @param qscore percentage of clusters over the given q-score value
+         * @return total of clusters over the given q-score
+         */
+        uint_t total_over_qscore(const size_t qscore_index) const
+        {
+            uint_t total_count = 0;
+            if(qscore_index <= m_qscore_hist.size())
+                total_count = std::accumulate(m_qscore_hist.begin() + qscore_index, m_qscore_hist.end(), 0);
+            return total_count;
+        }
+
+        /** Number of clusters over the given q-score
+         *
+         * This calculates over the local histogram. This function takes an index corresponding to
+         * the q-value of interest. This index is provided by the `index_for_q_value` in the metric header.
+         *
+         * @sa q_score_header::index_for_q_value
+         * @param qscore_index index of the q-score (for unbinned 29 is Q30)
+         * @return total of clusters over the given q-score
+         */
+        ::uint64_t total_over_qscore_cumulative(const size_t qscore_index) const
+        {
+            INTEROP_ASSERT(m_qscore_hist_cumulative.size() > 0);
+            ::uint64_t total_count = 0;
+            if(qscore_index <= m_qscore_hist_cumulative.size())
+                total_count = std::accumulate(m_qscore_hist_cumulative.begin() + qscore_index,
+                                              m_qscore_hist_cumulative.end(),
+                                              static_cast< ::uint64_t >(0));
+            return total_count;
+        }
+
+        /** Percent of clusters over the given q-score
+         *
+         * This calculates over the local histogram. This function takes an index corresponding to
+         * the q-value of interest. This index is provided by the `index_for_q_value` in the metric header.
+         *
+         * @snippet src/examples/example_q_metric.cpp Calculating Percent >= Q30
+         *
+         * @sa q_score_header::bins()
+         * @param qscore_index index of the q-score (for unbinned 29 is Q30)
+         * @return percent of cluster over the given q-score
+         */
+        float percent_over_qscore(const size_t qscore_index) const
+        {
+            const float total = static_cast<float>(sum_qscore());
+            if (total == 0.0f) return std::numeric_limits<float>::quiet_NaN();
+            const uint_t total_count = total_over_qscore(qscore_index);
+            return 100 * total_count / total;
+        }
+
+        /** Percent of clusters over the given q-score
+         *
+         * This calculates over the local histogram. This function takes an index corresponding to
+         * the q-value of interest. This index is provided by the `index_for_q_value` in the metric header.
+         *
+         * @sa q_score_header::bins()
+         * @param qscore_index index of the q-score (for unbinned 29 is Q30)
+         * @param bins q-score histogram bins
+         * @return percent of cluster over the given q-score
+         */
+        float percent_over_qscore_cumulative(const size_t qscore_index) const
+        {
+            INTEROP_ASSERT(m_qscore_hist_cumulative.size() > 0);
+            const ::uint64_t total = sum_qscore_cumulative();
+            if (total == 0) return std::numeric_limits<float>::quiet_NaN();
+            const ::uint64_t total_count = total_over_qscore_cumulative(qscore_index);
+            return 100.0f * total_count / total;
         }
 
         /** Number of clusters over the given q-score
@@ -444,29 +514,20 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * metric set (q_metrics).
          *
          * @sa q_score_header::bins()
+         * @deprecated This function will be removed in future versions
          * @param qscore percentage of clusters over the given q-score value
          * @param bins q-score histogram bins
          * @return total of clusters over the given q-score
          */
         ::uint64_t total_over_qscore_cumulative(const uint_t qscore,
-                                                const qscore_bin_vector_type &bins = qscore_bin_vector_type()) const
+                                                const qscore_bin_vector_type &bins) const
         {
             INTEROP_ASSERT(m_qscore_hist_cumulative.size() > 0);
             ::uint64_t total_count = 0;
-            if (bins.size() == 0)
+            for (size_t i = 0; i < bins.size(); i++)
             {
-                INTEROP_ASSERT(qscore > 0);
-                if(qscore <= m_qscore_hist_cumulative.size())
-                    total_count = std::accumulate(m_qscore_hist_cumulative.begin() + qscore, m_qscore_hist_cumulative.end(),
-                                                  static_cast< ::uint64_t >(0));
-            }
-            else
-            {
-                for (size_t i = 0; i < bins.size(); i++)
-                {
-                    if (bins[i].value() >= qscore)
-                        total_count += m_qscore_hist_cumulative[i];
-                }
+                if (bins[i].value() >= qscore)
+                    total_count += m_qscore_hist_cumulative[i];
             }
             return total_count;
         }
@@ -480,37 +541,18 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @snippet src/examples/example_q_metric.cpp Calculating Percent >= Q30
          *
          * @sa q_score_header::bins()
-         * @param qscore percentage of clusters over the given q-score value
+         * @deprecated This function will be removed in a future version.
+         * @param qscore_index index of the q-score (for unbinned 29 is Q30)
          * @param bins q-score histogram bins
          * @return percent of cluster over the given q-score
          */
-        float percent_over_qscore(const uint_t qscore,
+        float percent_over_qscore(const uint_t qscore_index,
                                   const qscore_bin_vector_type &bins) const
         {
             const float total = static_cast<float>(sum_qscore());
             if (total == 0.0f) return std::numeric_limits<float>::quiet_NaN();
-            const uint_t total_count = total_over_qscore(qscore, bins);
-            return 100 * total_count / total;
-        }
-
-        /** Percent of clusters over the given q-score
-         *
-         * This calculates over the local histogram. This function either requires the bins from the header
-         * or the index of the q-value for the first parameter. Note that the header is apart of the
-         * metric set (q_metrics).
-         *
-         * @snippet src/examples/example_q_metric.cpp Calculating Percent >= Q30
-         *
-         * @sa q_score_header::bins()
-         * @param qscore percentage of clusters over the given q-score value
-         * @return percent of cluster over the given q-score
-         */
-        float percent_over_qscore(const uint_t qscore) const
-        {
-            const float total = static_cast<float>(sum_qscore());
-            if (total == 0.0f) return std::numeric_limits<float>::quiet_NaN();
-            const uint_t total_count = total_over_qscore(qscore);
-            return 100 * total_count / total;
+            const uint_t total_count = total_over_qscore(qscore_index, bins);
+            return 100.0f * total_count / total;
         }
 
         /** Percent of clusters over the given q-score
@@ -520,13 +562,13 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * metric set (q_metrics).
          *
          * @sa q_score_header::bins()
+         * @deprecated This function will be removed in a future version.
          * @param qscore percentage of clusters over the given q-score value
          * @param bins q-score histogram bins
          * @return percent of cluster over the given q-score
          */
         float percent_over_qscore_cumulative(const uint_t qscore,
-                                             const qscore_bin_vector_type &bins =
-                                             qscore_bin_vector_type()) const
+                                             const qscore_bin_vector_type &bins) const
         {
             INTEROP_ASSERT(m_qscore_hist_cumulative.size() > 0);
             const ::uint64_t total = sum_qscore_cumulative();

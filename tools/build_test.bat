@@ -95,5 +95,5 @@ echo ##teamcity[blockClosed name='NuPack %BUILD_TYPE% %COMPILER%']
 
 cd %SOURCE_DIR%
 rd /s /q %BUILD_DIR%
-
+if exist %BUILD_DIR% rd /s /q %BUILD_DIR%
 
