@@ -11,6 +11,7 @@
 #include "src/tests/interop/metrics/inc/index_metrics_test.h"
 #include "src/tests/interop/metrics/inc/tile_metrics_test.h"
 #include "src/tests/interop/inc/abstract_regression_test_generator.h"
+#include "src/tests/interop/run/info_test.h"
 
 
 using namespace illumina::interop::model::summary;
@@ -68,18 +69,8 @@ TEST_P(index_summary_tests, index_lane_summary)
 /** TODO take tile metrics and index metrics from the same run */
 TEST(index_summary_test, lane_summary)
 {
-    const size_t lane_count = 8;
-    std::vector<model::run::read_info> reads(1, model::run::read_info(1, 1, 3, false));
-    std::vector<std::string> channels;
-    channels.push_back("Red");
-    channels.push_back("Green");
-    model::run::info run_info("XX",
-                              "",
-                              1,
-                              model::run::flowcell_layout(lane_count),
-                              channels,
-                              model::run::image_dimensions(),
-                              reads);
+    model::run::info run_info;
+    hiseq4k_run_info::create_expected(run_info);
 
     model::summary::index_flowcell_summary expected;
     index_metric_v1::create_summary(expected);
@@ -176,36 +167,15 @@ public:
     {
         expected.clear();
         actual.clear();
-        const size_t lane_count = 8;
-        const size_t surface_count = 2;
-        const size_t swath_count = 4;
-        const size_t tile_count = 99;
-        const size_t sections_per_lane = 6;
-        const size_t lanes_per_section = 6;
         IndexGen::create_summary(expected);
-        std::vector<std::string> channels;
-        channels.push_back("Red");
-        channels.push_back("Green");
 
-        std::vector<model::run::read_info> reads;
-        reads.reserve(3);
-        reads.push_back(model::run::read_info(1, 1, 3, false));
-        reads.push_back(model::run::read_info(2, 4, 10, false));
-        reads.push_back(model::run::read_info(3, 11, 15, false));
-        actual = model::summary::index_flowcell_summary();
-        model::run::info run_info("XX",
-                                  "",
-                                  1,
-                                  model::run::flowcell_layout(lane_count,
-                                                              surface_count,
-                                                              swath_count,
-                                                              tile_count,
-                                                              sections_per_lane,
-                                                              lanes_per_section),
-                                  channels,
-                                  model::run::image_dimensions(),
-                                  reads);
-        run_info.set_naming_method(constants::FourDigit);
+        model::run::info run_info;
+        const model::run::read_info read_array[]={
+                model::run::read_info(1, 1, 3, false),
+                model::run::read_info(2, 4, 10, false),
+                model::run::read_info(3, 11, 15, false)
+        };
+        hiseq4k_run_info::create_expected(run_info, util::to_vector(read_array));
         model::metrics::run_metrics metrics(run_info);
         IndexGen::create_expected(metrics.get<index_metric>());
         TileGen::create_expected(metrics.get<tile_metric>());

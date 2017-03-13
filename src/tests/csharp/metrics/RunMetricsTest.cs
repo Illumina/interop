@@ -24,20 +24,14 @@ namespace Illumina.InterOp.Interop.UnitTest
 
             read_info_vector reads = new read_info_vector();
             reads.Add(new read_info(1, 1, 3));
-            run.run_info(new info(
-                    "",
-                    "",
-                    1,
-                    new flowcell_layout(2, 2, 2, 16),
-                    new string_vector(),
-                    new image_dimensions(),
+            run.run_info(new info(new flowcell_layout(2, 2, 2, 16),
                     reads
             ));
             run.set_naming_method(tile_naming_method.FourDigit);
             run.legacy_channel_update(instrument_type.HiSeq);
 
             string_vector filenames = new string_vector();
-            run.list_error_metric_filenames(filenames, "RunFolder");
+            run.list_filenames(metric_group.Error, filenames, "RunFolder");
             Assert.AreEqual(filenames.Count, 4);
             Assert.AreEqual(filenames[0], Path.Combine("RunFolder", "InterOp", "ErrorMetricsOut.bin"));
             Assert.AreEqual(filenames[1], Path.Combine("RunFolder", "InterOp", "C1.1", "ErrorMetricsOut.bin"));

@@ -18,8 +18,11 @@ namespace illumina { namespace interop { namespace logic { namespace utils
      *
      * @param group specific metric group to load
      * @param valid_to_load list of metrics to load on demand
+     * @param instrument instrument type
      */
-    void list_metrics_to_load(const constants::metric_group group, std::vector<unsigned char>& valid_to_load)
+    void list_metrics_to_load(const constants::metric_group group,
+                              std::vector<unsigned char>& valid_to_load,
+                              const constants::instrument_type instrument)
     {
         if(valid_to_load.size() != constants::MetricCount) valid_to_load.assign(constants::MetricCount, 0);
         if(group < constants::MetricCount)
@@ -32,7 +35,13 @@ namespace illumina { namespace interop { namespace logic { namespace utils
         //Hence when Tile is loaded on-demand, we must also load EmpiricalPhasing too
         if(group == constants::Tile)
         {
-            valid_to_load[constants::EmpiricalPhasing] = static_cast<unsigned char>(1);
+            if(instrument == constants::NovaSeq)
+                valid_to_load[constants::EmpiricalPhasing] = static_cast<unsigned char>(1);
+        }
+        if(group == constants::Q)
+        {
+            valid_to_load[constants::QCollapsed] = static_cast<unsigned char>(1);
+            valid_to_load[constants::QByLane] = static_cast<unsigned char>(1);
         }
     }
 
@@ -40,45 +49,55 @@ namespace illumina { namespace interop { namespace logic { namespace utils
      *
      * @param type specific metric type to load
      * @param valid_to_load list of metrics to load on demand
+     * @param instrument instrument type
      */
-    void list_metrics_to_load(const constants::metric_type type, std::vector<unsigned char>& valid_to_load)
+    void list_metrics_to_load(const constants::metric_type type,
+                              std::vector<unsigned char>& valid_to_load,
+                              const constants::instrument_type instrument)
     {
-        list_metrics_to_load(utils::to_group(type), valid_to_load);
+        list_metrics_to_load(utils::to_group(type), valid_to_load, instrument);
     }
     /** List the required on demand metrics
      *
      * @param groups collection of specific metric groups to load
      * @param valid_to_load list of metrics to load on demand
+     * @param instrument instrument type
      */
     void list_metrics_to_load(const std::vector<constants::metric_group>& groups,
-                              std::vector<unsigned char>& valid_to_load)
+                              std::vector<unsigned char>& valid_to_load,
+                              const constants::instrument_type instrument)
     {
         for(std::vector<constants::metric_group>::const_iterator it = groups.begin();it != groups.end();++it)
-            list_metrics_to_load(*it, valid_to_load);
+            list_metrics_to_load(*it, valid_to_load, instrument);
     }
     /** List the required on demand metrics
      *
      * @param types collection of specific metric types to load
      * @param valid_to_load list of metrics to load on demand
+     * @param instrument instrument type
      */
     void list_metrics_to_load(const std::vector<constants::metric_type>& types,
-                              std::vector<unsigned char>& valid_to_load)
+                              std::vector<unsigned char>& valid_to_load,
+                              const constants::instrument_type instrument)
     {
         for(std::vector<constants::metric_type>::const_iterator it = types.begin();it != types.end();++it)
-            list_metrics_to_load(*it, valid_to_load);
+            list_metrics_to_load(*it, valid_to_load, instrument);
     }
     /** List the required on demand metrics
      *
      * @param metric_name name of metric value to load
      * @param valid_to_load list of metrics to load on demand
+     * @param instrument instrument type
      */
-    void list_metrics_to_load(const std::string& metric_name, std::vector<unsigned char>& valid_to_load)
+    void list_metrics_to_load(const std::string& metric_name,
+                              std::vector<unsigned char>& valid_to_load,
+                              const constants::instrument_type instrument)
     throw(model::invalid_metric_type)
     {
         const constants::metric_type type = constants::parse<constants::metric_type>(metric_name);
         if(type == constants::UnknownMetricType)
             INTEROP_THROW(model::invalid_metric_type, "Unsupported metric type: " << metric_name);
-        list_metrics_to_load(type, valid_to_load);
+        list_metrics_to_load(type, valid_to_load, instrument);
     }
 
     /** List all required metric groups
@@ -99,8 +118,10 @@ namespace illumina { namespace interop { namespace logic { namespace utils
     /** List all required metric groups
      *
      * @param groups destination group list
+     * @param instrument instrument type
      */
-    void list_summary_metric_groups(std::vector<constants::metric_group>& groups)
+    void list_summary_metric_groups(std::vector<constants::metric_group>& groups,
+                                    const constants::instrument_type instrument)
     {
         using namespace model::metrics;
         groups.clear();
@@ -109,20 +130,25 @@ namespace illumina { namespace interop { namespace logic { namespace utils
                 static_cast<constants::metric_group >(tile_metric::TYPE),
                 static_cast<constants::metric_group >(error_metric::TYPE),
                 static_cast<constants::metric_group >(extraction_metric::TYPE),
-                static_cast<constants::metric_group >(corrected_intensity_metric::TYPE),
-                static_cast<constants::metric_group >(phasing_metric::TYPE)
+                static_cast<constants::metric_group >(corrected_intensity_metric::TYPE)
         };
         groups.assign(group_set, group_set+util::length_of(group_set));
+        if(instrument == constants::NovaSeq)
+        {
+            groups.push_back(static_cast<constants::metric_group >(phasing_metric::TYPE));
+        }
     }
     /** List all required metric groups
      *
      * @param valid_to_load list of metrics to load on demand
+     * @param instrument instrument type
      */
-    void list_summary_metrics_to_load(std::vector<unsigned char>& valid_to_load)
+    void list_summary_metrics_to_load(std::vector<unsigned char>& valid_to_load,
+                                      const constants::instrument_type instrument)
     {
         std::vector<constants::metric_group> groups;
-        list_summary_metric_groups(groups);
-        logic::utils::list_metrics_to_load(groups, valid_to_load); // Only load the InterOp files required
+        list_summary_metric_groups(groups, instrument);
+        logic::utils::list_metrics_to_load(groups, valid_to_load, instrument); // Only load the InterOp files required
     }
 
     /** List all required metric groups
@@ -133,7 +159,7 @@ namespace illumina { namespace interop { namespace logic { namespace utils
     {
         std::vector<constants::metric_group> groups;
         list_index_summary_metric_groups(groups);
-        logic::utils::list_metrics_to_load(groups, valid_to_load); // Only load the InterOp files required
+        logic::utils::list_metrics_to_load(groups, valid_to_load, constants::UnknownInstrument); // Only load the InterOp files required
     }
     /** List all required metric groups for the analysis tab
      *
@@ -145,7 +171,7 @@ namespace illumina { namespace interop { namespace logic { namespace utils
         description_vector_t types;
         logic::plot::list_flowcell_metrics(types);
         for(description_vector_t::const_iterator it = types.begin();it != types.end();++it)
-            list_metrics_to_load(*it, valid_to_load);
+            list_metrics_to_load(*it, valid_to_load, constants::UnknownInstrument);
     }
 
 

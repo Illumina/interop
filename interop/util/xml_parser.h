@@ -11,6 +11,7 @@
 
 #include <interop/external/rapidxml.hpp>
 #include <interop/external/rapidxml_utils.hpp>
+#include <interop/external/rapidxml_print.hpp>
 #include "interop/util/xml_exceptions.h"
 #include "interop/util/exception.h"
 
@@ -22,6 +23,83 @@ namespace illumina { namespace interop { namespace xml
     /** XML attribute pointer type */
     typedef rapidxml::xml_attribute<> *xml_attr_ptr;
 
+    /** XML document wrapper */
+    class xml_document
+    {
+    public:
+        /** Constructor */
+        xml_document()
+        {
+            rapidxml::xml_node<>* decl = m_doc.allocate_node(rapidxml::node_declaration);
+            m_backing.reserve(50);
+            decl->append_attribute(m_doc.allocate_attribute("version", "1.0"));
+            m_doc.append_node(decl);
+        }
+        /** Add a node to the document with a given parent
+         *
+         * @param parent parent of the node
+         * @param name name of the node
+         * @return pointer to new node
+         */
+        xml_node_ptr add_node(xml_node_ptr parent, const char* name)
+        {
+            rapidxml::xml_node<>* child = m_doc.allocate_node(rapidxml::node_element, name);
+            parent->append_node(child);
+            return child;
+        }
+        /** Add a node to the document root
+         *
+         * @param name name of the node
+         * @return pointer to new node
+         */
+        xml_node_ptr add_node(const char* name)
+        {
+            return add_node(&m_doc, name);
+        }
+        /** Add a node to the document with a given parent
+         *
+         * @param parent parent of the node
+         * @param name name of the node
+         * @param val value of the node
+         * @return pointer to new node
+         */
+        template<typename T>
+        xml_node_ptr add_node(xml_node_ptr parent, const char* name, const T& val)
+        {
+            m_backing.push_back(util::lexical_cast<std::string>(val));
+            rapidxml::xml_node<>* child = m_doc.allocate_node(rapidxml::node_element, name, m_backing.back().c_str());
+            parent->append_node(child);
+            return child;
+        }
+        /** Add an attribute to the given parent node
+         *
+         * @param parent parent of the node
+         * @param name name of the node
+         * @param val value of the node
+         * @return pointer to new node
+         */
+        template<typename T>
+        void add_attribute(xml_node_ptr parent, const char* name, const T& val)
+        {
+            m_backing.push_back(util::lexical_cast<std::string>(val));
+            parent->append_attribute(m_doc.allocate_attribute(name, m_backing.back().c_str()));
+        }
+        /** Write an XML document to the output stream
+         *
+         * @param out output stream
+         * @param doc XML document
+         * @return output stream
+         */
+        friend std::ostream& operator<<(std::ostream& out, const xml_document& doc)
+        {
+            out << doc.m_doc;
+            return out;
+        }
+
+    private:
+        rapidxml::xml_document<> m_doc;
+        std::vector<std::string> m_backing;
+    };
     /** Check if the xml node matches the target, and, if so, set the value
      *
      * @param p_node current node
@@ -125,7 +203,12 @@ namespace illumina { namespace interop { namespace xml
         if (p_attr == 0) INTEROP_THROW(missing_xml_element_exception, "Cannot find attribute: " << target);
         if (p_attr->name() == target)
         {
-            val = util::lexical_cast<T>(p_attr->value());
+            std::string tmp = p_attr->value();
+            if(tmp[0] == '\"' && tmp[tmp.length()-1] == '\"')
+            {
+                tmp = tmp.substr(1, tmp.length()-1);
+            }
+            val = util::lexical_cast<T>(tmp);
             return true;
         }
         return false;
@@ -141,7 +224,12 @@ namespace illumina { namespace interop { namespace xml
     {
         if (p_attr == 0)
             INTEROP_THROW(missing_xml_element_exception, "Cannot find attribute");
-        val = util::lexical_cast<T>(p_attr->value());
+        std::string tmp = p_attr->value();
+        if(tmp[0] == '\"' && tmp[tmp.length()-1] == '\"')
+        {
+            tmp = tmp.substr(1, tmp.length()-1);
+        }
+        val = util::lexical_cast<T>(tmp);
     }
 
     /** Check if the xml node matches the target, and, if so, save the children to the vector

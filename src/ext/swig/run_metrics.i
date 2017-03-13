@@ -41,6 +41,17 @@ EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Metric Logic
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// The SWIG Python binding does not support polymorphic functions
+#if defined(SWIGPYTHON)
+    %rename(list_metrics_to_load_metric_group) illumina::interop::logic::utils::list_metrics_to_load(const constants::metric_group group,
+                                                                                                     std::vector<unsigned char>& valid_to_load,
+                                                                                                     const constants::instrument_type instrument);
+    %rename(list_metrics_to_load_metric_groups) illumina::interop::logic::utils::list_metrics_to_load(const std::vector<constants::metric_group>& groups, std::vector<unsigned char>& valid_to_load,
+                                                                                                                                   const constants::instrument_type type);
+#endif
+
+
 %{
 #include "interop/logic/metric/extraction_metric.h"
 #include "interop/logic/metric/q_metric.h"
@@ -64,7 +75,6 @@ EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 %include "interop/model/run_metrics.h"
 
 %define WRAP_RUN_METRICS(metric_t)
-    %template(list_ ## metric_t ## _filenames) illumina::interop::model::metrics::run_metrics::list_filenames< metric_t >;
     %template(set_ ## metric_t ## _set) illumina::interop::model::metrics::run_metrics::set< illumina::interop::model::metric_base::metric_set< metric_t> >;
     %template(metric_t ## _set) illumina::interop::model::metrics::run_metrics::get_metric_set< metric_t >;
 %enddef

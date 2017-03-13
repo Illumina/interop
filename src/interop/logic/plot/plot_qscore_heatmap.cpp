@@ -187,6 +187,8 @@ namespace illumina { namespace interop { namespace logic { namespace plot
      */
     size_t count_rows_for_heatmap(const model::metrics::run_metrics& metrics)
     {
+        if (metrics.get< model::metrics::q_by_lane_metric >().size() > 0)
+            return metrics.get< model::metrics::q_by_lane_metric >().max_cycle();
         return metrics.get< model::metrics::q_metric >().max_cycle();
     }
     /** Count number of columns for the heat map
@@ -196,6 +198,8 @@ namespace illumina { namespace interop { namespace logic { namespace plot
      */
     size_t count_columns_for_heatmap(const model::metrics::run_metrics& metrics)
     {
+        if (metrics.get< model::metrics::q_by_lane_metric >().size() > 0)
+            return logic::metric::max_qval(metrics.get< model::metrics::q_by_lane_metric >());
         return logic::metric::max_qval(metrics.get< model::metrics::q_metric >());
     }
 

@@ -171,6 +171,29 @@ namespace illumina { namespace interop { namespace io
         {
             return static_cast<record_size_t>(RECORD_SIZE);
         }
+        /** Compute the buffer size
+         *
+         * @param metric_set set of metrics
+         * @return buffer size for entire metric set
+         */
+        static size_t compute_buffer_size(const model::metric_base::metric_set<index_metric>& metric_set)
+        {
+            typedef model::metric_base::metric_set<index_metric>::const_iterator const_iterator;
+            typedef index_metric::index_array_t::const_iterator const_index_iterator;
+            size_t buffer_size = compute_header_size(metric_set);
+            for(const_iterator it = metric_set.begin();it != metric_set.end();++it)
+            {
+                for (const_index_iterator index_it = it->indices().begin(); index_it != it->indices().end(); ++index_it)
+                {
+                    buffer_size += sizeof(metric_id_t);
+                    buffer_size += sizeof( ::uint16_t ) + index_it->index_seq().size();
+                    buffer_size += sizeof(cluster_count_t);
+                    buffer_size += sizeof( ::uint16_t ) + index_it->sample_id().size();
+                    buffer_size += sizeof( ::uint16_t ) + index_it->sample_proj().size();
+                }
+            }
+            return buffer_size;
+        }
     };
 
     /** Index Metric Record Layout Version 2
@@ -325,6 +348,29 @@ namespace illumina { namespace interop { namespace io
         static record_size_t map_stream_record_size(Stream &, record_size_t)
         {
             return static_cast<record_size_t>(RECORD_SIZE);
+        }
+        /** Compute the buffer size
+         *
+         * @param metric_set set of metrics
+         * @return buffer size for entire metric set
+         */
+        static size_t compute_buffer_size(const model::metric_base::metric_set<index_metric>& metric_set)
+        {
+            typedef model::metric_base::metric_set<index_metric>::const_iterator const_iterator;
+            typedef index_metric::index_array_t::const_iterator const_index_iterator;
+            size_t buffer_size = compute_header_size(metric_set);
+            for(const_iterator it = metric_set.begin();it != metric_set.end();++it)
+            {
+                for (const_index_iterator index_it = it->indices().begin(); index_it != it->indices().end(); ++index_it)
+                {
+                    buffer_size += sizeof(metric_id_t);
+                    buffer_size += sizeof( ::uint16_t ) + index_it->index_seq().size();
+                    buffer_size += sizeof(cluster_count_t);
+                    buffer_size += sizeof( ::uint16_t ) + index_it->sample_id().size();
+                    buffer_size += sizeof( ::uint16_t ) + index_it->sample_proj().size();
+                }
+            }
+            return buffer_size;
         }
     };
 

@@ -67,6 +67,7 @@ int main(int argc, const char** argv)
         //print_help(std::cout);
         return INVALID_ARGUMENTS;
     }
+    const size_t thread_count = 1;
 
     size_t information_level=5;
     util::option_parser description;
@@ -89,6 +90,7 @@ int main(int argc, const char** argv)
         return INVALID_ARGUMENTS;
     }
 
+// @ [Reporting Summary Metrics in C++]
     std::vector<unsigned char> valid_to_load;
     logic::utils::list_summary_metrics_to_load(valid_to_load); // Only load the InterOp files required
 
@@ -98,7 +100,7 @@ int main(int argc, const char** argv)
         run_metrics run;
 
         std::cout << io::basename(argv[i]) << std::endl;
-        int ret = read_run_metrics(argv[i], run, valid_to_load);
+        int ret = read_run_metrics(argv[i], run, valid_to_load, thread_count);
         if(ret != SUCCESS)
         {
             continue;
@@ -123,6 +125,7 @@ int main(int argc, const char** argv)
             return UNEXPECTED_EXCEPTION;
         }
     }
+// @ [Reporting Summary Metrics in C++]
     return SUCCESS;
 }
 
@@ -252,6 +255,11 @@ void summarize(const surface_summary& summary, std::vector<std::string>& values,
     values[i++] = util::format(summary.phasing().mean(), 3, 3) + " / " + util::format(summary.prephasing().mean(), 3, 3);
 
 
+    values[i++] = util::format(summary.phasing_slope().mean(), 3, 3) + "*c " + (summary.phasing_offset().mean() > 0 ? "+ " : "- ")
+                  + util::format(static_cast<float>(std::abs(summary.phasing_offset().mean())), 3, 3);
+    values[i++] = util::format(summary.prephasing_slope().mean(), 3, 3) + "*c " + (summary.prephasing_offset().mean() > 0 ? "+ " : "- ")
+                  + util::format(static_cast<float>(std::abs(summary.prephasing_offset().mean())), 3, 3);
+
     values[i++] = format(summary.reads(), 0, 2, 1e6);
     values[i++] = format(summary.reads_pf(), 0, 2, 1e6);
     values[i++] = format(summary.percent_gt_q30(), 0, 2);
@@ -278,6 +286,10 @@ void summarize(const lane_summary& summary, std::vector<std::string>& values)
     values[i++] = format(summary.percent_pf(), 0, 2);
     values[i++] = util::format(summary.phasing().mean(), 3, 3) + " / " + util::format(summary.prephasing().mean(), 3, 3);
 
+    values[i++] = util::format(summary.phasing_slope().mean(), 3, 3) + "*c " + (summary.phasing_offset().mean() > 0 ? "+ " : "- ")
+                + util::format(static_cast<float>(std::abs(summary.phasing_offset().mean())), 3, 3);
+    values[i++] = util::format(summary.prephasing_slope().mean(), 3, 3) + "*c " + (summary.prephasing_offset().mean() > 0 ? "+ " : "- ")
+                + util::format(static_cast<float>(std::abs(summary.prephasing_offset().mean())), 3, 3);
     values[i++] = format(summary.reads(), 0, 2, 1e6);
     values[i++] = format(summary.reads_pf(), 0, 2, 1e6);
     values[i++] = format(summary.percent_gt_q30(), 0, 2);
@@ -327,6 +339,7 @@ void print_summary(std::ostream& out, const run_summary& summary, const size_t i
     if( information_level >= 3)
     {
         const char *lane_header[] = {"Lane", "Surface", "Tiles", "Density", "Cluster PF", "Phas/Prephas",
+                                     "Phasing Equation", "Prephas Equation",
                                      "Reads", "Reads PF", "%>=Q30", "Yield", "Cycles Error", "Aligned", "Error",
                                      "Error (35)", "Error (75)", "Error (100)", "Intensity C1"};
         values.resize(util::length_of(lane_header));

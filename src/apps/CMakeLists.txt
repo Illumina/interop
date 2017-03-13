@@ -30,7 +30,6 @@ endfunction()
 
 set(SWIG_VERSION_INFO "")
 
-add_application(interop2csv interop2csv.cpp)
 add_application(dumptext dumptext.cpp)
 add_application(cyclesim cyclesim.cpp)
 add_application(summary summary.cpp)

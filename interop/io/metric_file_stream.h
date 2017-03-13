@@ -30,11 +30,7 @@ namespace illumina { namespace interop { namespace io
     template<class MetricSet>
     size_t compute_buffer_size(const MetricSet& metrics) throw(invalid_argument, bad_format_exception)
     {
-        typedef typename MetricSet::metric_type metric_t;
-        if(is_multi_record(metrics))
-            throw invalid_argument("Format does not currently support computing the buffer size");
-        return header_size(metrics, metrics.version()) +
-                size_of_record<metric_t>(metrics, metrics.version()) * metrics.size();
+        return size_of_buffer(metrics);
     }
     /** Write the metric to a binary byte buffer
      *

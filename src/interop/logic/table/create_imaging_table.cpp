@@ -52,7 +52,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
             if(data_beg[row*column_count]==0)
             {
                 if((beg->cycle()-1) >= cycle_to_read.size())
-                    INTEROP_THROW(model::index_out_of_bounds_exception, "Cycle exceeds total cycles from Reads in the RunInfo.xml");
+                    INTEROP_THROW(model::index_out_of_bounds_exception, "Cycle exceeds total cycles from Reads in the RunInfo.xml - " << (beg->cycle()-1) << "  >= " << cycle_to_read.size());
 
 
                 INTEROP_ASSERTMSG(row_it != row_offset.end(), "Bug with row offset");
@@ -238,7 +238,8 @@ namespace illumina { namespace interop { namespace logic { namespace table
                                       0,
                                       naming_method,
                                       cmap,
-                                      data_beg+row*column_count, data_end);
+                                      data_beg+row*column_count,
+                                      data_end);
         }
         const dynamic_phasing_metric_set_t& dynamic_phasing_metrics =
                 metrics.get<model::metrics::dynamic_phasing_metric>();
@@ -376,6 +377,11 @@ namespace illumina { namespace interop { namespace logic { namespace table
             const constants::metric_group group = to_group(columns[i]);
             if(group >= constants::MetricCount)continue;
             valid_to_load[group] = static_cast<unsigned char>(1);
+            if(group == constants::Q)
+            {
+                valid_to_load[constants::QCollapsed] = static_cast<unsigned char>(1);
+                valid_to_load[constants::QByLane] = static_cast<unsigned char>(1);
+            }
         }
     }
 

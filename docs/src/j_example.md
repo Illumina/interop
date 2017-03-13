@@ -18,4 +18,5 @@ of the examples in that folder with additional commentary.
  - @subpage tile_report "Reporting Tile Metrics"
  - @subpage extraction_report "Reporting Extraction Metrics"
  - @subpage simple_stats "Reporting simple statistics"
+ - @subpage example_summary "Calculating ab SAV-like Summary"
 

@@ -13,6 +13,8 @@
 #include "interop/model/plot/filter_options.h"
 #include "src/tests/interop/logic/inc/empty_plot_test_generator.h"
 #include "src/tests/interop/logic/inc/plot_regression_test_generator.h"
+#include "src/tests/interop/metrics/inc/q_metrics_test.h"
+#include "src/tests/interop/run/info_test.h"
 
 
 using namespace illumina::interop::model::metrics;
@@ -46,6 +48,22 @@ TEST_P(heatmap_plot_tests, plot_data)
     {
         INTEROP_ASSERT_NEAR(actual[i], expected[i], tol);
     }
+}
+
+TEST(heatmap_plot_tests, q_by_lane_metric)
+{
+    model::run::info run_info;
+    hiseq4k_run_info::create_expected(run_info);
+
+    run_metrics metrics(run_info);
+    q_metric_v6::create_expected(metrics.get<q_metric>());
+    metrics.run_info(run_info);
+    metrics.legacy_channel_update(constants::HiSeq);
+    metrics.finalize_after_load();
+    metrics.get<q_metric>().clear();
+    EXPECT_EQ(logic::plot::count_rows_for_heatmap(metrics), 3u);
+    EXPECT_EQ(logic::plot::count_columns_for_heatmap(metrics), 40u);
+
 }
 
 //---------------------------------------------------------------------------------------------------------------------

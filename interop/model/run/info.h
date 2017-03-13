@@ -48,6 +48,8 @@ namespace illumina { namespace interop { namespace model { namespace run
          *
          * @param name name of the run
          * @param date date of the run
+         * @param instrument_name name of the instrument
+         * @param run_number number of the run
          * @param version xml file format version
          * @param flowcell layout of the flowcell
          * @param channels names of the color channels
@@ -56,6 +58,8 @@ namespace illumina { namespace interop { namespace model { namespace run
          */
         info(const std::string &name = "",
              const std::string &date = "",
+             const std::string instrument_name="",
+             const size_t run_number=0,
              const uint_t version = 0,
              const flowcell_layout &flowcell = flowcell_layout(),
              const str_vector_t &channels = str_vector_t(),
@@ -63,6 +67,8 @@ namespace illumina { namespace interop { namespace model { namespace run
              const read_vector_t &reads = read_vector_t()) :
                 m_name(name),
                 m_date(date),
+                m_instrument_name(instrument_name),
+                m_run_number(run_number),
                 m_version(version),
                 m_flowcell(flowcell),
                 m_channels(channels),
@@ -76,15 +82,20 @@ namespace illumina { namespace interop { namespace model { namespace run
         /** Constructor
          *
          * @param flowcell layout of the flowcell
-         * @param channels string list of channel names
          * @param reads description of the reads
+         * @param channels string list of channel names
          */
         info(const flowcell_layout &flowcell,
-             const str_vector_t &channels=str_vector_t(),
-             const read_vector_t &reads=read_vector_t()) :
-                m_version(0),
+             const read_vector_t &reads=read_vector_t(),
+             const str_vector_t &channels=str_vector_t()) :
+                m_name(""),
+                m_date(""),
+                m_instrument_name(""),
+                m_run_number(0),
+                m_version(3),
                 m_flowcell(flowcell),
                 m_channels(channels),
+                m_image_dim(image_dimensions()),
                 m_reads(reads),
                 m_total_cycle_count(0)
         {
@@ -143,6 +154,25 @@ namespace illumina { namespace interop { namespace model { namespace run
         throw(invalid_run_info_exception);
 
     public:
+        /** Get the name of the instrument
+         *
+         * @return name of the instrument
+         */
+        const std::string &instrument_name() const
+        { return m_instrument_name; }
+        /** Get the id of the flowcell
+         *
+         * @return id of the flowcell
+         */
+        const std::string &flowcell_id() const
+        { return m_flowcell.barcode(); }
+        /** Get the number of the run
+         *
+         * @return number of the run
+         */
+        size_t run_number() const
+        { return m_run_number; }
+
         /** Get the name of the run
          *
          * @return name of the run
@@ -201,6 +231,21 @@ namespace illumina { namespace interop { namespace model { namespace run
             for (read_vector_t::const_iterator b = m_reads.begin(), e = m_reads.end(); b != e; ++b)
                 if (b->is_index()) return true;
             return false;
+        }
+        /** Check if the run is a paired end read
+         *
+         * @return true if there is more than one non-index read
+         */
+        bool is_paired_end()const
+        {
+            size_t non_index_read_count = 0;
+
+            for (read_vector_t::const_iterator b = m_reads.begin(), e = m_reads.end(); b != e; ++b)
+            {
+                if (b->is_index()) continue;
+                ++non_index_read_count;
+            }
+            return non_index_read_count > 1;
         }
         /** Test if cycle is last cycle of a read
          *
@@ -315,9 +360,23 @@ namespace illumina { namespace interop { namespace model { namespace run
         xml::missing_xml_element_exception,
         xml::xml_parse_exception);
 
+        /** Read run information from the given XML file
+         *
+         * @param filename xml file
+         */
+        void write(const std::string &filename)const throw(xml::xml_file_not_found_exception,xml::bad_xml_format_exception);
+
+        /** String containing xml data
+         *
+         * @param out output stream
+         */
+        void write(std::ostream& out)const throw(xml::bad_xml_format_exception);
+
     private:
         std::string m_name;
         std::string m_date;
+        std::string m_instrument_name;
+        size_t m_run_number;
         uint_t m_version;
         flowcell_layout m_flowcell;
         str_vector_t m_channels;

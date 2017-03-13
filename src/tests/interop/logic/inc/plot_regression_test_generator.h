@@ -67,7 +67,7 @@ namespace illumina { namespace interop { namespace unittest
         bool generate_actual(const std::string& run_folder, PlotData& actual)const
         {
             model::metrics::run_metrics& actual_metrics = get_metrics(run_folder);
-            if( actual_metrics.empty() ) return false;
+            if( actual_metrics.empty() )return false;
             try
             {
                 m_metric_iterator.plot(actual_metrics, actual);
@@ -163,7 +163,6 @@ namespace illumina { namespace interop { namespace unittest
         std::string name()const
         {
             return constants::to_string(m_plot_type) + "_"
-                   + io::basename(parent_t::m_run_folder)
                    +  "_Metric_" + constants::to_string(m_metric_iterator.metric())
                    + "_" + util::lexical_cast<std::string>(m_metric_iterator.options());
         }

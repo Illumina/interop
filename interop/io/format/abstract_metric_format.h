@@ -48,6 +48,12 @@ namespace illumina { namespace interop { namespace io
          * @return size of record in bytes
          */
         virtual size_t record_size(const header_t &header) const = 0;
+        /** Calculate the size of a record
+         *
+         * @param metric_set source set of metrics
+         * @return size of buffer in bytes
+         */
+        virtual size_t buffer_size(const model::metric_base::metric_set<Metric>& metric_set) const=0;
         /** Read all the metrics into a metric set
          *
          * @param in input stream

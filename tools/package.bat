@@ -17,19 +17,27 @@ rem ----------------------------------------------------------------------------
 rem MinGW Build Test Script
 rem --------------------------------------------------------------------------------------------------------------------
 
-set SOURCE_DIR=..\
+set SOURCE_DIR=%CD%
+set BUILD_DIR=%SOURCE_DIR%\build
+set DIST_DIR=%SOURCE_DIR%\dist
 set BUILD_PARAM=
 set BUILD_TYPE=Release
 set BUILD_PATH=%1%
+pushd %BUILD_PATH%
+set BUILD_PATH=%CD%
+popd
 if NOT "%1" == "" (
 set BUILD_PARAM=-DGTEST_ROOT=%BUILD_PATH% -DJUNIT_ROOT=%BUILD_PATH% -DGMOCK_ROOT=%BUILD_PATH% -DNUNIT_ROOT=%BUILD_PATH%/NUnit-2.6.4
 )
+set BUILD_PARAM=%BUILD_PARAM% -DPACKAGE_OUTPUT_FILE_PREFIX=%DIST_DIR%
 
 
 
 echo ##teamcity[blockOpened name='Configure %BUILD_TYPE% Visual Studio 2015 Win64']
-mkdir build_vs2015_x64_%BUILD_TYPE%
-cd build_vs2015_x64_%BUILD_TYPE%
+if exist %BUILD_DIR%  rd /s /q %BUILD_DIR%
+if exist %DIST_DIR%  rd /s /q %DIST_DIR%
+mkdir %BUILD_DIR%
+cd %BUILD_DIR%
 echo cmake %SOURCE_DIR% -G"Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=%BUILD_TYPE%  %BUILD_PARAM%
 cmake %SOURCE_DIR% -G"Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=%BUILD_TYPE%  %BUILD_PARAM%
 if %errorlevel% neq 0 exit /b %errorlevel%
@@ -55,3 +63,12 @@ cmake --build . --target nuspec --config Release -- /M
 if %errorlevel% neq 0 exit /b %errorlevel%
 echo ##teamcity[blockClosed name='NuSpec Release Visual Studio 2015 Win64']
 
+
+echo "##teamcity[blockOpened name='NuPack Visual Studio 2015 Win64']"
+echo %BUILD_PATH%\nuget pack %BUILD_DIR%\src\ext\csharp\package.nuspec
+%BUILD_PATH%\nuget pack %BUILD_DIR%\src\ext\csharp\package.nuspec -OutputDirectory %DIST_DIR%
+echo "##teamcity[blockClosed name='NuPack Visual Studio 2015 Win64']"
+
+cd %SOURCE_DIR%
+rd /s /q %BUILD_DIR%
+if exist %BUILD_DIR% rd /s /q %BUILD_DIR%

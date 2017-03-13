@@ -16,5 +16,6 @@ The InterOp package includes several command line tools to extraction informatio
 | @subpage index_summary "index-summary"  | Generate the SAV Indexing Tab summary table as a CSV text file             |
 | @subpage cyclesim "cyclesim"            | Simulate the InterOps of a run folder at a specific cycle                  |
 | @subpage dumpbin "dumpbin"              | Developer app to help create unit tests by dumping the binary format       |
+| @subpage aggregate "aggregate"          | Aggregate by cycle InterOps                                                |
 
 Note: interop2csv has been deprecated in favor of dumptext

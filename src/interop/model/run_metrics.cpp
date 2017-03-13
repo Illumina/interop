@@ -5,6 +5,10 @@
  *  @version 1.0
  *  @copyright GNU Public License.
  */
+#ifdef _OPENMP
+#include <omp.h>
+#endif
+
 #include "interop/model/run_metrics.h"
 
 #include "interop/logic/metric/q_metric.h"
@@ -345,11 +349,109 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         bool_pointer m_load_metric_check;
     };
 
+    class read_metric_set_from_binary_buffer
+    {
+    public:
+        read_metric_set_from_binary_buffer(const constants::metric_group group,
+                                           uint8_t* buffer,
+                                           const size_t buffer_size) :
+                m_group(group),
+                m_buffer(buffer),
+                m_buffer_size(buffer_size){}
+        template<class MetricSet>
+        void operator()(MetricSet &metrics) const
+        {
+            if(m_group == static_cast<constants::metric_group>(MetricSet::TYPE))
+            {
+                io::read_interop_from_buffer(m_buffer, m_buffer_size, metrics);
+            }
+        }
+    private:
+        constants::metric_group m_group;
+        uint8_t* m_buffer;
+        size_t m_buffer_size;
+    };
+
+    class write_metric_set_to_binary_buffer
+    {
+    public:
+        write_metric_set_to_binary_buffer(const constants::metric_group group,
+                                          uint8_t* buffer,
+                                          const size_t buffer_size) :
+                m_group(group),
+                m_buffer(buffer),
+                m_buffer_size(buffer_size){}
+        template<class MetricSet>
+        void operator()(const MetricSet &metrics) const
+        {
+            if(m_group == static_cast<constants::metric_group>(MetricSet::TYPE))
+            {
+                io::write_interop_to_buffer(metrics, m_buffer, m_buffer_size);
+            }
+        }
+
+    private:
+        constants::metric_group m_group;
+        uint8_t* m_buffer;
+        size_t m_buffer_size;
+    };
+    class calculate_metric_set_buffer_size
+    {
+    public:
+        calculate_metric_set_buffer_size(const constants::metric_group group) :
+                m_group(group), m_buffer_size(0){}
+        template<class MetricSet>
+        void operator()(const MetricSet &metrics)
+        {
+            if(m_group == static_cast<constants::metric_group>(MetricSet::TYPE))
+            {
+                m_buffer_size = io::compute_buffer_size(metrics);
+            }
+        }
+        size_t buffer_size()const
+        {
+            return m_buffer_size;
+        }
+
+    private:
+        constants::metric_group m_group;
+        size_t m_buffer_size;
+    };
+    class list_interop_filenames
+    {
+    public:
+        list_interop_filenames(const constants::metric_group group,
+                               std::vector<std::string>& files,
+                               const std::string& run_folder,
+                               const size_t last_cycle) :
+                m_group(group),
+                m_files(files),
+                m_run_folder(run_folder),
+                m_last_cycle(last_cycle)
+        {}
+        template<class MetricSet>
+        void operator()(const MetricSet &) const
+        {
+            if(m_group == static_cast<constants::metric_group>(MetricSet::TYPE))
+            {
+                io::list_interop_filenames< MetricSet >(m_files, m_run_folder, m_last_cycle);
+            }
+        }
+
+    private:
+        constants::metric_group m_group;
+        std::vector<std::string>& m_files;
+        std::string m_run_folder;
+        size_t m_last_cycle;
+    };
+
+
     /** Read binary metrics and XML files from the run folder
      *
      * @param run_folder run folder path
+     * @param thread_count number of threads to use for network loading
      */
-    void run_metrics::read(const std::string &run_folder)
+    void run_metrics::read(const std::string &run_folder, const size_t thread_count)
     throw(xml::xml_file_not_found_exception,
     xml::bad_xml_format_exception,
     xml::empty_xml_format_exception,
@@ -365,7 +467,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     {
         clear();
         const size_t count = read_xml(run_folder);
-        read_metrics(run_folder, run_info().total_cycles());
+        read_metrics(run_folder, run_info().total_cycles(), thread_count);
         finalize_after_load(count);
     }
     /** Read binary metrics and XML files from the run folder
@@ -373,10 +475,12 @@ namespace illumina { namespace interop { namespace model { namespace metrics
      * @note This function does not clear
      * @param run_folder run folder path
      * @param valid_to_load list of metrics to load
+     * @param thread_count number of threads to use for network loading
      * @param skip_loaded skip metrics that are already loaded
      */
     void run_metrics::read(const std::string &run_folder,
                            const std::vector<unsigned char>& valid_to_load,
+                           const size_t thread_count,
                            const bool skip_loaded)
     throw(xml::xml_file_not_found_exception,
     xml::bad_xml_format_exception,
@@ -393,7 +497,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     invalid_parameter)
     {
         read_run_info(run_folder);
-        read_metrics(run_folder, run_info().total_cycles(), valid_to_load, skip_loaded);
+        read_metrics(run_folder, run_info().total_cycles(), valid_to_load, thread_count, skip_loaded);
         const size_t count = read_run_parameters(run_folder);
         finalize_after_load(count);
         check_for_data_sources(run_folder, run_info().total_cycles());
@@ -432,8 +536,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     /** Read RunParameters.xml if necessary
      *
      * @param run_folder run folder path
+     * @param force_load force loading of run parameters
      */
-    size_t run_metrics::read_run_parameters(const std::string &run_folder) throw(io::file_not_found_exception,
+    size_t run_metrics::read_run_parameters(const std::string &run_folder, const bool force_load) throw(io::file_not_found_exception,
     xml::xml_file_not_found_exception,
     xml::bad_xml_format_exception,
     xml::empty_xml_format_exception,
@@ -441,7 +546,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     xml::xml_parse_exception)
     {
         const size_t count = count_legacy_bins();
-        if (m_run_info.channels().empty() || logic::metric::requires_legacy_bins(count))
+        if (m_run_info.channels().empty() || logic::metric::requires_legacy_bins(count) || force_load)
         {
             try
             {
@@ -452,7 +557,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                 if (m_run_info.channels().empty())
                     INTEROP_THROW(io::file_not_found_exception,
                                   "RunParameters.xml required for legacy run folders with missing channel names");
-                else
+                else if(logic::metric::requires_legacy_bins(count))
                     INTEROP_THROW(io::file_not_found_exception,
                                   "RunParameters.xml required for legacy run folders and is missing");
             }
@@ -621,18 +726,31 @@ namespace illumina { namespace interop { namespace model { namespace metrics
      *
      * @param run_folder run folder path
      * @param last_cycle last cycle to search for by cycle interops
+     * @param thread_count number of threads to use for network loading
      */
-    void run_metrics::read_metrics(const std::string &run_folder, const size_t last_cycle) throw(
+    void run_metrics::read_metrics(const std::string &run_folder, const size_t last_cycle, const size_t thread_count)
+    throw(
     io::file_not_found_exception,
     io::bad_format_exception,
     io::incomplete_file_exception)
     {
-        read_func read_functor(run_folder);
-        m_metrics.apply(read_functor);
-        if (read_functor.are_all_files_missing())
+#ifdef _OPENMP
+        if(thread_count > 1)
         {
-            m_metrics.apply(read_by_cycle_func(run_folder, last_cycle));
+            std::vector<unsigned char> valid_to_load(constants::MetricCount, 1);
+            read_metrics(run_folder, last_cycle, valid_to_load, thread_count);
         }
+        else{
+#endif
+            read_func read_functor(run_folder);
+            m_metrics.apply(read_functor);
+            if (read_functor.are_all_files_missing())
+            {
+                m_metrics.apply(read_by_cycle_func(run_folder, last_cycle));
+            }
+#ifdef _OPENMP
+        }
+#endif
     }
 
     /** Read binary metrics from the run folder
@@ -645,11 +763,13 @@ namespace illumina { namespace interop { namespace model { namespace metrics
      * @param run_folder run folder path
      * @param last_cycle last cycle to search for by cycle interops
      * @param valid_to_load list of metrics to load
+     * @param thread_count number of threads to use for network loading
      * @param skip_loaded skip metrics that are already loaded
      */
     void run_metrics::read_metrics(const std::string &run_folder,
                                    const size_t last_cycle,
                                    const std::vector<unsigned char>& valid_to_load,
+                                   const size_t thread_count,
                                    const bool skip_loaded)
     throw(io::file_not_found_exception,
     io::bad_format_exception,
@@ -661,11 +781,92 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             INTEROP_THROW(invalid_parameter, "Boolean array valid_to_load does not match expected number of metrics: "
                     << valid_to_load.size() << " != " << constants::MetricCount);
 
-        read_func read_functor(run_folder, &valid_to_load.front(), skip_loaded);
-        m_metrics.apply(read_functor);
-        if (read_functor.are_all_files_missing())
+        bool all_files_are_missing = true;
+#ifdef _OPENMP
+        if(thread_count > 1)
         {
-            m_metrics.apply(read_by_cycle_func(run_folder, last_cycle, &valid_to_load.front()));
+            std::vector<bool> local_files_missing(thread_count, true);
+            std::vector<size_t> offset;
+            offset.reserve(valid_to_load.size());
+            for(size_t i=0;i<valid_to_load.size();++i)
+                if(valid_to_load[i]) offset.push_back(i);
+            std::vector< std::vector<unsigned char> > valid_to_load_local(thread_count, std::vector<unsigned char>(valid_to_load.size(), 0));
+            bool exception_thrown = false;
+            std::string exception_msg;
+#           pragma omp parallel for default(shared) num_threads(static_cast<int>(thread_count)) schedule(dynamic)
+            for(int i=0;i<static_cast<int>(offset.size());++i)
+            {
+#               pragma omp flush(exception_thrown)
+                if(exception_thrown) continue;
+                valid_to_load_local[ omp_get_thread_num() ][offset[i]] = 1;
+                read_func read_functor_l(run_folder, &valid_to_load_local[ omp_get_thread_num() ].front(), skip_loaded);
+                try{
+                    m_metrics.apply(read_functor_l);
+                }
+                catch(const std::exception& ex)
+                {
+#pragma             omp critical(SaveMessage)
+                    exception_msg = ex.what();
+
+                    exception_thrown = true;
+#pragma             omp flush(exception_thrown)
+                }
+                valid_to_load_local[ omp_get_thread_num() ][offset[i]] = 0;
+                local_files_missing[omp_get_thread_num()] = local_files_missing[omp_get_thread_num()] && read_functor_l.are_all_files_missing();
+            }
+            if(exception_thrown)
+                throw io::bad_format_exception(exception_msg);
+            for(size_t i=0;i<local_files_missing.size();++i)
+                all_files_are_missing = all_files_are_missing && local_files_missing[i];
+        }
+        else{
+#endif
+            read_func read_functor(run_folder, &valid_to_load.front(), skip_loaded);
+            m_metrics.apply(read_functor);
+            all_files_are_missing = read_functor.are_all_files_missing();
+#ifdef _OPENMP
+        }
+#endif
+        if (all_files_are_missing)
+        {
+#ifdef _OPENMP
+            if(thread_count > 1)
+            {
+                std::vector<size_t> offset;
+                offset.reserve(valid_to_load.size());
+                for(size_t i=0;i<valid_to_load.size();++i)
+                    if(valid_to_load[i]) offset.push_back(i);
+                std::vector< std::vector<unsigned char> > valid_to_load_local(thread_count, std::vector<unsigned char>(valid_to_load.size(), 0));
+                bool exception_thrown = false;
+                std::string exception_msg;
+#               pragma omp parallel for default(shared) num_threads(static_cast<int>(thread_count)) schedule(dynamic)
+                for(int i=0;i<static_cast<int>(offset.size());++i)
+                {
+#               pragma omp flush(exception_thrown)
+                    valid_to_load_local[ omp_get_thread_num() ][offset[i]] = 1;
+                    try{
+                        m_metrics.apply(read_by_cycle_func(run_folder, last_cycle, &valid_to_load_local[ omp_get_thread_num() ].front()));
+                    }
+                    catch(const std::exception& ex)
+                    {
+#pragma                 omp critical(SaveMessage)
+                        exception_msg = ex.what();
+
+                        exception_thrown = true;
+#pragma                 omp flush(exception_thrown)
+                    }
+                    valid_to_load_local[ omp_get_thread_num() ][offset[i]] = 0;
+                }
+                if(exception_thrown)
+                    throw io::bad_format_exception(exception_msg);
+            }
+            else
+            {
+#endif
+                m_metrics.apply(read_by_cycle_func(run_folder, last_cycle, &valid_to_load.front()));
+#ifdef _OPENMP
+            }
+#endif
         }
     }
 
@@ -678,6 +879,66 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     io::bad_format_exception)
     {
         m_metrics.apply(write_func(run_folder));
+    }
+
+    /** Read a single metric set from a binary buffer
+     *
+     * @param group metric set to write
+     * @param buffer binary buffer
+     * @param buffer_size size of binary buffer
+     */
+    void run_metrics::read_metrics_from_buffer(const constants::metric_group group,
+                                               uint8_t* buffer,
+                                               const size_t buffer_size) throw(
+    io::file_not_found_exception,
+    io::bad_format_exception,
+    io::incomplete_file_exception,
+    model::index_out_of_bounds_exception)
+    {
+        m_metrics.apply(read_metric_set_from_binary_buffer(group, buffer, buffer_size));
+    }
+    /** Write a single metric set to a binary buffer
+     *
+     * @param group metric set to write
+     * @param buffer binary buffer
+     * @param buffer_size size of binary buffer
+     */
+    void run_metrics::write_metrics_to_buffer(const constants::metric_group group,
+                                              uint8_t* buffer,
+                                              const size_t buffer_size)const throw(
+    io::invalid_argument,
+    io::bad_format_exception,
+    io::incomplete_file_exception)
+    {
+        m_metrics.apply(write_metric_set_to_binary_buffer(group, buffer, buffer_size));
+    }
+
+    /** List all filenames for a specific metric
+     *
+     * @param group metric group type
+     * @param files destination interop file names (first one is legacy, all subsequent are by cycle)
+     * @param run_folder run folder location
+     */
+    void run_metrics::list_filenames(const constants::metric_group group,
+                                     std::vector<std::string>& files,
+                                     const std::string& run_folder)
+    throw(invalid_run_info_exception)
+    {
+        const size_t last_cycle = run_info().total_cycles();
+        if( last_cycle == 0 ) INTEROP_THROW(invalid_run_info_exception, "RunInfo is empty");
+        m_metrics.apply(list_interop_filenames(group, files, run_folder, last_cycle));
+    }
+    /** Calculate the required size of the buffer for writing
+     *
+     * @param group metric set to write
+     * @return required size of the binary buffer
+     */
+    size_t run_metrics::calculate_buffer_size(const constants::metric_group group)const throw(
+    io::invalid_argument, io::bad_format_exception)
+    {
+        calculate_metric_set_buffer_size calc(group);
+        m_metrics.apply(calc);
+        return calc.buffer_size();
     }
 
     /** Populate a map of valid tiles

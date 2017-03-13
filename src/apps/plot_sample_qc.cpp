@@ -50,6 +50,7 @@ int main(int argc, char** argv)
         //print_help(std::cout);
         return INVALID_ARGUMENTS;
     }
+    const size_t thread_count = 1;
 
     std::cout << "# Version: " << INTEROP_VERSION << std::endl;
 
@@ -61,7 +62,7 @@ int main(int argc, char** argv)
 
         const std::string run_name = io::basename(argv[i]);
         std::cout << "# Run Folder: " << run_name << std::endl;
-        int ret = read_run_metrics(argv[i], run, valid_to_load);
+        int ret = read_run_metrics(argv[i], run, valid_to_load, thread_count);
         if(ret != SUCCESS) return ret;
 
         model::plot::plot_data<model::plot::bar_point> data;
