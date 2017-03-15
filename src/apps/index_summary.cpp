@@ -46,6 +46,7 @@
 #include <iomanip>
 #include "interop/io/metric_file_stream.h"
 #include "interop/logic/summary/index_summary.h"
+#include "interop/util/option_parser.h"
 #include "interop/version.h"
 #include "inc/application.h"
 
@@ -61,9 +62,9 @@ using namespace illumina::interop;
  * @param out output stream
  * @param summary summary metrics
  */
-void print_summary(std::ostream& out, const index_flowcell_summary& summary);
+void print_summary(std::ostream& out, const index_flowcell_summary& summary, const bool csv_format);
 
-int main(int argc, char** argv)
+int main(int argc, const char** argv)
 {
     if(argc == 0)
     {
@@ -72,6 +73,27 @@ int main(int argc, char** argv)
         return INVALID_ARGUMENTS;
     }
     const size_t thread_count = 1;
+    int csv_format = 0;
+
+    util::option_parser description;
+    description
+            (csv_format, "csv", "Format output as CSV only");
+    if(description.is_help_requested(argc, argv))
+    {
+        std::cout << "Usage: " << io::basename(argv[0]) << " run_folder [--option1=value1] [--option2=value2]" << std::endl;
+        description.display_help(std::cout);
+        return SUCCESS;
+    }
+    try
+    {
+        description.parse(argc, argv);
+        description.check_for_unknown_options(argc, argv);
+    }
+    catch(const util::option_exception& ex)
+    {
+        std::cerr << ex.what() << std::endl;
+        return INVALID_ARGUMENTS;
+    }
 
     std::vector<unsigned char> valid_to_load;
     logic::utils::list_index_metrics_to_load(valid_to_load); // Only load the InterOp files required
@@ -94,7 +116,7 @@ int main(int argc, char** argv)
         summary.sort();
         try
         {
-            print_summary(std::cout, summary);
+            print_summary(std::cout, summary, csv_format > 0);
         }
         catch(const std::exception& ex)
         {
@@ -114,15 +136,23 @@ int main(int argc, char** argv)
  * @param fillch fill character (space by default)
  */
 template<typename I>
-void print_array(std::ostream& out, I beg, I end, const size_t width, const char fillch=' ')
+void print_array(std::ostream& out, I beg, I end, const size_t width, const char fillch)
 {
     std::ios::fmtflags f( out.flags() );
-    for(;beg != end;++beg)
+    for(I start=beg;beg != end;++beg)
     {
-        out << " ";
-        out.width(width);
-        out.fill(fillch);
-        out << std::left << *beg;
+        if(fillch != 0)
+        {
+            out << " ";
+            out.width(width);
+            out.fill(fillch);
+            out << std::left << *beg;
+        }
+        else
+        {
+            if(beg != start) out << ",";
+            out << *beg;
+        }
     }
     out.flags(f);
     out << std::endl;
@@ -144,7 +174,7 @@ size_t size_of(const char*(&)[N])
  * @param fillch fill character (space by default)
  */
 template<size_t N>
-void print_array(std::ostream& out, const char*(&values)[N], const size_t width, const char fillch=' ')
+void print_array(std::ostream& out, const char*(&values)[N], const size_t width, const char fillch)
 {
     print_array(out, values, values+N, width, fillch);
 }
@@ -156,7 +186,7 @@ void print_array(std::ostream& out, const char*(&values)[N], const size_t width,
  * @param fillch fill character (space by default)
  */
 template<size_t N>
-void print_array(std::ostream& out, std::string(&values)[N], const size_t width, const char fillch=' ')
+void print_array(std::ostream& out, std::string(&values)[N], const size_t width, const char fillch)
 {
     print_array(out, values, values+N, width, fillch);
 }
@@ -167,7 +197,7 @@ void print_array(std::ostream& out, std::string(&values)[N], const size_t width,
  * @param width of fill characters around string
  * @param fillch fill character (space by default)
  */
-void print_array(std::ostream& out, const std::vector<std::string>& values, const size_t width, const char fillch=' ')
+void print_array(std::ostream& out, const std::vector<std::string>& values, const size_t width, const char fillch)
 {
     print_array(out, values.begin(), values.end(), width, fillch);
 }
@@ -209,11 +239,12 @@ void populate_index(const index_count_summary& summary, std::vector<std::string>
     values[5] = format(summary.fraction_mapped(), 0, 4);
 }
 
-void print_summary(std::ostream& out, const index_lane_summary& summary)
+void print_summary(std::ostream& out, const index_lane_summary& summary, const bool csv_format)
 {
     const size_t width=15;
+    const char fillch = csv_format ? 0 : ' ';
     const char* flowcell_header[] = {"Total Reads", "PF Reads", "% Read Identified (PF)", "CV", "Min", "Max"};
-    print_array(out, flowcell_header, width);
+    print_array(out, flowcell_header, width, fillch);
     std::vector<std::string> values(size_of(flowcell_header));
     values[0] = format(static_cast<float>(summary.total_reads()), 0, 0);
     values[1] = format(static_cast<float>(summary.total_pf_reads()), 0, 0);
@@ -221,24 +252,24 @@ void print_summary(std::ostream& out, const index_lane_summary& summary)
     values[3] = format(summary.mapped_reads_cv(), 0, 4);
     values[4] = format(summary.min_mapped_reads(), 0, 4);
     values[5] = format(summary.max_mapped_reads(), 0, 4);
-    print_array(out, values, width);
+    print_array(out, values, width, fillch);
 
     const char* index_header[] = {"Index Number", "Sample Id", "Project", "Index 1 (I7)", "Index 2 (I5)", "% Read Identified (PF)"};
     values.resize(size_of(index_header));
-    print_array(out, index_header, width);
+    print_array(out, index_header, width, fillch);
     for(size_t index=0;index<summary.size();++index)
     {
         populate_index(summary[index], values);
-        print_array(out, values, width);
+        print_array(out, values, width, fillch);
     }
 }
 
-void print_summary(std::ostream& out, const index_flowcell_summary& summary)
+void print_summary(std::ostream& out, const index_flowcell_summary& summary, const bool csv_format)
 {
     for(size_t lane=0;lane<summary.size();++lane)
     {
         out << "Lane " << lane+1 << "\n";
-        print_summary(out, summary[lane]);
+        print_summary(out, summary[lane], csv_format);
     }
 }
 

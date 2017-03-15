@@ -56,7 +56,7 @@ using namespace illumina::interop;
  * @param summary summary metrics
  * @param information_level level of information to print
  */
-void print_summary(std::ostream& out, const run_summary& summary, const size_t information_level);
+void print_summary(std::ostream& out, const run_summary& summary, const size_t information_level, const bool csv_format);
 
 int main(int argc, const char** argv)
 {
@@ -70,9 +70,11 @@ int main(int argc, const char** argv)
     const size_t thread_count = 1;
 
     size_t information_level=5;
+    int csv_format=0;
     util::option_parser description;
     description
-            (information_level, "level", "Level of summary information: 0: total, 1: non-index, 2: Read, 3: Lane, 4: Surface");
+            (information_level, "level", "Level of summary information: 0: total, 1: non-index, 2: Read, 3: Lane, 4: Surface")
+            (csv_format, "csv", "Format output as CSV only");
     if(description.is_help_requested(argc, argv))
     {
         std::cout << "Usage: " << io::basename(argv[0]) << " run_folder [--option1=value1] [--option2=value2]" << std::endl;
@@ -117,7 +119,7 @@ int main(int argc, const char** argv)
         }
         try
         {
-            print_summary(std::cout, summary, information_level);
+            print_summary(std::cout, summary, information_level, csv_format!=0);
         }
         catch(const std::exception& ex)
         {
@@ -138,22 +140,30 @@ int main(int argc, const char** argv)
  * @param fillch fill character (space by default)
  */
 template<typename I>
-void print_array(std::ostream& out, I beg, I end, const size_t width, const char fillch=' ')
+void print_array(std::ostream& out, I beg, I end, const size_t width, const char fillch)
 {
     std::ios::fmtflags f( out.flags() );
     if(beg != end)
     {
-        out.width(width);
-        out.fill(fillch);
-        out << std::left << *beg;
+        if(fillch != 0)
+        {
+            out.width(width);
+            out.fill(fillch);
+            out << std::left << *beg;
+        }
+        else out << *beg;
         ++beg;
     }
     for(;beg != end;++beg)
     {
         out << ",";
-        out.width(width);
-        out.fill(fillch);
-        out << std::left << *beg;
+        if(fillch != 0)
+        {
+            out.width(width);
+            out.fill(fillch);
+            out << std::left << *beg;
+        }
+        else out << *beg;
     }
     out.flags(f);
     out << std::endl;
@@ -166,7 +176,7 @@ void print_array(std::ostream& out, I beg, I end, const size_t width, const char
  * @param fillch fill character (space by default)
  */
 template<size_t N>
-void print_array(std::ostream& out, const char*(&values)[N], const size_t width, const char fillch=' ')
+void print_array(std::ostream& out, const char*(&values)[N], const size_t width, const char fillch)
 {
     print_array(out, values, values+N, width, fillch);
 }
@@ -178,7 +188,7 @@ void print_array(std::ostream& out, const char*(&values)[N], const size_t width,
  * @param fillch fill character (space by default)
  */
 template<size_t N>
-void print_array(std::ostream& out, std::string(&values)[N], const size_t width, const char fillch=' ')
+void print_array(std::ostream& out, std::string(&values)[N], const size_t width, const char fillch)
 {
     print_array(out, values, values+N, width, fillch);
 }
@@ -189,7 +199,7 @@ void print_array(std::ostream& out, std::string(&values)[N], const size_t width,
  * @param width of fill characters around string
  * @param fillch fill character (space by default)
  */
-void print_array(std::ostream& out, const std::vector<std::string>& values, const size_t width, const char fillch=' ')
+void print_array(std::ostream& out, const std::vector<std::string>& values, const size_t width, const char fillch)
 {
     print_array(out, values.begin(), values.end(), width, fillch);
 }
@@ -309,11 +319,12 @@ std::string format_read(const run::read_info& read)
     return "Read "+util::lexical_cast<std::string>(read.number()) + (read.is_index() ? " (I)" : "");
 }
 
-void print_summary(std::ostream& out, const run_summary& summary, const size_t information_level)
+void print_summary(std::ostream& out, const run_summary& summary, const size_t information_level, const bool csv_format)
 {
     const size_t width=15;
+    const char fillch = csv_format ? 0 : ' ';
     const char* read_header[] = {"Level", "Yield", "Projected Yield", "Aligned", "Error Rate", "Intensity C1", "%>=Q30"};
-    print_array(out, read_header, width);
+    print_array(out, read_header, width, fillch);
     std::vector<std::string> values(util::length_of(read_header));
     INTEROP_ASSERT(values.size()>=1);
     if( information_level >= 2)
@@ -322,18 +333,18 @@ void print_summary(std::ostream& out, const run_summary& summary, const size_t i
         {
             values[0] = format_read(summary[read].read());
             summarize(summary[read].summary(), values);
-            print_array(out, values, width);
+            print_array(out, values, width, fillch);
         }
     }
     if( information_level >= 1)
     {
         values[0] = "Non-indexed";
         summarize(summary.nonindex_summary(), values);
-        print_array(out, values, width);
+        print_array(out, values, width, fillch);
     }
     values[0]="Total";
     summarize(summary.total_summary(), values);
-    print_array(out, values, width);
+    print_array(out, values, width, fillch);
     out<< "\n\n";
 
     if( information_level >= 3)
@@ -346,18 +357,18 @@ void print_summary(std::ostream& out, const run_summary& summary, const size_t i
         for (size_t read = 0; read < summary.size(); ++read)
         {
             out << format_read(summary[read].read()) << std::endl;
-            print_array(out, lane_header, width);
+            print_array(out, lane_header, width, fillch);
             for (size_t lane = 0; lane < summary.lane_count(); ++lane)
             {
                 INTEROP_ASSERT(summary[read][lane].tile_count() > 0);
                 summarize(summary[read][lane], values);
-                print_array(out, values, width);
+                print_array(out, values, width, fillch);
                 if (summary.surface_count() > 1 && information_level >= 4)
                 {
                     for (size_t surface = 0; surface < summary.surface_count(); ++surface)
                     {
                         summarize(summary[read][lane][surface], values, summary[read][lane].lane());
-                        print_array(out, values, width);
+                        print_array(out, values, width, fillch);
                     }
                 }
             }
