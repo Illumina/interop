@@ -438,7 +438,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @snippet src/examples/example_q_metric.cpp Calculating Total >= Q30
          *
          * @sa q_score_header::index_for_q_value
-         * @param qscore percentage of clusters over the given q-score value
+         * @param qscore_index index of the q-score (for unbinned 29 is Q30)
          * @return total of clusters over the given q-score
          */
         uint_t total_over_qscore(const size_t qscore_index) const
@@ -495,7 +495,6 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          *
          * @sa q_score_header::bins()
          * @param qscore_index index of the q-score (for unbinned 29 is Q30)
-         * @param bins q-score histogram bins
          * @return percent of cluster over the given q-score
          */
         float percent_over_qscore_cumulative(const size_t qscore_index) const

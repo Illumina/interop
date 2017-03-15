@@ -54,7 +54,7 @@ set BUILD_PARAM=%BUILD_PARAM% -DPACKAGE_OUTPUT_FILE_PREFIX=%DIST_DIR% -DCMAKE_BU
 
 if "%COMPILER%" == "mingw" (
 echo ##teamcity[blockOpened name='Configure %BUILD_TYPE% MinGW']
-echo cmake %SOURCE_DIR% -G"MinGW Makefiles" %BUILD_PARAM%
+echo cmake %SOURCE_DIR% -G"MinGW Makefiles" %BUILD_PARAM% -DENABLE_PYTHON=OFF
 cmake %SOURCE_DIR% -G"MinGW Makefiles" %BUILD_PARAM% -DENABLE_PYTHON=OFF
 if !errorlevel! neq 0 exit /b !errorlevel!
 echo ##teamcity[blockClosed name='Configure %BUILD_TYPE% MinGW']

@@ -75,6 +75,10 @@ echo "##teamcity[blockOpened name='NuSpec Creation $build_type']"
 cmake --build . --target nuspec -- -j 8
 echo "##teamcity[blockClosed name='NuSpec Creation $build_type']"
 
+echo "##teamcity[blockOpened name='Python Wheel Creation $build_type']"
+cmake --build . --target package_wheel -- -j 8
+echo "##teamcity[blockClosed name='Python Wheel Creation $build_type']"
+
 cd $dist_dir
 echo "##teamcity[blockOpened name='NuPack $build_type']"
 nuget pack ${build_dir}/src/ext/csharp/package.nuspec
