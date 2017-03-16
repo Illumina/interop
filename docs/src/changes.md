@@ -4,6 +4,7 @@
 
 Date       | Description
 ---------- | -----------
+2017-03-15 | IPA-6285: IPA-6285: Support CSV writing of summary
 
 ## v1.0.17
 
