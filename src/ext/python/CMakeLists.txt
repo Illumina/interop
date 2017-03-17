@@ -27,10 +27,10 @@ endif()
 if(MSVC)
     string(REGEX MATCH "python[0-9]?[0-9]?_d.lib" HAS_DEBUG_PYTHON "${PYTHON_LIBRARIES}")
     if(NOT HAS_DEBUG_PYTHON)
-        message(STATUS "No debug Python library found on Windows for MSVC")
+        message(STATUS "Debug Python library for MSVC: Found")
         set(PYTHON_GENERATED_COMPILE_FLAGS "${PYTHON_GENERATED_COMPILE_FLAGS} -DSWIG_PYTHON_INTERPRETER_NO_DEBUG")
     else()
-        message(STATUS "Found debug Python library on Windows for MSVC")
+        message(STATUS "Debug Python library for MSVC: Not Found")
     endif()
 endif()
 
@@ -60,9 +60,6 @@ foreach(SRC ${SWIG_SRCS})
 
     if(PYTHON_GENERATED_COMPILE_FLAGS)
         set_target_properties(${SWIG_MODULE} PROPERTIES COMPILE_FLAGS "${PYTHON_GENERATED_COMPILE_FLAGS}")
-        #set_source_files_properties(${swig_generated_file_fullname}
-        #        PROPERTIES COMPILE_FLAGS "${PYTHON_GENERATED_COMPILE_FLAGS}"
-        #        )
     endif()
 
 

@@ -105,7 +105,7 @@ branches:
 deploy:
   provider: GitHub
   description: 'Release description'
-  artifact: /interop-.*\.zip|*\.whl/
+  artifact: /interop-.*\.zip/,/.*\.whl/
   draft: true
   auth_token:
       secure: HcMKUFlziwHVs3kI4ZWKvy9LPKHUoVsaURh9C0yHz7rvMaPD/J7yvlPcTYK7mdrM

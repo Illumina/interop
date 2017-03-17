@@ -121,8 +121,9 @@ before_script:
 
 script:
 - export BUILD_PATH=${PWD}/${BUILD_NAME}
+- export PYTHON_BUILD_PATH=${PWD}/dist
 - echo 'Configuring...' && echo -en 'travis_fold:start:script.1\\r'
-- cmake -DNUNIT_ROOT=$HOME/NUnit-2.6.4 ../ -DENABLE_BACKWARDS_COMPATIBILITY=$INTEROP_C89 -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_INSTALL_PREFIX=${BUILD_PATH} -DPACKAGE_OUTPUT_FILE_PREFIX=${PWD}/dist
+- cmake -DNUNIT_ROOT=$HOME/NUnit-2.6.4 ../ -DENABLE_BACKWARDS_COMPATIBILITY=$INTEROP_C89 -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_INSTALL_PREFIX=${BUILD_PATH} -DPACKAGE_OUTPUT_FILE_PREFIX=${PYTHON_BUILD_PATH}
 - echo -en 'travis_fold:end:script.1\\r'
 - cmake --build .
 - echo 'Installing...' && echo -en 'travis_fold:start:script.2\\r'
@@ -147,7 +148,7 @@ notifications:
 before_deploy:
 - cd `dirname ${BUILD_PATH}`
 - tar czf interop-${BUILD_NAME}.tar.gz ${BUILD_NAME}
-- export PYTHON_PACKAGE_NAME=`find ../dist -name "*.whl"`
+- export PYTHON_PACKAGE_NAME=`find $PYTHON_BUILD_PATH -name "*.whl"`
 deploy:
   skip_cleanup: true
   provider: releases
