@@ -70,12 +70,14 @@ install:
       if (Test-Path "C:/ProgramData/chocolatey/bin/swig.exe") {
         C:/ProgramData/chocolatey/bin/swig.exe -swiglib
         if ($lastexitcode -ne 0) {
-            echo "using swig from cache"
-        }
-        else{
+          echo "Installing swig from cache"
           choco install swig --version 3.0.5 -y > $null
         }
+        else{
+            echo "using swig from cache"
+        }
       } else {
+          echo "Installing swig from cache"
           choco install swig --version 3.0.5 -y > $null
       }
   - if not exist "%MINGW_ARCHIVE%" appveyor DownloadFile "%MINGW_URL%" -FileName "%MINGW_ARCHIVE%"
