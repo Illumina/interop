@@ -1,9 +1,15 @@
 # Changes                                               {#changes}
 
-## v1.0.18 (Master)
+## v1.0.19 (Master)
 
 Date       | Description
 ---------- | -----------
+
+## v1.0.18
+
+Date       | Description
+---------- | -----------
+2017-03-16 | Add Swig Python binding to InterOp Library
 2017-03-15 | IPA-6285: IPA-6285: Support CSV writing of summary
 
 ## v1.0.17

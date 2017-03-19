@@ -37,6 +37,7 @@ environment:
     - generator: "Visual Studio 14 2015 Win64"
       BUILD: msvc14_win64
       config_type: win64
+      PACKAGE_PYTHON_TARGET: package_wheel
 #    - generator: "Visual Studio 14 2015"
 #      BUILD: msvc14_win32
 #      config_type: win32
@@ -54,10 +55,14 @@ environment:
       COMPILER_PATH: C:\mingw64\bin
       BUILD: mingw_win64
       config_type: win64
+      ADDIONAL_CONFIG_OPTIONS: -DENABLE_PYTHON=OFF
+      PACKAGE_PYTHON_TARGET: package
 
 before_build:
   - cmd: set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
   - cmd: set PATH=%COMPILER_PATH%;%PATH%
+  - cmd: set PATH=C:\Miniconda-x64;C:\Miniconda-x64\Scripts;%PATH%
+  - cmd: conda install numpy -y
 
 install:
   - cmd: date /T & time /T
@@ -73,9 +78,10 @@ install:
 build_script:
   - set BUILD_PATH=%CD%\%BUILD%_%configuration%
   - cmake --version
-  - cmake ../ -G "%GENERATOR%" -H. -Bbuild -DCMAKE_BUILD_TYPE="%configuration%" -DCMAKE_INSTALL_PREFIX=%BUILD_PATH%
+  - cmake ../ -G "%GENERATOR%" -H. -Bbuild -DCMAKE_BUILD_TYPE="%configuration%" -DCMAKE_INSTALL_PREFIX=%BUILD_PATH% -DPACKAGE_OUTPUT_FILE_PREFIX=%CD% %ADDIONAL_CONFIG_OPTIONS%
   - cmake --build build --config "%configuration%"
   - cmake --build build --config "%configuration%" --target install
+  - cmake --build build --target %PACKAGE_PYTHON_TARGET%
 
 test_script:
   - cmake --build build --config "%configuration%" --target check
@@ -88,6 +94,8 @@ after_build:
 artifacts:
   - path: .\*.zip
     name: Releases
+  - path: .\*.whl
+    name: PythonRelease
 
 branches:
   only:
@@ -97,7 +105,7 @@ branches:
 deploy:
   provider: GitHub
   description: 'Release description'
-  artifact: /interop-.*\.zip/
+  artifact: /interop-.*\.zip/,/.*\.whl/
   draft: true
   auth_token:
       secure: HcMKUFlziwHVs3kI4ZWKvy9LPKHUoVsaURh9C0yHz7rvMaPD/J7yvlPcTYK7mdrM

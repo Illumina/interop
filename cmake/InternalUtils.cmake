@@ -122,7 +122,7 @@ macro(interop_config_compiler_and_linker)
     endif()
 
 
-    set(flags_to_check "-Wno-non-template-friend;-Wno-eof-newline;-Wno-maybe-uninitialized;-Wno-strict-aliasing;-fno-strict-aliasing;-Wno-unused-function;-Wno-unused-parameter;-Wno-unnamed-type-template-args;-Wno-c++0x-compat;-Wno-error=c++0x-compat")
+    set(flags_to_check "-Wno-uninitialized;-Wno-non-template-friend;-Wno-eof-newline;-Wno-maybe-uninitialized;-Wno-strict-aliasing;-fno-strict-aliasing;-Wno-unused-function;-Wno-unused-parameter;-Wno-unnamed-type-template-args;-Wno-c++0x-compat;-Wno-error=c++0x-compat")
     foreach(flag ${flags_to_check})
         string(TOUPPER ${flag} FLAG_NAME)
         string(REPLACE "-" "_" FLAG_NAME ${FLAG_NAME})

@@ -290,7 +290,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
                                      const std::vector<model::table::imaging_column>& columns,
                                      const row_offset_map_t& row_offset,
                                      float* data_beg,
-                                     const size_t n)
+                                     const size_t n) throw(model::index_out_of_bounds_exception)
     {
         std::fill(data_beg, data_beg+n, std::numeric_limits<float>::quiet_NaN());
         create_imaging_table_data(metrics, columns, row_offset, data_beg, data_beg+n);

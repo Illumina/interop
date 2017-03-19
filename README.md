@@ -10,8 +10,7 @@ Illumina sequencers. These libraries are backwards compatible and capable of sup
 with one exception: GA systems have been excluded.
 
 ***
->  We are happy to announce support for Illumina's newest sequencer: NovaSeq. This includes support for new InterOp
->  formats, per cycle InterOp files, and per cycle phasing weights (EmpiricalPhasingMetricsOut.bin).
+>  We now support an interface to Python (see contents below)
 ***
 
 The InterOp files supported by this library include:
@@ -54,6 +53,7 @@ Documentation
 | [Issues]                      | Have a question? Need a feature? Found a bug? Interact with the developers here.     |
 | [Performance][PerfPage]       | Computation performance of the code                                                  |
 | [Formats][BinaryFormats]      | Description of the binary formats for each InterOp file                              |
+| [Python][PythonBinding]       | Step by step tutorial using the Python binding                                       |
 
 [MainPage]: http://illumina.github.io/interop/index.html
 [InstallPage]: http://illumina.github.io/interop/install.html
@@ -64,9 +64,18 @@ Documentation
 [Issues]: https://github.com/Illumina/interop/issues
 [PerfPage]: http://illumina.github.io/interop/perf.html
 [BinaryFormats]: http://illumina.github.io/interop/binary_formats.html
+[PythonBinding]: http://illumina.github.io/interop/python_binding.html
 
 Install
 -------
+
+### Python
+
+You should have NumPy already installed.
+
+~~~~~~~~~~~~~{.sh}
+$ pip install -f https://github.com/Illumina/interop/releases/latest interop
+~~~~~~~~~~~~~
 
 ### From Source
 
