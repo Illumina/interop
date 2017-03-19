@@ -68,7 +68,13 @@ install:
   - cmd: date /T & time /T
   - ps: |
       if (Test-Path "C:/ProgramData/chocolatey/bin/swig.exe") {
-          echo "using swig from cache"
+        C:/ProgramData/chocolatey/bin/swig.exe -swiglib
+        if ($lastexitcode -ne 0) {
+            echo "using swig from cache"
+        }
+        else{
+          choco install swig --version 3.0.5 -y > $null
+        }
       } else {
           choco install swig --version 3.0.5 -y > $null
       }
