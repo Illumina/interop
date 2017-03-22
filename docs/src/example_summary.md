@@ -19,6 +19,14 @@ C#
 @snippet src/examples/csharp/SummaryExample.cs Reporting Summary Metrics in CSharp
 
 
+Python
+------
+
+
+If you have not installed InterOp, see [Install InterOp From a Wheel](@ref install)
+
+@snippet src/examples/python/summary.py Reporting Summary Metrics in Python
+
 C++
 ---
 

@@ -51,6 +51,17 @@ int main(int argc, char** argv)
         std::cout << "# Run Folder: " << io::basename(argv[i]) << std::endl;
         int ret = read_run_metrics(argv[i], run, valid_to_load, thread_count);
         if (ret != SUCCESS) return ret;
+
+#ifdef INTEROP_TEST_CSHARP_BINDING
+        std::vector<model::table::imaging_column> columns;
+        logic::table::row_offset_map_t row_offsets;
+        logic::table::create_imaging_table_columns(run, columns);
+        const size_t column_count = logic::table::count_table_columns(columns);
+        logic::table::count_table_rows(run, row_offsets);
+        std::vector<float> data(row_offsets.size()*column_count);
+        logic::table::populate_imaging_table_data(run, columns, row_offsets, &data[0], data.size());
+#endif
+
         model::table::imaging_table table;
 
         try

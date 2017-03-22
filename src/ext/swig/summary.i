@@ -14,6 +14,7 @@
 %import "src/ext/swig/metrics.i"
 %import "src/ext/swig/run_metrics.i"
 
+
 // Ensure all the modules import the shared namespace
 %pragma(csharp) moduleimports=%{
 using Illumina.InterOp.Metrics;

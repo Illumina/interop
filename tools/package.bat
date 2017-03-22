@@ -63,6 +63,10 @@ cmake --build . --target nuspec --config Release -- /M
 if %errorlevel% neq 0 exit /b %errorlevel%
 echo ##teamcity[blockClosed name='NuSpec Release Visual Studio 2015 Win64']
 
+echo ##teamcity[blockOpened name='Python Wheel Release Visual Studio 2015 Win64']
+cmake --build . --target package_wheel --config Release -- /M
+if %errorlevel% neq 0 exit /b %errorlevel%
+echo ##teamcity[blockClosed name='Python Wheel Release Visual Studio 2015 Win64']
 
 echo "##teamcity[blockOpened name='NuPack Visual Studio 2015 Win64']"
 echo %BUILD_PATH%\nuget pack %BUILD_DIR%\src\ext\csharp\package.nuspec

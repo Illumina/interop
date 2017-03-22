@@ -13,9 +13,25 @@ available for:
 - Linux
 - Mac OSX
 
+In addition to the binary archive below, there are language specific packages including:
+
+ - Wheel for Python
+ 
+ Note, we only distribute from GitHub currently, and not PyPi or NuGet.org
+
+### Binary Archive (C++, C#, Python, Java)
+
 [Latest Release]
 
 [Latest Release]: https://github.com/Illumina/interop/releases/latest
+
+### Python<a name="python_install"></a>
+
+For Pythons users, a Wheel package is available on Github Release:
+
+~~~~~~~~~~~~~{.sh}
+$ pip install -f https://github.com/Illumina/interop/releases/latest interop
+~~~~~~~~~~~~~
 
 ## Build from Source
 

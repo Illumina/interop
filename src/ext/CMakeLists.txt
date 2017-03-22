@@ -33,6 +33,7 @@ set(SWIG_DEPS_TEMP
         swig/exceptions/exceptions_impl.i
         swig/exceptions/exceptions_csharp.i
         swig/arrays/arrays_csharp_impl.i
+        swig/arrays/arrays_java_impl.i
         swig/arrays/arrays_impl.i
         swig/arrays/arrays_numpy_impl.i)
 
@@ -60,6 +61,9 @@ endforeach()
 
 if(ENABLE_CSHARP)
     add_subdirectory("csharp")
+endif()
+if(ENABLE_PYTHON)
+    add_subdirectory("python")
 endif()
 
 

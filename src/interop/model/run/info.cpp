@@ -314,6 +314,8 @@ namespace illumina { namespace interop { namespace model { namespace run
         typedef flowcell_layout::str_vector_t str_vector_t;
         if(m_flowcell.naming_method()==constants::UnknownTileNamingMethod)
             INTEROP_THROW(invalid_tile_naming_method, "Unknown tile naming method");
+        if(m_flowcell.lanes_per_section() > m_flowcell.lane_count())
+            INTEROP_THROW(invalid_run_info_exception, "Lanes per section cannot exceed number of lanes");
         std::set<size_t> unique_numbers;
         for(read_vector_t::const_iterator it = m_reads.begin();it != m_reads.end();++it)
         {

@@ -80,9 +80,6 @@ protected:
     }
 
     /** This function does nothing
-     *
-     * @param baseline_file baseline file
-     * @param actual actual model data
      */
     bool write_actual(const std::string &, const model::metrics::run_metrics &) const
     {

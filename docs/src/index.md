@@ -10,8 +10,7 @@ metric files are produced after a run during secondary analysis (index metrics) 
 the original data (collapsed quality scores).
 
 ***
->  We are happy to announce support for Illumina's newest sequencer: NovaSeq. This includes support for new InterOp
->  formats, per cycle InterOp files, and per cycle phasing weights (EmpiricalPhasingMetricsOut.bin).
+>  We now support an interface to Python (see contents below)
 ***
 
 Compatibility
@@ -36,6 +35,7 @@ Table of Contents
 | [Performance](@ref perf)      | Computation performance of the code                                                  |
 | [Changes](@ref changes)       | Changes between releases of the source code                                          |
 | [Formats](@ref binary_formats)| Description of the binary formats for each InterOp file                              |
+| [Python](@ref python_binding) | Step by step tutorial using the Python binding                                       |
 
 [Source Code]: https://github.com/Illumina/interop
 [Issues]: https://github.com/Illumina/interop/issues
