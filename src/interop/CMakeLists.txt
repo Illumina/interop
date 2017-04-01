@@ -162,7 +162,10 @@ set(HEADERS
         ../../interop/logic/summary/phasing_summary.h
         ../../interop/model/metrics/dynamic_phasing_metric.h
         ../../interop/logic/metric/dynamic_phasing_metric.h
-        )
+        ../../interop/util/base_exception.h
+        ../../interop/model/run/run_exceptions.h
+        ../../interop/model/metric_base/metric_exceptions.h
+        ../../interop/model/table/table_exceptions.h ../../interop/model/plot/plot_exceptions.h)
 
 set(INTEROP_HEADERS ${HEADERS} PARENT_SCOPE)
 if(COMPILER_IS_GNUCC_OR_CLANG)

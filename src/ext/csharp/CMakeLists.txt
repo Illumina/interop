@@ -31,7 +31,7 @@ foreach(SRC ${SWIG_SRCS})
         configure_file(${CMAKE_SOURCE_DIR}/cmake/version.rc.in ${SWIG_VERSION_INFO} @ONLY) # Requires: LIB_NAME, VERSION_LIST and VERSION
     endif()
     set(SWIG_MODULE_c_csharp_${MODULE}_EXTRA_DEPS ${SWIG_DEPS} ${SWIG_VERSION_INFO})
-    swig_add_module(c_csharp_${MODULE} csharp ${SRC} ${SWIG_VERSION_INFO})
+    add_swig_library(c_csharp_${MODULE} csharp ${SRC} ${SWIG_VERSION_INFO})
     set(SWIG_MODULE ${SWIG_MODULE_c_csharp_${MODULE}_REAL_NAME})
     set(EXTRA_LINKER_FLAGS)
     if(MINGW)

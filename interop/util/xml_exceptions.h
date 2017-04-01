@@ -8,20 +8,20 @@
 
 #pragma once
 
-#include <stdexcept>
+#include "interop/util/base_exception.h"
 
 namespace illumina { namespace interop { namespace xml
 {
 
     /** Base exception for all format errors
      */
-    struct xml_format_exception : public std::runtime_error
+    struct xml_format_exception : public util::base_exception
     {
         /** Constructor
          *
          *  @param mesg error message
          */
-        xml_format_exception(const std::string &mesg) : std::runtime_error(mesg)
+        xml_format_exception(const std::string &mesg) : util::base_exception(mesg)
         { }
     };
     /** @defgroup xml_exceptions XML Parsing Exceptions
@@ -33,13 +33,13 @@ namespace illumina { namespace interop { namespace xml
      */
     /** Exception raised if the XML file is not found in the file system
      */
-    struct xml_file_not_found_exception : public std::runtime_error
+    struct xml_file_not_found_exception : public util::base_exception
     {
         /** Constructor
          *
          *  @param mesg error message
          */
-        xml_file_not_found_exception(const std::string &mesg) : std::runtime_error(mesg)
+        xml_file_not_found_exception(const std::string &mesg) : util::base_exception(mesg)
         { }
     };
 

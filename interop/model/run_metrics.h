@@ -10,6 +10,7 @@
 #include "interop/util/exception.h"
 #include "interop/util/object_list.h"
 #include "interop/model/metric_base/metric_set.h"
+#include "interop/model/model_exceptions.h"
 #include "interop/io/stream_exceptions.h"
 #include "interop/io/metric_file_stream.h"
 #include "interop/model/run/info.h"
@@ -147,7 +148,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         model::index_out_of_bounds_exception,
         model::invalid_tile_naming_method,
         model::invalid_run_info_exception,
-        invalid_parameter);
+        model::invalid_parameter);
 
         /** Read XML files: RunInfo.xml and possibly RunParameters.xml
          *
@@ -362,7 +363,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         io::file_not_found_exception,
         io::bad_format_exception,
         io::incomplete_file_exception,
-        invalid_parameter);
+        model::invalid_parameter);
         /** Write binary metrics to the run folder
          *
          * @param run_folder run folder path

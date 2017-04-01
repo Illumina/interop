@@ -9,7 +9,6 @@
 #include <string>
 #include <fstream>
 #include "interop/util/exception.h"
-#include "interop/model/model_exceptions.h"
 #include "interop/io/format/metric_format_factory.h"
 #include "interop/io/format/text_format_factory.h"
 #include "interop/io/paths.h"

@@ -37,7 +37,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          *
          * @param data use the given buffer to back the heat map
          */
-        void set_buffer(float* data) throw(invalid_parameter)
+        void set_buffer(float* data) throw(model::invalid_parameter)
         {
             if(m_free) INTEROP_THROW( invalid_parameter, "Cannot use internal buffer map with external buffer");
             if(empty()) INTEROP_THROW( invalid_parameter, "Cannot set external buffer to empty map");

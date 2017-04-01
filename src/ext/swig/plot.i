@@ -9,7 +9,7 @@
 //////////////////////////////////////////////
 // Don't wrap it, just use it with %import
 //////////////////////////////////////////////
-%import "src/ext/swig/exceptions/exceptions_impl.i"
+%include "src/ext/swig/exceptions/exceptions_impl.i"
 %include "src/ext/swig/arrays/arrays_impl.i"
 %import "src/ext/swig/run.i"
 %import "src/ext/swig/metrics.i"
@@ -18,6 +18,12 @@
 
 // Ensure all the modules import the shared namespace
 %pragma(csharp) moduleimports=%{
+using Illumina.InterOp.Metrics;
+using Illumina.InterOp.RunMetrics;
+using Illumina.InterOp.Run;
+%}
+
+%pragma(csharp) imclassimports=%{
 using Illumina.InterOp.Metrics;
 using Illumina.InterOp.RunMetrics;
 using Illumina.InterOp.Run;
@@ -41,7 +47,11 @@ using Illumina.InterOp.Run;
 // This imports the metrics
 WRAP_METRICS(IMPORT_METRIC_WRAPPER)
 // This allows exceptions to be imported, but not belong to the module
-EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
+RUN_EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
+METRICS_EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
+RUN_METRICS_EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
+
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Plotting
@@ -60,6 +70,15 @@ EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 #include "interop/model/plot/heatmap_data.h"
 #include "interop/model/plot/flowcell_data.h"
 %}
+
+// Exceptions
+
+
+%define PLOT_EXCEPTION_WRAPPER(WRAPPER)
+WRAPPER(illumina::interop::model::, invalid_filter_option, invalid_filter_option)
+%enddef
+PLOT_EXCEPTION_WRAPPER(WRAP_EXCEPTION)
+%include "interop/model/plot/plot_exceptions.h"
 
 %ignore illumina::interop::model::plot::flowcell_data::tile_id(size_t const,size_t const);
 RENAME_TEMPLATE_OPERATOR_CONST(illumina::interop::model::plot::heatmap_data);
