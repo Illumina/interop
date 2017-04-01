@@ -8,7 +8,9 @@ in various ways found in SAV.
 
 If you do not have the Python InterOp library installed, then you can do the following:
 
-    $ pip install -f https://ussd.artifactory.illumina.com/list/generic-bioinformatics/interop/pypi/ interop
+    $ pip install -f https://github.com/Illumina/interop/releases/latest interop
+
+Note, only Python versions 2.7, 3.5 and 3.6 are currently supported as binary builds. Other Python versions must be built from source.
 
 You can then test the install as follows:
     

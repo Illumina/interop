@@ -20,7 +20,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		/// Test FileNotFoundException
 		/// </summary>
 		[Test]
-	    [ExpectedException("Illumina.InterOp.Run.file_not_found_exception")]
+	    [ExpectedException("Illumina.InterOp.Comm.file_not_found_exception")]
 		public void TestFileNotFoundException()
 		{
             base_corrected_intensity_metrics metrics = new base_corrected_intensity_metrics();
@@ -40,7 +40,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		/// Test IndexOutOfBoundsException
 		/// </summary>
 		[Test]
-	    [ExpectedException("Illumina.InterOp.Run.index_out_of_bounds_exception")]
+	    [ExpectedException("Illumina.InterOp.Metrics.index_out_of_bounds_exception")]
 		public void TestIndexOutOfBoundsException()
 		{
             base_corrected_intensity_metrics metrics = new base_corrected_intensity_metrics();
@@ -50,7 +50,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		/// Test invalid_filter_option
 		/// </summary>
 		[Test]
-	    [ExpectedException("Illumina.InterOp.Run.invalid_filter_option")]
+	    [ExpectedException("Illumina.InterOp.Plot.invalid_filter_option")]
 		public void TestInvalidFilterOption()
 		{
             run_metrics metrics = new run_metrics();
@@ -64,7 +64,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		/// Test invalid_metric_type
 		/// </summary>
 		[Test]
-	    [ExpectedException("Illumina.InterOp.Run.invalid_metric_type")]
+	    [ExpectedException("Illumina.InterOp.RunMetrics.invalid_metric_type")]
 		public void TestInvalidMetricName()
 		{
             run_metrics metrics = new run_metrics();
@@ -76,7 +76,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		/// Test invalid_metric_type
 		/// </summary>
 		/*[Test]
-	    [ExpectedException("Illumina.InterOp.Run.invalid_column_type")]
+	    [ExpectedException("Illumina.InterOp.Table.invalid_column_type")]
 		public void TestInvalidColumnType()
 		{
             size_vector_2d offsets = new size_vector_2d();

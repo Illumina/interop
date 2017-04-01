@@ -28,6 +28,7 @@
 #include "interop/io/format/generic_layout.h"
 #include "interop/model/metric_base/metric_set.h"
 #include "interop/io/layout/base_metric.h"
+#include "interop/model/metric_base/metric_exceptions.h"
 #include "interop/model/metric_base/base_cycle_metric.h"
 
 namespace illumina { namespace interop { namespace model { namespace metrics
@@ -275,7 +276,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @param index index of the base (A=0, C=1, G=2, T=3)
          * @return average corrected intensity for specified base
          */
-        ushort_t corrected_int_all(const constants::dna_bases index) const throw(index_out_of_bounds_exception)
+        ushort_t corrected_int_all(const constants::dna_bases index) const throw(model::index_out_of_bounds_exception)
         {
             if(index >= static_cast<constants::dna_bases>(m_corrected_int_all.size()))
                 INTEROP_THROW( index_out_of_bounds_exception, "Base out of bounds");
@@ -288,7 +289,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @param index index of the base (A=0, C=1, G=2, T=3)
          * @return average corrected intensity over only base called clusters
          */
-        float corrected_int_called(const constants::dna_bases index) const throw(index_out_of_bounds_exception)
+        float corrected_int_called(const constants::dna_bases index) const throw(model::index_out_of_bounds_exception)
         {
             if(index >= static_cast<constants::dna_bases>(m_corrected_int_called.size()))
                 INTEROP_THROW(index_out_of_bounds_exception, "Base out of bounds");
@@ -327,7 +328,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @param index index of the base (NC=-1, A=0, C=1, G=2, T=3)
          * @return number of clusters called per base
          */
-        uint_t called_counts(const constants::dna_bases index) const throw(index_out_of_bounds_exception)
+        uint_t called_counts(const constants::dna_bases index) const throw(model::index_out_of_bounds_exception)
         {
             if(index >= static_cast<constants::dna_bases>(m_called_counts.size()))
                 INTEROP_THROW( index_out_of_bounds_exception, "Base out of bounds");
@@ -395,7 +396,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @param index index of the base (NC=-1, A=0, C=1, G=2, T=3)
          * @return percentage for given base
          */
-        float percent_base(const constants::dna_bases index) const throw(index_out_of_bounds_exception)
+        float percent_base(const constants::dna_bases index) const throw(model::index_out_of_bounds_exception)
         {
             uint_t total = total_calls(index == constants::NC);
             if (total == 0)
@@ -423,7 +424,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @note Supported by all versions
          * @return percentage for no calls
          */
-        float percent_nocall() const throw(index_out_of_bounds_exception)
+        float percent_nocall() const throw(model::index_out_of_bounds_exception)
         {
             return percent_base(constants::NC);
         }

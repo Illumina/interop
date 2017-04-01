@@ -196,7 +196,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          *
          * @return minimum contrast intensity
          */
-        ushort_t min_contrast(const size_t channel) const throw(index_out_of_bounds_exception)
+        ushort_t min_contrast(const size_t channel) const throw(model::index_out_of_bounds_exception)
         {
             if(channel >= m_min_contrast.size())
                 INTEROP_THROW( index_out_of_bounds_exception, "Channel out of bounds");
@@ -207,7 +207,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          *
          * @return maximum contrast intensity
          */
-        ushort_t max_contrast(const size_t channel) const throw(index_out_of_bounds_exception)
+        ushort_t max_contrast(const size_t channel) const throw(model::index_out_of_bounds_exception)
         {
             if(channel >= m_max_contrast.size())
                 INTEROP_THROW( index_out_of_bounds_exception, "Channel out of bounds");

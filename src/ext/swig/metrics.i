@@ -14,7 +14,6 @@
 %import "src/ext/swig/exceptions/exceptions_impl.i"
 %import "src/ext/swig/run.i"
 
-
 // The SWIG Python binding does not support polymorphic functions
 #if defined(SWIGPYTHON)
     %rename(to_group_feature) to_feature(const constants::metric_group);
@@ -27,6 +26,9 @@
 
 // Ensure all the modules import the shared namespace
 %pragma(csharp) moduleimports=%{
+using Illumina.InterOp.Run;
+%}
+%pragma(csharp) imclassimports=%{
 using Illumina.InterOp.Run;
 %}
 
@@ -43,7 +45,8 @@ using Illumina.InterOp.Run;
   }
 %}
 
-EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
+RUN_EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -53,7 +56,18 @@ EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 %{
 #include "interop/util/time.h"
 #include "interop/constants/enum_description.h"
+#include "interop/model/metric_base/metric_exceptions.h"
+#include "interop/model/run/run_exceptions.h"
+#include "interop/util/xml_exceptions.h"
 %}
+
+
+
+%define METRICS_EXCEPTION_WRAPPER(WRAPPER)
+WRAPPER(illumina::interop::model::, index_out_of_bounds_exception, index_out_of_bounds_exception)
+%enddef
+METRICS_EXCEPTION_WRAPPER(WRAP_EXCEPTION)
+%include "interop/model/metric_base/metric_exceptions.h"
 
 %ignore set_base(const io::layout::base_metric& base);
 %ignore set_base(const io::layout::base_cycle_metric& base);
@@ -154,6 +168,7 @@ WRAP_METRICS(IMPORT_METRIC_WRAPPER)
 
 
 WRAP_METRICS(INCLUDE_METRIC_WRAPPER)
+
 WRAP_METRICS(WRAP_TYPES)
 
 

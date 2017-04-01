@@ -14,6 +14,7 @@
 #include "interop/util/string.h"
 #include "interop/constants/enums.h"
 #include "interop/logic/utils/enums.h"
+#include "interop/model/table/table_exceptions.h"
 
 
 /** Mapping of data for the imaging table

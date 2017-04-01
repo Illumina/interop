@@ -48,7 +48,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
                         ::uint32_t *id_buffer,
                         const size_t lanes,
                         const size_t swaths,
-                        const size_t tiles)
+                        const size_t tiles)  throw(model::invalid_parameter)
         {
             heatmap_data::set_buffer(data_buffer, lanes, swaths * tiles);
             set_buffer(id_buffer, swaths, tiles);
@@ -246,7 +246,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          *
          * @param id_buffer buffer to hold the tile ids
          */
-        void set_buffer(::uint32_t *id_buffer) throw(invalid_parameter)
+        void set_buffer(::uint32_t *id_buffer)
         {
             if (m_free) INTEROP_THROW(invalid_parameter, "Cannot use internal buffer map with external buffer");
             if (empty()) INTEROP_THROW(invalid_parameter, "Cannot set external buffer to empty map");

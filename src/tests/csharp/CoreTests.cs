@@ -45,7 +45,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		/// Test IndexOutOfBoundsException
 		/// </summary>
 		[Test]
-	    [ExpectedException("Illumina.InterOp.Run.index_out_of_bounds_exception")]
+	    [ExpectedException("Illumina.InterOp.Metrics.index_out_of_bounds_exception")]
 		public void TestHeatMapIndexOutOfBoundsException()
 		{
             heatmap_data heatmap = new heatmap_data();
@@ -55,7 +55,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		/// Test IndexOutOfBoundsException
 		/// </summary>
 		[Test]
-	    [ExpectedException("Illumina.InterOp.Run.index_out_of_bounds_exception")]
+	    [ExpectedException("Illumina.InterOp.Metrics.index_out_of_bounds_exception")]
 		public void TestImagingTableIndexOutOfBoundsException()
 		{
             imaging_table table = new imaging_table();
@@ -65,7 +65,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		/// Test IndexOutOfBoundsException
 		/// </summary>
 		[Test]
-	    [ExpectedException("Illumina.InterOp.Run.index_out_of_bounds_exception")]
+	    [ExpectedException("Illumina.InterOp.Metrics.index_out_of_bounds_exception")]
 		public void TestIndexLaneSummaryIndexOutOfBoundsException()
 		{
             index_lane_summary summary = new index_lane_summary();
@@ -75,7 +75,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		/// Test IndexOutOfBoundsException
 		/// </summary>
 		[Test]
-	    [ExpectedException("Illumina.InterOp.Run.index_out_of_bounds_exception")]
+	    [ExpectedException("Illumina.InterOp.Metrics.index_out_of_bounds_exception")]
 		public void TestIndexFlowcellSummaryIndexOutOfBoundsException()
 		{
             index_flowcell_summary summary = new index_flowcell_summary();
@@ -85,7 +85,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		/// Test IndexOutOfBoundsException
 		/// </summary>
 		[Test]
-	    [ExpectedException("Illumina.InterOp.Run.index_out_of_bounds_exception")]
+	    [ExpectedException("Illumina.InterOp.Metrics.index_out_of_bounds_exception")]
 		public void TestRunSummaryIndexOutOfBoundsException()
 		{
             run_summary summary = new run_summary();
@@ -95,7 +95,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		/// Test IndexOutOfBoundsException
 		/// </summary>
 		[Test]
-	    [ExpectedException("Illumina.InterOp.Run.index_out_of_bounds_exception")]
+	    [ExpectedException("Illumina.InterOp.Metrics.index_out_of_bounds_exception")]
 		public void TestReadSummaryIndexOutOfBoundsException()
 		{
             read_summary summary = new read_summary();
@@ -105,7 +105,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		/// Test IndexOutOfBoundsException
 		/// </summary>
 		[Test]
-	    [ExpectedException("Illumina.InterOp.Run.index_out_of_bounds_exception")]
+	    [ExpectedException("Illumina.InterOp.Metrics.index_out_of_bounds_exception")]
 		public void TestLaneSummaryIndexOutOfBoundsException()
 		{
             lane_summary summary = new lane_summary();
@@ -115,7 +115,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		/// Test IndexOutOfBoundsException
 		/// </summary>
 		[Test]
-	    [ExpectedException("Illumina.InterOp.Run.index_out_of_bounds_exception")]
+	    [ExpectedException("Illumina.InterOp.Metrics.index_out_of_bounds_exception")]
 		public void TestTileMetricsIndexOutOfBoundsException()
 		{
             base_tile_metrics summary = new base_tile_metrics();
@@ -145,7 +145,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		/// Test IndexOutOfBoundsException
 		/// </summary>
 		[Test]
-	    [ExpectedException("Illumina.InterOp.Run.index_out_of_bounds_exception")]
+	    [ExpectedException("Illumina.InterOp.Metrics.index_out_of_bounds_exception")]
 		public void TestCandleStickCollectionIndexOutOfBoundsException()
 		{
             candle_stick_collection points = new candle_stick_collection();
@@ -155,7 +155,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		/// Test IndexOutOfBoundsException
 		/// </summary>
 		[Test]
-	    [ExpectedException("Illumina.InterOp.Run.index_out_of_bounds_exception")]
+	    [ExpectedException("Illumina.InterOp.Metrics.index_out_of_bounds_exception")]
 		public void TestBarCollectionIndexOutOfBoundsException()
 		{
             bar_collection points = new bar_collection();
@@ -165,7 +165,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		/// Test IndexOutOfBoundsException
 		/// </summary>
 		[Test]
-	    [ExpectedException("Illumina.InterOp.Run.index_out_of_bounds_exception")]
+	    [ExpectedException("Illumina.InterOp.Metrics.index_out_of_bounds_exception")]
 		public void TestCandleStickSeriesIndexOutOfBoundsException()
 		{
             candle_stick_series points = new candle_stick_series();
@@ -175,7 +175,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		/// Test IndexOutOfBoundsException
 		/// </summary>
 		[Test]
-	    [ExpectedException("Illumina.InterOp.Run.index_out_of_bounds_exception")]
+	    [ExpectedException("Illumina.InterOp.Metrics.index_out_of_bounds_exception")]
 		public void TestBarSeriesIndexOutOfBoundsException()
 		{
             bar_series points = new bar_series();
@@ -185,7 +185,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		/// Test IndexOutOfBoundsException
 		/// </summary>
 		[Test]
-	    [ExpectedException("Illumina.InterOp.Run.index_out_of_bounds_exception")]
+	    [ExpectedException("Illumina.InterOp.Metrics.index_out_of_bounds_exception")]
 		public void TestCandleStickDataIndexOutOfBoundsException()
 		{
             candle_stick_plot_data points = new candle_stick_plot_data();
@@ -195,7 +195,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		/// Test IndexOutOfBoundsException
 		/// </summary>
 		[Test]
-	    [ExpectedException("Illumina.InterOp.Run.index_out_of_bounds_exception")]
+	    [ExpectedException("Illumina.InterOp.Metrics.index_out_of_bounds_exception")]
 		public void TestBarDataIndexOutOfBoundsException()
 		{
             bar_plot_data points = new bar_plot_data();

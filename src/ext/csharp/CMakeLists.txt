@@ -31,7 +31,7 @@ foreach(SRC ${SWIG_SRCS})
         configure_file(${CMAKE_SOURCE_DIR}/cmake/version.rc.in ${SWIG_VERSION_INFO} @ONLY) # Requires: LIB_NAME, VERSION_LIST and VERSION
     endif()
     set(SWIG_MODULE_c_csharp_${MODULE}_EXTRA_DEPS ${SWIG_DEPS} ${SWIG_VERSION_INFO})
-    swig_add_module(c_csharp_${MODULE} csharp ${SRC} ${SWIG_VERSION_INFO})
+    add_swig_library(c_csharp_${MODULE} csharp ${SRC} ${SWIG_VERSION_INFO})
     set(SWIG_MODULE ${SWIG_MODULE_c_csharp_${MODULE}_REAL_NAME})
     set(EXTRA_LINKER_FLAGS)
     if(MINGW)
@@ -43,7 +43,7 @@ foreach(SRC ${SWIG_SRCS})
         set_target_properties(${SWIG_MODULE} PROPERTIES LINK_FLAGS "${EXTRA_LINKER_FLAGS}")
     endif()
     if(MSVC)
-        set_target_properties(${SWIG_MODULE} PROPERTIES COMPILE_FLAGS "${ENABLE_BIG_OBJ_FLAG} /wd4100")
+        set_target_properties(${SWIG_MODULE} PROPERTIES COMPILE_FLAGS "${ENABLE_BIG_OBJ_FLAG} /wd4100 /wd4702")
     elseif(MINGW)
         set_target_properties(${SWIG_MODULE} PROPERTIES COMPILE_FLAGS "${ENABLE_BIG_OBJ_FLAG} ${_WNO_UNUSED_FUNCTION} ${_WNO_UNUSED_PARAMETER}")
     elseif(COMPILER_IS_GNUCC_OR_CLANG)
@@ -85,6 +85,7 @@ set(SWIG_GEN_CSHARP_SOURCE_FILES ${CMAKE_SWIG_OUTDIR}/*.cs CACHE INTERNAL "C# so
 
 set(ASSEMBLY_INFO ${CMAKE_CURRENT_BINARY_DIR}/AssemblyInfo.cs)
 configure_file(${CMAKE_SOURCE_DIR}/cmake/AssemblyInfo.cs.in ${ASSEMBLY_INFO} @ONLY)
+set(CSHARP_BINARY_SUFFIX ${CMAKE_SYSTEM_NAME})
 csharp_add_library(csharp_interop ${CMAKE_SWIG_OUTDIR}/*.cs)
 add_dependencies(csharp_interop ${SWIG_MODULE_LIST})
 foreach(SRC ${SWIG_SRCS})
@@ -168,6 +169,7 @@ add_custom_target(nuspec
         -DCSHARP_VERSION=${CSHARP_VERSION}
         -DINTEROP_VERSION=${INTEROP_VERSION_STR}
         -DPLATFORM=${NUGET_SYS_ID}
+        -DCSHARP_LIBRARY=${CSHARP_csharp_interop_BINARY_NAME}
         -DCONFIG="${CONFIG_DIR}"
         -DSHARED_LIB_SEARCH="${SHARED_LIB_SEARCH_STR}"
         -DCONFIG_INPUT_FILE=${CMAKE_SOURCE_DIR}/cmake/package.nuspec.in

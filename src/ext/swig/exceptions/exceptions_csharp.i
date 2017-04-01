@@ -33,7 +33,7 @@
            void ENTRY_POINT(CustomExceptionDelegate customCallback);
 
     static void SetPendingCustomException(string message) {
-      SWIGPendingException.Set(new Illumina.InterOp.Run.EXCEPTION_CSHARP(message, SWIGPendingException.Retrieve()));
+      SWIGPendingException.Set(new EXCEPTION_CSHARP(message, SWIGPendingException.Retrieve()));
     }
 
     static CustomExceptionHelper_##EXCEPTION_CPLUS_PLUS() {

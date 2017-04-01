@@ -8,6 +8,7 @@ if(swig_major_ver LESS "3")
     return()
 endif()
 
+find_package(PythonInterp)
 find_package(PythonLibs)
 if(NOT PYTHONLIBS_FOUND)
     return()
@@ -18,17 +19,12 @@ if(NOT NUMPY_FOUND)
     return()
 endif()
 
-find_package(PythonInterp)
 if(NOT PYTHONINTERP_FOUND)
     message(WARNING "Cannot find Python Interpretor, unit tests will not be run")
     return()
 endif()
 
-if(MSVC)
-    set(PYTHON_UNIT_TEST_SUITE $<$<CONFIG:Release>:CoreTests.py> $<$<CONFIG:Debug>:-c> $<$<CONFIG:Debug>:print>)
-else()
-    set(PYTHON_UNIT_TEST_SUITE CoreTests.py)
-endif()
+set(PYTHON_UNIT_TEST_SUITE CoreTests.py)
 
 set(PYTHON_TEST_ENABLED ON PARENT_SCOPE)
 add_custom_target(check_python
