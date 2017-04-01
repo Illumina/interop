@@ -19,7 +19,7 @@
 #include "interop/util/exception.h"
 #include "interop/util/assert.h"
 #include "interop/model/metric_base/base_read_metric.h"
-#include "interop/model/model_exceptions.h"
+#include "interop/model/metric_base/metric_exceptions.h"
 #include "interop/io/format/generic_layout.h"
 
 namespace illumina { namespace interop { namespace model { namespace metrics
@@ -224,7 +224,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @param n index of index
          * @return index
          */
-        const index_info &indices(const size_t n) const throw(index_out_of_bounds_exception)
+        const index_info &indices(const size_t n) const throw(model::index_out_of_bounds_exception)
         {
             if(n >= m_indices.size())
                 INTEROP_THROW( index_out_of_bounds_exception, "Index out of bounds");

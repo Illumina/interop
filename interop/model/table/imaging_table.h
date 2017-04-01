@@ -77,10 +77,13 @@ namespace illumina { namespace interop { namespace model { namespace table
          */
         float operator()(const size_t r, const size_t c, const size_t subcol=0)const throw(model::index_out_of_bounds_exception)
         {
-            if(r >=m_row_count) INTEROP_THROW(model::index_out_of_bounds_exception, "Row out of bounds");
-            if(c >=m_columns.size()) INTEROP_THROW(model::index_out_of_bounds_exception, "Column out of bounds");
+            if(r >=m_row_count)
+                INTEROP_THROW(model::index_out_of_bounds_exception, "Row out of bounds");
+            if(c >=m_columns.size())
+                INTEROP_THROW(model::index_out_of_bounds_exception, "Column out of bounds");
             const size_t col = m_columns[c].offset()+subcol;
-            if(col >=m_col_count) INTEROP_THROW(model::index_out_of_bounds_exception, "Column data offset out of bounds");
+            if(col >=m_col_count)
+                INTEROP_THROW(model::index_out_of_bounds_exception, "Column data offset out of bounds");
             const size_t index = r*m_col_count+col;
             INTEROP_ASSERT(index < m_data.size());
             return m_data[index];
@@ -95,10 +98,13 @@ namespace illumina { namespace interop { namespace model { namespace table
          */
         float at(const size_t r, const size_t c, const size_t subcol=0)const throw(model::index_out_of_bounds_exception)
         {
-            if(r >=m_row_count) INTEROP_THROW(model::index_out_of_bounds_exception, "Row out of bounds");
-            if(c >=m_columns.size()) INTEROP_THROW(model::index_out_of_bounds_exception, "Column out of bounds");
+            if(r >=m_row_count)
+                INTEROP_THROW(model::index_out_of_bounds_exception, "Row out of bounds");
+            if(c >=m_columns.size())
+                INTEROP_THROW(model::index_out_of_bounds_exception, "Column out of bounds");
             const size_t col = m_columns[c].offset()+subcol;
-            if(col >=m_col_count) INTEROP_THROW(model::index_out_of_bounds_exception, "Column data offset out of bounds");
+            if(col >=m_col_count)
+                INTEROP_THROW(model::index_out_of_bounds_exception, "Column data offset out of bounds");
             const size_t index = r*m_col_count+col;
             INTEROP_ASSERT(index < m_data.size());
             return m_data[index];
@@ -135,7 +141,8 @@ namespace illumina { namespace interop { namespace model { namespace table
          */
         const imaging_column& column_at(const size_t col_index)throw(model::index_out_of_bounds_exception)
         {
-            if( col_index >= m_columns.size()) INTEROP_THROW(model::index_out_of_bounds_exception, "Column index of out bounds");
+            if( col_index >= m_columns.size())
+                INTEROP_THROW(model::index_out_of_bounds_exception, "Column index of out bounds");
             return m_columns[col_index];
         }
 

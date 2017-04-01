@@ -22,6 +22,12 @@ using Illumina.InterOp.Run;
 using Illumina.InterOp.RunMetrics;
 %}
 
+%pragma(csharp) imclassimports=%{
+using Illumina.InterOp.Metrics;
+using Illumina.InterOp.Run;
+using Illumina.InterOp.RunMetrics;
+%}
+
 // Ensure each of the generated C# class import the shared code
 %typemap(csimports) SWIGTYPE %{
 using System;
@@ -40,7 +46,9 @@ using Illumina.InterOp.RunMetrics;
 // This imports the metrics
 WRAP_METRICS(IMPORT_METRIC_WRAPPER)
 // This allows exceptions to be imported, but not belong to the module
-EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
+RUN_EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
+METRICS_EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
+RUN_METRICS_EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Summary model
