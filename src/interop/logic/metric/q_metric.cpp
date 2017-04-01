@@ -105,34 +105,6 @@ namespace illumina { namespace interop { namespace logic { namespace metric
     {
         populate_cumulative_distribution_t(q_metric_set);
     }
-    /** Count number of unique counts to determine number
-     * of unique bins for legacy binning
-     *
-     * @note, if the number of bins is greater than 7, than this function stops counting!
-     *
-     * @param q_metric_set q-metric set
-     * @return number of unique bins
-     */
-    size_t count_legacy_q_score_bins(const model::metric_base::metric_set<model::metrics::q_metric>& q_metric_set)
-    {
-        // 0 is a sentinel that indicates legacy binning is not required
-        if(q_metric_set.version() > 4) return 0;     // Version 5 and later do not require legacy binning
-        if(!q_metric_set.get_bins().empty()) return 0;   // If the metrics already have a header they do not require binning
-
-        const size_t max_bin_count = 7;
-        model::metric_base::metric_set<model::metrics::q_metric>::const_iterator beg = q_metric_set.begin(),
-                end=q_metric_set.end();
-        if(beg == end) return 0 ;
-        typedef model::metrics::q_metric::uint_t uint_t;
-        std::set<uint_t> bins_found;
-        for(;beg != end;++beg)
-        {
-            for(uint_t i=0;i<static_cast<uint_t>(beg->qscore_hist().size());++i)
-                if(beg->qscore_hist()[i] > 0) bins_found.insert(i);
-            if(bins_found.size() > max_bin_count) break; // Number of bins greater than 7 indicates this is unbinned
-        }
-        return bins_found.size();
-    }
     /** Populate the q-score header bins from the data
      *
      * This only for legacy platforms that use older q-metric formats, which do not include bin information
@@ -242,11 +214,12 @@ namespace illumina { namespace interop { namespace logic { namespace metric
 
     /** Generate by lane Q-metric data from Q-metrics
      *
+     * @note This function is only used for unit testing
      * @param metric_set Q-metrics
      * @param bylane bylane Q-metrics
      * @throws index_out_of_bounds_exception
      */
-    void create_q_metrics_by_lane(const model::metric_base::metric_set<model::metrics::q_metric>& metric_set,
+    void create_q_metrics_by_lane_base(const model::metric_base::metric_set<model::metrics::q_metric>& metric_set,
                                   model::metric_base::metric_set<model::metrics::q_by_lane_metric>& bylane)
     throw(model::index_out_of_bounds_exception)
     {
@@ -255,7 +228,6 @@ namespace illumina { namespace interop { namespace logic { namespace metric
         typedef model::metric_base::base_cycle_metric::id_t id_t;
 
         bylane = static_cast<const header_type&>(metric_set);
-        bylane.set_version(model::metrics::q_by_lane_metric::LATEST_VERSION);
         for(const_iterator beg = metric_set.begin(), end = metric_set.end();beg != end;++beg)
         {
             const id_t id = model::metric_base::base_cycle_metric::create_id(beg->lane(), 0, beg->cycle());
@@ -264,6 +236,27 @@ namespace illumina { namespace interop { namespace logic { namespace metric
             else
                 bylane.insert(model::metrics::q_by_lane_metric(beg->lane(), 0, beg->cycle(), beg->qscore_hist()));
         }
+    }
+
+    /** Generate by lane Q-metric data from Q-metrics
+     *
+     * @param metric_set Q-metrics
+     * @param bylane bylane Q-metrics
+     * @throws index_out_of_bounds_exception
+     */
+    void create_q_metrics_by_lane(const model::metric_base::metric_set<model::metrics::q_metric>& metric_set,
+                                  model::metric_base::metric_set<model::metrics::q_by_lane_metric>& bylane,
+                                  const constants::instrument_type instrument)
+    throw(model::index_out_of_bounds_exception)
+    {
+        create_q_metrics_by_lane_base(metric_set, bylane);
+        const size_t bin_count = logic::metric::count_legacy_q_score_bins(bylane);
+        if(requires_legacy_bins(bin_count))
+        {
+            populate_legacy_q_score_bins(bylane.bins(), instrument, bin_count);
+            compress_q_metrics(bylane);
+        }
+        bylane.set_version(model::metrics::q_by_lane_metric::LATEST_VERSION);
     }
 
     /** Compress the q-metric set using the bins in the header

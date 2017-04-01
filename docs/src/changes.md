@@ -1,10 +1,16 @@
 # Changes                                               {#changes}
 
-## v1.0.21 (Master)
+## v1.0.22 (Master)
 
 Date       | Description
 ---------- | -----------
 0000-00-00 | placeholder
+
+## v1.0.21
+
+Date       | Description
+---------- | -----------
+2017-04-11 | Fix missing dependencies in Python and create more portable build
 
 ## v1.0.20
 

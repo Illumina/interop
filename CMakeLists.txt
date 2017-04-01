@@ -36,6 +36,7 @@ option(FORCE_X86 "Force 32-bit libraries instead of platform default (Does nothi
 option(FORCE_SHARED_CRT "Used the shared (DLL) run time lib (must be ON if compiling for C#)" ON)
 option(ENABLE_CSHARP "Build C# language bindings" ON)
 option(ENABLE_PYTHON "Build Python language bindings" ON)
+option(ENABLE_PORTABLE "Statically link libraries for GCC compiler")
 
 include(${PROJECT_SOURCE_DIR}/cmake/InternalUtils.cmake)
 interop_config_compiler_and_linker()

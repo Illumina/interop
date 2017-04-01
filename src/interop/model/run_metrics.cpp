@@ -633,7 +633,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                 get<q_metric>().size() == get<q_collapsed_metric>().size(),
                 get<q_metric>().size() << " == " << get<q_collapsed_metric>().size());
         if (get<q_metric>().size() > 0 && get<q_by_lane_metric>().size() == 0)
-            logic::metric::create_q_metrics_by_lane(get<q_metric>(), get<q_by_lane_metric>());
+            logic::metric::create_q_metrics_by_lane(get<q_metric>(),
+                                                    get<q_by_lane_metric>(),
+                                                    m_run_parameters.instrument_type());
         logic::metric::populate_cumulative_distribution(get<q_metric>());
         logic::metric::populate_cumulative_distribution(get<q_by_lane_metric>());
         logic::metric::populate_cumulative_distribution(get<q_collapsed_metric>());

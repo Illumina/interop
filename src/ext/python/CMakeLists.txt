@@ -34,6 +34,10 @@ if(MSVC)
     endif()
 endif()
 
+if(CMAKE_COMPILER_IS_GNUCC AND ENABLE_PORTABLE)
+    set (CMAKE_SHARED_LINKER_FLAGS "-static-libgcc -static-libstdc++")
+endif()
+
 add_custom_target(python_lib)
 set_target_properties(python_lib PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
 
@@ -76,6 +80,9 @@ foreach(SRC ${SWIG_SRCS})
         set_target_properties(${SWIG_MODULE} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_SWIG_OUTDIR}")
         set_target_properties(${SWIG_MODULE} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_DEBUG "${CMAKE_SWIG_OUTDIR}")
     endif()
+
+#
+
     add_custom_command(
             TARGET ${SWIG_MODULE}
             POST_BUILD

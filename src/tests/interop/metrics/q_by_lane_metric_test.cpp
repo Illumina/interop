@@ -31,7 +31,7 @@ TEST(q_by_lane_metrics_test, test_convert_write_read)
 
 
     metric_set<q_by_lane_metric> expected_metric_set;
-    logic::metric::create_q_metrics_by_lane(metrics, expected_metric_set);
+    logic::metric::create_q_metrics_by_lane(metrics, expected_metric_set, constants::HiSeq);
 
     std::ostringstream fout;
     illumina::interop::io::write_metrics(fout, expected_metric_set);
@@ -78,7 +78,7 @@ TEST(run_metrics_q_by_lane_test, test_is_group_empty)
     q_metric_v4::create_binary_data(data);
     io::read_interop_from_string(data,
                                  metrics.get<q_metric>());
-    logic::metric::create_q_metrics_by_lane(metrics.get<q_metric>(), metrics.get<q_by_lane_metric>());
+    logic::metric::create_q_metrics_by_lane(metrics.get<q_metric>(), metrics.get<q_by_lane_metric>(), constants::HiSeq);
     EXPECT_FALSE(metrics.is_group_empty(constants::QByLane));
 }
 
@@ -104,4 +104,20 @@ TEST(run_metrics_q_by_lane_test, try_write_binned_as_unbinned)
     EXPECT_THROW(io::write_interop_to_buffer(metrics.get<q_by_lane_metric>(), &buffer.front(), buffer.size()),
                  io::bad_format_exception);
 
+}
+namespace illumina { namespace interop { namespace logic { namespace metric
+{
+        void create_q_metrics_by_lane_base(const model::metric_base::metric_set<model::metrics::q_metric> &metric_set,
+                                           model::metric_base::metric_set<model::metrics::q_by_lane_metric> &bylane)
+        throw(model::index_out_of_bounds_exception);
+}}}}
+
+TEST(run_metrics_q_by_lane_test, count_legacy_q_score_bins)
+{
+    run_metrics metrics;
+    q_metric_v4::create_expected(metrics.get<q_metric>());
+    logic::metric::create_q_metrics_by_lane_base(metrics.get<q_metric>(), metrics.get<q_by_lane_metric>());
+
+    EXPECT_EQ(logic::metric::count_legacy_q_score_bins(metrics.get<q_metric>()),
+              logic::metric::count_legacy_q_score_bins(metrics.get<q_by_lane_metric>()));
 }

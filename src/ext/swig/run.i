@@ -1,6 +1,6 @@
 /** Model to describe a Run
  */
-
+%module(package="interop") py_interop_run
 %include <std_string.i>
 %include <std_vector.i>
 %include <stdint.i>

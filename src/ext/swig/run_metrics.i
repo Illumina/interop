@@ -1,5 +1,6 @@
 /** Run Metrics model and metric logic
  */
+%module(package="interop") py_interop_run_metrics
 %include <std_vector.i>
 %include <stdint.i>
 %include <std_map.i>

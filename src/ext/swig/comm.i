@@ -1,6 +1,6 @@
 /** Input/output stream interface
  */
-
+%module(package="interop") py_interop_comm
 %include <std_string.i>
 %include <stdint.i>
 %include <std_vector.i>
