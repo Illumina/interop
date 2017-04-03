@@ -12,6 +12,20 @@ if(swig_major_ver LESS "3")
     return()
 endif()
 
+# Support earlier and later versions of CMake
+macro(ADD_SWIG_LIBRARY name language)
+    if(CMAKE_VERSION VERSION_LESS 3.8)
+        swig_add_module(${name}
+                ${language}
+                ${ARGN})
+    else()
+        swig_add_library(${name}
+                LANGUAGE ${language}
+                TYPE MODULE
+                SOURCES ${ARGN})
+    endif()
+endmacro()
+
 ############################################################
 # Need to enable SWIGWORDSIZE64 in SWIG when long is 64-bit
 # This is so stdint.i works properly

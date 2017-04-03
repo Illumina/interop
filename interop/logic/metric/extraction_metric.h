@@ -9,8 +9,8 @@
 #include <vector>
 #include <set>
 #include "interop/model/metrics/extraction_metric.h"
-#include "interop/model/model_exceptions.h"
 #include "interop/model/metric_base/metric_set.h"
+#include "interop/model/model_exceptions.h"
 
 
 namespace illumina { namespace interop { namespace logic { namespace metric

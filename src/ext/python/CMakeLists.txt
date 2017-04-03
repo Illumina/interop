@@ -1,20 +1,20 @@
 
-
 find_package(PythonInterp)
-find_package(PythonLibs)
+find_package(PythonLibs EXACT ${PYTHON_VERSION_STRING})
+message(STATUS "Found PythonIncludePath: ${PYTHON_INCLUDE_PATH}")
 if(NOT PYTHONLIBS_FOUND)
-    message(WARNING "PythonLibs not found, unable to generate Python Binding")
+    message(WARNING "PythonLibs not found, unable to generate Python Binding for version ${PYTHON_VERSION_STRING} and interpreter ${PYTHON_EXECUTABLE}")
     return()
 endif()
 find_package(NumPy)
 if(NOT NUMPY_FOUND)
-    message(WARNING "Numpy not found, unable to generate Python Binding")
+    message(WARNING "Numpy not found, unable to generate Python Binding, interpreter ${PYTHON_EXECUTABLE}")
     return()
 endif()
 
 # Workaround for fun little MinGw/Python "feature" for 64-bit systems
 if(MSVC)
-    set(PYTHON_GENERATED_COMPILE_FLAGS "/wd4127 /wd4459 /wd4456 /wd4701 /wd4267 /wd4244 /wd4706 /wd4703 ${ENABLE_BIG_OBJ_FLAG}")
+    set(PYTHON_GENERATED_COMPILE_FLAGS "/wd4702 /wd4286 /wd4127 /wd4459 /wd4456 /wd4701 /wd4267 /wd4244 /wd4706 /wd4703 ${ENABLE_BIG_OBJ_FLAG}")
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
     set(PYTHON_GENERATED_COMPILE_FLAGS "${_WNO_UNUSED_FUNCTION} ${_WNO_UNUSED_PARAMETER}")
 elseif(COMPILER_IS_GNUCC_OR_CLANG)
@@ -55,7 +55,7 @@ foreach(SRC ${SWIG_SRCS})
         configure_file(${CMAKE_SOURCE_DIR}/cmake/version.rc.in ${SWIG_VERSION_INFO} @ONLY) # Requires: LIB_NAME, VERSION_LIST and VERSION
     endif()
     set(SWIG_MODULE_${MODULE}_EXTRA_DEPS ${SWIG_DEPS} ${SWIG_VERSION_INFO})
-    swig_add_module(${MODULE} python ${SRC} ${SWIG_VERSION_INFO})
+    add_swig_library(${MODULE} python ${SRC} ${SWIG_VERSION_INFO})
     set(SWIG_MODULE ${SWIG_MODULE_${MODULE}_REAL_NAME})
 
     if(PYTHON_GENERATED_COMPILE_FLAGS)

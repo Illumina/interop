@@ -29,11 +29,35 @@
 #include "interop/model/run/flowcell_layout.h"
 #include "interop/model/run/image_dimensions.h"
 #include "interop/model/run/info.h"
+#include "interop/model/run/run_exceptions.h"
 #include "interop/model/run/parameters.h"
 #include "interop/logic/metric/q_metric.h"
 #include "interop/logic/utils/enums.h"
+#include "interop/util/xml_exceptions.h"
+using namespace illumina::interop;
 %}
 
+// Exceptions
+
+%define RUN_EXCEPTION_WRAPPER(WRAPPER)
+WRAPPER(illumina::interop::util::, base_exception, base_exception)
+// XML
+WRAPPER(illumina::interop::xml::, xml_file_not_found_exception, xml_file_not_found_exception)
+WRAPPER(illumina::interop::xml::, xml_format_exception, xml_format_exception)
+WRAPPER(illumina::interop::xml::, xml_parse_exception, xml_parse_exception)
+WRAPPER(illumina::interop::xml::, bad_xml_format_exception, bad_xml_format_exception)
+WRAPPER(illumina::interop::xml::, empty_xml_format_exception, empty_xml_format_exception)
+WRAPPER(illumina::interop::xml::, missing_xml_element_exception, missing_xml_element_exception)
+// RunInfo
+WRAPPER(illumina::interop::model::, invalid_read_exception, invalid_read_exception)
+WRAPPER(illumina::interop::model::, invalid_tile_naming_method, invalid_tile_naming_method)
+WRAPPER(illumina::interop::model::, invalid_run_info_exception, invalid_run_info_exception)
+%enddef
+
+RUN_EXCEPTION_WRAPPER(WRAP_EXCEPTION)
+%include "interop/util/base_exception.h"
+%include "interop/util/xml_exceptions.h"
+%include "interop/model/run/run_exceptions.h"
 
 
 // Primitive array types

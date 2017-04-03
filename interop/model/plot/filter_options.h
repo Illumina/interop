@@ -14,6 +14,7 @@
 #include "interop/util/indirect_range_iterator.h"
 #include "interop/util/lexical_cast.h"
 #include "interop/constants/enums.h"
+#include "interop/model/plot/plot_exceptions.h"
 #include "interop/logic/utils/metric_type_ext.h"
 #include "interop/logic/utils/channel.h"
 #include "interop/model/run/info.h"

@@ -18,7 +18,7 @@
 #include "interop/model/run/image_dimensions.h"
 #include "interop/model/run/read_info.h"
 #include "interop/util/xml_exceptions.h"
-#include "interop/model/model_exceptions.h"
+#include "interop/model/run/run_exceptions.h"
 
 #ifdef _MSC_VER
 #pragma warning(push)
@@ -120,20 +120,22 @@ namespace illumina { namespace interop { namespace model { namespace run
         xml::bad_xml_format_exception,
         xml::empty_xml_format_exception,
         xml::missing_xml_element_exception,
-        xml::xml_parse_exception);
+        xml::xml_parse_exception,
+        xml::xml_format_exception,
+        util::base_exception);
 
         /** Test if tile list matches flowcell layout
          *
          * @throws invalid_run_info_exception
          */
-        void validate()const throw(invalid_run_info_exception,invalid_tile_naming_method);
+        void validate()const throw(model::invalid_run_info_exception,model::invalid_tile_naming_method);
         /** Test if tile list matches flowcell layout
          *
          * @param lane lane number
          * @param tile tile number
          * @throws invalid_run_info_exception
          */
-        void validate(const ::uint32_t lane, const ::uint32_t tile)const throw(invalid_run_info_exception);
+        void validate(const ::uint32_t lane, const ::uint32_t tile)const throw(model::invalid_run_info_exception);
         /** Test if tile list matches flowcell layout
          *
          * @param lane lane number
@@ -142,7 +144,7 @@ namespace illumina { namespace interop { namespace model { namespace run
          * @throws invalid_run_info_exception
          */
         void validate_cycle(const ::uint32_t lane, const ::uint32_t tile, const size_t cycle)const
-        throw(invalid_run_info_exception);
+        throw(model::invalid_run_info_exception);
         /** Test if tile list matches flowcell layout
          *
          * @param lane lane number
@@ -151,7 +153,7 @@ namespace illumina { namespace interop { namespace model { namespace run
          * @throws invalid_run_info_exception
          */
         void validate_read(const ::uint32_t lane, const ::uint32_t tile, const size_t read)const
-        throw(invalid_run_info_exception);
+        throw(model::invalid_run_info_exception);
 
     public:
         /** Get the name of the instrument
@@ -275,7 +277,7 @@ namespace illumina { namespace interop { namespace model { namespace run
          * @param read_number number of the read
          * @return read
          */
-        const read_info &read(const size_t read_number) const throw(invalid_read_exception)
+        const read_info &read(const size_t read_number) const throw(model::invalid_read_exception)
         {
             for (read_vector_t::const_iterator b = m_reads.begin(), e = m_reads.end(); b != e; ++b)
                 if (b->number() == read_number) return *b;

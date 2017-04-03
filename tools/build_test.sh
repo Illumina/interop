@@ -43,6 +43,10 @@ if [ -e /opt/rh/devtoolset-2/root/usr/bin/g++ ] ; then
     echo "Found GCC4.8 dev"
 fi
 
+if [ -e $HOME/miniconda2 ]; then
+    export PATH=$HOME/miniconda2/bin:$PATH
+fi
+
 echo "##teamcity[blockOpened name='Configure $build_type']"
 rm -fr $build_dir
 rm -fr $dist_dir
@@ -65,6 +69,14 @@ rm -f CMakeCache.txt
 cmake $source_dir -DCMAKE_BUILD_TYPE=Release $build_param
 cmake --build . --target install -- -j4
 echo "##teamcity[blockClosed name='Install $build_type']"
+
+echo "##teamcity[blockOpened name='Test Python3']"
+export PATH=$HOME/miniconda3/bin:$PATH
+which python
+rm -fr CMakeCache.txt
+cmake $source_dir $build_param
+cmake --build . --target check_python -- -j 8
+echo "##teamcity[blockClosed name='Test Python3']"
 
 cd ..
 rm -fr $build_dir
