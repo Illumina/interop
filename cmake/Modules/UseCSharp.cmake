@@ -95,23 +95,23 @@ macro( CSHARP_ADD_PROJECT type name )
   #list( SORT sources_dep )
   #file(MAKE_DIRECTORY ${CSHARP_OUTPUT_DIR})
   string (REPLACE ";" "," source_list "${sources}")
-  set(CSHARP_${name}_BINARY ${CSHARP_OUTPUT_DIR}/${name}.${output})
-  set(CSHARP_${name}_BINARY_NAME ${name}.${output})
+  set(CSHARP_${name}_BINARY ${CSHARP_OUTPUT_DIR}/${name}${CSHARP_BINARY_SUFFIX}.${output})
+  set(CSHARP_${name}_BINARY_NAME ${name}${CSHARP_BINARY_SUFFIX}.${output})
   # Add custom target and command
-  MESSAGE( STATUS "Adding C# ${type} ${name}: '${CSHARP_COMPILER} /t:${type} /out:${name}.${output} /platform:${CSHARP_PLATFORM} ${CSHARP_SDK} ${refs} ${sources}'" )
+  MESSAGE( STATUS "Adding C# ${type} ${name}: '${CSHARP_COMPILER} /t:${type} /out:${name}${CSHARP_BINARY_SUFFIX}.${output} /platform:${CSHARP_PLATFORM} ${CSHARP_SDK} ${refs} ${sources}'" )
   add_custom_command(
-    COMMENT "Compiling C# ${type} ${name}: '${CSHARP_COMPILER} /unsafe /t:${type} /out:${CSHARP_OUTPUT_DIR}/${name}.${output} /platform:${CSHARP_PLATFORM} ${CSHARP_SDK} ${refs} ${sources}'"
-    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${name}.${output}
+    COMMENT "Compiling C# ${type} ${name}: '${CSHARP_COMPILER} /unsafe /t:${type} /out:${CSHARP_OUTPUT_DIR}/${name}${CSHARP_BINARY_SUFFIX}.${output} /platform:${CSHARP_PLATFORM} ${CSHARP_SDK} ${refs} ${sources}'"
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${name}${CSHARP_BINARY_SUFFIX}.${output}
     COMMAND ${CMAKE_COMMAND} -E make_directory ${CSHARP_OUTPUT_DIR}
     COMMAND ${CMAKE_COMMAND} -DFILES_TO_COPY="${source_list}" -DDESTINATION_DIR="${CMAKE_CURRENT_BINARY_DIR}" -P "${CMAKE_SOURCE_DIR}/cmake/CopyListOfFiles.cmake"
     COMMAND ${CSHARP_COMPILER}
-    ARGS /t:${type} /out:${CSHARP_OUTPUT_DIR}/${name}.${output} /unsafe /platform:${CSHARP_PLATFORM} ${CSHARP_SDK} ${refs} ${sources}
+    ARGS /t:${type} /out:${CSHARP_OUTPUT_DIR}/${name}${CSHARP_BINARY_SUFFIX}.${output} /unsafe /platform:${CSHARP_PLATFORM} ${CSHARP_SDK} ${refs} ${sources}
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     DEPENDS ${sources_dep}
   )
   add_custom_target(
     ${name} ALL
-    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${name}.${output}
+    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${name}${CSHARP_BINARY_SUFFIX}.${output}
     SOURCES ${sources_dep}
   )
 endmacro( CSHARP_ADD_PROJECT )

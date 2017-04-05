@@ -12,7 +12,6 @@
 #include "interop/model/metrics/dynamic_phasing_metric.h"
 #include "interop/model/metrics/tile_metric.h"
 #include "interop/model/metrics/phasing_metric.h"
-#include "interop/model/model_exceptions.h"
 #include "interop/model/metric_base/metric_set.h"
 #include "interop/logic/summary/map_cycle_to_read.h"
 

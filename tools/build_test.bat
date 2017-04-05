@@ -90,8 +90,15 @@ echo ##teamcity[blockOpened name='NuPack %BUILD_TYPE% %COMPILER%']
 echo %BUILD_PATH%\nuget pack %BUILD_DIR%\src\ext\csharp\package.nuspec
 %BUILD_PATH%\nuget pack %BUILD_DIR%\src\ext\csharp\package.nuspec -OutputDirectory %DIST_DIR%
 echo ##teamcity[blockClosed name='NuPack %BUILD_TYPE% %COMPILER%']
-
 )
+
+echo ##teamcity[blockOpened name='Test Python3 %BUILD_TYPE% %COMPILER%']
+del /f /q CMakeCache.txt
+set PYTHON_PATH_DIR=C:\Miniconda3
+set PATH=%PYTHON_PATH_DIR%;%PYTHON_PATH_DIR%\Scripts;%PATH%
+cmake %SOURCE_DIR% -G"Visual Studio 14 2015 Win64" %BUILD_PARAM%
+cmake --build . --config %BUILD_TYPE% --target check_python -- %MT%
+echo ##teamcity[blockClosed name='Test Python3 %BUILD_TYPE% %COMPILER%']
 
 cd %SOURCE_DIR%
 rd /s /q %BUILD_DIR%

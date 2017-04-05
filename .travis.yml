@@ -21,17 +21,35 @@ sudo: required
 matrix:
   include:
   - compiler: clang
-    os: linux
-    env: INTEROP_C89=ON BUILD_TYPE=Debug BUILD_NAME=linux_clang34_debug
+    os: osx
+    env: INTEROP_C89=OFF BUILD_TYPE=Debug BUILD_NAME=osx_clang_debug PYTHON_VERSION_NUM="2.7"
+  - compiler: clang
+    os: osx
+    env: INTEROP_C89=OFF BUILD_TYPE=Release BUILD_NAME=osx_py36_clang_release DEPLOY_BUILD=true PYTHON_VERSION_NUM="3.6"
+  - compiler: clang
+    os: osx
+    env: INTEROP_C89=OFF BUILD_TYPE=Release BUILD_NAME=osx_py35_clang_release DEPLOY_BUILD=true PYTHON_VERSION_NUM="3.5"
+  - compiler: clang
+    os: osx
+    env: INTEROP_C89=OFF BUILD_TYPE=Release BUILD_NAME=osx_py27_clang_release DEPLOY_BUILD=true PYTHON_VERSION_NUM="2.7"
   - compiler: clang
     os: linux
-    env: INTEROP_C89=ON BUILD_TYPE=Release BUILD_NAME=linux_clang34_release
+    env: INTEROP_C89=ON BUILD_TYPE=Debug BUILD_NAME=linux_clang34_debug PYTHON_VERSION_NUM="2.7"
+  - compiler: clang
+    os: linux
+    env: INTEROP_C89=ON BUILD_TYPE=Release BUILD_NAME=linux_clang34_release PYTHON_VERSION_NUM="2.7"
   - compiler: gcc
     os: linux
-    env: INTEROP_C89=ON BUILD_TYPE=Debug BUILD_NAME=linux_gcc46_debug
+    env: INTEROP_C89=ON BUILD_TYPE=Debug BUILD_NAME=linux_gcc46_debug PYTHON_VERSION_NUM="2.7"
   - compiler: gcc
     os: linux
-    env: INTEROP_C89=ON BUILD_TYPE=Release BUILD_NAME=linux_gcc46_release DEPLOY_BUILD=true
+    env: INTEROP_C89=ON BUILD_TYPE=Release BUILD_NAME=linux_py36_gcc46_release DEPLOY_BUILD=true PYTHON_VERSION_NUM="3.6"
+  - compiler: gcc
+    os: linux
+    env: INTEROP_C89=ON BUILD_TYPE=Release BUILD_NAME=linux_py36_gcc46_release DEPLOY_BUILD=true PYTHON_VERSION_NUM="3.5"
+  - compiler: gcc
+    os: linux
+    env: INTEROP_C89=ON BUILD_TYPE=Release BUILD_NAME=linux_py27_gcc46_release DEPLOY_BUILD=true PYTHON_VERSION_NUM="2.7"
   - compiler: gcc
     addons: &1
       apt:
@@ -40,8 +58,6 @@ matrix:
         - ubuntu-toolchain-r-test
         - sourceline: 'ppa:teward/swig3.0'
         packages:
-        - cmake
-        - cmake-data
         - g++-5
         - libicu-dev
         - swig3.0
@@ -49,11 +65,11 @@ matrix:
         - graphviz
         - mono-complete
         - libgtest-dev
-    env: INTEROP_C89=OFF COMPILER_VERSION=-5 BUILD_TYPE=Debug BUILD_NAME=linux_gcc52_debug
+    env: INTEROP_C89=OFF COMPILER_VERSION=-5 BUILD_TYPE=Debug BUILD_NAME=linux_gcc52_debug PYTHON_VERSION_NUM="2.7"
     os: linux
   - compiler: gcc
     addons: *1
-    env: INTEROP_C89=OFF COMPILER_VERSION=-5 BUILD_TYPE=Release BUILD_NAME=linux_gcc52_release
+    env: INTEROP_C89=OFF COMPILER_VERSION=-5 BUILD_TYPE=Release BUILD_NAME=linux_gcc52_release PYTHON_VERSION_NUM="2.7"
     os: linux
   - compiler: clang
     addons: &2
@@ -64,8 +80,6 @@ matrix:
         - llvm-toolchain-precise-3.7
         - sourceline: 'ppa:teward/swig3.0'
         packages:
-        - cmake
-        - cmake-data
         - g++-4.9
         - clang-3.7
         - libicu-dev
@@ -74,26 +88,18 @@ matrix:
         - graphviz
         - mono-complete
         - libgtest-dev
-    env: INTEROP_C89=OFF COMPILER_VERSION=-3.7 BUILD_TYPE=Debug BUILD_NAME=linux_clang37_debug
+    env: INTEROP_C89=OFF COMPILER_VERSION=-3.7 BUILD_TYPE=Debug BUILD_NAME=linux_clang37_debug PYTHON_VERSION_NUM="2.7"
     os: linux
   - compiler: clang
     addons: *2
-    env: INTEROP_C89=OFF COMPILER_VERSION=-3.7 BUILD_TYPE=Release BUILD_NAME=linux_clang37_release
+    env: INTEROP_C89=OFF COMPILER_VERSION=-3.7 BUILD_TYPE=Release BUILD_NAME=linux_clang37_release PYTHON_VERSION_NUM="2.7"
     os: linux
-  - compiler: clang
-    os: osx
-    env: INTEROP_C89=OFF BUILD_TYPE=Debug BUILD_NAME=osx_clang_debug
-  - compiler: clang
-    os: osx
-    env: INTEROP_C89=OFF BUILD_TYPE=Release BUILD_NAME=osx_clang_release DEPLOY_BUILD=true
 addons:
   apt:
     sources:
     - george-edison55-precise-backports
     - sourceline: 'ppa:teward/swig3.0'
     packages:
-    - cmake
-    - cmake-data
     - libicu-dev
     - swig3.0
     - doxygen
@@ -103,10 +109,11 @@ addons:
 cache:
   directories:
     - $HOME/NUnit-2.6.4
+    - $HOME/cmake
 
 install:
-- if test "$TRAVIS_OS_NAME" = "linux"; then source tools/travis-linux-install.sh; fi
-- if test "$TRAVIS_OS_NAME" = "osx"; then source tools/travis-osx-install.sh; fi
+- if test "$TRAVIS_OS_NAME" = "linux"; then source tools/travis-linux-install.sh $PYTHON_VERSION_NUM ; fi
+- if test "$TRAVIS_OS_NAME" = "osx"; then source tools/travis-osx-install.sh $PYTHON_VERSION_NUM ; fi
 - ls -la $(which $CC)
 - ls -la $(which $CXX)
 - ls $HOME/NUnit-2.6.4
@@ -117,7 +124,10 @@ before_script:
 - cd build
 - export CC="${CC}${COMPILER_VERSION}"
 - export CXX="${CXX}${COMPILER_VERSION}"
-- export PATH="$HOME/miniconda/bin:$PATH"
+- export PATH="$HOME/miniconda_${PYTHON_VERSION_NUM}/bin:$PATH"
+- if test "$TRAVIS_OS_NAME" = "linux"; then export PATH="$HOME/cmake/bin:${PATH}" ; fi
+- source activate test-environment
+- cmake -version
 
 script:
 - export BUILD_PATH=${PWD}/${BUILD_NAME}

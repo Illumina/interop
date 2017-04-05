@@ -63,15 +63,25 @@ cmake --build . --target nuspec --config Release -- /M
 if %errorlevel% neq 0 exit /b %errorlevel%
 echo ##teamcity[blockClosed name='NuSpec Release Visual Studio 2015 Win64']
 
-echo ##teamcity[blockOpened name='Python Wheel Release Visual Studio 2015 Win64']
+echo ##teamcity[blockOpened name='Python2 Wheel Release Visual Studio 2015 Win64']
 cmake --build . --target package_wheel --config Release -- /M
 if %errorlevel% neq 0 exit /b %errorlevel%
-echo ##teamcity[blockClosed name='Python Wheel Release Visual Studio 2015 Win64']
+echo ##teamcity[blockClosed name='Python2 Wheel Release Visual Studio 2015 Win64']
 
 echo "##teamcity[blockOpened name='NuPack Visual Studio 2015 Win64']"
 echo %BUILD_PATH%\nuget pack %BUILD_DIR%\src\ext\csharp\package.nuspec
 %BUILD_PATH%\nuget pack %BUILD_DIR%\src\ext\csharp\package.nuspec -OutputDirectory %DIST_DIR%
 echo "##teamcity[blockClosed name='NuPack Visual Studio 2015 Win64']"
+
+echo ##teamcity[blockOpened name='Python3 Wheel Release Visual Studio 2015 Win64']
+del /f /q CMakeCache.txt
+set PYTHON_PATH_DIR=C:\Miniconda3
+set PATH=%PYTHON_PATH_DIR%;%PYTHON_PATH_DIR%\Scripts;%PATH%
+cmake %SOURCE_DIR% -G"Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=%BUILD_TYPE%  %BUILD_PARAM%
+if %errorlevel% neq 0 exit /b %errorlevel%
+cmake --build . --target package_wheel --config Release -- /M
+if %errorlevel% neq 0 exit /b %errorlevel%
+echo ##teamcity[blockClosed name='Python3 Wheel Release Visual Studio 2015 Win64']
 
 cd %SOURCE_DIR%
 rd /s /q %BUILD_DIR%
