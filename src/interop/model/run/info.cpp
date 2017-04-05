@@ -239,6 +239,8 @@ namespace illumina { namespace interop { namespace model { namespace run
     }
 
     void info::read(const std::string &run_folder) throw(xml::xml_file_not_found_exception,
+    util::base_exception,
+    xml::xml_format_exception,
     xml::bad_xml_format_exception,
     xml::empty_xml_format_exception,
     xml::missing_xml_element_exception,
@@ -259,7 +261,7 @@ namespace illumina { namespace interop { namespace model { namespace run
      * @throws invalid_run_info_exception
      */
     void info::validate_read(const ::uint32_t lane, const ::uint32_t tile, const size_t read)const
-    throw(invalid_run_info_exception)
+    throw(model::invalid_run_info_exception)
     {
         validate(lane, tile);
         if(read > m_reads.size())
@@ -273,7 +275,7 @@ namespace illumina { namespace interop { namespace model { namespace run
      * @throws invalid_run_info_exception
      */
     void info::validate_cycle(const ::uint32_t lane, const ::uint32_t tile, const size_t cycle)const
-    throw(invalid_run_info_exception)
+    throw(model::invalid_run_info_exception)
     {
         validate(lane, tile);
         if(cycle > m_total_cycle_count)
@@ -287,7 +289,7 @@ namespace illumina { namespace interop { namespace model { namespace run
      * @param tile tile number
      * @throws invalid_run_info_exception
      */
-    void info::validate(const ::uint32_t lane, const ::uint32_t tile)const throw(invalid_run_info_exception)
+    void info::validate(const ::uint32_t lane, const ::uint32_t tile)const throw(model::invalid_run_info_exception)
     {
         if(lane > m_flowcell.lane_count())
             INTEROP_THROW(invalid_run_info_exception,"Lane identifier exceeds number of lanes");
@@ -309,7 +311,7 @@ namespace illumina { namespace interop { namespace model { namespace run
      *
      * @throws invalid_run_info_exception
      */
-    void info::validate()const throw(invalid_run_info_exception, invalid_tile_naming_method)
+    void info::validate()const throw(model::invalid_run_info_exception, model::invalid_tile_naming_method)
     {
         typedef flowcell_layout::str_vector_t str_vector_t;
         if(m_flowcell.naming_method()==constants::UnknownTileNamingMethod)

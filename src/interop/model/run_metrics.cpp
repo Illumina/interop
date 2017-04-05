@@ -774,7 +774,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     throw(io::file_not_found_exception,
     io::bad_format_exception,
     io::incomplete_file_exception,
-    invalid_parameter)
+    model::invalid_parameter)
     {
         if(valid_to_load.empty())return;
         if(valid_to_load.size() != constants::MetricCount)

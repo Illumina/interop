@@ -1,9 +1,15 @@
 # Changes                                               {#changes}
 
-## v1.0.19 (Master)
+## v1.0.20 (Master)
 
 Date       | Description
 ---------- | -----------
+
+## v1.0.19
+
+Date       | Description
+---------- | -----------
+2017-04-02 | Added Python 3 support
 
 ## v1.0.18
 

@@ -50,6 +50,10 @@ if [ -e /opt/rh/devtoolset-2/root/usr/bin/g++ ] ; then
     echo "Found GCC4.8 dev"
 fi
 
+if [ -e $HOME/miniconda2 ]; then
+    export PATH=$HOME/miniconda2/bin:$PATH
+fi
+
 echo "##teamcity[blockOpened name='Configure $build_type']"
 rm -fr $dist_dir
 rm -fr $build_dir
@@ -75,14 +79,24 @@ echo "##teamcity[blockOpened name='NuSpec Creation $build_type']"
 cmake --build . --target nuspec -- -j 8
 echo "##teamcity[blockClosed name='NuSpec Creation $build_type']"
 
-echo "##teamcity[blockOpened name='Python Wheel Creation $build_type']"
+echo "##teamcity[blockOpened name='Python2 Wheel Creation $build_type']"
+which python
 cmake --build . --target package_wheel -- -j 8
-echo "##teamcity[blockClosed name='Python Wheel Creation $build_type']"
+echo "##teamcity[blockClosed name='Python2 Wheel Creation $build_type']"
 
 cd $dist_dir
 echo "##teamcity[blockOpened name='NuPack $build_type']"
 nuget pack ${build_dir}/src/ext/csharp/package.nuspec
 echo "##teamcity[blockClosed name='NuPack $build_type']"
+
+
+echo "##teamcity[blockOpened name='Python3 Wheel Creation $build_type']"
+export PATH=$HOME/miniconda3/bin:$PATH
+which python
+rm -fr CMakeCache.txt
+cmake $source_dir $build_param
+cmake --build . --target package_wheel -- -j 8
+echo "##teamcity[blockClosed name='Python3 Wheel Creation $build_type']"
 
 cd $root_dir
 rm -fr $build_dir

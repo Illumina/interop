@@ -10,7 +10,7 @@ Illumina sequencers. These libraries are backwards compatible and capable of sup
 with one exception: GA systems have been excluded.
 
 ***
->  We now support an interface to Python (see contents below)
+>  We now support an interface to Python 2.7, 3.5 and 3.6 (see contents below)
 ***
 
 The InterOp files supported by this library include:
@@ -71,6 +71,8 @@ Install
 
 ### Python
 
+Supported versions for binary distribution: 2.7, 3.5 and 3.6.
+
 You should have NumPy already installed.
 
 ~~~~~~~~~~~~~{.sh}
@@ -121,5 +123,5 @@ SAV Analysis Tab
 The following images were generated using the applications provided by
 the InterOp package.
 
-![Example Plots] [example_image]
+![Example Plots][example_image]
 [example_image]:docs/images/example_plots.png

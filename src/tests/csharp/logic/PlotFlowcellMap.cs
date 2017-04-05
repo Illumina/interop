@@ -56,7 +56,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		/// Test bad metric name exception
 		/// </summary>
 		[Test]
-	    [ExpectedException("Illumina.InterOp.Run.invalid_metric_type")]
+	    [ExpectedException("Illumina.InterOp.RunMetrics.invalid_metric_type")]
 		public void TestBadMetricException()
 		{
 			int[] tmp = new int[]{

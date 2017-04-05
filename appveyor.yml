@@ -7,18 +7,19 @@
 #   Visual Studio 14 2015
 #     - Release/Debug
 #     - 64-bit
-#   Visual Studio 12 2013
-#     - Release/Debug
-#     - 64-bit
 #   MinGW
 #     - Release/Debug
 #     - 64-bit
 #
-# Removed support for 32-bit compilers
+# Removed support for
+#   - 32-bit compilers
+#   - Visual Studio 12 2013
 #
 # C# Compiler is always .NET v4.0.30319
 #
 # TODO: Why does enabling CRT fail on appveyor?
+#
+# TODO: Add code to download miniconda if it does not exist
 
 configuration:
   - Debug
@@ -35,33 +36,45 @@ environment:
   MINGW_ARCHIVE: x86_64-4.9.2-release-win32-seh-rt_v4-rev4.7z
   matrix:
     - generator: "Visual Studio 14 2015 Win64"
-      BUILD: msvc14_win64
+      BUILD: msvc14_win64_py27
       config_type: win64
-      PACKAGE_PYTHON_TARGET: package_wheel
-#    - generator: "Visual Studio 14 2015"
-#      BUILD: msvc14_win32
-#      config_type: win32
-#    - generator: "Visual Studio 12 2013 Win64"
-#      BUILD: msvc12_win64
-#      config_type: win64
-#    - generator: "Visual Studio 12 2013"
-#      BUILD: msvc12_win32
-#      config_type: win32
-#    - generator: "MinGW Makefiles"
-#      COMPILER_PATH: C:\MinGW\bin
-#      BUILD: mingw_win32
-#      config_type: win32
+      PACKAGE_TARGET: package_wheel
+      ADDIONAL_CONFIG_OPTIONS: -DENABLE_APPS=OFF -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=OFF
+      PYTHON_PATH_DIR: C:\Miniconda-x64
+      PYTHON_VERSION: 2.7
+    - generator: "Visual Studio 14 2015 Win64"
+      BUILD: msvc14_win64_py36
+      config_type: win64
+      PACKAGE_TARGET: package_wheel
+      ADDIONAL_CONFIG_OPTIONS: -DENABLE_APPS=OFF -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=OFF
+      PYTHON_PATH_DIR: C:\Miniconda36-x64
+      PYTHON_VERSION: 3.6
+    - generator: "Visual Studio 14 2015 Win64"
+      BUILD: msvc14_win64_py35
+      config_type: win64
+      PACKAGE_TARGET: package_wheel
+      ADDIONAL_CONFIG_OPTIONS: -DENABLE_APPS=OFF -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=OFF
+      PYTHON_PATH_DIR: C:\Miniconda36-x64
+      PYTHON_VERSION: 3.5
     - generator: "MinGW Makefiles"
       COMPILER_PATH: C:\mingw64\bin
       BUILD: mingw_win64
       config_type: win64
       ADDIONAL_CONFIG_OPTIONS: -DENABLE_PYTHON=OFF
-      PACKAGE_PYTHON_TARGET: package
+      PACKAGE_TARGET: install
+      PYTHON_PATH_DIR: C:\Miniconda-x64
+      PYTHON_VERSION: 2.7
+
+matrix:
+  fast_finish: true
 
 before_build:
   - cmd: set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
   - cmd: set PATH=%COMPILER_PATH%;%PATH%
-  - cmd: set PATH=C:\Miniconda-x64;C:\Miniconda-x64\Scripts;%PATH%
+  - cmd: set PATH=%PYTHON_PATH_DIR%;%PYTHON_PATH_DIR%\Scripts;%PATH%
+  - cmd: conda update -q -y conda
+  - cmd: conda info -a
+  - cmd: conda install python=%PYTHON_VERSION% -y
   - cmd: conda install numpy -y
 
 install:
@@ -89,15 +102,15 @@ build_script:
   - cmake ../ -G "%GENERATOR%" -H. -Bbuild -DCMAKE_BUILD_TYPE="%configuration%" -DCMAKE_INSTALL_PREFIX=%BUILD_PATH% -DPACKAGE_OUTPUT_FILE_PREFIX=%CD% %ADDIONAL_CONFIG_OPTIONS%
   - cmake --build build --config "%configuration%"
   - cmake --build build --config "%configuration%" --target install
-  - cmake --build build --target %PACKAGE_PYTHON_TARGET%
+  - cmake --build build --config "%configuration%" --target %PACKAGE_TARGET%
+
 
 test_script:
   - cmake --build build --config "%configuration%" --target check
 
-after_build:
+before_deploy:
   - echo "%BUILD_PATH%"
-  - mkdir builds
-  - 7z a interop-%BUILD%_%configuration%.zip %BUILD_PATH%
+  - if not exist "%BUILD_PATH%" 7z a interop-%BUILD%_%configuration%.zip %BUILD_PATH%
 
 artifacts:
   - path: .\*.zip

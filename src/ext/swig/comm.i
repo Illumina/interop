@@ -1,4 +1,4 @@
-/** Plotting model and logic
+/** Input/output stream interface
  */
 
 %include <std_string.i>
@@ -16,6 +16,10 @@
 
 // Ensure all the modules import the shared namespace
 %pragma(csharp) moduleimports=%{
+using Illumina.InterOp.Metrics;
+using Illumina.InterOp.Run;
+%}
+%pragma(csharp) imclassimports=%{
 using Illumina.InterOp.Metrics;
 using Illumina.InterOp.Run;
 %}
@@ -37,12 +41,37 @@ using Illumina.InterOp.Run;
 
 // This imports the metrics
 WRAP_METRICS(IMPORT_METRIC_WRAPPER)
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Exceptions
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+%define IO_EXCEPTION_WRAPPER(WRAPPER)
+WRAPPER(illumina::interop::io::, file_not_found_exception, file_not_found_exception)
+WRAPPER(illumina::interop::io::, format_exception, format_exception)
+WRAPPER(illumina::interop::io::, bad_format_exception, bad_format_exception)
+WRAPPER(illumina::interop::io::, incomplete_file_exception, incomplete_file_exception)
+WRAPPER(illumina::interop::io::, invalid_argument, invalid_argument)
+%enddef
+
+
+IO_EXCEPTION_WRAPPER(WRAP_EXCEPTION)
+%include "interop/io/stream_exceptions.h"
 // This allows exceptions to be imported, but not belong to the module
-EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
+RUN_EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
+METRICS_EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// IO
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 %{
 #include "interop/io/metric_file_stream.h"
 #include "interop/io/paths.h"
+#include "interop/model/run/run_exceptions.h"
+#include "interop/util/xml_exceptions.h"
 %}
 
 %include "interop/io/metric_file_stream.h"

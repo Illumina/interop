@@ -17,6 +17,7 @@
 #include <cstring>
 #include "interop/util/exception.h"
 #include "interop/model/metric_base/base_cycle_metric.h"
+#include "interop/model/metric_base/metric_exceptions.h"
 #include "interop/model/metric_base/metric_set.h"
 #include "interop/io/layout/base_metric.h"
 #include "interop/io/format/generic_layout.h"
@@ -110,7 +111,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @param n index of read
          * @return total number of errors
          */
-        uint_t mismatch_cluster_count(const size_t n) const throw(index_out_of_bounds_exception)
+        uint_t mismatch_cluster_count(const size_t n) const throw(model::index_out_of_bounds_exception)
         {
             if(n >= m_mismatch_cluster_count.size())
                 INTEROP_THROW( index_out_of_bounds_exception, "Index out of bounds");
