@@ -31,7 +31,7 @@ set(SRCS
         model/metrics/phasing_metric.cpp
         model/metrics/dynamic_phasing_metric.cpp
         logic/metric/dynamic_phasing_metric.cpp
-        )
+        ../examples/example_populate_qmetricset.cpp)
 
 set(HEADERS
         ../../interop/io/paths.h
