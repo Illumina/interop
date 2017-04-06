@@ -18,5 +18,9 @@ of the examples in that folder with additional commentary.
  - @subpage tile_report "Reporting Tile Metrics"
  - @subpage extraction_report "Reporting Extraction Metrics"
  - @subpage simple_stats "Reporting simple statistics"
- - @subpage example_summary "Calculating ab SAV-like Summary"
+ - @subpage example_summary "Calculating an SAV-like Summary Table"
+ - @subpage example_imaging "Calculating an SAV-like Imaging Table"
 
+## Python Interactive Tutorials
+
+ - [SAV Summary Table](https://github.com/Illumina/interop/blob/master/docs/src/Tutorial_01_Intro.ipynb)

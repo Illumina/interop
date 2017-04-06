@@ -17,6 +17,7 @@ brew install doxygen
 brew install mono
 
 CONDA_HOME=$HOME/miniconda_${PYTHON_VERSION_NUM}
+if [ "$PYTHON_VERSION_NUM" != "System" ]; then
 #if [ ! -e $CONDA_HOME/envs/test-environment/lib/python${PYTHON_VERSION_NUM}/site-packages/numpy/core/include/numpy/arrayobject.h ]; then
     # How To: https://conda.io/docs/travis.html
     if [[ "$PYTHON_VERSION_NUM" == "2.7" ]]; then
@@ -31,7 +32,7 @@ CONDA_HOME=$HOME/miniconda_${PYTHON_VERSION_NUM}
     conda config --set always_yes yes --set changeps1 no
     conda update -q conda
     conda info -a
-
-    conda create -q -n test-environment python=$PYTHON_VERSION_NUM numpy
-#fi
+    conda install -y numpy
+    conda install -y python=$PYTHON_VERSION_NUM
+fi
 

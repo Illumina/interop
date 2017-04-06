@@ -10,7 +10,12 @@ If you do not have the Python InterOp library installed, then you can do the fol
 
     $ pip install -f https://github.com/Illumina/interop/releases/latest interop
 
-Note, only Python versions 2.7, 3.5 and 3.6 are currently supported as binary builds. Other Python versions must be built from source.
+Note, only Python versions 2.7 (UCS-4), 3.5 and 3.6 are currently 
+supported as binary builds. Other Python versions must be built 
+from source.
+
+If you are new to Python or unsure what UCS-4 means, then please use
+Anaconda or Miniconda.
 
 You can then test the install as follows:
     
@@ -18,5 +23,5 @@ You can then test the install as follows:
 
 ## Introductory Tutorials
 
- * [SAV Summary Table](https://github.com/Illumina/interop/blob/master/docs/src/PythonIntroTutorial.ipynb)
+ * [SAV Summary Table](https://github.com/Illumina/interop/blob/master/docs/src/Tutorial_01_Intro.ipynb)
 
