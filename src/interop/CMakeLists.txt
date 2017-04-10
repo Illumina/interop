@@ -30,8 +30,7 @@ set(SRCS
         model/summary/index_summary.cpp
         model/metrics/phasing_metric.cpp
         model/metrics/dynamic_phasing_metric.cpp
-        logic/metric/dynamic_phasing_metric.cpp
-        )
+        logic/metric/dynamic_phasing_metric.cpp)
 
 set(HEADERS
         ../../interop/io/paths.h

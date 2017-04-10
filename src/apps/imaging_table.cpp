@@ -42,6 +42,7 @@ int main(int argc, char** argv)
 
     std::cout << "# Version: " << INTEROP_VERSION << std::endl;
 
+// @ [Reporting Imaging Metrics in C++]
     std::vector<unsigned char> valid_to_load;
 
     logic::table::list_imaging_table_metrics_to_load(valid_to_load);
@@ -75,6 +76,7 @@ int main(int argc, char** argv)
         }
         std::cout << table << std::endl;
     }
+// @ [Reporting Imaging Metrics in C++]
     return SUCCESS;
 }
 

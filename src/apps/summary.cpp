@@ -55,6 +55,7 @@ using namespace illumina::interop;
  * @param out output stream
  * @param summary summary metrics
  * @param information_level level of information to print
+ * @param csv_format if true, write in CSV format
  */
 void print_summary(std::ostream& out, const run_summary& summary, const size_t information_level, const bool csv_format);
 

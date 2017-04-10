@@ -61,6 +61,7 @@ using namespace illumina::interop;
  *
  * @param out output stream
  * @param summary summary metrics
+ * @param csv_format if true, write in CSV format
  */
 void print_summary(std::ostream& out, const index_flowcell_summary& summary, const bool csv_format);
 

@@ -17,7 +17,12 @@ In addition to the binary archive below, there are language specific packages in
 
  - Wheel for Python
  
- Note, we only distribute from GitHub currently, and not PyPi or NuGet.org
+Note, we only distribute from GitHub currently, and not PyPi or NuGet.org. These should
+be compatible with most Linux Versions, Mac OSX and Windows. We support Python 2.7 (UCS-4),
+Python 3.5 and Python 3.6.
+
+If you are new to Python or unsure what UCS-4 means, then please use
+Anaconda or Miniconda.
 
 ### Binary Archive (C++, C#, Python, Java)
 
@@ -33,7 +38,7 @@ For Pythons users, a Wheel package is available on Github Release:
 $ pip install -f https://github.com/Illumina/interop/releases/latest interop
 ~~~~~~~~~~~~~
 
-Supported versions for binary distribution: 2.7, 3.5 and 3.6.
+Supported versions for binary distribution: 2.7 (UCS-4), 3.5 and 3.6.
 
 ## Build from Source
 
@@ -58,6 +63,10 @@ The following optional features have the corresponding requirements:
 - Wrapping the library for C#
     - [SWIG] 3.x or later
     - C# compiler: Visual Studio or [Mono]
+- Wrapping the library for Python
+    - [SWIG] 3.x or later
+    - Python installed with the shared library (.so or .dll)
+    - NumPy installed
 - Running C# Unit Tests:
     - [NUnit] - NUNIT_ROOT may have to be specified
 - Building the documentation
@@ -70,6 +79,7 @@ Tips for Prerequisites
   - CMake and SWIG will likely need to be installed from the source on Linux
   - On Windows, CMake will likely need to know the location of SWIG, see Example configurations below
   - When using Visual Studio, use 2015 or later.
+  - Use Anaconda or Miniconda version of Python (with NumPy installed)
 
 [NUnit]: http://www.nunit.org/
 [Git]: https://git-scm.com/

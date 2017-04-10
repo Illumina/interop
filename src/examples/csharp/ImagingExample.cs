@@ -1,4 +1,3 @@
-
 // @ [Create Imaging Table from a Run Folder]
 using System;
 using Illumina.InterOp.Run;
@@ -20,12 +19,14 @@ class ImagingTableExample
 			return 1;
 		}
 
+// @ [Reading only metrics required by the Imaging Tab]
 		run_metrics metrics = new run_metrics();
 		uchar_vector interopsToLoad = new uchar_vector();
 
 		// Load only the metrics required by imaging table
         c_csharp_table.list_imaging_table_metrics_to_load(interopsToLoad);
 		metrics.read(args[0], interopsToLoad);
+// @ [Reading only metrics required by the Imaging Tab]
 
 
         imaging_column_vector columnVector = new imaging_column_vector();
