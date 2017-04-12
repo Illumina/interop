@@ -1,6 +1,6 @@
 /** Plotting model and logic
  */
-
+%module(package="interop") py_interop_plot
 %include <std_string.i>
 %include <stdint.i>
 %include <std_vector.i>

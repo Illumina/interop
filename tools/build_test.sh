@@ -62,7 +62,7 @@ rm -fr $dist_dir
 mkdir $build_dir
 cd $build_dir
 echo "cmake $source_dir $build_param  -DCMAKE_BUILD_TYPE=$build_type"
-cmake $source_dir $build_param  -DCMAKE_BUILD_TYPE=$build_type
+cmake $source_dir $build_param  -DCMAKE_BUILD_TYPE=$build_type -DENABLE_PORTABLE=ON
 echo "##teamcity[blockClosed name='Configure $build_type']"
 
 echo "##teamcity[blockOpened name='Build $build_type']"

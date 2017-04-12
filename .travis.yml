@@ -39,16 +39,16 @@ matrix:
     env: INTEROP_C89=ON BUILD_TYPE=Debug BUILD_NAME=linux_gcc46_debug PYTHON_VERSION_NUM="System"
   - compiler: gcc
     os: linux
-    env: INTEROP_C89=ON BUILD_TYPE=Release BUILD_NAME=linux_py36_gcc48_release DEPLOY_BUILD=true PYTHON_VERSION_NUM="3.6"
+    env: INTEROP_C89=ON BUILD_TYPE=Release BUILD_NAME=linux_py36_gcc48_release EXTRA_CMAKE_FLAGS=-DENABLE_PORTABLE=ON DEPLOY_BUILD=true PYTHON_VERSION_NUM="3.6"
   - compiler: clang
     os: osx
     env: INTEROP_C89=OFF BUILD_TYPE=Debug BUILD_NAME=osx_clang_debug PYTHON_VERSION_NUM="2.7"
   - compiler: gcc
     os: linux
-    env: INTEROP_C89=ON BUILD_TYPE=Release BUILD_NAME=linux_py36_gcc48_release DEPLOY_BUILD=true PYTHON_VERSION_NUM="3.5" COMPILER_HOME=$HOME/miniconda_3.5/bin/
+    env: INTEROP_C89=ON BUILD_TYPE=Release BUILD_NAME=linux_py35_gcc48_release EXTRA_CMAKE_FLAGS=-DENABLE_PORTABLE=ON DEPLOY_BUILD=true PYTHON_VERSION_NUM="3.5" COMPILER_HOME=$HOME/miniconda_3.5/bin/
   - compiler: gcc
     os: linux
-    env: INTEROP_C89=ON BUILD_TYPE=Release BUILD_NAME=linux_py27m_gcc48_release DEPLOY_BUILD=true PYTHON_VERSION_NUM="2.7" COMPILER_HOME=$HOME/miniconda_2.7/bin/
+    env: INTEROP_C89=ON BUILD_TYPE=Release BUILD_NAME=linux_py27m_gcc48_release EXTRA_CMAKE_FLAGS=-DENABLE_PORTABLE=ON DEPLOY_BUILD=true PYTHON_VERSION_NUM="2.7" COMPILER_HOME=$HOME/miniconda_2.7/bin/
   - compiler: clang
     os: osx
     env: INTEROP_C89=OFF BUILD_TYPE=Release BUILD_NAME=osx_py36_clang_release DEPLOY_BUILD=true PYTHON_VERSION_NUM="3.6"
@@ -137,7 +137,7 @@ script:
 - export BUILD_PATH=${PWD}/${BUILD_NAME}
 - export PYTHON_BUILD_PATH=${PWD}/dist
 - echo 'Configuring...' && echo -en 'travis_fold:start:script.1\\r'
-- cmake -DNUNIT_ROOT=$HOME/NUnit-2.6.4 ../ -DENABLE_BACKWARDS_COMPATIBILITY=$INTEROP_C89 -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_INSTALL_PREFIX=${BUILD_PATH} -DPACKAGE_OUTPUT_FILE_PREFIX=${PYTHON_BUILD_PATH}
+- cmake -DNUNIT_ROOT=$HOME/NUnit-2.6.4 ../ -DENABLE_BACKWARDS_COMPATIBILITY=$INTEROP_C89 -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_INSTALL_PREFIX=${BUILD_PATH} -DPACKAGE_OUTPUT_FILE_PREFIX=${PYTHON_BUILD_PATH} ${EXTRA_CMAKE_FLAGS}
 - echo -en 'travis_fold:end:script.1\\r'
 - cmake --build .
 - echo 'Installing...' && echo -en 'travis_fold:start:script.2\\r'

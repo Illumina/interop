@@ -42,7 +42,7 @@ if [ ! -z $3 ] ; then
     build_param="$build_param -DPACKAGE_SUFFIX=$3"
 fi
 
-build_param="$build_param -DCMAKE_BUILD_TYPE=Release -DPACKAGE_OUTPUT_FILE_PREFIX=$dist_dir"
+build_param="$build_param -DCMAKE_BUILD_TYPE=Release -DPACKAGE_OUTPUT_FILE_PREFIX=$dist_dir -DENABLE_PORTABLE=ON"
 
 if [ -e /opt/rh/devtoolset-2/root/usr/bin/g++ ] ; then
     export CXX=/opt/rh/devtoolset-2/root/usr/bin/g++

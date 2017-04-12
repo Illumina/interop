@@ -32,6 +32,7 @@ set(TEST_SRCS
         logic/PlotQScoreHistogram.cs
         logic/PlotDataByLaneTest.cs
         logic/PlotDataByCycleTest.cs
+        logic/DependencyTest.cs
         metrics/RunMetricsTest.cs
         metrics/ErrorMetricsTest.cs
         metrics/CorrectedIntensityMetricsTest.cs

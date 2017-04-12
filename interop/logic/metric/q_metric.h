@@ -83,7 +83,26 @@ namespace illumina { namespace interop { namespace logic { namespace metric
      * @param q_metric_set q-metric set
      * @return number of unique bins
      */
-    size_t count_legacy_q_score_bins(const model::metric_base::metric_set<model::metrics::q_metric>& q_metric_set);
+    template<class QMetric>
+    size_t count_legacy_q_score_bins(const model::metric_base::metric_set<QMetric>& q_metric_set)
+    {
+        // 0 is a sentinel that indicates legacy binning is not required
+        if (q_metric_set.version() > 4) return 0;     // Version 5 and later do not require legacy binning
+        if (!q_metric_set.get_bins().empty()) return 0;   // If the metrics already have a header they do not require binning
+
+        const size_t max_bin_count = 7;
+        typename model::metric_base::metric_set<QMetric>::const_iterator beg = q_metric_set.begin(),
+                end = q_metric_set.end();
+        if (beg == end) return 0;
+        typedef model::metrics::q_metric::uint_t uint_t;
+        std::set<uint_t> bins_found;
+        for (; beg != end; ++beg) {
+            for (uint_t i = 0; i < static_cast<uint_t>(beg->qscore_hist().size()); ++i)
+                if (beg->qscore_hist()[i] > 0) bins_found.insert(i);
+            if (bins_found.size() > max_bin_count) break; // Number of bins greater than 7 indicates this is unbinned
+        }
+        return bins_found.size();
+    }
     /** Test if legacy binning should be performed
      *
      * @param count number of bins
@@ -141,22 +160,6 @@ namespace illumina { namespace interop { namespace logic { namespace metric
      * @param instrument type
      */
     inline void populate_legacy_q_score_bins(model::metric_base::metric_set<model::metrics::q_by_lane_metric>& q_metric_set,
-                                             std::vector<model::metrics::q_score_bin>& q_score_bins,
-                                             const constants::instrument_type instrument)
-    {
-        const size_t count = count_legacy_q_score_bins(q_metric_set);
-        populate_legacy_q_score_bins(q_score_bins, instrument, count);
-    }
-    /** Populate the q-score header bins from the data
-     *
-     * This only for legacy platforms that use older q-metric formats, which do not include bin information
-     * in the header.
-     *
-     * @param q_metric_set q-metric set
-     * @param q_score_bins vector of q-score bins
-     * @param instrument type
-     */
-    inline void populate_legacy_q_score_bins(model::metric_base::metric_set<model::metrics::q_collapsed_metric>& q_metric_set,
                                              std::vector<model::metrics::q_score_bin>& q_score_bins,
                                              const constants::instrument_type instrument)
     {
@@ -286,10 +289,12 @@ namespace illumina { namespace interop { namespace logic { namespace metric
      *
      * @param metric_set Q-metrics
      * @param bylane bylane Q-metrics
+     * @param instrument instrument type
      * @throws index_out_of_bounds_exception
      */
     void create_q_metrics_by_lane(const model::metric_base::metric_set<model::metrics::q_metric>& metric_set,
-                                         model::metric_base::metric_set<model::metrics::q_by_lane_metric>& bylane)
+                                  model::metric_base::metric_set<model::metrics::q_by_lane_metric>& bylane,
+                                  const constants::instrument_type instrument)
                                         throw(model::index_out_of_bounds_exception);
 }}}}
 

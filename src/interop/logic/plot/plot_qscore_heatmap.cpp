@@ -161,7 +161,8 @@ namespace illumina { namespace interop { namespace logic { namespace plot
             typedef model::metrics::q_by_lane_metric metric_t;
             if(0 == metrics.get<metric_t>().size())
                 logic::metric::create_q_metrics_by_lane(metrics.get<model::metrics::q_metric>(),
-                                                        metrics.get<metric_t>());
+                                                        metrics.get<metric_t>(),
+                                                        metrics.run_parameters().instrument_type());
             if (metrics.get<metric_t>().size() == 0)return;
             options.validate(constants::QScore, metrics.run_info());
             populate_heatmap(metrics.get<metric_t>(), options, data, buffer);

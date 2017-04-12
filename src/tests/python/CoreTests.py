@@ -4,12 +4,19 @@ Unit tests for core functionality for the SWIG binding
 import unittest
 import numpy
 import os
-import py_interop_run
-import py_interop_metrics
-import py_interop_plot
-import py_interop_comm
-import py_interop_table
-import py_interop_run_metrics
+
+try:
+    from interop import py_interop_run
+except:
+    import sys
+    sys.path.append(".")
+    from interop import py_interop_run
+
+from interop import py_interop_metrics
+from interop import py_interop_plot
+from interop import py_interop_comm
+from interop import py_interop_table
+from interop import py_interop_run_metrics
 
 class CoreTests(unittest.TestCase):
     """ Unit tests for the core functionality in the binding
