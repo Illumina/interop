@@ -1,10 +1,16 @@
 # Changes                                               {#changes}
 
-## v1.0.22 (Master)
+## v1.0.23 (Master)
 
 Date       | Description
 ---------- | -----------
 0000-00-00 | placeholder
+
+## v1.0.22
+
+Date       | Description
+---------- | -----------
+2017-04-13 | Create a ManyLinux build of InterOp and InterOp Python
 
 ## v1.0.21
 

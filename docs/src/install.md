@@ -18,11 +18,8 @@ In addition to the binary archive below, there are language specific packages in
  - Wheel for Python
  
 Note, we only distribute from GitHub currently, and not PyPi or NuGet.org. These should
-be compatible with most Linux Versions, Mac OSX and Windows. We support Python 2.7 (UCS-4),
-Python 3.5 and Python 3.6.
-
-If you are new to Python or unsure what UCS-4 means, then please use
-Anaconda or Miniconda.
+be compatible with most Linux Versions, Mac OSX and Windows. We support Python 2.7,
+Python 3.4, 3.5 and 3.6.
 
 ### Binary Archive (C++, C#, Python, Java)
 
@@ -38,7 +35,7 @@ For Pythons users, a Wheel package is available on Github Release:
 $ pip install -f https://github.com/Illumina/interop/releases/latest interop
 ~~~~~~~~~~~~~
 
-Supported versions for binary distribution: 2.7 (UCS-4), 3.5 and 3.6.
+Supported versions for binary distribution: 2.7, 3.4, 3.5 and 3.6.
 
 ## Build from Source
 
