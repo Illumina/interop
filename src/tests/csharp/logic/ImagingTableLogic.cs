@@ -32,7 +32,7 @@ namespace Illumina.InterOp.Interop.UnitTest
             run_metrics run = new run_metrics();
             c_csharp_comm.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, run.extraction_metric_set());
 
-            var run_param = new parameters();
+            parameters run_param = new parameters();
             Assert.AreEqual(run_param.version(), 0);
             Assert.AreEqual(run.extraction_metric_set().max_cycle(), 1);
 
@@ -49,7 +49,7 @@ namespace Illumina.InterOp.Interop.UnitTest
             map_id_offset rowOffsets = new map_id_offset();
             c_csharp_table.count_table_rows(run, rowOffsets);
             uint columnCount = c_csharp_table.count_table_columns(columnVector);
-            var data = new float[rowOffsets.Count*columnCount];
+            float[] data = new float[rowOffsets.Count*columnCount];
             c_csharp_table.populate_imaging_table_data(run, columnVector, rowOffsets, data, (uint)data.Length);
             Assert.AreEqual(rowOffsets.Count, 3);
             Assert.AreEqual(data[0], 7);
@@ -72,7 +72,7 @@ namespace Illumina.InterOp.Interop.UnitTest
             run_metrics run = new run_metrics();
             c_csharp_comm.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, run.extraction_metric_set());
 
-            var run_param = new parameters();
+            parameters run_param = new parameters();
             Assert.AreEqual(run_param.version(), 0);
             Assert.AreEqual(run.extraction_metric_set().max_cycle(), 1);
 
@@ -87,13 +87,13 @@ namespace Illumina.InterOp.Interop.UnitTest
             imaging_table table = new imaging_table();
             c_csharp_table.create_imaging_table(run, table);
             Assert.AreEqual(table.row_count(), 3);
-            Assert.AreEqual(table.at(0u, 0u), 7);
+            Assert.AreEqual(table.at(0u, (column_id)0), 7);
 
 		}
 		[Test]
 		public void IsBaseMetric()
 		{
-		    var metricType = metric_type.BasePercent;
+		    metric_type metricType = metric_type.BasePercent;
 		    Assert.IsTrue(c_csharp_run_metrics.is_base_metric(metricType));
 		}
 	}

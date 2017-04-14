@@ -1,0 +1,44 @@
+diff -Naur mono_clean/mono/profiler/mono-profiler-log.c mono_working/mono/profiler/mono-profiler-log.c
+--- mono_clean/mono/profiler/mono-profiler-log.c	2017-04-12 03:51:21.000000000 -0700
++++ mono_working/mono/profiler/mono-profiler-log.c	2017-04-14 15:54:18.145707359 -0700
+@@ -54,7 +54,19 @@
+ #if defined (HAVE_SYS_ZLIB)
+ #include <zlib.h>
+ #endif
+-
++#ifdef HAVE_SCHED_GETAFFINITY
++#ifndef CPU_COUNT
++#define CPU_COUNT(set) _CPU_COUNT((unsigned int *)(set), sizeof(*(set))/sizeof(unsigned int))
++static int _CPU_COUNT(unsigned int *set, size_t len) {
++    int cnt;
++    cnt = 0;
++    while (len--)
++        cnt += __builtin_popcount(*set++);
++    return cnt;
++}
++#endif
++ 
++#endif
+ #define BUFFER_SIZE (4096 * 16)
+ 
+ /* Worst-case size in bytes of a 64-bit value encoded with LEB128. */
+diff -Naur mono_clean/mono/utils/mono-proclib.c mono_working/mono/utils/mono-proclib.c
+--- mono_clean/mono/utils/mono-proclib.c	2017-04-12 03:51:21.000000000 -0700
++++ mono_working/mono/utils/mono-proclib.c	2017-04-14 15:53:52.620739849 -0700
+@@ -17,6 +17,16 @@
+ #endif
+ #ifdef HAVE_SCHED_GETAFFINITY
+ #include <sched.h>
++#ifndef CPU_COUNT
++#define CPU_COUNT(set) _CPU_COUNT((unsigned int *)(set), sizeof(*(set))/sizeof(unsigned int))
++static int _CPU_COUNT(unsigned int *set, size_t len) {
++    int cnt;
++    cnt = 0;
++    while (len--)
++        cnt += __builtin_popcount(*set++);
++    return cnt;
++}
++#endif
+ #endif
+ 
+ #ifdef HOST_WIN32

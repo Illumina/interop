@@ -35,9 +35,15 @@ endif( NOT CSHARP_COMPILER )
 if( CSHARP_TYPE MATCHES ".NET" )
   include( ${DotNetFrameworkSdk_USE_FILE} )
   set(CSHARP_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>)
+  set(EXTRA_FLAGS "/platform:${CSHARP_PLATFORM}")
 elseif ( CSHARP_TYPE MATCHES "Mono" )
   include( ${Mono_USE_FILE} )
   set(CSHARP_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE})
+  if(CSHARP_MONO_VERSION VERSION_GREATER 2.4)
+    set(EXTRA_FLAGS "/platform:${CSHARP_PLATFORM}")
+  else()
+    set(CSHARP_SDK "")
+  endif()
 endif ( CSHARP_TYPE MATCHES ".NET" )
 
 macro( CSHARP_ADD_LIBRARY name )
@@ -98,14 +104,14 @@ macro( CSHARP_ADD_PROJECT type name )
   set(CSHARP_${name}_BINARY ${CSHARP_OUTPUT_DIR}/${name}${CSHARP_BINARY_SUFFIX}.${output})
   set(CSHARP_${name}_BINARY_NAME ${name}${CSHARP_BINARY_SUFFIX}.${output})
   # Add custom target and command
-  MESSAGE( STATUS "Adding C# ${type} ${name}: '${CSHARP_COMPILER} /t:${type} /out:${name}${CSHARP_BINARY_SUFFIX}.${output} /platform:${CSHARP_PLATFORM} ${CSHARP_SDK} ${refs} ${sources}'" )
+  MESSAGE( STATUS "Adding C# ${type} ${name}: '${CSHARP_COMPILER} /t:${type} /out:${name}${CSHARP_BINARY_SUFFIX}.${output} ${EXTRA_FLAGS} ${CSHARP_SDK} ${refs} ${sources}'" )
   add_custom_command(
     COMMENT "Compiling C# ${type} ${name}: '${CSHARP_COMPILER} /unsafe /t:${type} /out:${CSHARP_OUTPUT_DIR}/${name}${CSHARP_BINARY_SUFFIX}.${output} /platform:${CSHARP_PLATFORM} ${CSHARP_SDK} ${refs} ${sources}'"
     OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${name}${CSHARP_BINARY_SUFFIX}.${output}
     COMMAND ${CMAKE_COMMAND} -E make_directory ${CSHARP_OUTPUT_DIR}
     COMMAND ${CMAKE_COMMAND} -DFILES_TO_COPY="${source_list}" -DDESTINATION_DIR="${CMAKE_CURRENT_BINARY_DIR}" -P "${CMAKE_SOURCE_DIR}/cmake/CopyListOfFiles.cmake"
     COMMAND ${CSHARP_COMPILER}
-    ARGS /t:${type} /out:${CSHARP_OUTPUT_DIR}/${name}${CSHARP_BINARY_SUFFIX}.${output} /unsafe /platform:${CSHARP_PLATFORM} ${CSHARP_SDK} ${refs} ${sources}
+    ARGS /t:${type} /out:${CSHARP_OUTPUT_DIR}/${name}${CSHARP_BINARY_SUFFIX}.${output} /unsafe ${EXTRA_FLAGS} ${CSHARP_SDK} ${refs} ${sources}
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     DEPENDS ${sources_dep}
   )

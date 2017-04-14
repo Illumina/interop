@@ -90,7 +90,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		[Test]
 		public void TestListFlowMetrics()
 		{
-		    var interopsToLoad = new uchar_vector();
+		    uchar_vector interopsToLoad = new uchar_vector();
 		    c_csharp_run_metrics.list_analysis_metrics_to_load(interopsToLoad);
 		}
 	}

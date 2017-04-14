@@ -38,6 +38,7 @@ option(FORCE_SHARED_CRT "Used the shared (DLL) run time lib (must be ON if compi
 option(ENABLE_CSHARP "Build C# language bindings" ON)
 option(ENABLE_PYTHON "Build Python language bindings" ON)
 option(ENABLE_PORTABLE "Statically link libraries for GCC compiler")
+option(DISABLE_PACKAGE_SUBDIR "Disable placing the packaged build in a subdirectory structure: interop/${VERSION}")
 
 include(${PROJECT_SOURCE_DIR}/cmake/InternalUtils.cmake)
 interop_config_compiler_and_linker()
@@ -84,7 +85,11 @@ if(INTEROP_VERSION)
     else()
         get_filename_component(PACKAGE_OUTPUT_FILE_PREFIX ${PACKAGE_OUTPUT_FILE_PREFIX} ABSOLUTE)
     endif()
-    set(CPACK_OUTPUT_FILE_PREFIX "${PACKAGE_OUTPUT_FILE_PREFIX}/interop/${VERSION}")
+    if(DISABLE_PACKAGE_SUBDIR)
+        set(CPACK_OUTPUT_FILE_PREFIX "${PACKAGE_OUTPUT_FILE_PREFIX}")
+    else()
+        set(CPACK_OUTPUT_FILE_PREFIX "${PACKAGE_OUTPUT_FILE_PREFIX}/interop/${VERSION}")
+    endif()
 endif()
 
 #Adds the target "package"

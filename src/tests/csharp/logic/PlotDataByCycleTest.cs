@@ -17,7 +17,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 	{
 	    public void MetricTypeList()
      	{
-            var typeList = new metric_type_description_vector();
+            metric_type_description_vector typeList = new metric_type_description_vector();
             c_csharp_plot.list_by_cycle_metrics(typeList);
             Assert.AreEqual(typeList[0], metric_type.Intensity);
         }
@@ -38,7 +38,7 @@ namespace Illumina.InterOp.Interop.UnitTest
             run_metrics run = new run_metrics();
             c_csharp_comm.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, run.extraction_metric_set());
 
-            var run_param = new parameters();
+            parameters run_param = new parameters();
             Assert.AreEqual(run_param.version(), 0);
             Assert.AreEqual(run.extraction_metric_set().max_cycle(), 1);
 

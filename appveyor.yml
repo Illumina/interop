@@ -21,10 +21,6 @@
 #
 # TODO: Add code to download miniconda if it does not exist
 
-configuration:
-  - Debug
-  - Release
-
 cache:
   - x86_64-4.9.2-release-win32-seh-rt_v4-rev4.7z
   - C:\ProgramData\chocolatey\bin -> appveyor.yml
@@ -42,6 +38,23 @@ environment:
       ADDIONAL_CONFIG_OPTIONS: -DENABLE_APPS=OFF -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=OFF
       PYTHON_PATH_DIR: C:\Miniconda-x64
       PYTHON_VERSION: 2.7
+      configuration: Release
+    - generator: "Visual Studio 14 2015 Win64"
+      BUILD: msvc14_win64_py27
+      config_type: win64
+      PACKAGE_TARGET: package
+      ADDIONAL_CONFIG_OPTIONS: -DENABLE_APPS=OFF -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=OFF -DDISABLE_PACKAGE_SUBDIR=ON
+      PYTHON_PATH_DIR: C:\Miniconda-x64
+      PYTHON_VERSION: 2.7
+      configuration: Release
+    - generator: "Visual Studio 14 2015 Win64"
+      BUILD: msvc14_win64_py27
+      config_type: win64
+      PACKAGE_TARGET: package_wheel
+      ADDIONAL_CONFIG_OPTIONS: -DENABLE_APPS=OFF -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=OFF
+      PYTHON_PATH_DIR: C:\Miniconda-x64
+      PYTHON_VERSION: 2.7
+      configuration: Debug
     - generator: "Visual Studio 14 2015 Win64"
       BUILD: msvc14_win64_py36
       config_type: win64
@@ -49,6 +62,7 @@ environment:
       ADDIONAL_CONFIG_OPTIONS: -DENABLE_APPS=OFF -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=OFF
       PYTHON_PATH_DIR: C:\Miniconda36-x64
       PYTHON_VERSION: 3.6
+      configuration: Release
     - generator: "Visual Studio 14 2015 Win64"
       BUILD: msvc14_win64_py35
       config_type: win64
@@ -56,6 +70,7 @@ environment:
       ADDIONAL_CONFIG_OPTIONS: -DENABLE_APPS=OFF -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=OFF
       PYTHON_PATH_DIR: C:\Miniconda36-x64
       PYTHON_VERSION: 3.5
+      configuration: Release
     - generator: "MinGW Makefiles"
       COMPILER_PATH: C:\mingw64\bin
       BUILD: mingw_win64
@@ -64,6 +79,7 @@ environment:
       PACKAGE_TARGET: install
       PYTHON_PATH_DIR: C:\Miniconda-x64
       PYTHON_VERSION: 2.7
+      configuration: Release
 
 matrix:
   fast_finish: true
@@ -107,10 +123,6 @@ build_script:
 
 test_script:
   - cmake --build build --config "%configuration%" --target check
-
-before_deploy:
-  - echo "%BUILD_PATH%"
-  - if not exist "%BUILD_PATH%" 7z a interop-%BUILD%_%configuration%.zip %BUILD_PATH%
 
 artifacts:
   - path: .\*.zip

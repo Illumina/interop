@@ -109,7 +109,7 @@ if( WIN32 )
 else( UNIX )
   # Search for Mono on non-Win32 systems
   # We currently disallow any framework less than .NET 4.x (dmcs only)
-  set( csharp_mono_names "dmcs" "dmcs.exe")# "mcs" "mcs.exe" "smcs" "smcs.exe" "gmcs" "gmcs.exe" )
+  set( csharp_mono_names "dmcs" "dmcs.exe" "gmcs" "gmcs.exe" "mcs" "mcs.exe" "smcs" "smcs.exe" )
   set(
     csharp_mono_paths
     "/usr/bin/"
