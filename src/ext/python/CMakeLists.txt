@@ -1,13 +1,18 @@
 
 find_package(PythonInterp)
 find_package(PythonLibs EXACT ${PYTHON_VERSION_STRING})
-message(STATUS "Found PythonIncludePath: ${PYTHON_INCLUDE_PATH}")
 if(NOT PYTHONLIBS_FOUND)
-    message(WARNING "PythonLibs not found, unable to generate Python Binding for version ${PYTHON_VERSION_STRING} and interpreter ${PYTHON_EXECUTABLE}")
-    return()
+    execute_process(
+            COMMAND ${PYTHON_EXECUTABLE} -c "from distutils import sysconfig; print(sysconfig.get_python_inc())"
+            OUTPUT_VARIABLE
+            PYTHON_INCLUDE_PATH
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
 endif()
+message(STATUS "Found PythonIncludePath: ${PYTHON_INCLUDE_PATH}")
 find_package(NumPy)
 if(NOT NUMPY_FOUND)
+    set(PYTHON_TARGET_FOUND OFF CACHE INTERNAL "Python target is available" FORCE)
     message(WARNING "Numpy not found, unable to generate Python Binding, interpreter ${PYTHON_EXECUTABLE}")
     return()
 endif()
@@ -66,8 +71,11 @@ foreach(SRC ${SWIG_SRCS})
         set_target_properties(${SWIG_MODULE} PROPERTIES COMPILE_FLAGS "${PYTHON_GENERATED_COMPILE_FLAGS}")
     endif()
 
-
-    swig_link_libraries(${MODULE} ${PYTHON_LIBRARIES} ${INTEROP_DL_LIB})
+    if(PYTHONLIBS_FOUND)
+        swig_link_libraries(${MODULE} ${PYTHON_LIBRARIES} ${INTEROP_DL_LIB})
+    else()
+        swig_link_libraries(${MODULE} ${INTEROP_DL_LIB})
+    endif()
     add_dependencies(${SWIG_MODULE} ${INTEROP_DL_LIB})
     set(swig_py_file "${CMAKE_SWIG_OUTDIR}/${MODULE}.py")
     list(APPEND py_gens "$<TARGET_FILE:${SWIG_MODULE}>")
@@ -136,3 +144,5 @@ add_custom_target(package_wheel
         )
 add_dependencies(package_wheel python_lib)
 set_target_properties(package_wheel PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
+
+set(PYTHON_TARGET_FOUND ON CACHE INTERNAL "Python target is available" FORCE)

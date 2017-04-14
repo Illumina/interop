@@ -22,37 +22,26 @@ sudo: required
 
 matrix:
   include:
-  - compiler: clang
-    os: osx
-    env: INTEROP_C89=OFF BUILD_TYPE=Release BUILD_NAME=osx_py35_clang_release DEPLOY_BUILD=true PYTHON_VERSION_NUM="3.5"
-  - compiler: clang
-    os: osx
-    env: INTEROP_C89=OFF BUILD_TYPE=Release BUILD_NAME=osx_py27_clang_release DEPLOY_BUILD=true PYTHON_VERSION_NUM="2.7"
-  - compiler: clang
-    os: linux
-    env: INTEROP_C89=ON BUILD_TYPE=Debug BUILD_NAME=linux_clang34_debug PYTHON_VERSION_NUM="System"
-  - compiler: clang
-    os: linux
-    env: INTEROP_C89=ON BUILD_TYPE=Release BUILD_NAME=linux_clang34_release PYTHON_VERSION_NUM="System"
-  - compiler: gcc
-    os: linux
-    env: INTEROP_C89=ON BUILD_TYPE=Debug BUILD_NAME=linux_gcc46_debug PYTHON_VERSION_NUM="System"
-  - compiler: gcc
-    os: linux
-    env: INTEROP_C89=ON BUILD_TYPE=Release BUILD_NAME=linux_py36_gcc48_release EXTRA_CMAKE_FLAGS=-DENABLE_PORTABLE=ON DEPLOY_BUILD=true PYTHON_VERSION_NUM="3.6"
-  - compiler: clang
-    os: osx
-    env: INTEROP_C89=OFF BUILD_TYPE=Debug BUILD_NAME=osx_clang_debug PYTHON_VERSION_NUM="2.7"
-  - compiler: gcc
-    os: linux
-    env: INTEROP_C89=ON BUILD_TYPE=Release BUILD_NAME=linux_py35_gcc48_release EXTRA_CMAKE_FLAGS=-DENABLE_PORTABLE=ON DEPLOY_BUILD=true PYTHON_VERSION_NUM="3.5" COMPILER_HOME=$HOME/miniconda_3.5/bin/
-  - compiler: gcc
-    os: linux
-    env: INTEROP_C89=ON BUILD_TYPE=Release BUILD_NAME=linux_py27m_gcc48_release EXTRA_CMAKE_FLAGS=-DENABLE_PORTABLE=ON DEPLOY_BUILD=true PYTHON_VERSION_NUM="2.7" COMPILER_HOME=$HOME/miniconda_2.7/bin/
-  - compiler: clang
-    os: osx
-    env: INTEROP_C89=OFF BUILD_TYPE=Release BUILD_NAME=osx_py36_clang_release DEPLOY_BUILD=true PYTHON_VERSION_NUM="3.6"
-  - compiler: gcc
+  - os: osx
+    compiler: clang
+    env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package_osx.sh $PWD $PWD/dist travis"
+  - os: linux
+    compiler: clang
+    env: SCRIPT="bash ./tools/test.sh ON Debug travis"
+  - os: linux
+    compiler: gcc
+    env: SCRIPT="bash ./tools/test.sh ON Debug travis"
+  - os: linux
+    compiler: gcc
+    sudo: required
+    services:
+      - docker
+    env: DEPLOY_BUILD=true DOCKER_IMAGE=quay.io/pypa/manylinux1_x86_64 SCRIPT="docker run --rm -v $PWD:/io quay.io/pypa/manylinux1_x86_64 sh /io/tools/package_linux.sh /io /io/dist"
+  - os: osx
+    compiler: clang
+    env: SCRIPT="bash ./tools/test.sh OFF Debug travis"
+  - os: linux
+    compiler: gcc
     addons: &1
       apt:
         sources:
@@ -68,13 +57,9 @@ matrix:
         - mono-complete
         - libgtest-dev
         - python-numpy
-    env: INTEROP_C89=OFF COMPILER_VERSION=-5 BUILD_TYPE=Debug BUILD_NAME=linux_gcc52_debug PYTHON_VERSION_NUM="System"
-    os: linux
-  - compiler: gcc
-    addons: *1
-    env: INTEROP_C89=OFF COMPILER_VERSION=-5 BUILD_TYPE=Release BUILD_NAME=linux_gcc52_release PYTHON_VERSION_NUM="System"
-    os: linux
-  - compiler: clang
+    env: COMPILER_VERSION=-5 SCRIPT="bash ./tools/test.sh ON Debug travis"
+  - os: linux
+    compiler: clang
     addons: &2
       apt:
         sources:
@@ -92,12 +77,7 @@ matrix:
         - mono-complete
         - libgtest-dev
         - python-numpy
-    env: INTEROP_C89=OFF COMPILER_VERSION=-3.7 BUILD_TYPE=Debug BUILD_NAME=linux_clang37_debug PYTHON_VERSION_NUM="System"
-    os: linux
-  - compiler: clang
-    addons: *2
-    env: INTEROP_C89=OFF COMPILER_VERSION=-3.7 BUILD_TYPE=Release BUILD_NAME=linux_clang37_release PYTHON_VERSION_NUM="System"
-    os: linux
+    env: COMPILER_VERSION=-3.7 SCRIPT="bash ./tools/test.sh ON Debug travis"
 addons:
   apt:
     sources:
@@ -117,14 +97,12 @@ cache:
     - $HOME/cmake
 
 install:
-- if test "$TRAVIS_OS_NAME" = "linux"; then source tools/travis-linux-install.sh $PYTHON_VERSION_NUM ; fi
-- if test "$TRAVIS_OS_NAME" = "osx"; then source tools/travis-osx-install.sh $PYTHON_VERSION_NUM ; fi
+- if test "$TRAVIS_OS_NAME" = "linux"; then source tools/travis-linux-install.sh ; fi
+- if test "$TRAVIS_OS_NAME" = "osx"; then source tools/travis-osx-install.sh ; fi
+- if [ ! -z $DOCKER_IMAGE ]; then docker pull $DOCKER_IMAGE ; fi
 - ls $HOME/NUnit-2.6.4
 
 before_script:
-- rm -fr build
-- mkdir -p build
-- cd build
 - export CC="${COMPILER_HOME}${CC}${COMPILER_VERSION}"
 - export CXX="${COMPILER_HOME}${CXX}${COMPILER_VERSION}"
 - if test "$PYTHON_VERSION_NUM" != "System"; then export PATH="$HOME/miniconda_${PYTHON_VERSION_NUM}/bin:$PATH" ; fi
@@ -132,23 +110,11 @@ before_script:
 - cmake -version
 - which $CC
 - which $CXX
+- echo "HOME=$HOME"
+- echo "PWD=$PWD"
 
 script:
-- export BUILD_PATH=${PWD}/${BUILD_NAME}
-- export PYTHON_BUILD_PATH=${PWD}/dist
-- echo 'Configuring...' && echo -en 'travis_fold:start:script.1\\r'
-- cmake -DNUNIT_ROOT=$HOME/NUnit-2.6.4 ../ -DENABLE_BACKWARDS_COMPATIBILITY=$INTEROP_C89 -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_INSTALL_PREFIX=${BUILD_PATH} -DPACKAGE_OUTPUT_FILE_PREFIX=${PYTHON_BUILD_PATH} ${EXTRA_CMAKE_FLAGS}
-- echo -en 'travis_fold:end:script.1\\r'
-- cmake --build .
-- echo 'Installing...' && echo -en 'travis_fold:start:script.2\\r'
-- make install
-- echo -en 'travis_fold:end:script.2\\r'
-- cmake --build . --target check
-- echo 'Package Python' && echo -en 'travis_fold:start:script.3\\r'
-- if test "$PYTHON_VERSION_NUM" != "System"; then  cmake --build . --target package_wheel ; fi
-- echo 'Cleaning...' && echo -en 'travis_fold:start:script.3\\r'
-- make clean
-- echo -en 'travis_fold:end:script.3\\r'
+- $SCRIPT
 
 #white list broke the tag push deployment
 
@@ -159,18 +125,13 @@ branches:
 
 notifications:
   email: false
-before_deploy:
-- cd `dirname ${BUILD_PATH}`
-- tar czf interop-${BUILD_NAME}.tar.gz ${BUILD_NAME}
-- export PYTHON_PACKAGE_NAME=`find $PYTHON_BUILD_PATH -name "*.whl"`
 deploy:
   skip_cleanup: true
   provider: releases
   api_key:
     secure: qUB+Gaq1jYzYgMW+rh3mYquzFpt4cuJ+C89L0o/NkkSrCeDizftNL0P2mBXMqeUOLEWDFGwMgWcdTSs0MMdoOmYKp0hMFbCzipbwANKdzcmUjYx9VDlft9iEnKyjhnwLTyljvcK2OYWMCiPkTv+V4O0H9/T8bZEGQ/zBElCeYJPSdjNTRSFzfe8XqzGsNoty4YDlK89UIWy2Pmw38qRIWpu2rk3WAMDxsJgSO7uPs5xxaLioAfukhV7thbeQjYQn42OQ8eA2AwQa478KtlY2V5XtZqFQtdDPosvtS5HXYCXvnCWJeUbB0KrE5o+Je8njm4e+K30WDfpDGiCPU7Guz52FN551/5L5iv0+6++ZOt8fxKSMF+4H42JxDzDMdzvJmTImdIP2ACm5EnY8pJXOVnXbemDNNnpjhE8CqMVSqfiB+QDLasiZ3PBAaqPbb7XVYKpxUE1nGQCIynHjS7KClKo0EKrvJo2vWSgeXW5wBtmGuIsgMkPcNTtqM6WEui1mdoKQXrvAl4SxdgwhvmA6RYhva+yBIGf9HPqfGL7c2ByQADULLtc8SgOjqbibDO+jVITTtWsliaD53nXJKHzU8JkOsAJNl0Le+kyQKNoHaMersHrZzccrCeRkGOES5g/a+2a3PF0hRkgQjmVQsEEPw9C1rLEXG5gTUL3gd5UmD58=
-  file:
-  - interop-${BUILD_NAME}.tar.gz
-  - ${PYTHON_PACKAGE_NAME}
+  file_glob: true
+  file: $PWD/dist/*.*
   on:
     repo: Illumina/interop
     branch: master

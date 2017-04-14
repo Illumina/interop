@@ -9,8 +9,7 @@ if(swig_major_ver LESS "3")
 endif()
 
 find_package(PythonInterp)
-find_package(PythonLibs EXACT ${PYTHON_VERSION_STRING})
-if(NOT PYTHONLIBS_FOUND)
+if(NOT PYTHON_TARGET_FOUND)
     return()
 endif()
 

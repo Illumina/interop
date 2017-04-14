@@ -10,7 +10,7 @@ Illumina sequencers including **NovaSeq**. These libraries are backwards compati
 with one exception: GA systems have been excluded.
 
 ***
->  We now support an interface to Python 2.7 (UCS-4), 3.5 and 3.6 (see contents below)
+>  We now support an interface to Python 2.7 and 3.4-3.6 (see contents below)
 ***
 
 The InterOp files supported by this library include:
@@ -71,12 +71,9 @@ Install
 
 ### Python
 
-Supported versions for binary distribution: 2.7 (UCS-4), 3.5 and 3.6.
+Supported versions for binary distribution: Python 2.7 and 3.4-3.6.
 
 You should have NumPy already installed.
-
-If you are new to Python or unsure what UCS-4 means, then please use
-Anaconda or Miniconda.
 
 ~~~~~~~~~~~~~{.sh}
 $ pip install -f https://github.com/Illumina/interop/releases/latest interop

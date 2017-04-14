@@ -1,0 +1,5 @@
+FROM quay.io/pypa/manylinux1_x86_64
+COPY package_linux.sh /package_linux.sh
+RUN bash package_linux.sh && rm -fr package_linux.sh
+
+

@@ -16,23 +16,26 @@ brew install swig
 brew install doxygen
 brew install mono
 
-CONDA_HOME=$HOME/miniconda_${PYTHON_VERSION_NUM}
-if [ "$PYTHON_VERSION_NUM" != "System" ]; then
-#if [ ! -e $CONDA_HOME/envs/test-environment/lib/python${PYTHON_VERSION_NUM}/site-packages/numpy/core/include/numpy/arrayobject.h ]; then
-    # How To: https://conda.io/docs/travis.html
-    if [[ "$PYTHON_VERSION_NUM" == "2.7" ]]; then
-        wget https://repo.continuum.io/miniconda/Miniconda2-latest-MacOSX-x86_64.sh -O miniconda.sh;
-    else
-        wget https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -O miniconda.sh;
-    fi
+CONDA2=$HOME/miniconda2
+CONDA3=$HOME/miniconda3
 
-    bash miniconda.sh -b -p $CONDA_HOME
-    export PATH="$CONDA_HOME/bin:$PATH"
+if [ ! -e $CONDA2 ] ; then
+    wget https://repo.continuum.io/miniconda/Miniconda2-latest-MacOSX-x86_64.sh -O miniconda.sh;
+    bash miniconda.sh -b -p $CONDA2
     hash -r
-    conda config --set always_yes yes --set changeps1 no
-    conda update -q conda
-    conda info -a
-    conda install -y numpy
-    conda install -y python=$PYTHON_VERSION_NUM
+    $CONDA2/bin/conda config --set always_yes yes --set changeps1 no
+    $CONDA2/bin/conda update -q conda
+    $CONDA2/bin/conda info -a
+    $CONDA2/bin/conda install -y numpy
+    export PATH="$CONDA2/bin:$PATH"
 fi
 
+if [ ! -e $CONDA3 ] ; then
+    wget https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -O miniconda.sh;
+    bash miniconda.sh -b -p $CONDA3
+    hash -r
+    $CONDA3/bin/conda config --set always_yes yes --set changeps1 no
+    $CONDA3/bin/conda update -q conda
+    $CONDA3/bin/conda info -a
+    $CONDA3/bin/conda install -y numpy
+fi
