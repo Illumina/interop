@@ -62,18 +62,21 @@ namespace illumina { namespace interop { namespace logic { namespace plot
      * @param data output flowcell map
      * @param buffer preallocated memory for data
      * @param tile_buffer preallocated memory for tile ids
+     * @param skip_empty set false for testing purposes
      */
     void plot_flowcell_map(model::metrics::run_metrics& metrics,
                                   const constants::metric_type type,
                                   const model::plot::filter_options& options,
                                   model::plot::flowcell_data& data,
                                   float* buffer,
-                                  ::uint32_t* tile_buffer)
+                                  ::uint32_t* tile_buffer,
+                           const bool skip_empty)
     throw(model::invalid_filter_option,
     model::invalid_metric_type,
     model::index_out_of_bounds_exception)
     {
         data.clear();
+        if(skip_empty && metrics.empty()) return;
         options.validate(type, metrics.run_info());
 
         const model::run::flowcell_layout& layout = metrics.run_info().flowcell();
@@ -233,13 +236,15 @@ namespace illumina { namespace interop { namespace logic { namespace plot
      * @param data output flowcell map
      * @param buffer preallocated memory for data
      * @param tile_buffer preallocated memory for tile ids
+     * @param skip_empty set false for testing purposes
      */
     void plot_flowcell_map(model::metrics::run_metrics& metrics,
                                   const std::string& metric_name,
                                   const model::plot::filter_options& options,
                                   model::plot::flowcell_data& data,
                                   float* buffer,
-                                  ::uint32_t* tile_buffer)
+                                  ::uint32_t* tile_buffer,
+                           const bool skip_empty)
     throw(model::invalid_filter_option,
     model::invalid_metric_type,
     model::index_out_of_bounds_exception)
@@ -247,7 +252,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
         const constants::metric_type type = constants::parse<constants::metric_type>(metric_name);
         if(type == constants::UnknownMetricType)
             INTEROP_THROW(model::invalid_metric_type, "Unsupported metric type: " << metric_name);
-        plot_flowcell_map(metrics, type, options, data, buffer, tile_buffer);
+        plot_flowcell_map(metrics, type, options, data, buffer, tile_buffer, skip_empty);
     }
 
     /** List metric type names available for flowcell
