@@ -144,7 +144,8 @@ namespace illumina { namespace interop { namespace model { namespace run
          * @throws invalid_run_info_exception
          */
         void validate_cycle(const ::uint32_t lane, const ::uint32_t tile, const size_t cycle)const
-        throw(model::invalid_run_info_exception);
+        throw(model::invalid_run_info_exception,
+              model::invalid_run_info_cycle_exception);
         /** Test if tile list matches flowcell layout
          *
          * @param lane lane number

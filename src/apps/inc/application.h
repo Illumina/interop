@@ -119,6 +119,10 @@ inline int read_run_metrics(const char* filename,
         std::cerr << ex.what() << std::endl;
         return BAD_FORMAT;
     }
+    catch(const model::invalid_run_info_cycle_exception& ex)
+    {
+        std::cerr << ex.what() << std::endl;
+    }
     catch(const std::exception& ex)
     {
         std::cerr << ex.what() << std::endl;

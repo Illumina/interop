@@ -73,6 +73,11 @@ echo "##teamcity[blockOpened name='Test $build_type']"
 cmake --build . --target check -- -j8
 echo "##teamcity[blockClosed name='Test $build_type']"
 
+
+echo "##teamcity[blockOpened name='Package $build_type']"
+cmake --build . --target package -- -j8
+echo "##teamcity[blockClosed name='Package $build_type']"
+
 echo "##teamcity[blockOpened name='Install $build_type']"
 rm -f CMakeCache.txt
 cmake $source_dir -DCMAKE_BUILD_TYPE=Release $build_param

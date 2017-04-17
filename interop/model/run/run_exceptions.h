@@ -57,6 +57,17 @@ namespace illumina { namespace interop { namespace model
         invalid_run_info_exception(const std::string &mesg) : util::base_exception(mesg)
         { }
     };
+
+    /** Exception raised if the RunInfo cycle does not match the InterOps (for legacy HiSeq datasets)
+     */
+    struct invalid_run_info_cycle_exception : public util::base_exception
+    {
+        /** Constructor
+         *
+         *  @param mesg error message
+         */
+        invalid_run_info_cycle_exception(const std::string &mesg) : util::base_exception(mesg) {}
+    };
     /** @} */
 
 }}}

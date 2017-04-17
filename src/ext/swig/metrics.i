@@ -92,6 +92,7 @@ METRICS_EXCEPTION_WRAPPER(WRAP_EXCEPTION)
     %ignore illumina::interop::model::metric_base::metric_set<metric_t>::populate_tile_numbers_for_lane;
     %ignore illumina::interop::model::metric_base::metric_set<metric_t>::populate_tile_numbers_for_lane_surface;
     %ignore illumina::interop::model::metric_base::metric_set<metric_t>::offset_map;
+    %ignore illumina::interop::model::metric_base::metric_set<metric_t>::remove;
 
     %apply size_t { std::map< std::size_t, metric_t >::size_type };
     %apply uint64_t { metric_base::metric_set<metric_t>::id_t };
