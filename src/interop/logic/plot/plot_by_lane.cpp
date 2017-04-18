@@ -63,17 +63,20 @@ namespace illumina { namespace interop { namespace logic { namespace plot
      * @param type specific metric value to plot by lane
      * @param options options to filter the data
      * @param data output plot data
+     * @param skip_empty set false for testing purposes
      */
     template<class Point>
     void plot_by_lane_t(const model::metrics::run_metrics& metrics,
                       const constants::metric_type type,
                       const model::plot::filter_options& options,
-                      model::plot::plot_data<Point>& data)
+                      model::plot::plot_data<Point>& data,
+                        const bool skip_empty)
     throw(model::index_out_of_bounds_exception,
     model::invalid_metric_type,
     model::invalid_filter_option)
     {
         data.clear();
+        if(skip_empty && metrics.empty()) return;
         if(utils::is_cycle_metric(type))
             INTEROP_THROW(model::invalid_metric_type, "Cycle metrics are unsupported: " << constants::to_string(type));
         options.validate(type, metrics.run_info());
@@ -125,16 +128,18 @@ namespace illumina { namespace interop { namespace logic { namespace plot
      * @param type specific metric value to plot by lane
      * @param options options to filter the data
      * @param data output plot data
+     * @param skip_empty set false for testing purposes
      */
     void plot_by_lane(const model::metrics::run_metrics& metrics,
                       const constants::metric_type type,
                       const model::plot::filter_options& options,
-                      model::plot::plot_data<model::plot::candle_stick_point>& data)
+                      model::plot::plot_data<model::plot::candle_stick_point>& data,
+                      const bool skip_empty)
             throw(model::index_out_of_bounds_exception,
             model::invalid_metric_type,
             model::invalid_filter_option)
     {
-        plot_by_lane_t(metrics, type, options, data);
+        plot_by_lane_t(metrics, type, options, data, skip_empty);
     }
 
     /** Plot a specified metric value by cycle
@@ -145,11 +150,13 @@ namespace illumina { namespace interop { namespace logic { namespace plot
      * @param metric_name name of metric value to plot by cycle
      * @param options options to filter the data
      * @param data output plot data
+     * @param skip_empty set false for testing purposes
      */
     void plot_by_lane(const model::metrics::run_metrics& metrics,
                       const std::string& metric_name,
                       const model::plot::filter_options& options,
-                      model::plot::plot_data<model::plot::candle_stick_point>& data)
+                      model::plot::plot_data<model::plot::candle_stick_point>& data,
+                      const bool skip_empty)
     throw(model::index_out_of_bounds_exception,
     model::invalid_metric_type,
     model::invalid_filter_option)
@@ -157,7 +164,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
         const constants::metric_type type = constants::parse<constants::metric_type>(metric_name);
         if(type == constants::UnknownMetricType)
             INTEROP_THROW(model::invalid_metric_type, "Unsupported metric type: " << metric_name);
-        plot_by_lane(metrics, type, options, data);
+        plot_by_lane(metrics, type, options, data, skip_empty);
     }
 
     /** List metric types available for by lane plots

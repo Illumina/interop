@@ -23,6 +23,7 @@ SWIG_URL="http://prdownloads.sourceforge.net/swig/swig-3.0.12.tar.gz"
 PROG_HOME=/opt
 CMAKE_HOME=${PROG_HOME}/cmake34
 SWIG_HOME=${PROG_HOME}/swig3
+CMAKE_EXTRA_FLAGS="-DDISABLE_PACKAGE_SUBDIR=ON"
 
 if [ ! -z $1 ] ; then
     SOURCE_PATH=$1
@@ -61,6 +62,42 @@ if [ ! -e ${SWIG_HOME}/bin/swig ]; then
     cd -
 fi
 
+export PATH=${CMAKE_HOME}/bin:${SWIG_HOME}/bin:$PATH
+
+if hash mono  2> /dev/null; then
+    which mono
+    mono --version
+else
+    # For some reason GLIBC_HAS_CPU_COUNT does not work properly on Centos5 for 4.8.1.0
+    #
+    # The following function needs to be added to
+    # 1. mono_src/mono/profiler/mono-profiler-log.c (4.8.1.0) or mono/profiler/proflog.c (Line: 48)
+    # 2. mono/utils/mono-proclib.c (Line: 19)
+    # #ifndef CPU_COUNT
+    # #define CPU_COUNT(set) _CPU_COUNT((unsigned int *)(set), sizeof(*(set))/sizeof(unsigned int))
+    # static int _CPU_COUNT(unsigned int *set, size_t len) {
+    #     int cnt;
+    #     cnt = 0;
+    #     while (len--)
+    #         cnt += __builtin_popcount(*set++);
+    #     return cnt;
+    # }
+    #endif
+    mkdir /mono_clean
+    wget --no-check-certificate --quiet -O - https://download.mono-project.com/sources/mono/mono-4.8.1.0.tar.bz2 | tar --strip-components=1 -xj -C /mono_clean
+    patch -p0 < /mono_patch.txt
+
+
+    #cd /io/mono_src
+    cd /mono_clean
+    ./configure --prefix=/usr
+    make && make install
+    cd -
+    rm -fr /mono_clean
+    which dmcs
+    which mono
+    mono --version
+fi
 
 for PYBUILD in `ls -1 /opt/python`; do
     if [[ "$PYBUILD" == cp26* ]]; then
@@ -72,7 +109,6 @@ for PYBUILD in `ls -1 /opt/python`; do
     "/opt/python/${PYBUILD}/bin/pip" install numpy
 done
 
-export PATH=${CMAKE_HOME}/bin:${SWIG_HOME}/bin:$PATH
 which cmake
 which gcc
 which g++
@@ -93,8 +129,8 @@ if [ ! -z $SOURCE_PATH ] ; then
         if [[ "$PYBUILD" == cp33* ]]; then
             continue
         fi
-        rm -fr build/src/ext/python
-        cmake $SOURCE_PATH -Bbuild -DPYTHON_EXECUTABLE=${PYTHON_BIN}/python -DPACKAGE_OUTPUT_FILE_PREFIX=${ARTIFACT_PATH} -DENABLE_PORTABLE=ON
+        touch $SOURCE_PATH/src/ext/python/CMakeLists.txt
+        cmake $SOURCE_PATH -Bbuild -DPYTHON_EXECUTABLE=${PYTHON_BIN}/python -DPACKAGE_OUTPUT_FILE_PREFIX=${ARTIFACT_PATH} -DENABLE_PORTABLE=ON ${CMAKE_EXTRA_FLAGS}
         cmake --build build --target check -- -j4
         cmake --build build --target package_wheel -- -j4
         auditwheel show ${ARTIFACT_PATH}/interop*${PYBUILD}*linux_x86_64.whl

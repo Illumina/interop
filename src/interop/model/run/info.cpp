@@ -275,11 +275,12 @@ namespace illumina { namespace interop { namespace model { namespace run
      * @throws invalid_run_info_exception
      */
     void info::validate_cycle(const ::uint32_t lane, const ::uint32_t tile, const size_t cycle)const
-    throw(model::invalid_run_info_exception)
+    throw(model::invalid_run_info_exception,
+          model::invalid_run_info_cycle_exception)
     {
         validate(lane, tile);
         if(cycle > m_total_cycle_count)
-            INTEROP_THROW(invalid_run_info_exception, "Cycle number exceeds number of cycles: "
+            INTEROP_THROW(invalid_run_info_cycle_exception, "Cycle number exceeds number of cycles: "
                     << cycle << " > " << m_total_cycle_count);
     }
 

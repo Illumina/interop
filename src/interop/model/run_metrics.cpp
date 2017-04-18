@@ -245,7 +245,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         validate_run_info(const run::info& info) : m_info(info){}
 
         template<class MetricSet>
-        void operator()(const MetricSet &metrics)const
+        void operator()(MetricSet &metrics)const
         {
             typedef typename MetricSet::base_t base_t;
             validate(metrics, base_t::null());
@@ -260,12 +260,26 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             }
         }
         template<class MetricSet>
-        void validate(const MetricSet &metrics, const constants::base_cycle_t*)const
+        void validate(MetricSet &metrics, const constants::base_cycle_t*)const
         {
-            for(typename MetricSet::const_iterator it = metrics.begin();it != metrics.end();++it)
+            bool exception_is_thrown = false;
+            std::string exception_string = "";
+            for(typename MetricSet::iterator it = metrics.begin();it != metrics.end();++it)
             {
-                m_info.validate_cycle(it->lane(), it->tile(), it->cycle());
+                try
+                {
+                    m_info.validate_cycle(it->lane(), it->tile(), it->cycle());
+                }
+                catch(const model::invalid_run_info_cycle_exception& ex)
+                {
+                    metrics.remove(it);
+                    --it;
+                    exception_is_thrown = true;
+                    exception_string = ex.what();
+                }
             }
+            if(exception_is_thrown)
+                INTEROP_THROW(model::invalid_run_info_cycle_exception, exception_string + ": truncating invalid entries");
         }
         template<class MetricSet>
         void validate(const MetricSet &metrics, const constants::base_read_t*)const
@@ -463,7 +477,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     model::invalid_channel_exception,
     model::index_out_of_bounds_exception,
     model::invalid_tile_naming_method,
-    model::invalid_run_info_exception)
+    model::invalid_run_info_exception,
+    model::invalid_run_info_cycle_exception)
     {
         clear();
         const size_t count = read_xml(run_folder);
@@ -494,6 +509,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     model::index_out_of_bounds_exception,
     model::invalid_tile_naming_method,
     model::invalid_run_info_exception,
+    model::invalid_run_info_cycle_exception,
     invalid_parameter)
     {
         read_run_info(run_folder);
@@ -602,7 +618,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     throw(model::invalid_channel_exception,
     model::invalid_tile_naming_method,
     model::index_out_of_bounds_exception,
-    model::invalid_run_info_exception)
+    model::invalid_run_info_exception,
+    model::invalid_run_info_cycle_exception)
     {
         if (m_run_info.flowcell().naming_method() == constants::UnknownTileNamingMethod)
         {
@@ -659,13 +676,6 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                 INTEROP_THROW(model::invalid_channel_exception,
                               "Channel names are missing from the RunInfo.xml, and RunParameters.xml does not contain sufficient information on the instrument run.");
         }
-        if (!empty())
-        {
-            if(run_info().flowcell().naming_method() == constants::UnknownTileNamingMethod)
-                INTEROP_THROW(model::invalid_tile_naming_method, "Unknown tile naming method - update your RunInfo.xml");
-            m_run_info.validate();
-            validate();
-        }
         typedef metric_base::metric_set< extraction_metric > extraction_metric_set_t;
         extraction_metric_set_t &extraction_metrics = get<extraction_metric>();
         // Trim excess channel data for imaging table
@@ -680,6 +690,14 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             for (image_metric_set_t::iterator it = image_metrics.begin(); it != image_metrics.end(); ++it)
                 it->trim(run_info().channels().size());
         }
+
+        if (!empty())
+        {
+            if(run_info().flowcell().naming_method() == constants::UnknownTileNamingMethod)
+                INTEROP_THROW(model::invalid_tile_naming_method, "Unknown tile naming method - update your RunInfo.xml");
+            m_run_info.validate();
+            validate();
+        }
     }
 
     /** Test if all metrics are empty
@@ -692,6 +710,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         m_metrics.apply(func);
         return func.empty();
     }
+
     /** Clear all the metrics
      */
     void run_metrics::clear()
@@ -1006,7 +1025,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
      *
      * @throws invalid_run_info_exception
      */
-    void run_metrics::validate() throw(invalid_run_info_exception)
+    void run_metrics::validate() throw(invalid_run_info_exception, invalid_run_info_cycle_exception)
     {
         m_metrics.apply(validate_run_info(m_run_info));
     }

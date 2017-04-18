@@ -1,10 +1,18 @@
 # Changes                                               {#changes}
 
-## v1.0.23 (Master)
+## v1.0.24 (Master)
 
 Date       | Description
 ---------- | -----------
 0000-00-00 | placeholder
+
+## v1.0.23
+
+Date       | Description
+---------- | -----------
+2017-04-15 | Handle legacy HiSeq RunInfo rewrite
+2017-04-14 | Fix deployment in Travis and Appveyor
+2017-04-13 | Ensure empty metrics consistently produce empty plots
 
 ## v1.0.22
 

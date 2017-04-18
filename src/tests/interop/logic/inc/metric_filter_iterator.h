@@ -75,10 +75,10 @@ namespace illumina { namespace interop { namespace unittest
             switch(m_plot_type)
             {
                 case constants::ByCyclePlot:
-                    logic::plot::plot_by_cycle(run, *m_current_metric, m_options, data);
+                    logic::plot::plot_by_cycle(run, *m_current_metric, m_options, data, false);
                     break;
                 case constants::ByLanePlot:
-                    logic::plot::plot_by_lane(run, *m_current_metric, m_options, data);
+                    logic::plot::plot_by_lane(run, *m_current_metric, m_options, data, false);
                     break;
                 default:
                     INTEROP_THROW(std::runtime_error, "Plot type unsupported");
@@ -129,7 +129,7 @@ namespace illumina { namespace interop { namespace unittest
             switch(m_plot_type)
             {
                 case constants::FlowcellPlot:
-                    logic::plot::plot_flowcell_map(run, *m_current_metric, m_options, data);
+                    logic::plot::plot_flowcell_map(run, *m_current_metric, m_options, data, 0, 0, false);
                     break;
                 default:
                     INTEROP_THROW(std::runtime_error, "Plot type unsupported");

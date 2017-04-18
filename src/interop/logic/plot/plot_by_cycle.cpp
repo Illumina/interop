@@ -139,14 +139,17 @@ namespace illumina { namespace interop { namespace logic { namespace plot
      * @param type specific metric value to plot by cycle
      * @param options options to filter the data
      * @param data output plot data
+     * @param skip_empty set false for testing purposes
      */
     template<class Point>
     void plot_by_cycle_t(model::metrics::run_metrics& metrics,
                        const constants::metric_type type,
                        const model::plot::filter_options& options,
-                       model::plot::plot_data<Point>& data)
+                       model::plot::plot_data<Point>& data,
+                         const bool skip_empty)
     {
         data.clear();
+        if(skip_empty && metrics.empty()) return;
         if(!options.all_cycles())
             INTEROP_THROW(model::invalid_filter_option, "Filtering by cycle is not supported");// TODO: Remove this!
         if(!options.all_reads())
@@ -314,17 +317,19 @@ namespace illumina { namespace interop { namespace logic { namespace plot
      * @param metric_name name of metric value to plot by cycle
      * @param options options to filter the data
      * @param data output plot data
+     * @param skip_empty set false for testing purposes
      */
     template<class Point>
     void plot_by_cycle_t(model::metrics::run_metrics& metrics,
                          const std::string& metric_name,
                          const model::plot::filter_options& options,
-                         model::plot::plot_data<Point>& data)
+                         model::plot::plot_data<Point>& data,
+                         const bool skip_empty)
     {
         const constants::metric_type type = constants::parse<constants::metric_type>(metric_name);
         if(type == constants::UnknownMetricType)
             INTEROP_THROW(model::invalid_metric_type, "Unsupported metric type: " << metric_name);
-        plot_by_cycle_t(metrics, type, options, data);
+        plot_by_cycle_t(metrics, type, options, data, skip_empty);
     }
 
     /** Plot a specified metric value by cycle
@@ -334,18 +339,20 @@ namespace illumina { namespace interop { namespace logic { namespace plot
     * @param type specific metric value to plot by cycle
     * @param options options to filter the data
     * @param data output plot data
+    * @param skip_empty set false for testing purposes
     */
     void plot_by_cycle(model::metrics::run_metrics& metrics,
                        const constants::metric_type type,
                        const model::plot::filter_options& options,
-                       model::plot::plot_data<model::plot::candle_stick_point>& data)
+                       model::plot::plot_data<model::plot::candle_stick_point>& data,
+                       const bool skip_empty)
             throw(model::index_out_of_bounds_exception,
             model::invalid_metric_type,
             model::invalid_channel_exception,
             model::invalid_filter_option,
             model::invalid_read_exception)
     {
-        plot_by_cycle_t(metrics, type, options, data);
+        plot_by_cycle_t(metrics, type, options, data, skip_empty);
     }
 
     /** Plot a specified metric value by cycle using the candle stick model
@@ -356,17 +363,19 @@ namespace illumina { namespace interop { namespace logic { namespace plot
      * @param metric_name name of metric value to plot by cycle
      * @param options options to filter the data
      * @param data output plot data
+     * @param skip_empty set false for testing purposes
      */
     void plot_by_cycle(model::metrics::run_metrics& metrics,
                        const std::string& metric_name,
                        const model::plot::filter_options& options,
-                       model::plot::plot_data<model::plot::candle_stick_point>& data)
+                       model::plot::plot_data<model::plot::candle_stick_point>& data,
+                       const bool skip_empty)
             throw(model::index_out_of_bounds_exception,
             model::invalid_filter_option,
             model::invalid_channel_exception,
             model::invalid_metric_type)
     {
-        plot_by_cycle_t(metrics, metric_name, options, data);
+        plot_by_cycle_t(metrics, metric_name, options, data, skip_empty);
     }
 
     /** List metric types available for by cycle plots

@@ -26,13 +26,15 @@ namespace illumina { namespace interop { namespace logic { namespace plot
      * @param data output flowcell map
      * @param buffer preallocated memory for data
      * @param tile_buffer preallocated memory for tile ids
+     * @param skip_empty set false for testing purposes
      */
     void plot_flowcell_map(model::metrics::run_metrics& metrics,
                                   const constants::metric_type type,
                                   const model::plot::filter_options& options,
                                   model::plot::flowcell_data& data,
                                   float* buffer=0,
-                                  ::uint32_t* tile_buffer=0)
+                                  ::uint32_t* tile_buffer=0,
+                           const bool skip_empty=true)
                                   throw(model::invalid_filter_option,
                                   model::invalid_metric_type,
                                   model::index_out_of_bounds_exception);
@@ -47,6 +49,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
      * @param buffer_size size of the buffer
      * @param id_buffer preallocated memory for tile ids
      * @param id_buffer_size size of the buffer
+     * @param skip_empty set false for testing purposes
      */
     inline void plot_flowcell_map2(model::metrics::run_metrics& metrics,
                            const constants::metric_type type,
@@ -55,14 +58,15 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                            float* buffer,
                             const size_t buffer_size,
                            ::uint32_t* id_buffer,
-                           const size_t id_buffer_size)
+                           const size_t id_buffer_size,
+                                   const bool skip_empty=true)
             throw(model::invalid_filter_option,
             model::invalid_metric_type,
             model::index_out_of_bounds_exception)
     {
         (void)buffer_size;
         (void)id_buffer_size;
-        plot_flowcell_map(metrics, type, options, data, buffer, id_buffer);
+        plot_flowcell_map(metrics, type, options, data, buffer, id_buffer, skip_empty);
     }
 
     /** Plot a flowcell map
@@ -74,13 +78,15 @@ namespace illumina { namespace interop { namespace logic { namespace plot
      * @param data output flowcell map
      * @param buffer preallocated memory for data
      * @param tile_buffer preallocated memory for tile ids
+     * @param skip_empty set false for testing purposes
      */
     void plot_flowcell_map(model::metrics::run_metrics& metrics,
                                   const std::string& metric_name,
                                   const model::plot::filter_options& options,
                                   model::plot::flowcell_data& data,
                                   float* buffer=0,
-                                  ::uint32_t* tile_buffer=0)
+                                  ::uint32_t* tile_buffer=0,
+                           const bool skip_empty=true)
                                   throw(model::invalid_filter_option,
                                   model::invalid_metric_type,
                                   model::index_out_of_bounds_exception);
@@ -95,6 +101,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
      * @param buffer_size size of the buffer
      * @param id_buffer preallocated memory for tile ids
      * @param id_buffer_size size of the buffer
+     * @param skip_empty set false for testing purposes
      */
     inline void plot_flowcell_map2(model::metrics::run_metrics& metrics,
                            const std::string& metric_name,
@@ -103,14 +110,15 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                            float* buffer,
                             const size_t buffer_size,
                            ::uint32_t* id_buffer,
-                            const size_t id_buffer_size)
+                            const size_t id_buffer_size,
+                                   const bool skip_empty=true)
             throw(model::invalid_filter_option,
             model::invalid_metric_type,
             model::index_out_of_bounds_exception)
     {
         (void)buffer_size;
         (void)id_buffer_size;
-        plot_flowcell_map(metrics, metric_name, options, data, buffer, id_buffer);
+        plot_flowcell_map(metrics, metric_name, options, data, buffer, id_buffer, skip_empty);
     }
 
     /** List metric type names available for flowcell

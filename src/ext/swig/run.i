@@ -51,6 +51,7 @@ WRAPPER(illumina::interop::xml::, missing_xml_element_exception, missing_xml_ele
 WRAPPER(illumina::interop::model::, invalid_read_exception, invalid_read_exception)
 WRAPPER(illumina::interop::model::, invalid_tile_naming_method, invalid_tile_naming_method)
 WRAPPER(illumina::interop::model::, invalid_run_info_exception, invalid_run_info_exception)
+WRAPPER(illumina::interop::model::, invalid_run_info_cycle_exception, invalid_run_info_cycle_exception)
 %enddef
 
 RUN_EXCEPTION_WRAPPER(WRAP_EXCEPTION)

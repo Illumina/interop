@@ -21,9 +21,11 @@ fi
 if [[ "$3" == "travis" ]]; then
     TRAVIS_BEG='travis_fold:start:script.1\\r'
     TRAVIS_END='travis_fold:end:script.1\\r'
+    CMAKE_EXTRA_FLAGS="-DDISABLE_PACKAGE_SUBDIR=ON"
 else
     TRAVIS_BEG=""
     TRAVIS_END=""
+    CMAKE_EXTRA_FLAGS=""
     brew update
     brew list
     brew unlink cmake
@@ -62,7 +64,7 @@ fi
 echo -en ${TRAVIS_END}
 
 echo 'Configure with Py27...' && echo -en ${TRAVIS_BEG}
-cmake $SOURCE_PATH -Bbuild27 -DPYTHON_EXECUTABLE=$CONDA2/bin/python -DPACKAGE_OUTPUT_FILE_PREFIX=${ARTIFACT_PATH} -DENABLE_PORTABLE=ON -DPACKAGE_SUFFIX=py27
+cmake $SOURCE_PATH -Bbuild27 -DPYTHON_EXECUTABLE=$CONDA2/bin/python -DPACKAGE_OUTPUT_FILE_PREFIX=${ARTIFACT_PATH} -DENABLE_PORTABLE=ON -DPACKAGE_SUFFIX=py27 ${CMAKE_EXTRA_FLAGS}
 echo -en ${TRAVIS_END}
 
 echo 'Test with Py27...' && echo -en ${TRAVIS_BEG}
@@ -78,7 +80,7 @@ cmake --build build27 --target package_wheel -- -j4
 echo -en ${TRAVIS_END}
 
 echo 'Configure with Py36...' && echo -en ${TRAVIS_BEG}
-cmake $SOURCE_PATH -Bbuild36 -DPYTHON_EXECUTABLE=$CONDA3/bin/python -DPACKAGE_OUTPUT_FILE_PREFIX=${ARTIFACT_PATH} -DENABLE_PORTABLE=ON -DPACKAGE_SUFFIX=py36
+cmake $SOURCE_PATH -Bbuild36 -DPYTHON_EXECUTABLE=$CONDA3/bin/python -DPACKAGE_OUTPUT_FILE_PREFIX=${ARTIFACT_PATH} -DENABLE_PORTABLE=ON -DPACKAGE_SUFFIX=py36 ${CMAKE_EXTRA_FLAGS}
 echo -en ${TRAVIS_END}
 
 echo 'Test with Py36...' && echo -en ${TRAVIS_BEG}

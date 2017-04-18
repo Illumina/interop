@@ -272,6 +272,17 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
             m_data.push_back(metric);
         }
 
+        /** Remove a metric from the metric set
+         *
+         * @param it iterator to metric to remove
+         */
+        void remove(iterator &it)
+        {
+            INTEROP_ASSERT(size() > 0);
+            std::iter_swap(it, m_data.rbegin());
+            trim(size()-1);
+        }
+
         /** Get metric for lane, tile and cycle
          *
          * @todo: remove this function

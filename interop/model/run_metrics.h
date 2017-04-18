@@ -49,6 +49,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
      */
     class run_metrics
     {
+    public:
+        /** List of metrics */
         typedef make_type_list<
                 corrected_intensity_metric,
                 dynamic_phasing_metric,
@@ -62,6 +64,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                 q_collapsed_metric,
                 tile_metric
         >::result_t metric_type_list_t;
+
+    private:
         template<class T>
         struct create_metric_set
         {
@@ -124,7 +128,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         model::invalid_channel_exception,
         model::index_out_of_bounds_exception,
         model::invalid_tile_naming_method,
-        model::invalid_run_info_exception);
+        model::invalid_run_info_exception,
+        model::invalid_run_info_cycle_exception);
         /** Read binary metrics and XML files from the run folder
          *
          * @param run_folder run folder path
@@ -148,6 +153,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         model::index_out_of_bounds_exception,
         model::invalid_tile_naming_method,
         model::invalid_run_info_exception,
+        model::invalid_run_info_cycle_exception,
         model::invalid_parameter);
 
         /** Read XML files: RunInfo.xml and possibly RunParameters.xml
@@ -192,7 +198,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         model::invalid_channel_exception,
         model::invalid_tile_naming_method,
         model::index_out_of_bounds_exception,
-        model::invalid_run_info_exception);
+        model::invalid_run_info_exception,
+        model::invalid_run_info_cycle_exception);
 
         /** Test if all metrics are empty
          *
@@ -409,8 +416,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         /** Validate whether the RunInfo.xml matches the InterOp files
          *
          * @throws invalid_run_info_exception
+         * @throws invalid_run_info_cycle_exception
          */
-        void validate() throw(invalid_run_info_exception);
+        void validate() throw(invalid_run_info_exception, invalid_run_info_cycle_exception);
 
         /** Read binary metrics and XML files from the run folder
          *

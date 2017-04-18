@@ -24,11 +24,13 @@ namespace illumina { namespace interop { namespace logic { namespace plot
      * @param type specific metric value to plot by lane
      * @param options options to filter the data
      * @param data output plot data
+     * @param skip_empty set false for testing purposes
      */
     void plot_by_lane(const model::metrics::run_metrics& metrics,
                       const constants::metric_type type,
                       const model::plot::filter_options& options,
-                      model::plot::plot_data<model::plot::candle_stick_point>& data)
+                      model::plot::plot_data<model::plot::candle_stick_point>& data,
+                      const bool skip_empty=true)
                     throw(model::index_out_of_bounds_exception,
                     model::invalid_metric_type,
                     model::invalid_filter_option);
@@ -41,11 +43,13 @@ namespace illumina { namespace interop { namespace logic { namespace plot
      * @param metric_name name of metric value to plot by cycle
      * @param options options to filter the data
      * @param data output plot data
+     * @param skip_empty set false for testing purposes
      */
     void plot_by_lane(const model::metrics::run_metrics& metrics,
                       const std::string& metric_name,
                       const model::plot::filter_options& options,
-                      model::plot::plot_data<model::plot::candle_stick_point>& data)
+                      model::plot::plot_data<model::plot::candle_stick_point>& data,
+                      const bool skip_empty=true)
             throw(model::index_out_of_bounds_exception,
             model::invalid_metric_type,
             model::invalid_filter_option);

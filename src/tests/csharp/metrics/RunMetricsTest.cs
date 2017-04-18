@@ -33,10 +33,14 @@ namespace Illumina.InterOp.Interop.UnitTest
             string_vector filenames = new string_vector();
             run.list_filenames(metric_group.Error, filenames, "RunFolder");
             Assert.AreEqual(filenames.Count, 4);
-            Assert.AreEqual(filenames[0], Path.Combine("RunFolder", "InterOp", "ErrorMetricsOut.bin"));
-            Assert.AreEqual(filenames[1], Path.Combine("RunFolder", "InterOp", "C1.1", "ErrorMetricsOut.bin"));
-            Assert.AreEqual(filenames[2], Path.Combine("RunFolder", "InterOp", "C2.1", "ErrorMetricsOut.bin"));
-            Assert.AreEqual(filenames[3], Path.Combine("RunFolder", "InterOp", "C3.1", "ErrorMetricsOut.bin"));
+            string interopFolder = Path.Combine("RunFolder", "InterOp");
+            string interopFolderCycle1 = Path.Combine(interopFolder, "C1.1");
+            string interopFolderCycle2 = Path.Combine(interopFolder, "C2.1");
+            string interopFolderCycle3 = Path.Combine(interopFolder, "C3.1");
+            Assert.AreEqual(filenames[0], Path.Combine(interopFolder, "ErrorMetricsOut.bin"));
+            Assert.AreEqual(filenames[1], Path.Combine(interopFolderCycle1, "ErrorMetricsOut.bin"));
+            Assert.AreEqual(filenames[2], Path.Combine(interopFolderCycle2, "ErrorMetricsOut.bin"));
+            Assert.AreEqual(filenames[3], Path.Combine(interopFolderCycle3, "ErrorMetricsOut.bin"));
 
 		}
 		[Test]
