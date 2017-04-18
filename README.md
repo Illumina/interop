@@ -85,7 +85,7 @@ $ pip install -f https://github.com/Illumina/interop/releases/latest interop
 $ git clone https://github.com/Illumina/interop.git
 $ mkdir build
 $ cd build
-$ cmake ../interop
+$ cmake ../
 $ cmake --build .
 ~~~~~~~~~~~~~
 
