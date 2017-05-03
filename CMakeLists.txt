@@ -39,6 +39,7 @@ option(ENABLE_CSHARP "Build C# language bindings" ON)
 option(ENABLE_PYTHON "Build Python language bindings" ON)
 option(ENABLE_PORTABLE "Statically link libraries for GCC compiler")
 option(DISABLE_PACKAGE_SUBDIR "Disable placing the packaged build in a subdirectory structure: interop/${VERSION}")
+option(ENABLE_PYTHON_DYNAMIC_LOAD "Do not link to Python shared library (Linux and Mac)")
 
 include(${PROJECT_SOURCE_DIR}/cmake/InternalUtils.cmake)
 interop_config_compiler_and_linker()
