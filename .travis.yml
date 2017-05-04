@@ -30,7 +30,7 @@ matrix:
     env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package_osx.sh $PWD 3.5.1 $PWD/dist travis"
   - os: osx
     compiler: clang
-    env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package_osx.sh $PWD 3.6.0 $PWD/dist travis"
+    env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package_osx.sh $PWD 3.6.0b1 $PWD/dist travis"
   - os: osx
     compiler: clang
     env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package_osx.sh $PWD 2.7.11 $PWD/dist travis"
@@ -142,7 +142,7 @@ deploy:
   file_glob: true
   file: $PWD/dist/*.*
   on:
-    repo: Illumina/interop
+    repo: ezralanglois/interop
     branch: master
     tags: true
     condition:
