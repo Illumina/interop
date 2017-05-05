@@ -12,7 +12,7 @@ PYTHON_VER=$2
 PYTHON_VER_SUFFIX=`echo $PYTHON_VER | awk -F "." '{printf "%d%d%d", $1, $2, $3}'`
 
 if [ ! -z $3 ] ; then
-    ARTIFACT_PATH=$2
+    ARTIFACT_PATH=$3
 else
     ARTIFACT_PATH=$SOURCE_PATH/dist
 fi
