@@ -1,6 +1,8 @@
 
 find_package(PythonInterp)
-find_package(PythonLibs EXACT ${PYTHON_VERSION_STRING})
+if(NOT ENABLE_PYTHON_DYNAMIC_LOAD OR WIN32)
+    find_package(PythonLibs EXACT ${PYTHON_VERSION_STRING})
+endif()
 if(NOT PYTHONLIBS_FOUND)
     execute_process(
             COMMAND ${PYTHON_EXECUTABLE} -c "from distutils import sysconfig; print(sysconfig.get_python_inc())"
@@ -43,6 +45,14 @@ if(CMAKE_COMPILER_IS_GNUCC AND ENABLE_PORTABLE)
     set (CMAKE_SHARED_LINKER_FLAGS "-static-libgcc -static-libstdc++")
 endif()
 
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
+    #-flat_namespace -undefined suppress
+    set(CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS "${CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS} -undefined dynamic_lookup")
+    set(CMAKE_SHARED_LIBRARY_CREATE_LINKER_FLAGS "${CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS} -undefined dynamic_lookup")
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -undefined dynamic_lookup")
+    set(PYTHON_GENERATED_LINK_FLAGS "-undefined dynamic_lookup")
+endif()
+
 add_custom_target(python_lib)
 set_target_properties(python_lib PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
 
@@ -69,6 +79,10 @@ foreach(SRC ${SWIG_SRCS})
 
     if(PYTHON_GENERATED_COMPILE_FLAGS)
         set_target_properties(${SWIG_MODULE} PROPERTIES COMPILE_FLAGS "${PYTHON_GENERATED_COMPILE_FLAGS}")
+    endif()
+
+    if(PYTHON_GENERATED_LINK_FLAGS)
+        set_target_properties(${SWIG_MODULE} PROPERTIES LINK_FLAGS "${PYTHON_GENERATED_LINK_FLAGS}")
     endif()
 
     if(PYTHONLIBS_FOUND)

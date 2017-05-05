@@ -1,97 +1,68 @@
 #!/usr/bin/env bash
 ########################################################################################################################
-# This script packages the InterOp library for Mac OSX using Miniconda
+# This script packages the InterOp library for Mac OSX using CPython
 #
 #
 ########################################################################################################################
 set -ex
+GET_PIP_URL=https://bootstrap.pypa.io/get-pip.py
 
-CONDA2=$HOME/miniconda2
-CONDA3=$HOME/miniconda3
+SOURCE_PATH=$1
+PYTHON_VER=$2
+PYTHON_VER_SUFFIX=`echo $PYTHON_VER | awk -F "." '{printf "%d%d%d", $1, $2, $3}'`
 
-if [ ! -z $1 ] ; then
-    SOURCE_PATH=$1
-fi
-if [ ! -z $2 ] ; then
-    ARTIFACT_PATH=$2
+if [ ! -z $3 ] ; then
+    ARTIFACT_PATH=$3
 else
     ARTIFACT_PATH=$SOURCE_PATH/dist
 fi
 
-if [[ "$3" == "travis" ]]; then
+if [[ "$4" == "travis" ]]; then
     TRAVIS_BEG='travis_fold:start:script.1\\r'
     TRAVIS_END='travis_fold:end:script.1\\r'
     CMAKE_EXTRA_FLAGS="-DDISABLE_PACKAGE_SUBDIR=ON"
 else
+    # Already installed by a previous travis step
     TRAVIS_BEG=""
     TRAVIS_END=""
     CMAKE_EXTRA_FLAGS=""
-    brew update
-    brew list
-    brew unlink cmake
-    brew install cmake
-    brew install swig
-    brew install doxygen
-    brew install mono
+    sh `dirname $0`/travis-osx-install.sh
 fi
 
+echo "Install Python ${PYTHON_VER}..." && echo -en "${TRAVIS_BEG}"
+brew install pyenv && true
+pyenv install ${PYTHON_VER} && true
+pyenv local ${PYTHON_VER}
+which python
+echo -en ${TRAVIS_END}
+python --version
 
-echo 'Installing Miniconda-2...' && echo -en ${TRAVIS_BEG}
 
-if [ ! -e $CONDA2 ] ; then
-    wget https://repo.continuum.io/miniconda/Miniconda2-latest-MacOSX-x86_64.sh -O miniconda.sh;
-    bash miniconda.sh -b -p $CONDA2
-    hash -r
-    $CONDA2/bin/conda config --set always_yes yes --set changeps1 no
-    $CONDA2/bin/conda update -q conda
-    $CONDA2/bin/conda info -a
-    $CONDA2/bin/conda install -y numpy
-fi
+echo "Install Deps with Python ${PYTHON_VER}..." && echo -en "${TRAVIS_BEG}"
+pip install numpy
+pip install wheel
+pip install delocate
 echo -en ${TRAVIS_END}
 
 
-echo 'Installing Miniconda-3...' && echo -en ${TRAVIS_BEG}
 
-if [ ! -e $CONDA3 ] ; then
-    wget https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -O miniconda.sh;
-    bash miniconda.sh -b -p $CONDA3
-    hash -r
-    $CONDA3/bin/conda config --set always_yes yes --set changeps1 no
-    $CONDA3/bin/conda update -q conda
-    $CONDA3/bin/conda info -a
-    $CONDA3/bin/conda install -y numpy
-fi
-echo -en ${TRAVIS_END}
+########################################################################################################################
+echo "Configure with Python ${PYTHON_VER}..." && echo -en "${TRAVIS_BEG}"
+cmake $SOURCE_PATH -Bbuild_${PYTHON_VER_SUFFIX} -DENABLE_PYTHON_DYNAMIC_LOAD=ON -DPYTHON_EXECUTABLE=`which python` -DPACKAGE_OUTPUT_FILE_PREFIX=${ARTIFACT_PATH} -DENABLE_PORTABLE=ON -DPACKAGE_SUFFIX=py${PYTHON_VER_SUFFIX} ${CMAKE_EXTRA_FLAGS}
+echo -en "${TRAVIS_END}"
 
-echo 'Configure with Py27...' && echo -en ${TRAVIS_BEG}
-cmake $SOURCE_PATH -Bbuild27 -DPYTHON_EXECUTABLE=$CONDA2/bin/python -DPACKAGE_OUTPUT_FILE_PREFIX=${ARTIFACT_PATH} -DENABLE_PORTABLE=ON -DPACKAGE_SUFFIX=py27 ${CMAKE_EXTRA_FLAGS}
-echo -en ${TRAVIS_END}
+echo "Test with Python ${PYTHON_VER}..." && echo -en "${TRAVIS_BEG}"
+cmake --build build_${PYTHON_VER_SUFFIX} --target check -- -j4 VERBOSE=1
+echo -en "${TRAVIS_END}"
 
-echo 'Test with Py27...' && echo -en ${TRAVIS_BEG}
-cmake --build build27 --target check -- -j4
-echo -en ${TRAVIS_END}
+echo "Package with Python ${PYTHON_VER}..." && echo -en "${TRAVIS_BEG}"
+cmake --build build_${PYTHON_VER_SUFFIX} --target package -- -j4
+echo -en "${TRAVIS_END}"
 
-echo 'Package with Py27...' && echo -en ${TRAVIS_BEG}
-cmake --build build27 --target package -- -j4
-echo -en ${TRAVIS_END}
-
-echo 'Package Wheel with Py27...' && echo -en ${TRAVIS_BEG}
-cmake --build build27 --target package_wheel -- -j4
-echo -en ${TRAVIS_END}
-
-echo 'Configure with Py36...' && echo -en ${TRAVIS_BEG}
-cmake $SOURCE_PATH -Bbuild36 -DPYTHON_EXECUTABLE=$CONDA3/bin/python -DPACKAGE_OUTPUT_FILE_PREFIX=${ARTIFACT_PATH} -DENABLE_PORTABLE=ON -DPACKAGE_SUFFIX=py36 ${CMAKE_EXTRA_FLAGS}
-echo -en ${TRAVIS_END}
-
-echo 'Test with Py36...' && echo -en ${TRAVIS_BEG}
-cmake --build build27 --target check -- -j4
-echo -en ${TRAVIS_END}
-
-echo 'Package with Py36...' && echo -en ${TRAVIS_BEG}
-cmake --build build36 --target package -- -j4
-echo -en ${TRAVIS_END}
-
-echo 'Package Wheel with Py36...' && echo -en ${TRAVIS_BEG}
-cmake --build build36 --target package_wheel -- -j4
-echo -en ${TRAVIS_END}
-
+echo "Package Wheel with Python ${PYTHON_VER}..." && echo -en "${TRAVIS_BEG}"
+cmake --build build_${PYTHON_VER_SUFFIX} --target package_wheel -- -j4
+delocate-listdeps ${ARTIFACT_PATH}/*.whl
+delocate-wheel $ARTIFACT_PATH/*.whl
+delocate-addplat --rm-orig -x 10_9 -x 10_10 $ARTIFACT_PATH/*.whl
+ls $ARTIFACT_PATH/*.whl
+echo -en "${TRAVIS_END}"
