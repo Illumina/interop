@@ -300,7 +300,7 @@ protected:
     bool generate_actual(const std::string &run_folder, model::summary::index_flowcell_summary &actual) const
     {
         model::metrics::run_metrics actual_metrics;
-        actual_metrics.read(run_folder);
+        read_metrics_safe(actual_metrics, run_folder);
         if( actual_metrics.empty() ) return false;
         logic::summary::summarize_index_metrics(actual_metrics, actual);
         return actual.size() > 0;

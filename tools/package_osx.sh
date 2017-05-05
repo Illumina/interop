@@ -30,9 +30,11 @@ else
 fi
 
 echo "Install Python ${PYTHON_VER}..." && echo -en "${TRAVIS_BEG}"
-brew install pyenv && true
-pyenv install ${PYTHON_VER} && true
-pyenv local ${PYTHON_VER}
+brew unlink pyenv
+brew install pyenv
+export PATH=$(pyenv root)/shims:${PATH}
+pyenv install ${PYTHON_VER}
+pyenv global ${PYTHON_VER}
 which python
 echo -en ${TRAVIS_END}
 python --version

@@ -20,10 +20,13 @@ set -ex
 
 CMAKE_URL="http://www.cmake.org/files/v3.4/cmake-3.4.3-Linux-x86_64.tar.gz"
 SWIG_URL="http://prdownloads.sourceforge.net/swig/swig-3.0.12.tar.gz"
+MONO_URL="https://download.mono-project.com/sources/mono/mono-4.8.1.0.tar.bz2"
+NUGET_URL="https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
+GOOGLETEST_URL="https://github.com/google/googletest/archive/release-1.8.0.tar.gz"
+JUNIT_URL="http://search.maven.org/remotecontent?filepath=junit/junit/4.12/junit-4.12.jar"
 PROG_HOME=/opt
 CMAKE_HOME=${PROG_HOME}/cmake34
 SWIG_HOME=${PROG_HOME}/swig3
-CMAKE_EXTRA_FLAGS="-DDISABLE_PACKAGE_SUBDIR=ON"
 
 if [ ! -z $1 ] ; then
     SOURCE_PATH=$1
@@ -33,6 +36,8 @@ if [ ! -z $2 ] ; then
 else
     ARTIFACT_PATH=$SOURCE_PATH/dist
 fi
+
+CMAKE_EXTRA_FLAGS="-DDISABLE_PACKAGE_SUBDIR=ON -DPACKAGE_OUTPUT_FILE_PREFIX=${ARTIFACT_PATH} -DENABLE_PORTABLE=ON"
 
 if [ ! -e ${CMAKE_HOME}/bin/cmake ]; then
     if [ ! -e ${CMAKE_HOME} ]; then
@@ -84,7 +89,7 @@ else
     # }
     #endif
     mkdir /mono_clean
-    wget --no-check-certificate --quiet -O - https://download.mono-project.com/sources/mono/mono-4.8.1.0.tar.bz2 | tar --strip-components=1 -xj -C /mono_clean
+    wget --no-check-certificate --quiet -O - ${MONO_URL} | tar --strip-components=1 -xj -C /mono_clean
     patch -p0 < /mono_patch.txt
 
 
@@ -97,6 +102,33 @@ else
     which dmcs
     which mono
     mono --version
+
+    wget --no-check-certificate --quiet ${NUGET_URL} -O /usr/lib/nuget.exe
+    echo "mono /usr/lib/nuget.exe $@" > /usr/bin/nuget
+    chmod +x /usr/bin/nuget
+
+    nuget help
+fi
+
+if ldconfig -p | grep libgmock -q; then
+    ldconfig -p | grep libgmock
+    ldconfig -p | grep libgtest
+else
+    mkdir /gtest
+    wget --no-check-certificate --quiet -O - ${GOOGLETEST_URL} | tar --strip-components=1 -xz -C /gtest
+    mkdir /gtest/build
+    cmake -H/gtest -B/gtest/build
+    cmake --build /gtest/build -- -j4
+    cp -r /gtest/googletest/include/gtest /usr/include/
+    cp -r /gtest/googlemock/include/gmock /usr/include/
+    cp /gtest/build/googlemock/gtest/lib*.a /usr/lib/
+    cp /gtest/build/googlemock/lib*.a /usr/lib/
+
+    rm -fr /gtest
+fi
+
+if [ ! -e /usr/lib/junit-4.12.jar ]; then
+    wget --no-check-certificate --quiet ${JUNIT_URL} -O /usr/lib/junit-4.12.jar
 fi
 
 for PYBUILD in `ls -1 /opt/python`; do
@@ -130,7 +162,7 @@ if [ ! -z $SOURCE_PATH ] ; then
             continue
         fi
         touch $SOURCE_PATH/src/ext/python/CMakeLists.txt
-        cmake $SOURCE_PATH -Bbuild -DPYTHON_EXECUTABLE=${PYTHON_BIN}/python -DPACKAGE_OUTPUT_FILE_PREFIX=${ARTIFACT_PATH} -DENABLE_PORTABLE=ON ${CMAKE_EXTRA_FLAGS}
+        cmake $SOURCE_PATH -Bbuild -DPYTHON_EXECUTABLE=${PYTHON_BIN}/python ${CMAKE_EXTRA_FLAGS}
         cmake --build build --target check -- -j4
         cmake --build build --target package_wheel -- -j4
         auditwheel show ${ARTIFACT_PATH}/interop*${PYBUILD}*linux_x86_64.whl

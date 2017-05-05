@@ -192,7 +192,7 @@ protected:
     bool generate_actual(const std::string& run_folder,  model::table::imaging_table& actual)const
     {
         model::metrics::run_metrics actual_metrics;
-        actual_metrics.read(run_folder);
+        read_metrics_safe(actual_metrics, run_folder);
         if( actual_metrics.empty() ) return false;
         logic::table::create_imaging_table(actual_metrics, actual);
         return actual.column_count()*actual.row_count() > 0;

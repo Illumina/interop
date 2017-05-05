@@ -20,7 +20,7 @@ param(
     [string]$lib_path="",
     [Parameter()][ValidateNotNullOrEmpty()][string]$data_path=$(throw "Regression data path must be specified"),
     [Parameter()][ValidateNotNullOrEmpty()][string]$baseline_path=$(throw "Regression baseline path must be specified"),
-    [string]$source_path="../",
+    [string]$source_path=".",
     [string]$generator="`"Visual Studio 14 2015 Win64`"",
     [switch]$rebaseline = $false
 )
@@ -37,15 +37,13 @@ Write-Host "##teamcity[blockOpened name='Configure $config $generator']"
 if(Test-Path -Path build){
     Remove-Item build -Force -Recurse
 }
-new-item build -itemtype directory
-set-location -path build
-Write-Host "cmake $source_path -G $generator -DCMAKE_BUILD_TYPE=$config $build_param"
-cmake $source_path -G $generator -DCMAKE_BUILD_TYPE=$config $build_param.Split(" ")
+
+Write-Host "cmake $source_path -Bbuild -G $generator -DCMAKE_BUILD_TYPE=$config $build_param"
+cmake $source_path -Bbuild -G $generator -DCMAKE_BUILD_TYPE=$config $build_param.Split(" ")
 $test_code=$lastexitcode
 Write-Host "##teamcity[blockClosed name='Configure $config $generator']"
 if ($test_code -ne 0)
 {
-    cd ..
     Write-Host "##teamcity[buildStatus status='FAILURE' text='Configure Failed!']"
     if(Test-Path -Path build){
         Remove-Item build -Force -Recurse
@@ -56,12 +54,11 @@ if ($test_code -ne 0)
 # --------------------------------------------------------------------------------------------------------------------
 
 Write-Host "##teamcity[blockOpened name='Build $config $generator']"
-& cmake --build . --config $config --target interop_gtests
+& cmake --build build --config $config --target interop_gtests
 $test_code=$lastexitcode
 Write-Host "##teamcity[blockClosed name='Build $config $generator']"
 if ($test_code -ne 0)
 {
-    cd ..
     Write-Host "##teamcity[buildStatus status='FAILURE' text='Build Failed!']"
     if(Test-Path -Path build){
         Remove-Item build -Force -Recurse
@@ -72,24 +69,28 @@ if ($test_code -ne 0)
 $baseline_path = $baseline_path + "_master"
 
 if(-Not (Test-Path -Path $data_path) ) {
+    Write-Host "##teamcity[buildStatus status='FAILURE' text='Cannot find data directory!']"
+    if(Test-Path -Path build){
+        Remove-Item build -Force -Recurse
+    }
     exit 1
 }
-$datasets = Get-ChildItem $data_path | foreach {$_.fullname}
+$datasets = Get-ChildItem $data_path -Filter RunInfo.xml -Recurse | foreach {$_.DirectoryName}
 if($rebaseline)
 {
     $backup_baseline=$baseline_path + "_last"
     if(Test-Path -Path $backup_baseline)
     {
+        Write-Host "Remove backup baseline: $baseline_path"
         Remove-Item -Recurse -Force $backup_baseline
     }
     Move-Item $baseline_path $backup_baseline
     Write-Host "##teamcity[blockOpened name='Rebaseline $config $generator']"
-    & src\tests\interop\$config\interop_gtests.exe $baseline_path $datasets --rebaseline
+    & build\src\tests\interop\$config\interop_gtests.exe $baseline_path $datasets --rebaseline
     $test_code=$lastexitcode
     Write-Host "##teamcity[blockClosed name='Test $config $generator']"
     if ($test_code -ne 0)
     {
-        cd ..
         Write-Host "##teamcity[buildStatus status='FAILURE' text='Rebaseline failed!']"
         if(Test-Path -Path build){
             Remove-Item build -Force -Recurse
@@ -99,12 +100,11 @@ if($rebaseline)
 }
 
 Write-Host "##teamcity[blockOpened name='Test $config $generator']"
-& src\tests\interop\$config\interop_gtests.exe $baseline_path $datasets
+& build\src\tests\interop\$config\interop_gtests.exe $baseline_path $datasets
 $test_code=$lastexitcode
 Write-Host "##teamcity[blockClosed name='Test $config $generator']"
 if ($test_code -ne 0)
 {
-    cd ..
     Write-Host "##teamcity[buildStatus status='FAILURE' text='Not all regression tests passed!']"
     if(Test-Path -Path build){
         Remove-Item build -Force -Recurse
@@ -112,7 +112,6 @@ if ($test_code -ne 0)
     exit 1
 }
 
-cd ..
 if(Test-Path -Path build){
     Remove-Item build -Force -Recurse
 }

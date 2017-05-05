@@ -153,7 +153,7 @@ namespace illumina { namespace interop { namespace unittest
             if( current != run_folder )
             {
                 current = run_folder;
-                actual_metrics.read(run_folder);
+                read_metrics_safe(actual_metrics, run_folder);
             }
 
             return actual_metrics;

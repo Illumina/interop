@@ -1,10 +1,16 @@
 # Changes                                               {#changes}
 
-## v1.0.24 (Master)
+## v1.0.25 (Master)
 
 Date       | Description
 ---------- | -----------
 0000-00-00 | placeholder
+
+## v1.0.24
+
+Date       | Description
+---------- | -----------
+2017-05-05 | Remove Python library from module dependencies
 
 ## v1.0.23
 

@@ -10,6 +10,7 @@
 #include "src/tests/interop/inc/regression_test_data.h"
 #include "src/tests/interop/inc/generic_fixture.h"
 #include "src/tests/interop/inc/proxy_parameter_generator.h"
+#include "interop/model/run_metrics.h"
 
 namespace illumina{ namespace interop { namespace unittest
 {
@@ -149,7 +150,18 @@ namespace illumina{ namespace interop { namespace unittest
         std::string m_test_dir;
     };
 
-
+    /** Read run metrics safely from the disk
+     *
+     * @param metrics run_metrics object
+     * @param run_folder path to the run folder
+     */
+    inline void read_metrics_safe(model::metrics::run_metrics& metrics, const std::string& run_folder)
+    {
+        try{
+            metrics.read(run_folder);
+        }
+        catch(const model::invalid_run_info_cycle_exception&){}
+    }
 
 }}}
 
