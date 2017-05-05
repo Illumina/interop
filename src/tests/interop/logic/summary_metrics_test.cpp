@@ -670,7 +670,7 @@ protected:
     bool generate_actual(const std::string &run_folder, model::summary::run_summary &actual) const
     {
         model::metrics::run_metrics actual_metrics;
-        actual_metrics.read(run_folder);
+        read_metrics_safe(actual_metrics, run_folder);
         if( actual_metrics.empty() ) return false;
         Logic logic;
         logic(actual_metrics, actual);

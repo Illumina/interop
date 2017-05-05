@@ -46,10 +46,6 @@ if(CMAKE_COMPILER_IS_GNUCC AND ENABLE_PORTABLE)
 endif()
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
-    #-flat_namespace -undefined suppress
-    set(CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS "${CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS} -undefined dynamic_lookup")
-    set(CMAKE_SHARED_LIBRARY_CREATE_LINKER_FLAGS "${CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS} -undefined dynamic_lookup")
-    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -undefined dynamic_lookup")
     set(PYTHON_GENERATED_LINK_FLAGS "-undefined dynamic_lookup")
 endif()
 
