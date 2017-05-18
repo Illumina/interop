@@ -117,6 +117,7 @@
 #include "interop/io/metric_file_stream.h"
 #include "interop/model/run_metrics.h"
 #include "interop/util/option_parser.h"
+#include "interop/logic/utils/enums.h"
 #include "interop/version.h"
 #include "inc/application.h"
 
@@ -192,9 +193,11 @@ int main(int argc, const char** argv)
     std::cout << "# Version: " << INTEROP_VERSION << std::endl;
 
     size_t subset_count=0;
+    std::string metric_name;
     util::option_parser description;
     description
-            (subset_count, "subset", "Number of metrics to subsample");
+            (subset_count, "subset", "Number of metrics to subsample")
+            (metric_name, "metric", "Name of metric to load, e.g. --metric=Tile to load TileMetricsOut.bin");
     if(description.is_help_requested(argc, argv))
     {
         std::cout << "Usage: " << io::basename(argv[0]) << " run_folder [--option1=value1] [--option2=value2]" << std::endl;
@@ -210,11 +213,28 @@ int main(int argc, const char** argv)
         std::cerr << ex.what() << std::endl;
         return INVALID_ARGUMENTS;
     }
+    std::vector<unsigned char> valid_to_load;
+    if("" != metric_name)
+    {
+        valid_to_load.resize(constants::MetricCount, 0);
+        const constants::metric_group group = constants::parse<constants::metric_group >(metric_name);
+        if(constants::UnknownMetricGroup == group)
+        {
+            std::cerr << "Unknown metric group: " << metric_name << std::endl;
+            std::cerr << "Valid metric groups include: " << std::endl;
+            for(size_t i=0;i<static_cast<size_t>(constants::MetricCount);++i)
+                std::cerr << constants::to_string(static_cast<constants::metric_group>(i)) << std::endl;
+            return UNEXPECTED_EXCEPTION;
+        }
+        valid_to_load[group]=1;
+    }
 
     for(int i=1;i<argc;i++)
     {
         run_metrics run;
-        int ret = read_run_metrics(argv[i], run, thread_count);
+        const int ret = valid_to_load.empty() ?
+                        read_run_metrics(argv[i], run, thread_count) :
+                        read_run_metrics(argv[i], run, valid_to_load, thread_count);
         if(ret != SUCCESS) return ret;
         metric_writer write_metrics(std::cout, run.run_info().channels());
         if( subset_count > 0 )

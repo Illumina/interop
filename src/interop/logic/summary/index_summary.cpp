@@ -33,6 +33,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
         typedef model::summary::index_count_summary index_count_summary;
         typedef INTEROP_UNORDERED_MAP(std::string, index_count_summary) index_count_map_t;
         typedef typename index_count_map_t::iterator map_iterator;
+        const size_t kAllLanes = 0;
 
         if(beg == end || tile_metrics.empty()) return;
         index_count_map_t index_count_map;
@@ -41,7 +42,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
         read_count_t cluster_count_total = 0;
         for(;beg != end;++beg)
         {
-            if(beg->lane() != lane) continue;
+            if(lane != kAllLanes && beg->lane() != lane) continue;
             try
             {
                 const model::metrics::tile_metric &tile_metric = tile_metrics.get_metric(beg->lane(), beg->tile());
@@ -50,10 +51,11 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
 
                 for(const_index_iterator ib = beg->indices().begin(), ie =  beg->indices().end();ib != ie;++ib)
                 {
-                    map_iterator found_index = index_count_map.find(ib->index_seq());
+                    const std::string index_id = ib->index_seq() + ib->sample_id();
+                    map_iterator found_index = index_count_map.find(index_id);
                     if(found_index == index_count_map.end())
                     {
-                        index_count_map[ib->index_seq()] = index_count_summary(index_count_map.size()+1,// TODO: get correspondance with plot
+                        index_count_map[index_id] = index_count_summary(index_count_map.size()+1,// TODO: get correspondance with plot
                                                                                ib->index1(),
                                                                                ib->index2(),
                                                                                ib->sample_id(),

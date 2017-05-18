@@ -40,7 +40,7 @@ namespace illumina { namespace interop { namespace util
              * @param param1 first value to function
              * @param func pointer to member function
              */
-            const_member_function_w(const P1 param1, R (T::*func )(P1) const) : m_param1(param1), m_function(func)
+            const_member_function_w(P1 param1, R (T::*func )(P1) const) : m_param1(param1), m_function(func)
             { }
 
             /** Perform function call
@@ -135,6 +135,8 @@ namespace illumina { namespace interop { namespace util
         private:
             const_member_function_w<T, R, P1> m_func;
         };
+        /** Dummy argument */
+        struct dummy_arg {};
 
         /**Function Interface for function call with single parameter
          *
@@ -143,7 +145,7 @@ namespace illumina { namespace interop { namespace util
          * @return functor wrapper
          */
         template<class T, typename R, typename P2, typename P1>
-        const_member_function_w<T, R, P1> const_member_function(P2 param1, R (T::*func )(P1) const)
+        const_member_function_w<T, R, P1> const_member_function(const P2& param1, R (T::*func )(P1) const)
         {
             return const_member_function_w<T, R, P1>(param1, func);
         }
@@ -159,6 +161,19 @@ namespace illumina { namespace interop { namespace util
             return const_member_function_w<T, R>(func);
         }
 
+
+        /**Function Interface for function call with single parameter
+         *
+         * @note this function supports a dummy first parameter
+         * @param func pointer to member function
+         * @return functor wrapper
+         */
+        template<class T, typename R>
+        const_member_function_w<T, R> const_member_function(dummy_arg, R (T::*func )() const)
+        {
+            return const_member_function_w<T, R>(func);
+        }
+
         /**Function Interface for function call with single parameter
          *
          * @param param1 first value to function
@@ -166,7 +181,7 @@ namespace illumina { namespace interop { namespace util
          * @return functor wrapper
          */
         template<class T, typename R, typename P2, typename P1>
-        const_member_function_less_w<T, R, P1> const_member_function_less(P2 param1, R (T::*func )(P1) const)
+        const_member_function_less_w<T, R, P1> const_member_function_less(const P2& param1, R (T::*func )(P1) const)
         {
             return const_member_function_less_w<T, R, P1>(const_member_function(param1, func));
         }

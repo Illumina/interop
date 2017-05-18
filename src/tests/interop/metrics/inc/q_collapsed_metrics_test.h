@@ -156,7 +156,7 @@ namespace illumina{ namespace interop { namespace unittest
      * @see model::metrics::q_collapsed_metric
      */
     template<int Version>
-    struct q_collapsed_metric_no_median_v_2_4 : metric_test<model::metrics::q_collapsed_metric, Version>
+    struct q_collapsed_metric_no_median_v_2_4 : metric_test<model::metrics::q_collapsed_metric, Version, 'b'>
     {
         enum{
             /** Do not check the expected binary data */
@@ -224,7 +224,7 @@ namespace illumina{ namespace interop { namespace unittest
      * @note Version 6
      */
     template<int Version>
-    struct q_collapsed_metric_no_median_v5_6 : metric_test<model::metrics::q_collapsed_metric, Version>
+    struct q_collapsed_metric_no_median_v5_6 : metric_test<model::metrics::q_collapsed_metric, Version, 'b'>
     {
         /** Define a parent type */
         typedef metric_test<model::metrics::q_collapsed_metric, Version> parent_t;

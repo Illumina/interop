@@ -41,6 +41,226 @@ namespace Illumina.InterOp.Interop.UnitTest
 		{
 		    Assert.AreEqual(c_csharp_run.to_string(metric_group.Error), "Error");
 		}
+
+		/// <summary>
+		/// Test xml_file_not_found_exception
+		/// </summary>
+		[Test]
+	    [ExpectedException("Illumina.InterOp.Run.xml_file_not_found_exception")]
+		public void Test_xml_file_not_found_exception()
+		{
+            info run_info = new info();
+            run_info.read("file/not/found");
+		}
+		/// <summary>
+		/// Test xml_parse_exception
+		/// </summary>
+		[Test]
+	    [ExpectedException("Illumina.InterOp.Run.xml_parse_exception")]
+		public void Test_xml_parse_exception()
+		{
+            info run_info = new info();
+            run_info.parse("<RunInfo></RunInfo");
+		}
+		/// <summary>
+		/// Test empty_xml_format_exception
+		/// </summary>
+		[Test]
+	    [ExpectedException("Illumina.InterOp.Run.empty_xml_format_exception")]
+		public void Test_empty_xml_format_exception()
+		{
+            info run_info = new info();
+            run_info.parse("");
+		}
+		/// <summary>
+		/// Test missing_xml_element_exception
+		/// </summary>
+		[Test]
+	    [ExpectedException("Illumina.InterOp.Run.missing_xml_element_exception")]
+		public void Test_missing_xml_element_exception()
+		{
+            info run_info = new info();
+            run_info.parse("<RunInfo><Run><FlowcellLayout> <TileSet> </TileSet></FlowcellLayout></Run></RunInfo>");
+		}
+		/// <summary>
+		/// Test bad_xml_format_exception
+		/// </summary>
+		[Test]
+	    [ExpectedException("Illumina.InterOp.Run.bad_xml_format_exception")]
+		public void Test_bad_xml_format_exception()
+		{
+            info run_info = new info();
+            run_info.parse("<RunInfo></RunInfo>");
+		}
+		/// <summary>
+		/// Test invalid_read_exception
+		/// </summary>
+		[Test]
+	    [ExpectedException("Illumina.InterOp.Run.invalid_read_exception")]
+		public void Test_invalid_read_exception()
+		{
+            info run_info = new info();
+            run_info.read(8);
+		}
+		/// <summary>
+		/// Test invalid_tile_naming_method
+		/// </summary>
+		[Test]
+	    [ExpectedException("Illumina.InterOp.Run.invalid_tile_naming_method")]
+		public void Test_invalid_tile_naming_method()
+		{
+            info run_info = new info();
+            run_info.validate();
+		}
+		/// <summary>
+		/// Test invalid_run_info_exception
+		/// </summary>
+		[Test]
+	    [ExpectedException("Illumina.InterOp.Run.invalid_run_info_exception")]
+		public void Test_invalid_run_info_exception()
+		{
+            info run_info = new info();
+            run_info.validate(20, 9999);
+		}
+		/// <summary>
+		/// Test invalid_run_info_cycle_exception
+		/// </summary>
+		[Test]
+	    [ExpectedException("Illumina.InterOp.Run.invalid_run_info_cycle_exception")]
+		public void Test_invalid_run_info_cycle_exception()
+		{
+            info run_info = new info(new flowcell_layout(8, 2, 4, 99));
+            run_info.validate_cycle(1, 1101, 3000);
+		}
+
+		/// <summary>
+		/// Test bad_format_exception
+		/// </summary>
+		[Test]
+	    [ExpectedException("Illumina.InterOp.Comm.bad_format_exception")]
+		public void Test_bad_format_exception()
+		{
+		    int[] tmp = new int[]{
+                 0,3
+                 ,7,0,90,4,1,0,-12,-56,15,64,-98,35,12,64,0,0,0,0,0,0,0,0,46,1,17,1,0,0,0,0,96,-41,-104,36,122,-86,-46,-120
+                 ,7,0,-66,4,1,0,96,-43,14,64,-63,49,13,64,0,0,0,0,0,0,0,0,56,1,17,1,0,0,0,0,112,125,77,38,122,-86,-46,-120
+                 ,7,0,66,8,1,0,74,-68,6,64,-118,-7,8,64,0,0,0,0,0,0,0,0,93,1,46,1,0,0,0,0,-47,-104,2,40,122,-86,-46,-120
+            };
+         	byte[] expected_binary_data = new byte[tmp.Length];
+         	for(int i=0;i<expected_binary_data.Length;i++) expected_binary_data[i] = (byte)tmp[i];
+         	base_extraction_metrics expected_metric_set = new base_extraction_metrics();
+         	c_csharp_comm.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, expected_metric_set);;
+		}
+		/// <summary>
+		/// Test incomplete_file_exception
+		/// </summary>
+		[Test]
+	    [ExpectedException("Illumina.InterOp.Comm.incomplete_file_exception")]
+		public void Test_incomplete_file_exception()
+		{
+		    int[] tmp = new int[]{
+                 3,38
+                 ,7,0,90,4,1,0,-12,-56,15,64,-98,35,12,64,0,0,0,0,0,0,0,0,46,1,17,1,0,0,0,0,96,-41,-104,36,122,-86,-46,-120
+                 ,7,0,-66,4,1,0,96,-43,14,64,-63,49,13,64,0,0,0,0,0,0,0,0,56,1,17,1,0,0,0,0,112,125,77,38,122,-86,-46,-120
+                 ,7,0,66,8,1,0,74,-68,6,64,-118,-7,8,64,0,0,0,0,0,0,0,0,93,1,46,1,0,0,0,0,-47,-104,2,40,122,-86,-46,-120
+            };
+         	byte[] expected_binary_data = new byte[tmp.Length];
+         	for(int i=0;i<expected_binary_data.Length;i++) expected_binary_data[i] = (byte)tmp[i];
+         	base_extraction_metrics expected_metric_set = new base_extraction_metrics();
+         	c_csharp_comm.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, expected_metric_set);;
+		}
+		/// <summary>
+		/// Test invalid_argument
+		/// </summary>
+		[Test]
+	    [ExpectedException("Illumina.InterOp.Comm.invalid_argument")]
+		public void Test_invalid_argument()
+		{
+		    int[] tmp = new int[]{
+                2,38
+                 ,7,0,90,4,1,0,-12,-56,15,64,-98,35,12,64,0,0,0,0,0,0,0,0,46,1,17,1,0,0,0,0,96,-41,-104,36,122,-86,-46,-120
+                 ,7,0,-66,4,1,0,96,-43,14,64,-63,49,13,64,0,0,0,0,0,0,0,0,56,1,17,1,0,0,0,0,112,125,77,38,122,-86,-46,-120
+                 ,7,0,66,8,1,0,74,-68,6,64,-118,-7,8,64,0,0,0,0,0,0,0,0,93,1,46,1,0,0,0,0,-47,-104,2,40,122,-86,-46,-120
+            };
+         	byte[] expected_binary_data = new byte[tmp.Length];
+         	for(int i=0;i<expected_binary_data.Length;i++) expected_binary_data[i] = (byte)tmp[i];
+         	base_extraction_metrics expected_metric_set = new base_extraction_metrics();
+         	c_csharp_comm.read_interop_from_buffer(expected_binary_data, (uint)expected_binary_data.Length, expected_metric_set);
+            byte[] newBuffer = new byte[3];
+			c_csharp_comm.write_interop_to_buffer(expected_metric_set, newBuffer, (uint)newBuffer.Length);
+		}
+		/// <summary>
+		/// Test invalid_argument
+		/// </summary>
+		[Test]
+	    [ExpectedException("Illumina.InterOp.Plot.invalid_filter_option")]
+		public void Test_invalid_filter_option()
+		{
+            info run_info = new info();
+            filter_options options = new filter_options(tile_naming_method.FourDigit);
+            options.validate(metric_type.Intensity, run_info);
+		}
+		/// <summary>
+		/// Test invalid_column_type
+		/// </summary>
+		[Test]
+	    [ExpectedException("Illumina.InterOp.Table.invalid_column_type")]
+		public void Test_invalid_column_type()
+		{
+            string_vector channels = new string_vector();
+            bool_vector filled = new bool_vector();
+            imaging_column_vector columns = new imaging_column_vector();
+            c_csharp_table.create_imaging_table_columns(channels, filled, columns);
+		}
+		/// <summary>
+		/// Test invalid_parameter
+		/// </summary>
+		[Test]
+	    [ExpectedException("Illumina.InterOp.RunMetrics.invalid_parameter")]
+		public void Test_invalid_parameter()
+		{
+            uchar_vector valid_to_load = new uchar_vector();
+            valid_to_load.Add(0);
+            run_metrics metrics = new run_metrics();
+            metrics.read_metrics("", 3, valid_to_load, 1);
+		}
+		/// <summary>
+		/// Test invalid_metric_type
+		/// </summary>
+		[Test]
+	    [ExpectedException("Illumina.InterOp.RunMetrics.invalid_metric_type")]
+		public void Test_invalid_metric_type()
+		{
+            uchar_vector valid_to_load = new uchar_vector();
+		    c_csharp_run_metrics.list_metrics_to_load("Unknown", valid_to_load);
+		}
+		/// <summary>
+		/// Test invalid_channel_exception
+		/// </summary>
+		[Test]
+	    [ExpectedException("Illumina.InterOp.RunMetrics.invalid_channel_exception")]
+		public void Test_invalid_channel_exception()
+		{
+            run_metrics metrics = new run_metrics();
+            metrics.finalize_after_load();
+		}
+		/// <summary>
+		/// Test invalid_parameter base exception
+		/// </summary>
+		[Test]
+		public void Test_invalid_parameter_base()
+		{
+            uchar_vector valid_to_load = new uchar_vector();
+            valid_to_load.Add(0);
+            run_metrics metrics = new run_metrics();
+            try{
+                metrics.read_metrics("", 3, valid_to_load, 1);
+                Assert.IsTrue(false);
+            }catch(Exception){}
+		}
+
+
+
 		/// <summary>
 		/// Test IndexOutOfBoundsException
 		/// </summary>

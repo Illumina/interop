@@ -323,7 +323,9 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
             if (it == m_id_map.end())
                 INTEROP_THROW( index_out_of_bounds_exception, "No tile available: key: " <<  key << " map: " <<
                         m_id_map.size() << " == data: " <<
-                        m_data.size());
+                        m_data.size() <<
+                        "  lane: " << base_metric::lane_from_id(key) <<
+                        "  tile: " << base_metric::tile_from_id(key));
             INTEROP_ASSERT(it->second < m_data.size());
             return m_data[it->second];
         }

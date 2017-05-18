@@ -84,7 +84,9 @@ tile_metrics_tests::generator_type tile_unit_test_generators[] = {
         ,wrap(new hardcoded_metric_generator< tile_metric_v3 >),
         wrap(new write_read_metric_generator< tile_metric_v3 >),
         wrap(new by_cycle_metric_generator< tile_metric_v3 >),
-        wrap(new write_metric_generator<tile_metric_v3>)
+        wrap(new write_metric_generator<tile_metric_v3>),
+        wrap(new clear_metric_generator< tile_metric_v2 >),
+        wrap(new clear_metric_generator< tile_metric_v3 >)
 };
 
 // Setup unit tests for tile_metrics_tests

@@ -44,6 +44,12 @@ if NOT "%4" == "" (
 set COMPILER=%4%
 )
 
+if not exist C:\Program Files\CMake\bin goto SKIP_CMAKE_PATH
+set PATH=C:\Program Files\CMake\bin;%PATH%
+:SKIP_CMAKE_PATH
+for %%X in (cmake.exe) do (set FOUND=%%~$PATH:X)
+if not defined FOUND exit /b 1
+
 if exist %BUILD_DIR%  rd /s /q %BUILD_DIR%
 if exist %DIST_DIR%  rd /s /q %DIST_DIR%
 mkdir %BUILD_DIR%
@@ -61,6 +67,7 @@ echo ##teamcity[blockClosed name='Configure %BUILD_TYPE% MinGW']
 set MT=-j8
 set INSTALL=install
 )
+
 if "%COMPILER%" == "msvc" (
 echo ##teamcity[blockOpened name='Configure %BUILD_TYPE% Visual Studio 2015 Win64']
 echo cmake %SOURCE_DIR% -G"Visual Studio 14 2015 Win64"  %BUILD_PARAM%
@@ -69,6 +76,7 @@ if !errorlevel! neq 0 exit /b !errorlevel!
 echo ##teamcity[blockClosed name='Configure %BUILD_TYPE% Visual Studio 2015 Win64']
 )
 
+if "%5" == "nuspec" goto NUSPEC_ONLY
 
 echo ##teamcity[blockOpened name='Build %BUILD_TYPE% %COMPILER%']
 cmake --build . --config %BUILD_TYPE% -- %MT%
@@ -77,7 +85,7 @@ echo ##teamcity[blockClosed name='Build %BUILD_TYPE% %COMPILER%']
 
 
 echo ##teamcity[blockOpened name='Package %BUILD_TYPE% %COMPILER%']
-cmake --build . --config %BUILD_TYPE% --target package -- %MT%
+cmake --build . --config Release --target package -- %MT%
 if %errorlevel% neq 0 exit /b %errorlevel%
 echo ##teamcity[blockClosed name='Package %BUILD_TYPE% %COMPILER%']
 
@@ -86,10 +94,13 @@ cmake --build . --config %BUILD_TYPE% --target check -- %MT%
 if %errorlevel% neq 0 exit /b %errorlevel%
 echo ##teamcity[blockClosed name='Test %BUILD_TYPE% %COMPILER%']
 
+:NUSPEC_ONLY
+
 echo ##teamcity[blockOpened name='Install %BUILD_TYPE% %COMPILER%']
 cmake --build . --config Release --target %INSTALL% -- %MT%
 if %errorlevel% neq 0 exit /b %errorlevel%
 echo ##teamcity[blockClosed name='Install %BUILD_TYPE% %COMPILER%']
+
 
 if "%COMPILER%" == "msvc" (
 echo ##teamcity[blockOpened name='NuPack %BUILD_TYPE% %COMPILER%']
@@ -97,14 +108,19 @@ echo %BUILD_PATH%\nuget pack %BUILD_DIR%\src\ext\csharp\package.nuspec
 %BUILD_PATH%\nuget pack %BUILD_DIR%\src\ext\csharp\package.nuspec -OutputDirectory %DIST_DIR%
 echo ##teamcity[blockClosed name='NuPack %BUILD_TYPE% %COMPILER%']
 )
+if "%5" == "nuspec" goto SCRIPT_END
 
 echo ##teamcity[blockOpened name='Test Python3 %BUILD_TYPE% %COMPILER%']
 del /f /q CMakeCache.txt
 set PYTHON_PATH_DIR=C:\Miniconda3
 set PATH=%PYTHON_PATH_DIR%;%PYTHON_PATH_DIR%\Scripts;%PATH%
 cmake %SOURCE_DIR% -G"Visual Studio 14 2015 Win64" %BUILD_PARAM%
+if "%COMPILER%" == "msvc" (
 cmake --build . --config %BUILD_TYPE% --target check_python -- %MT%
+)
 echo ##teamcity[blockClosed name='Test Python3 %BUILD_TYPE% %COMPILER%']
+
+:SCRIPT_END
 
 cd %SOURCE_DIR%
 rd /s /q %BUILD_DIR%
