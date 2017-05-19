@@ -127,7 +127,7 @@ heatmap_plot_tests::generator_type plot_heatmap_generators[] = {
         wrap(new standard_parameter_generator<heatmap_data, heatmap_write_read_generator>(0)),
 };
 
-// Setup unit tests for extended_tile_metrics_tests
+// Setup unit tests
 INSTANTIATE_TEST_CASE_P(heatmap_unit_tests,
                         heatmap_plot_tests,
                         ::testing::ValuesIn(plot_heatmap_generators));

@@ -9,6 +9,7 @@
  */
 
 #pragma once
+#include <limits>
 
 #include <cmath>
 #if defined(HAVE_NO_STD_ISNAN)
@@ -60,3 +61,13 @@
     }
 #endif
 
+namespace illumina { namespace interop { namespace util
+{
+    template<typename T>
+    float float_cast(const T val, const T sentinel = std::numeric_limits<T>::max())
+    {
+        if (val == sentinel)
+            return std::numeric_limits<float>::quiet_NaN();
+        return static_cast<float>(val);
+    }
+}}}

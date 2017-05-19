@@ -166,7 +166,7 @@ candle_stick_tests::generator_type plot_candle_stick_generators[] = {
         wrap(new standard_parameter_generator<candle_stick_plot_data, candle_stick_read_generator>(0)),
 };
 
-// Setup unit tests for extended_tile_metrics_tests
+// Setup unit tests
 INSTANTIATE_TEST_CASE_P(candle_stick_unit_tests,
                         candle_stick_tests,
                         ::testing::ValuesIn(plot_candle_stick_generators));

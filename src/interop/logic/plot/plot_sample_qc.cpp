@@ -29,20 +29,22 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
         typedef typename index_count_map_t::iterator map_iterator;
         typedef typename index_count_map_t::const_iterator const_map_iterator;
         typedef typename model::metrics::index_metric::const_iterator const_index_iterator;
+        const size_t kAllLanes = 0;
 
         index_count_map_t index_count_map;
         ::uint64_t pf_cluster_count_total = 0;
         for(typename index_metric_set_t::const_iterator b = index_metrics.begin(), e = index_metrics.end();b != e;++b)
         {
-            if(lane != b->lane()) continue;
+            if(lane != kAllLanes && lane != b->lane()) continue;
             try
             {
                 const model::metrics::tile_metric &tile_metric = tile_metrics.get_metric(b->lane(), b->tile());
                 pf_cluster_count_total += static_cast< ::uint64_t >( tile_metric.cluster_count_pf());
                 for(const_index_iterator ib = b->indices().begin(), ie =  b->indices().end();ib != ie;++ib)
                 {
-                    map_iterator found_index = index_count_map.find(ib->index_seq());
-                    if(found_index == index_count_map.end()) index_count_map[ib->index_seq()] = ib->cluster_count();
+                    const std::string index_id = ib->index_seq() + ib->sample_id();
+                    map_iterator found_index = index_count_map.find(index_id);
+                    if(found_index == index_count_map.end()) index_count_map[index_id] = ib->cluster_count();
                     else found_index->second += ib->cluster_count();
                 }
             }

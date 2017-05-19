@@ -228,8 +228,6 @@ TEST(channel_test, actual2expected_2channel_valid)
     EXPECT_EQ(map[1], (size_t )1);
 }
 
-
-
 //Test 4 - check full normalization of all letters in channel name
 TEST(channel_test, actual2expected_valid_4)
 {

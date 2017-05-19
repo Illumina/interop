@@ -15,6 +15,8 @@
 %import "src/ext/swig/exceptions/exceptions_impl.i"
 %import "src/ext/swig/run.i"
 
+
+
 // The SWIG Python binding does not support polymorphic functions
 #if defined(SWIGPYTHON)
     %rename(to_group_feature) to_feature(const constants::metric_group);

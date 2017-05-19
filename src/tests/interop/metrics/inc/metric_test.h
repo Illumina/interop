@@ -37,7 +37,7 @@ namespace illumina{ namespace interop { namespace unittest {
 
     /** Generic metric set structure
      */
-    template<class Metric, int Version>
+    template<class Metric, int Version, char Variant=0>
     class metric_test
     {
     public:
@@ -69,7 +69,10 @@ namespace illumina{ namespace interop { namespace unittest {
          */
         static std::string name()
         {
-            return std::string() + Metric::prefix()+Metric::suffix()+util::lexical_cast<std::string>(VERSION);
+            return std::string() +
+                   Metric::prefix()+
+                   Metric::suffix()+
+                   util::lexical_cast<std::string>(VERSION) + ((Variant>0) ? Variant : ' ');
         }
         /** Convert an array to a vector
          *

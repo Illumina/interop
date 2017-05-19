@@ -59,7 +59,7 @@ int main(int argc, char **argv)
         ::testing::TestEventListeners &listeners = ::testing::UnitTest::GetInstance()->listeners();
         ::testing::TestEventListener *default_printer = listeners.Release(listeners.default_result_printer());
         // Add listener that will only print failures
-        failure_listener *listener = new failure_listener(default_printer);
+        failure_listener *listener = new failure_listener(default_printer, data.files().size() > 0);
         listeners.Append(listener);
     }
 

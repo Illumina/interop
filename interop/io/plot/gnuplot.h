@@ -407,6 +407,8 @@ namespace illumina { namespace interop { namespace io { namespace plot
         std::string normalize_color(const std::string &color)
         {
             std::string color_normalized;
+            if(color.length() > 0 && color[0] == '#')
+                return color;
             for (size_t i = 0; i < color.length(); ++i)
             {
                 if (std::isupper(color[i]))

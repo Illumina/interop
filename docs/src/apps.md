@@ -14,7 +14,6 @@ The InterOp package includes several command line tools to extraction informatio
 | @subpage q_hmap "plot_qscore_heatmap"   | Generate the SAV Analysis Tab Q-score heat map as a GNUPlot text file      |
 | @subpage plot_sampleqc "plot_sample_qc" | Generate the SAV Indexing Tab index graph as a GNUPlot text file           |
 | @subpage index_summary "index-summary"  | Generate the SAV Indexing Tab summary table as a CSV text file             |
-| @subpage cyclesim "cyclesim"            | Simulate the InterOps of a run folder at a specific cycle                  |
 | @subpage dumpbin "dumpbin"              | Developer app to help create unit tests by dumping the binary format       |
 | @subpage aggregate "aggregate"          | Aggregate by cycle InterOps                                                |
 

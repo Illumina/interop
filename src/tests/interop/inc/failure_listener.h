@@ -22,8 +22,10 @@ namespace illumina{ namespace interop { namespace unittest
         /** Reuse GTest's default listener
          *
          * @param event_listener gtests dfault listener
+         * @param regression turn on extra printing for regression tests
          */
-        explicit failure_listener(::testing::TestEventListener *event_listener) : m_event_listener(event_listener)
+        explicit failure_listener(::testing::TestEventListener *event_listener,
+                                  const bool regression) : m_event_listener(event_listener), m_regression(regression)
         {
         }
 
@@ -60,9 +62,16 @@ namespace illumina{ namespace interop { namespace unittest
         {
         }
 
-        /** Does nothing */
-        virtual void OnTestCaseStart(const ::testing::TestCase &/*test_case*/)
+        /** Print message on test case start (regression mode only)
+         *
+         * @param test_case unit case
+         */
+        virtual void OnTestCaseStart(const ::testing::TestCase &test_case)
         {
+            if(m_regression)
+            {
+                m_event_listener->OnTestCaseStart(test_case);
+            }
         }
 
         /** Does nothing */
@@ -90,9 +99,16 @@ namespace illumina{ namespace interop { namespace unittest
             }
         }
 
-        /** Does nothing */
-        virtual void OnTestCaseEnd(const ::testing::TestCase &/*test_case*/)
+        /** Print message on test case end (regression mode only)
+         *
+         * @param test_case unit case
+         */
+        virtual void OnTestCaseEnd(const ::testing::TestCase &test_case)
         {
+            if(m_regression)
+            {
+                m_event_listener->OnTestCaseEnd(test_case);
+            }
         }
 
         /** Does nothing */
@@ -122,7 +138,8 @@ namespace illumina{ namespace interop { namespace unittest
         {
             m_event_listener->OnTestProgramEnd(unit_test);
         }
-
+    private:
+       bool m_regression;
     };
 }}}
 

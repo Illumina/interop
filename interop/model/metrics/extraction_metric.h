@@ -387,7 +387,6 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          *
          * These values are estimated using full width half max (FWHM) from each image, e.g. each channel.
          *
-         * @deprecated Will be removed in 1.1.x (use focus_scores instead)
          * @return vector of focus scores
          */
         const float_array_t &focus_scores() const

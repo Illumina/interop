@@ -25,6 +25,10 @@ namespace illumina{ namespace interop { namespace unittest
     class by_cycle_metric_generator;
     /** By cycle metric registry */
     typedef registry_factory<by_cycle_metric_generator> by_cycle_metric_registry_t;
+    template<class Gen>
+    class clear_metric_generator;
+    /** By cycle metric registry */
+    typedef registry_factory<clear_metric_generator> clear_metric_registry_t;
     /** Generate the actual metric set by reading in from hardcoded binary buffer
      *
      * The expected metric set is provided by the generator.
@@ -97,7 +101,12 @@ namespace illumina{ namespace interop { namespace unittest
             Gen::create_expected(expected);
             std::ostringstream fout;
             illumina::interop::io::write_metrics(fout, expected);
+
+            //-------------------------------------------------
+            //For unit test creation!
             //print_actual(std::cout, fout.str());
+            //-------------------------------------------------
+
             io::read_interop_from_string(fout.str(), actual);
             return ::testing::AssertionSuccess();
         }
@@ -313,6 +322,50 @@ namespace illumina{ namespace interop { namespace unittest
         }
     };
 
+    /** Generate the actual metric set by reading in from hardcoded binary buffer
+     *
+     * The expected metric set is provided by the generator.
+     */
+    template<class Gen>
+    class clear_metric_generator : public abstract_generator< typename Gen::metric_set_t >
+    {
+        typedef typename Gen::metric_set_t metric_set_t;
+        typedef typename Gen::metric_t metric_t;
+        typedef typename abstract_generator<metric_set_t>::parent_type parent_t;
+    public:
+        /** Constructor */
+        clear_metric_generator()
+        {
+            clear_metric_registry_t::instance()(metric_t(), Gen::VERSION);
+        }
+        /** Generate the expected and actual metric sets
+         *
+         * @param actual actual metric set
+         */
+        ::testing::AssertionResult generate(metric_set_t&, metric_set_t& actual, bool*)const
+        {
+            actual.clear();
+            std::string binary_data;
+            Gen::create_binary_data(binary_data);
+            io::read_interop_from_string(binary_data, actual);
+            actual.clear();
+            return ::testing::AssertionSuccess();
+        }
+        /** Create a copy of this object
+         *
+         * @return pointer to copy
+         */
+        parent_t clone()const{return new clear_metric_generator<Gen>;}
+        /** Write generator info to output stream
+         *
+         * @param out output stream
+         */
+        void write(std::ostream& out)const
+        {
+            out << "clear_metric_generator<" << Gen::name() << ">";
+        }
+
+    };
 
 }}}
 
