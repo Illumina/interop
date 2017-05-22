@@ -136,7 +136,7 @@ namespace illumina { namespace interop { namespace util
             const_member_function_w<T, R, P1> m_func;
         };
         /** Dummy argument */
-        struct dummy_arg {};
+        struct dummy_arg {/** Constructor */ dummy_arg(){}};
 
         /**Function Interface for function call with single parameter
          *
