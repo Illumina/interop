@@ -1,10 +1,21 @@
 # Changes                                               {#changes}
 
-## v1.0.25 (Master)
+
+## v1.0.26 (Master)
+
+## v1.0.25
 
 Date       | Description
 ---------- | -----------
-0000-00-00 | placeholder
+2017-05-08 | IPA-6419: Filter metric list by empty metric values
+2017-05-05 | Refactor plot-by-lane, cycle and flowcell to use reflection-like enums
+2017-04-28 | IPA-6413: Add C# exception unit tests
+2017-04-26 | Fix bug in list filename by moving clear
+2017-04-25 | Fixes for the regression tests
+2017-04-20 | Add feature to list all InterOp filenames
+2017-04-14 | IPA-6353: Handle Legacy RunInfo rewrite
+2017-03-28 | IPA-5052: All lanes on Indexing Tab
+
 
 ## v1.0.24
 
