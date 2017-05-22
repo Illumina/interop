@@ -33,7 +33,9 @@ error_metrics_tests::generator_type error_unit_test_generators[] = {
         ,wrap(new hardcoded_metric_generator< error_metric_v4 >),
         wrap(new write_read_metric_generator< error_metric_v4 >),
         wrap(new by_cycle_metric_generator< error_metric_v3 >),
-        wrap(new by_cycle_metric_generator< error_metric_v4 >)
+        wrap(new by_cycle_metric_generator< error_metric_v4 >),
+        wrap(new clear_metric_generator< error_metric_v3 >),
+        wrap(new clear_metric_generator< error_metric_v4 >)
 };
 
 // Setup unit tests for error_metrics_tests

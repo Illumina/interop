@@ -28,9 +28,11 @@ phasing_metrics_tests::generator_type phasing_unit_test_generators[] = {
         wrap(new hardcoded_metric_generator< phasing_metric_v1 >) ,
         wrap(new write_read_metric_generator< phasing_metric_v1 >),
         wrap(new by_cycle_metric_generator< phasing_metric_v1 >),
+        wrap(new clear_metric_generator< phasing_metric_v1 >),
         wrap(new hardcoded_metric_generator< phasing_metric_v2 >) ,
         wrap(new write_read_metric_generator< phasing_metric_v2 >),
-        wrap(new by_cycle_metric_generator< phasing_metric_v2 >)
+        wrap(new by_cycle_metric_generator< phasing_metric_v2 >),
+        wrap(new clear_metric_generator< phasing_metric_v2 >)
 };
 
 // Setup unit tests for phasing_metrics_tests

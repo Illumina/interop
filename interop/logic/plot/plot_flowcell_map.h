@@ -128,6 +128,13 @@ namespace illumina { namespace interop { namespace logic { namespace plot
      */
     void list_flowcell_metrics(std::vector< logic::utils::metric_type_description_t > &types,
                                const bool ignore_accumulated=false);
+    /** Filter metric type names available for flowcell
+     *
+     * @param types destination vector to fill with metric type names
+     * @param ignore_accumulated exclude accumulated q-metrics
+     */
+    void filter_flowcell_metrics(std::vector< logic::utils::metric_type_description_t > &types,
+                                 const bool ignore_accumulated=false);
 
     /** Calculate the required buffer size
      *

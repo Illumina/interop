@@ -12,6 +12,7 @@
 #include <interop/external/rapidxml.hpp>
 #include <interop/external/rapidxml_utils.hpp>
 #include <interop/external/rapidxml_print.hpp>
+#include "interop/util/assert.h"
 #include "interop/util/xml_exceptions.h"
 #include "interop/util/exception.h"
 
@@ -109,19 +110,17 @@ namespace illumina { namespace interop { namespace xml
      * @return true if the target was found
      */
     template<class T>
-    bool set_data_with_default(xml_node_ptr p_node, const std::string &target, T &val, const T default_val)
+    bool set_data_with_default(xml_node_ptr p_node, const char* target, T &val, const T default_val)
     {
+        INTEROP_ASSERT(p_node != 0);
+        p_node = p_node->first_node(target);
         if (p_node == 0)
         {
             val = default_val;
             return false;
         }
-        if (p_node->name() == target)
-        {
-            val = util::lexical_cast<T>(p_node->value());
-            return true;
-        }
-        INTEROP_THROW(missing_xml_element_exception, "Cannot find node: " << target);
+        val = util::lexical_cast<T>(p_node->value());
+        return true;
     }
 
     /** Find the target node and set the value
@@ -153,7 +152,8 @@ namespace illumina { namespace interop { namespace xml
     template<class T>
     void set_data_for_target(xml_node_ptr p_node, const std::string &target, T &val, const T default_val)
     {
-        if (p_node == 0) INTEROP_THROW(missing_xml_element_exception, "Cannot find parent");
+        if (p_node == 0)
+            INTEROP_THROW(missing_xml_element_exception, "Cannot find parent for target: " << target);
         p_node = p_node->first_node(target.c_str());
         if (p_node == 0) val = default_val;
         else val = util::lexical_cast<T>(p_node->value());
@@ -169,7 +169,8 @@ namespace illumina { namespace interop { namespace xml
     template<class T>
     bool set_data(xml_node_ptr p_node, const std::string &target, T &val)
     {
-        if (p_node == 0) INTEROP_THROW(missing_xml_element_exception, "Cannot find node: " << target);
+        if (p_node == 0)
+            INTEROP_THROW(missing_xml_element_exception, "Cannot find node: " << target);
         if (p_node->name() == target)
         {
             val = util::lexical_cast<T>(p_node->value());
@@ -186,7 +187,8 @@ namespace illumina { namespace interop { namespace xml
     template<class T>
     void set_data(xml_node_ptr p_attr, T &val)
     {
-        if (p_attr == 0) INTEROP_THROW(missing_xml_element_exception, "Cannot find node");
+        if (p_attr == 0)
+            INTEROP_THROW(missing_xml_element_exception, "Cannot find node");
         val = util::lexical_cast<T>(p_attr->value());
     }
 
@@ -200,7 +202,8 @@ namespace illumina { namespace interop { namespace xml
     template<class T>
     bool set_data(xml_attr_ptr p_attr, const std::string &target, T &val)
     {
-        if (p_attr == 0) INTEROP_THROW(missing_xml_element_exception, "Cannot find attribute: " << target);
+        if (p_attr == 0)
+            INTEROP_THROW(missing_xml_element_exception, "Cannot find attribute: " << target);
         if (p_attr->name() == target)
         {
             std::string tmp = p_attr->value();
@@ -216,14 +219,17 @@ namespace illumina { namespace interop { namespace xml
 
     /** Convert the value of the attribute to the destination type
      *
-     * @param p_attr current attribute
+     * @param p_node current node
+     * @param target target string
      * @param val destination value
      */
     template<class T>
-    void set_data(xml_attr_ptr p_attr, T &val)
+    void set_data_from_attribute(xml_node_ptr p_node, const char* target, T &val)
     {
+        INTEROP_ASSERT(p_node != 0);
+        xml_attr_ptr p_attr = p_node->first_attribute(target);
         if (p_attr == 0)
-            INTEROP_THROW(missing_xml_element_exception, "Cannot find attribute");
+            INTEROP_THROW(missing_xml_element_exception, "Cannot find attribute: " << target);
         std::string tmp = p_attr->value();
         if(tmp[0] == '\"' && tmp[tmp.length()-1] == '\"')
         {

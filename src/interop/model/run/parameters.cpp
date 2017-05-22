@@ -49,7 +49,7 @@ namespace illumina { namespace interop { namespace model { namespace run
         if (p_root == 0) INTEROP_THROW(empty_xml_format_exception, "Root not found");
         if (p_root->name() != std::string("RunParameters"))
             INTEROP_THROW(bad_xml_format_exception, "Invalid run parameters xml file");
-        set_data_with_default(p_root->first_node("Version"), "Version", m_version, 0u);
+        set_data_with_default(p_root, "Version", m_version, 0u);
 
         // Parse run data
         std::string application_name;

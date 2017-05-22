@@ -138,7 +138,7 @@ imaging_table_tests::generator_type imaging_io_generators[] = {
         wrap(new standard_parameter_generator<model::table::imaging_table, imaging_write_read_generator>(0)),
 };
 
-// Setup unit tests for extended_tile_metrics_tests
+// Setup unit tests
 INSTANTIATE_TEST_CASE_P(imaging_unit_tests,
                         imaging_table_tests,
                         ::testing::ValuesIn(imaging_io_generators));

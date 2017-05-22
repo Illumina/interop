@@ -97,6 +97,14 @@ namespace illumina { namespace interop { namespace model { namespace plot {
         {
             m_options.push_back(option);
         }
+        /** Get color of the series
+         *
+         * @param color_name color name or code of the series
+         */
+        void color(const std::string& color_name)
+        {
+            m_color = color_name;
+        }
 
         friend std::ostream& operator<<(std::ostream& out, const series& data)
         {

@@ -133,6 +133,7 @@ WRAP_VECTOR(std::vector<illumina::interop::model::plot::candle_stick_point>)
 #include "interop/logic/plot/plot_qscore_heatmap.h"
 #include "interop/logic/plot/plot_flowcell_map.h"
 #include "interop/logic/plot/plot_sample_qc.h"
+#include "interop/logic/plot/plot_metric_list.h"
 %}
 %include "interop/logic/plot/plot_by_cycle.h"
 %include "interop/logic/plot/plot_by_lane.h"
@@ -140,3 +141,4 @@ WRAP_VECTOR(std::vector<illumina::interop::model::plot::candle_stick_point>)
 %include "interop/logic/plot/plot_qscore_heatmap.h"
 %include "interop/logic/plot/plot_flowcell_map.h"
 %include "interop/logic/plot/plot_sample_qc.h"
+%include "interop/logic/plot/plot_metric_list.h"

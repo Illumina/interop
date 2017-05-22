@@ -129,7 +129,7 @@ bar_plot_tests::generator_type plot_bar_generators[] = {
         wrap(new standard_parameter_generator<bar_plot_data, bar_write_read_generator>(0)),
 };
 
-// Setup unit tests for extended_tile_metrics_tests
+// Setup unit tests
 INSTANTIATE_TEST_CASE_P(bar_plot_add_unit_tests,
                         bar_plot_tests,
                         ::testing::ValuesIn(plot_bar_generators));

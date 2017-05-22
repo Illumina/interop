@@ -48,7 +48,10 @@ corrected_intensity_metrics_tests::generator_type corrected_intensity_unit_test_
         wrap(new write_read_metric_generator< corrected_intensity_metric_v4 >),
         wrap(new by_cycle_metric_generator< corrected_intensity_metric_v2 >),
         wrap(new by_cycle_metric_generator< corrected_intensity_metric_v3 >),
-        wrap(new by_cycle_metric_generator< corrected_intensity_metric_v4 >)
+        wrap(new by_cycle_metric_generator< corrected_intensity_metric_v4 >),
+        wrap(new clear_metric_generator< corrected_intensity_metric_v2 >),
+        wrap(new clear_metric_generator< corrected_intensity_metric_v3 >),
+        wrap(new clear_metric_generator< corrected_intensity_metric_v4 >)
 };
 
 // Specificy the fixtures used for corrected_intensity_metrics_tests TEST_P functions
