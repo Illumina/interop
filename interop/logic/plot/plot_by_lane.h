@@ -62,5 +62,12 @@ namespace illumina { namespace interop { namespace logic { namespace plot
     void list_by_lane_metrics(std::vector< logic::utils::metric_type_description_t > &types, const bool ignore_pf=false);
 
 
+    /** Filter metric types available for by lane plots
+     *
+     * @param types destination vector to fill with metric types
+     * @param ignore_pf if true, ignore density PF and cluster PF
+     */
+    void filter_by_lane_metrics(std::vector< logic::utils::metric_type_description_t > &types,
+                                const bool ignore_pf=false);
 }}}}
 

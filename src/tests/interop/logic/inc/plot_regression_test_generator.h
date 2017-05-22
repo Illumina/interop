@@ -85,7 +85,7 @@ namespace illumina { namespace interop { namespace unittest
          */
         void write(std::ostream& out)const
         {
-            out << name();
+            out << io::basename(parent_t::m_run_folder) << " -> " << name();
         }
         /** Advance to the next type
          *
@@ -152,6 +152,7 @@ namespace illumina { namespace interop { namespace unittest
             static model::metrics::run_metrics actual_metrics;
             if( current != run_folder )
             {
+                actual_metrics.clear();
                 current = run_folder;
                 read_metrics_safe(actual_metrics, run_folder);
             }

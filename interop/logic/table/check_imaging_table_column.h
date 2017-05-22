@@ -180,7 +180,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
 #       undef INTEROP_TUPLE7 // Reuse this for another conversion
 
     private:
-        /** Test if a metric type is valid
+        /** Test if float is valid
          *
          * @param val floating point value
          * @return true if not NaN
@@ -190,7 +190,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
             return !std::isnan(val);
         }
 
-        /** Test if a metric type is valid
+        /** Test if non-float is valid
          *
          * @param val integral value
          * @return true
@@ -201,7 +201,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
             return val < std::numeric_limits<T>::max();
         }
 
-        /** Test if a metric type is valid
+        /** Test if vector is valid
          *
          * @param values vector of values
          * @return true if not empty

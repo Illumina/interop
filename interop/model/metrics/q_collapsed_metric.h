@@ -163,6 +163,16 @@ namespace illumina { namespace interop { namespace model { namespace metrics {
         {
             return m_median_qscore;
         }
+        /** Median q-score for tile
+         *
+         * @return median q-score as a float
+         */
+        float median_qscore_flt()const
+        {
+            if (m_median_qscore == std::numeric_limits<uint_t>::max() || m_median_qscore == 0)
+                return std::numeric_limits<float>::quiet_NaN();
+            return static_cast<float>(m_median_qscore);
+        }
         /** Cumulative number of Q20 clusters over all cycles up to the current cycle
          *
          * @return number of q20 clusters cumulative over cycles

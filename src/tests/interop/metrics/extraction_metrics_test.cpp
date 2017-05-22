@@ -31,9 +31,11 @@ extraction_metrics_tests::generator_type extraction_unit_test_generators[] = {
         wrap(new hardcoded_metric_generator< extraction_metric_v2 >) ,
         wrap(new write_read_metric_generator< extraction_metric_v2 >)
         ,wrap(new by_cycle_metric_generator< extraction_metric_v2 >),
+        wrap(new clear_metric_generator< extraction_metric_v2 >),
         wrap(new hardcoded_metric_generator< extraction_metric_v3 >),
         wrap(new write_read_metric_generator< extraction_metric_v3 >),
-        wrap(new by_cycle_metric_generator< extraction_metric_v3 >)
+        wrap(new by_cycle_metric_generator< extraction_metric_v3 >),
+        wrap(new clear_metric_generator< extraction_metric_v3 >)
 };
 
 // Setup unit tests for extraction_metrics_tests

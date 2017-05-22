@@ -119,8 +119,6 @@ before_script:
 - cmake -version
 - which $CC
 - which $CXX
-- echo "HOME=$HOME"
-- echo "PWD=$PWD"
 
 script:
 - $SCRIPT

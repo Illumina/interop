@@ -77,8 +77,10 @@ namespace illumina { namespace interop { namespace model { namespace run
         }
         else
         {
-            if(m_flowcell.sections_per_lane() > 1) throw bad_xml_format_exception("SectionPerLane not supported before Version 4");
-            if(m_flowcell.lanes_per_section() > 1) throw bad_xml_format_exception("LanePerSection not supported before Version 4");
+            if(m_flowcell.sections_per_lane() > 1)
+                throw bad_xml_format_exception("SectionPerLane not supported before Version 4");
+            if(m_flowcell.lanes_per_section() > 1)
+                throw bad_xml_format_exception("LanePerSection not supported before Version 4");
         }
         rapidxml::xml_node<>* tile_set = doc.add_node(flowcell, "TileSet");
         // TODO: check if supported by version
@@ -173,7 +175,7 @@ namespace illumina { namespace interop { namespace model { namespace run
                 else
                 {
                     std::string naming_convention;
-                    set_data(p_tile_set->first_attribute("TileNamingConvention"), naming_convention);
+                    set_data_from_attribute(p_tile_set, "TileNamingConvention", naming_convention);
                     m_flowcell.m_naming_method = constants::parse<constants::tile_naming_method>(naming_convention);
                     set_data(p_tile_set->first_node("Tiles"), "Tiles", "Tile", m_flowcell.m_tiles);
                 }

@@ -20,6 +20,7 @@ set(SRCS
         logic/plot/plot_sample_qc.cpp
         logic/plot/plot_qscore_histogram.cpp
         model/run_metrics.cpp
+        model/run_metrics_helper.cpp
         logic/summary/run_summary.cpp
         logic/summary/index_summary.cpp
         logic/table/create_imaging_table_columns.cpp
@@ -30,7 +31,8 @@ set(SRCS
         model/summary/index_summary.cpp
         model/metrics/phasing_metric.cpp
         model/metrics/dynamic_phasing_metric.cpp
-        logic/metric/dynamic_phasing_metric.cpp)
+        logic/metric/dynamic_phasing_metric.cpp
+        logic/plot/plot_metric_list.cpp)
 
 set(HEADERS
         ../../interop/io/paths.h
@@ -166,6 +168,8 @@ set(HEADERS
         ../../interop/model/metric_base/metric_exceptions.h
         ../../interop/model/table/table_exceptions.h
         ../../interop/model/plot/plot_exceptions.h
+        ../../interop/logic/plot/plot_metric_proxy.h
+        ../../interop/logic/plot/plot_metric_list.h
         )
 
 set(INTEROP_HEADERS ${HEADERS} PARENT_SCOPE)

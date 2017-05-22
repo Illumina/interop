@@ -194,6 +194,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
         //reads and reads pf
         // percent pf
         INTEROP_ASSERT(run.size() > 0);
+
         model::summary::metric_stat stat;
         for (size_t lane = 0; lane < run[0].size(); ++lane)
         {

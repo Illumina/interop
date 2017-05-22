@@ -23,6 +23,7 @@
 #include <numeric>
 #include <cstring>
 #include <fstream>
+#include "interop/util/math.h"
 #include "interop/util/exception.h"
 #include "interop/constants/enums.h"
 #include "interop/io/format/generic_layout.h"
@@ -85,7 +86,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                 m_average_cycle_intensity(0),
                 m_corrected_int_all(constants::NUM_OF_BASES, std::numeric_limits<ushort_t>::max()),
                 m_corrected_int_called(constants::NUM_OF_BASES, std::numeric_limits<float>::quiet_NaN()),
-                m_called_counts(constants::NUM_OF_BASES_AND_NC, std::numeric_limits<uint_t>::max()),
+                m_called_counts(constants::NUM_OF_BASES_AND_NC, 0),
                 m_signal_to_noise(std::numeric_limits<float>::quiet_NaN())
         { }
         /** Constructor
@@ -95,7 +96,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                 m_average_cycle_intensity(0),
                 m_corrected_int_all(constants::NUM_OF_BASES, std::numeric_limits<ushort_t>::max()),
                 m_corrected_int_called(constants::NUM_OF_BASES, std::numeric_limits<float>::quiet_NaN()),
-                m_called_counts(constants::NUM_OF_BASES_AND_NC, std::numeric_limits<uint_t>::max()),
+                m_called_counts(constants::NUM_OF_BASES_AND_NC, 0),
                 m_signal_to_noise(std::numeric_limits<float>::quiet_NaN())
         { }
 
@@ -281,6 +282,19 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             if(index >= static_cast<constants::dna_bases>(m_corrected_int_all.size()))
                 INTEROP_THROW( index_out_of_bounds_exception, "Base out of bounds");
             return m_corrected_int_all[index];
+        }
+
+        /** Average corrected intensity for each type of base: A, C, G and T
+         *
+         * @note Supported version 2, not supported by 3 or later
+         * @param index index of the base (A=0, C=1, G=2, T=3)
+         * @return average corrected intensity for specified base
+         */
+        float corrected_int_all_float(const constants::dna_bases index) const throw(model::index_out_of_bounds_exception)
+        {
+            if(index >= static_cast<constants::dna_bases>(m_corrected_int_all.size()))
+                INTEROP_THROW( index_out_of_bounds_exception, "Base out of bounds");
+            return util::float_cast(m_corrected_int_all[index]);
         }
 
         /** Average corrected intensity for only base called clusters: A, C, G and T

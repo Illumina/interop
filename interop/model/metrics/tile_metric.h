@@ -341,6 +341,13 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         float cluster_count_k() const
         { return m_cluster_count/1000.0f; }
 
+        /** Number of mega-clusters for each tile
+         *
+         * @return number of mega-clusters
+         */
+        float cluster_count_m() const
+        { return m_cluster_count/1000000.0f; }
+
         /** Number of clusters passing filter for each tile
          *
          * @return number of clusters passing filter
@@ -354,6 +361,13 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         float cluster_count_pf_k() const
         { return m_cluster_count_pf/1000.0f; }
+
+        /** Number of mega-clusters passing filter for each tile
+         *
+         * @return number of mega-clusters passing filter
+         */
+        float cluster_count_pf_m() const
+        { return m_cluster_count_pf/1000000.0f; }
 
         /** Percent of clusters passing filter
          *

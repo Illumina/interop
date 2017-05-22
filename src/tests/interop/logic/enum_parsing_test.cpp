@@ -8,6 +8,7 @@
 #include <gtest/gtest.h>
 #include "interop/logic/utils/enums.h"
 #include "interop/logic/utils/metric_type_ext.h"
+#include "interop/util/type_traits.h"
 
 
 using namespace illumina::interop;
@@ -19,6 +20,7 @@ TEST(enum_parsing_test, parse_metric_type)
     EXPECT_EQ(constants::parse<constants::metric_type>("FWHM"), constants::FWHM);
     EXPECT_EQ(constants::parse<constants::metric_type>("Gobble"), constants::UnknownMetricType);
 }
+
 
 TEST(enum_parsing_test, list_enums_intensity)
 {
@@ -66,9 +68,16 @@ struct enum_list_test : public ::testing::Test
     enum_list_test()
     {
         constants::list_enums(features);
+        if(is_same<Enum, constants::metric_feature_type>::value) return;
+        // Skip no calls in DNA bases
+        const size_t skip = is_same<Enum, constants::dna_bases >::value;
+        names.clear();
+        constants::list_enum_names< Enum >(names, skip);
     }
     /** List of all available enum values */
     std::vector< Enum > features;
+    /** List of all available enum names */
+    std::vector< std::string > names;
 };
 typedef ::testing::Types<
         constants::metric_feature_type,
@@ -86,6 +95,19 @@ typedef ::testing::Types<
         constants::plot_types
 > all_enums_t;
 TYPED_TEST_CASE(enum_list_test, all_enums_t);
+
+/** Confirm that every enum does not conflict with unknown */
+TYPED_TEST(enum_list_test, names)
+{
+    if(TestFixture::names.empty())return;
+    size_t count = TestFixture::names.size() - 1;
+    for(;count>0;--count)
+        if(TestFixture::names[count].find("Count") != std::string::npos) break;
+    for(size_t i=0;i<count;++i)
+    {
+        ASSERT_EQ(TestFixture::names[i], constants::to_string(static_cast<TypeParam>(i))) << i;
+    }
+}
 
 /** Confirm that every enum does not conflict with unknown */
 TYPED_TEST(enum_list_test, unknown)

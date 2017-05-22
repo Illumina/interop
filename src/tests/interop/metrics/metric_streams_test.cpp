@@ -106,6 +106,31 @@ TEST(metric_stream_test, list_filenames)
     EXPECT_EQ(error_metric_files[3], io::combine("InterOp", "C3.1", "ErrorMetricsOut.bin"));
 }
 
+TEST(metric_stream_test, list_filenames_aggregated)
+{
+    model::metrics::run_metrics metrics;
+    std::vector<std::string> files;
+    metrics.list_filenames(files, "");
+    EXPECT_EQ(constants::MetricCount, files.size());
+}
+
+TEST(metric_stream_test, list_filenames_by_cycle)
+{
+    model::run::read_info reads[] = {model::run::read_info(1, 1, 3, false)};
+    model::metrics::run_metrics metrics(
+            model::run::info(
+                    model::run::flowcell_layout(),
+                    util::to_vector(reads)
+            ));
+    std::vector<std::string> files;
+    ASSERT_NE(0u, metrics.run_info().reads().size());
+    ASSERT_NE(0u, metrics.run_info().reads()[0].total_cycles());
+    ASSERT_NE(0u, metrics.run_info().total_cycles());
+    metrics.list_filenames(files, "", true);
+    EXPECT_EQ(constants::MetricCount*metrics.run_info().total_cycles()+constants::MetricCount, files.size());
+}
+
+
 
 
 REGISTER_TYPED_TEST_CASE_P(metric_stream_test,

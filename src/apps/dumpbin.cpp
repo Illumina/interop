@@ -33,6 +33,7 @@
 #include <iomanip>
 #include "interop/io/metric_file_stream.h"
 #include "interop/model/run_metrics.h"
+#include "interop/util/option_parser.h"
 #include "interop/version.h"
 #include "inc/application.h"
 
@@ -48,7 +49,8 @@ struct metric_writer
      * @param out output stream
      * @param max_line number of characters before wrapping
      */
-    metric_writer(std::ostream& out, const size_t max_line=80) : m_out(out), m_max_line(max_line){}
+    metric_writer(std::ostream& out, const size_t latest_version, const size_t max_line=80) :
+            m_out(out), m_latest_version(latest_version), m_max_line(max_line){}
     /** Function operator overload to write data
      *
      * @param metrics set of metrics
@@ -58,7 +60,10 @@ struct metric_writer
     {
         if(metrics.size()==0) return;
         std::ostringstream fout;
-        io::write_metrics(fout, metrics, metrics.version());
+        if(m_latest_version == 0)
+            io::write_metrics(fout, metrics, metrics.version());
+        else
+            io::write_metrics(fout, metrics, MetricSet::LATEST_VERSION);
         m_out << io::interop_basename<MetricSet>() << std::endl;
         write_bytes_as_string(m_out, fout.str(), m_max_line);
     }
@@ -94,6 +99,7 @@ private:
     }
 private:
     std::ostream& m_out;
+    size_t m_latest_version;
     size_t m_max_line;
 
 };
@@ -126,7 +132,7 @@ private:
     size_t m_total;
 };
 
-int main(int argc, char** argv)
+int main(int argc, const char** argv)
 {
     if(argc == 0)
     {
@@ -134,10 +140,30 @@ int main(int argc, char** argv)
         //print_help(std::cout);
         return INVALID_ARGUMENTS;
     }
-    const size_t subset_count=3;
+    size_t subset_count = 0;
+    size_t latest_version = 0;
     const size_t thread_count = 1;
+    util::option_parser description;
+    description
+            (subset_count, "subset", "Display only a subset of records from each file")
+            (latest_version, "latest_version", "Display file as latest version of the format");
+    if(description.is_help_requested(argc, argv))
+    {
+        std::cout << "Usage: " << io::basename(argv[0]) << " run_folder [--option1=value1] [--option2=value2]" << std::endl;
+        description.display_help(std::cout);
+        return SUCCESS;
+    }
+    try{
+        description.parse(argc, argv);
+        description.check_for_unknown_options(argc, argv);
+    }
+    catch(const util::option_exception& ex)
+    {
+        std::cerr << ex.what() << std::endl;
+        return INVALID_ARGUMENTS;
+    }
 
-    metric_writer write_metrics(std::cout);
+    metric_writer write_metrics(std::cout, latest_version);
     std::cout << "# Version: " << INTEROP_VERSION << std::endl;
 
     for(int i=1;i<argc;i++)

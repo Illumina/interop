@@ -214,22 +214,31 @@ namespace illumina { namespace interop { namespace io
      *
      * @note The first filename is the legacy name
      *
+     * We could also specialize this for index_metrics.
+     *
      * @param files destination list of files
      * @param run_directory file path to the run directory
      * @param last_cycle last cycle to check
      * @param use_out use the copied version
+     * @param add if true, do not clear, add more
      */
     template<class MetricSet>
     void list_interop_filenames(std::vector<std::string>& files,
                                 const std::string& run_directory,
                                 const size_t last_cycle=0,
-                                const bool use_out=true)
+                                const bool use_out=true,
+                                const bool add=false)
     {
-        files.resize(last_cycle+1);
-        files[0] = interop_filename<MetricSet>(run_directory, use_out);
+        if(!add)
+        {
+            files.clear();
+            files.reserve(last_cycle+1);
+        }
+        else files.reserve(last_cycle+1+files.size());
+        files.push_back(interop_filename<MetricSet>(run_directory, use_out));
         for(size_t cycle=1;cycle <= last_cycle;++cycle)
         {
-            files[cycle] = interop_filename<MetricSet>(run_directory, cycle, use_out);
+            files.push_back(interop_filename<MetricSet>(run_directory, cycle, use_out));
         }
     }
     /** Read the binary InterOp file into the given metric set
