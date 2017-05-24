@@ -114,6 +114,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         /** Read binary metrics and XML files from the run folder
          *
+         * @note invalid_run_info_cycle_exception and invalid_tile_list_exception can be safely caught and ignored
+         *
          * @param run_folder run folder path
          * @param thread_count number of threads to use for network loading
          */
@@ -128,9 +130,12 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         model::invalid_channel_exception,
         model::index_out_of_bounds_exception,
         model::invalid_tile_naming_method,
+        model::invalid_tile_list_exception,
         model::invalid_run_info_exception,
         model::invalid_run_info_cycle_exception);
         /** Read binary metrics and XML files from the run folder
+         *
+         * @note invalid_run_info_cycle_exception and invalid_tile_list_exception can be safely caught and ignored
          *
          * @param run_folder run folder path
          * @param valid_to_load list of metrics to load
@@ -152,6 +157,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         model::invalid_channel_exception,
         model::index_out_of_bounds_exception,
         model::invalid_tile_naming_method,
+        model::invalid_tile_list_exception,
         model::invalid_run_info_exception,
         model::invalid_run_info_cycle_exception,
         model::invalid_parameter);
@@ -198,6 +204,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         model::invalid_channel_exception,
         model::invalid_tile_naming_method,
         model::index_out_of_bounds_exception,
+        model::invalid_tile_list_exception,
         model::invalid_run_info_exception,
         model::invalid_run_info_cycle_exception);
 

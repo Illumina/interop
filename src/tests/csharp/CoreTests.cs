@@ -83,6 +83,17 @@ namespace Illumina.InterOp.Interop.UnitTest
             run_info.parse("<RunInfo><Run><FlowcellLayout> <TileSet> </TileSet></FlowcellLayout></Run></RunInfo>");
 		}
 		/// <summary>
+		/// Test invalid_tile_list_exception
+		/// </summary>
+		[Test]
+	    [ExpectedException("Illumina.InterOp.Run.invalid_tile_list_exception")]
+		public void Test_invalid_tile_list_exception()
+		{
+            info run_info = new info();
+            run_info.parse("<RunInfo><Run><FlowcellLayout LaneCount=\"2\" SurfaceCount=\"2\" SwathCount=\"4\" TileCount=\"88\" FlowcellSide=\"1\"> <TileSet TileNamingConvention=\"FourDigit\"> <Tiles> <Tile>3_2101</Tile> </Tiles> </TileSet></FlowcellLayout></Run></RunInfo>");
+		    run_info.validate_tiles();
+		}
+		/// <summary>
 		/// Test bad_xml_format_exception
 		/// </summary>
 		[Test]

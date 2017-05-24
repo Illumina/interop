@@ -277,6 +277,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     model::invalid_channel_exception,
     model::index_out_of_bounds_exception,
     model::invalid_tile_naming_method,
+    model::invalid_tile_list_exception,
     model::invalid_run_info_exception,
     model::invalid_run_info_cycle_exception)
     {
@@ -308,6 +309,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     model::invalid_channel_exception,
     model::index_out_of_bounds_exception,
     model::invalid_tile_naming_method,
+    model::invalid_tile_list_exception,
     model::invalid_run_info_exception,
     model::invalid_run_info_cycle_exception,
     invalid_parameter)
@@ -389,6 +391,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     throw(model::invalid_channel_exception,
     model::invalid_tile_naming_method,
     model::index_out_of_bounds_exception,
+    model::invalid_tile_list_exception,
     model::invalid_run_info_exception,
     model::invalid_run_info_cycle_exception)
     {
@@ -468,6 +471,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                 INTEROP_THROW(model::invalid_tile_naming_method, "Unknown tile naming method - update your RunInfo.xml");
             m_run_info.validate();
             validate();
+            m_run_info.validate_tiles();
         }
     }
 

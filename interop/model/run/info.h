@@ -124,11 +124,17 @@ namespace illumina { namespace interop { namespace model { namespace run
         xml::xml_format_exception,
         util::base_exception);
 
-        /** Test if tile list matches flowcell layout
+        /** Ensure flowcell layout and reads are valid
          *
          * @throws invalid_run_info_exception
+         * @throws invalid_tile_naming_method
          */
         void validate()const throw(model::invalid_run_info_exception,model::invalid_tile_naming_method);
+        /** Test if tile list matches flowcell layout
+         *
+         * @throws invalid_tile_list_exception
+         */
+        void validate_tiles()const throw(model::invalid_tile_list_exception);
         /** Test if tile list matches flowcell layout
          *
          * @param lane lane number
