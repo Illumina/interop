@@ -310,13 +310,13 @@ namespace illumina { namespace interop { namespace model { namespace run
             INTEROP_THROW(invalid_run_info_exception, "Section number exceeds number of sections");
     }
 
-    /** Test if tile list matches flowcell layout
+    /** Ensure flowcell layout and reads are valid
      *
      * @throws invalid_run_info_exception
+     * @throws invalid_tile_naming_method
      */
     void info::validate()const throw(model::invalid_run_info_exception, model::invalid_tile_naming_method)
     {
-        typedef flowcell_layout::str_vector_t str_vector_t;
         if(m_flowcell.naming_method()==constants::UnknownTileNamingMethod)
             INTEROP_THROW(invalid_tile_naming_method, "Unknown tile naming method");
         if(m_flowcell.lanes_per_section() > m_flowcell.lane_count())
@@ -330,13 +330,28 @@ namespace illumina { namespace interop { namespace model { namespace run
                 INTEROP_THROW(invalid_run_info_exception, "Missing reads");
             unique_numbers.insert(it->number());
         }
+    }
+    /** Test if tile list matches flowcell layout
+     *
+     * @throws invalid_run_info_exception
+     */
+    void info::validate_tiles()const throw(model::invalid_tile_list_exception)
+    {
+        typedef flowcell_layout::str_vector_t str_vector_t;
         for(str_vector_t::const_iterator it = m_flowcell.tiles().begin();it != m_flowcell.tiles().end();++it)
         {
             const ::uint32_t lane = logic::metric::lane_from_name(*it);
-            if(lane == 0) INTEROP_THROW( invalid_run_info_exception, "Invalid tile identifier in tile names");
+            if(lane == 0) INTEROP_THROW( invalid_tile_list_exception, "Invalid tile identifier in tile names");
             const ::uint32_t tile = logic::metric::tile_from_name(*it);
-            if(tile == 0) INTEROP_THROW( invalid_run_info_exception, "Invalid tile identifier in tile names");
-            validate(lane, tile);
+            if(tile == 0) INTEROP_THROW( invalid_tile_list_exception, "Invalid tile identifier in tile names");
+            try
+            {
+                validate(lane, tile);
+            }
+            catch(const invalid_run_info_exception& ex)
+            {
+                INTEROP_THROW( invalid_tile_list_exception, ex.what());
+            }
         }
     }
 

@@ -114,7 +114,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
     public:
         /** Constructor
          *
-         * @param reference to collection of points
+         * @param points reference to collection of points
          */
         by_cycle_candle_stick_plot(model::plot::data_point_collection<Point>&  points) :
             m_points(points), m_max_cycle(0), m_empty(true){}
@@ -429,7 +429,6 @@ namespace illumina { namespace interop { namespace logic { namespace plot
     /** Filter metric types available for by cycle plots
      *
      * @param types destination vector to fill with metric types
-     * @param show_iuo display IUO metrics
      * @param ignore_accumulated if true, ignore accumulated Q20 and Q30
      */
     void filter_by_cycle_metrics(std::vector< logic::utils::metric_type_description_t >& types,
