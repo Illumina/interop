@@ -132,6 +132,14 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             if (pos != std::string::npos) return m_index_seq.substr(pos + 1);
             return "";
         }
+        /** Get unique ID of index sequence
+         *
+         * @return unique ID of index sequence
+         */
+        std::string unique_id()const
+        {
+            return m_index_seq+m_sample_id;
+        }
         /** @} */
     private:
         std::string::size_type index_of_separator() const
@@ -146,6 +154,60 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         std::string m_sample_id;
         std::string m_sample_proj;
         ::uint64_t m_cluster_count;
+        template<class MetricType, int Version>
+        friend
+        struct io::generic_layout;
+    };
+
+
+    /** Header information for writing an index metric set
+     */
+    class index_metric_header : public metric_base::base_read_metric::header_type
+    {
+    public:
+        /** Unsigned int16_t
+         */
+        typedef ::uint16_t ushort_t;
+    public:
+        /** Constructor
+         *
+         * @param channel_count number of channels
+         */
+        index_metric_header(){}
+
+        /** Get the ordered unique indices
+         *
+         * @return number of channels
+         */
+        const std::vector<std::string>& index_order() const
+        { return m_index_order; }
+        /** Set the ordered unique indices
+         *
+         * @param order unique index order
+         */
+        void index_order(const std::vector<std::string>& order)
+        {
+            m_index_order = order;
+        }
+
+        /** Generate a default header
+         *
+         * @return default header
+         */
+        static index_metric_header default_header()
+        {
+            return index_metric_header();
+        }
+        /** Clear the data
+         */
+        void clear()
+        {
+            m_index_order.clear();
+            metric_base::base_read_metric::header_type::clear();
+        }
+
+    private:
+        std::vector<std::string> m_index_order;
         template<class MetricType, int Version>
         friend
         struct io::generic_layout;
@@ -167,6 +229,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             /** Latest version of the InterOp format */
             LATEST_VERSION = 2
         };
+        /** Index metric header */
+        typedef index_metric_header header_type;
         /** Define a index array using an underlying vector */
         typedef std::vector<index_info> index_array_t;
         /** Define index info type */
@@ -240,6 +304,22 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             return m_indices;
         }
         /** @} */
+        /** Get iterator to start of indices
+         *
+         * @return iterator to start of indices
+         */
+        const_iterator begin()const
+        {
+            return m_indices.begin();
+        }
+        /** Get iterator to end of indices
+         *
+         * @return iterator to end of indices
+         */
+        const_iterator end()const
+        {
+            return m_indices.end();
+        }
 
     public:
         /** Get the prefix of the InterOp filename

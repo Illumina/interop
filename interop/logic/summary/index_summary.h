@@ -21,7 +21,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
      * @param lane lane number
      * @param summary destination index lane summary
      */
-    void summarize_index_metrics(const model::metrics::run_metrics &metrics,
+    void summarize_index_metrics(model::metrics::run_metrics &metrics,
                                         const size_t lane,
                                         model::summary::index_lane_summary &summary)
                                         throw(model::index_out_of_bounds_exception);
@@ -33,7 +33,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
      * @param lane_count number of lanes
      * @param summary destination index flowcell summary
      */
-    void summarize_index_metrics(const model::metric_base::metric_set<model::metrics::index_metric>& index_metrics,
+    void summarize_index_metrics(model::metric_base::metric_set<model::metrics::index_metric>& index_metrics,
                                         const model::metric_base::metric_set<model::metrics::tile_metric>& tile_metrics,
                                         const size_t lane_count,
                                         model::summary::index_flowcell_summary &summary)
@@ -45,7 +45,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
      * @param metrics source collection of all metrics
      * @param summary destination index flowcell summary
      */
-    void summarize_index_metrics(const model::metrics::run_metrics &metrics,
+    void summarize_index_metrics(model::metrics::run_metrics &metrics,
                                         model::summary::index_flowcell_summary &summary)
                                             throw(model::index_out_of_bounds_exception);
 }}}}

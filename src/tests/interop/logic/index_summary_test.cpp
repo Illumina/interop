@@ -110,7 +110,7 @@ TEST(index_summary_test, lane_summary)
             const model::summary::index_count_summary &expected_count = expected_lane[index];
             const model::summary::index_count_summary &actual_count = actual_lane[index];
             EXPECT_EQ(expected_count.id(), actual_count.id());
-            EXPECT_EQ(expected_count.index1(), actual_count.index1());
+            EXPECT_EQ(expected_count.index1(), actual_count.index1()) << "Index: " << index << " " << expected_count.id();
             EXPECT_EQ(expected_count.index2(), actual_count.index2());
             EXPECT_EQ(expected_count.cluster_count(), actual_count.cluster_count());
             EXPECT_EQ(expected_count.sample_id(), actual_count.sample_id());
