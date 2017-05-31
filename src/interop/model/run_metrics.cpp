@@ -13,6 +13,7 @@
 
 #include "interop/logic/metric/q_metric.h"
 #include "interop/logic/metric/tile_metric.h"
+#include "interop/logic/metric/index_metric.h"
 #include "interop/logic/utils/channel.h"
 #include "interop/logic/metric/dynamic_phasing_metric.h"
 
@@ -400,6 +401,10 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             determine_tile_naming_method naming_method_determinator;
             m_metrics.apply(naming_method_determinator);
             m_run_info.set_naming_method( naming_method_determinator.naming_method());
+        }
+        if(!get<model::metrics::index_metric>().empty())
+        {
+            logic::metric::populate_indices(get<model::metrics::index_metric>());
         }
         if (count == std::numeric_limits<size_t>::max())
         {

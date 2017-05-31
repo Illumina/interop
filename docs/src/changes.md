@@ -3,6 +3,10 @@
 
 ## v1.0.26 (Master)
 
+Date       | Description
+---------- | -----------
+2017-05-30 | IPA-6541: Fix index sequence order for BaseSpace
+
 ## v1.0.25
 
 Date       | Description

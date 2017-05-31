@@ -6,6 +6,7 @@
  *  @copyright GNU Public License.
  */
 #pragma once
+
 #include "interop/constants/enums.h"
 #include "interop/model/run_metrics.h"
 #include "interop/model/plot/bar_point.h"
@@ -23,10 +24,10 @@ namespace illumina { namespace interop { namespace logic { namespace plot
      * @param lane lane number
      * @param data output plot data
      */
-    void plot_sample_qc(const model::metrics::run_metrics& metrics,
-                               const size_t lane,
-                               model::plot::plot_data<model::plot::bar_point>& data)
-                                throw(model::index_out_of_bounds_exception);
+    void plot_sample_qc(model::metrics::run_metrics &metrics,
+                        const size_t lane,
+                        model::plot::plot_data <model::plot::bar_point> &data)
+    throw(model::index_out_of_bounds_exception);
 
 
 }}}}
