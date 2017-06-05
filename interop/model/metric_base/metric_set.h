@@ -60,10 +60,10 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         /** Define a set of ids */
         typedef std::set<uint_t> id_set_t; // TODO: Do the same for set
         /** Define offset map */
-#if defined(__cplusplus) && __cplusplus < 201103L // Workaround for SWIG not understanding the macro
-        typedef std::map<id_t, size_t> offset_map_t;
-#else
+#ifdef INTEROP_HAS_UNORDERED_MAP // Workaround for SWIG not understanding the macro
         typedef std::unordered_map<id_t, size_t> offset_map_t;
+#else
+        typedef std::map<id_t, size_t> offset_map_t;
 #endif
 
     public:

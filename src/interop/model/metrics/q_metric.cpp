@@ -85,7 +85,6 @@ namespace illumina { namespace interop { namespace io
             if(metric.size() < q_metric::MAX_Q_BINS)
                 INTEROP_THROW(bad_format_exception, "Cannot write out binned q-score histogram in an unbinned format");
             const std::streamsize count = stream_map<count_t>(stream, metric.m_qscore_hist, q_metric::MAX_Q_BINS);
-            resize_accumulated(stream, metric);
             return count;
         }
 
@@ -106,19 +105,6 @@ namespace illumina { namespace interop { namespace io
         {
             return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t));
         }
-
-    private:
-        static void resize_accumulated(const char*, q_metric& metric)
-        {
-            metric.m_qscore_hist_cumulative.resize(metric.m_qscore_hist.size(), 0);
-        }
-        static void resize_accumulated(std::istream &, q_metric &metric)
-        {
-            metric.m_qscore_hist_cumulative.resize(metric.m_qscore_hist.size(), 0);
-        }
-
-        static void resize_accumulated(std::ostream &, const q_metric &)
-        { }
     };
 
     /** Q-score Metric Record Layout Version 5
@@ -209,11 +195,9 @@ namespace illumina { namespace interop { namespace io
                     INTEROP_ASSERTMSG(i < metric.m_qscore_hist.size(), metric.m_qscore_hist.size());
                     metric.m_qscore_hist[i] = hist[header.m_qscore_bins[i].value() - 1];
                 }
-                resize_accumulated(stream, metric);
                 return count;
             }
             const std::streamsize count = stream_map<count_t>(stream, metric.m_qscore_hist, q_metric::MAX_Q_BINS);
-            resize_accumulated(stream, metric);
             return count;
         }
 
@@ -377,19 +361,6 @@ namespace illumina { namespace interop { namespace io
 
         static void copy_value_write(std::vector<q_score_bin> &, bin_t *)
         { }
-
-    private:
-        static void resize_accumulated(const char*, q_metric& metric)
-        {
-            metric.m_qscore_hist_cumulative.resize(metric.m_qscore_hist.size(), 0);
-        }
-        static void resize_accumulated(std::istream &, q_metric &metric)
-        {
-            metric.m_qscore_hist_cumulative.resize(metric.m_qscore_hist.size(), 0);
-        }
-
-        static void resize_accumulated(std::ostream &, const q_metric &)
-        { }
     };
 
     /** Q-score Metric Record Layout Version 6
@@ -473,7 +444,6 @@ namespace illumina { namespace interop { namespace io
         {
             const size_t bin_count = (header.bin_count() == 0) ? static_cast<size_t>(q_metric::MAX_Q_BINS) : header.bin_count();
             const std::streamsize count = stream_map<count_t>(stream, metric.m_qscore_hist, bin_count);
-            resize_accumulated(stream, metric);
             return count;
         }
 
@@ -604,19 +574,6 @@ namespace illumina { namespace interop { namespace io
         }
 
         static void copy_value_write(std::vector<q_score_bin> &, bin_t *)
-        { }
-
-    private:
-        static void resize_accumulated(const char*, q_metric& metric)
-        {
-            metric.m_qscore_hist_cumulative.resize(metric.m_qscore_hist.size(), 0);
-        }
-        static void resize_accumulated(std::istream &, q_metric &metric)
-        {
-            metric.m_qscore_hist_cumulative.resize(metric.m_qscore_hist.size(), 0);
-        }
-
-        static void resize_accumulated(std::ostream &, const q_metric &)
         { }
     };
 
