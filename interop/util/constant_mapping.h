@@ -34,7 +34,7 @@ namespace illumina { namespace interop { namespace util
             {
                 return static_cast<std::size_t>(val);
             }
-#if defined(__cplusplus) && __cplusplus >= 201103L
+#ifdef INTEROP_HAS_UNORDERED_MAP
             /** Convert enum to hash
              *
              * @param val enum value

@@ -89,6 +89,18 @@ macro(interop_config_compiler_and_linker)
         set(CXX11_FLAG_ "-std=c++11")
     endif()
 
+    include(CheckCXXSourceCompiles)
+    check_cxx_source_compiles("#include <unordered_map>
+                               int main() {
+                                 std::unordered_map<int, int> map;
+                                 return 0;
+                               }"
+            HAVE_UNORDERED_MAP_IN_STD_NAMESPACE)
+    if(HAVE_UNORDERED_MAP_IN_STD_NAMESPACE)
+        message(STATUS "Found unordered map")
+        add_definitions(-DHAVE_UNORDERED_MAP_IN_STD)
+    endif()
+
     set(ANSI_FLAG "-std=c++98")
     check_cxx_compiler_flag("${ANSI_FLAG}" COMPILER_SUPPORTS_ANSI) #-ansi (does not work on CLang 3.4)
     check_cxx_compiler_flag("${CXX11_FLAG_}" COMPILER_SUPPORTS_CXX11)
