@@ -7,7 +7,6 @@ namespace Illumina.InterOp.Interop.UnitTest
 	/// <summary>
 	/// Test C# dependencies
 	/// </summary>
-	[TestFixture]
 	public class DependencyTests
 	{
 		/// <summary>

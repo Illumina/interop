@@ -1,0 +1,118 @@
+# Add a target to build a C# library or executable
+#
+# csharp_add_library( name references [files] ) - Define C# library with the given name
+#
+# Examples:
+#   csharp_add_library( MyLibrary "" "File1.cs" )
+#   csharp_add_library( MyLibrary "ref1.dll ref2.dll" "File1.cs" )
+
+macro( csharp_add_library name )
+    csharp_add_project( "library" ${name} ${ARGN} )
+endmacro()
+
+macro( csharp_add_executable name )
+    csharp_add_project( "Exe" ${name} ${ARGN} )
+endmacro()
+
+
+macro( csharp_add_project type name )
+    foreach( it ${ARGN} )
+        if( ${it} MATCHES "(.*)(dll)" )
+            file(TO_NATIVE_PATH ${it} nit)
+            list( APPEND refs "<Reference;Include=\\\"${nit}\\\";/>" )
+        elseif( ${it} MATCHES "(.*)=([0-9]*)([.])([0-9]*)([.]*)([0-9]*)" )
+            string(REPLACE "=" ";" PACKAGE_ID "${it}")
+            list(GET PACKAGE_ID 0 PACKAGE_NAME )
+            list(GET PACKAGE_ID 1 PACKAGE_VERSION )
+            list( APPEND packages "<PackageReference;Include=\\\"${PACKAGE_NAME}\\\";Version=\\\"${PACKAGE_VERSION}\\\";/>" )
+        else( )
+            if( EXISTS ${it} )
+                file(TO_NATIVE_PATH ${it} nit)
+                list( APPEND sources "<Compile;Include=\\\"${nit}\\\";/>" )
+                list( APPEND sources_dep ${it} )
+            elseif( EXISTS ${CSBUILD_SOURCE_DIRECTORY}/${it} )
+                file(TO_NATIVE_PATH ${CSHARP_SOURCE_DIRECTORY}/${it} nit)
+                list( APPEND sources "<Compile;Include=\\\"${nit}\\\";/>" )
+                list( APPEND sources_dep ${CSHARP_SOURCE_DIRECTORY}/${it} )
+            elseif( EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${it} )
+                if(DOTNET_FOUND)
+                    string(REPLACE "/" "\\" nit "${CMAKE_CURRENT_SOURCE_DIR}/${it}")
+                else()
+                    file(TO_NATIVE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/${it} nit)
+                endif()
+                list( APPEND sources "<Compile;Include=\\\"${nit}\\\";/>" )
+                list( APPEND sources_dep ${CMAKE_CURRENT_SOURCE_DIR}/${it} )
+            elseif( ${it} MATCHES "[*]" )
+                file(TO_NATIVE_PATH ${it} nit)
+                FILE( GLOB it_glob ${it} )
+                list( APPEND sources "<Compile;Include=\\\"${nit}\\\";/>" )
+                list( APPEND sources_dep ${it_glob} )
+            else()
+                message(WARNING "not found ${it}")
+            endif( )
+        endif ( )
+    endforeach( )
+    list(LENGTH sources SOURCE_FILE_COUNT)
+    list(LENGTH refs REFEENCE_COUNT)
+    list(LENGTH packages PACKAGE_COUNT)
+    if(SOURCE_FILE_COUNT GREATER 0)
+        set(CSHARP_BUILDER_SOURCES "${sources}")
+    else()
+        messge(FATAL_ERROR "No C# source files for library")
+    endif()
+    if(REFEENCE_COUNT GREATER 0)
+        set(CSHARP_BUILDER_ADDITIONAL_REFERENCES "${refs}")
+    else()
+        set(CSHARP_BUILDER_ADDITIONAL_REFERENCES "")
+    endif()
+    if(PACKAGE_COUNT GREATER 0)
+        set(CSHARP_PACKAGE_REFERENCES "${packages}")
+    else()
+        set(CSHARP_PACKAGE_REFERENCES "")
+    endif()
+
+    if( ${type} MATCHES "library" )
+        set( ext "dll" )
+    elseif( ${type} MATCHES "Exe" )
+        if(DOTNET_CORE_FOUND)
+            set( ext "dll" )
+        else()
+            set( ext "exe" )
+        endif()
+    endif()
+    # TODO: <RuntimeIdentifier>osx.10.11-x64</RuntimeIdentifier>
+    set(CSBUILD_${name}_BINARY "${CSHARP_BUILDER_OUTPUT_PATH}/${CSBUILD_OUPUT_PREFIX}${name}${CSBUILD_OUTPUT_SUFFIX}.${ext}")
+    set(CSBUILD_${name}_BINARY_NAME "${name}${CSBUILD_OUTPUT_SUFFIX}.${ext}")
+
+    set(CSBUILD_${name}_CSPROJ "${name}_${CSBUILD_CSPROJ}")
+    file(TO_NATIVE_PATH ${CSHARP_BUILDER_OUTPUT_PATH} CSHARP_BUILDER_OUTPUT_PATH_NATIVE)
+    add_custom_target(
+            ${name} ALL
+            ${CMAKE_COMMAND}
+            -DCSHARP_TARGET_FRAMEWORK="${CSHARP_TARGET_FRAMEWORK}"
+            -DCSHARP_BUILDER_OUTPUT_TYPE="${type}"
+            -DCSHARP_BUILDER_OUTPUT_PATH="${CSHARP_BUILDER_OUTPUT_PATH_NATIVE}"
+            -DCSHARP_PLATFORM="${CSHARP_PLATFORM}"
+            -DCSHARP_BUILDER_OUTPUT_NAME="${name}${CSBUILD_OUTPUT_SUFFIX}"
+            -DCSHARP_BUILDER_ADDITIONAL_REFERENCES="${CSHARP_BUILDER_ADDITIONAL_REFERENCES}"
+            -DCSHARP_BUILDER_SOURCES="${CSHARP_BUILDER_SOURCES}"
+            -DCSHARP_TARGET_FRAMEWORK_VERSION="${CSHARP_TARGET_FRAMEWORK_VERSION}"
+            -DCSHARP_PACKAGE_REFERENCES="${CSHARP_PACKAGE_REFERENCES}"
+            -DMSBUILD_TOOLSET="${MSBUILD_TOOLSET}"
+            -DCONFIG_INPUT_FILE="${CSBUILD_CSPROJ_IN}"
+            -DCONFIG_OUTPUT_FILE="${CMAKE_CURRENT_BINARY_DIR}/${CSBUILD_${name}_CSPROJ}"
+            -P ${CMAKE_SOURCE_DIR}/cmake/ConfigureFile.cmake
+
+            COMMAND ${CSBUILD_EXECUTABLE} ${CSBUILD_RESTORE_FLAGS} ${CSBUILD_${name}_CSPROJ}
+            COMMAND ${CSBUILD_EXECUTABLE} ${CSBUILD_BUILD_FLAGS} ${CSBUILD_${name}_CSPROJ}
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+            COMMENT "${CSBUILD_EXECUTABLE} ${CSBUILD_RESTORE_FLAGS} ${CSBUILD_${name}_CSPROJ}; ${CSBUILD_EXECUTABLE} ${CSBUILD_BUILD_FLAGS} ${CSBUILD_${name}_CSPROJ} -> ${CMAKE_CURRENT_BINARY_DIR}"
+            DEPENDS ${sources_dep}
+    )
+    unset(ext)
+    unset(CSHARP_BUILDER_SOURCES)
+    unset(CSHARP_BUILDER_OUTPUT_PATH_NATIVE)
+    unset(sources)
+    unset(refs)
+
+endmacro()

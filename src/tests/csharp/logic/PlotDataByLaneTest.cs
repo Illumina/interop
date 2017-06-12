@@ -12,7 +12,6 @@ namespace Illumina.InterOp.Interop.UnitTest
 	/// <summary>
 	/// Test plotting data by lane
 	/// </summary>
-	[TestFixture]
 	public class PlotDataByLaneTest
 	{
 		/// <summary>

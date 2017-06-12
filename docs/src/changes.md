@@ -5,7 +5,11 @@
 
 Date       | Description
 ---------- | -----------
-2017-05-30 | IPA-6541: Fix index sequence order for BaseSpace
+2017-06-12 | IPA-6290: Create .NET Core build for InterOp
+2017-06-05 | IPA-6597: Enable hash map for visual studio
+2017-06-02 | Bug fix for VS2017 warning as error
+2017-05-31 | IPA-6541: Fix index sequence order for BaseSpace
+2017-05-25 | IPA-6540: Make tile list validation less catastrophic and own exception
 
 ## v1.0.25
 

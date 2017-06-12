@@ -9,7 +9,6 @@ namespace Illumina.InterOp.Interop.UnitTest
 	/// <summary>
 	/// Confirm that the index metrics InterOp works properly in C#
 	/// </summary>
-	[TestFixture]
 	public class IndexMetricsTestV3
 	{
 		const int Version = 1;

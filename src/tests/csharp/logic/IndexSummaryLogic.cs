@@ -12,7 +12,6 @@ namespace Illumina.InterOp.Interop.UnitTest
 	/// <summary>
 	/// Test plotting % reads identified
 	/// </summary>
-	[TestFixture]
 	public class IndexSummaryLogic
 	{
 		/// <summary>

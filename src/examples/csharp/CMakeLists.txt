@@ -5,9 +5,9 @@
 #
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Modules)
-find_package(CSharp)
+find_package(CSBuild)
 
-if(NOT CSHARP_FOUND)
+if(NOT CSBUILD_FOUND)
     return()
 endif()
 
@@ -27,29 +27,26 @@ if(NOT SWIG_GEN_CSHARP_SOURCE_FILES)
     return()
 endif()
 
-include(${CSHARP_USE_FILE})
+include(${CSBUILD_USE_FILE})
 
 
 
 function(add_csharp_example _target _source_files)
-    set(_abs_source_files)
-    foreach(SRC ${_source_files})
-        list(APPEND _abs_source_files "${CMAKE_CURRENT_SOURCE_DIR}/${SRC}")
-    endforeach()
-    csharp_add_executable(${_target} ${_abs_source_files} ${SWIG_CSHARP_LIBRARY})
+    csharp_add_executable(${_target} ${_source_files} ${SWIG_CSHARP_LIBRARY})
     add_dependencies(${_target} csharp_interop)
     add_custom_command(TARGET ${_target} POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy ${CSHARP_${_target}_BINARY} $<TARGET_FILE_DIR:${INTEROP_LIB}>)
+            COMMAND ${CMAKE_COMMAND} -E copy ${CSBUILD_${_target}_BINARY} $<TARGET_FILE_DIR:${INTEROP_LIB}>
+            COMMENT "${CMAKE_COMMAND} -E copy ${CSBUILD_${_target}_BINARY} -> InterOp DIR")
     if(NOT ENABLE_EXAMPLES)
         set_target_properties(${_target} PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
     else()
-        install(FILES ${CSHARP_${_target}_BINARY} ${CSHARP_INTEROP_LIBRARY}
+        install(FILES ${CSBUILD_${_target}_BINARY} ${CSHARP_INTEROP_LIBRARY}
                 DESTINATION share/illumina/interop/examples
                 )
     endif()
     if(NOT ENABLE_STATIC)
         add_custom_command(TARGET ${_target} POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE_DIR:${INTEROP_LIB}> ${CMAKE_CURRENT_BINARY_DIR})
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${INTEROP_LIB}> ${CMAKE_CURRENT_BINARY_DIR})
     endif()
 endfunction()
 

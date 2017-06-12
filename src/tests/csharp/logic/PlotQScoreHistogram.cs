@@ -12,7 +12,6 @@ namespace Illumina.InterOp.Interop.UnitTest
 	/// <summary>
 	/// Test plotting q-score histogram
 	/// </summary>
-	[TestFixture]
 	public class PlotQScoreHistogram
 	{
 		/// <summary>
