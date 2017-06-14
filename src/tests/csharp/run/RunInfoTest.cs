@@ -10,7 +10,6 @@ namespace illumina.interop.csharp.unittest
 	/// Confirm that the run info XML parsing works properly in C#
 	/// </summary>
 	///
-	[TestFixture]
 	public abstract class AbstractRunInfoTest
 	{
 		/// <summary>
@@ -68,7 +67,6 @@ namespace illumina.interop.csharp.unittest
 	/// Confirm that the run info XML parsing for MiSeq works properly in C#
 	/// </summary>
 	///
-	[TestFixture]
 	public class RunInfoMiSeqTest : AbstractRunInfoTest
 	{
 		/// <summary>

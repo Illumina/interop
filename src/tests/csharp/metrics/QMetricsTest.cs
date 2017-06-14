@@ -13,7 +13,6 @@ namespace Illumina.InterOp.Interop.UnitTest
 	/// Confirm that the q-metrics InterOp works properly in C#
 	/// </summary>
 	///
-	[TestFixture]
 	public abstract class AbstractQMetricsTest
 	{
 		/// <summary>
@@ -90,7 +89,6 @@ namespace Illumina.InterOp.Interop.UnitTest
 	/// Confirm that the q-metrics InterOp works properly in C# for Version 4 of the format
 	/// </summary>
 	///
-	[TestFixture]
 	public class QMetricsTestV4 : AbstractQMetricsTest
 	{
 		const int Version = 4;
@@ -133,7 +131,6 @@ namespace Illumina.InterOp.Interop.UnitTest
 	/// Confirm that the q-metrics InterOp works properly in C# for Version 5 of the format
 	/// </summary>
 	///
-	[TestFixture]
 	public class QMetricsTestV5 : AbstractQMetricsTest
 	{
 		const int Version = 5;
@@ -187,7 +184,6 @@ namespace Illumina.InterOp.Interop.UnitTest
 	/// Confirm that the q-metrics InterOp works properly in C# for Version 6 of the format
 	/// </summary>
 	///
-	[TestFixture]
 	public class QMetricsTestV6 : AbstractQMetricsTest
 	{
 		const int Version = 6;

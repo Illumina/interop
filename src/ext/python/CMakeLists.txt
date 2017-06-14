@@ -70,7 +70,7 @@ foreach(SRC ${SWIG_SRCS})
         configure_file(${CMAKE_SOURCE_DIR}/cmake/version.rc.in ${SWIG_VERSION_INFO} @ONLY) # Requires: LIB_NAME, VERSION_LIST and VERSION
     endif()
     set(SWIG_MODULE_${MODULE}_EXTRA_DEPS ${SWIG_DEPS} ${SWIG_VERSION_INFO})
-    add_swig_library(${MODULE} python ${SRC} ${SWIG_VERSION_INFO})
+    swig_add_library(${MODULE} python ${SRC} ${SWIG_VERSION_INFO})
     set(SWIG_MODULE ${SWIG_MODULE_${MODULE}_REAL_NAME})
 
     if(PYTHON_GENERATED_COMPILE_FLAGS)

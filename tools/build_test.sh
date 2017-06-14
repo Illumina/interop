@@ -88,18 +88,26 @@ echo "##teamcity[blockOpened name='NuSpec Creation $build_type']"
 cmake --build . --target nuspec -- -j 8
 echo "##teamcity[blockClosed name='NuSpec Creation $build_type']"
 
+echo "##teamcity[blockOpened name='Test DotNetCore']"
+cmake $source_dir $build_param -DCSBUILD_TOOL=DotNetCore
+cmake --build . --target check_csharp -- -j 8
+echo "##teamcity[blockClosed name='Test DotNetCore']"
+
 cd $dist_dir
 echo "##teamcity[blockOpened name='NuPack $build_type']"
 nuget pack ${build_dir}/src/ext/csharp/package.nuspec
 echo "##teamcity[blockClosed name='NuPack $build_type']"
 
+cd $build_dir
 echo "##teamcity[blockOpened name='Test Python3']"
 export PATH=$HOME/miniconda3/bin:$PATH
 which python
+# TODO fix this so we don't have to remove the cache
 rm -fr CMakeCache.txt
 cmake $source_dir $build_param
 cmake --build . --target check_python -- -j 8
 echo "##teamcity[blockClosed name='Test Python3']"
+
 
 cd ..
 rm -fr $build_dir

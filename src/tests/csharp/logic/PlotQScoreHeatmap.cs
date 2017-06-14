@@ -12,7 +12,6 @@ namespace Illumina.InterOp.Interop.UnitTest
 	/// <summary>
 	/// Test plotting q-score heat map
 	/// </summary>
-	[TestFixture]
 	public class PlotQScoreHeatmap
 	{
 		/// <summary>
