@@ -47,6 +47,7 @@ struct metric_writer
     /** Constructor
      *
      * @param out output stream
+     * @param latest_version version to write out
      * @param max_line number of characters before wrapping
      */
     metric_writer(std::ostream& out, const size_t latest_version, const size_t max_line=80) :

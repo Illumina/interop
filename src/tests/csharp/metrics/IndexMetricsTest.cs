@@ -9,7 +9,6 @@ namespace Illumina.InterOp.Interop.UnitTest
 	/// <summary>
 	/// Confirm that the index metrics InterOp works properly in C#
 	/// </summary>
-	[TestFixture]
 	public class IndexMetricsTestV3
 	{
 		const int Version = 1;
@@ -25,7 +24,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 		protected void SetUp()
 		{
 
-	        base_read_metric_header header = new base_read_metric_header();
+	        index_metric_header header = new index_metric_header();
 		    index_info_vector indices1 = new index_info_vector();
 		    indices1.Add(new index_info("ATCACGAC-AAGGTTCA", "1", "TSCAIndexes", 4570));
 			expected_metrics.Add(new index_metric(1, 12106, 3, indices1));

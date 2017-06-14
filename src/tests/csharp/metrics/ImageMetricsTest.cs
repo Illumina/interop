@@ -11,7 +11,6 @@ namespace Illumina.InterOp.Interop.UnitTest
 	/// Confirm that the image metrics InterOp works properly in C#
 	/// </summary>
 	///
-	[TestFixture]
 	public abstract class AbstractImageMetricsTest
 	{
 		/// <summary>
@@ -72,7 +71,6 @@ namespace Illumina.InterOp.Interop.UnitTest
 	/// Confirm that the image metrics InterOp works properly in C# for Version 1 of the format
 	/// </summary>
 	///
-	[TestFixture]
 	public class ImageMetricsTestV1 : AbstractImageMetricsTest
 	{
 		const int Version = 1;
@@ -116,7 +114,6 @@ namespace Illumina.InterOp.Interop.UnitTest
 	/// Confirm that the image metrics InterOp works properly in C# for Version 2 of the format
 	/// </summary>
 	///
-	[TestFixture]
 	public class ImageMetricsTestV2 : AbstractImageMetricsTest
 	{
 		const int Version = 2;

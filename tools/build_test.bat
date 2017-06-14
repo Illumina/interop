@@ -110,7 +110,15 @@ echo ##teamcity[blockClosed name='NuPack %BUILD_TYPE% %COMPILER%']
 )
 if "%5" == "nuspec" goto SCRIPT_END
 
+echo ##teamcity[blockOpened name='Test DotNetCore %BUILD_TYPE% %COMPILER%']
+cmake %SOURCE_DIR% -G"Visual Studio 14 2015 Win64" %BUILD_PARAM% -DCSBUILD_TOOL=DotNetCore
+if "%COMPILER%" == "msvc" (
+cmake --build . --config %BUILD_TYPE% --target check_csharp -- %MT%
+)
+echo ##teamcity[blockClosed name='Test DotNetCore %BUILD_TYPE% %COMPILER%']
+
 echo ##teamcity[blockOpened name='Test Python3 %BUILD_TYPE% %COMPILER%']
+REM Fix this so we don't have to remove the cache
 del /f /q CMakeCache.txt
 set PYTHON_PATH_DIR=C:\Miniconda3
 set PATH=%PYTHON_PATH_DIR%;%PYTHON_PATH_DIR%\Scripts;%PATH%

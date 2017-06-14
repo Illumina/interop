@@ -9,7 +9,6 @@ namespace Illumina.InterOp.Interop.UnitTest
 	/// <summary>
 	/// Confirm that the Error metrics InterOp works properly in C#
 	/// </summary>
-	[TestFixture]
 	public class ErrorMetricsTestV3
 	{
 		const int Version = 3;

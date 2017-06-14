@@ -9,7 +9,6 @@ namespace Illumina.InterOp.Interop.UnitTest
 	/// <summary>
 	/// Confirm that the tile metrics InterOp works properly in C#
 	/// </summary>
-	[TestFixture]
 	public class TileMetricsTestV2
 	{
 		const int Version = 2;

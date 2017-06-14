@@ -32,7 +32,8 @@ set(SRCS
         model/metrics/phasing_metric.cpp
         model/metrics/dynamic_phasing_metric.cpp
         logic/metric/dynamic_phasing_metric.cpp
-        logic/plot/plot_metric_list.cpp)
+        logic/plot/plot_metric_list.cpp
+        logic/metric/index_metric.cpp)
 
 set(HEADERS
         ../../interop/io/paths.h
@@ -170,6 +171,7 @@ set(HEADERS
         ../../interop/model/plot/plot_exceptions.h
         ../../interop/logic/plot/plot_metric_proxy.h
         ../../interop/logic/plot/plot_metric_list.h
+        ../../interop/logic/metric/index_metric.h
         )
 
 set(INTEROP_HEADERS ${HEADERS} PARENT_SCOPE)

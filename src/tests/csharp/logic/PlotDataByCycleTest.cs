@@ -12,7 +12,6 @@ namespace Illumina.InterOp.Interop.UnitTest
 	/// <summary>
 	/// Test plotting data by cycle
 	/// </summary>
-	[TestFixture]
 	public class PlotDataByCycleTest
 	{
 	    public void MetricTypeList()

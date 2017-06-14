@@ -13,6 +13,7 @@
 
 #include "interop/logic/metric/q_metric.h"
 #include "interop/logic/metric/tile_metric.h"
+#include "interop/logic/metric/index_metric.h"
 #include "interop/logic/utils/channel.h"
 #include "interop/logic/metric/dynamic_phasing_metric.h"
 
@@ -277,6 +278,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     model::invalid_channel_exception,
     model::index_out_of_bounds_exception,
     model::invalid_tile_naming_method,
+    model::invalid_tile_list_exception,
     model::invalid_run_info_exception,
     model::invalid_run_info_cycle_exception)
     {
@@ -308,6 +310,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     model::invalid_channel_exception,
     model::index_out_of_bounds_exception,
     model::invalid_tile_naming_method,
+    model::invalid_tile_list_exception,
     model::invalid_run_info_exception,
     model::invalid_run_info_cycle_exception,
     invalid_parameter)
@@ -389,6 +392,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     throw(model::invalid_channel_exception,
     model::invalid_tile_naming_method,
     model::index_out_of_bounds_exception,
+    model::invalid_tile_list_exception,
     model::invalid_run_info_exception,
     model::invalid_run_info_cycle_exception)
     {
@@ -397,6 +401,10 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             determine_tile_naming_method naming_method_determinator;
             m_metrics.apply(naming_method_determinator);
             m_run_info.set_naming_method( naming_method_determinator.naming_method());
+        }
+        if(!get<model::metrics::index_metric>().empty())
+        {
+            logic::metric::populate_indices(get<model::metrics::index_metric>());
         }
         if (count == std::numeric_limits<size_t>::max())
         {
@@ -468,6 +476,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                 INTEROP_THROW(model::invalid_tile_naming_method, "Unknown tile naming method - update your RunInfo.xml");
             m_run_info.validate();
             validate();
+            m_run_info.validate_tiles();
         }
     }
 

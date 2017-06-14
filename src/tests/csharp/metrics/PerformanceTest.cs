@@ -9,7 +9,6 @@ namespace Illumina.InterOp.UnitTest
 	/// <summary>
 	/// Test the performance of tabulating a large number of extraction metrics
 	/// </summary>
-	[TestFixture]
 	public class ExtractionMetricsPerformanceTestV2
 	{
 		const int Version = 2;
