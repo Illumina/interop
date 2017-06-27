@@ -242,12 +242,16 @@ namespace illumina { namespace interop { namespace util
                               const bool fixed = true)
     {
         std::ostringstream oss;
+        if(std::isnan(val))
+        {
+            oss << std::numeric_limits<float>::quiet_NaN();
+            return oss.str();
+        }
         if (fixed) oss << std::fixed;
         if (width > -1) oss << std::setw(width);
         if (precision > -1) oss << std::setprecision(precision);
         if (fill != 0) oss << std::setfill(fill);
-        if(std::isnan(val)) oss << std::numeric_limits<float>::quiet_NaN();
-        else oss << val;
+        oss << val;
         return oss.str();
     }
 
