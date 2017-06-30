@@ -9,15 +9,15 @@ if [ ! -e ${HOME}/cmake/bin/cmake ]; then
         mkdir $HOME/cmake
     fi
     travis_retry wget --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C $HOME/cmake
-    export PATH=${HOME}/cmake/bin:${PATH}
 else
     echo "Using cached cmake"
 fi
-
+export PATH="$HOME/cmake/bin:${PATH}"
 
 python --version
 python -c "import sys; opts={1114111: 'ucs4', 65535: 'ucs2'}; print opts.get(sys.maxunicode)"
-
+pip install wheel --user
+pip install auditwheel==1.5.0 --user
 
 if [ ! -e $HOME/NUnit-2.6.4/bin/nunit.framework.dll ]; then
     travis_retry wget https://github.com/nunit/nunitv2/releases/download/2.6.4/NUnit-2.6.4.zip
@@ -26,6 +26,7 @@ else
     echo "Using cached NUnit"
 fi
 
+export NUNIT_DIR=$HOME/NUnit-2.6.4
 
 
 

@@ -1,22 +1,20 @@
 #!/usr/bin/env bash
 ########################################################################################################################
-# This script packages the InterOp library using Docker
+# This script setups dependencies for the InterOp library using Docker
 #
-# Requires two command line arguments:
-# 1. source file directory
-# 2. artifact directory
 #
-# Run the Image
-#
-# $ docker run --rm -v `pwd`:/io ezralangois/interop sh /io/tools/package_linux.sh /io /io/dist
 #
 # Build the Image
 #
 # $ docker build --rm -t ezralangois/interop -f ./tools/DockerFile tools
-#
+# $ docker images
+# $ docker tag <image-id> ezralangois/interop:last_good
+# $ docker tag ezralangois/interop:last_good ezralangois/interop:latest
+# $ docker push ezralangois/interop:latest
 #
 ########################################################################################################################
-set -ex
+#set -ex
+set -e
 
 CMAKE_URL="http://www.cmake.org/files/v3.4/cmake-3.4.3-Linux-x86_64.tar.gz"
 SWIG_URL="http://prdownloads.sourceforge.net/swig/swig-3.0.12.tar.gz"
@@ -24,29 +22,37 @@ MONO_URL="https://download.mono-project.com/sources/mono/mono-4.8.1.0.tar.bz2"
 NUGET_URL="https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
 GOOGLETEST_URL="https://github.com/google/googletest/archive/release-1.8.0.tar.gz"
 JUNIT_URL="http://search.maven.org/remotecontent?filepath=junit/junit/4.12/junit-4.12.jar"
+NUNIT_URL="https://github.com/nunit/nunitv2/releases/download/2.6.4/NUnit-2.6.4.zip"
+JAVA_URL="http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.rpm"
 PROG_HOME=/opt
-CMAKE_HOME=${PROG_HOME}/cmake34
 SWIG_HOME=${PROG_HOME}/swig3
+JUNIT_HOME=${PROG_HOME}/junit
+NUNIT_HOME=${PROG_HOME}/nunit
 
-if [ ! -z $1 ] ; then
-    SOURCE_PATH=$1
-fi
-if [ ! -z $2 ] ; then
-    ARTIFACT_PATH=$2
+if hash cmake  2> /dev/null; then
+    echo "Found CMake"
 else
-    ARTIFACT_PATH=$SOURCE_PATH/dist
+    wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C /usr
+
+
+    for PYBUILD in `ls -1 /opt/python`; do
+        if [[ "$PYBUILD" == cp26* ]]; then
+            continue
+        fi
+        if [[ "$PYBUILD" == cp33* ]]; then
+            continue
+        fi
+        "/opt/python/${PYBUILD}/bin/pip" install numpy
+    done
+
+    # Current version 1.7.0 of auditwheel fails when building a fake pure Python lib with shared libs in data
+    "/opt/python/cp36-cp36m/bin/pip" uninstall auditwheel -y
+    "/opt/python/cp36-cp36m/bin/pip" install auditwheel==1.5.0
 fi
 
-CMAKE_EXTRA_FLAGS="-DDISABLE_PACKAGE_SUBDIR=ON -DPACKAGE_OUTPUT_FILE_PREFIX=${ARTIFACT_PATH} -DENABLE_PORTABLE=ON"
-
-if [ ! -e ${CMAKE_HOME}/bin/cmake ]; then
-    if [ ! -e ${CMAKE_HOME} ]; then
-        mkdir ${CMAKE_HOME}
-    fi
-    wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C ${CMAKE_HOME}
-fi
-
-if [ ! -e ${SWIG_HOME}/bin/swig ]; then
+if hash swig  2> /dev/null; then
+    echo "Found Swig"
+else
     if [ ! -e ${SWIG_HOME} ]; then
         mkdir ${SWIG_HOME}
     fi
@@ -60,19 +66,19 @@ if [ ! -e ${SWIG_HOME}/bin/swig ]; then
     yum install pcre-devel -y
 
 
-    ./configure --prefix=${SWIG_HOME} --with-python=/opt/python/cp27-cp27m/bin/python --with-python3=/opt/python/cp36-cp36m/bin/python
-    make swig > /dev/null
+    ./configure --prefix=/usr --with-python=/opt/python/cp27-cp27m/bin/python --with-python3=/opt/python/cp36-cp36m/bin/python
+    make swig -j4 > /dev/null
     make install
-    rm -fr ${SWIG_HOME}/src
+    rm -fr ${SWIG_HOME}
     cd -
 fi
 
-export PATH=${CMAKE_HOME}/bin:${SWIG_HOME}/bin:$PATH
-
 if hash mono  2> /dev/null; then
-    which mono
-    mono --version
+    echo "Found mono"
 else
+    PATH_OLD=$PATH
+    export PATH=/opt/python/cp27-cp27mu/bin/:$PATH
+    yum install automake autoconf libtool  -y
     # For some reason GLIBC_HAS_CPU_COUNT does not work properly on Centos5 for 4.8.1.0
     #
     # The following function needs to be added to
@@ -96,7 +102,7 @@ else
     #cd /io/mono_src
     cd /mono_clean
     ./configure --prefix=/usr
-    make && make install
+    make -j4 && make install
     cd -
     rm -fr /mono_clean
     which dmcs
@@ -104,15 +110,15 @@ else
     mono --version
 
     wget --no-check-certificate --quiet ${NUGET_URL} -O /usr/lib/nuget.exe
-    echo "mono /usr/lib/nuget.exe $@" > /usr/bin/nuget
+    echo "mono /usr/lib/nuget.exe \$@" > /usr/bin/nuget
     chmod +x /usr/bin/nuget
+    export PATH=$PATH_OLD
 
     nuget help
 fi
 
-if ldconfig -p | grep libgmock -q; then
-    ldconfig -p | grep libgmock
-    ldconfig -p | grep libgtest
+if [ -e /usr/include/gtest/gtest.h ]; then
+    echo "Found GTest and GMock"
 else
     mkdir /gtest
     wget --no-check-certificate --quiet -O - ${GOOGLETEST_URL} | tar --strip-components=1 -xz -C /gtest
@@ -127,48 +133,47 @@ else
     rm -fr /gtest
 fi
 
-if [ ! -e /usr/lib/junit-4.12.jar ]; then
-    wget --no-check-certificate --quiet ${JUNIT_URL} -O /usr/lib/junit-4.12.jar
+if hash java  2> /dev/null; then
+    echo "Found Java"
+else
+    wget --quiet --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "${JAVA_URL}" -O ${JAVA_URL##*/}
+    rpm -Uvh ${JAVA_URL##*/}
+    rm -f  ${JAVA_URL##*/}
 fi
 
-for PYBUILD in `ls -1 /opt/python`; do
-    if [[ "$PYBUILD" == cp26* ]]; then
-        continue
-    fi
-    if [[ "$PYBUILD" == cp33* ]]; then
-        continue
-    fi
-    "/opt/python/${PYBUILD}/bin/pip" install numpy
-done
+if [ ! -e ${NUNIT_HOME}/NUnit-2.6.4 ]; then
+    mkdir ${NUNIT_HOME}
+    wget --no-check-certificate --quiet ${NUNIT_URL} -O  ${NUNIT_HOME}/${NUNIT_URL##*/}
+    unzip ${NUNIT_HOME}/${NUNIT_URL##*/} -d ${NUNIT_HOME}
+    rm -f ${NUNIT_HOME}/${JUNIT_URL##*/}
+else
+    echo "Found NUnit at ${NUNIT_HOME}/NUnit-2.6.4"
+fi
+NUNIT_HOME=${NUNIT_HOME}/NUnit-2.6.4
 
-which cmake
+if [ ! -e ${JUNIT_HOME}/${JUNIT_URL##*/} ]; then
+    mkdir ${JUNIT_HOME}
+    wget --no-check-certificate --quiet ${JUNIT_URL} -O  ${JUNIT_HOME}/${JUNIT_URL##*/}
+else
+    echo "Found JUnit at ${JUNIT_HOME}/${JUNIT_URL##*/}"
+fi
+
+
+export JAVA_HOME=/usr/java/jdk1.8.0_131
+
 which gcc
 which g++
 which swig
+which java
+which cmake
+which mono
 
 
-cmake --version
 gcc --version
 swig -version
+java -version
+cmake --version
+mono --version
 
-if [ ! -z $SOURCE_PATH ] ; then
-    mkdir build
-    for PYBUILD in `ls -1 /opt/python`; do
-        PYTHON_BIN=/opt/python/${PYBUILD}/bin
-        if [[ "$PYBUILD" == cp26* ]]; then
-            continue
-        fi
-        if [[ "$PYBUILD" == cp33* ]]; then
-            continue
-        fi
-        touch $SOURCE_PATH/src/ext/python/CMakeLists.txt
-        cmake $SOURCE_PATH -Bbuild -DPYTHON_EXECUTABLE=${PYTHON_BIN}/python ${CMAKE_EXTRA_FLAGS}
-        cmake --build build --target check -- -j4
-        cmake --build build --target package_wheel -- -j4
-        auditwheel show ${ARTIFACT_PATH}/interop*${PYBUILD}*linux_x86_64.whl
-        auditwheel repair ${ARTIFACT_PATH}/interop*${PYBUILD}*linux_x86_64.whl -w ${ARTIFACT_PATH}
-        rm -f ${ARTIFACT_PATH}/interop*${PYBUILD}*linux_x86_64.whl
-    done
-    cmake --build build --target package -- -j4
-fi
+
 
