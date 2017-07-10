@@ -33,8 +33,8 @@ namespace illumina { namespace interop { namespace model { namespace summary
          */
         stat_summary(const size_t /*channel_count*/) :
                 m_percent_gt_q30(std::numeric_limits<float>::quiet_NaN()),
-                m_yield_g(0), // TODO: Update logic to allow this to be NaN!
-                m_projected_yield_g(0), // TODO: Update logic to allow this to be NaN!
+                m_yield_g(std::numeric_limits<float>::quiet_NaN()),
+                m_projected_yield_g(0),
                 m_reads(std::numeric_limits<float>::quiet_NaN()),
                 m_reads_pf(std::numeric_limits<float>::quiet_NaN())
 

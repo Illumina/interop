@@ -7,7 +7,7 @@
 
 set(MONO_ROOT "" CACHE PATH "Set the location of the Mono root directory")
 
-if(MONO_ROOT AND EXISTS ${MONO_ROOT})
+if(MONO_ROOT AND EXISTS "${MONO_ROOT}")
     find_program(MONO_EXECUTABLE mono
             PATHS ${MONO_ROOT} ${MONO_ROOT}/lib/mono/1.0
             PATH_SUFFIXES bin
@@ -51,7 +51,7 @@ find_program(XBUILD_EXECUTABLE xbuild xbuild.exe
         NO_DEFAULT_PATH
         )
 
-if(EXISTS ${MONO_EXECUTABLE})
+if(EXISTS "${MONO_EXECUTABLE}")
     execute_process(
             COMMAND ${MONO_EXECUTABLE} -V
             OUTPUT_VARIABLE csharp_mono_version_string

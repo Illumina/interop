@@ -1,14 +1,15 @@
 # Setup conditional printing for build servers
 
-TRAVIS_BEG='travis_fold:start:script.1\\r'
-TRAVIS_END='travis_fold:end:script.1\\r'
+TRAVIS_BEG='travis_fold:start'
+TRAVIS_END='travis_fold:end'
 if [[ "$BUILD_SERVER" == "travis" ]]; then
     function run(){
         mesg=$1
+        tag=${mesg// /_}
         shift
-        echo "$mesg" && echo -en ${TRAVIS_BEG}
+        echo "$mesg" && echo -en "${TRAVIS_BEG}:${tag}\r"
         $@
-        echo -en ${TRAVIS_END}
+        echo -en "${TRAVIS_END}:${tag}\r"
     }
 elif [[ "$BUILD_SERVER" == "teamcity" ]]; then
     function run(){

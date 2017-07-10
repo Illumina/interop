@@ -266,10 +266,10 @@ void summarize(const surface_summary& summary, std::vector<std::string>& values,
     values[i++] = util::format(summary.phasing().mean(), 3, 3) + " / " + util::format(summary.prephasing().mean(), 3, 3);
 
 
-    values[i++] = util::format(summary.phasing_slope().mean(), 3, 3) + "*c " + (summary.phasing_offset().mean() > 0 ? "+ " : "- ")
-                  + util::format(static_cast<float>(std::abs(summary.phasing_offset().mean())), 3, 3);
-    values[i++] = util::format(summary.prephasing_slope().mean(), 3, 3) + "*c " + (summary.prephasing_offset().mean() > 0 ? "+ " : "- ")
-                  + util::format(static_cast<float>(std::abs(summary.prephasing_offset().mean())), 3, 3);
+    values[i++] = util::format(summary.phasing_slope().mean(), 3, 3) + " / "
+                  + util::format(summary.phasing_offset().mean(), 3, 3);
+    values[i++] = util::format(summary.prephasing_slope().mean(), 3, 3) + " / "
+                  + util::format(summary.prephasing_offset().mean(), 3, 3);
 
     values[i++] = format(summary.reads(), 0, 2, 1e6);
     values[i++] = format(summary.reads_pf(), 0, 2, 1e6);
@@ -297,10 +297,10 @@ void summarize(const lane_summary& summary, std::vector<std::string>& values)
     values[i++] = format(summary.percent_pf(), 0, 2);
     values[i++] = util::format(summary.phasing().mean(), 3, 3) + " / " + util::format(summary.prephasing().mean(), 3, 3);
 
-    values[i++] = util::format(summary.phasing_slope().mean(), 3, 3) + "*c " + (summary.phasing_offset().mean() > 0 ? "+ " : "- ")
-                + util::format(static_cast<float>(std::abs(summary.phasing_offset().mean())), 3, 3);
-    values[i++] = util::format(summary.prephasing_slope().mean(), 3, 3) + "*c " + (summary.prephasing_offset().mean() > 0 ? "+ " : "- ")
-                + util::format(static_cast<float>(std::abs(summary.prephasing_offset().mean())), 3, 3);
+    values[i++] = util::format(summary.phasing_slope().mean(), 3, 3) + " / "
+                + util::format(summary.phasing_offset().mean(), 3, 3);
+    values[i++] = util::format(summary.prephasing_slope().mean(), 3, 3) + " / "
+                + util::format(summary.prephasing_offset().mean(), 3, 3);
     values[i++] = format(summary.reads(), 0, 2, 1e6);
     values[i++] = format(summary.reads_pf(), 0, 2, 1e6);
     values[i++] = format(summary.percent_gt_q30(), 0, 2);
@@ -350,8 +350,8 @@ void print_summary(std::ostream& out, const run_summary& summary, const size_t i
 
     if( information_level >= 3)
     {
-        const char *lane_header[] = {"Lane", "Surface", "Tiles", "Density", "Cluster PF", "Phas/Prephas",
-                                     "Phasing Equation", "Prephas Equation",
+        const char *lane_header[] = {"Lane", "Surface", "Tiles", "Density", "Cluster PF", "Legacy Phasing/Prephasing Rate",
+                                     "Phasing  slope/offset", "Prephasing slope/offset",
                                      "Reads", "Reads PF", "%>=Q30", "Yield", "Cycles Error", "Aligned", "Error",
                                      "Error (35)", "Error (75)", "Error (100)", "Intensity C1"};
         values.resize(util::length_of(lane_header));

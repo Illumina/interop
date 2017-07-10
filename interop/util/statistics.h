@@ -54,6 +54,30 @@ namespace illumina { namespace interop { namespace util
             {
                 return val + operator()(obj);
             }
+            /** Perform function call
+             *
+             * @param val previous accumulated value
+             * @param obj object with value to access
+             * @return addition of both values
+             */
+            float operator()(const float val, const T &obj) const
+            {
+                const float ret = static_cast<float>(operator()(obj));
+                if(std::isnan(ret)) return val;
+                return val + ret;
+            }
+            /** Perform function call
+             *
+             * @param val previous accumulated value
+             * @param obj object with value to access
+             * @return addition of both values
+             */
+            double operator()(const double val, const T &obj) const
+            {
+                const double ret = static_cast<double>(operator()(obj));
+                if(std::isnan(ret)) return val;
+                return val + ret;
+            }
 
             /** Perform function call
              *
@@ -92,7 +116,32 @@ namespace illumina { namespace interop { namespace util
             template<class F>
             F operator()(const F val, const T &obj) const
             {
-                return val + operator()(obj);
+                const F ret = static_cast<F>(operator()(obj));
+                return val + ret;
+            }
+            /** Perform function call
+             *
+             * @param val previous accumulated value
+             * @param obj object with value to access
+             * @return addition of both values
+             */
+            float operator()(const float val, const T &obj) const
+            {
+                const float ret = static_cast<float>(operator()(obj));
+                if(std::isnan(ret)) return val;
+                return val + ret;
+            }
+            /** Perform function call
+             *
+             * @param val previous accumulated value
+             * @param obj object with value to access
+             * @return addition of both values
+             */
+            double operator()(const double val, const T &obj) const
+            {
+                const double ret = static_cast<double>(operator()(obj));
+                if(std::isnan(ret)) return val;
+                return val + ret;
             }
 
             /** Perform function call

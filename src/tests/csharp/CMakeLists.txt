@@ -81,7 +81,7 @@ csharp_add_library(csharp_perftest ${NUNIT_LIBRARIES} ${PERF_TEST_SRCS} ${SWIG_C
 add_dependencies(csharp_perftest csharp_interop ${NUNIT_TARGET})
 
 add_custom_command(TARGET csharp_perftest POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy ${CSBUILD_csharp_perftest_BINARY} $<TARGET_FILE_DIR:${INTEROP_LIB}>
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CSBUILD_csharp_perftest_BINARY} $<TARGET_FILE_DIR:${INTEROP_LIB}>
         #COMMAND ${CMAKE_COMMAND} -E copy ${NUNIT_LIBRARIES} $<TARGET_FILE_DIR:${INTEROP_LIB}>
         )
 
@@ -102,4 +102,5 @@ set_target_properties(check_csharp PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DE
 add_custom_target(csharp_perf
         COMMAND ${NUNIT_COMMAND} $<TARGET_FILE_DIR:${INTEROP_LIB}>/${CSBUILD__csharp_perftest_BINARY_NAME})
 set_target_properties(csharp_perf PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
+set_target_properties(csharp_perftest PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
 

@@ -13,7 +13,7 @@ if(swig_major_ver LESS "3")
 endif()
 
 # Support earlier and later versions of CMake
-if(CMAKE_VERSION VERSION_LESS 3.8 OR EXISTS ${CMAKE_SOURCE_DIR}/cmake/Modules/UseSWIG.cmake)
+if(CMAKE_VERSION VERSION_LESS 3.8 OR EXISTS "${CMAKE_SOURCE_DIR}/cmake/Modules/UseSWIG.cmake")
     macro(swig_add_library name language)
         swig_add_module(${name}
                 ${language}

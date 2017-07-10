@@ -21,11 +21,11 @@ namespace illumina { namespace interop { namespace model { namespace summary {
          */
         metric_summary(const size_t /*channel_count*/) :
                 m_error_rate(std::numeric_limits<float>::quiet_NaN()),
-                m_percent_aligned(0), // TODO: Update logic to allow this to be NaN!
+                m_percent_aligned(std::numeric_limits<float>::quiet_NaN()),
                 m_first_cycle_intensity(std::numeric_limits<float>::quiet_NaN()),
                 m_percent_gt_q30(std::numeric_limits<float>::quiet_NaN()),
-                m_yield_g(0), // TODO: Update logic to allow this to be NaN!
-                m_projected_yield_g(0) // TODO: Update logic to allow this to be NaN!
+                m_yield_g(std::numeric_limits<float>::quiet_NaN()),
+                m_projected_yield_g(0)
 
         {}
     public:
