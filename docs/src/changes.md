@@ -5,6 +5,7 @@
 
 Date       | Description
 ---------- | -----------
+2017-06-27 | IPA-6640: Fix issues with summary app and phasing reporting
 2017-06-12 | IPA-6290: Create .NET Core build for InterOp
 2017-06-05 | IPA-6597: Enable hash map for visual studio
 2017-06-02 | Bug fix for VS2017 warning as error

@@ -116,7 +116,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @return percent phasing
          */
         float percent_phasing() const
-        { return m_percent_phasing; }
+        { return (m_percent_phasing < 0) ? 0 : m_percent_phasing; /* Consistent with legacy */ }
 
         /** Percent prephasing for read
          *
@@ -124,7 +124,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @return percent prephasing
          */
         float percent_prephasing() const
-        { return m_percent_prephasing; }
+        { return (m_percent_prephasing < 0) ? 0 : m_percent_prephasing; /* Consistent with legacy */ }
         /** @} */
         /** Set percent aligned for read
          *
