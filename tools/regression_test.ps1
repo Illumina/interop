@@ -8,7 +8,7 @@
 #     4. Path to baseline data
 #
 # Example Running script (from source directory)
-#     .\tools\build_test.bat -config Debug -lib_path c:\external -data_path c:\RegressionData -baseline_path c:\BaselineData
+#     .\tools\build_test.bat -config Release -lib_path c:\external -data_path c:\RegressionData -baseline_path c:\BaselineData
 #
 # Note, you must already have CMake and Visual Studio installed and on your path.
 #
@@ -29,7 +29,6 @@ $build_param=""
 if($lib_path)
 {
 $lib_path=(resolve-path $lib_path).path
-$build_param="-DGTEST_ROOT=$lib_path -DJUNIT_ROOT=$lib_path -DGMOCK_ROOT=$lib_path -DNUNIT_ROOT=$lib_path/NUnit-2.6.4"
 }
 
 # --------------------------------------------------------------------------------------------------------------------

@@ -25,12 +25,21 @@ cache:
   - x86_64-4.9.2-release-win32-seh-rt_v4-rev4.7z
   - C:\ProgramData\chocolatey\bin -> appveyor.yml
   - C:\ProgramData\chocolatey\lib -> appveyor.yml
-  - C:\mingw64
+
+image:
+- Visual Studio 2015
 
 environment:
-  MINGW_URL: http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/4.9.2/threads-win32/seh/x86_64-4.9.2-release-win32-seh-rt_v4-rev4.7z/download
-  MINGW_ARCHIVE: x86_64-4.9.2-release-win32-seh-rt_v4-rev4.7z
   matrix:
+    - generator: "MinGW Makefiles"
+      COMPILER_PATH: C:\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev1\mingw64\bin
+      BUILD: mingw_win64
+      config_type: win64
+      ADDIONAL_CONFIG_OPTIONS: -DENABLE_PYTHON=OFF
+      PACKAGE_TARGET: bundle
+      PYTHON_PATH_DIR: C:\Miniconda-x64
+      PYTHON_VERSION: 2.7
+      configuration: Release
     - generator: "Visual Studio 14 2015 Win64"
       BUILD: msvc14_win64_py27
       config_type: win64
@@ -42,7 +51,7 @@ environment:
     - generator: "Visual Studio 14 2015 Win64"
       BUILD: msvc14_win64_py27
       config_type: win64
-      PACKAGE_TARGET: package
+      PACKAGE_TARGET: bundle
       ADDIONAL_CONFIG_OPTIONS: -DENABLE_APPS=OFF -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=OFF -DDISABLE_PACKAGE_SUBDIR=ON
       PYTHON_PATH_DIR: C:\Miniconda-x64
       PYTHON_VERSION: 2.7
@@ -87,15 +96,6 @@ environment:
       PYTHON_PATH_DIR: C:\Miniconda36-x64
       PYTHON_VERSION: 3.5
       configuration: Release
-    - generator: "MinGW Makefiles"
-      COMPILER_PATH: C:\mingw64\bin
-      BUILD: mingw_win64
-      config_type: win64
-      ADDIONAL_CONFIG_OPTIONS: -DENABLE_PYTHON=OFF
-      PACKAGE_TARGET: install
-      PYTHON_PATH_DIR: C:\Miniconda-x64
-      PYTHON_VERSION: 2.7
-      configuration: Release
 
 matrix:
   fast_finish: true
@@ -125,25 +125,14 @@ install:
           echo "Installing swig"
           appveyor-retry choco install swig --version 3.0.5 -y > $null
       }
-  - if not exist "%MINGW_ARCHIVE%" appveyor DownloadFile "%MINGW_URL%" -FileName "%MINGW_ARCHIVE%"
-  - if not exist "C:\mingw64" 7z x -oC:\ -y "%MINGW_ARCHIVE%" > nul
 
 build_script:
-  - set BUILD_PATH=%CD%\%BUILD%_%configuration%
-  - cmake --version
-  - cmake ../ -G "%GENERATOR%" -H. -Bbuild -DCMAKE_BUILD_TYPE="%configuration%" -DCMAKE_INSTALL_PREFIX=%BUILD_PATH% -DPACKAGE_OUTPUT_FILE_PREFIX=%CD% %ADDIONAL_CONFIG_OPTIONS%
-  - cmake --build build --config "%configuration%"
-  - cmake --build build --config "%configuration%" --target install
-  - cmake --build build --config "%configuration%" --target %PACKAGE_TARGET%
-
-
-test_script:
-  - cmake --build build --config "%configuration%" --target check
+  - call tools\package.bat "%configuration%" "%GENERATOR%" %PACKAGE_TARGET% "%ADDIONAL_CONFIG_OPTIONS%"
 
 artifacts:
-  - path: .\*.zip
+  - path: .\dist\*.zip
     name: Releases
-  - path: .\*.whl
+  - path: .\dist\*.whl
     name: PythonRelease
 
 branches:

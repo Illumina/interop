@@ -1,5 +1,6 @@
 REM Software required to build InterOp
 
+REM Assumes you have the windows package manager installed: https://chocolatey.org/
 choco install vcbuildtools -y
 choco install nuget.commandline -y
 choco install miniconda -y

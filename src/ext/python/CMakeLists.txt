@@ -29,6 +29,9 @@ elseif(COMPILER_IS_GNUCC_OR_CLANG)
     if(WIN32 AND MINGW AND "${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
         set(PYTHON_GENERATED_COMPILE_FLAGS "${PYTHON_GENERATED_COMPILE_FLAGS} -DMS_WIN64")
     endif()
+    if(WIN32 AND MINGW)
+        set(PYTHON_GENERATED_COMPILE_FLAGS "${PYTHON_GENERATED_COMPILE_FLAGS} -D_hypot=hypot")
+    endif()
 endif()
 
 if(MSVC)
@@ -99,8 +102,6 @@ foreach(SRC ${SWIG_SRCS})
         set_target_properties(${SWIG_MODULE} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_DEBUG "${CMAKE_SWIG_OUTDIR}")
     endif()
 
-#
-
     add_custom_command(
             TARGET ${SWIG_MODULE}
             POST_BUILD
@@ -154,5 +155,8 @@ add_custom_target(package_wheel
         )
 add_dependencies(package_wheel python_lib)
 set_target_properties(package_wheel PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
+if(NOT SKIP_PACKAGE_ALL_WHEEL)
+    add_dependencies(bundle package_wheel)
+endif()
 
 set(PYTHON_TARGET_FOUND ON CACHE INTERNAL "Python target is available" FORCE)
