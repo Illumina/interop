@@ -98,7 +98,6 @@ set(SWIG_GEN_CSHARP_SOURCE_FILES ${CMAKE_SWIG_OUTDIR}/*.cs CACHE INTERNAL "C# so
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/AssemblyInfo.cs.in ${CMAKE_CURRENT_BINARY_DIR}/AssemblyInfo.cs @ONLY)
 
 
-set(CSBUILD_OUTPUT_SUFFIX "${CMAKE_SYSTEM_NAME}")
 csharp_add_library(csharp_interop "${CMAKE_SWIG_OUTDIR}/*.cs")
 add_dependencies(csharp_interop ${SWIG_MODULE_LIST})
 foreach(SRC ${SWIG_SRCS})
@@ -166,8 +165,10 @@ else()
 endif()
 if("${CMAKE_HOST_SYSTEM}" MATCHES ".*Windows.*")
     set(SHARED_LIB_SEARCH_STR "\\*${CMAKE_SHARED_LIBRARY_SUFFIX}")
+    set(NUGET_PLATFORM "lib\\${DOT_NET_FRAMEWORK}")
 else()
     set(SHARED_LIB_SEARCH_STR "/*${CMAKE_SHARED_LIBRARY_SUFFIX}")
+    set(NUGET_PLATFORM "lib/${DOT_NET_FRAMEWORK}")
 endif()
 # This creates the nuspec file in the proper directory
 add_custom_target(nuspec
@@ -180,6 +181,7 @@ add_custom_target(nuspec
         -DCMAKE_CURRENT_BINARY_DIR=${CMAKE_CURRENT_BINARY_DIR}
         -DCSHARP_TYPE=${CSHARP_TYPE}
         -DCSHARP_VERSION=${CSHARP_VERSION}
+        -DNUGET_PLATFORM=${NUGET_PLATFORM}
         -DINTEROP_VERSION=${INTEROP_VERSION_STR}
         -DPLATFORM=${NUGET_SYS_ID}
         -DCSHARP_LIBRARY=${CSBUILD_csharp_interop_BINARY_NAME}
@@ -193,10 +195,19 @@ add_dependencies(nuspec csharp_interop)
 set_target_properties(nuspec PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
 find_program(NUGET_EXE nuget)
 if(NUGET_EXE)
+    if( PACKAGE_OUTPUT_FILE_PREFIX STREQUAL ".")
+        set(NUPACKOUTPUT ${CMAKE_CURRENT_BINARY_DIR})
+    else()
+        set(NUPACKOUTPUT ${PACKAGE_OUTPUT_FILE_PREFIX})
+    endif()
     add_custom_target(nupack
-            COMMENT "Creating Nuget package: ${CMAKE_SWIG_OUTDIR}/package.nuspec"
+            COMMENT "Creating Nuget package: cd ${NUPACKOUTPUT};${NUGET_EXE} pack ${CMAKE_SWIG_OUTDIR}/package.nuspec"
             COMMAND ${NUGET_EXE} pack  ${CMAKE_SWIG_OUTDIR}/package.nuspec
+            WORKING_DIRECTORY ${NUPACKOUTPUT}
             )
     add_dependencies(nupack nuspec)
     set_target_properties(nupack PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
+    add_dependencies(bundle nupack)
+else()
+    message(STATUS "NuGet not found, nupack target will not be available")
 endif()

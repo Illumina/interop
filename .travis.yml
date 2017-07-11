@@ -24,31 +24,31 @@ matrix:
   include:
   - os: osx
     compiler: clang
-    env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package_osx.sh $PWD 3.4.4 $PWD/dist travis"
+    env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release 3.4.4"
   - os: osx
     compiler: clang
-    env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package_osx.sh $PWD 3.5.1 $PWD/dist travis"
+    env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release 3.5.1"
   - os: osx
     compiler: clang
-    env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package_osx.sh $PWD 3.6.0 $PWD/dist travis"
+    env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release 3.6.0"
   - os: osx
     compiler: clang
-    env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package_osx.sh $PWD 2.7.11 $PWD/dist travis"
+    env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release 2.7.11"
   - os: linux
     compiler: clang
-    env: SCRIPT="bash ./tools/test.sh ON Debug travis"
+    env: SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis ON Debug"
   - os: linux
     compiler: gcc
-    env: SCRIPT="bash ./tools/test.sh ON Debug travis"
+    env: SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis ON Debug"
   - os: linux
     compiler: gcc
     sudo: required
     services:
       - docker
-    env: DEPLOY_BUILD=true DOCKER_IMAGE=ezralanglois/interop SCRIPT="docker run --rm -v $PWD:/io ezralanglois/interop sh /io/tools/package_linux.sh /io /io/dist"
+    env: DEPLOY_BUILD=true DOCKER_IMAGE=ezralanglois/interop SCRIPT="docker run --rm -v $PWD:/io ezralanglois/interop sh /io/tools/package.sh /io /io/dist travis"
   - os: osx
     compiler: clang
-    env: SCRIPT="bash ./tools/test.sh OFF Debug travis"
+    env: SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Debug"
   - os: linux
     compiler: gcc
     addons: &1
@@ -66,7 +66,7 @@ matrix:
         - mono-complete
         - libgtest-dev
         - python-numpy
-    env: COMPILER_VERSION=-5 SCRIPT="bash ./tools/test.sh ON Debug travis"
+    env: COMPILER_VERSION=-5 SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis ON Debug"
   - os: linux
     compiler: clang
     addons: &2
@@ -86,7 +86,7 @@ matrix:
         - mono-complete
         - libgtest-dev
         - python-numpy
-    env: COMPILER_VERSION=-3.7 SCRIPT="bash ./tools/test.sh ON Debug travis"
+    env: COMPILER_VERSION=-3.7 SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis ON Debug"
 addons:
   apt:
     sources:
@@ -106,16 +106,13 @@ cache:
     - $HOME/cmake
 
 install:
-- if test "$TRAVIS_OS_NAME" = "linux"; then source tools/travis-linux-install.sh ; fi
-- if test "$TRAVIS_OS_NAME" = "osx"; then source tools/travis-osx-install.sh ; fi
+- source tools/prereqs/travis-${TRAVIS_OS_NAME}-install.sh
 - if [ ! -z $DOCKER_IMAGE ]; then docker pull $DOCKER_IMAGE ; fi
 - ls $HOME/NUnit-2.6.4
 
 before_script:
 - export CC="${COMPILER_HOME}${CC}${COMPILER_VERSION}"
 - export CXX="${COMPILER_HOME}${CXX}${COMPILER_VERSION}"
-- if test "$PYTHON_VERSION_NUM" != "System"; then export PATH="$HOME/miniconda_${PYTHON_VERSION_NUM}/bin:$PATH" ; fi
-- if test "$TRAVIS_OS_NAME" = "linux"; then export PATH="$HOME/cmake/bin:${PATH}" ; fi
 - cmake -version
 - which $CC
 - which $CXX

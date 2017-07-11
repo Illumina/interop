@@ -23,6 +23,7 @@ set(NUNIT_ROOT "" CACHE PATH "Set the location of the NUnit library")
 
 set(nunit_search_hints
         ${NUNIT_ROOT}
+        $ENV{NUNIT_DIR}
         [HKEY_CURRENT_USER\\Software\\nunit.org\\NUnit\\2.6.4]
         "C:\\Program Files (x86)\\NUnit 2.6.4"
         /usr/local
@@ -32,12 +33,10 @@ set(nunit_search_hints
         /usr/lib/mono/2.0
         /usr/lib/mono/1.0
         /usr/lib/nunit
-        $ENV{NUNIT_DIR}
         )
 
 find_file(NUNIT_LIBRARY nunit.framework.dll
-        PATHS ${nunit_search_hints}
-        HINTS ${PC_NUNIT_INCLUDEDIR} ${PC_NUNIT_INCLUDE_DIRS}
+        HINTS ${nunit_search_hints} ${PC_NUNIT_INCLUDEDIR} ${PC_NUNIT_INCLUDE_DIRS}
         PATH_SUFFIXES bin bin/framework lib/mono lib/mono/4.5
         )
 
@@ -108,7 +107,7 @@ set(NUNIT_INCLUDE_DIR ${NUNIT_LIBRARY} )
 set(NUNIT_INCLUDE_DIRS ${NUNIT_LIBRARY} )
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(NUnit DEFAULT_MSG NUNIT_LIBRARY NUNIT_COMMAND)
-
+message(STATUS "Found NUnit Runner: ${NUNIT_COMMAND}")
 if(NUNIT_COMMAND)
     if(MONO_EXECUTABLE AND NUNIT_COMMAND MATCHES "(.exe)")
         set(NUNIT_COMMAND ${MONO_EXECUTABLE} ${NUNIT_COMMAND})

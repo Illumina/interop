@@ -2,7 +2,21 @@
 #
 #
 
+macro(set_msvc_mt)
+    foreach (flag_var
+            CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
+            CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+        string(REPLACE "-MD" "-MT" ${flag_var} "${${flag_var}}")
+    endforeach()
+endmacro()
 
+macro(set_msvc_md)
+    foreach (flag_var
+            CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
+            CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+        string(REPLACE "/MT" "-MD" ${flag_var} "${${flag_var}}")
+    endforeach()
+endmacro()
 # Adopted from Google Test
 # https://code.google.com/p/googletest/source/browse/trunk/cmake/internal_utils.cmake?r=677
 #
