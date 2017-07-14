@@ -297,7 +297,8 @@ namespace illumina { namespace interop { namespace logic { namespace summary
             total_useable_calls += total_useable_calls_by_read;
             useable_calls_gt_q30 += useable_calls_gt_q30_by_read;
             overall_projected_yield += read_projected_yield;
-            yield_g += run[read].summary().yield_g();
+            if(!std::isnan(run[read].summary().yield_g()))
+                yield_g += run[read].summary().yield_g();
             // Certain metrics can be biased by the index read, e.g. C1 intensity, total yield
             // So, we include totals that skip the index reads
             if(!run[read].read().is_index())
@@ -305,7 +306,8 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                 total_useable_calls_nonindex += total_useable_calls_by_read;
                 useable_calls_gt_q30_nonindex += useable_calls_gt_q30_by_read;
                 projected_yield_nonindex += read_projected_yield;
-                yield_g_nonindex += run[read].summary().yield_g();
+                if(!std::isnan(run[read].summary().yield_g()))
+                    yield_g_nonindex += run[read].summary().yield_g();
             }
         }
         run.nonindex_summary().projected_yield_g(::uint64_t(projected_yield_nonindex+0.5f)/1e9f);

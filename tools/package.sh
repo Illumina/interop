@@ -24,6 +24,7 @@
 set -e
 INTEROP_C89=OFF
 BUILD_TYPE=Release
+THREAD_COUNT=4
 
 if [ ! -z $1 ] ; then
     SOURCE_PATH=$1
@@ -102,56 +103,71 @@ for PYBUILD in `ls -1 /opt/python`; do
         continue
     fi
     touch $SOURCE_PATH/src/ext/python/CMakeLists.txt
-    run "Configure ${PYBUILD}" cmake $SOURCE_PATH -B${BUILD_PATH} -DPYTHON_EXECUTABLE=${PYTHON_BIN}/python ${CMAKE_EXTRA_FLAGS} -DSKIP_PACKAGE_ALL_WHEEL=ON
+    run "Configure ${PYBUILD}" cmake $SOURCE_PATH -B${BUILD_PATH} -DPYTHON_EXECUTABLE=${PYTHON_BIN}/python ${CMAKE_EXTRA_FLAGS} -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp
 
-    run "Test ${PYBUILD}" cmake --build $BUILD_PATH --target check -- -j4
-    run "Build ${PYBUILD}" cmake --build $BUILD_PATH --target package_wheel -- -j4
-    auditwheel show ${ARTIFACT_PATH}/interop*${PYBUILD}*linux_x86_64.whl
-    auditwheel repair ${ARTIFACT_PATH}/interop*${PYBUILD}*linux_x86_64.whl -w ${ARTIFACT_PATH}
-    rm -f ${ARTIFACT_PATH}/interop*${PYBUILD}*linux_x86_64.whl
+    run "Test ${PYBUILD}" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
+    run "Build ${PYBUILD}" cmake --build $BUILD_PATH --target package_wheel -- -j${THREAD_COUNT}
+    auditwheel show ${ARTIFACT_PATH}/tmp/interop*${PYBUILD}*linux_x86_64.whl
+    auditwheel repair ${ARTIFACT_PATH}/tmp/interop*${PYBUILD}*linux_x86_64.whl -w ${ARTIFACT_PATH}
+    rm -fr ${ARTIFACT_PATH}/tmp
 done
 
 if [ ! -z $PYTHON_VERSION ] ; then
-    if hash pyenv 2> /dev/null; then
-        pyenv install $PYTHON_VERSION || true
-        pyenv global $PYTHON_VERSION || true
-        python --version
-        pip install numpy
-        pip install wheel
-        if [[ "$OSTYPE" == "linux-gnu" ]]; then
-            pip install auditwheel==1.5
-        elif [[ "$OSTYPE" == "darwin"* ]]; then
-            pip install delocate
+    if [ "$PYTHON_VERSION" == "ALL" ] ; then
+        python_versions="2.7.11 3.4.4 3.5.1 3.6.0"
+    else
+        python_versions="$PYTHON_VERSION"
+    fi
+    for py_ver in $python_versions; do
+        echo "Building Python $py_ver"
+        if hash pyenv 2> /dev/null; then
+            export PATH=$(pyenv root)/shims:${PATH}
+            pyenv install $py_ver || true
+            pyenv global $py_ver || true
+            which python
+            python --version
+            pip install numpy
+            pip install wheel
+            if [[ "$OSTYPE" == "linux-gnu" ]]; then
+                pip install auditwheel==1.5
+            elif [[ "$OSTYPE" == "darwin"* ]]; then
+                pip install delocate
+            fi
         fi
-    fi
-    run "Configure" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS} -DENABLE_PYTHON_DYNAMIC_LOAD=ON -DPYTHON_EXECUTABLE=`which python`
-    run "Build" cmake --build $BUILD_PATH -- -j4
-    run "Test" cmake --build $BUILD_PATH --target check -- -j4
-    run "Build Wheel $PYTHON_VERSION" cmake --build $BUILD_PATH --target package_wheel -- -j4
+        run "Configure $py_ver" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS} -DENABLE_PYTHON_DYNAMIC_LOAD=ON -DPYTHON_EXECUTABLE=`which python` -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp
+        run "Build $py_ver" cmake --build $BUILD_PATH -- -j${THREAD_COUNT}
+        run "Test $py_ver" cmake --build $BUILD_PATH --target check_python -- -j${THREAD_COUNT}
+        run "Build Wheel $py_ver" cmake --build $BUILD_PATH --target package_wheel -- -j${THREAD_COUNT}
 
-    if hash delocate-wheel 2> /dev/null; then
-        delocate-listdeps ${ARTIFACT_PATH}/*.whl
-        delocate-wheel $ARTIFACT_PATH/*.whl
-        delocate-addplat --rm-orig -x 10_9 -x 10_10 $ARTIFACT_PATH/*.whl
-    elif hash auditwheel 2> /dev/null; then
-        auditwheel show ${ARTIFACT_PATH}/*.whl
-        auditwheel repair ${ARTIFACT_PATH}/*.whl -w ${ARTIFACT_PATH}
-        rm -f ${ARTIFACT_PATH}/interop*linux_x86_64.whl
-    fi
+        if hash delocate-wheel 2> /dev/null; then
+            delocate-listdeps ${ARTIFACT_PATH}/tmp/*.whl
+            delocate-wheel $ARTIFACT_PATH/tmp/*.whl
+            delocate-addplat -c --rm-orig -x 10_9 -x 10_10 $ARTIFACT_PATH/tmp/*.whl -w $ARTIFACT_PATH
+        elif hash auditwheel 2> /dev/null; then
+            auditwheel show ${ARTIFACT_PATH}/tmp/*.whl
+            auditwheel repair ${ARTIFACT_PATH}/tmp/*.whl -w ${ARTIFACT_PATH}
+        fi
+        touch $SOURCE_PATH/src/ext/python/CMakeLists.txt
+        rm -fr ${ARTIFACT_PATH}/tmp
+    done
 fi
 
 if [ ! -e $BUILD_PATH/CMakeCache.txt ] ; then
     run "Configure" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS}
-    run "Build" cmake --build $BUILD_PATH -- -j4
-    run "Test" cmake --build $BUILD_PATH --target check -- -j4
-
+    run "Build" cmake --build $BUILD_PATH -- -j${THREAD_COUNT}
+    run "Test" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
 fi
 
-run "Package" cmake --build $BUILD_PATH --target bundle -- -j4
+run "Package" cmake --build $BUILD_PATH --target bundle -- -j${THREAD_COUNT}
 
 if hash dotnet 2> /dev/null; then
-    run "Configure DotNetCore" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS} -DCSBUILD_TOOL=DotNetCore && cmake --$BUILD_PATH --target nupack -- -j 4 || true
+    run "Configure DotNetCore" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS} -DCSBUILD_TOOL=DotNetCore && cmake --$BUILD_PATH --target nupack -- -j${THREAD_COUNT} || true
 fi
+rm -fr ${ARTIFACT_PATH}/tmp
+echo "List Artifacts:"
+ls -l $ARTIFACT_PATH/*
+echo "----"
+
 
 rm -fr $BUILD_PATH
 

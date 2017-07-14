@@ -436,11 +436,11 @@ TEST(summary_metrics_test, clear_run_metrics) // TODO Expand to catch everything
     model::metrics::run_metrics partial_metrics(run_info);
     extraction_metric_v2::create_expected(partial_metrics.get<extraction_metric>());
     logic::summary::summarize_run_metrics(partial_metrics, summary);
-    INTEROP_EXPECT_NEAR(summary.total_summary().percent_aligned(), 0, tol);
+    INTEROP_EXPECT_NEAR(summary.total_summary().percent_aligned(), std::numeric_limits<float>::quiet_NaN(), tol);
 
     model::metrics::run_metrics empty_metrics;
     logic::summary::summarize_run_metrics(empty_metrics, summary);
-    INTEROP_EXPECT_NEAR(summary.total_summary().percent_aligned(), 0, tol);
+    INTEROP_EXPECT_NEAR(summary.total_summary().percent_aligned(), std::numeric_limits<float>::quiet_NaN(), tol);
     EXPECT_EQ(summary.size(), 0u);
 }
 
@@ -450,7 +450,7 @@ TEST(summary_metrics_test, empty_run_metrics)
     model::metrics::run_metrics metrics;
     model::summary::run_summary summary;
     logic::summary::summarize_run_metrics(metrics, summary);
-    INTEROP_EXPECT_NEAR(summary.total_summary().percent_aligned(), 0, tol);
+    INTEROP_EXPECT_NEAR(summary.total_summary().percent_aligned(), std::numeric_limits<float>::quiet_NaN(), tol);
     EXPECT_EQ(summary.size(), 0u);
 }
 

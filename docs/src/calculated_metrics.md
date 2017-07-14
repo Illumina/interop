@@ -18,3 +18,7 @@ cycle as one that is fully corrected in terms of phasing/prephasing. For this re
 of a run as usable because it is not fully corrected. So, we don’t count this cycle toward yield or q30 or error rate. 
 Many aligners drop the last cycle for this reason.
 
+### A note on phasing weights
+
+The phasing weights have a factor of 100x baked in. This means the actual phasing weight can be derived by dividing by 
+100. The phasing rate, slope and offset all have this factor baked into the calculation.

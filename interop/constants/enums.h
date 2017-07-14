@@ -53,11 +53,11 @@
         INTEROP_TUPLE7(ClusterCount, "Cluster Count", Tile, TileFeature, tile_metric, cluster_count_m, Void)\
         INTEROP_TUPLE7(ClusterCountPF, "Clusters PF", Tile, TileFeature, tile_metric, cluster_count_pf_m, Void)\
         INTEROP_TUPLE7(ErrorRate, "Error Rate", Error, CycleFeature, error_metric, error_rate, Void)\
-        INTEROP_TUPLE7(PercentPhasing, "% Phasing", Tile, ReadFeature, tile_metric, percent_phasing_at, read)\
-        INTEROP_TUPLE7(PercentPrephasing, "% Prephasing", Tile, ReadFeature, tile_metric, percent_prephasing_at, read)\
+        INTEROP_TUPLE7(PercentPhasing, "Legacy Phasing Rate", Tile, ReadFeature, tile_metric, percent_phasing_at, read)\
+        INTEROP_TUPLE7(PercentPrephasing, "Legacy Prephasing Rate", Tile, ReadFeature, tile_metric, percent_prephasing_at, read)\
         INTEROP_TUPLE7(PercentAligned, "% Aligned", Tile, ReadFeature, tile_metric, percent_aligned_at, read)\
-        INTEROP_TUPLE7(Phasing, "Phasing", EmpiricalPhasing, CycleFeature, phasing_metric, phasing_weight, Void)\
-        INTEROP_TUPLE7(PrePhasing, "PrePhasing", EmpiricalPhasing, CycleFeature, phasing_metric, prephasing_weight, Void)\
+        INTEROP_TUPLE7(Phasing, "Phasing Weight", EmpiricalPhasing, CycleFeature, phasing_metric, phasing_weight, Void)\
+        INTEROP_TUPLE7(PrePhasing, "Prephasing Weight", EmpiricalPhasing, CycleFeature, phasing_metric, prephasing_weight, Void)\
         INTEROP_TUPLE7(CorrectedIntensity, "Corrected Int", CorrectedInt, CycleFeature|BaseFeature, corrected_intensity_metric, corrected_int_all_float, base)\
         INTEROP_TUPLE7(CalledIntensity, "Called Int", CorrectedInt, CycleFeature|BaseFeature, corrected_intensity_metric, corrected_int_called, base)\
         INTEROP_TUPLE7(SignalToNoise, "Signal to Noise", CorrectedInt, CycleFeature, corrected_intensity_metric, signal_to_noise, Void)\
@@ -107,13 +107,13 @@
  */
 #define INTEROP_ENUM_TILE_NAMING_METHODS \
         /** Four digit tiles for HiSeq and modern MiSeqs */\
-        INTEROP_TUPLE1(FourDigit),\
+        INTEROP_TUPLE1(FourDigit), \
         /** Five digit tiles for NextSeq and ... */\
-        INTEROP_TUPLE1(FiveDigit),\
+        INTEROP_TUPLE1(FiveDigit), \
         /** Absolute naming for tiles GAs and old MiSeqs*/\
-        INTEROP_TUPLE1(Absolute),\
+        INTEROP_TUPLE1(Absolute), \
         /** Number of naming methods */\
-        INTEROP_TUPLE1(TileNamingMethodCount),\
+        INTEROP_TUPLE1(TileNamingMethodCount), \
         INTEROP_TUPLE1(UnknownTileNamingMethod)
 
 /** Enumeration of DNA bases
@@ -146,9 +146,9 @@
  * @see illumina::interop::constants::surface_type
  */
 #define INTEROP_ENUM_SURFACE_TYPES \
-        INTEROP_TUPLE1(SentinelSurface),\
-        INTEROP_TUPLE1(Top),\
-        INTEROP_TUPLE1(Bottom),\
+        INTEROP_TUPLE1(SentinelSurface), \
+        INTEROP_TUPLE1(Top), \
+        INTEROP_TUPLE1(Bottom), \
         INTEROP_TUPLE1(UnknownSurface)
 
 
@@ -158,10 +158,10 @@
  * @see illumina::interop::constants::instrument_type
  */
 #define INTEROP_ENUM_INSTRUMENT_TYPES \
-        INTEROP_TUPLE1(HiSeq),\
-        INTEROP_TUPLE1(HiScan),\
-        INTEROP_TUPLE1(MiSeq),\
-        INTEROP_TUPLE1(NextSeq),\
+        INTEROP_TUPLE1(HiSeq), \
+        INTEROP_TUPLE1(HiScan), \
+        INTEROP_TUPLE1(MiSeq), \
+        INTEROP_TUPLE1(NextSeq), \
         INTEROP_TUPLE1(MiniSeq), \
         INTEROP_TUPLE1(NovaSeq), \
         INTEROP_TUPLE1(InstrumentCount), \

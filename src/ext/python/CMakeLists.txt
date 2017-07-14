@@ -149,9 +149,12 @@ if(NOT PYTHONINTERP_FOUND)
     return()
 endif()
 
+if(NOT PYTHON_WHEEL_PREFIX)
+    set(PYTHON_WHEEL_PREFIX "${PACKAGE_OUTPUT_FILE_PREFIX}")
+endif()
 add_custom_target(package_wheel
-        COMMENT "Creating Python wheel package"
-        COMMAND ${PYTHON_EXECUTABLE} setup.py bdist_wheel -d ${PACKAGE_OUTPUT_FILE_PREFIX}
+        COMMENT "Creating Python wheel package in ${PYTHON_WHEEL_PREFIX}"
+        COMMAND ${PYTHON_EXECUTABLE} setup.py bdist_wheel -d ${PYTHON_WHEEL_PREFIX}
         )
 add_dependencies(package_wheel python_lib)
 set_target_properties(package_wheel PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)

@@ -10,7 +10,7 @@ Illumina sequencers including **NovaSeq**. These libraries are backwards compati
 with one exception: GA systems have been excluded.
 
 ***
->  We now support an interface to Python 2.7 and 3.4-3.6 (see contents below)
+>  We now support an interface to Python 2.7 (UCS-4) and 3.4-3.6 (see contents below)
 ***
 
 The InterOp files supported by this library include:
