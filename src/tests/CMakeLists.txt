@@ -30,7 +30,7 @@ endif()
 if(ENABLE_CSHARP)
     add_subdirectory("csharp")
     if(CSHARP_TEST_ENABLED)
-        add_dependencies(check check_csharp csharp_perftest)
+        add_dependencies(check check_csharp)
     endif()
 endif()
 

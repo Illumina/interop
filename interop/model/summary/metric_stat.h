@@ -22,8 +22,8 @@ namespace illumina { namespace interop { namespace model { namespace summary
          * @param stddev standard deviation over several metrics
          * @param median median over several metrics
          */
-        metric_stat(const float mean = 0,
-                    const float stddev = 0,
+        metric_stat(const float mean = std::numeric_limits<float>::quiet_NaN(),
+                    const float stddev = std::numeric_limits<float>::quiet_NaN(),
                     const float median = std::numeric_limits<float>::quiet_NaN()) :
                 m_mean(mean),
                 m_stddev(stddev),
@@ -33,13 +33,11 @@ namespace illumina { namespace interop { namespace model { namespace summary
 
     public:
         /** Clear the stat variables
-         *
-         * @param set_nan clear to NaN
          */
-        void clear(const bool set_nan=false)
+        void clear()
         {
-            m_mean = set_nan ? std::numeric_limits<float>::quiet_NaN() : 0;
-            m_stddev = set_nan ? std::numeric_limits<float>::quiet_NaN() : 0;
+            m_mean = std::numeric_limits<float>::quiet_NaN();
+            m_stddev =  std::numeric_limits<float>::quiet_NaN();
             m_median = std::numeric_limits<float>::quiet_NaN();
         }
 

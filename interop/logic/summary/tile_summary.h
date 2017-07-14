@@ -247,6 +247,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                 const size_t non_nan = update_read_summary(read_data_by_lane_read(read, lane),
                                                            run[read][lane],
                                                            skip_median);
+                if(non_nan == 0) continue;
                 INTEROP_ASSERT(!std::isnan(run[read][lane].percent_aligned().mean()));
                 percent_aligned_by_read += run[read][lane].percent_aligned().mean() * non_nan;
                 total_by_read += non_nan;

@@ -35,7 +35,7 @@ For Pythons users, a Wheel package is available on Github Release:
 $ pip install -f https://github.com/Illumina/interop/releases/latest interop
 ~~~~~~~~~~~~~
 
-Supported versions for binary distribution: 2.7, 3.4, 3.5 and 3.6.
+Supported versions for binary distribution: 2.7 (UCS-4), 3.4, 3.5 and 3.6.
 
 ## Build from Source
 

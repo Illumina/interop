@@ -217,8 +217,6 @@ install(TARGETS ${INTEROP_LIB}
 )
 
 if(MSVC)
-
-
     if (NOT BUILD_SHARED_LIBS AND NOT FORCE_SHARED_CRT)
         set_msvc_md()
         set(INTEROP_MSVC interop-md)

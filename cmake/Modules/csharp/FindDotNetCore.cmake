@@ -7,7 +7,7 @@
 set(DOTNET_CORE_ROOT "" CACHE PATH "Set the location of the .NET root directory")
 set(DOTNET_CORE_VERSION "" CACHE STRING "C# .NET compiler version" )
 
-if(DOTNET_CORE_ROOT AND EXISTS ${DOTNET_CORE_ROOT})
+if(DOTNET_CORE_ROOT AND EXISTS "${DOTNET_CORE_ROOT}")
     find_program(DOTNET_CORE_EXECUTABLE dotnet dotnet.exe
             PATHS ${DOTNET_CORE_ROOT}
             PATH_SUFFIXES . bin
@@ -17,7 +17,7 @@ endif()
 
 find_program(DOTNET_CORE_EXECUTABLE dotnet dotnet.exe)
 
-if(EXISTS ${DOTNET_CORE_EXECUTABLE})
+if(EXISTS "${DOTNET_CORE_EXECUTABLE}")
     execute_process(
         COMMAND ${DOTNET_CORE_EXECUTABLE} --version
         OUTPUT_VARIABLE dotnet_core_version_string

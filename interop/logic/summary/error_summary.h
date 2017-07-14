@@ -54,6 +54,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
           */
          float average()const
          {
+             if(m_error_count == 0) return std::numeric_limits<float>::quiet_NaN();
              return divide(m_error_sum, static_cast<float>(m_error_count));
          }
          /** Get the maximum cycle apart of the average
@@ -165,6 +166,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                 INTEROP_ASSERT(lane < run[read].size());
                 INTEROP_ASSERT(lane < read_lane_cache.lane_count());
                 model::summary::metric_stat stat;
+                stat.clear();
                 summarize(read_lane_cache(read, lane).begin(),
                           read_lane_cache(read, lane).end(),
                           stat,
@@ -269,6 +271,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
             {
                 INTEROP_ASSERT(lane < run[read].size());
                 model::summary::metric_stat error_stat;
+                error_stat.clear();
                 summarize(read_lane_cache(read, lane).begin(),
                           read_lane_cache(read, lane).end(),
                           error_stat,

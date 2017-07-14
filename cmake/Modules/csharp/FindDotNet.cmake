@@ -12,7 +12,7 @@ endif()
 set(DOTNET_ROOT "" CACHE PATH "Set the location of the .NET root directory")
 set(DOTNET_EXECUTABLE_VERSION "" CACHE STRING "C# .NET compiler version" )
 
-if(DOTNET_ROOT AND EXISTS ${DOTNET_ROOT})
+if(DOTNET_ROOT AND EXISTS "${DOTNET_ROOT}")
     find_program(DOTNET_EXECUTABLE csc.exe
             PATHS ${DOTNET_ROOT}
             PATH_SUFFIXES bin

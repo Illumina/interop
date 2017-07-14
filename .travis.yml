@@ -24,16 +24,7 @@ matrix:
   include:
   - os: osx
     compiler: clang
-    env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release 3.4.4"
-  - os: osx
-    compiler: clang
-    env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release 3.5.1"
-  - os: osx
-    compiler: clang
-    env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release 3.6.0"
-  - os: osx
-    compiler: clang
-    env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release 2.7.11"
+    env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release ALL"
   - os: linux
     compiler: clang
     env: SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis ON Debug"
