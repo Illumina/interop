@@ -5,6 +5,7 @@
 
 Date       | Description
 ---------- | -----------
+2017-07-21 | Native shared libraries are now copied to bin folder for NuGet packages on Linux (non-Windows systems)
 2017-07-11 | IPA-6535: Error rate should report NaN for no data
 2017-07-10 | Simplify build scripts, add nuget package and additional MSVC libraries
 2017-06-27 | IPA-6640: Fix issues with summary app and phasing reporting
