@@ -290,8 +290,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         const index_info &indices(const size_t n) const throw(model::index_out_of_bounds_exception)
         {
-            if(n >= m_indices.size())
-                INTEROP_THROW( index_out_of_bounds_exception, "Index out of bounds");
+            INTEROP_BOUNDS_CHECK(n, m_indices.size(), "Index out of bounds");
             return m_indices[n];
         }
 

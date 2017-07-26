@@ -48,8 +48,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          */
         const Point & operator[](const size_t index) const throw(model::index_out_of_bounds_exception)
         {
-            if(index >= m_points.size())
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Index out of bounds");
+            INTEROP_BOUNDS_CHECK(index, m_points.size(), "Index out of bounds");
             return m_points[index];
         }
 
@@ -60,8 +59,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          */
         Point & operator[](const size_t index) throw(model::index_out_of_bounds_exception)
         {
-            if(index >= m_points.size())
-                INTEROP_THROW( model::index_out_of_bounds_exception, "Index out of bounds");
+            INTEROP_BOUNDS_CHECK(index, m_points.size(), "Index out of bounds");
             return m_points[index];
         }
 
@@ -73,8 +71,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          */
         const Point &at(const size_t index) const throw(model::index_out_of_bounds_exception)
         {
-            if(index >= m_points.size())
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Index out of bounds");
+            INTEROP_BOUNDS_CHECK(index, m_points.size(), "Index out of bounds");
             return m_points[index];
         }
 

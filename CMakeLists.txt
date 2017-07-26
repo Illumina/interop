@@ -51,7 +51,7 @@ if(ENABLE_DEPENDENCY_MANAGER)
     if(DEPS_URL)
         update_dependencies(
                 ${DEPS_URL}
-                .illumina.builddeps
+                .illumina.builddeps.interop
                 DEPS_DIR
         )
     endif()

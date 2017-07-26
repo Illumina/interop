@@ -139,7 +139,7 @@ namespace illumina { namespace interop { namespace io
     inline void read_binary(std::istream &in, std::string &str, const std::string& default_val)
     {
         const size_t length = read_binary< ::uint16_t >(in);
-        if (in.fail()) INTEROP_THROW(incomplete_file_exception, "No more data after length");
+        if (in.fail()) INTEROP_THROW(incomplete_file_exception, "Unexpected end of file");
         if (length > 0)
         {
             str.assign(length, ' ');

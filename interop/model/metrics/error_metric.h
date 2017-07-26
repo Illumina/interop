@@ -113,8 +113,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         uint_t mismatch_cluster_count(const size_t n) const throw(model::index_out_of_bounds_exception)
         {
-            if(n >= m_mismatch_cluster_count.size())
-                INTEROP_THROW( index_out_of_bounds_exception, "Index out of bounds");
+            INTEROP_BOUNDS_CHECK(n, m_mismatch_cluster_count.size(), "Index out of bounds");
             return m_mismatch_cluster_count[n];
         }
 

@@ -51,8 +51,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
             const summary::read_cycle& read = cycle_to_read[beg->cycle()-1];
             if(data_beg[row*column_count]==0)
             {
-                if((beg->cycle()-1) >= cycle_to_read.size())
-                    INTEROP_THROW(model::index_out_of_bounds_exception, "Cycle exceeds total cycles from Reads in the RunInfo.xml - " << (beg->cycle()-1) << "  >= " << cycle_to_read.size());
+                INTEROP_BOUNDS_CHECK(beg->cycle()-1, cycle_to_read.size(), "Cycle exceeds total cycles from Reads in the RunInfo.xml");
 
 
                 INTEROP_ASSERTMSG(row_it != row_offset.end(), "Bug with row offset");
@@ -161,7 +160,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
                                           metrics.run_info().reads().end(),
                                           cycle_to_read);
         if(data_beg+column_count*row_offset.size() > data_end)
-            INTEROP_THROW(model::index_out_of_bounds_exception, "Table is larger than buffer: "
+            INTEROP_THROW(model::invalid_parameter, "Table is larger than buffer: "
                     << (column_count*row_offset.size()) << " > " << std::distance(data_beg, data_end)
                     << " column_count: " << column_count << " row_offset.size()=" << row_offset.size());
         zero_first_column(data_beg, data_beg+column_count*row_offset.size(), column_count);
@@ -290,7 +289,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
                                      const std::vector<model::table::imaging_column>& columns,
                                      const row_offset_map_t& row_offset,
                                      float* data_beg,
-                                     const size_t n) throw(model::index_out_of_bounds_exception)
+                                     const size_t n) throw(model::index_out_of_bounds_exception, model::invalid_parameter)
     {
         std::fill(data_beg, data_beg+n, std::numeric_limits<float>::quiet_NaN());
         create_imaging_table_data(metrics, columns, row_offset, data_beg, data_beg+n);
@@ -327,7 +326,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
      * @param table destination imaging table
      */
     void create_imaging_table(model::metrics::run_metrics& metrics, model::table::imaging_table& table)
-                                        throw(model::invalid_column_type, model::index_out_of_bounds_exception)
+                                        throw(model::invalid_column_type, model::index_out_of_bounds_exception, model::invalid_parameter)
     {
         typedef model::table::imaging_table::column_vector_t column_vector_t;
         typedef model::table::imaging_table::data_vector_t data_vector_t;
