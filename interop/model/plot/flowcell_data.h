@@ -92,8 +92,8 @@ namespace illumina { namespace interop { namespace model { namespace plot
         ::uint32_t tile_at(const size_t index)const
         {
             INTEROP_ASSERTMSG(m_data != 0, "length: " << length());
-            if (index >= length())
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Tile index out of bounds");
+
+            INTEROP_BOUNDS_CHECK(index, length(), "Tile Index out of bounds");
             return m_data[index];
         }
 
@@ -107,10 +107,8 @@ namespace illumina { namespace interop { namespace model { namespace plot
         void set_data(const size_t lane_idx, const size_t loc, const ::uint32_t tile_id, const float value)
         throw(model::index_out_of_bounds_exception)
         {
-            if (lane_idx >= lane_count())
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Lane index out of bounds");
-            if (loc >= column_count())
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Location index out of bounds");
+            INTEROP_BOUNDS_CHECK(lane_idx, lane_count(), "Lane Index out of bounds");
+            INTEROP_BOUNDS_CHECK(loc, column_count(), "Location Index out of bounds");
             heatmap_data::operator()(lane_idx, loc) = value;
             INTEROP_ASSERT(m_data != 0);
             m_data[index_of(lane_idx, loc)] = tile_id;
@@ -124,10 +122,8 @@ namespace illumina { namespace interop { namespace model { namespace plot
          */
         ::uint32_t tile_id(const size_t lane_idx, const size_t loc) const throw(model::index_out_of_bounds_exception)
         {
-            if (lane_idx >= lane_count())
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Lane index out of bounds");
-            if (loc >= column_count())
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Location index out of bounds");
+            INTEROP_BOUNDS_CHECK(lane_idx, lane_count(), "Lane Index out of bounds");
+            INTEROP_BOUNDS_CHECK(loc, column_count(), "Location Index out of bounds");
             INTEROP_ASSERT(index_of(lane_idx, loc) < length());
             INTEROP_ASSERT(m_data != 0);
             return m_data[index_of(lane_idx, loc)];
@@ -141,10 +137,8 @@ namespace illumina { namespace interop { namespace model { namespace plot
          */
         ::uint32_t& tile_id(const size_t lane_idx, const size_t loc) throw(model::index_out_of_bounds_exception)
         {
-            if (lane_idx >= lane_count())
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Lane index out of bounds");
-            if (loc >= column_count())
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Location index out of bounds");
+            INTEROP_BOUNDS_CHECK(lane_idx, lane_count(), "Lane Index out of bounds");
+            INTEROP_BOUNDS_CHECK(loc, column_count(), "Location Index out of bounds");
             INTEROP_ASSERT(index_of(lane_idx, loc) < length());
             INTEROP_ASSERT(m_data != 0);
             return m_data[index_of(lane_idx, loc)];

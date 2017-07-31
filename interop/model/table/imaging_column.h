@@ -177,8 +177,7 @@ namespace illumina { namespace interop { namespace model { namespace table
         {
             if (has_children())
             {
-                if(sub_index >= m_subcolumn_names.size())
-                    INTEROP_THROW(model::index_out_of_bounds_exception, "Sub column index out of bounds");
+                INTEROP_BOUNDS_CHECK(sub_index, m_subcolumn_names.size(), "SubColumn index out of bounds");
                 return m_name + "_" + m_subcolumn_names[sub_index];
             }
             return m_name;

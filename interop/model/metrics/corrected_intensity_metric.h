@@ -279,8 +279,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         ushort_t corrected_int_all(const constants::dna_bases index) const throw(model::index_out_of_bounds_exception)
         {
-            if(index >= static_cast<constants::dna_bases>(m_corrected_int_all.size()))
-                INTEROP_THROW( index_out_of_bounds_exception, "Base out of bounds");
+            INTEROP_BOUNDS_CHECK(static_cast<size_t>(index), m_corrected_int_all.size(), "Base out of bounds");
             return m_corrected_int_all[index];
         }
 
@@ -292,8 +291,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         float corrected_int_all_float(const constants::dna_bases index) const throw(model::index_out_of_bounds_exception)
         {
-            if(index >= static_cast<constants::dna_bases>(m_corrected_int_all.size()))
-                INTEROP_THROW( index_out_of_bounds_exception, "Base out of bounds");
+            INTEROP_BOUNDS_CHECK(static_cast<size_t>(index), m_corrected_int_all.size(), "Base out of bounds");
             return util::float_cast(m_corrected_int_all[index]);
         }
 
@@ -305,8 +303,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         float corrected_int_called(const constants::dna_bases index) const throw(model::index_out_of_bounds_exception)
         {
-            if(index >= static_cast<constants::dna_bases>(m_corrected_int_called.size()))
-                INTEROP_THROW(index_out_of_bounds_exception, "Base out of bounds");
+            INTEROP_BOUNDS_CHECK(static_cast<size_t>(index), m_corrected_int_all.size(), "Base out of bounds");
             return m_corrected_int_called[index];
         }
 
@@ -344,8 +341,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         uint_t called_counts(const constants::dna_bases index) const throw(model::index_out_of_bounds_exception)
         {
-            if(index >= static_cast<constants::dna_bases>(m_called_counts.size()))
-                INTEROP_THROW( index_out_of_bounds_exception, "Base out of bounds");
+            INTEROP_BOUNDS_CHECK(static_cast<size_t>(index + 1), m_called_counts.size(), "Base out of bounds");
             return m_called_counts[static_cast<uint_t>(index + 1)];
         }
 

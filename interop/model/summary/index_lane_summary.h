@@ -93,8 +93,7 @@ namespace illumina { namespace interop { namespace model { namespace summary {
          */
         index_count_summary& operator[](const size_type n) throw( model::index_out_of_bounds_exception )
         {
-            if(n >= m_count_summaries.size())
-                INTEROP_THROW(index_out_of_bounds_exception, "Index sequence index exceeds index sequence count");
+            INTEROP_BOUNDS_CHECK(n, m_count_summaries.size(), "Index sequence index exceeds index sequence count");
             return m_count_summaries[n];
         }
         /** Get constant reference to lane summary at given index
@@ -104,8 +103,7 @@ namespace illumina { namespace interop { namespace model { namespace summary {
          */
         const index_count_summary& operator[](const size_t n)const throw( model::index_out_of_bounds_exception )
         {
-            if(n >= m_count_summaries.size())
-                INTEROP_THROW(index_out_of_bounds_exception, "Index sequence  index exceeds index sequence count");
+            INTEROP_BOUNDS_CHECK(n, m_count_summaries.size(), "Index sequence index exceeds index sequence count");
             return m_count_summaries[n];
         }
         /** Get reference to lane summary at given index
@@ -116,8 +114,7 @@ namespace illumina { namespace interop { namespace model { namespace summary {
          */
         index_count_summary& at(const size_t n) throw( model::index_out_of_bounds_exception )
         {
-            if(n >= m_count_summaries.size())
-                INTEROP_THROW(index_out_of_bounds_exception, "Index sequence  index exceeds index sequence count");
+            INTEROP_BOUNDS_CHECK(n, m_count_summaries.size(), "Index sequence index exceeds index sequence count");
             return m_count_summaries[n];
         }
         /** Get constant reference to lane summary at given index
@@ -128,8 +125,7 @@ namespace illumina { namespace interop { namespace model { namespace summary {
          */
         const_reference at(const size_type n)const throw( model::index_out_of_bounds_exception )
         {
-            if(n >= m_count_summaries.size())
-                INTEROP_THROW( index_out_of_bounds_exception, "Index sequence  index exceeds index sequence count");
+            INTEROP_BOUNDS_CHECK(n, m_count_summaries.size(), "Index sequence index exceeds index sequence count");
             return m_count_summaries[n];
         }
         /** Get number of summaries by read

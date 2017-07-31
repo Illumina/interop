@@ -170,17 +170,13 @@ namespace illumina { namespace interop { namespace logic { namespace summary
             const size_t surface = beg->surface(naming_method);
             INTEROP_ASSERT(surface > 0);
             const size_t lane = beg->lane() - 1;
-            if (lane >= tile_data_by_lane.size())
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Lane exceeds lane count in RunInfo.xml");
+            INTEROP_BOUNDS_CHECK(lane, tile_data_by_lane.size(), "Lane exceeds number of lanes in RunInfo.xml");
             tile_data_by_lane[beg->lane() - 1].push_back(*beg);// TODO: make more efficient by copying only tile data
             for (const_read_metric_iterator rb = beg->read_metrics().begin(), re = beg->read_metrics().end();
                  rb != re; ++rb)
             {
                 const size_t read = rb->read() - 1;
-                if (read >= read_data_by_lane_read.read_count())
-                    INTEROP_THROW(model::index_out_of_bounds_exception,
-                                  "Read exceeds read count in RunInfo.xml: "
-                                          << read << " >= " << read_data_by_lane_read.read_count());
+                INTEROP_BOUNDS_CHECK(read, read_data_by_lane_read.read_count(), "Read exceeds number of reads in RunInfo.xml");
                 read_data_by_lane_read(read, lane).push_back(*rb);
                 if(surface_count < 2) continue;
                 read_data_by_surface_lane_read(read, lane, surface-1).push_back(*rb);

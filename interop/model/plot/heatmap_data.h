@@ -93,10 +93,8 @@ namespace illumina { namespace interop { namespace model { namespace plot
          */
         float at(const size_t row, const size_t col) const throw(model::index_out_of_bounds_exception)
         {
-            if (row >= m_num_rows)
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Row index out of bounds");
-            if (col >= m_num_columns)
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Column index out of bounds (at): " << col << " >= " << m_num_columns);
+            INTEROP_BOUNDS_CHECK(row, m_num_rows, "Row Index out of bounds");
+            INTEROP_BOUNDS_CHECK(col, m_num_columns, "Column Index out of bounds");
             const size_t idx = index_of(row, col);
             INTEROP_ASSERT(idx < m_num_rows*m_num_columns);
             INTEROP_ASSERT(m_data != 0);
@@ -111,9 +109,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          */
         float at(const size_t idx) const throw(model::index_out_of_bounds_exception)
         {
-            if (idx >= length())
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Index out of bounds");
-            INTEROP_ASSERT(idx < m_num_rows*m_num_columns);
+            INTEROP_BOUNDS_CHECK(idx, length(), "Index out of bounds");
             INTEROP_ASSERT(m_data != 0);
             return m_data[idx];
         }
@@ -124,9 +120,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          */
         float operator[](const size_t idx) const throw(model::index_out_of_bounds_exception)
         {
-            if (idx >= length())
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Index out of bounds");
-            INTEROP_ASSERT(idx < m_num_rows*m_num_columns);
+            INTEROP_BOUNDS_CHECK(idx, length(), "Index out of bounds");
             INTEROP_ASSERT(m_data != 0);
             return m_data[idx];
         }
@@ -141,10 +135,8 @@ namespace illumina { namespace interop { namespace model { namespace plot
          */
         float operator()(const size_t row, const size_t col) const throw(model::index_out_of_bounds_exception)
         {
-            if (row >= m_num_rows)
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Row index out of bounds");
-            if (col >= m_num_columns)
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Column index out of bounds (operator const): " << col << " >= " << m_num_columns);
+            INTEROP_BOUNDS_CHECK(row, m_num_rows, "Row Index out of bounds");
+            INTEROP_BOUNDS_CHECK(col, m_num_columns, "Column Index out of bounds");
             const size_t idx = index_of(row, col);
             INTEROP_ASSERT(idx < m_num_rows*m_num_columns);
             INTEROP_ASSERT(m_data != 0);
@@ -161,10 +153,8 @@ namespace illumina { namespace interop { namespace model { namespace plot
          */
         float &operator()(const size_t row, const size_t col) throw(model::index_out_of_bounds_exception)
         {
-            if (row >= m_num_rows)
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Row index out of bounds");
-            if (col >= m_num_columns)
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Column index out of bounds (operator): " << col << " >= " << m_num_columns);
+            INTEROP_BOUNDS_CHECK(row, m_num_rows, "Row Index out of bounds");
+            INTEROP_BOUNDS_CHECK(col, m_num_columns, "Column Index out of bounds");
             const size_t idx = index_of(row, col);
             INTEROP_ASSERT(idx < m_num_rows*m_num_columns);
             INTEROP_ASSERT(m_data != 0);

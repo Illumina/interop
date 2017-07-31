@@ -59,8 +59,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
          */
         index_lane_summary& operator[](const size_t n) throw( model::index_out_of_bounds_exception )
         {
-            if(n >= m_lane_summaries.size())
-                INTEROP_THROW(index_out_of_bounds_exception, "Lane index exceeds lane count");
+            INTEROP_BOUNDS_CHECK(n, m_lane_summaries.size(), "Lane index exceeds lane count");
             return m_lane_summaries[n];
         }
         /** Get constant reference to lane summary at given index
@@ -70,8 +69,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
          */
         const index_lane_summary& operator[](const size_t n)const throw( model::index_out_of_bounds_exception )
         {
-            if(n >= m_lane_summaries.size())
-                INTEROP_THROW(index_out_of_bounds_exception, "Lane index exceeds lane count");
+            INTEROP_BOUNDS_CHECK(n, m_lane_summaries.size(), "Lane index exceeds lane count");
             return m_lane_summaries[n];
         }
         /** Get reference to lane summary at given index
@@ -82,8 +80,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
          */
         index_lane_summary& at(const size_t n) throw( model::index_out_of_bounds_exception )
         {
-            if(n >= m_lane_summaries.size())
-                INTEROP_THROW(index_out_of_bounds_exception, "Lane index exceeds lane count");
+            INTEROP_BOUNDS_CHECK(n, m_lane_summaries.size(), "Lane index exceeds lane count");
             return m_lane_summaries[n];
         }
         /** Get constant reference to lane summary at given index
@@ -94,8 +91,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
          */
         const_reference at(const size_type n)const throw( model::index_out_of_bounds_exception )
         {
-            if(n >= m_lane_summaries.size())
-                INTEROP_THROW(index_out_of_bounds_exception, "Lane index exceeds lane count");
+            INTEROP_BOUNDS_CHECK(n, m_lane_summaries.size(), "Lane index exceeds lane count");
             return m_lane_summaries[n];
         }
         /** Get number of summaries by read

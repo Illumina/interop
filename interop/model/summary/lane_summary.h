@@ -63,8 +63,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
          */
         surface_summary & operator[](const size_t n) throw(model::index_out_of_bounds_exception)
         {
-            if (n >= m_summary_by_surface.size())
-                INTEROP_THROW( index_out_of_bounds_exception, "Surface index exceeds surface count");
+            INTEROP_BOUNDS_CHECK(n, m_summary_by_surface.size(), "Surface index exceeds surface count");
             return m_summary_by_surface[n];
         }
 
@@ -76,8 +75,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
          */
         surface_summary &at(const size_t n) throw(model::index_out_of_bounds_exception)
         {
-            if (n >= m_summary_by_surface.size())
-                INTEROP_THROW( index_out_of_bounds_exception, "Surface index exceeds surface count");
+            INTEROP_BOUNDS_CHECK(n, m_summary_by_surface.size(), "Surface index exceeds surface count");
             return m_summary_by_surface[n];
         }
 
@@ -167,8 +165,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
          */
         const surface_summary& operator[](const size_t n) const throw(model::index_out_of_bounds_exception)
         {
-            if (n >= m_summary_by_surface.size())
-                INTEROP_THROW( index_out_of_bounds_exception, "Surface index exceeds surface count");
+            INTEROP_BOUNDS_CHECK(n, m_summary_by_surface.size(), "Surface index exceeds surface count");
             return m_summary_by_surface[n];
         }
 
@@ -180,8 +177,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
          */
         const_reference at(const size_type n) const throw(model::index_out_of_bounds_exception)
         {
-            if (n >= m_summary_by_surface.size())
-                INTEROP_THROW( index_out_of_bounds_exception, "Surface index exceeds surface count");
+            INTEROP_BOUNDS_CHECK(n, m_summary_by_surface.size(), "Surface index exceeds surface count");
             return m_summary_by_surface[n];
         }
         /** Get lane number
