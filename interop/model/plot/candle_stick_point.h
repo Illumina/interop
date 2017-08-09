@@ -50,6 +50,14 @@ namespace illumina { namespace interop { namespace model { namespace plot
         { }
 
     public:
+        /** @defgroup candle_stick_point Point on a candle stick plot
+         *
+         * Point on a candle stick plot
+         *
+         * @ingroup plot_data
+         * @ref illumina::interop::model::plot::candle_stick_point "See full class description"
+         * @{
+         */
         /** Get maximum y-value
          *
          * @return maximum y-value
@@ -130,6 +138,9 @@ namespace illumina { namespace interop { namespace model { namespace plot
         {
             return m_data_point_count;
         }
+        /** @} */
+
+    public:
         friend std::ostream& operator<<(std::ostream& out, const candle_stick_point& data)
         {
             const size_t precision = 10;

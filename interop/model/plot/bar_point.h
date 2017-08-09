@@ -43,6 +43,15 @@ namespace illumina { namespace interop { namespace model { namespace plot
             m_width = width;
         }
 
+    public:
+        /** @defgroup bar_point Point on a bar graph
+         *
+         * Point on the bar graph
+         *
+         * @ingroup plot_data
+         * @ref illumina::interop::model::plot::bar_point "See full class description"
+         * @{
+         */
         /** Get width of the bar
          *
          * @return bar width
@@ -60,6 +69,9 @@ namespace illumina { namespace interop { namespace model { namespace plot
         {
             return 0;
         }
+        /** @} */
+
+    public:
         friend std::ostream& operator<<(std::ostream& out, const bar_point& data)
         {
             std::ios::fmtflags previous_state( out.flags() );

@@ -11,7 +11,16 @@
 #include "interop/model/plot/axes.h"
 #include "interop/model/plot/chart_data.h"
 
-namespace illumina { namespace interop { namespace model { namespace plot {
+namespace illumina { namespace interop { namespace model { namespace plot
+{
+
+    /** @defgroup plot_model Model for plotting
+     *
+     * This group defines the plot models:
+     *  1. plot_data - line, bar and candle stick plots
+     *  2. heat_map - Q-score heatmap
+     *  3. flowcell_data - Flowcell heatmap
+     */
 
     /** Encapsulates all data for a single plot
      */
@@ -33,38 +42,14 @@ namespace illumina { namespace interop { namespace model { namespace plot {
         typedef typename series_collection_t::const_iterator const_iterator;
 
     public:
-        /** Clear all series
-         */
-        void clear()
-        {
-            m_series.clear();
-            chart_data::clear();
-        }
-        /** Resize collection to given size
+        /** @defgroup plot_data Model for line, bar and candlestick plots
          *
-         * @param n given size
-         */
-        void resize(const size_t n)
-        {
-            m_series.resize(n);
-        }
-        /** Assign value to collection
+         * Model for line, bar and candlestick plots
          *
-         * @param n given size
-         * @param val value to assign
+         * @ingroup plot_model
+         * @ref illumina::interop::model::plot::plot_data "See full class description"
+         * @{
          */
-        void assign(const size_t n, const series<Point>& val)
-        {
-            m_series.assign(n, val);
-        }
-        /** Push a value to the back of the collection
-         *
-         * @param val value to add
-         */
-        void push_back(const series<Point>& val)
-        {
-            m_series.push_back(val);
-        }
         /** Get point at index
          *
          * @deprecated Will be removed in next feature version (use operator[] instead for C++ Code)
@@ -112,8 +97,41 @@ namespace illumina { namespace interop { namespace model { namespace plot {
         {
             return size()==0;
         }
+        /** @} */
 
     public:
+        /** Clear all series
+         */
+        void clear()
+        {
+            m_series.clear();
+            chart_data::clear();
+        }
+        /** Resize collection to given size
+         *
+         * @param n given size
+         */
+        void resize(const size_t n)
+        {
+            m_series.resize(n);
+        }
+        /** Assign value to collection
+         *
+         * @param n given size
+         * @param val value to assign
+         */
+        void assign(const size_t n, const series<Point>& val)
+        {
+            m_series.assign(n, val);
+        }
+        /** Push a value to the back of the collection
+         *
+         * @param val value to add
+         */
+        void push_back(const series<Point>& val)
+        {
+            m_series.push_back(val);
+        }
         /** Get iterator to start of collection
          *
          * @return iterator to start of collection

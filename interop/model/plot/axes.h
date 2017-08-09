@@ -37,6 +37,24 @@ namespace illumina { namespace interop { namespace model { namespace plot {
         {
             m_label = label;
         }
+        /** Clear the axis
+         */
+        void clear()
+        {
+            m_min = 0.0f;
+            m_max = 0.0f;
+            m_label = "";
+        }
+
+    public:
+        /** @defgroup plot_axis Axis
+         *
+         * Plot axis
+         *
+         * @ingroup plot_axes
+         * @ref illumina::interop::model::plot::axis "See full class description"
+         * @{
+         */
         /** Get the label of the axis
          *
          * @return text label
@@ -61,15 +79,9 @@ namespace illumina { namespace interop { namespace model { namespace plot {
         {
             return m_max;
         }
-        /** Clear the axis
-         */
-        void clear()
-        {
-            m_min = 0.0f;
-            m_max = 0.0f;
-            m_label = "";
-        }
+        /** @} */
 
+    public:
         friend std::ostream& operator<<(std::ostream& out, const axis& data)
         {
             std::ios::fmtflags previous_state( out.flags() );
@@ -145,22 +157,6 @@ namespace illumina { namespace interop { namespace model { namespace plot {
         {
             m_y.set_label(label);
         }
-        /** Get the label of the X-axis
-         *
-         * @return X-axis text label
-         */
-        const std::string& xlabel()const
-        {
-            return m_x.label();
-        }
-        /** Get the label of the Y-axis
-         *
-         * @return X-axis text label
-         */
-        const std::string& ylabel()const
-        {
-            return m_y.label();
-        }
         /** Set the X-axis
          *
          * @param xaxes x axis
@@ -177,8 +173,39 @@ namespace illumina { namespace interop { namespace model { namespace plot {
         {
             m_y = yaxes;
         }
+        /** Clear both axes
+         */
+        void clear()
+        {
+            m_x.clear();
+            m_y.clear();
+        }
 
     public:
+        /** @defgroup plot_axes Axes
+         *
+         * Plot axes
+         *
+         * @ingroup chart_data
+         * @ref illumina::interop::model::plot::axes "See full class description"
+         * @{
+         */
+        /** Get the label of the X-axis
+         *
+         * @return X-axis text label
+         */
+        const std::string& xlabel()const
+        {
+            return m_x.label();
+        }
+        /** Get the label of the Y-axis
+         *
+         * @return X-axis text label
+         */
+        const std::string& ylabel()const
+        {
+            return m_y.label();
+        }
         /** Get the X-axis
          *
          * @return axis
@@ -195,13 +222,9 @@ namespace illumina { namespace interop { namespace model { namespace plot {
         {
             return m_y;
         }
-        /** Clear both axes
-         */
-        void clear()
-        {
-            m_x.clear();
-            m_y.clear();
-        }
+        /** @} */
+
+    public:
 
         friend std::ostream& operator<<(std::ostream& out, const axes& data)
         {

@@ -139,17 +139,20 @@ namespace illumina { namespace interop { namespace model { namespace run
          *
          * @param lane lane number
          * @param tile tile number
+         * @param metric_name name of the metric checked
          * @throws invalid_run_info_exception
          */
-        void validate(const ::uint32_t lane, const ::uint32_t tile)const throw(model::invalid_run_info_exception);
+        void validate(const ::uint32_t lane, const ::uint32_t tile, const std::string& metric_name)const
+        throw(model::invalid_run_info_exception);
         /** Test if tile list matches flowcell layout
          *
          * @param lane lane number
          * @param tile tile number
          * @param cycle cycle number
+         * @param metric_name name of the metric checked
          * @throws invalid_run_info_exception
          */
-        void validate_cycle(const ::uint32_t lane, const ::uint32_t tile, const size_t cycle)const
+        void validate_cycle(const ::uint32_t lane, const ::uint32_t tile, const size_t cycle, const std::string& metric_name)const
         throw(model::invalid_run_info_exception,
               model::invalid_run_info_cycle_exception);
         /** Test if tile list matches flowcell layout
@@ -157,9 +160,10 @@ namespace illumina { namespace interop { namespace model { namespace run
          * @param lane lane number
          * @param tile tile number
          * @param read read number
+         * @param metric_name name of the metric checked
          * @throws invalid_run_info_exception
          */
-        void validate_read(const ::uint32_t lane, const ::uint32_t tile, const size_t read)const
+        void validate_read(const ::uint32_t lane, const ::uint32_t tile, const size_t read, const std::string& metric_name)const
         throw(model::invalid_run_info_exception);
 
     public:

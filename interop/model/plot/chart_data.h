@@ -97,6 +97,31 @@ namespace illumina { namespace interop { namespace model { namespace plot
             m_axes.set_yrange(vmin, vmax);
         }
 
+        /** Set the title of the plot
+         *
+         * @param title plot title
+         */
+        void set_title(const std::string &title)
+        {
+            m_title = title;
+        }
+        /** Clear the title and axis
+         */
+        void clear()
+        {
+            m_axes.clear();
+            m_title = "";
+        }
+
+    public:
+        /** @defgroup chart_data Chart data
+         *
+         * Chart data
+         *
+         * @ingroup plot_model
+         * @ref illumina::interop::model::plot::chart_data "See full class description"
+         * @{
+         */
         /** Get X-axis
          *
          * @return x-axis
@@ -113,15 +138,6 @@ namespace illumina { namespace interop { namespace model { namespace plot
         const axis &y_axis() const
         {
             return m_axes.y();
-        }
-
-        /** Set the title of the plot
-         *
-         * @param title plot title
-         */
-        void set_title(const std::string &title)
-        {
-            m_title = title;
         }
 
         /** Get the title of the plto
@@ -141,14 +157,10 @@ namespace illumina { namespace interop { namespace model { namespace plot
         {
             return m_axes;
         }
-        /** Clear the title and axis
-         */
-        void clear()
-        {
-            m_axes.clear();
-            m_title = "";
-        }
+        /** @} */
 
+
+    public:
         friend std::ostream& operator<<(std::ostream& out, const chart_data& data)
         {
             out << data.m_title << ",";

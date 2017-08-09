@@ -261,55 +261,65 @@ namespace illumina { namespace interop { namespace model { namespace run
      * @param lane lane number
      * @param tile tile number
      * @param read read number
+     * @param metric_name name of the metric checked
      * @throws invalid_run_info_exception
      */
-    void info::validate_read(const ::uint32_t lane, const ::uint32_t tile, const size_t read)const
+    void info::validate_read(const ::uint32_t lane, const ::uint32_t tile, const size_t read, const std::string& metric_name)const
     throw(model::invalid_run_info_exception)
     {
-        validate(lane, tile);
+        validate(lane, tile, metric_name);
         INTEROP_RANGE_CHECK_GT(read, m_reads.size(), invalid_run_info_exception,
-                               "Read number exceeds number of reads in RunInfo.xml");
+                               "Read number exceeds number of reads in RunInfo.xml for record "
+                                       << lane << "_" << tile << " @ " << read << " in file " << metric_name);
     }
     /** Test if tile list matches flowcell layout
      *
      * @param lane lane number
      * @param tile tile number
      * @param cycle cycle number
+     * @param metric_name name of the metric checked
      * @throws invalid_run_info_exception
      */
-    void info::validate_cycle(const ::uint32_t lane, const ::uint32_t tile, const size_t cycle)const
+    void info::validate_cycle(const ::uint32_t lane, const ::uint32_t tile, const size_t cycle, const std::string& metric_name)const
     throw(model::invalid_run_info_exception,
           model::invalid_run_info_cycle_exception)
     {
-        validate(lane, tile);
+        validate(lane, tile, metric_name);
         INTEROP_RANGE_CHECK_GT(cycle, m_total_cycle_count, invalid_run_info_cycle_exception,
-                               "Cycle number exceeds number of cycles in RunInfo.xml");
+                               "Cycle number exceeds number of cycles in RunInfo.xml for record "
+                                       << lane << "_" << tile << " @ " << cycle << " in file " << metric_name);
     }
 
     /** Test if tile list matches flowcell layout
      *
      * @param lane lane number
      * @param tile tile number
+     * @param metric_name name of the metric checked
      * @throws invalid_run_info_exception
      */
-    void info::validate(const ::uint32_t lane, const ::uint32_t tile)const throw(model::invalid_run_info_exception)
+    void info::validate(const ::uint32_t lane, const ::uint32_t tile, const std::string& metric_name)const throw(model::invalid_run_info_exception)
     {
         INTEROP_RANGE_CHECK_GT(lane, m_flowcell.lane_count(), invalid_run_info_exception,
-                             "Lane identifier exceeds number of lanes in RunInfo.xml");
+                             "Lane identifier exceeds number of lanes in RunInfo.xml for record "
+                                     << lane << "_" << tile << " in file " << metric_name);
         const ::uint32_t swath = logic::metric::swath(tile, m_flowcell.naming_method());
         INTEROP_RANGE_CHECK_GT(swath, m_flowcell.swath_count(), invalid_run_info_exception,
-                            "Swath number exceeds number of swaths in RunInfo.xml");
+                            "Swath number exceeds number of swaths in RunInfo.xml for record "
+                                    << lane << "_" << tile << " in file " << metric_name);
         const ::uint32_t tile_number = logic::metric::number(tile, m_flowcell.naming_method());
         INTEROP_RANGE_CHECK_GT(tile_number, m_flowcell.tile_count(), invalid_run_info_exception,
-                            "Tile number exceeds number of tiles in RunInfo.xml");
+                            "Tile number exceeds number of tiles in RunInfo.xml for record "
+                                    << lane << "_" << tile << " in file " << metric_name);
         const ::uint32_t surface = logic::metric::surface(tile, m_flowcell.naming_method());
         INTEROP_RANGE_CHECK_GT(surface, m_flowcell.surface_count(), invalid_run_info_exception,
-                            "Surface number exceeds number of surfaces in RunInfo.xml");
+                            "Surface number exceeds number of surfaces in RunInfo.xml for record "
+                                    << lane << "_" << tile << " in file " << metric_name);
         if(m_flowcell.m_naming_method == constants::FiveDigit)
         {
             const ::uint32_t section = logic::metric::section(tile, m_flowcell.naming_method());
             INTEROP_RANGE_CHECK_GT(section, m_flowcell.total_number_of_sections(), invalid_run_info_exception,
-                                "Section number exceeds number of sections in RunInfo.xml");
+                                "Section number exceeds number of sections in RunInfo.xml for record "
+                                        << lane << "_" << tile << " in file " << metric_name);
         }
     }
 
@@ -350,7 +360,7 @@ namespace illumina { namespace interop { namespace model { namespace run
             if(tile == 0) INTEROP_THROW( invalid_tile_list_exception, "Invalid tile identifier in tile names");
             try
             {
-                validate(lane, tile);
+                validate(lane, tile, "RunInfo.xml");
             }
             catch(const invalid_run_info_exception& ex)
             {

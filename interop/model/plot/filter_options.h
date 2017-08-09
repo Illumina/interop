@@ -413,6 +413,14 @@ namespace illumina { namespace interop { namespace model { namespace plot
         }
 
     public:
+        /** @defgroup filter_options Options to filter plots
+         *
+         * Options to filter plots
+         *
+         * @ingroup plot_model
+         * @ref illumina::interop::model::plot::filter_options "See full class description"
+         * @{
+         */
         /** Set the tile naming method
          *
          * @param naming_method tile naming method enum
@@ -498,6 +506,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
         {
             m_lane = l;
         }
+        /** @} */
 
     public:
         /** Get the lane to display

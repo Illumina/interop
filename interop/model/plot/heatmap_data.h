@@ -33,54 +33,14 @@ namespace illumina { namespace interop { namespace model { namespace plot
         }
 
     public:
-        /** Resize the heat map to the given number of rows and columns
+        /** @defgroup heatmap_data Model for Q-score heatmap
          *
-         * @param data use the given buffer to back the heat map
-         */
-        void set_buffer(float* data) throw(model::invalid_parameter)
-        {
-            if(m_free) INTEROP_THROW( invalid_parameter, "Cannot use internal buffer map with external buffer");
-            if(empty()) INTEROP_THROW( invalid_parameter, "Cannot set external buffer to empty map");
-            m_data = data;
-        }
-        /** Resize the heat map to the given number of rows and columns
+         * Model for Q-score heatmap
          *
-         * @param data use the given buffer to back the heat map
-         * @param rows number of rows
-         * @param cols number of columns
-         * @param default_val value to fill heatmap
+         * @ingroup plot_model
+         * @ref illumina::interop::model::plot::heatmap_data "See full class description"
+         * @{
          */
-        void set_buffer(float* data,
-                        const size_t rows,
-                        const size_t cols,
-                        const float default_val=std::numeric_limits<float>::quiet_NaN())
-        {
-            if(m_free) delete[] m_data;
-            m_data = data;
-            m_num_columns = cols;
-            m_num_rows = rows;
-            m_free=false;
-            std::fill(data, data+length(), default_val);
-        }
-        /** Resize the heat map to the given number of rows and columns
-         *
-         * @param rows number of rows
-         * @param cols number of columns
-         * @param default_val value to fill heatmap
-         */
-        void resize(const size_t rows, const size_t cols,
-                    const float default_val=std::numeric_limits<float>::quiet_NaN())
-        {
-            if(rows != m_num_rows && cols != m_num_columns)
-            {
-                if (m_free) delete[] m_data;
-                m_data = new float[cols * rows];
-                m_num_columns = cols;
-                m_num_rows = rows;
-                m_free = true;
-                std::fill(m_data, m_data+length(), default_val);
-            }
-        }
 
         /** Get value at given row and column
          *
@@ -194,6 +154,57 @@ namespace illumina { namespace interop { namespace model { namespace plot
         bool empty()const
         {
             return length()==0;
+        }
+        /** @} */
+
+    public:
+        /** Resize the heat map to the given number of rows and columns
+         *
+         * @param data use the given buffer to back the heat map
+         */
+        void set_buffer(float* data) throw(model::invalid_parameter)
+        {
+            if(m_free) INTEROP_THROW( invalid_parameter, "Cannot use internal buffer map with external buffer");
+            if(empty()) INTEROP_THROW( invalid_parameter, "Cannot set external buffer to empty map");
+            m_data = data;
+        }
+        /** Resize the heat map to the given number of rows and columns
+         *
+         * @param data use the given buffer to back the heat map
+         * @param rows number of rows
+         * @param cols number of columns
+         * @param default_val value to fill heatmap
+         */
+        void set_buffer(float* data,
+                        const size_t rows,
+                        const size_t cols,
+                        const float default_val=std::numeric_limits<float>::quiet_NaN())
+        {
+            if(m_free) delete[] m_data;
+            m_data = data;
+            m_num_columns = cols;
+            m_num_rows = rows;
+            m_free=false;
+            std::fill(data, data+length(), default_val);
+        }
+        /** Resize the heat map to the given number of rows and columns
+         *
+         * @param rows number of rows
+         * @param cols number of columns
+         * @param default_val value to fill heatmap
+         */
+        void resize(const size_t rows, const size_t cols,
+                    const float default_val=std::numeric_limits<float>::quiet_NaN())
+        {
+            if(rows != m_num_rows && cols != m_num_columns)
+            {
+                if (m_free) delete[] m_data;
+                m_data = new float[cols * rows];
+                m_num_columns = cols;
+                m_num_rows = rows;
+                m_free = true;
+                std::fill(m_data, m_data+length(), default_val);
+            }
         }
 
         /** Clear the data
