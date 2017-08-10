@@ -2,6 +2,20 @@
 
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
+
+    execute_process(
+            COMMAND ${DOXYGEN_EXECUTABLE} --version
+            RESULT_VARIABLE
+            res
+            OUTPUT_VARIABLE
+            doxygen_ver
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    if(NOT doxygen_ver VERSION_EQUAL "1.8.10")
+        message(WARNING "Only doxygen version 1.8.10 is currently supported - not found version: ${doxygen_ver}\nDocumentation target will be disabled")
+        return()
+    endif()
+
     add_custom_target(doc
             COMMAND ${CMAKE_COMMAND} -DCURRENT_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR} -DPROJECT_SOURCE_DIR=${PROJECT_SOURCE_DIR} -DINTEROP_VERSION=${INTEROP_VERSION} -DCONFIG_INPUT_FILE=${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in -DCONFIG_OUTPUT_FILE=${CMAKE_CURRENT_BINARY_DIR}/Doxyfile -P ${CMAKE_SOURCE_DIR}/cmake/ConfigureFile.cmake
             COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
@@ -11,7 +25,7 @@ if(DOXYGEN_FOUND)
     add_dependencies(doc version)
 
     if(NOT GIT_FOUND)
-        find_package(Git REQUIRED)
+        find_package(Git)
     endif()
 
     if(GIT_FOUND)

@@ -36,6 +36,164 @@ namespace illumina { namespace interop { namespace model { namespace plot
         }
 
     public:
+        /** @defgroup flowcell_data Model for flowcell heatmap
+         *
+         * Model for flowcell heatmap
+         *
+         * @ingroup plot_model
+         * @ref illumina::interop::model::plot::flowcell_data "See full class description"
+         * @{
+         */
+        /** Get tile id at index
+         *
+         * @param index index of id
+         * @return tile id
+         */
+        ::uint32_t tile_at(const size_t index)const
+        {
+            INTEROP_ASSERTMSG(m_data != 0, "length: " << length());
+
+            INTEROP_BOUNDS_CHECK(index, length(), "Tile Index out of bounds");
+            return m_data[index];
+        }
+
+        /** Get the tile id associated with the location
+         *
+         * @param lane_idx
+         * @param loc
+         * @return tile id
+         */
+        ::uint32_t tile_id(const size_t lane_idx, const size_t loc) const throw(model::index_out_of_bounds_exception)
+        {
+            INTEROP_BOUNDS_CHECK(lane_idx, lane_count(), "Lane Index out of bounds");
+            INTEROP_BOUNDS_CHECK(loc, column_count(), "Location Index out of bounds");
+            INTEROP_ASSERT(index_of(lane_idx, loc) < length());
+            INTEROP_ASSERT(m_data != 0);
+            return m_data[index_of(lane_idx, loc)];
+        }
+
+        /** Get the single axis
+         *
+         * @return single axis
+         */
+        const plot::axis &saxis() const
+        {
+            return y_axis();
+        }
+
+        /** Get the sub title
+         *
+         * @return sub title
+         */
+        const std::string &subtitle() const
+        {
+            return m_subtitle;
+        }
+
+        /** Get number of lanes
+         *
+         * @return number of lanes
+         */
+        size_t lane_count() const
+        {
+            return row_count();
+        }
+
+        /** Get number of swaths
+         *
+         * @return number of swaths
+         */
+        size_t swath_count() const
+        {
+            return m_swath_count;
+        }
+
+        /** Get number of tiles
+         *
+         * @return number of tiles
+         */
+        size_t tile_count() const
+        {
+            return m_tile_count;
+        }
+
+        /** Get total number of tiles for a single lane
+         *
+         * @return total number of tiles for a single lane
+         */
+        size_t total_tile_count() const
+        {
+            return m_tile_count * m_swath_count;
+        }
+        /** @} */
+
+    public:
+
+        /** Set data at given location in the flowcell
+         *
+         * @param lane_idx lane index
+         * @param loc physical tile location
+         * @param tile_id id of the tile
+         * @param value value of the metric
+         */
+        void set_data(const size_t lane_idx, const size_t loc, const ::uint32_t tile_id, const float value)
+        throw(model::index_out_of_bounds_exception)
+        {
+            INTEROP_BOUNDS_CHECK(lane_idx, lane_count(), "Lane Index out of bounds");
+            INTEROP_BOUNDS_CHECK(loc, column_count(), "Location Index out of bounds");
+            heatmap_data::operator()(lane_idx, loc) = value;
+            INTEROP_ASSERT(m_data != 0);
+            m_data[index_of(lane_idx, loc)] = tile_id;
+        }
+        /** Get the tile id associated with the location
+         *
+         * @param lane_idx
+         * @param loc
+         * @return tile id
+         */
+        ::uint32_t& tile_id(const size_t lane_idx, const size_t loc) throw(model::index_out_of_bounds_exception)
+        {
+            INTEROP_BOUNDS_CHECK(lane_idx, lane_count(), "Lane Index out of bounds");
+            INTEROP_BOUNDS_CHECK(loc, column_count(), "Location Index out of bounds");
+            INTEROP_ASSERT(index_of(lane_idx, loc) < length());
+            INTEROP_ASSERT(m_data != 0);
+            return m_data[index_of(lane_idx, loc)];
+        }
+        /** Set the axis
+         *
+         * @param plot_axis single axis
+         */
+        void set_saxis(const plot::axis &plot_axis)
+        {
+            set_yaxis(plot_axis);
+        }
+
+        /** Set the label of the axis
+         *
+         * @param label text label
+         */
+        void set_label(const std::string &label)
+        {
+            set_ylabel(label);
+        }
+        /** Set the sub title
+         *
+         * @param subtitle label string
+         */
+        void set_subtitle(const std::string &subtitle)
+        {
+            m_subtitle = subtitle;
+        }
+
+        /** Set the limits of the axis
+         *
+         * @param vmin minimum value
+         * @param vmax maximum value
+         */
+        void set_range(const float vmin, const float vmax)
+        {
+            set_yrange(vmin, vmax);
+        }
         /** Resize the heat map to the given number of rows and columns
          *
          * @param data_buffer buffer to hold the flow cell values
@@ -82,157 +240,6 @@ namespace illumina { namespace interop { namespace model { namespace plot
             }
             m_swath_count = 0;
             m_tile_count = 0;
-        }
-
-        /** Get tile id at index
-         *
-         * @param index index of id
-         * @return tile id
-         */
-        ::uint32_t tile_at(const size_t index)const
-        {
-            INTEROP_ASSERTMSG(m_data != 0, "length: " << length());
-
-            INTEROP_BOUNDS_CHECK(index, length(), "Tile Index out of bounds");
-            return m_data[index];
-        }
-
-        /** Set data at given location in the flowcell
-         *
-         * @param lane_idx lane index
-         * @param loc physical tile location
-         * @param tile_id id of the tile
-         * @param value value of the metric
-         */
-        void set_data(const size_t lane_idx, const size_t loc, const ::uint32_t tile_id, const float value)
-        throw(model::index_out_of_bounds_exception)
-        {
-            INTEROP_BOUNDS_CHECK(lane_idx, lane_count(), "Lane Index out of bounds");
-            INTEROP_BOUNDS_CHECK(loc, column_count(), "Location Index out of bounds");
-            heatmap_data::operator()(lane_idx, loc) = value;
-            INTEROP_ASSERT(m_data != 0);
-            m_data[index_of(lane_idx, loc)] = tile_id;
-        }
-
-        /** Get the tile id associated with the location
-         *
-         * @param lane_idx
-         * @param loc
-         * @return tile id
-         */
-        ::uint32_t tile_id(const size_t lane_idx, const size_t loc) const throw(model::index_out_of_bounds_exception)
-        {
-            INTEROP_BOUNDS_CHECK(lane_idx, lane_count(), "Lane Index out of bounds");
-            INTEROP_BOUNDS_CHECK(loc, column_count(), "Location Index out of bounds");
-            INTEROP_ASSERT(index_of(lane_idx, loc) < length());
-            INTEROP_ASSERT(m_data != 0);
-            return m_data[index_of(lane_idx, loc)];
-        }
-
-        /** Get the tile id associated with the location
-         *
-         * @param lane_idx
-         * @param loc
-         * @return tile id
-         */
-        ::uint32_t& tile_id(const size_t lane_idx, const size_t loc) throw(model::index_out_of_bounds_exception)
-        {
-            INTEROP_BOUNDS_CHECK(lane_idx, lane_count(), "Lane Index out of bounds");
-            INTEROP_BOUNDS_CHECK(loc, column_count(), "Location Index out of bounds");
-            INTEROP_ASSERT(index_of(lane_idx, loc) < length());
-            INTEROP_ASSERT(m_data != 0);
-            return m_data[index_of(lane_idx, loc)];
-        }
-
-        /** Set the axis
-         *
-         * @param plot_axis single axis
-         */
-        void set_saxis(const plot::axis &plot_axis)
-        {
-            set_yaxis(plot_axis);
-        }
-
-        /** Set the label of the axis
-         *
-         * @param label text label
-         */
-        void set_label(const std::string &label)
-        {
-            set_ylabel(label);
-        }
-
-        /** Get the single axis
-         *
-         * @return single axis
-         */
-        const plot::axis &saxis() const
-        {
-            return y_axis();
-        }
-
-        /** Set the sub title
-         *
-         * @param subtitle label string
-         */
-        void set_subtitle(const std::string &subtitle)
-        {
-            m_subtitle = subtitle;
-        }
-
-        /** Set the limits of the axis
-         *
-         * @param vmin minimum value
-         * @param vmax maximum value
-         */
-        void set_range(const float vmin, const float vmax)
-        {
-            set_yrange(vmin, vmax);
-        }
-
-        /** Get the sub title
-         *
-         * @return sub title
-         */
-        const std::string &subtitle() const
-        {
-            return m_subtitle;
-        }
-
-        /** Get number of lanes
-         *
-         * @return number of lanes
-         */
-        size_t lane_count() const
-        {
-            return row_count();
-        }
-
-        /** Get number of swaths
-         *
-         * @return number of swaths
-         */
-        size_t swath_count() const
-        {
-            return m_swath_count;
-        }
-
-        /** Get number of tiles
-         *
-         * @return number of tiles
-         */
-        size_t tile_count() const
-        {
-            return m_tile_count;
-        }
-
-        /** Get total number of tiles for a single lane
-         *
-         * @return total number of tiles for a single lane
-         */
-        size_t total_tile_count() const
-        {
-            return m_tile_count * m_swath_count;
         }
 
     protected:

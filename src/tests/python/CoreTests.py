@@ -53,10 +53,10 @@ class CoreTests(unittest.TestCase):
 
         run_info = py_interop_run.info()
         try:
-            run_info.validate(20, 9999)
+            run_info.validate(20, 9999, "Test")
             self.fail("invalid_run_info_exception should have been thrown")
         except py_interop_run.invalid_run_info_exception as ex:
-            self.assertEqual(str(ex).split('\n')[0], "Lane identifier exceeds number of lanes in RunInfo.xml - 20 > 1")
+            self.assertEqual(str(ex).split('\n')[0], "Lane identifier exceeds number of lanes in RunInfo.xml for record 20_9999 in file Test - 20 > 1")
 
     def test_invalid_run_info_cycle_exception(self):
         """
@@ -65,10 +65,10 @@ class CoreTests(unittest.TestCase):
 
         run_info = py_interop_run.info(py_interop_run.flowcell_layout(8, 2, 4, 99))
         try:
-            run_info.validate_cycle(1, 1101, 3000)
+            run_info.validate_cycle(1, 1101, 3000, "Test")
             self.fail("invalid_run_info_cycle_exception should have been thrown")
         except py_interop_run.invalid_run_info_cycle_exception as ex:
-            self.assertEqual(str(ex).split('\n')[0], "Cycle number exceeds number of cycles in RunInfo.xml - 3000 > 0")
+            self.assertEqual(str(ex).split('\n')[0], "Cycle number exceeds number of cycles in RunInfo.xml for record 1_1101 @ 3000 in file Test - 3000 > 0")
 
     def test_xml_file_not_found_exception(self):
         """

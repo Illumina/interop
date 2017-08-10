@@ -81,6 +81,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          *
          * @note This is not actually an InterOp written to disk, but is calculated from EmpiricalPhasingMetricsOut.bin
          * @ref illumina::interop::model::metrics::dynamic_phasing_metric "See full class description"
+         * @ingroup run_metrics
          * @{
          */
         /** Slope of the best-fit line by cycle of all phasing metrics in the tile
