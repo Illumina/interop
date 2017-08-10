@@ -53,10 +53,10 @@ class CoreTests(unittest.TestCase):
 
         run_info = py_interop_run.info()
         try:
-            run_info.validate(20, 9999)
+            run_info.validate(20, 9999, "Test")
             self.fail("invalid_run_info_exception should have been thrown")
         except py_interop_run.invalid_run_info_exception as ex:
-            self.assertEqual(str(ex).split('\n')[0], "Lane identifier exceeds number of lanes")
+            self.assertEqual(str(ex).split('\n')[0], "Lane identifier exceeds number of lanes in RunInfo.xml for record 20_9999 in file Test - 20 > 1")
 
     def test_invalid_run_info_cycle_exception(self):
         """
@@ -65,10 +65,10 @@ class CoreTests(unittest.TestCase):
 
         run_info = py_interop_run.info(py_interop_run.flowcell_layout(8, 2, 4, 99))
         try:
-            run_info.validate_cycle(1, 1101, 3000)
+            run_info.validate_cycle(1, 1101, 3000, "Test")
             self.fail("invalid_run_info_cycle_exception should have been thrown")
         except py_interop_run.invalid_run_info_cycle_exception as ex:
-            self.assertEqual(str(ex).split('\n')[0], "Cycle number exceeds number of cycles: 3000 > 0")
+            self.assertEqual(str(ex).split('\n')[0], "Cycle number exceeds number of cycles in RunInfo.xml for record 1_1101 @ 3000 in file Test - 3000 > 0")
 
     def test_xml_file_not_found_exception(self):
         """
@@ -77,7 +77,7 @@ class CoreTests(unittest.TestCase):
 
         run_info = py_interop_run.info()
         try:
-            run_info.read('file/not/found')
+            run_info.read("file/not/found")
             self.fail("xml_file_not_found_exception should have been thrown")
         except py_interop_run.xml_file_not_found_exception as ex:
             self.assertEqual(str(ex).split('\n')[0], "cannot open file " + os.path.join("file/not/found", "RunInfo.xml"))
@@ -132,6 +132,7 @@ class CoreTests(unittest.TestCase):
     def test_index_out_of_bounds_exception(self):
         """
         Test that exceptions can be caught and they have the expected message
+        TODO: flush this out for the entire model
         """
 
         expected_metrics = py_interop_metrics.base_error_metrics(3)
@@ -139,7 +140,7 @@ class CoreTests(unittest.TestCase):
             expected_metrics.at(1)
             self.fail("index_out_of_bounds_exception should have been thrown")
         except py_interop_metrics.index_out_of_bounds_exception as ex:
-            self.assertEqual(str(ex).split('\n')[0], "Index out of bounds")
+            self.assertEqual(str(ex).split('\n')[0], "Index out of bounds - 1 >= 0")
 
     def test_bad_format_exception(self):
         """
@@ -208,7 +209,7 @@ class CoreTests(unittest.TestCase):
             options.validate(py_interop_run.Intensity, run_info)
             self.fail("invalid_filter_option should have been thrown")
         except py_interop_plot.invalid_filter_option as ex:
-            self.assertEqual(str(ex).split('\n')[0], "Invalid tile naming method: does not match RunInfo.xml")
+            self.assertEqual(str(ex).split('\n')[0], "Invalid tile naming method: does not match RunInfo.xml: FourDigit != UnknownTileNamingMethod")
 
     def test_invalid_column_type(self):
         """
@@ -271,7 +272,7 @@ class CoreTests(unittest.TestCase):
             expected_metrics.at(1)
             self.fail("index_out_of_bounds_exception should have been thrown")
         except Exception as ex:
-            self.assertEqual(str(ex).split('\n')[0], "Index out of bounds")
+            self.assertEqual(str(ex).split('\n')[0], "Index out of bounds - 1 >= 0")
 
     def test_run_metrics_typedef_wrapping(self):
         """

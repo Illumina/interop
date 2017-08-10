@@ -32,15 +32,14 @@ namespace illumina { namespace interop { namespace model { namespace plot
         typedef typename point_vector_t::const_iterator const_iterator;
 
     public:
-        /** Add a point to the collection
+        /** @defgroup data_point_collection Collection of points on a plot
          *
-         * @param point data point
+         * Collection of points on a plot
+         *
+         * @ingroup plot_data
+         * @ref illumina::interop::model::plot::data_point_collection "See full class description"
+         * @{
          */
-        void push_back(const Point &point)
-        {
-            m_points.push_back(point);
-        }
-
         /** Get point at index
          *
          * @param index index of point
@@ -48,8 +47,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          */
         const Point & operator[](const size_t index) const throw(model::index_out_of_bounds_exception)
         {
-            if(index >= m_points.size())
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Index out of bounds");
+            INTEROP_BOUNDS_CHECK(index, m_points.size(), "Index out of bounds");
             return m_points[index];
         }
 
@@ -60,8 +58,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          */
         Point & operator[](const size_t index) throw(model::index_out_of_bounds_exception)
         {
-            if(index >= m_points.size())
-                INTEROP_THROW( model::index_out_of_bounds_exception, "Index out of bounds");
+            INTEROP_BOUNDS_CHECK(index, m_points.size(), "Index out of bounds");
             return m_points[index];
         }
 
@@ -73,8 +70,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          */
         const Point &at(const size_t index) const throw(model::index_out_of_bounds_exception)
         {
-            if(index >= m_points.size())
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Index out of bounds");
+            INTEROP_BOUNDS_CHECK(index, m_points.size(), "Index out of bounds");
             return m_points[index];
         }
 
@@ -86,6 +82,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
         {
             return m_points.size();
         }
+        /** @} */
 
         /** Assign value to collection
          *
@@ -122,6 +119,14 @@ namespace illumina { namespace interop { namespace model { namespace plot
         const_iterator end() const
         {
             return m_points.end();
+        }
+        /** Add a point to the collection
+         *
+         * @param point data point
+         */
+        void push_back(const Point &point)
+        {
+            m_points.push_back(point);
         }
 
     private:

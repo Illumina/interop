@@ -151,7 +151,7 @@ namespace Illumina.InterOp.Interop.UnitTest
             info run_info = new info();
 
             try{
-                run_info.validate(20, 9999);
+                run_info.validate(20, 9999, "Test");
                 Assert.Fail( "No exception thrown!" );
             }catch(Illumina.InterOp.Run.invalid_run_info_exception){}
 		}
@@ -164,7 +164,7 @@ namespace Illumina.InterOp.Interop.UnitTest
             info run_info = new info(new flowcell_layout(8, 2, 4, 99));
 
             try{
-                run_info.validate_cycle(1, 1101, 3000);
+                run_info.validate_cycle(1, 1101, 3000, "Test");
                 Assert.Fail( "No exception thrown!" );
             }catch(Illumina.InterOp.Run.invalid_run_info_cycle_exception){}
 		}

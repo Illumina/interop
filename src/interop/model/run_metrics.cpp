@@ -115,21 +115,23 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         template<class MetricSet>
         void validate(const MetricSet &metrics, const constants::base_tile_t*)const
         {
+            const std::string name =  io::interop_basename<MetricSet>();
             for(typename MetricSet::const_iterator it = metrics.begin();it != metrics.end();++it)
             {
-                m_info.validate(it->lane(), it->tile());
+                m_info.validate(it->lane(), it->tile(), name);
             }
         }
         template<class MetricSet>
         void validate(MetricSet &metrics, const constants::base_cycle_t*)const
         {
+            const std::string name =  io::interop_basename<MetricSet>();
             bool exception_is_thrown = false;
             std::string exception_string = "";
             for(typename MetricSet::iterator it = metrics.begin();it != metrics.end();++it)
             {
                 try
                 {
-                    m_info.validate_cycle(it->lane(), it->tile(), it->cycle());
+                    m_info.validate_cycle(it->lane(), it->tile(), it->cycle(), name);
                 }
                 catch(const model::invalid_run_info_cycle_exception& ex)
                 {
@@ -145,9 +147,10 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         template<class MetricSet>
         void validate(const MetricSet &metrics, const constants::base_read_t*)const
         {
+            const std::string name = io::interop_basename<MetricSet>();
             for(typename MetricSet::const_iterator it = metrics.begin();it != metrics.end();++it)
             {
-                m_info.validate_read(it->lane(), it->tile(), it->read());
+                m_info.validate_read(it->lane(), it->tile(), it->read(), name);
             }
         }
         template<class MetricSet>

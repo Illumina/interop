@@ -365,8 +365,8 @@ namespace illumina { namespace interop { namespace io
     std::streamsize stream_map(std::ostream &out, const ValueType &vals, const size_t n)
     {
         INTEROP_ASSERT(util::length_of(vals) >= n);
-        if(util::length_of(vals) < n)
-            INTEROP_THROW(bad_format_exception, "Write bug: Number of values is less than expected!");
+        INTEROP_RANGE_CHECK_GT(n, util::length_of(vals), bad_format_exception,
+                               "Write bug: expected values is greater than array size");
         for (size_t i = 0; i < n; i++)
         {
             WriteType write_val = static_cast<WriteType>(vals[i]);
@@ -414,8 +414,8 @@ namespace illumina { namespace interop { namespace io
     std::streamsize stream_map(std::ostream &out, const ValueType &vals, const size_t offset, const size_t n)
     {
         INTEROP_ASSERT(util::length_of(vals) >= (offset+n));
-        if(util::length_of(vals) < (offset+n))
-            INTEROP_THROW(bad_format_exception, "Write bug: Number of values is less than expected!");
+        INTEROP_RANGE_CHECK_GT(offset+n, util::length_of(vals), bad_format_exception,
+                               "Write bug: expected values is greater than array size");
         for (size_t i = 0; i < n; i++)
         {
             WriteType write_val = static_cast<WriteType>(vals[offset + i]);

@@ -12,6 +12,7 @@
 #include <fstream>
 #include <iterator>
 #include <algorithm>
+#include <numeric>
 #include "interop/util/map.h"
 #include "interop/util/exception.h"
 #include "interop/model/metric_base/base_cycle_metric.h"
@@ -337,7 +338,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         metric_type &operator[](const size_t n) throw(model::index_out_of_bounds_exception)
         {
-            if(n >= m_data.size()) INTEROP_THROW(index_out_of_bounds_exception, "Index out of bounds");
+            INTEROP_BOUNDS_CHECK(n, m_data.size(), "Index out of bounds");
             return m_data[n];
         }
 
@@ -348,7 +349,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         const metric_type &operator[](const size_t n)const throw(model::index_out_of_bounds_exception)
         {
-            if(n >= m_data.size()) INTEROP_THROW(index_out_of_bounds_exception, "Index out of bounds");
+            INTEROP_BOUNDS_CHECK(n, m_data.size(), "Index out of bounds");
             return m_data[n];
         }
 
@@ -360,7 +361,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         metric_type &at(const size_t n) throw(model::index_out_of_bounds_exception)
         {
-            if(n >= m_data.size()) INTEROP_THROW(index_out_of_bounds_exception, "Index out of bounds");
+            INTEROP_BOUNDS_CHECK(n, m_data.size(), "Index out of bounds");
             return m_data[n];
         }
 
@@ -372,7 +373,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         const metric_type &at(const size_t n)const throw(model::index_out_of_bounds_exception)
         {
-            if(n >= m_data.size()) INTEROP_THROW(index_out_of_bounds_exception, "Index out of bounds");
+            INTEROP_BOUNDS_CHECK(n, m_data.size(), "Index out of bounds");
             return m_data[n];
         }
 

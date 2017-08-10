@@ -59,8 +59,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
             const size_t read = beg->read() - 1;
             INTEROP_ASSERT(read < phasing_slope.read_count());
             const size_t lane = beg->lane() - 1;
-            if (lane >= phasing_slope.lane_count())
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Lane exceeds lane count in RunInfo.xml - " << beg->lane() << " >= " << phasing_slope.lane_count());
+            INTEROP_BOUNDS_CHECK(lane, phasing_slope.lane_count(), "Lane exceeds number of lanes in RunInfo.xml");
             phasing_slope(read, lane).push_back(beg->phasing_slope());
             phasing_offset(read, lane).push_back(beg->phasing_offset());
             prephasing_slope(read, lane).push_back(beg->prephasing_slope());

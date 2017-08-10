@@ -21,4 +21,6 @@ You can then test the install as follows:
 ## Introductory Tutorials
 
  * [SAV Summary Table](https://github.com/Illumina/interop/blob/master/docs/src/Tutorial_01_Intro.ipynb)
+ * [Q-Score Histogram](https://github.com/Illumina/interop/blob/master/docs/src/Tutorial_02_Plot_Bar.ipynb)
+ * [Low-level Extraction](https://github.com/Illumina/interop/blob/master/docs/src/Tutorial_03_Low_Level.ipynb)
 

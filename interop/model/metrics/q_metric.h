@@ -142,8 +142,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         const q_score_bin &bin_at(const size_t n) const throw(model::index_out_of_bounds_exception)
         {
-            if(n >= m_qscore_bins.size())
-                INTEROP_THROW( index_out_of_bounds_exception, "Index out of bounds");
+            INTEROP_BOUNDS_CHECK(n, m_qscore_bins.size(), "Index out of bounds");
             return m_qscore_bins[n];
         }
 
@@ -361,8 +360,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         uint_t qscore_hist(const size_t n) const throw(model::index_out_of_bounds_exception)
         {
-            if(n >= m_qscore_hist.size())
-                INTEROP_THROW( index_out_of_bounds_exception, "Index out of bounds");
+            INTEROP_BOUNDS_CHECK(n, m_qscore_hist.size(), "Index out of bounds");
             return m_qscore_hist[n];
         }
 
