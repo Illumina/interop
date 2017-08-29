@@ -339,9 +339,11 @@ namespace illumina { namespace interop { namespace model { namespace run
         for(read_vector_t::const_iterator it = m_reads.begin();it != m_reads.end();++it)
         {
             if(unique_numbers.find(it->number()) != unique_numbers.end())
-                INTEROP_THROW(invalid_run_info_exception, "Repeated read number");
+                INTEROP_THROW(invalid_run_info_exception, "Repeated read number: " << it->number());
             if (it->number() > m_reads.size())
-                INTEROP_THROW(invalid_run_info_exception, "Missing reads");
+                INTEROP_THROW(invalid_run_info_exception, "Missing reads: " << it->number() << " > " << m_reads.size());
+            if (it->number() == 0)
+                INTEROP_THROW(invalid_run_info_exception, "Missing read number, found 0");
             unique_numbers.insert(it->number());
         }
     }
