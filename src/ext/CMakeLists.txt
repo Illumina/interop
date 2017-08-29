@@ -70,6 +70,14 @@ endforeach()
 # https://github.com/SimpleITK/SimpleITK/blob/master/CMake/sitkLanguageOptions.cmake
 
 
+# Pass compiler definitions to SWIG
+get_directory_property(DirDefs COMPILE_DEFINITIONS)
+if(DirDefs)
+    string(REPLACE ";" ";-D" DirDefs "${DirDefs}")
+    set(DirDefs "-D${DirDefs}")
+endif()
+set(CMAKE_SWIG_FLAGS "${CMAKE_SWIG_FLAGS};${DirDefs}")
+
 if(ENABLE_CSHARP)
     add_subdirectory("csharp")
 endif()

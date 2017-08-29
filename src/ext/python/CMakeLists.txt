@@ -58,6 +58,8 @@ set_target_properties(python_lib PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFA
 include_directories(${PYTHON_INCLUDE_PATH} ${NUMPY_INCLUDE_DIRS})
 set(CMAKE_SWIG_OUTDIR ${CMAKE_CURRENT_BINARY_DIR}/interop)
 set(SWIG_VERSION_INFO "")
+
+
 foreach(SRC ${SWIG_SRCS})
     get_filename_component(MODULE ${SRC} NAME_WE)
     set(MODULE "py_interop_${MODULE}")

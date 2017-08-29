@@ -12,19 +12,27 @@
 #
 # Run the Image
 #
-# $ docker run --rm -v `pwd`:/io:Z ezralanglois/interop sh /io/tools/package.sh /io /io/dist travis OFF Release
-# $ docker run --rm -v `pwd`:/io:Z ezralanglois/interop sh /io/tools/package.sh /io /io/dist teamcity OFF Release
+# $ docker run --rm -w /tmp --user `id -u`:`id -g` -v `pwd`:/src:ro -v `pwd`/dist:/dist:rw ezralanglois/interop sh /src/tools/package.sh /src /dist travis OFF Release
+# $ docker run --rm -w /tmp --user `id -u`:`id -g` -v `pwd`:/src:ro -v `pwd`/dist:/dist:rw ezralanglois/interop sh /src/tools/package.sh /src /dist teamcity OFF Release
 #
 # Debug the Image Interactively
 #
-# $ docker run --it -v `pwd`:/io ezralanglois/interop sh /io/tools/package_linux.sh /io /io/dist
+# $ docker run --rm -i -t -v `pwd`:/io ezralanglois/interop sh /io/tools/package_linux.sh /io /io/dist
 #
 #
 ########################################################################################################################
 set -e
 INTEROP_C89=OFF
 BUILD_TYPE=Release
-THREAD_COUNT=4
+
+# When inside docker and not using root, but using the root home. So, change it to working directory
+# Without this, nuget fails when trying to read Nuget.config
+whoami 1>/dev/null 2>&1 || export HOME=$PWD
+
+# Get value from environment for low memory vms
+if [ -z $THREAD_COUNT ] ; then
+    THREAD_COUNT=4
+fi
 
 if [ ! -z $1 ] ; then
     SOURCE_PATH=$1
@@ -88,9 +96,10 @@ fi
 mkdir $BUILD_PATH
 
 if [ -e $ARTIFACT_PATH ] ; then
-    rm -fr $ARTIFACT_PATH
+    rm -fr $ARTIFACT_PATH/*
+else
+    mkdir $ARTIFACT_PATH
 fi
-mkdir $ARTIFACT_PATH
 
 
 # Build Python Wheels for a range of Python Versions
@@ -103,7 +112,7 @@ if [ -e /opt/python ] ; then
         if [[ "$PYBUILD" == cp33* ]]; then
             continue
         fi
-        touch $SOURCE_PATH/src/ext/python/CMakeLists.txt
+        rm -fr ${BUILD_PATH}/src/ext/python/*
         run "Configure ${PYBUILD}" cmake $SOURCE_PATH -B${BUILD_PATH} -DPYTHON_EXECUTABLE=${PYTHON_BIN}/python ${CMAKE_EXTRA_FLAGS} -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp
 
         run "Test ${PYBUILD}" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
@@ -149,7 +158,7 @@ if [ ! -z $PYTHON_VERSION ] ; then
             auditwheel show ${ARTIFACT_PATH}/tmp/*.whl
             auditwheel repair ${ARTIFACT_PATH}/tmp/*.whl -w ${ARTIFACT_PATH}
         fi
-        touch $SOURCE_PATH/src/ext/python/CMakeLists.txt
+        rm -fr ${BUILD_PATH}/src/ext/python/*
         rm -fr ${ARTIFACT_PATH}/tmp
     done
 fi

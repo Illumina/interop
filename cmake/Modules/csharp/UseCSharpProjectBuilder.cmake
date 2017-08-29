@@ -109,6 +109,13 @@ macro( csharp_add_project type name )
         set(CSHARP_NUGET_SOURCE_CMD -source ${CSHARP_NUGET_SOURCE})
     endif()
 
+    if(RESTORE_EXE AND CSHARP_NUGET_SOURCE_CMD)
+        set(RESTORE_CMD ${RESTORE_EXE} install ${CSHARP_NUGET_SOURCE_CMD})
+    else()
+        set(RESTORE_CMD ${CMAKE_COMMAND} -version)
+    endif()
+
+
     set(CSBUILD_${name}_CSPROJ "${name}_${CSBUILD_CSPROJ}")
     file(TO_NATIVE_PATH ${CSHARP_BUILDER_OUTPUT_PATH} CSHARP_BUILDER_OUTPUT_PATH_NATIVE)
     add_custom_target(
@@ -135,12 +142,12 @@ macro( csharp_add_project type name )
             -DCONFIG_OUTPUT_FILE="${CMAKE_CURRENT_BINARY_DIR}/packages.config"
             -P ${CMAKE_SOURCE_DIR}/cmake/ConfigureFile.cmake
 
-            COMMAND ${RESTORE_EXE} install ${CSHARP_NUGET_SOURCE_CMD}
+            COMMAND ${RESTORE_CMD}
 
             COMMAND ${CSBUILD_EXECUTABLE} ${CSBUILD_RESTORE_FLAGS} ${CSBUILD_${name}_CSPROJ}
             COMMAND ${CSBUILD_EXECUTABLE} ${CSBUILD_BUILD_FLAGS} ${CSBUILD_${name}_CSPROJ}
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-            COMMENT "${CSBUILD_EXECUTABLE} ${CSBUILD_RESTORE_FLAGS} ${CSBUILD_${name}_CSPROJ}; ${CSBUILD_EXECUTABLE} ${CSBUILD_BUILD_FLAGS} ${CSBUILD_${name}_CSPROJ} -> ${CMAKE_CURRENT_BINARY_DIR}"
+            COMMENT "${RESTORE_CMD};${CSBUILD_EXECUTABLE} ${CSBUILD_RESTORE_FLAGS} ${CSBUILD_${name}_CSPROJ}; ${CSBUILD_EXECUTABLE} ${CSBUILD_BUILD_FLAGS} ${CSBUILD_${name}_CSPROJ} -> ${CMAKE_CURRENT_BINARY_DIR}"
             DEPENDS ${sources_dep}
     )
     unset(ext)
