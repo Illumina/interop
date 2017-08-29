@@ -159,9 +159,9 @@ set(DOT_NET_FRAMEWORK "net40")
 get_filename_component(DLL_NAME ${CSBUILD_csharp_interop_BINARY} NAME)
 if(BUILD_NUMBER)
     MATH(EXPR VERSION_PATCHN "${VERSION_PATCH}+1")
-    set(INTEROP_VERSION_STR ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCHN}-alpha${BUILD_NUMBER})
+    set(NUGET_VERSION_STR ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCHN}-alpha${BUILD_NUMBER} CACHE INTERNAL "")
 else()
-    set(INTEROP_VERSION_STR ${VERSION_SHORT})
+    set(NUGET_VERSION_STR ${VERSION_SHORT} CACHE INTERNAL "")
 endif()
 if("${CMAKE_HOST_SYSTEM}" MATCHES ".*Windows.*")
     set(SHARED_LIB_SEARCH_STR "\\*${CMAKE_SHARED_LIBRARY_SUFFIX}")
@@ -170,19 +170,20 @@ else()
     set(SHARED_LIB_SEARCH_STR "/*${CMAKE_SHARED_LIBRARY_SUFFIX}")
     set(NUGET_PLATFORM "lib/${DOT_NET_FRAMEWORK}")
 endif()
+set(NUGET_PACKAGE_ID illumina_interop_${CSHARP_TYPE}_${NUGET_SYS_ID} CACHE INTERNAL "")
 # This creates the nuspec file in the proper directory
 add_custom_target(nuspec
         COMMENT "Creating package.nuspec"
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
         ${CMAKE_CURRENT_SOURCE_DIR}/package.targets
-        ${CMAKE_SWIG_OUTDIR}/illumina_interop_${CSHARP_TYPE}_${NUGET_SYS_ID}.targets
+        ${CMAKE_SWIG_OUTDIR}/${NUGET_PACKAGE_ID}.targets
         COMMAND ${CMAKE_COMMAND}
         -DCOMPILER_INFO="${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}"
         -DCMAKE_CURRENT_BINARY_DIR=${CMAKE_CURRENT_BINARY_DIR}
         -DCSHARP_TYPE=${CSHARP_TYPE}
         -DCSHARP_VERSION=${CSHARP_VERSION}
         -DNUGET_PLATFORM=${NUGET_PLATFORM}
-        -DINTEROP_VERSION=${INTEROP_VERSION_STR}
+        -DINTEROP_VERSION=${NUGET_VERSION_STR}
         -DPLATFORM=${NUGET_SYS_ID}
         -DCSHARP_LIBRARY=${CSBUILD_csharp_interop_BINARY_NAME}
         -DCONFIG="${CONFIG_DIR}"
@@ -208,6 +209,8 @@ if(NUGET_EXE)
     add_dependencies(nupack nuspec)
     set_target_properties(nupack PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
     add_dependencies(bundle nupack)
+    set(SWIG_CSHARP_PACKAGE_PATH ${NUPACKOUTPUT} CACHE INTERNAL "C# NuGet package directory" FORCE)
+
 else()
     message(STATUS "NuGet not found, nupack target will not be available")
 endif()

@@ -5,6 +5,8 @@
 # Examples:
 #   csharp_add_library( MyLibrary "" "File1.cs" )
 #   csharp_add_library( MyLibrary "ref1.dll ref2.dll" "File1.cs" )
+#
+# Note, the while you can reference a NuGet package, this code is untested if the package has multiple framework Dlls.
 
 macro( csharp_add_library name )
     csharp_add_project( "library" ${name} ${ARGN} )
@@ -20,11 +22,20 @@ macro( csharp_add_project type name )
         if( ${it} MATCHES "(.*)(dll)" )
             file(TO_NATIVE_PATH ${it} nit)
             list( APPEND refs "<Reference;Include=\\\"${nit}\\\";/>" )
+        elseif( ${it} MATCHES "(.*)(nupkg)" )
+            file(TO_NATIVE_PATH ${it} nit)
+            list( APPEND pkgs "<package;id=\\\"${nit}\\\";version=;/>" )
         elseif( ${it} MATCHES "(.*)=([0-9]*)([.])([0-9]*)([.]*)([0-9]*)" )
             string(REPLACE "=" ";" PACKAGE_ID "${it}")
             list(GET PACKAGE_ID 0 PACKAGE_NAME )
             list(GET PACKAGE_ID 1 PACKAGE_VERSION )
             list( APPEND packages "<PackageReference;Include=\\\"${PACKAGE_NAME}\\\";Version=\\\"${PACKAGE_VERSION}\\\";/>" )
+            list( APPEND legacy_packages "<package;id=\\\"${PACKAGE_NAME}\\\";version=\\\"${PACKAGE_VERSION}\\\";/>" )
+            file(TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}.${PACKAGE_VERSION}/lib/**/*.dll" hint_path)
+            list( APPEND refs "<Reference;Include=\\\"${hint_path}\\\";></Reference>" )
+
+            file(TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}.${PACKAGE_VERSION}/build/${PACKAGE_NAME}.targets" target_path)
+            list(APPEND imports "<Import;Project=\\\"${target_path}\\\";Condition=\\\"Exists('${target_path}')\\\";/>")
         else( )
             if( EXISTS "${it}" )
                 file(TO_NATIVE_PATH ${it} nit)
@@ -55,6 +66,7 @@ macro( csharp_add_project type name )
     list(LENGTH sources SOURCE_FILE_COUNT)
     list(LENGTH refs REFEENCE_COUNT)
     list(LENGTH packages PACKAGE_COUNT)
+    list(LENGTH imports IMPORT_COUNT)
     if(SOURCE_FILE_COUNT GREATER 0)
         set(CSHARP_BUILDER_SOURCES "${sources}")
     else()
@@ -70,6 +82,16 @@ macro( csharp_add_project type name )
     else()
         set(CSHARP_PACKAGE_REFERENCES "")
     endif()
+    if(PACKAGE_COUNT GREATER 0)
+        set(CSHARP_LEGACY_PACKAGE_REFERENCES "${legacy_packages}")
+    else()
+        set(CSHARP_LEGACY_PACKAGE_REFERENCES "")
+    endif()
+    if(IMPORT_COUNT GREATER 0)
+        set(CSHARP_IMPORTS "${imports}")
+    else()
+        set(CSHARP_IMPORTS "")
+    endif()
 
     if( ${type} MATCHES "library" )
         set( ext "dll" )
@@ -83,6 +105,9 @@ macro( csharp_add_project type name )
     # TODO: <RuntimeIdentifier>osx.10.11-x64</RuntimeIdentifier>
     set(CSBUILD_${name}_BINARY "${CSHARP_BUILDER_OUTPUT_PATH}/${CSBUILD_OUPUT_PREFIX}${name}${CSBUILD_OUTPUT_SUFFIX}.${ext}")
     set(CSBUILD_${name}_BINARY_NAME "${name}${CSBUILD_OUTPUT_SUFFIX}.${ext}")
+    if(CSHARP_NUGET_SOURCE)
+        set(CSHARP_NUGET_SOURCE_CMD -source ${CSHARP_NUGET_SOURCE})
+    endif()
 
     set(CSBUILD_${name}_CSPROJ "${name}_${CSBUILD_CSPROJ}")
     file(TO_NATIVE_PATH ${CSHARP_BUILDER_OUTPUT_PATH} CSHARP_BUILDER_OUTPUT_PATH_NATIVE)
@@ -99,9 +124,18 @@ macro( csharp_add_project type name )
             -DCSHARP_TARGET_FRAMEWORK_VERSION="${CSHARP_TARGET_FRAMEWORK_VERSION}"
             -DCSHARP_PACKAGE_REFERENCES="${CSHARP_PACKAGE_REFERENCES}"
             -DMSBUILD_TOOLSET="${MSBUILD_TOOLSET}"
+            -DCSHARP_IMPORTS="${CSHARP_IMPORTS}"
             -DCONFIG_INPUT_FILE="${CSBUILD_CSPROJ_IN}"
             -DCONFIG_OUTPUT_FILE="${CMAKE_CURRENT_BINARY_DIR}/${CSBUILD_${name}_CSPROJ}"
             -P ${CMAKE_SOURCE_DIR}/cmake/ConfigureFile.cmake
+
+            COMMAND ${CMAKE_COMMAND}
+            -DCSHARP_PACKAGE_REFERENCES="${CSHARP_LEGACY_PACKAGE_REFERENCES}"
+            -DCONFIG_INPUT_FILE="${CMAKE_SOURCE_DIR}/cmake/Modules/csharp/packages.config.in"
+            -DCONFIG_OUTPUT_FILE="${CMAKE_CURRENT_BINARY_DIR}/packages.config"
+            -P ${CMAKE_SOURCE_DIR}/cmake/ConfigureFile.cmake
+
+            COMMAND ${RESTORE_EXE} install ${CSHARP_NUGET_SOURCE_CMD}
 
             COMMAND ${CSBUILD_EXECUTABLE} ${CSBUILD_RESTORE_FLAGS} ${CSBUILD_${name}_CSPROJ}
             COMMAND ${CSBUILD_EXECUTABLE} ${CSBUILD_BUILD_FLAGS} ${CSBUILD_${name}_CSPROJ}

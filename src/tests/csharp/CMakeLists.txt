@@ -55,13 +55,23 @@ set(TEST_SRCS
 if(DOTNET_CORE_FOUND)
     set(TEST_SRCS ${TEST_SRCS} Program.cs)
 endif()
-csharp_add_project(${PROJ_TYPE} csharp_unittest ${NUNIT_LIBRARIES} ${TEST_SRCS} ${SWIG_CSHARP_LIBRARY})
-add_dependencies(csharp_unittest csharp_interop ${NUNIT_TARGET})
+
+
+find_program(NUGET_EXE nuget)
+if(NUGET_EXE)
+    # Test the NuGet Package
+    set(CSHARP_NUGET_SOURCE "${SWIG_CSHARP_PACKAGE_PATH}")
+    csharp_add_project(${PROJ_TYPE} csharp_unittest ${NUNIT_LIBRARIES} ${TEST_SRCS} ${NUGET_PACKAGE_ID}=${NUGET_VERSION_STR})
+    add_dependencies(csharp_unittest nupack ${NUNIT_TARGET})
+else()
+    # Test the Library
+    csharp_add_project(${PROJ_TYPE} csharp_unittest ${NUNIT_LIBRARIES} ${TEST_SRCS} ${SWIG_CSHARP_LIBRARY})
+    add_dependencies(csharp_unittest csharp_interop ${NUNIT_TARGET})
+endif()
 
 get_filename_component(CSBUILD_csharp_unittest_BINARY_DIR "${CSBUILD_csharp_unittest_BINARY}" DIRECTORY)
 add_custom_command(TARGET csharp_unittest POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CSBUILD_csharp_unittest_BINARY_DIR} $<TARGET_FILE_DIR:${INTEROP_LIB}>
-        #COMMAND ${CMAKE_COMMAND} -E copy ${NUNIT_LIBRARIES} $<TARGET_FILE_DIR:${INTEROP_LIB}>
         )
 
 
@@ -104,3 +114,7 @@ add_custom_target(csharp_perf
 set_target_properties(csharp_perf PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
 set_target_properties(csharp_perftest PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
 
+if(ENABLE_BUNDLE_TEST)
+    csharp_add_project(${PROJ_TYPE} csharp_unittest_nuget ${NUNIT_LIBRARIES} ${TEST_SRCS} ${SWIG_CSHARP_NUGET_PACKAGE})
+    set_target_properties(csharp_unittest_nuget PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
+endif()
