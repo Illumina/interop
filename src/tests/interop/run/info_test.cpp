@@ -146,3 +146,35 @@ TEST(run_info_test, test_invalid_tile_list_exception)
     run_info.parse(&data[0]);
     EXPECT_THROW(run_info.validate_tiles(), model::invalid_tile_list_exception);
 }
+
+TEST(run_info_test, test_invalid_run_number)
+{
+    std::string
+            data= "<?xml version=\"1.0\"?>\n"
+            "<RunInfo xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" Version=\"4\">\n"
+            "  <Run Id=\"160630_NS500179_0099_AHW3YTBGXX\" Number=\"99\">\n"
+            "    <Flowcell>HW3YTBGXX</Flowcell>\n"
+            "    <Instrument>NS500179</Instrument>\n"
+            "    <Date>160630</Date>\n"
+            "    <Reads>\n"
+            "      <Read NumCycles=\"101\" IsIndexedRead=\"N\" />\n"
+            "    </Reads>\n"
+            "    <FlowcellLayout LaneCount=\"4\" SurfaceCount=\"2\" SwathCount=\"3\" TileCount=\"12\" SectionPerLane=\"3\" LanePerSection=\"2\">\n"
+            "      <TileSet TileNamingConvention=\"FiveDigit\">\n"
+            "        <Tiles>\n"
+            "          <Tile>1_11101</Tile>\n"
+            "          <Tile>1_21101</Tile>\n"
+            "        </Tiles>\n"
+            "      </TileSet>\n"
+            "    </FlowcellLayout>\n"
+            "    <ImageDimensions Width=\"2592\" Height=\"1944\" />\n"
+            "    <ImageChannels>\n"
+            "      <Name>Red</Name>\n"
+            "      <Name>Green</Name>\n"
+            "    </ImageChannels>\n"
+            "  </Run>\n"
+            "</RunInfo>";
+    run::info run_info;
+    run_info.parse(&data[0]);
+    EXPECT_THROW(run_info.validate(), model::invalid_run_info_exception);
+}

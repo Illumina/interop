@@ -12,19 +12,27 @@
 #
 # Run the Image
 #
-# $ docker run --rm -v `pwd`:/io:Z ezralanglois/interop sh /io/tools/package.sh /io /io/dist travis OFF Release
-# $ docker run --rm -v `pwd`:/io:Z ezralanglois/interop sh /io/tools/package.sh /io /io/dist teamcity OFF Release
+# $ docker run --rm -w /tmp --user `id -u`:`id -g` -v `pwd`:/src:ro -v `pwd`/dist:/dist:rw ezralanglois/interop sh /src/tools/package.sh /src /dist travis OFF Release
+# $ docker run --rm -w /tmp --user `id -u`:`id -g` -v `pwd`:/src:ro -v `pwd`/dist:/dist:rw ezralanglois/interop sh /src/tools/package.sh /src /dist teamcity OFF Release
 #
 # Debug the Image Interactively
 #
-# $ docker run --it -v `pwd`:/io ezralanglois/interop sh /io/tools/package_linux.sh /io /io/dist
+# $ docker run --rm -i -t -v `pwd`:/io ezralanglois/interop sh /io/tools/package_linux.sh /io /io/dist
 #
 #
 ########################################################################################################################
 set -e
 INTEROP_C89=OFF
 BUILD_TYPE=Release
-THREAD_COUNT=4
+
+# When inside docker and not using root, but using the root home. So, change it to working directory
+# Without this, nuget fails when trying to read Nuget.config
+whoami 1>/dev/null 2>&1 || export HOME=$PWD
+
+# Get value from environment for low memory vms
+if [ -z $THREAD_COUNT ] ; then
+    THREAD_COUNT=4
+fi
 
 if [ ! -z $1 ] ; then
     SOURCE_PATH=$1
@@ -88,29 +96,32 @@ fi
 mkdir $BUILD_PATH
 
 if [ -e $ARTIFACT_PATH ] ; then
-    rm -fr $ARTIFACT_PATH
+    rm -fr $ARTIFACT_PATH/*
+else
+    mkdir $ARTIFACT_PATH
 fi
-mkdir $ARTIFACT_PATH
 
 
 # Build Python Wheels for a range of Python Versions
-for PYBUILD in `ls -1 /opt/python`; do
-    PYTHON_BIN=/opt/python/${PYBUILD}/bin
-    if [[ "$PYBUILD" == cp26* ]]; then
-        continue
-    fi
-    if [[ "$PYBUILD" == cp33* ]]; then
-        continue
-    fi
-    touch $SOURCE_PATH/src/ext/python/CMakeLists.txt
-    run "Configure ${PYBUILD}" cmake $SOURCE_PATH -B${BUILD_PATH} -DPYTHON_EXECUTABLE=${PYTHON_BIN}/python ${CMAKE_EXTRA_FLAGS} -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp
+if [ -e /opt/python ] ; then
+    for PYBUILD in `ls -1 /opt/python`; do
+        PYTHON_BIN=/opt/python/${PYBUILD}/bin
+        if [[ "$PYBUILD" == cp26* ]]; then
+            continue
+        fi
+        if [[ "$PYBUILD" == cp33* ]]; then
+            continue
+        fi
+        rm -fr ${BUILD_PATH}/src/ext/python/*
+        run "Configure ${PYBUILD}" cmake $SOURCE_PATH -B${BUILD_PATH} -DPYTHON_EXECUTABLE=${PYTHON_BIN}/python ${CMAKE_EXTRA_FLAGS} -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp
 
-    run "Test ${PYBUILD}" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
-    run "Build ${PYBUILD}" cmake --build $BUILD_PATH --target package_wheel -- -j${THREAD_COUNT}
-    auditwheel show ${ARTIFACT_PATH}/tmp/interop*${PYBUILD}*linux_x86_64.whl
-    auditwheel repair ${ARTIFACT_PATH}/tmp/interop*${PYBUILD}*linux_x86_64.whl -w ${ARTIFACT_PATH}
-    rm -fr ${ARTIFACT_PATH}/tmp
-done
+        run "Test ${PYBUILD}" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
+        run "Build ${PYBUILD}" cmake --build $BUILD_PATH --target package_wheel -- -j${THREAD_COUNT}
+        auditwheel show ${ARTIFACT_PATH}/tmp/interop*${PYBUILD}*linux_x86_64.whl
+        auditwheel repair ${ARTIFACT_PATH}/tmp/interop*${PYBUILD}*linux_x86_64.whl -w ${ARTIFACT_PATH}
+        rm -fr ${ARTIFACT_PATH}/tmp
+    done
+fi
 
 if [ ! -z $PYTHON_VERSION ] ; then
     if [ "$PYTHON_VERSION" == "ALL" ] ; then
@@ -147,7 +158,7 @@ if [ ! -z $PYTHON_VERSION ] ; then
             auditwheel show ${ARTIFACT_PATH}/tmp/*.whl
             auditwheel repair ${ARTIFACT_PATH}/tmp/*.whl -w ${ARTIFACT_PATH}
         fi
-        touch $SOURCE_PATH/src/ext/python/CMakeLists.txt
+        rm -fr ${BUILD_PATH}/src/ext/python/*
         rm -fr ${ARTIFACT_PATH}/tmp
     done
 fi
@@ -161,7 +172,7 @@ fi
 run "Package" cmake --build $BUILD_PATH --target bundle -- -j${THREAD_COUNT}
 
 if hash dotnet 2> /dev/null; then
-    run "Configure DotNetCore" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS} -DCSBUILD_TOOL=DotNetCore && cmake --$BUILD_PATH --target nupack -- -j${THREAD_COUNT} || true
+    run "Configure DotNetCore" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS} -DCSBUILD_TOOL=DotNetCore && cmake --build $BUILD_PATH --target nupack -- -j${THREAD_COUNT} || true
 fi
 rm -fr ${ARTIFACT_PATH}/tmp
 echo "List Artifacts:"
