@@ -134,6 +134,8 @@ artifacts:
     name: Releases
   - path: .\dist\*.whl
     name: PythonRelease
+  - path: .\dist\*.nupkg
+    name: NuGetRelease
 
 branches:
   only:

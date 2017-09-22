@@ -5,9 +5,10 @@
 
 Date       | Description
 ---------- | -----------
+2017-09-22 | Added additional documentation for index summary 
 2017-08-29 | Improve run info validation
 2017-08-29 | Update build scripts with various bug fixes
-2017-08-29 | IPA-6789: Create NuGet build test Robert Langlois
+2017-08-29 | IPA-6789: Create NuGet build test
 2017-07-21 | Native shared libraries are now copied to bin folder for NuGet packages on Linux (non-Windows systems)
 2017-07-11 | IPA-6535: Error rate should report NaN for no data
 2017-07-10 | Simplify build scripts, add nuget package and additional MSVC libraries
