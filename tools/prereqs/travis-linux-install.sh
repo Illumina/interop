@@ -17,7 +17,7 @@ export PATH="$HOME/cmake/bin:${PATH}"
 python --version
 python -c "import sys; opts={1114111: 'ucs4', 65535: 'ucs2'}; print opts.get(sys.maxunicode)"
 pip install wheel --user
-pip install auditwheel==1.5.0 --user
+pip install numpy --user
 
 if [ ! -e $HOME/NUnit-2.6.4/bin/nunit.framework.dll ]; then
     travis_retry wget https://github.com/nunit/nunitv2/releases/download/2.6.4/NUnit-2.6.4.zip

@@ -10,7 +10,7 @@ brew install swig
 brew install doxygen
 brew install mono
 brew install nuget
-brew install gstat
+brew install coreutils || brew install gstat
 brew unlink pyenv
 brew install pyenv
 
