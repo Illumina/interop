@@ -6,11 +6,16 @@
 #
 # Build the Image
 #
-# $ docker build --rm -t ezralangois/interop -f ./tools/DockerFile tools
+# $ docker build --rm -t ezralanglois/interop -f ./tools/DockerFile tools
 # $ docker images
-# $ docker tag <image-id> ezralangois/interop:last_good
-# $ docker tag ezralangois/interop:last_good ezralangois/interop:latest
-# $ docker push ezralangois/interop:latest
+# $ docker tag <image-id> ezralanglois/interop:last_good
+# $ docker tag ezralanglois/interop:last_good ezralanglois/interop:latest
+# $ docker push ezralanglois/interop:latest
+#
+# Clean containers and images
+#
+# $ docker rm $(docker ps -a -f status=exited -q)
+# $ docker rmi $(docker images -f dangling=true -q)
 #
 ########################################################################################################################
 #set -ex
@@ -24,6 +29,7 @@ GOOGLETEST_URL="https://github.com/google/googletest/archive/release-1.8.0.tar.g
 JUNIT_URL="http://search.maven.org/remotecontent?filepath=junit/junit/4.12/junit-4.12.jar"
 NUNIT_URL="https://github.com/nunit/nunitv2/releases/download/2.6.4/NUnit-2.6.4.zip"
 JAVA_URL="http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.rpm"
+VALGRIND_URL="ftp://sourceware.org/pub/valgrind/valgrind-3.13.0.tar.bz2"
 PROG_HOME=/opt
 SWIG_HOME=${PROG_HOME}/swig3
 JUNIT_HOME=${PROG_HOME}/junit
@@ -157,6 +163,15 @@ if [ ! -e ${JUNIT_HOME}/${JUNIT_URL##*/} ]; then
 else
     echo "Found JUnit at ${JUNIT_HOME}/${JUNIT_URL##*/}"
 fi
+
+mkdir tmp_build
+wget --no-check-certificate --quiet -O - ${VALGRIND_URL} | tar --strip-components=1 -xj -C ./tmp_build
+cd tmp_build
+./configure --prefix=/usr
+make -j 4
+make install
+cd -
+rm -fr tmp_build
 
 
 export JAVA_HOME=/usr/java/jdk1.8.0_131

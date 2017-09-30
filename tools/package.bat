@@ -8,7 +8,11 @@ rem
 rem Example Running script (from source directory)
 rem     .\tools\package.bat Release mingw bundle "-DENABLE_APPS=OFF -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=OFF"
 rem
+rem All arguments are required for this script to work!
+rem
 rem Note, you must already have CMake, MinGW and Visual Studio installed and on your path.
+rem
+rem To select an older Visual Studio toolset use: cmake -T v120,host=x64
 rem
 rem --------------------------------------------------------------------------------------------------------------------
 
@@ -26,6 +30,7 @@ set PACKAGE_TARGET=bundle
 set PREFIX_BEG=##teamcity[blockOpened name='
 set PREFIX_END=##teamcity[blockClosed name='
 set SUFFIX=']
+set python_version=
 
 if NOT "%1" == "" (
 set BUILD_TYPE=%1
@@ -37,11 +42,23 @@ if NOT "%3" == "" (
 set PACKAGE_TARGET=%3%
 )
 if NOT '%4' == '' (
-set ADDIONAL_CONFIG_OPTIONS=%4%
+ set ADDIONAL_CONFIG_OPTIONS=%4%
+)
+if NOT '%5' == '' (
+ set python_version=%5%
 )
 set ADDIONAL_CONFIG_OPTIONS=%ADDIONAL_CONFIG_OPTIONS:"=%
 
 set BUILD_PARAM=%BUILD_PARAM% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DPACKAGE_OUTPUT_FILE_PREFIX=%CD%\dist %ADDIONAL_CONFIG_OPTIONS%
+
+if '%python_version' == '' goto SKIP_CONDA_UPDATE
+where /q conda
+if %errorlevel% neq 0 goto SKIP_CONDA_UPDATE
+echo "Create environment"
+conda create -n py%python_version% python=%python_version% numpy wheel -y || echo "Environment exists"
+echo "Activate py%python_version%"
+call activate py%python_version%
+:SKIP_CONDA_UPDATE
 
 rem Clean build and dist directories
 if exist %BUILD_DIR%  rd /s /q %BUILD_DIR%

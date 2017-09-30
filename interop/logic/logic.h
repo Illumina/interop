@@ -17,7 +17,7 @@
 #include "interop/logic/plot/plot_sample_qc.h"
 
 
-/** @defgroup logic Logic for populating summaries, tables and plots
+/** @defgroup logic Logic for populating tables and plots
  *
  * This group defines the interface functions for computing the SAV:
  *  1. Summary tab
@@ -31,12 +31,12 @@
  * @ingroup logic
  */
 
-/** @defgroup summary_logic Logic for populating the SAV Summary and Indexing tabs
+/** @defgroup summary_logic Logic for populating tables in the SAV Summary and Indexing tabs
  *
  * @ingroup logic
  */
 
-/** @defgroup table_logic Logic for populating the SAV Imaging tab
+/** @defgroup table_logic Logic for populating the table in the SAV Imaging tab
  *
  * @ingroup logic
  */

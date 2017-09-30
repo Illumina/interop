@@ -44,15 +44,16 @@ namespace illumina { namespace interop { namespace model { namespace summary
         }
 
     public:
-        /** Allocate space for the number of lanes
+        /** @defgroup index_flowcell_summary Index Flowcell Summary
          *
-         * @param n number of lanes
+         * Information used in the SAV Indexing Tab
+         *
+         * @ref illumina::interop::model::summary::index_flowcell_summary "See full class description"
+         * @{
          */
-        void resize(const size_type n)
-        {
-            m_lane_summaries.resize(n);
-        }
         /** Get reference to lane summary at given index
+         *
+         * Note, in Python, C#, etc, this is converted to .at(index)
          *
          * @param n index
          * @return reference to lane summary
@@ -63,6 +64,8 @@ namespace illumina { namespace interop { namespace model { namespace summary
             return m_lane_summaries[n];
         }
         /** Get constant reference to lane summary at given index
+         *
+         * Note, in Python, C#, etc, this is converted to .at(index)
          *
          * @param n index
          * @return constant reference to lane summary
@@ -101,6 +104,18 @@ namespace illumina { namespace interop { namespace model { namespace summary
         size_t size()const
         {
             return m_lane_summaries.size();
+        }
+
+        /** @} */
+
+    public:
+        /** Allocate space for the number of lanes
+         *
+         * @param n number of lanes
+         */
+        void resize(const size_type n)
+        {
+            m_lane_summaries.resize(n);
         }
         /** Get random access iterator to start of summaries by read
          *

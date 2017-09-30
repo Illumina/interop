@@ -43,7 +43,17 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         {}
 
     public:
+        /** @defgroup index_count_summary Index Lane Summary
+         *
+         * Information used in the SAV Indexing Tab
+         *
+         * @ingroup index_lane_summary
+         * @ref illumina::interop::model::summary::index_count_summary "See full class description"
+         * @{
+         */
         /** Get the index unique identifier (based on a counter)
+         *
+         * `Index Number` in SAV
          *
          * @return index identifier
          */
@@ -51,15 +61,9 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         {
             return m_id;
         }
-        /** Set the index unique identifier (based on a counter)
-         *
-         * @param n index identifier
-         */
-        void id(const size_t n)
-        {
-            m_id = n;
-        }
         /** Index sequence 1
+         *
+         * `Index 1 (I7)` in SAV
          *
          * @return index sequence
          */
@@ -69,6 +73,8 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         }
         /** Index sequence 2
          *
+         * `Index 2 (I5)` in SAV
+         *
          * @return index sequence
          */
         const std::string& index2()const
@@ -76,6 +82,8 @@ namespace illumina { namespace interop { namespace model { namespace summary {
             return m_index2;
         }
         /** Fraction of reads mapped
+         *
+         * `% Reads Identified (PF)` in SAV
          *
          * @return fraction of reads mapped
          */
@@ -93,6 +101,8 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         }
         /** Sample id
          *
+         * `Sample Id` in SAV
+         *
          * @return sample id
          */
         const std::string& sample_id()const
@@ -107,8 +117,17 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         {
             return m_project_name;
         }
+        /** @} */
 
     public:
+        /** Set the index unique identifier (based on a counter)
+         *
+         * @param n index identifier
+         */
+        void id(const size_t n)
+        {
+            m_id = n;
+        }
         /** Update the count
          *
          * @param cluster_count count to add
