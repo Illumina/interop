@@ -1,10 +1,43 @@
 # Changes                                               {#changes}
 
-## v1.0.24 (Master)
+
+## v1.0.26 (Master)
 
 Date       | Description
 ---------- | -----------
-0000-00-00 | placeholder
+2017-09-22 | Added additional documentation for index summary 
+2017-08-29 | Improve run info validation
+2017-08-29 | Update build scripts with various bug fixes
+2017-08-29 | IPA-6789: Create NuGet build test
+2017-07-21 | Native shared libraries are now copied to bin folder for NuGet packages on Linux (non-Windows systems)
+2017-07-11 | IPA-6535: Error rate should report NaN for no data
+2017-07-10 | Simplify build scripts, add nuget package and additional MSVC libraries
+2017-06-27 | IPA-6640: Fix issues with summary app and phasing reporting
+2017-06-12 | IPA-6290: Create .NET Core build for InterOp
+2017-06-05 | IPA-6597: Enable hash map for visual studio
+2017-06-02 | Bug fix for VS2017 warning as error
+2017-05-31 | IPA-6541: Fix index sequence order for BaseSpace
+2017-05-25 | IPA-6540: Make tile list validation less catastrophic and own exception
+
+## v1.0.25
+
+Date       | Description
+---------- | -----------
+2017-05-08 | IPA-6419: Filter metric list by empty metric values
+2017-05-05 | Refactor plot-by-lane, cycle and flowcell to use reflection-like enums
+2017-04-28 | IPA-6413: Add C# exception unit tests
+2017-04-26 | Fix bug in list filename by moving clear
+2017-04-25 | Fixes for the regression tests
+2017-04-20 | Add feature to list all InterOp filenames
+2017-04-14 | IPA-6353: Handle Legacy RunInfo rewrite
+2017-03-28 | IPA-5052: All lanes on Indexing Tab
+
+
+## v1.0.24
+
+Date       | Description
+---------- | -----------
+2017-05-05 | Remove Python library from module dependencies
 
 ## v1.0.23
 

@@ -12,7 +12,6 @@ namespace Illumina.InterOp.Interop.UnitTest
 	/// Confirm that the corrected intensity metrics InterOp works properly in C#
 	/// </summary>
 	///
-	[TestFixture]
 	public abstract class AbstractCorrectedIntensityMetricsTest
 	{
 		/// <summary>
@@ -81,7 +80,6 @@ namespace Illumina.InterOp.Interop.UnitTest
 	/// Confirm that the corrected intensity metrics InterOp works properly in C# for Version 2 of the format
 	/// </summary>
 	///
-	[TestFixture]
 	public class CorrectedIntensityMetricsTestV2 : AbstractCorrectedIntensityMetricsTest
 	{
 		const int Version = 2;
@@ -126,7 +124,6 @@ namespace Illumina.InterOp.Interop.UnitTest
 	/// Confirm that the corrected intensity metrics InterOp works properly in C# for Version 3 of the format
 	/// </summary>
 	///
-	[TestFixture]
 	public class CorrectedIntensityMetricsTestV3 : AbstractCorrectedIntensityMetricsTest
 	{
 		const int Version = 3;

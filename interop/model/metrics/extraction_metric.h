@@ -356,8 +356,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         ushort_t max_intensity(const size_t channel) const throw(model::index_out_of_bounds_exception)
         {
-            if(channel >= m_max_intensity_values.size())
-                INTEROP_THROW( index_out_of_bounds_exception, "Channel out of bounds");
+            INTEROP_BOUNDS_CHECK(channel, m_max_intensity_values.size(), "Channel out of bounds");
             return m_max_intensity_values[channel];
         }
 
@@ -368,8 +367,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         float focus_score(const size_t channel) const throw(model::index_out_of_bounds_exception)
         {
-            if(channel >= m_focus_scores.size())
-                INTEROP_THROW( index_out_of_bounds_exception, "Channel out of bounds");
+            INTEROP_BOUNDS_CHECK(channel, m_focus_scores.size(), "Channel out of bounds");
             return m_focus_scores[channel];
         }
 
@@ -387,7 +385,6 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          *
          * These values are estimated using full width half max (FWHM) from each image, e.g. each channel.
          *
-         * @deprecated Will be removed in 1.1.x (use focus_scores instead)
          * @return vector of focus scores
          */
         const float_array_t &focus_scores() const

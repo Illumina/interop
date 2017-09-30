@@ -20,7 +20,10 @@
 /** This macro maps an enum description to a string/enum pair */
 #define INTEROP_TUPLE3(X, IGNORED_1, IGNORED_2) name_type_pair_t(#X,X)
 /** This macro maps an enum description to a string/enum pair */
-#define INTEROP_TUPLE4(X, IGNORED_1, IGNORED_2, IGNORED_3) name_type_pair_t(#X,X)
+#define INTEROP_TUPLE4(X, IGNORED_1, IGNORED_2, IGNORED_3) name_type_pair_t(#X,X),
+/** This macro maps an enum description to a string/enum pair */
+#define INTEROP_TUPLE7(X, IGNORED_1, IGNORED_2, IGNORED_3, IGNORED_4, IGNORED_5, IGNORED_6) name_type_pair_t(#X,X),
+
 
 namespace illumina { namespace interop {  namespace constants
 {
@@ -360,4 +363,5 @@ namespace illumina { namespace interop {  namespace constants
 #undef INTEROP_TUPLE2
 #undef INTEROP_TUPLE3
 #undef INTEROP_TUPLE4
+#undef INTEROP_TUPLE7
 

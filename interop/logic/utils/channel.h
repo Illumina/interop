@@ -23,6 +23,20 @@
 
 namespace illumina { namespace interop { namespace logic { namespace utils
 {
+    namespace detail
+    {
+        /** Convert character to lower case
+         *
+         * @note workarond for MSVC  warning C4244: '=': conversion from 'int' to 'char', possible loss of data
+         *
+         * @param ch character
+         * @return lowercase character
+         */
+        inline char tolower(const char ch)
+        {
+            return static_cast<char>(::tolower(ch));
+        }
+    }
 
     /** Normalize a channel name by making it lower case
      *
@@ -32,7 +46,7 @@ namespace illumina { namespace interop { namespace logic { namespace utils
     inline std::string normalize(const std::string &channel)
     {
         std::string channel_normalized=channel;
-        std::transform(channel.begin(), channel.end(), channel_normalized.begin(), ::tolower);
+        std::transform(channel.begin(), channel.end(), channel_normalized.begin(), detail::tolower);
         return channel_normalized;
     }
     /** Normalize a collection of channel names

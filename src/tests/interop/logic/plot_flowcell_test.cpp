@@ -124,7 +124,7 @@ flowcell_plot_tests::generator_type plot_flowcell_generators[] = {
         wrap(new standard_parameter_generator<flowcell_data, flowcell_write_read_generator>(0)),
 };
 
-// Setup unit tests for extended_tile_metrics_tests
+// Setup unit tests
 INSTANTIATE_TEST_CASE_P(flowcell_unit_tests,
                         flowcell_plot_tests,
                         ::testing::ValuesIn(plot_flowcell_generators));

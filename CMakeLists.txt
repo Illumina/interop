@@ -3,7 +3,8 @@ project(InterOp)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules)
 enable_testing()
 include(${PROJECT_SOURCE_DIR}/cmake/Modules/UseGitVersion.cmake)
-set(ARCHIVE_VERSION "v1.0.16-src")
+include(${PROJECT_SOURCE_DIR}/cmake/DependencyManager.cmake)
+set(ARCHIVE_VERSION "v3.0.35-src")
 
 option(ENABLE_PORTABLE "Create a portable build of InterOP")
 find_package(OpenMP)
@@ -22,35 +23,77 @@ endif()
 
 # TODO: Handle Windows Shared libs: https://cmake.org/Wiki/BuildingWinDLL
 
-set(INTEROP_TESTS interop_tests)
-set(INTEROP_LIB interop_lib)
-set(INTEROP_DL_LIB interop_fpic_lib)
-
-option(ENABLE_BACKWARDS_COMPATIBILITY "Compile code for c++98" ON)
+option(ENABLE_BACKWARDS_COMPATIBILITY "Compile code for c++98" OFF)
 option(ENABLE_DOCS "Build documentation with Doxygen" ON)
 option(ENABLE_SWIG "Build third-party language bindings, e.g. C#" ON)
 option(ENABLE_TEST "Build unit tests (depends on Boost)" ON)
 option(ENABLE_APPS "Build command line programs" ON)
 option(ENABLE_EXAMPLES "Build example programs" ON)
 option(ENABLE_STATIC "Build static libraries instead of dynamic" ON)
-option(FORCE_X86 "Force 32-bit libraries instead of platform default (Does nothing for Visual Studio)" OFF)
-option(FORCE_SHARED_CRT "Used the shared (DLL) run time lib (must be ON if compiling for C#)" ON)
 option(ENABLE_CSHARP "Build C# language bindings" ON)
 option(ENABLE_PYTHON "Build Python language bindings" ON)
-option(ENABLE_PORTABLE "Statically link libraries for GCC compiler")
-option(DISABLE_PACKAGE_SUBDIR "Disable placing the packaged build in a subdirectory structure: interop/${VERSION}")
-option(ENABLE_PYTHON_DYNAMIC_LOAD "Do not link to Python shared library (Linux and Mac)")
+option(ENABLE_PORTABLE "Statically link libraries for GCC compiler" ON)
+option(DISABLE_PACKAGE_SUBDIR "Disable placing the packaged build in a subdirectory structure: interop/${VERSION}" OFF)
+option(ENABLE_PYTHON_DYNAMIC_LOAD "Do not link to Python shared library (Linux and Mac)" ON)
+option(ENABLE_DEPENDENCY_MANAGER "Download dependencies from Artifactory" ON)
+option(ENABLE_DEPENDENCY_MANAGER_WINDOWS_ONLY "Only check for dependencies on Windows Platforms" ON)
+option(SKIP_PACKAGE_ALL_WHEEL "Do not package a well as apart of the package_all target" OFF)
+set(DEPENDENCY_URL "" CACHE STRING "Location of dependencies for Windows")
+
+# Not officially supported if changed from default
+option(FORCE_X86 "Force 32-bit libraries instead of platform default (Does nothing for Visual Studio)" OFF)
+option(FORCE_SHARED_CRT "Used the shared (DLL) run time lib in MSVC (must be ON if compiling for C#)" ON)
+
+if(ENABLE_DEPENDENCY_MANAGER)
+    if(WIN32 OR NOT ENABLE_DEPENDENCY_MANAGER_WINDOWS_ONLY)
+        set(DEPS_URL ${DEPENDENCY_URL})
+    else()
+        set(DEPS_URL "")
+    endif()
+    if(DEPS_URL)
+        update_dependencies(
+                ${DEPS_URL}
+                .illumina.builddeps.interop
+                DEPS_DIR
+        )
+    endif()
+endif()
+
+if(DEPS_DIR)
+    message(STATUS "Using prebuilt dependencies at ${DEPS_DIR}")
+    set(GTEST_DIR ${DEPS_DIR})
+    set(GMOCK_DIR ${DEPS_DIR})
+    set(JUNIT_DIR ${DEPS_DIR})
+    set(NUNIT_DIR ${DEPS_DIR}/NUnit-2.6.4)
+    if(WIN32)
+        if(EXISTS ${DEPS_DIR}/nuget.exe)
+            set(NUGET_EXE ${DEPS_DIR}/nuget.exe)
+        endif()
+        if(EXISTS ${DEPS_DIR}/swig.exe)
+            set(SWIG_EXECUTABLE ${DEPS_DIR}/swig.exe)
+        endif()
+    endif()
+else()
+    message(STATUS "No prebuilt dependencies found")
+endif()
 
 include(${PROJECT_SOURCE_DIR}/cmake/InternalUtils.cmake)
 interop_config_compiler_and_linker()
 
-# Options to control integration builds
-set(PACKAGE_SUFFIX "" CACHE STRING "Suffix added to the output packages")
-set(BUILD_NUMBER "" CACHE STRING "Build number used for select packing scripts")
-mark_as_advanced(PACKAGE_SUFFIX BUILD_NUMBER)
+set(INTEROP_TESTS interop_tests)
+set(INTEROP_LIB interop_lib)
+if(COMPILER_IS_GNUCC_OR_CLANG AND NOT MINGW)
+    set(INTEROP_DL_LIB interop_fpic_lib)
+else()
+    set(INTEROP_DL_LIB interop_lib)
+endif()
 
-include_directories(.)
-add_version_target(version ${CMAKE_SOURCE_DIR}/interop/version.h INTEROP_VERSION ${ARCHIVE_VERSION})
+# Options to control integration builds
+set(BUILD_NUMBER "" CACHE STRING "Build number used for select packing scripts")
+mark_as_advanced(BUILD_NUMBER)
+
+include_directories(. ${CMAKE_CURRENT_BINARY_DIR}/include)
+add_version_target(version ${CMAKE_CURRENT_BINARY_DIR}/include/interop/version.h INTEROP_VERSION ${ARCHIVE_VERSION})
 
 if(INTEROP_VERSION)
     string(REGEX REPLACE "[^v]*(v.*)" "\\1" VERSION ${INTEROP_VERSION})
@@ -79,7 +122,7 @@ if(INTEROP_VERSION)
     set(CPACK_PACKAGE_VERSION_MAJOR "${VERSION_MAJOR}")
     set(CPACK_PACKAGE_VERSION_MINOR "${VERSION_MINOR}")
     set(CPACK_PACKAGE_VERSION_PATCH "${VERSION_PATCH}")
-    set(CPACK_SYSTEM_NAME "${CMAKE_SYSTEM_NAME}-${CMAKE_CXX_COMPILER_ID}-${CMAKE_CXX_COMPILER_VERSION}${PACKAGE_SUFFIX}")
+    set(CPACK_SYSTEM_NAME "${CMAKE_SYSTEM_NAME}-${CMAKE_CXX_COMPILER_ID}")
     set(CPACK_PACKAGE_INSTALL_DIRECTORY "interop_${VERSION_SHORT}")
     if(NOT PACKAGE_OUTPUT_FILE_PREFIX)
         set(PACKAGE_OUTPUT_FILE_PREFIX ".")
@@ -93,8 +136,12 @@ if(INTEROP_VERSION)
     endif()
 endif()
 
-#Adds the target "package"
 include(CPack)
+
+#https://stackoverflow.com/questions/12302836/renaming-cpack-automatic-target
+add_custom_target(bundle
+        COMMAND "${CMAKE_CPACK_COMMAND}"
+        "-C" "$<CONFIGURATION>" "--config" "${CMAKE_BINARY_DIR}/CPackConfig.cmake")
 
 if(ENABLE_STATIC)
     set(LIBRARY_TYPE STATIC)
@@ -119,7 +166,9 @@ find_package(Git)
 if(GIT_FOUND)
     string(REGEX REPLACE "[^v]*(v[0-9]+.[0-9]+.[0-9]+)-.*" "\\1" TAG ${INTEROP_VERSION})
     add_custom_target(history
-        COMMAND ${GIT_EXECUTABLE};log;${TAG}..HEAD;-m;--first-parent;--date=short;--format='%ad | %b'
+        COMMAND ${GIT_EXECUTABLE};log;${TAG}..HEAD;-m;--first-parent;--date=short;"--format='%ad | %b'"
         COMMENT "List all commits from last tag - ${TAG}"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 endif()
+
+set_target_properties(bundle PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)

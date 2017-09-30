@@ -184,9 +184,9 @@ namespace illumina { namespace interop { namespace logic { namespace summary
      * @return number of non-NaN elements
      */
     template<typename I, typename S, typename BinaryOp, typename Compare>
-    size_t nan_summarize(I beg, I end, S &stat, BinaryOp op, Compare comp, const bool skip_median, const bool reset_nan=false)
+    size_t nan_summarize(I beg, I end, S &stat, BinaryOp op, Compare comp, const bool skip_median)
     {
-        stat.clear(reset_nan);
+        stat.clear();
         if (beg == end) return 0;
         end = util::remove_nan(beg, end, op);
         if (beg == end) return 0;

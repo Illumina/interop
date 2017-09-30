@@ -9,15 +9,16 @@
  */
 #pragma once
 
-#if defined(__cplusplus) && __cplusplus < 201103L
-#   include <map>
-#   define INTEROP_ORDERED_MAP(key_t, value_t) std::map<key_t, value_t>
-#   define INTEROP_UNORDERED_MAP(key_t, value_t) std::map<key_t, value_t>
-#   define INTEROP_UNORDERED_HASHMAP(key_t, value_t, hash_t) std::map<key_t, value_t>
-#else
+#ifdef HAVE_UNORDERED_MAP_IN_STD
+#   define INTEROP_HAS_UNORDERED_MAP 1
 #   include <map>
 #   include <unordered_map>
 #   define INTEROP_ORDERED_MAP(key_t, value_t) std::map<key_t, value_t>
 #   define INTEROP_UNORDERED_MAP(key_t, value_t) std::unordered_map<key_t, value_t>
 #   define INTEROP_UNORDERED_HASHMAP(key_t, value_t, hash_t) std::unordered_map<key_t, value_t, hash_t>
+#else
+#   include <map>
+#   define INTEROP_ORDERED_MAP(key_t, value_t) std::map<key_t, value_t>
+#   define INTEROP_UNORDERED_MAP(key_t, value_t) std::map<key_t, value_t>
+#   define INTEROP_UNORDERED_HASHMAP(key_t, value_t, hash_t) std::map<key_t, value_t>
 #endif

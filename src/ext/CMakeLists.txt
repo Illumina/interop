@@ -13,18 +13,13 @@ if(swig_major_ver LESS "3")
 endif()
 
 # Support earlier and later versions of CMake
-macro(ADD_SWIG_LIBRARY name language)
-    if(CMAKE_VERSION VERSION_LESS 3.8)
+if(CMAKE_VERSION VERSION_LESS 3.8 OR EXISTS "${CMAKE_SOURCE_DIR}/cmake/Modules/UseSWIG.cmake")
+    macro(swig_add_library name language)
         swig_add_module(${name}
                 ${language}
                 ${ARGN})
-    else()
-        swig_add_library(${name}
-                LANGUAGE ${language}
-                TYPE MODULE
-                SOURCES ${ARGN})
-    endif()
-endmacro()
+    endmacro()
+endif()
 
 ############################################################
 # Need to enable SWIGWORDSIZE64 in SWIG when long is 64-bit
@@ -38,7 +33,9 @@ endif()
 if("${SIZE_T}" EQUAL 8)
     set(SWIG_WORDSIZE_FLAG "${SWIG_WORDSIZE_FLAG};-DHAVE_UINT64_SIZE_T")
 endif()
-include(${SWIG_USE_FILE})
+
+#TODO: Check CMake Version (use bug fixed!)
+include(${CMAKE_SOURCE_DIR}/cmake/Modules/UseSWIG.cmake) #${SWIG_USE_FILE})
 set(CMAKE_SWIG_FLAGS "")
 
 set(SWIG_SRCS_TEMP swig/run.i swig/metrics.i swig/run_metrics.i swig/comm.i swig/table.i swig/plot.i swig/summary.i)
@@ -72,6 +69,14 @@ endforeach()
 # Language options
 # https://github.com/SimpleITK/SimpleITK/blob/master/CMake/sitkLanguageOptions.cmake
 
+
+# Pass compiler definitions to SWIG
+get_directory_property(DirDefs COMPILE_DEFINITIONS)
+if(DirDefs)
+    string(REPLACE ";" ";-D" DirDefs "${DirDefs}")
+    set(DirDefs "-D${DirDefs}")
+endif()
+set(CMAKE_SWIG_FLAGS "${CMAKE_SWIG_FLAGS};${DirDefs}")
 
 if(ENABLE_CSHARP)
     add_subdirectory("csharp")

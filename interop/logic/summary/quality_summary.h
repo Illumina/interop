@@ -185,14 +185,11 @@ namespace illumina { namespace interop { namespace logic { namespace summary
         for(;beg != end;++beg)
         {
             INTEROP_ASSERT(beg->cycle() > 0);
-            INTEROP_ASSERT((beg->cycle()-1) < cycle_to_read.size());
-            if((beg->cycle()-1) >= cycle_to_read.size())
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Cycle exceeds total cycles from Reads in the RunInfo.xml");
+            INTEROP_BOUNDS_CHECK(beg->cycle() - 1, cycle_to_read.size(), "Cycle exceeds total cycles from Reads in the RunInfo.xml");
             const size_t read_number = cycle_to_read[beg->cycle()-1].number-1;
             if(cycle_to_read[beg->cycle()-1].is_last_cycle_in_read) continue;
             const size_t lane = beg->lane()-1;
-            if(lane >= run.lane_count())
-                INTEROP_THROW( model::index_out_of_bounds_exception, "Lane exceeds lane count in RunInfo.xml");
+            INTEROP_BOUNDS_CHECK(lane, run.lane_count(), "Lane exceeds number of lanes in RunInfo.xml");
             read_lane_cache.add(*beg, read_number, lane);
 
             if(surface_count < 2) continue;
@@ -297,7 +294,8 @@ namespace illumina { namespace interop { namespace logic { namespace summary
             total_useable_calls += total_useable_calls_by_read;
             useable_calls_gt_q30 += useable_calls_gt_q30_by_read;
             overall_projected_yield += read_projected_yield;
-            yield_g += run[read].summary().yield_g();
+            if(!std::isnan(run[read].summary().yield_g()))
+                yield_g += run[read].summary().yield_g();
             // Certain metrics can be biased by the index read, e.g. C1 intensity, total yield
             // So, we include totals that skip the index reads
             if(!run[read].read().is_index())
@@ -305,7 +303,8 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                 total_useable_calls_nonindex += total_useable_calls_by_read;
                 useable_calls_gt_q30_nonindex += useable_calls_gt_q30_by_read;
                 projected_yield_nonindex += read_projected_yield;
-                yield_g_nonindex += run[read].summary().yield_g();
+                if(!std::isnan(run[read].summary().yield_g()))
+                    yield_g_nonindex += run[read].summary().yield_g();
             }
         }
         run.nonindex_summary().projected_yield_g(::uint64_t(projected_yield_nonindex+0.5f)/1e9f);

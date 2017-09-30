@@ -20,6 +20,7 @@ set(SRCS
         logic/plot/plot_sample_qc.cpp
         logic/plot/plot_qscore_histogram.cpp
         model/run_metrics.cpp
+        model/run_metrics_helper.cpp
         logic/summary/run_summary.cpp
         logic/summary/index_summary.cpp
         logic/table/create_imaging_table_columns.cpp
@@ -30,7 +31,9 @@ set(SRCS
         model/summary/index_summary.cpp
         model/metrics/phasing_metric.cpp
         model/metrics/dynamic_phasing_metric.cpp
-        logic/metric/dynamic_phasing_metric.cpp)
+        logic/metric/dynamic_phasing_metric.cpp
+        logic/plot/plot_metric_list.cpp
+        logic/metric/index_metric.cpp)
 
 set(HEADERS
         ../../interop/io/paths.h
@@ -166,6 +169,9 @@ set(HEADERS
         ../../interop/model/metric_base/metric_exceptions.h
         ../../interop/model/table/table_exceptions.h
         ../../interop/model/plot/plot_exceptions.h
+        ../../interop/logic/plot/plot_metric_proxy.h
+        ../../interop/logic/plot/plot_metric_list.h
+        ../../interop/logic/metric/index_metric.h
         )
 
 set(INTEROP_HEADERS ${HEADERS} PARENT_SCOPE)
@@ -192,13 +198,16 @@ if(MSVC AND "${LIBRARY_TYPE}" STREQUAL "SHARED")
 endif()
 
 add_library(${INTEROP_LIB} ${LIBRARY_TYPE} ${SRCS} ${HEADERS} ${SWIG_VERSION_INFO})
-add_library(${INTEROP_DL_LIB} ${LIBRARY_TYPE} ${SRCS} ${HEADERS}  ${SWIG_VERSION_INFO} )
 add_dependencies(${INTEROP_LIB} version)
-add_dependencies(${INTEROP_DL_LIB} version)
-
-set_target_properties(${INTEROP_DL_LIB} PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
-if(COMPILER_IS_GNUCC_OR_CLANG AND NOT MINGW)
+if(NOT "${INTEROP_DL_LIB}" STREQUAL "${INTEROP_LIB}")
+    add_library(${INTEROP_DL_LIB} ${LIBRARY_TYPE} ${SRCS} ${HEADERS}  ${SWIG_VERSION_INFO} )
     set_target_properties(${INTEROP_DL_LIB} PROPERTIES COMPILE_FLAGS "-fPIC")
+    add_dependencies(${INTEROP_DL_LIB} version)
+    install(TARGETS ${INTEROP_DL_LIB}
+            LIBRARY DESTINATION lib64
+            RUNTIME DESTINATION bin
+            ARCHIVE DESTINATION lib64
+            )
 endif()
 
 install(TARGETS ${INTEROP_LIB}
@@ -206,3 +215,28 @@ install(TARGETS ${INTEROP_LIB}
         RUNTIME DESTINATION bin
         ARCHIVE DESTINATION lib64
 )
+
+if(MSVC)
+    if (NOT BUILD_SHARED_LIBS AND NOT FORCE_SHARED_CRT)
+        set_msvc_md()
+        set(INTEROP_MSVC interop-md)
+        set_target_properties(${INTEROP_LIB} PROPERTIES OUTPUT_NAME "interop-mt")
+    else()
+        set_msvc_mt()
+        set(INTEROP_MSVC interop-mt)
+        set_target_properties(${INTEROP_LIB} PROPERTIES OUTPUT_NAME "interop-md")
+    endif()
+    add_library(${INTEROP_MSVC} ${LIBRARY_TYPE} ${SRCS} ${HEADERS}  ${SWIG_VERSION_INFO} )
+    add_dependencies(${INTEROP_MSVC} version)
+    install(TARGETS ${INTEROP_MSVC}
+            LIBRARY DESTINATION lib64
+            RUNTIME DESTINATION bin
+            ARCHIVE DESTINATION lib64
+            )
+    if (NOT BUILD_SHARED_LIBS AND NOT FORCE_SHARED_CRT)
+        set_msvc_mt()
+    else()
+        set_msvc_md()
+    endif()
+
+endif()

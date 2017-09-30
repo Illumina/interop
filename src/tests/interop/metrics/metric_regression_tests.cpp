@@ -75,7 +75,7 @@ protected:
      */
     bool generate_actual(const std::string &run_folder, model::metrics::run_metrics &actual) const
     {
-        actual.read(run_folder);
+        read_metrics_safe(actual, run_folder);
         return true;
     }
 

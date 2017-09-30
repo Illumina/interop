@@ -23,43 +23,42 @@ set(NUNIT_ROOT "" CACHE PATH "Set the location of the NUnit library")
 
 set(nunit_search_hints
         ${NUNIT_ROOT}
+        $ENV{NUNIT_DIR}
         [HKEY_CURRENT_USER\\Software\\nunit.org\\NUnit\\2.6.4]
         "C:\\Program Files (x86)\\NUnit 2.6.4"
-        /usr/local//Cellar/mono/4.0.1/lib/mono/4.5/
+        /usr/local
         /usr/lib/monodevelop/AddIns/NUnit
         /usr/lib/mono/4.0
         /usr/lib/mono/3.5
         /usr/lib/mono/2.0
         /usr/lib/mono/1.0
         /usr/lib/nunit
-        $ENV{NUNIT_DIR}
         )
 
 find_file(NUNIT_LIBRARY nunit.framework.dll
-        PATHS ${nunit_search_hints}
-        HINTS ${PC_NUNIT_INCLUDEDIR} ${PC_NUNIT_INCLUDE_DIRS}
-        PATH_SUFFIXES bin bin/framework
+        HINTS ${nunit_search_hints} ${PC_NUNIT_INCLUDEDIR} ${PC_NUNIT_INCLUDE_DIRS}
+        PATH_SUFFIXES bin bin/framework lib/mono lib/mono/4.5
         )
 
-find_program(NUNIT64_COMMAND nunit-console.exe
+find_program(NUNIT64_COMMAND nunit-console nunit-console.exe
         HINTS ${PC_NUNIT_INCLUDEDIR} ${PC_NUNIT_INCLUDE_DIRS} ${nunit_search_hints}
         PATH_SUFFIXES bin
         NO_DEFAULT_PATH
         )
 
-find_program(NUNIT64_COMMAND nunit-console.exe
+find_program(NUNIT64_COMMAND nunit-console nunit-console.exe
         HINTS ${PC_NUNIT_INCLUDEDIR} ${PC_NUNIT_INCLUDE_DIRS} ${nunit_search_hints}
         PATH_SUFFIXES bin
         DOC "NUnit test runner command"
         )
 
-find_program(NUNIT32_COMMAND nunit-console-x86.exe
+find_program(NUNIT32_COMMAND nunit-console-x86 nunit-console-x86.exe
         HINTS ${PC_NUNIT_INCLUDEDIR} ${PC_NUNIT_INCLUDE_DIRS} ${nunit_search_hints}
         PATH_SUFFIXES bin
         NO_DEFAULT_PATH
         )
 
-find_program(NUNIT32_COMMAND nunit-console-x86.exe
+find_program(NUNIT32_COMMAND nunit-console-x86 nunit-console-x86.exe
         HINTS ${PC_NUNIT_INCLUDEDIR} ${PC_NUNIT_INCLUDE_DIRS} ${nunit_search_hints}
         PATH_SUFFIXES bin
         DOC "NUnit test runner command"
@@ -108,9 +107,13 @@ set(NUNIT_INCLUDE_DIR ${NUNIT_LIBRARY} )
 set(NUNIT_INCLUDE_DIRS ${NUNIT_LIBRARY} )
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(NUnit DEFAULT_MSG NUNIT_LIBRARY NUNIT_COMMAND)
-
-if(CSHARP_MONO_FOUND AND CSHARP_INTERPRETER AND NUNIT_COMMAND)
-    set(NUNIT_COMMAND ${CSHARP_INTERPRETER} ${NUNIT_COMMAND})
+message(STATUS "Found NUnit Runner: ${NUNIT_COMMAND}")
+if(NUNIT_COMMAND)
+    if(MONO_EXECUTABLE AND NUNIT_COMMAND MATCHES "(.exe)")
+        set(NUNIT_COMMAND ${MONO_EXECUTABLE} ${NUNIT_COMMAND})
+    endif()
 endif()
+
+
 
 mark_as_advanced(NUNIT_LIBRARIES NUNIT_INCLUDE_DIR NUNIT_INCLUDE_DIRS)

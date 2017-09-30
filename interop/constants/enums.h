@@ -35,40 +35,34 @@
 
 /** Enumeration of each metric type
  *
- * @note This macro requires the macro INTEROP_TUPLE3 to be defined before use
+ * @note This macro requires the macro INTEROP_TUPLE1, INTEROP_TUPLE4, INTEROP_TUPLE7 to be defined before use
  * @see illumina::interop::constants::metric_type
  */
 #define INTEROP_ENUM_METRIC_TYPES \
-        INTEROP_TUPLE4(Intensity, "Intensity", Extraction, CycleFeature|ChannelFeature),\
-        INTEROP_TUPLE4(FWHM, "FWHM", Extraction, CycleFeature|ChannelFeature),\
-        /*INTEROP_TUPLE4(PercentBase, "% Base", CorrectedInt, CycleFeature|BaseFeature), */\
-        INTEROP_TUPLE4(BasePercent, "% Base", CorrectedInt, CycleFeature|BaseFeature),\
-        INTEROP_TUPLE4(PercentNoCall, "% NoCall", CorrectedInt, CycleFeature),\
-        /*INTEROP_TUPLE4(PercentQ20, "% >=Q20", Q, CycleFeature),*/\
-        INTEROP_TUPLE4(Q20Percent, "% >=Q20", Q, CycleFeature),\
-        /*INTEROP_TUPLE4(PercentQ30, "% >=Q30", Q, CycleFeature),*/\
-        INTEROP_TUPLE4(Q30Percent, "% >=Q30", Q, CycleFeature),\
-        INTEROP_TUPLE4(AccumPercentQ20, "% >=Q20 (Accumulated)", Q, CycleFeature),\
-        INTEROP_TUPLE4(AccumPercentQ30, "% >=Q30 (Accumulated)", Q, CycleFeature),\
-        INTEROP_TUPLE4(QScore, "Median QScore", Q, CycleFeature),\
-        INTEROP_TUPLE4(Clusters, "Density", Tile, TileFeature),\
-        /*INTEROP_TUPLE4(Density, "Density (K/mm2)", Tile, TileFeature),*/ \
-        INTEROP_TUPLE4(ClustersPF, "Density PF", Tile, TileFeature),\
-        /*INTEROP_TUPLE4(DensityPF, "Density PF", Tile, TileFeature),*/\
-        INTEROP_TUPLE4(ClusterCount, "Cluster Count", Tile, TileFeature),\
-        /*INTEROP_TUPLE4(ClusterCount, "Cluster Count", Tile, TileFeature),*/\
-        INTEROP_TUPLE4(ClusterCountPF, "Clusters PF", Tile, TileFeature),\
-        INTEROP_TUPLE4(ErrorRate, "Error Rate", Error, CycleFeature),\
-        INTEROP_TUPLE4(PercentPhasing, "% Phasing", Tile, ReadFeature),\
-        INTEROP_TUPLE4(PercentPrephasing, "% Prephasing", Tile, ReadFeature),\
-        INTEROP_TUPLE4(PercentAligned, "% Aligned", Tile, ReadFeature),\
-        INTEROP_TUPLE4(Phasing, "Phasing", EmpiricalPhasing, CycleFeature),\
-        INTEROP_TUPLE4(PrePhasing, "PrePhasing", EmpiricalPhasing, CycleFeature),\
-        INTEROP_TUPLE4(CorrectedIntensity, "Corrected Int", CorrectedInt, CycleFeature|BaseFeature),\
-        INTEROP_TUPLE4(CalledIntensity, "Called Int", CorrectedInt, CycleFeature|BaseFeature),\
-        INTEROP_TUPLE4(SignalToNoise, "Signal to Noise", CorrectedInt, CycleFeature),\
-        INTEROP_TUPLE4(MetricTypeCount, "!!!!BAD!!!!", UnknownMetricGroup, UnknownMetricFeature),\
-        INTEROP_TUPLE4(UnknownMetricType, "!!!!BAD!!!!", UnknownMetricGroup, UnknownMetricFeature)
+        INTEROP_TUPLE7(Intensity, "Intensity", Extraction, CycleFeature|ChannelFeature, extraction_metric, max_intensity, channel)\
+        INTEROP_TUPLE7(FWHM, "FWHM", Extraction, CycleFeature|ChannelFeature, extraction_metric, focus_score, channel)\
+        INTEROP_TUPLE7(BasePercent, "% Base", CorrectedInt, CycleFeature|BaseFeature, corrected_intensity_metric, percent_base, base)\
+        INTEROP_TUPLE7(PercentNoCall, "% NoCall", CorrectedInt, CycleFeature, corrected_intensity_metric, percent_nocall, Void)\
+        INTEROP_TUPLE7(Q20Percent, "% >=Q20", Q, CycleFeature, q_collapsed_metric, percent_over_q20, Void)\
+        INTEROP_TUPLE7(Q30Percent, "% >=Q30", Q, CycleFeature, q_collapsed_metric, percent_over_q30, Void)\
+        INTEROP_TUPLE7(AccumPercentQ20, "% >=Q20 (Accumulated)", Q, CycleFeature, q_collapsed_metric, cumulative_percent_over_q20, Void)\
+        INTEROP_TUPLE7(AccumPercentQ30, "% >=Q30 (Accumulated)", Q, CycleFeature, q_collapsed_metric, cumulative_percent_over_q30, Void)\
+        INTEROP_TUPLE7(QScore, "Median QScore", Q, CycleFeature, q_collapsed_metric, median_qscore_flt, Void)\
+        INTEROP_TUPLE7(Clusters, "Density", Tile, TileFeature, tile_metric, cluster_density_k, Void)\
+        INTEROP_TUPLE7(ClustersPF, "Density PF", Tile, TileFeature, tile_metric, cluster_density_pf_k, Void)\
+        INTEROP_TUPLE7(ClusterCount, "Cluster Count", Tile, TileFeature, tile_metric, cluster_count_m, Void)\
+        INTEROP_TUPLE7(ClusterCountPF, "Clusters PF", Tile, TileFeature, tile_metric, cluster_count_pf_m, Void)\
+        INTEROP_TUPLE7(ErrorRate, "Error Rate", Error, CycleFeature, error_metric, error_rate, Void)\
+        INTEROP_TUPLE7(PercentPhasing, "Legacy Phasing Rate", Tile, ReadFeature, tile_metric, percent_phasing_at, read)\
+        INTEROP_TUPLE7(PercentPrephasing, "Legacy Prephasing Rate", Tile, ReadFeature, tile_metric, percent_prephasing_at, read)\
+        INTEROP_TUPLE7(PercentAligned, "% Aligned", Tile, ReadFeature, tile_metric, percent_aligned_at, read)\
+        INTEROP_TUPLE7(Phasing, "Phasing Weight", EmpiricalPhasing, CycleFeature, phasing_metric, phasing_weight, Void)\
+        INTEROP_TUPLE7(PrePhasing, "Prephasing Weight", EmpiricalPhasing, CycleFeature, phasing_metric, prephasing_weight, Void)\
+        INTEROP_TUPLE7(CorrectedIntensity, "Corrected Int", CorrectedInt, CycleFeature|BaseFeature, corrected_intensity_metric, corrected_int_all_float, base)\
+        INTEROP_TUPLE7(CalledIntensity, "Called Int", CorrectedInt, CycleFeature|BaseFeature, corrected_intensity_metric, corrected_int_called, base)\
+        INTEROP_TUPLE7(SignalToNoise, "Signal to Noise", CorrectedInt, CycleFeature, corrected_intensity_metric, signal_to_noise, Void)\
+        INTEROP_TUPLE4(MetricTypeCount, "!!!!BAD!!!!", UnknownMetricGroup, UnknownMetricFeature)\
+        INTEROP_TUPLE1(UnknownMetricType)
 
 /** Enumeration of each metric group
  *
@@ -113,13 +107,13 @@
  */
 #define INTEROP_ENUM_TILE_NAMING_METHODS \
         /** Four digit tiles for HiSeq and modern MiSeqs */\
-        INTEROP_TUPLE1(FourDigit),\
+        INTEROP_TUPLE1(FourDigit), \
         /** Five digit tiles for NextSeq and ... */\
-        INTEROP_TUPLE1(FiveDigit),\
+        INTEROP_TUPLE1(FiveDigit), \
         /** Absolute naming for tiles GAs and old MiSeqs*/\
-        INTEROP_TUPLE1(Absolute),\
+        INTEROP_TUPLE1(Absolute), \
         /** Number of naming methods */\
-        INTEROP_TUPLE1(TileNamingMethodCount),\
+        INTEROP_TUPLE1(TileNamingMethodCount), \
         INTEROP_TUPLE1(UnknownTileNamingMethod)
 
 /** Enumeration of DNA bases
@@ -152,9 +146,9 @@
  * @see illumina::interop::constants::surface_type
  */
 #define INTEROP_ENUM_SURFACE_TYPES \
-        INTEROP_TUPLE1(SentinelSurface),\
-        INTEROP_TUPLE1(Top),\
-        INTEROP_TUPLE1(Bottom),\
+        INTEROP_TUPLE1(SentinelSurface), \
+        INTEROP_TUPLE1(Top), \
+        INTEROP_TUPLE1(Bottom), \
         INTEROP_TUPLE1(UnknownSurface)
 
 
@@ -164,10 +158,10 @@
  * @see illumina::interop::constants::instrument_type
  */
 #define INTEROP_ENUM_INSTRUMENT_TYPES \
-        INTEROP_TUPLE1(HiSeq),\
-        INTEROP_TUPLE1(HiScan),\
-        INTEROP_TUPLE1(MiSeq),\
-        INTEROP_TUPLE1(NextSeq),\
+        INTEROP_TUPLE1(HiSeq), \
+        INTEROP_TUPLE1(HiScan), \
+        INTEROP_TUPLE1(MiSeq), \
+        INTEROP_TUPLE1(NextSeq), \
         INTEROP_TUPLE1(MiniSeq), \
         INTEROP_TUPLE1(NovaSeq), \
         INTEROP_TUPLE1(InstrumentCount), \
@@ -205,6 +199,7 @@
         INTEROP_TUPLE1(Blue),\
         /** Color for T */\
         INTEROP_TUPLE1(Black),\
+        INTEROP_TUPLE1(PlotColorCount), \
         INTEROP_TUPLE1(UnknownColor)
 
 /** Enumeration of plot types
@@ -246,7 +241,9 @@
 
 
 /** This temp macro converts a enum/description pair into the an enum (first element of the pair) */
-#define INTEROP_TUPLE4(X, Y, Z, A) X
+#define INTEROP_TUPLE7(X, Unused1, Unused2, Unused3, Unused4, Unused5, Unused6) X,
+/** This temp macro converts a enum/description pair into the an enum (first element of the pair) */
+#define INTEROP_TUPLE4(X, Y, Z, A) X,
 /** This temp macro converts a enum/description pair into the an enum (first element of the pair) */
 #define INTEROP_TUPLE3(X, Y, Z) X
 /** This temp macro converts an enum to an enum */
@@ -332,6 +329,7 @@ namespace illumina { namespace interop { namespace constants
 #undef INTEROP_TUPLE2
 #undef INTEROP_TUPLE3
 #undef INTEROP_TUPLE4
+#undef INTEROP_TUPLE7
 #undef INTEROP_TUPLE_ASSIGN
 
 

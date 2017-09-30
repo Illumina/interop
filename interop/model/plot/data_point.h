@@ -35,6 +35,14 @@ namespace illumina { namespace interop { namespace model { namespace plot {
         data_point(const x_type x=0, const y_type y=0) : m_x(x), m_y(y){}
 
     public:
+        /** @defgroup data_point Point on a plot
+         *
+         * Point on a plot
+         *
+         * @ingroup plot_data
+         * @ref illumina::interop::model::plot::data_point "See full class description"
+         * @{
+         */
         /** Get the x-coordinate of the point
          *
          * @return x-coordinate
@@ -67,6 +75,7 @@ namespace illumina { namespace interop { namespace model { namespace plot {
         {
             return m_y;
         }
+        /** @} */
 
     public:
         /** Add a coordinate to the point

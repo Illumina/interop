@@ -24,9 +24,13 @@ namespace illumina { namespace interop {  namespace logic { namespace utils
         using namespace constants;
         // TODO: This can be reduced to a single macro define
         typedef std::pair<metric_type, metric_group > mapped_t;
-#       define INTEROP_TUPLE4(Metric, Description, Group, Feature) mapped_t(Metric,Group)
+#       define INTEROP_TUPLE1(Metric)
+#       define INTEROP_TUPLE4(Metric, Unused1, Group, Unused2) mapped_t(Metric,Group),
+#       define INTEROP_TUPLE7(Metric, Unused1, Group, Unused2, Unused3, Unused4, Unused5) mapped_t(Metric,Group),
         static const mapped_t name_types[] = {INTEROP_ENUM_METRIC_TYPES};
+#       undef INTEROP_TUPLE7
 #       undef INTEROP_TUPLE4
+#       undef INTEROP_TUPLE1
         return util::constant_mapping_get(name_types, type, UnknownMetricGroup);
     }
     /** Convert metric type to string description
@@ -39,9 +43,13 @@ namespace illumina { namespace interop {  namespace logic { namespace utils
         using namespace constants;
         // TODO: This can be reduced to a single macro define
         typedef std::pair<metric_type, std::string > mapped_t;
-#       define INTEROP_TUPLE4(Metric, Description, Group, Feature) mapped_t(Metric,Description)
+#       define INTEROP_TUPLE1(Metric)
+#       define INTEROP_TUPLE4(Metric, Description, Unused1, Unused2) mapped_t(Metric,Description),
+#       define INTEROP_TUPLE7(Metric, Description, Unused1, Unused2, Unused3, Unused4, Unused5) mapped_t(Metric,Description),
         static const mapped_t name_types[] = {INTEROP_ENUM_METRIC_TYPES};
+#       undef INTEROP_TUPLE7
 #       undef INTEROP_TUPLE4
+#       undef INTEROP_TUPLE1
         return util::constant_mapping_get(name_types, type, std::string("UnknownDescription"));
     }
     /** Convert metric type to string description
@@ -53,9 +61,13 @@ namespace illumina { namespace interop {  namespace logic { namespace utils
         using namespace constants;
         // TODO: This can be reduced to a single macro define
         typedef std::pair<metric_type, std::string > mapped_t;
-#       define INTEROP_TUPLE4(Metric, Description, Group, Feature) mapped_t(Metric,Description)
+#       define INTEROP_TUPLE1(Metric)
+#       define INTEROP_TUPLE4(Metric, Description, Unused1, Unused2) mapped_t(Metric,Description),
+#       define INTEROP_TUPLE7(Metric, Description, Unused1, Unused2, Unused3, Unused4, Unused5) mapped_t(Metric,Description),
         static const mapped_t name_types[] = {INTEROP_ENUM_METRIC_TYPES};
+#       undef INTEROP_TUPLE7
 #       undef INTEROP_TUPLE4
+#       undef INTEROP_TUPLE1
         types.assign(name_types, name_types+util::length_of(name_types));
     }
     /** Convert metric type to metric feature type
@@ -68,9 +80,13 @@ namespace illumina { namespace interop {  namespace logic { namespace utils
         using namespace constants;
         // TODO: This can be reduced to a single macro define
         typedef std::pair<metric_type, metric_feature_type > mapped_t;
-#       define INTEROP_TUPLE4(Metric, Description, Group, Feature) mapped_t(Metric,static_cast<metric_feature_type>(Feature))
+#       define INTEROP_TUPLE1(Metric)
+#       define INTEROP_TUPLE4(Metric, Unused1, Unused2, Feature) mapped_t(Metric,static_cast<metric_feature_type>(Feature)),
+#       define INTEROP_TUPLE7(Metric, Unused1, Unused2, Feature, Unused3, Unused4, Unused5) mapped_t(Metric,static_cast<metric_feature_type>(Feature)),
         static const mapped_t name_types[] = {INTEROP_ENUM_METRIC_TYPES};
+#       undef INTEROP_TUPLE7
 #       undef INTEROP_TUPLE4
+#       undef INTEROP_TUPLE1
         return util::constant_mapping_get(name_types, type, UnknownMetricFeature);
     }
     /** Convert group type to metric feature type

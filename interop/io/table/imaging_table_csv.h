@@ -81,8 +81,8 @@ namespace illumina { namespace interop { namespace model { namespace table
         {
             io::table::read_csv_line(in, values, std::numeric_limits<float>::quiet_NaN());
             if (values.empty()) continue;
-            if(column_count != values.size())
-                INTEROP_THROW(io::bad_format_exception, "Number of values does not match number of columns");
+            INTEROP_RANGE_CHECK_NE(column_count, values.size(), io::bad_format_exception,
+                                   "Number of values does not match number of columns");
             data.resize(data.size()+column_count);
             std::copy(values.begin(), values.end(), data.begin()+data.size()-column_count);
             ++row_count;

@@ -11,7 +11,6 @@ namespace Illumina.InterOp.Interop.UnitTest
 	/// <summary>
 	/// Test C# Swig run_metrics Mapping
 	/// </summary>
-	[TestFixture]
 	public class RunMetricsTests
 	{
 		/// <summary>

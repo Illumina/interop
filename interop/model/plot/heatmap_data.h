@@ -33,6 +33,131 @@ namespace illumina { namespace interop { namespace model { namespace plot
         }
 
     public:
+        /** @defgroup heatmap_data Model for Q-score heatmap
+         *
+         * Model for Q-score heatmap
+         *
+         * @ingroup plot_model
+         * @ref illumina::interop::model::plot::heatmap_data "See full class description"
+         * @{
+         */
+
+        /** Get value at given row and column
+         *
+         * TODO: This should thrown an exception if wrong
+         *
+         * @deprecated Will be removed in next feature version (use operator() instead for C++ Code)
+         * @param row row index
+         * @param col column index
+         * @return value
+         */
+        float at(const size_t row, const size_t col) const throw(model::index_out_of_bounds_exception)
+        {
+            INTEROP_BOUNDS_CHECK(row, m_num_rows, "Row Index out of bounds");
+            INTEROP_BOUNDS_CHECK(col, m_num_columns, "Column Index out of bounds");
+            const size_t idx = index_of(row, col);
+            INTEROP_ASSERT(idx < m_num_rows*m_num_columns);
+            INTEROP_ASSERT(m_data != 0);
+            return m_data[idx];
+        }
+
+        /** Get value at given index
+         *
+         * @deprecated Will be removed in next feature version (use operator[] instead for C++ Code)
+         * @param idx index
+         * @return value
+         */
+        float at(const size_t idx) const throw(model::index_out_of_bounds_exception)
+        {
+            INTEROP_BOUNDS_CHECK(idx, length(), "Index out of bounds");
+            INTEROP_ASSERT(m_data != 0);
+            return m_data[idx];
+        }
+        /** Get value at given index
+         *
+         * @param idx index
+         * @return value
+         */
+        float operator[](const size_t idx) const throw(model::index_out_of_bounds_exception)
+        {
+            INTEROP_BOUNDS_CHECK(idx, length(), "Index out of bounds");
+            INTEROP_ASSERT(m_data != 0);
+            return m_data[idx];
+        }
+
+        /** Get value at given row and column
+         *
+         * TODO: This should thrown an exception if wrong
+         *
+         * @param row row index
+         * @param col column index
+         * @return value
+         */
+        float operator()(const size_t row, const size_t col) const throw(model::index_out_of_bounds_exception)
+        {
+            INTEROP_BOUNDS_CHECK(row, m_num_rows, "Row Index out of bounds");
+            INTEROP_BOUNDS_CHECK(col, m_num_columns, "Column Index out of bounds");
+            const size_t idx = index_of(row, col);
+            INTEROP_ASSERT(idx < m_num_rows*m_num_columns);
+            INTEROP_ASSERT(m_data != 0);
+            return m_data[idx];
+        }
+
+        /** Get value at given row and column
+         *
+         * TODO: This should thrown an exception if wrong
+         *
+         * @param row row index
+         * @param col column index
+         * @return value
+         */
+        float &operator()(const size_t row, const size_t col) throw(model::index_out_of_bounds_exception)
+        {
+            INTEROP_BOUNDS_CHECK(row, m_num_rows, "Row Index out of bounds");
+            INTEROP_BOUNDS_CHECK(col, m_num_columns, "Column Index out of bounds");
+            const size_t idx = index_of(row, col);
+            INTEROP_ASSERT(idx < m_num_rows*m_num_columns);
+            INTEROP_ASSERT(m_data != 0);
+            return m_data[idx];
+        }
+
+        /** Get number of rows
+         *
+         * @return number of rows
+         */
+        size_t row_count() const
+        {
+            return m_num_rows;
+        }
+
+        /** Get number of columns
+         *
+         * @return number of columns
+         */
+        size_t column_count() const
+        {
+            return m_num_columns;
+        }
+
+        /** Get number of rows * columns
+         *
+         * @return number of rows * columns
+         */
+        size_t length() const
+        {
+            return m_num_columns * m_num_rows;
+        }
+        /** Test if heatmap is empty
+         *
+         * @return true if there are not values in heatmap
+         */
+        bool empty()const
+        {
+            return length()==0;
+        }
+        /** @} */
+
+    public:
         /** Resize the heat map to the given number of rows and columns
          *
          * @param data use the given buffer to back the heat map
@@ -80,130 +205,6 @@ namespace illumina { namespace interop { namespace model { namespace plot
                 m_free = true;
                 std::fill(m_data, m_data+length(), default_val);
             }
-        }
-
-        /** Get value at given row and column
-         *
-         * TODO: This should thrown an exception if wrong
-         *
-         * @deprecated Will be removed in next feature version (use operator() instead for C++ Code)
-         * @param row row index
-         * @param col column index
-         * @return value
-         */
-        float at(const size_t row, const size_t col) const throw(model::index_out_of_bounds_exception)
-        {
-            if (row >= m_num_rows)
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Row index out of bounds");
-            if (col >= m_num_columns)
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Column index out of bounds (at): " << col << " >= " << m_num_columns);
-            const size_t idx = index_of(row, col);
-            INTEROP_ASSERT(idx < m_num_rows*m_num_columns);
-            INTEROP_ASSERT(m_data != 0);
-            return m_data[idx];
-        }
-
-        /** Get value at given index
-         *
-         * @deprecated Will be removed in next feature version (use operator[] instead for C++ Code)
-         * @param idx index
-         * @return value
-         */
-        float at(const size_t idx) const throw(model::index_out_of_bounds_exception)
-        {
-            if (idx >= length())
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Index out of bounds");
-            INTEROP_ASSERT(idx < m_num_rows*m_num_columns);
-            INTEROP_ASSERT(m_data != 0);
-            return m_data[idx];
-        }
-        /** Get value at given index
-         *
-         * @param idx index
-         * @return value
-         */
-        float operator[](const size_t idx) const throw(model::index_out_of_bounds_exception)
-        {
-            if (idx >= length())
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Index out of bounds");
-            INTEROP_ASSERT(idx < m_num_rows*m_num_columns);
-            INTEROP_ASSERT(m_data != 0);
-            return m_data[idx];
-        }
-
-        /** Get value at given row and column
-         *
-         * TODO: This should thrown an exception if wrong
-         *
-         * @param row row index
-         * @param col column index
-         * @return value
-         */
-        float operator()(const size_t row, const size_t col) const throw(model::index_out_of_bounds_exception)
-        {
-            if (row >= m_num_rows)
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Row index out of bounds");
-            if (col >= m_num_columns)
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Column index out of bounds (operator const): " << col << " >= " << m_num_columns);
-            const size_t idx = index_of(row, col);
-            INTEROP_ASSERT(idx < m_num_rows*m_num_columns);
-            INTEROP_ASSERT(m_data != 0);
-            return m_data[idx];
-        }
-
-        /** Get value at given row and column
-         *
-         * TODO: This should thrown an exception if wrong
-         *
-         * @param row row index
-         * @param col column index
-         * @return value
-         */
-        float &operator()(const size_t row, const size_t col) throw(model::index_out_of_bounds_exception)
-        {
-            if (row >= m_num_rows)
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Row index out of bounds");
-            if (col >= m_num_columns)
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Column index out of bounds (operator): " << col << " >= " << m_num_columns);
-            const size_t idx = index_of(row, col);
-            INTEROP_ASSERT(idx < m_num_rows*m_num_columns);
-            INTEROP_ASSERT(m_data != 0);
-            return m_data[idx];
-        }
-
-        /** Get number of rows
-         *
-         * @return number of rows
-         */
-        size_t row_count() const
-        {
-            return m_num_rows;
-        }
-
-        /** Get number of columns
-         *
-         * @return number of columns
-         */
-        size_t column_count() const
-        {
-            return m_num_columns;
-        }
-
-        /** Get number of rows * columns
-         *
-         * @return number of rows * columns
-         */
-        size_t length() const
-        {
-            return m_num_columns * m_num_rows;
-        }
-        /** Test if heatmap is empty
-         *
-         * @return true if there are not values in heatmap
-         */
-        bool empty()const
-        {
-            return length()==0;
         }
 
         /** Clear the data

@@ -10,7 +10,7 @@ Illumina sequencers including **NovaSeq**. These libraries are backwards compati
 with one exception: GA systems have been excluded.
 
 ***
->  We now support an interface to Python 2.7 and 3.4-3.6 (see contents below)
+>  We now support an interface to Python 2.7 (UCS-4) and 3.4-3.6 (see contents below)
 ***
 
 The InterOp files supported by this library include:
@@ -116,6 +116,7 @@ There are several known limitations to the current library:
   6. We do not support 32-bit builds
   7. MinGW W64 4.9.x and prior will not link properly
   8. Visual Studio 12 2013 is not supported for the C# Bindings (Results in heap corruption)
+  9. We support .NET Core 2.x or later
 
 SAV Analysis Tab
 ----------------
@@ -123,5 +124,4 @@ SAV Analysis Tab
 The following images were generated using the applications provided by
 the InterOp package.
 
-![Example Plots][example_image]
-[example_image]:docs/images/example_plots.png
+![Example Plots](docs/images/example_plots.png)

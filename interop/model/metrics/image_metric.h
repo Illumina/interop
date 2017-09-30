@@ -120,8 +120,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         image_metric() :
                 metric_base::base_cycle_metric(0, 0, 0),
-                m_min_contrast(MAX_CHANNELS, 0),
-                m_max_contrast(MAX_CHANNELS, 0),
+                m_min_contrast(MAX_CHANNELS, std::numeric_limits<ushort_t>::max()),
+                m_max_contrast(MAX_CHANNELS, std::numeric_limits<ushort_t>::max()),
                 m_channel_count(0)
         { }
         /** Constructor
@@ -130,8 +130,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         image_metric(const header_type& header) :
                 metric_base::base_cycle_metric(0, 0, 0),
-                m_min_contrast(header.channel_count(), 0),
-                m_max_contrast(header.channel_count(), 0),
+                m_min_contrast(header.channel_count(), std::numeric_limits<ushort_t>::max()),
+                m_max_contrast(header.channel_count(), std::numeric_limits<ushort_t>::max()),
                 m_channel_count(0)
         { }
 
@@ -198,8 +198,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         ushort_t min_contrast(const size_t channel) const throw(model::index_out_of_bounds_exception)
         {
-            if(channel >= m_min_contrast.size())
-                INTEROP_THROW( index_out_of_bounds_exception, "Channel out of bounds");
+            INTEROP_BOUNDS_CHECK(channel, m_min_contrast.size(), "Channel out of bounds");
             return m_min_contrast[channel];
         }
 
@@ -209,8 +208,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         ushort_t max_contrast(const size_t channel) const throw(model::index_out_of_bounds_exception)
         {
-            if(channel >= m_max_contrast.size())
-                INTEROP_THROW( index_out_of_bounds_exception, "Channel out of bounds");
+            INTEROP_BOUNDS_CHECK(channel, m_max_contrast.size(), "Channel out of bounds");
             return m_max_contrast[channel];
         }
 

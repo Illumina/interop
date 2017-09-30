@@ -86,52 +86,6 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         {
             m_count_summaries.push_back(count_summary);
         }
-        /** Get reference to lane summary at given index
-         *
-         * @param n index
-         * @return reference to lane summary
-         */
-        index_count_summary& operator[](const size_type n) throw( model::index_out_of_bounds_exception )
-        {
-            if(n >= m_count_summaries.size())
-                INTEROP_THROW(index_out_of_bounds_exception, "Index sequence index exceeds index sequence count");
-            return m_count_summaries[n];
-        }
-        /** Get constant reference to lane summary at given index
-         *
-         * @param n index
-         * @return constant reference to lane summary
-         */
-        const index_count_summary& operator[](const size_t n)const throw( model::index_out_of_bounds_exception )
-        {
-            if(n >= m_count_summaries.size())
-                INTEROP_THROW(index_out_of_bounds_exception, "Index sequence  index exceeds index sequence count");
-            return m_count_summaries[n];
-        }
-        /** Get reference to lane summary at given index
-         *
-         * @deprecated Will be removed in next feature version (use operator[] instead for C++ Code)
-         * @param n index
-         * @return reference to lane summary
-         */
-        index_count_summary& at(const size_t n) throw( model::index_out_of_bounds_exception )
-        {
-            if(n >= m_count_summaries.size())
-                INTEROP_THROW(index_out_of_bounds_exception, "Index sequence  index exceeds index sequence count");
-            return m_count_summaries[n];
-        }
-        /** Get constant reference to lane summary at given index
-         *
-         * @deprecated Will be removed in next feature version (use operator[] instead for C++ Code)
-         * @param n index
-         * @return constant reference to lane summary
-         */
-        const_reference at(const size_type n)const throw( model::index_out_of_bounds_exception )
-        {
-            if(n >= m_count_summaries.size())
-                INTEROP_THROW( index_out_of_bounds_exception, "Index sequence  index exceeds index sequence count");
-            return m_count_summaries[n];
-        }
         /** Get number of summaries by read
          *
          * @return number of summaries by read
@@ -174,7 +128,61 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         }
 
     public:
-        /** Total reads
+        /** @defgroup index_lane_summary Index Lane Summary
+         *
+         * Information used in the SAV Indexing Tab
+         *
+         * @ingroup index_flowcell_summary
+         * @ref illumina::interop::model::summary::index_lane_summary "See full class description"
+         * @{
+         */
+        /** Get reference to lane summary at given index
+         *
+         * Note, in Python, C#, etc, this is converted to .at(index)
+         *
+         * @param n index
+         * @return reference to lane summary
+         */
+        index_count_summary& operator[](const size_type n) throw( model::index_out_of_bounds_exception )
+        {
+            INTEROP_BOUNDS_CHECK(n, m_count_summaries.size(), "Index sequence index exceeds index sequence count");
+            return m_count_summaries[n];
+        }
+        /** Get constant reference to lane summary at given index
+         *
+         * Note, in Python, C#, etc, this is converted to .at(index)
+         *
+         * @param n index
+         * @return constant reference to lane summary
+         */
+        const index_count_summary& operator[](const size_t n)const throw( model::index_out_of_bounds_exception )
+        {
+            INTEROP_BOUNDS_CHECK(n, m_count_summaries.size(), "Index sequence index exceeds index sequence count");
+            return m_count_summaries[n];
+        }
+        /** Get reference to lane summary at given index
+         *
+         * @deprecated Will be removed in next feature version (use operator[] instead for C++ Code)
+         * @param n index
+         * @return reference to lane summary
+         */
+        index_count_summary& at(const size_t n) throw( model::index_out_of_bounds_exception )
+        {
+            INTEROP_BOUNDS_CHECK(n, m_count_summaries.size(), "Index sequence index exceeds index sequence count");
+            return m_count_summaries[n];
+        }
+        /** Get constant reference to lane summary at given index
+         *
+         * @deprecated Will be removed in next feature version (use operator[] instead for C++ Code)
+         * @param n index
+         * @return constant reference to lane summary
+         */
+        const_reference at(const size_type n)const throw( model::index_out_of_bounds_exception )
+        {
+            INTEROP_BOUNDS_CHECK(n, m_count_summaries.size(), "Index sequence index exceeds index sequence count");
+            return m_count_summaries[n];
+        }
+        /** Total Reads
          *
          * @return total reads
          */
@@ -190,7 +198,9 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         {
             return m_total_pf_reads;
         }
-        /** Total fraction of mapped reads
+        /** Total fraction of mapped reads (this is stored as a percent)
+         *
+         * Displayed as `% Reads Identified (PF)` in SAV
          *
          * @return total fraction of mapped reads
          */
@@ -200,7 +210,9 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         }
         /** Coefficient of variation of the mapped reads
          *
-         * @return coefficient of variationof the mapped reads
+         * This is a measure of *relative* variability
+         *
+         * @return coefficient of variation of the mapped reads
          */
         float mapped_reads_cv()const
         {
@@ -222,14 +234,16 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         {
             return m_max_mapped_reads;
         }
+        /** @} */
+
+    public:
+
         /** Sort the index summaries in each lane
          */
         void sort()
         {
             std::stable_sort(begin(), end());
         }
-
-    public:
         /** Set the data for the lane summary
          *
          * @param total_mapped_reads number of reads mapped

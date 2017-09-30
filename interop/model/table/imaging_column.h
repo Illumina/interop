@@ -57,8 +57,8 @@
         INTEROP_TUPLE7(ClusterCountPfK,       metrics::tile_metric,               cluster_count_pf_k,         Void, Float, ValueType, 1)\
         INTEROP_TUPLE7(PercentPassFilter,     metrics::tile_metric,               percent_pf,                 Void, Float, ValueType, 1)\
         INTEROP_TUPLE7(PercentAligned,        metrics::tile_metric,               percent_aligned_at,         Read, Float, ValueType, 1)\
-        INTEROP_TUPLE7(PercentPhasing,        metrics::tile_metric,               percent_phasing_at,         Read, Float, ValueType, 3)\
-        INTEROP_TUPLE7(PercentPrephasing,     metrics::tile_metric,               percent_prephasing_at,      Read, Float, ValueType, 3)\
+        INTEROP_TUPLE7(LegacyPhasingRate,     metrics::tile_metric,               percent_phasing_at,         Read, Float, ValueType, 3)\
+        INTEROP_TUPLE7(LegacyPrephasingRate,  metrics::tile_metric,               percent_prephasing_at,      Read, Float, ValueType, 3)\
         INTEROP_TUPLE7(ErrorRate,             metrics::error_metric,              error_rate,                 Void, Float, ValueType, 3)\
         INTEROP_TUPLE7(PercentGreaterThanQ20, metrics::q_metric,                  percent_over_qscore,        Q20,  Float, ValueType, 2)\
         INTEROP_TUPLE7(PercentGreaterThanQ30, metrics::q_metric,                  percent_over_qscore,        Q30,  Float, ValueType, 2)\
@@ -69,12 +69,12 @@
         INTEROP_TUPLE7(Corrected,             metrics::corrected_intensity_metric,corrected_int_all_array,    Void, UShort, BaseArray, 0)\
         INTEROP_TUPLE7(Called,                metrics::corrected_intensity_metric,corrected_int_called_array, Void, UShort, BaseArray, 0)\
         INTEROP_TUPLE7(SignalToNoise,         metrics::corrected_intensity_metric,signal_to_noise,            Void, Float, ValueType, 2)\
-        INTEROP_TUPLE7(PercentPhasingWeight,   metrics::phasing_metric,            phasing_weight,             Void, Float, ValueType, 3)\
-        INTEROP_TUPLE7(PercentPrephasingWeight,metrics::phasing_metric,            prephasing_weight,          Void, Float, ValueType, 3)\
-        INTEROP_TUPLE7(PhasingSlope,           metrics::dynamic_phasing_metric,    phasing_slope,              Void, Float, ValueType, 3)\
-        INTEROP_TUPLE7(PhasingOffset,          metrics::dynamic_phasing_metric,    phasing_offset,             Void, Float, ValueType, 3)\
-        INTEROP_TUPLE7(PrephasingSlope,        metrics::dynamic_phasing_metric,    prephasing_slope,           Void, Float, ValueType, 3)\
-        INTEROP_TUPLE7(PrephasingOffset,       metrics::dynamic_phasing_metric,    prephasing_offset,          Void, Float, ValueType, 3)\
+        INTEROP_TUPLE7(PhasingWeight,         metrics::phasing_metric,            phasing_weight,             Void, Float, ValueType, 3)\
+        INTEROP_TUPLE7(PrephasingWeight,      metrics::phasing_metric,            prephasing_weight,          Void, Float, ValueType, 3)\
+        INTEROP_TUPLE7(PhasingSlope,          metrics::dynamic_phasing_metric,    phasing_slope,              Void, Float, ValueType, 3)\
+        INTEROP_TUPLE7(PhasingOffset,         metrics::dynamic_phasing_metric,    phasing_offset,             Void, Float, ValueType, 3)\
+        INTEROP_TUPLE7(PrephasingSlope,       metrics::dynamic_phasing_metric,    prephasing_slope,           Void, Float, ValueType, 3)\
+        INTEROP_TUPLE7(PrephasingOffset,      metrics::dynamic_phasing_metric,    prephasing_offset,          Void, Float, ValueType, 3)\
         INTEROP_TUPLE7(MinimumContrast,       metrics::image_metric,              min_contrast_array,         Void, UShort, ChannelArray, 0)\
         INTEROP_TUPLE7(MaximumContrast,       metrics::image_metric,              max_contrast_array,         Void, UShort, ChannelArray, 0)\
         INTEROP_TUPLE7(Surface,               metric_base::base_metric,           surface,                    NamingConvention, UInt, IdType, 0)\
@@ -177,8 +177,7 @@ namespace illumina { namespace interop { namespace model { namespace table
         {
             if (has_children())
             {
-                if(sub_index >= m_subcolumn_names.size())
-                    INTEROP_THROW(model::index_out_of_bounds_exception, "Sub column index out of bounds");
+                INTEROP_BOUNDS_CHECK(sub_index, m_subcolumn_names.size(), "SubColumn index out of bounds");
                 return m_name + "_" + m_subcolumn_names[sub_index];
             }
             return m_name;

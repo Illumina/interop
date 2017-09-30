@@ -63,5 +63,12 @@ namespace illumina { namespace interop { namespace logic { namespace plot
     void list_by_cycle_metrics(std::vector< logic::utils::metric_type_description_t > &types,
                                const bool ignore_accumulated=false);
 
+    /** Filter metric types available for by cycle plots
+     *
+     * @param types destination vector to fill with metric types
+     * @param ignore_accumulated if true, ignore accumulated Q20 and Q30
+     */
+    void filter_by_cycle_metrics(std::vector< logic::utils::metric_type_description_t > &types,
+                                 const bool ignore_accumulated=false);
 }}}}
 

@@ -54,6 +54,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
           */
          float average()const
          {
+             if(m_error_count == 0) return std::numeric_limits<float>::quiet_NaN();
              return divide(m_error_sum, static_cast<float>(m_error_count));
          }
          /** Get the maximum cycle apart of the average
@@ -108,14 +109,11 @@ namespace illumina { namespace interop { namespace logic { namespace summary
         for (; beg != end; ++beg)
         {
             INTEROP_ASSERT(beg->cycle() > 0);
-            INTEROP_ASSERT((beg->cycle() - 1) < cycle_to_read.size());
-            if ((beg->cycle() - 1) >= cycle_to_read.size())
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Cycle exceeds total cycles from Reads in the RunInfo.xml");
+            INTEROP_BOUNDS_CHECK(beg->cycle() - 1, cycle_to_read.size(), "Cycle exceeds total cycles from Reads in the RunInfo.xml");
             const read_cycle &read = cycle_to_read[beg->cycle() - 1];
             const key_t key = std::make_pair(beg->lane(), beg->tile());
             const size_t read_number = read.number - 1;
-            INTEROP_ASSERTMSG(read_number < tmp.size(),
-                              read.number << " " << read.cycle_within_read << ", " << beg->cycle());
+            INTEROP_BOUNDS_CHECK(read_number, tmp.size(), "Read number exceeds total reads in the RunInfo.xml");
             tmp[read_number][key].update_cycle(read.cycle_within_read);
             if (read.cycle_within_read > max_cycle || read.is_last_cycle_in_read) continue;
             tmp[read_number][key].update_error(beg->error_rate());
@@ -127,8 +125,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
             {
                 INTEROP_ASSERT(read < read_lane_cache.read_count());
                 const size_t lane = ebeg->first.first - 1;
-                if (lane >= read_lane_cache.lane_count())
-                    INTEROP_THROW(model::index_out_of_bounds_exception, "Lane exceeds number of lanes in RunInfo.xml");
+                INTEROP_BOUNDS_CHECK(lane, read_lane_cache.lane_count(), "Lane exceeds number of lanes in RunInfo.xml");
                 if(max_cycle < std::numeric_limits<size_t>::max() && ebeg->second.max_cycle() < max_cycle) continue;
                 if(ebeg->second.is_empty()) continue;
                 const float err_avg = ebeg->second.average();
@@ -165,6 +162,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                 INTEROP_ASSERT(lane < run[read].size());
                 INTEROP_ASSERT(lane < read_lane_cache.lane_count());
                 model::summary::metric_stat stat;
+                stat.clear();
                 summarize(read_lane_cache(read, lane).begin(),
                           read_lane_cache(read, lane).end(),
                           stat,
@@ -269,6 +267,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
             {
                 INTEROP_ASSERT(lane < run[read].size());
                 model::summary::metric_stat error_stat;
+                error_stat.clear();
                 summarize(read_lane_cache(read, lane).begin(),
                           read_lane_cache(read, lane).end(),
                           error_stat,

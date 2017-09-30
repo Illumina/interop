@@ -13,6 +13,8 @@
 #include "interop/logic/plot/plot_qscore_heatmap.h"
 #include "interop/logic/plot/plot_flowcell_map.h"
 #include "interop/logic/plot/plot_sample_qc.h"
+#include "interop/logic/plot/plot_metric_list.h"
+#include "src/tests/interop/metrics/inc/corrected_intensity_metrics_test.h"
 #include "src/tests/interop/metrics/inc/extraction_metrics_test.h"
 #include "src/tests/interop/metrics/inc/tile_metrics_test.h"
 #include "src/tests/interop/metrics/inc/q_metrics_test.h"
@@ -24,6 +26,49 @@
 using namespace illumina::interop;
 using namespace illumina::interop::unittest;
 
+TEST(plot_logic, test_corrected_int_v2_list_types)
+{
+    model::run::info run_info;
+    hiseq4k_run_info::create_expected(run_info);
+    model::metrics::run_metrics metrics(run_info);
+    unittest::corrected_intensity_metric_v2::create_expected(metrics.get<model::metrics::corrected_intensity_metric>());
+    std::vector< logic::utils::metric_type_description_t > types;
+    logic::plot::list_available_plot_metrics(metrics, types);
+    ASSERT_EQ(5u, types.size());
+    EXPECT_EQ(constants::BasePercent, types[0]);
+    EXPECT_EQ(constants::PercentNoCall, types[1]);
+    EXPECT_EQ(constants::CorrectedIntensity, types[2]);
+    EXPECT_EQ(constants::CalledIntensity, types[3]);
+    EXPECT_EQ(constants::SignalToNoise, types[4]);
+}
+
+TEST(plot_logic, test_corrected_int_v3_list_types)
+{
+    model::run::info run_info;
+    hiseq4k_run_info::create_expected(run_info);
+    model::metrics::run_metrics metrics(run_info);
+    unittest::corrected_intensity_metric_v3::create_expected(metrics.get<model::metrics::corrected_intensity_metric>());
+    std::vector< logic::utils::metric_type_description_t > types;
+    logic::plot::list_available_plot_metrics(metrics, types);
+    ASSERT_EQ(3u, types.size());
+    EXPECT_EQ(constants::BasePercent, types[0]);
+    EXPECT_EQ(constants::PercentNoCall, types[1]);
+    EXPECT_EQ(constants::CalledIntensity, types[2]);
+}
+
+TEST(plot_logic, test_corrected_int_v4_list_types)
+{
+    model::run::info run_info;
+    hiseq4k_run_info::create_expected(run_info);
+    model::metrics::run_metrics metrics(run_info);
+    unittest::corrected_intensity_metric_v4::create_expected(metrics.get<model::metrics::corrected_intensity_metric>());
+    std::vector< logic::utils::metric_type_description_t > types;
+    logic::plot::list_available_plot_metrics(metrics, types);
+    ASSERT_EQ(2u, types.size());
+    EXPECT_EQ(constants::BasePercent, types[0]);
+    EXPECT_EQ(constants::PercentNoCall, types[1]);
+}
+
 /** @test Confirm invalid metric thrown */
 TEST(plot_logic, failure_mode_bad_metric_plot_by_cycle)
 {
@@ -32,6 +77,12 @@ TEST(plot_logic, failure_mode_bad_metric_plot_by_cycle)
     model::plot::plot_data<model::plot::candle_stick_point> data;
     EXPECT_THROW(logic::plot::plot_by_cycle(metrics, "NoSuchMetric", options, data), model::invalid_metric_type);
 }
+
+TEST(plot_logic, ensure_color_name_index_is_correct)
+{
+    EXPECT_NE("Unknown", logic::plot::color_name_for_index(5));
+}
+
 
 //Check that reading in an interop and then plotting by cycle graph works
 TEST(plot_logic, intensity_by_cycle)
@@ -486,6 +537,8 @@ TEST(plot_logic, check_plot_by_cycle_list)
     logic::plot::list_by_cycle_metrics(types);
     for (size_t i = 0; i < types.size(); ++i)
     {
+        EXPECT_NE(logic::utils::to_feature(types[i]), constants::UnknownMetricFeature)
+                            << constants::to_string(types[i].value());
         EXPECT_FALSE(logic::utils::is_read_metric(types[i]));
         EXPECT_FALSE(logic::utils::is_tile_metric(types[i]))
                             << types[i] << " " << constants::to_string(types[i].value());

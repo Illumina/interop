@@ -57,6 +57,14 @@ namespace illumina { namespace interop { namespace model { namespace plot {
                 m_series_type(series_type){}
 
     public:
+        /** @defgroup series Collection of points on a plot
+         *
+         * Collection of points on a plot with a title, type and color associated
+         *
+         * @ingroup plot_data
+         * @ref illumina::interop::model::plot::series "See full class description"
+         * @{
+         */
         /** Get label of series for the legend
          *
          * @return series label
@@ -89,6 +97,9 @@ namespace illumina { namespace interop { namespace model { namespace plot {
         {
             return m_options;
         }
+        /** @} */
+
+    public:
         /** Collection of options
          *
          * @param option string name of option
@@ -96,6 +107,14 @@ namespace illumina { namespace interop { namespace model { namespace plot {
         void add_option(const std::string& option)
         {
             m_options.push_back(option);
+        }
+        /** Get color of the series
+         *
+         * @param color_name color name or code of the series
+         */
+        void color(const std::string& color_name)
+        {
+            m_color = color_name;
         }
 
         friend std::ostream& operator<<(std::ostream& out, const series& data)

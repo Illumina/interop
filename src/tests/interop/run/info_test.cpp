@@ -111,3 +111,70 @@ TYPED_TEST(run_info_fixture, run_info_test)
         EXPECT_EQ(TestFixture::run_info.flowcell().tiles()[i], TestFixture::expected_run_info.flowcell().tiles()[i]);
     }
 }
+
+TEST(run_info_test, test_invalid_tile_list_exception)
+{
+    std::string data= "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+            "<RunInfo>\n"
+            "\t<Run Id=\"170208_XXXXXX_0021_YYYYYYYY\" Number=\"21\">\n"
+            "\t\t<Flowcell>YYYYYYYY</Flowcell>\n"
+            "\t\t<Instrument>XXXXXX</Instrument>\n"
+            "\t\t<Date>2/8/2017 4:25:41 PM</Date>\n"
+            "\t\t<Reads>\n"
+            "\t\t\t<Read Number=\"1\" NumCycles=\"151\" IsIndexedRead=\"N\"/>\n"
+            "\t\t\t<Read Number=\"2\" NumCycles=\"8\" IsIndexedRead=\"Y\"/>\n"
+            "\t\t\t<Read Number=\"3\" NumCycles=\"8\" IsIndexedRead=\"Y\"/>\n"
+            "\t\t\t<Read Number=\"4\" NumCycles=\"151\" IsIndexedRead=\"N\"/>\n"
+            "\t\t</Reads>\n"
+            "\t\t<FlowcellLayout LaneCount=\"2\" SurfaceCount=\"2\" SwathCount=\"4\" TileCount=\"88\" FlowcellSide=\"1\">\n"
+            "\t\t\t<TileSet TileNamingConvention=\"FourDigit\">\n"
+            "\t\t\t\t<Tiles>\n"
+            "\t\t\t\t\t<Tile>1_2101</Tile>\n"
+            "\t\t\t\t\t<Tile>3_2102</Tile>\n"
+            "\t\t\t\t</Tiles>\n"
+            "\t\t\t</TileSet>\n"
+            "\t\t</FlowcellLayout>\n"
+            "\t\t<AlignToPhiX/>\n"
+            "\t\t<ImageDimensions Width=\"3200\" Height=\"3607\"/>\n"
+            "\t\t<ImageChannels>\n"
+            "\t\t\t<Name>RED</Name>\n"
+            "\t\t\t<Name>GREEN</Name>\n"
+            "\t\t</ImageChannels>\n"
+            "\t</Run>\n"
+            "</RunInfo>";
+    run::info run_info;
+    run_info.parse(&data[0]);
+    EXPECT_THROW(run_info.validate_tiles(), model::invalid_tile_list_exception);
+}
+
+TEST(run_info_test, test_invalid_run_number)
+{
+    std::string
+            data= "<?xml version=\"1.0\"?>\n"
+            "<RunInfo xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" Version=\"4\">\n"
+            "  <Run Id=\"160630_NS500179_0099_AHW3YTBGXX\" Number=\"99\">\n"
+            "    <Flowcell>HW3YTBGXX</Flowcell>\n"
+            "    <Instrument>NS500179</Instrument>\n"
+            "    <Date>160630</Date>\n"
+            "    <Reads>\n"
+            "      <Read NumCycles=\"101\" IsIndexedRead=\"N\" />\n"
+            "    </Reads>\n"
+            "    <FlowcellLayout LaneCount=\"4\" SurfaceCount=\"2\" SwathCount=\"3\" TileCount=\"12\" SectionPerLane=\"3\" LanePerSection=\"2\">\n"
+            "      <TileSet TileNamingConvention=\"FiveDigit\">\n"
+            "        <Tiles>\n"
+            "          <Tile>1_11101</Tile>\n"
+            "          <Tile>1_21101</Tile>\n"
+            "        </Tiles>\n"
+            "      </TileSet>\n"
+            "    </FlowcellLayout>\n"
+            "    <ImageDimensions Width=\"2592\" Height=\"1944\" />\n"
+            "    <ImageChannels>\n"
+            "      <Name>Red</Name>\n"
+            "      <Name>Green</Name>\n"
+            "    </ImageChannels>\n"
+            "  </Run>\n"
+            "</RunInfo>";
+    run::info run_info;
+    run_info.parse(&data[0]);
+    EXPECT_THROW(run_info.validate(), model::invalid_run_info_exception);
+}

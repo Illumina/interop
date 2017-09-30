@@ -1,5 +1,4 @@
-echo off
-setlocal enabledelayedexpansion
+rem echo off
 rem --------------------------------------------------------------------------------------------------------------------
 rem Package InterOp for Windows Systems
 rem
@@ -7,82 +6,133 @@ rem The script takes two arguments:
 rem     1. Path to third party binaries: E.g. GTest, NUnit
 rem
 rem Example Running script (from source directory)
-rem     .\tools\build_test.bat c:\external
+rem     .\tools\package.bat Release mingw bundle "-DENABLE_APPS=OFF -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=OFF"
+rem
+rem All arguments are required for this script to work!
 rem
 rem Note, you must already have CMake, MinGW and Visual Studio installed and on your path.
 rem
+rem To select an older Visual Studio toolset use: cmake -T v120,host=x64
+rem
 rem --------------------------------------------------------------------------------------------------------------------
 
-rem --------------------------------------------------------------------------------------------------------------------
-rem MinGW Build Test Script
-rem --------------------------------------------------------------------------------------------------------------------
+set MINGW_HOME=C:\Program Files\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev2\mingw64\bin
+set CMAKE_HOME=C:\Program Files\CMake\bin
 
 set SOURCE_DIR=%CD%
 set BUILD_DIR=%SOURCE_DIR%\build
 set DIST_DIR=%SOURCE_DIR%\dist
 set BUILD_PARAM=
 set BUILD_TYPE=Release
-set BUILD_PATH=%1%
-pushd %BUILD_PATH%
-set BUILD_PATH=%CD%
-popd
+set COMPILER=Visual Studio 14 2015 Win64
+set MT=/M
+set PACKAGE_TARGET=bundle
+set PREFIX_BEG=##teamcity[blockOpened name='
+set PREFIX_END=##teamcity[blockClosed name='
+set SUFFIX=']
+set python_version=
+
 if NOT "%1" == "" (
-set BUILD_PARAM=-DGTEST_ROOT=%BUILD_PATH% -DJUNIT_ROOT=%BUILD_PATH% -DGMOCK_ROOT=%BUILD_PATH% -DNUNIT_ROOT=%BUILD_PATH%/NUnit-2.6.4
+set BUILD_TYPE=%1
 )
-set BUILD_PARAM=%BUILD_PARAM% -DPACKAGE_OUTPUT_FILE_PREFIX=%DIST_DIR%
+if NOT '%2' == '' (
+set COMPILER=%2%
+)
+if NOT "%3" == "" (
+set PACKAGE_TARGET=%3%
+)
+if NOT '%4' == '' (
+ set ADDIONAL_CONFIG_OPTIONS=%4%
+)
+if NOT '%5' == '' (
+ set python_version=%5%
+)
+set ADDIONAL_CONFIG_OPTIONS=%ADDIONAL_CONFIG_OPTIONS:"=%
 
+set BUILD_PARAM=%BUILD_PARAM% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DPACKAGE_OUTPUT_FILE_PREFIX=%CD%\dist %ADDIONAL_CONFIG_OPTIONS%
 
+if '%python_version' == '' goto SKIP_CONDA_UPDATE
+where /q conda
+if %errorlevel% neq 0 goto SKIP_CONDA_UPDATE
+echo "Create environment"
+conda create -n py%python_version% python=%python_version% numpy wheel -y || echo "Environment exists"
+echo "Activate py%python_version%"
+call activate py%python_version%
+:SKIP_CONDA_UPDATE
 
-echo ##teamcity[blockOpened name='Configure %BUILD_TYPE% Visual Studio 2015 Win64']
+rem Clean build and dist directories
 if exist %BUILD_DIR%  rd /s /q %BUILD_DIR%
 if exist %DIST_DIR%  rd /s /q %DIST_DIR%
-mkdir %BUILD_DIR%
-cd %BUILD_DIR%
-echo cmake %SOURCE_DIR% -G"Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=%BUILD_TYPE%  %BUILD_PARAM%
-cmake %SOURCE_DIR% -G"Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=%BUILD_TYPE%  %BUILD_PARAM%
-if %errorlevel% neq 0 exit /b %errorlevel%
-echo ##teamcity[blockClosed name='Configure %BUILD_TYPE% Visual Studio 2015 Win64']
+mkdir %DIST_DIR%
 
-echo ##teamcity[blockOpened name='Build %BUILD_TYPE% Visual Studio 2015 Win64']
-cmake --build . --config %BUILD_TYPE% -- /M
-if %errorlevel% neq 0 exit /b %errorlevel%
-echo ##teamcity[blockClosed name='Build %BUILD_TYPE% Visual Studio 2015 Win64']
+rem Ensure cmake is on the PATH
+if not exist %CMAKE_HOME% goto SKIP_CMAKE_PATH
+set PATH=%CMAKE_HOME%;%PATH%
+:SKIP_CMAKE_PATH
+for %%X in (cmake.exe) do (set FOUND=%%~$PATH:X)
+if not defined FOUND exit /b 1
 
-echo ##teamcity[blockOpened name='Test %BUILD_TYPE% Visual Studio 2015 Win64']
-cmake --build . --target check --config %BUILD_TYPE% -- /M
-if %errorlevel% neq 0 exit /b %errorlevel%
-echo ##teamcity[blockClosed name='Test %BUILD_TYPE% Visual Studio 2015 Win64']
+rem Check compiler type
+if %COMPILER% == mingw goto CONFIGURE_MINGW
+if %COMPILER% == "mingw" goto CONFIGURE_MINGW
+if %COMPILER% == "MinGW Makefiles" goto CONFIGURE_MINGW
 
-echo ##teamcity[blockOpened name='Package Release Visual Studio 2015 Win64']
-cmake --build . --target package --config Release -- /M
-if %errorlevel% neq 0 exit /b %errorlevel%
-echo ##teamcity[blockClosed name='Package Release Visual Studio 2015 Win64']
+rem --------------------------------------------------------------------------------------------------------------------
+rem Configure for MSVC
+rem --------------------------------------------------------------------------------------------------------------------
 
-echo ##teamcity[blockOpened name='NuSpec Release Visual Studio 2015 Win64']
-cmake --build . --target nuspec --config Release -- /M
+echo %PREFIX_BEG% Configure %SUFFIX%
+cmake %SOURCE_DIR% -G%COMPILER% -B%BUILD_DIR% %BUILD_PARAM%
 if %errorlevel% neq 0 exit /b %errorlevel%
-echo ##teamcity[blockClosed name='NuSpec Release Visual Studio 2015 Win64']
+echo %PREFIX_END% Configure %SUFFIX%
 
-echo ##teamcity[blockOpened name='Python2 Wheel Release Visual Studio 2015 Win64']
-cmake --build . --target package_wheel --config Release -- /M
+goto CONFIGURE_DONE
+:CONFIGURE_MINGW
+rem --------------------------------------------------------------------------------------------------------------------
+rem Configure for MinGW
+rem --------------------------------------------------------------------------------------------------------------------
+
+rem Ensure MinGW-w64 is on the PATH
+if not exist %MINGW_HOME% goto SKIP_MINGW_PATH
+set PATH=%MINGW_HOME%;%PATH%
+:SKIP_MINGW_PATH
+
+echo %PREFIX_BEG% Configure %SUFFIX%
+cmake %SOURCE_DIR% -G"MinGW Makefiles" -B%BUILD_DIR% -DENABLE_PYTHON=OFF %BUILD_PARAM%
 if %errorlevel% neq 0 exit /b %errorlevel%
-echo ##teamcity[blockClosed name='Python2 Wheel Release Visual Studio 2015 Win64']
+echo %PREFIX_END% Configure %SUFFIX%
 
-echo "##teamcity[blockOpened name='NuPack Visual Studio 2015 Win64']"
-echo %BUILD_PATH%\nuget pack %BUILD_DIR%\src\ext\csharp\package.nuspec
-%BUILD_PATH%\nuget pack %BUILD_DIR%\src\ext\csharp\package.nuspec -OutputDirectory %DIST_DIR%
-echo "##teamcity[blockClosed name='NuPack Visual Studio 2015 Win64']"
+set MT=-j4
 
-echo ##teamcity[blockOpened name='Python3 Wheel Release Visual Studio 2015 Win64']
-del /f /q CMakeCache.txt
-set PYTHON_PATH_DIR=C:\Miniconda3
-set PATH=%PYTHON_PATH_DIR%;%PYTHON_PATH_DIR%\Scripts;%PATH%
-cmake %SOURCE_DIR% -G"Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=%BUILD_TYPE%  %BUILD_PARAM%
+:CONFIGURE_DONE
+
+rem --------------------------------------------------------------------------------------------------------------------
+rem Build
+rem --------------------------------------------------------------------------------------------------------------------
+
+echo %PREFIX_BEG% Build %SUFFIX%
+cmake --build %BUILD_DIR% --config %BUILD_TYPE% -- %MT%
 if %errorlevel% neq 0 exit /b %errorlevel%
-cmake --build . --target package_wheel --config Release -- /M
-if %errorlevel% neq 0 exit /b %errorlevel%
-echo ##teamcity[blockClosed name='Python3 Wheel Release Visual Studio 2015 Win64']
+echo %PREFIX_END% Build %SUFFIX%
 
-cd %SOURCE_DIR%
+rem --------------------------------------------------------------------------------------------------------------------
+rem Test
+rem --------------------------------------------------------------------------------------------------------------------
+
+echo %PREFIX_BEG% Test %SUFFIX%
+cmake --build %BUILD_DIR% --config %BUILD_TYPE% --target check -- %MT%
+if %errorlevel% neq 0 exit /b %errorlevel%
+echo %PREFIX_END% Test %SUFFIX%
+
+rem --------------------------------------------------------------------------------------------------------------------
+rem Package
+rem --------------------------------------------------------------------------------------------------------------------
+
+echo %PREFIX_BEG% %PACKAGE_TARGET% %SUFFIX%
+cmake --build %BUILD_DIR% --config %BUILD_TYPE% --target %PACKAGE_TARGET% -- %MT%
+if %errorlevel% neq 0 exit /b %errorlevel%
+echo %PREFIX_END% %PACKAGE_TARGET% %SUFFIX%
+
 rd /s /q %BUILD_DIR%
 if exist %BUILD_DIR% rd /s /q %BUILD_DIR%
+

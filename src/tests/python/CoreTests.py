@@ -22,6 +22,54 @@ class CoreTests(unittest.TestCase):
     """ Unit tests for the core functionality in the binding
     """
 
+    def test_invalid_read_exception(self):
+        """
+        Test that exceptions can be caught and they have the expected message
+        """
+
+        run_info = py_interop_run.info()
+        try:
+            run_info.read(8)
+            self.fail("invalid_read_exception should have been thrown")
+        except py_interop_run.invalid_read_exception as ex:
+            self.assertEqual(str(ex).split('\n')[0], "Read number not found: 8")
+
+    def test_invalid_tile_naming_method(self):
+        """
+        Test that exceptions can be caught and they have the expected message
+        """
+
+        run_info = py_interop_run.info()
+        try:
+            run_info.validate()
+            self.fail("invalid_tile_naming_method should have been thrown")
+        except py_interop_run.invalid_tile_naming_method as ex:
+            self.assertEqual(str(ex).split('\n')[0], "Unknown tile naming method")
+
+    def test_invalid_run_info_exception(self):
+        """
+        Test that exceptions can be caught and they have the expected message
+        """
+
+        run_info = py_interop_run.info()
+        try:
+            run_info.validate(20, 9999, "Test")
+            self.fail("invalid_run_info_exception should have been thrown")
+        except py_interop_run.invalid_run_info_exception as ex:
+            self.assertEqual(str(ex).split('\n')[0], "Lane identifier exceeds number of lanes in RunInfo.xml for record 20_9999 in file Test - 20 > 1")
+
+    def test_invalid_run_info_cycle_exception(self):
+        """
+        Test that exceptions can be caught and they have the expected message
+        """
+
+        run_info = py_interop_run.info(py_interop_run.flowcell_layout(8, 2, 4, 99))
+        try:
+            run_info.validate_cycle(1, 1101, 3000, "Test")
+            self.fail("invalid_run_info_cycle_exception should have been thrown")
+        except py_interop_run.invalid_run_info_cycle_exception as ex:
+            self.assertEqual(str(ex).split('\n')[0], "Cycle number exceeds number of cycles in RunInfo.xml for record 1_1101 @ 3000 in file Test - 3000 > 0")
+
     def test_xml_file_not_found_exception(self):
         """
         Test that exceptions can be caught and they have the expected message
@@ -29,7 +77,7 @@ class CoreTests(unittest.TestCase):
 
         run_info = py_interop_run.info()
         try:
-            run_info.read('file/not/found')
+            run_info.read("file/not/found")
             self.fail("xml_file_not_found_exception should have been thrown")
         except py_interop_run.xml_file_not_found_exception as ex:
             self.assertEqual(str(ex).split('\n')[0], "cannot open file " + os.path.join("file/not/found", "RunInfo.xml"))
@@ -58,17 +106,16 @@ class CoreTests(unittest.TestCase):
         except py_interop_run.empty_xml_format_exception as ex:
             self.assertEqual(str(ex).split('\n')[0], "Root node not found")
 
-    def missing_xml_element_exception(self):
+    def test_missing_xml_element_exception(self):
         """
-        TODO: Exception never thrown, remove?
         """
 
         run_info = py_interop_run.info()
         try:
-            run_info.parse("<RunInfo><Run Id=\"2\" Number=\"2\"><FlowcellLayout LaneCount=\"2\" /></Run></RunInfo>")
+            run_info.parse("<RunInfo><Run><FlowcellLayout> <TileSet> </TileSet></FlowcellLayout></Run></RunInfo>")
             self.fail("missing_xml_element_exception should have been thrown")
         except py_interop_run.missing_xml_element_exception as ex:
-            self.assertEqual(str(ex).split('\n')[0], "Run node not found")
+            self.assertEqual(str(ex).split('\n')[0], "Cannot find attribute: TileNamingConvention")
 
     def test_bad_xml_format_exception(self):
         """
@@ -85,6 +132,7 @@ class CoreTests(unittest.TestCase):
     def test_index_out_of_bounds_exception(self):
         """
         Test that exceptions can be caught and they have the expected message
+        TODO: flush this out for the entire model
         """
 
         expected_metrics = py_interop_metrics.base_error_metrics(3)
@@ -92,7 +140,7 @@ class CoreTests(unittest.TestCase):
             expected_metrics.at(1)
             self.fail("index_out_of_bounds_exception should have been thrown")
         except py_interop_metrics.index_out_of_bounds_exception as ex:
-            self.assertEqual(str(ex).split('\n')[0], "Index out of bounds")
+            self.assertEqual(str(ex).split('\n')[0], "Index out of bounds - 1 >= 0")
 
     def test_bad_format_exception(self):
         """
@@ -161,7 +209,7 @@ class CoreTests(unittest.TestCase):
             options.validate(py_interop_run.Intensity, run_info)
             self.fail("invalid_filter_option should have been thrown")
         except py_interop_plot.invalid_filter_option as ex:
-            self.assertEqual(str(ex).split('\n')[0], "Invalid tile naming method: does not match RunInfo.xml")
+            self.assertEqual(str(ex).split('\n')[0], "Invalid tile naming method: does not match RunInfo.xml: FourDigit != UnknownTileNamingMethod")
 
     def test_invalid_column_type(self):
         """
@@ -190,6 +238,30 @@ class CoreTests(unittest.TestCase):
         except py_interop_run_metrics.invalid_parameter as ex:
             self.assertEqual(str(ex).split('\n')[0], "Boolean array valid_to_load does not match expected number of metrics: 2 != 11")
 
+    def test_invalid_metric_type(self):
+        """
+        Test that exceptions can be caught and they have the expected message
+        """
+
+        valid_to_load = py_interop_run.uchar_vector()
+        try:
+            py_interop_run_metrics.list_metrics_to_load("Unknown", valid_to_load)
+            self.fail("invalid_metric_type should have been thrown")
+        except py_interop_run_metrics.invalid_metric_type as ex:
+            self.assertEqual(str(ex).split('\n')[0], "Unsupported metric type: Unknown")
+
+    def test_invalid_channel_exception(self):
+        """
+        Test that exceptions can be caught and they have the expected message
+        """
+
+        run_metrics = py_interop_run_metrics.run_metrics()
+        try:
+            run_metrics.finalize_after_load();
+            self.fail("invalid_channel_exception should have been thrown")
+        except py_interop_run_metrics.invalid_channel_exception as ex:
+            self.assertEqual(str(ex).split('\n')[0], "Channel names are missing from the RunInfo.xml, and RunParameters.xml does not contain sufficient information on the instrument run.")
+
     def test_exception_base(self):
         """
         Test that exceptions can be caught and they have the expected message
@@ -200,7 +272,7 @@ class CoreTests(unittest.TestCase):
             expected_metrics.at(1)
             self.fail("index_out_of_bounds_exception should have been thrown")
         except Exception as ex:
-            self.assertEqual(str(ex).split('\n')[0], "Index out of bounds")
+            self.assertEqual(str(ex).split('\n')[0], "Index out of bounds - 1 >= 0")
 
     def test_run_metrics_typedef_wrapping(self):
         """

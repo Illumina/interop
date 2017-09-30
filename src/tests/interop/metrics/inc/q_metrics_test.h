@@ -452,7 +452,7 @@ namespace illumina{ namespace interop { namespace unittest
      * @note Version 6
      *
      */
-    struct q_metric_requirements : metric_test<model::metrics::q_metric, 6>
+    struct q_metric_requirements : metric_test<model::metrics::q_metric, 6, 'c'>
     {
         /** Create the expected metric set
          *
@@ -550,6 +550,7 @@ namespace illumina{ namespace interop { namespace unittest
             summary.cycle_state().qscored_cycle_range(model::run::cycle_range(total_cycles, total_cycles));
         }
     };
+
 
     /** This test writes three records of an InterOp files, then reads them back in and compares
      * each value to ensure they did not change.

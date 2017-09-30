@@ -114,6 +114,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         /** Read binary metrics and XML files from the run folder
          *
+         * @note invalid_run_info_cycle_exception and invalid_tile_list_exception can be safely caught and ignored
+         *
          * @param run_folder run folder path
          * @param thread_count number of threads to use for network loading
          */
@@ -128,9 +130,12 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         model::invalid_channel_exception,
         model::index_out_of_bounds_exception,
         model::invalid_tile_naming_method,
+        model::invalid_tile_list_exception,
         model::invalid_run_info_exception,
         model::invalid_run_info_cycle_exception);
         /** Read binary metrics and XML files from the run folder
+         *
+         * @note invalid_run_info_cycle_exception and invalid_tile_list_exception can be safely caught and ignored
          *
          * @param run_folder run folder path
          * @param valid_to_load list of metrics to load
@@ -152,6 +157,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         model::invalid_channel_exception,
         model::index_out_of_bounds_exception,
         model::invalid_tile_naming_method,
+        model::invalid_tile_list_exception,
         model::invalid_run_info_exception,
         model::invalid_run_info_cycle_exception,
         model::invalid_parameter);
@@ -198,6 +204,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         model::invalid_channel_exception,
         model::invalid_tile_naming_method,
         model::index_out_of_bounds_exception,
+        model::invalid_tile_list_exception,
         model::invalid_run_info_exception,
         model::invalid_run_info_cycle_exception);
 
@@ -275,10 +282,25 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @param group metric group type
          * @param files destination interop file names (first one is legacy, all subsequent are by cycle)
          * @param run_folder run folder location
+         * @param use_out use the copied version
          */
         void list_filenames(const constants::metric_group group,
                             std::vector<std::string>& files,
-                            const std::string& run_folder)
+                            const std::string& run_folder,
+                            const bool use_out=true)
+        throw(invalid_run_info_exception);
+
+        /** List all filenames for all metrics
+         *
+         * @param files destination interop file names (first one is legacy, all subsequent are by cycle)
+         * @param run_folder run folder location
+         * @param bycycle if true, list all by cycle file name
+         * @param use_out use the copied version
+         */
+        void list_filenames(std::vector<std::string>& files,
+                            const std::string& run_folder,
+                            const bool bycycle=false,
+                            const bool use_out=true)
         throw(invalid_run_info_exception);
 
     public:
@@ -374,8 +396,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         /** Write binary metrics to the run folder
          *
          * @param run_folder run folder path
+         * @param use_out use the copied version
          */
-        void write_metrics(const std::string &run_folder)const throw(
+        void write_metrics(const std::string &run_folder, const bool use_out=true)const throw(
         io::file_not_found_exception,
         io::bad_format_exception);
 

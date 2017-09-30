@@ -11,7 +11,16 @@
 #include "interop/model/plot/axes.h"
 #include "interop/model/plot/chart_data.h"
 
-namespace illumina { namespace interop { namespace model { namespace plot {
+namespace illumina { namespace interop { namespace model { namespace plot
+{
+
+    /** @defgroup plot_model Model for plotting
+     *
+     * This group defines the plot models:
+     *  1. plot_data - line, bar and candle stick plots
+     *  2. heat_map - Q-score heatmap
+     *  3. flowcell_data - Flowcell heatmap
+     */
 
     /** Encapsulates all data for a single plot
      */
@@ -31,6 +40,64 @@ namespace illumina { namespace interop { namespace model { namespace plot {
         typedef typename series_collection_t::iterator iterator;
         /** Constant iterator */
         typedef typename series_collection_t::const_iterator const_iterator;
+
+    public:
+        /** @defgroup plot_data Model for line, bar and candlestick plots
+         *
+         * Model for line, bar and candlestick plots
+         *
+         * @ingroup plot_model
+         * @ref illumina::interop::model::plot::plot_data "See full class description"
+         * @{
+         */
+        /** Get point at index
+         *
+         * @deprecated Will be removed in next feature version (use operator[] instead for C++ Code)
+         * @param index index of point
+         * @return data point
+         */
+        const series<Point>& at(const size_t index)const throw(model::index_out_of_bounds_exception)
+        {
+            INTEROP_BOUNDS_CHECK(index,  m_series.size(), "Index out of bounds");
+            return m_series[index];
+        }
+        /** Get point at index
+         *
+         * @param index index of point
+         * @return data point
+         */
+        series<Point>& operator[](const size_t index) throw(model::index_out_of_bounds_exception)
+        {
+            INTEROP_BOUNDS_CHECK(index,  m_series.size(), "Index out of bounds");
+            return m_series[index];
+        }
+        /** Get point at index
+         *
+         * @param index index of point
+         * @return data point
+         */
+        const series<Point>& operator[](const size_t index)const throw(model::index_out_of_bounds_exception)
+        {
+            INTEROP_BOUNDS_CHECK(index,  m_series.size(), "Index out of bounds");
+            return m_series[index];
+        }
+        /** Number of points in collection
+         *
+         * @return number of points in the collection
+         */
+        size_t size()const
+        {
+            return m_series.size();
+        }
+        /** Check if object has points
+         *
+         * @return true if plot has points
+         */
+        bool empty()const
+        {
+            return size()==0;
+        }
+        /** @} */
 
     public:
         /** Clear all series
@@ -65,58 +132,6 @@ namespace illumina { namespace interop { namespace model { namespace plot {
         {
             m_series.push_back(val);
         }
-        /** Get point at index
-         *
-         * @deprecated Will be removed in next feature version (use operator[] instead for C++ Code)
-         * @param index index of point
-         * @return data point
-         */
-        const series<Point>& at(const size_t index)const throw(model::index_out_of_bounds_exception)
-        {
-            if(index >= m_series.size())
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Row index out of bounds");
-            return m_series[index];
-        }
-        /** Get point at index
-         *
-         * @param index index of point
-         * @return data point
-         */
-        series<Point>& operator[](const size_t index) throw(model::index_out_of_bounds_exception)
-        {
-            if(index >= m_series.size())
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Row index out of bounds");
-            return m_series[index];
-        }
-        /** Get point at index
-         *
-         * @param index index of point
-         * @return data point
-         */
-        const series<Point>& operator[](const size_t index)const throw(model::index_out_of_bounds_exception)
-        {
-            if(index >= m_series.size())
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Row index out of bounds");
-            return m_series[index];
-        }
-        /** Number of points in collection
-         *
-         * @return number of points in the collection
-         */
-        size_t size()const
-        {
-            return m_series.size();
-        }
-        /** Check if object has points
-         *
-         * @return true if plot has points
-         */
-        bool empty()const
-        {
-            return size()==0;
-        }
-
-    public:
         /** Get iterator to start of collection
          *
          * @return iterator to start of collection

@@ -12,6 +12,7 @@
 #include <fstream>
 #include <iterator>
 #include <algorithm>
+#include <numeric>
 #include "interop/util/map.h"
 #include "interop/util/exception.h"
 #include "interop/model/metric_base/base_cycle_metric.h"
@@ -60,10 +61,10 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         /** Define a set of ids */
         typedef std::set<uint_t> id_set_t; // TODO: Do the same for set
         /** Define offset map */
-#if defined(__cplusplus) && __cplusplus < 201103L // Workaround for SWIG not understanding the macro
-        typedef std::map<id_t, size_t> offset_map_t;
-#else
+#ifdef INTEROP_HAS_UNORDERED_MAP // Workaround for SWIG not understanding the macro
         typedef std::unordered_map<id_t, size_t> offset_map_t;
+#else
+        typedef std::map<id_t, size_t> offset_map_t;
 #endif
 
     public:
@@ -323,7 +324,9 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
             if (it == m_id_map.end())
                 INTEROP_THROW( index_out_of_bounds_exception, "No tile available: key: " <<  key << " map: " <<
                         m_id_map.size() << " == data: " <<
-                        m_data.size());
+                        m_data.size() <<
+                        "  lane: " << base_metric::lane_from_id(key) <<
+                        "  tile: " << base_metric::tile_from_id(key));
             INTEROP_ASSERT(it->second < m_data.size());
             return m_data[it->second];
         }
@@ -335,7 +338,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         metric_type &operator[](const size_t n) throw(model::index_out_of_bounds_exception)
         {
-            if(n >= m_data.size()) INTEROP_THROW(index_out_of_bounds_exception, "Index out of bounds");
+            INTEROP_BOUNDS_CHECK(n, m_data.size(), "Index out of bounds");
             return m_data[n];
         }
 
@@ -346,7 +349,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         const metric_type &operator[](const size_t n)const throw(model::index_out_of_bounds_exception)
         {
-            if(n >= m_data.size()) INTEROP_THROW(index_out_of_bounds_exception, "Index out of bounds");
+            INTEROP_BOUNDS_CHECK(n, m_data.size(), "Index out of bounds");
             return m_data[n];
         }
 
@@ -358,7 +361,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         metric_type &at(const size_t n) throw(model::index_out_of_bounds_exception)
         {
-            if(n >= m_data.size()) INTEROP_THROW(index_out_of_bounds_exception, "Index out of bounds");
+            INTEROP_BOUNDS_CHECK(n, m_data.size(), "Index out of bounds");
             return m_data[n];
         }
 
@@ -370,7 +373,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         const metric_type &at(const size_t n)const throw(model::index_out_of_bounds_exception)
         {
-            if(n >= m_data.size()) INTEROP_THROW(index_out_of_bounds_exception, "Index out of bounds");
+            INTEROP_BOUNDS_CHECK(n, m_data.size(), "Index out of bounds");
             return m_data[n];
         }
 
