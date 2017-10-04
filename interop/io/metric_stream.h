@@ -116,7 +116,7 @@ namespace illumina { namespace interop { namespace io
         }
         catch(const incomplete_file_exception& ex)
         {
-            if(rebuild)metrics.rebuild_index();// TODO: Speed up with hash map if using c++11 compiler
+            if(rebuild)metrics.rebuild_index();
             throw ex;
         }
         if(rebuild)metrics.rebuild_index();

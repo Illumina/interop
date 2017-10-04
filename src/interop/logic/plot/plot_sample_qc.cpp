@@ -32,27 +32,22 @@ namespace illumina { namespace interop { namespace logic { namespace plot
         typedef typename model::metrics::index_metric::const_iterator const_index_iterator;
         const size_t kAllLanes = 0;
 
-        logic::metric::populate_indices(index_metrics);
+        logic::metric::populate_indices(tile_metrics, index_metrics);
         index_count_map_t index_count_map;
         ::uint64_t pf_cluster_count_total = 0;
         for (typename index_metric_set_t::const_iterator b = index_metrics.begin(), e = index_metrics.end();
              b != e; ++b)
         {
             if (lane != kAllLanes && lane != b->lane()) continue;
-            try
+            if(std::isnan(b->cluster_count_pf())) continue;// TODO: check better?
+            pf_cluster_count_total += static_cast< ::uint64_t >( b->cluster_count_pf());
+            for (const_index_iterator ib = b->indices().begin(), ie = b->indices().end(); ib != ie; ++ib)
             {
-                const model::metrics::tile_metric &tile_metric = tile_metrics.get_metric(b->lane(), b->tile());
-                pf_cluster_count_total += static_cast< ::uint64_t >( tile_metric.cluster_count_pf());
-                for (const_index_iterator ib = b->indices().begin(), ie = b->indices().end(); ib != ie; ++ib)
-                {
-                    const std::string index_id = ib->index_seq() + ib->sample_id();
-                    map_iterator found_index = index_count_map.find(index_id);
-                    if (found_index == index_count_map.end()) index_count_map[index_id] = ib->cluster_count();
-                    else found_index->second += ib->cluster_count();
-                }
+                const std::string index_id = ib->index_seq() + ib->sample_id();
+                map_iterator found_index = index_count_map.find(index_id);
+                if (found_index == index_count_map.end()) index_count_map[index_id] = ib->cluster_count();
+                else found_index->second += ib->cluster_count();
             }
-            catch (const model::index_out_of_bounds_exception &)
-            { continue; } // TODO: check better?
         }
         points.resize(index_count_map.size());
         float max_height = 0;

@@ -37,7 +37,9 @@ set(SRCS
         logic/index_summary_test.cpp
         metrics/coverage_test.cpp
         metrics/metric_stream_error_test.cpp
-        metrics/metric_regression_tests.cpp)
+        metrics/metric_regression_tests.cpp
+        io/csv_format.cpp
+        )
 
 set(HEADERS
         logic/inc/collapsed_q_plot_test_generator.h

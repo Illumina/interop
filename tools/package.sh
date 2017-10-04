@@ -72,7 +72,11 @@ if [ ! -z $7 ] ; then
     BUILD_NUMBER=$7
 fi
 
-CMAKE_EXTRA_FLAGS="-DDISABLE_PACKAGE_SUBDIR=${DISABLE_SUBDIR} -DENABLE_PORTABLE=ON -DENABLE_BACKWARDS_COMPATIBILITY=$INTEROP_C89 -DCMAKE_BUILD_TYPE=$BUILD_TYPE"
+if [ ! -z $8 ] ; then
+    MORE_FLAGS=$8
+fi
+
+CMAKE_EXTRA_FLAGS="-DDISABLE_PACKAGE_SUBDIR=${DISABLE_SUBDIR} -DENABLE_PORTABLE=ON -DENABLE_BACKWARDS_COMPATIBILITY=$INTEROP_C89 -DCMAKE_BUILD_TYPE=$BUILD_TYPE $MORE_FLAGS"
 
 if [ ! -z $BUILD_NUMBER ] ; then
  CMAKE_EXTRA_FLAGS="-DBUILD_NUMBER=$BUILD_NUMBER  $CMAKE_EXTRA_FLAGS"
@@ -123,7 +127,7 @@ if [ -z $PYTHON_VERSION ] && [  -e /opt/python ] ; then
     done
 fi
 
-if [ ! -z $PYTHON_VERSION ] ; then
+if [ "$PYTHON_VERSION" != "" ] ; then
     if [ "$PYTHON_VERSION" == "ALL" ] ; then
         python_versions="2.7.11 3.4.4 3.5.1 3.6.0"
     else
@@ -176,7 +180,7 @@ if [ ! -e $BUILD_PATH/CMakeCache.txt ] ; then
     run "Test" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
 fi
 
-run "Package" cmake --build $BUILD_PATH --target bundle -- -j${THREAD_COUNT}
+run "Package" cmake --build $BUILD_PATH --target bundle
 
 if hash dotnet 2> /dev/null; then
     run "Configure DotNetCore" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS} -DCSBUILD_TOOL=DotNetCore && cmake --build $BUILD_PATH --target nupack -- -j${THREAD_COUNT} || true
@@ -190,3 +194,4 @@ echo "----"
 rm -fr $BUILD_PATH
 
 setuser $SOURCE_PATH $ARTIFACT_PATH
+

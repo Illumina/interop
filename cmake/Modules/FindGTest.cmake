@@ -18,6 +18,10 @@ find_package(PkgConfig)
 pkg_check_modules(PC_GTEST QUIET gtest)
 
 set(GTEST_ROOT "" CACHE PATH "Set the location of the Google Test library and header")
+if(NOT GTEST_ROOT AND GTEST_DIR)
+    set(GTEST_ROOT "${GTEST_DIR}" CACHE PATH "Set the location of the Google Test library and header" FORCE)
+endif()
+
 
 find_path(GTEST_INCLUDE_DIR
         NAMES gtest/gtest.h
@@ -67,11 +71,11 @@ find_library(GMOCK_MAIN_LIBRARY_TEST
 if(NOT GTEST_INCLUDE_DIR OR NOT GTEST_LIBRARY OR NOT GTEST_MAIN_LIBRARY OR NOT GMOCK_INCLUDE_DIR_TEST OR NOT GMOCK_LIBRARY_TEST OR NOT GMOCK_MAIN_LIBRARY_TEST)
 
     if(NOT GTEST_INCLUDE_DIR)
-        message(STATUS "GTest include directory not found")
+        message(STATUS "GTest include directory not found - GTEST_ROOT: ${GTEST_ROOT}")
     elseif(NOT GTEST_LIBRARY)
-        message(STATUS "GTest library not found")
+        message(STATUS "GTest library not found - GTEST_ROOT: ${GTEST_ROOT}")
     elseif(NOT GTEST_MAIN_LIBRARY)
-        message(STATUS "GTest main library not found")
+        message(STATUS "GTest main library not found - GTEST_ROOT: ${GTEST_ROOT}")
     endif()
     if(MSVC)
         set(USE_OWN_TR1_TUPLE 0)

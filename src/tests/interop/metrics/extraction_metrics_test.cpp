@@ -76,7 +76,7 @@ TEST_P(extraction_metrics_tests, test_read_write)
         for(size_t i=0;i<it_expected->channel_count();i++)
         {
             EXPECT_EQ(it_expected->max_intensity(i), it_actual->max_intensity(i));
-            EXPECT_NEAR(it_expected->focus_score(i), it_actual->focus_score(i), tol);
+            INTEROP_EXPECT_NEAR(it_expected->focus_score(i), it_actual->focus_score(i), tol);
         }
     }
 }

@@ -346,6 +346,31 @@ namespace illumina { namespace interop { namespace model { namespace run
                 INTEROP_THROW(invalid_run_info_exception, "Missing read number, found 0");
             unique_numbers.insert(it->number());
         }
+
+        if(m_flowcell.m_lane_count == 0)
+        {
+            INTEROP_THROW(invalid_run_info_exception, "Lane count should be greater than 0");
+        }
+        if(m_flowcell.m_surface_count == 0)
+        {
+            INTEROP_THROW(invalid_run_info_exception, "Surface count should be greater than 0");
+        }
+        if(m_flowcell.m_swath_count == 0)
+        {
+            INTEROP_THROW(invalid_run_info_exception, "Swath count should be greater than 0");
+        }
+        if(m_flowcell.m_sections_per_lane == 0)
+        {
+            INTEROP_THROW(invalid_run_info_exception, "Sections per lane should be greater than 0");
+        }
+        if(m_flowcell.m_lanes_per_section == 0)
+        {
+            INTEROP_THROW(invalid_run_info_exception, "Lanes per section should be greater than 0");
+        }
+        if(m_flowcell.m_tile_count == 0)
+        {
+            INTEROP_THROW(invalid_run_info_exception, "Tile count should be greater than 0");
+        }
     }
     /** Test if tile list matches flowcell layout
      *

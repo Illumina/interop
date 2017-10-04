@@ -44,7 +44,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                     select_metric_##Method##Param(metrics.get< model::metrics:: Metric >(),\
                                                   options, options.channel(),\
                                                   options.dna_base(),\
-                                                  options.read(), metrics.get<tile_metric_set>(), plot);\
+                                                  options.read(), plot);\
                     break;//
 #       define INTEROP_TUPLE4(Unused1, Unused2, Unused3, Unused4)
 #       define INTEROP_TUPLE1(Unused1)
@@ -70,8 +70,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
 #       define INTEROP_TUPLE7(Enum, Unused1, Unused2, Unused3, Metric, Method, Param) \
                 case constants:: Enum:\
                     return is_metric_present_##Method##Param(metrics.get< model::metrics:: Metric >(), 0u, \
-                                                  constants::A, 1u,\
-                                                  metrics.get<tile_metric_set>());//
+                                                  constants::A, 1u);//
 #       define INTEROP_TUPLE4(Unused1, Unused2, Unused3, Unused4)
 #       define INTEROP_TUPLE1(Unused1)
                 INTEROP_ENUM_METRIC_TYPES
@@ -91,11 +90,10 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                                                           const size_t channel, \
                                                           const constants::dna_bases base,\
                                                           const id_t read,\
-                                                          const tile_metric_set& tile_metrics,\
                                                           Plot& plot)\
                 {\
                     const util::op::dummy_arg Void;\
-                    (void)channel;(void)base;(void)read;(void)tile_metrics;(void)Void;\
+                    (void)channel;(void)base;(void)read;(void)Void;\
                     plot(metrics, options, util::op::const_member_function(Param, &model::metrics:: Metric::Method));\
                 }
 #       define INTEROP_TUPLE4(Unused1, Unused2, Unused3, Unused4)
@@ -110,11 +108,10 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                 static bool is_metric_present_##Method##Param(const model::metric_base::metric_set< model::metrics:: Metric >& metrics,\
                                                           const size_t channel, \
                                                           const constants::dna_bases base,\
-                                                          const id_t read,\
-                                                          const tile_metric_set& tile_metrics)\
+                                                          const id_t read)\
                 {\
                     const util::op::dummy_arg Void;\
-                    (void)channel;(void)base;(void)read;(void)tile_metrics;(void)Void;\
+                    (void)channel;(void)base;(void)read;(void)Void;\
                     return is_metric_present_in(metrics, util::op::const_member_function(Param, &model::metrics:: Metric::Method));\
                 }
 #       define INTEROP_TUPLE4(Unused1, Unused2, Unused3, Unused4)

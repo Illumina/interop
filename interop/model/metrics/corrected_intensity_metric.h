@@ -422,7 +422,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         float_array_t percent_bases() const
         {
             uint_t total = total_calls();
-            std::vector<float> percent_bases(called_counts_array().size() - 1);
+            float_array_t percent_bases(called_counts_array().size() - 1);
             for (size_t i = 0; i < percent_bases.size(); ++i)
                 percent_bases[i] = (total == 0) ? std::numeric_limits<float>::quiet_NaN() :
                                    called_counts_array()[i + 1] / static_cast<float>(total) * 100;
@@ -445,7 +445,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         void corrected_int_called_array(const float_array_t & vals)
         {
-            m_corrected_int_called = vals;
+            m_corrected_int_called.assign(vals.begin(), vals.end());
         }
 
         //--------------------------------------------------------------------------------------------------------------
@@ -456,7 +456,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         bool any_valid_called_int()const
         {
             for(size_t i=0;i<m_corrected_int_called.size();++i)
-                if(!std::isnan(m_corrected_int_called[i])) return true;
+                if(!std::isnan(static_cast<float>(m_corrected_int_called[i]))) return true;
             return false;
         }
         /** Average intensity over all clusters

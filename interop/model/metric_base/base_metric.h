@@ -92,6 +92,10 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         /** Base metric header that adds no functionality
          */
         typedef base_metric_header header_type;
+        /** Define lane type */
+        typedef ::uint8_t lane_t;
+        /** Define tile type */
+        typedef ::uint32_t tile_t;
         /** Define the base type */
         typedef constants::base_tile_t base_t;
         enum
@@ -119,7 +123,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          * @param tile tile number
          */
         base_metric(const uint_t lane=0, const uint_t tile=0) :
-                m_lane(lane), m_tile(tile)
+                m_lane(static_cast<lane_t>(lane)), m_tile(static_cast<tile_t>(tile))
         { }
 
     public:
@@ -130,8 +134,8 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         void set_base(const uint_t lane, const uint_t tile)
         {
-            m_lane = lane;
-            m_tile = tile;
+            m_lane = static_cast<lane_t>(lane);
+            m_tile = static_cast<tile_t>(tile);
         }
 
         /** Set the base metric identifiers
@@ -141,8 +145,8 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         template<class BaseMetric>
         void set_base(const BaseMetric &base)
         {
-            m_lane = base.lane;
-            m_tile = base.tile;
+            m_lane = static_cast<lane_t>(base.lane);
+            m_tile = static_cast<tile_t>(base.tile);
         }
 
         /** Unique id created from both the lane and tile
@@ -426,8 +430,8 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         }
 
     private:
-        uint_t m_lane;
-        uint_t m_tile;
+        lane_t m_lane;
+        tile_t m_tile;
     };
 
 

@@ -23,6 +23,7 @@ source_dir="${PWD}"
 build_dir="${PWD}/build"
 build_type="Debug"
 build_param=""
+coverity_host=coverity.illumina.com
 
 if [ ! -z $1 ] ; then
     build_type=$1
@@ -36,6 +37,8 @@ fi
 if [ ! -z $3 ] ; then
     cov_path=$3
 fi
+
+tag=`git describe --tags`
 
 echo "##teamcity[blockOpened name='Configure $build_type']"
 rm -fr $build_dir
@@ -54,7 +57,9 @@ $cov_path/cov-analyze --dir cov --strip-path $(dirname `pwd`) --security --concu
 echo "##teamcity[blockClosed name='Coverity Analyze $build_type']"
 
 echo "##teamcity[blockOpened name='Coverity Upload $build_type']"
-$cov_path/cov-commit-defects --dir cov --host ussd-prd-cove01 --stream InterOp_Master --auth-key-file $HOME/key
+$cov_path/cov-manage-im --host $coverity_host --auth-key-file $HOME/key --mode streams --add --set name:InterOp_${tag} --set lang:cpp --set cmap:CM_IPA --set "triage:Primary Analysis"
+$cov_path/cov-manage-im --host $coverity_host --auth-key-file $HOME/key --mode projects --update --name InterOp --insert stream:InterOp_${tag}
+$cov_path/cov-commit-defects --dir cov --host $coverity_host --stream InterOp_${tag} --auth-key-file $HOME/key
 echo "##teamcity[blockClosed name='Coverity Upload $build_type']"
 
 cd ..

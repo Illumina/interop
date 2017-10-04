@@ -13,6 +13,7 @@
 #include <iterator>
 #include <algorithm>
 #include <numeric>
+#include <utility>
 #include "interop/util/map.h"
 #include "interop/util/exception.h"
 #include "interop/model/metric_base/base_cycle_metric.h"
@@ -167,6 +168,10 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
 
     public:
         /** Rebuild the index map and update the cycle state
+         *
+         * @note This function clears the lookup table for most metrics if update_ids is false (exceptions are Tile and DynamicPhasing
+         *
+         * @param update_ids rebuild the lookup table with new ids
          */
         void rebuild_index(const bool update_ids=false)
         {
@@ -180,6 +185,17 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
                 }
                 T::header_type::update_max_cycle(*b);
             }
+            if(update_ids) return;
+            const constants::metric_group group = static_cast<constants::metric_group>(TYPE);
+            if(group != constants::Tile &&                // imaging table
+                    group != constants::DynamicPhasing && // Not read in
+                    group != constants::CorrectedInt)     // `populate_called_intensities`
+            {
+                clear_lookup();
+            }
+            metric_array_t tmp;
+            tmp.assign(m_data.begin(), m_data.end());
+            tmp.swap(m_data);
         }
         /** Resize the number of places in the metric vector
          *
@@ -204,49 +220,6 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         void trim(const size_t n)
         {
             m_data.resize(n);
-        }
-        /** Find index of metric given the id. If not found, return number of metrics
-         *
-         * @param lane lane
-         * @param tile tile
-         * @param cycle cycle
-         * @return index of metric or number of metrics
-         */
-        size_t find(const uint_t lane, const uint_t tile, const uint_t cycle = 0) const
-        {
-            return find(metric_type::create_id(lane, tile, cycle));
-        }
-
-        /** Find index of metric given the id. If not found, return number of metrics
-         *
-         * @param id id
-         * @return index of metric or number of metrics
-         */
-        size_t find(const id_t id) const
-        {
-            typename offset_map_t::const_iterator it = m_id_map.find(id);
-            if (it == m_id_map.end()) return size();
-            return it->second;
-        }
-
-        /** Test if set has metric
-         *
-         * @param lane lane
-         * @param tile tile
-         * @param cycle cycle
-         */
-        bool has_metric(const uint_t lane, const uint_t tile, const uint_t cycle = 0) const
-        {
-            return has_metric(metric_type::create_id(lane, tile, cycle));
-        }
-
-        /** Test if set has metric
-         *
-         * @param id id
-         */
-        bool has_metric(const id_t id) const
-        {
-            return m_id_map.find(id) != m_id_map.end();
         }
 
         /** Add a metric to the metric set
@@ -282,53 +255,6 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
             INTEROP_ASSERT(size() > 0);
             std::iter_swap(it, m_data.rbegin());
             trim(size()-1);
-        }
-
-        /** Get metric for lane, tile and cycle
-         *
-         * @todo: remove this function
-         *
-         * @param lane lane
-         * @param tile tile
-         * @param cycle cycle
-         * @return metric
-         */
-        const metric_type &get_metric(const uint_t lane, const uint_t tile,
-                                      const uint_t cycle = 0) const throw(model::index_out_of_bounds_exception)
-        {
-            try
-            {
-                return get_metric(metric_type::create_id(lane, tile, cycle));
-            }
-            catch (const index_out_of_bounds_exception &)
-            {
-                INTEROP_THROW( index_out_of_bounds_exception, "No tile available: key: " <<
-                                       metric_type::create_id(lane, tile, cycle) <<
-                                                    " map: " << (m_id_map.size()) <<
-                                                    "  lane: " << (lane) <<
-                                                    "  tile: " << (tile) <<
-                                                    "  cycle: " << (cycle));
-            }
-        }
-
-        /** Get metric for a unique identifier
-         *
-         * @todo: remove this function
-         *
-         * @param key unique id built from lane, tile and cycle (if available)
-         * @return metric
-         */
-        const metric_type &get_metric(const id_t key) const throw(model::index_out_of_bounds_exception)
-        {
-            typename offset_map_t::const_iterator it = m_id_map.find(key);
-            if (it == m_id_map.end())
-                INTEROP_THROW( index_out_of_bounds_exception, "No tile available: key: " <<  key << " map: " <<
-                        m_id_map.size() << " == data: " <<
-                        m_data.size() <<
-                        "  lane: " << base_metric::lane_from_id(key) <<
-                        "  tile: " << base_metric::tile_from_id(key));
-            INTEROP_ASSERT(it->second < m_data.size());
-            return m_data[it->second];
         }
 
         /** Get a metric at the given index
@@ -578,7 +504,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         void clear()
         {
             header_type::clear();
-            m_id_map.clear();
+            clear_lookup();
             m_data.clear();
             m_version=0;
             m_data_source_exists=false;
@@ -607,6 +533,17 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         static const char *suffix()
         { return metric_attributes<T>::suffix(); }
 
+
+    public:// TODO: Remove from I/O?
+        /** Get the current id offset map
+         *
+         * @return id offset map
+         */
+        offset_map_t& offset_map()
+        {
+            return m_id_map;
+        }
+
     public:
         /** Get metric for lane, tile and cycle
          *
@@ -626,12 +563,15 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
             }
             catch (const index_out_of_bounds_exception &)
             {
+                if(m_id_map.empty())
+                    INTEROP_THROW( index_out_of_bounds_exception, "Index map empty: Run rebuild_index(true) on this metric_set" );
                 INTEROP_THROW( index_out_of_bounds_exception,"No tile available: key: " <<
-                                                    metric_type::create_id(lane, tile, cycle) <<
-                                                    " map: " <<(m_id_map.size()) <<
-                                                    "  lane: " << (lane) <<
-                                                    "  tile: " << (tile) <<
-                                                    "  cycle: " << (cycle));
+                                                                                        metric_type::create_id(lane, tile, cycle) <<
+                                                                                        " map: " <<(m_id_map.size()) <<
+                                                                                        "  lane: " << (lane) <<
+                                                                                        "  tile: " << (tile) <<
+                                                                                        "  cycle: " << (cycle)
+                                                                                        << " for metric: " << prefix());
 
             }
         }
@@ -645,22 +585,118 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          */
         metric_type &get_metric_ref(id_t key) throw(model::index_out_of_bounds_exception)
         {
+            if(m_id_map.empty())
+                INTEROP_THROW( index_out_of_bounds_exception, "Index map empty: Run rebuild_index(true) on this metric_set" );
             typename offset_map_t::const_iterator it = m_id_map.find(key);
             if (it == m_id_map.end())
                 INTEROP_THROW( index_out_of_bounds_exception,
-                        "No tile available: key: " << (key) << " map: " <<
-                        (m_id_map.size()) << " == data: " <<
-                        (size()));
+                               "No tile available: key: " << (key) << " map: " <<
+                                                          (m_id_map.size()) << " == data: " <<
+                                                          (size()) << " for metric: " << prefix());
             INTEROP_ASSERT(it->second < size());
             return m_data[it->second];
         }
-        /** Get the current id offset map
+        /** Find index of metric given the id. If not found, return number of metrics
          *
-         * @return id offset map
+         * @param lane lane
+         * @param tile tile
+         * @param cycle cycle
+         * @return index of metric or number of metrics
          */
-        offset_map_t& offset_map()
+        size_t find(const uint_t lane, const uint_t tile, const uint_t cycle = 0) const
         {
-            return m_id_map;
+            return find(metric_type::create_id(lane, tile, cycle));
+        }
+
+        /** Find index of metric given the id. If not found, return number of metrics
+         *
+         * @param id id
+         * @return index of metric or number of metrics
+         */
+        size_t find(const id_t id) const
+        {
+            typename offset_map_t::const_iterator it = m_id_map.find(id);
+            if (it == m_id_map.end()) return size();
+            return it->second;
+        }
+
+        /** Get metric for lane, tile and cycle
+         *
+         * @todo: remove this function
+         *
+         * @param lane lane
+         * @param tile tile
+         * @param cycle cycle
+         * @return metric
+         */
+        const metric_type &get_metric(const uint_t lane, const uint_t tile,
+                                      const uint_t cycle = 0) const throw(model::index_out_of_bounds_exception)
+        {
+            try
+            {
+                return get_metric(metric_type::create_id(lane, tile, cycle));
+            }
+            catch (const index_out_of_bounds_exception &)
+            {
+                if(m_id_map.empty())
+                    INTEROP_THROW( index_out_of_bounds_exception, "Index map empty: Run rebuild_index(true) on this metric_set" );
+                INTEROP_THROW( index_out_of_bounds_exception, "No tile available: key: " <<
+                                                                                         metric_type::create_id(lane, tile, cycle) <<
+                                                                                         " map: " << (m_id_map.size()) <<
+                                                                                         "  lane: " << (lane) <<
+                                                                                         "  tile: " << (tile) <<
+                                                                                         "  cycle: " << (cycle)
+                                                                                         << "for metric: " << prefix());
+            }
+        }
+
+
+        /** Test if set has metric
+         *
+         * @param lane lane
+         * @param tile tile
+         * @param cycle cycle
+         */
+        bool has_metric(const uint_t lane, const uint_t tile, const uint_t cycle = 0) const
+        {
+            return has_metric(metric_type::create_id(lane, tile, cycle));
+        }
+        /** Get metric for a unique identifier
+         *
+         * @todo: remove this function
+         *
+         * @param key unique id built from lane, tile and cycle (if available)
+         * @return metric
+         */
+        const metric_type &get_metric(const id_t key) const throw(model::index_out_of_bounds_exception)
+        {
+            if(m_id_map.empty())
+                INTEROP_THROW( index_out_of_bounds_exception, "Index map empty: Run rebuild_index(true) on this metric_set" );
+            typename offset_map_t::const_iterator it = m_id_map.find(key);
+            if (it == m_id_map.end())
+                INTEROP_THROW( index_out_of_bounds_exception, "No tile available: key: "
+                        <<  key << " map: "
+                        << m_id_map.size() << " == data: "
+                        << m_data.size()
+                        << "  lane: " << base_metric::lane_from_id(key)
+                        << "  tile: " << base_metric::tile_from_id(key) << " for metric: " << prefix());
+            INTEROP_ASSERT(it->second < m_data.size());
+            return m_data[it->second];
+        }
+
+        /** Test if set has metric
+         *
+         * @param id id
+         */
+        bool has_metric(const id_t id) const
+        {
+            return m_id_map.find(id) != m_id_map.end();
+        }
+        /** Clear the lookup table.
+         */
+        void clear_lookup()
+        {
+            INTEROP_CLEAR_MAP(m_id_map);
         }
 
     private:

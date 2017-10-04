@@ -407,7 +407,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         }
         if(!get<model::metrics::index_metric>().empty())
         {
-            logic::metric::populate_indices(get<model::metrics::index_metric>());
+            logic::metric::populate_indices(get<model::metrics::tile_metric>(), get<model::metrics::index_metric>());
         }
         if (count == std::numeric_limits<size_t>::max())
         {

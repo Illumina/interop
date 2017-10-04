@@ -66,6 +66,16 @@ namespace illumina{ namespace interop { namespace unittest {
          * @param out output stream
          */
         virtual void write(std::ostream& out)const=0;
+        /** Generator information
+         *
+         * @return generator info
+         */
+        std::string info()const
+        {
+            std::ostringstream oss;
+            write(oss);
+            return oss.str();
+        }
         /** Write name of generator to output stream
          *
          * @param out output stream
@@ -358,6 +368,8 @@ namespace illumina{ namespace interop { namespace unittest {
     {
         if(std::isnan(expected) && std::isnan(actual)) return true;
         if(std::isnan(expected) || std::isnan(actual)) return false;
+        if(std::isinf(expected) && std::isinf(actual)) return true;
+        if(std::isinf(expected) || std::isinf(actual)) return false;
         return std::abs(expected-actual) < tol;
     }
 
@@ -410,7 +422,7 @@ namespace illumina{ namespace interop { namespace unittest {
 
 
 }}}
+#define INTEROP_ASSERT_NEAR(EXPECTED, ACTUAL, TOL) ASSERT_TRUE(::illumina::interop::unittest::AreFloatsNear(EXPECTED, ACTUAL, TOL))
+#define INTEROP_EXPECT_NEAR(EXPECTED, ACTUAL, TOL) EXPECT_TRUE(::illumina::interop::unittest::AreFloatsNear(EXPECTED, ACTUAL, TOL))
+#define INTEROP_EXPECT_ARRAY_NEAR(EXPECTED, ACTUAL, TOL) EXPECT_TRUE(::illumina::interop::unittest::AreValuesNear(EXPECTED, ACTUAL, TOL))
 
-#define INTEROP_ASSERT_NEAR(EXPECTED, ACTUAL, TOL) ASSERT_TRUE(AreFloatsNear(EXPECTED, ACTUAL, TOL))
-#define INTEROP_EXPECT_NEAR(EXPECTED, ACTUAL, TOL) EXPECT_TRUE(AreFloatsNear(EXPECTED, ACTUAL, TOL))
-#define INTEROP_EXPECT_ARRAY_NEAR(EXPECTED, ACTUAL, TOL) EXPECT_TRUE(AreValuesNear(EXPECTED, ACTUAL, TOL))

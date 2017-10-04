@@ -45,8 +45,12 @@ namespace illumina { namespace interop { namespace util
             {
                 return nan_value(static_cast<Destination*>(0));
             }
+            if(is_inf(str, static_cast<Destination*>(0)))
+            {
+                return inf_value(static_cast<Destination*>(0));
+            }
             std::istringstream iss(str);
-            Destination val;
+            Destination val = Destination();
             iss >> val;
             return val;
         }
@@ -80,6 +84,39 @@ namespace illumina { namespace interop { namespace util
         {
             const size_t n = str.length();
             if(n >= 3 && ::tolower(str[n-3]) =='n' && ::tolower(str[n-2]) == 'a' && ::tolower(str[n-1]) == 'n')
+            {
+                return true;
+            }
+            return false;
+        }
+        static double inf_value(double*)
+        {
+            return std::numeric_limits<double>::infinity();
+        }
+        static float inf_value(float*)
+        {
+            return std::numeric_limits<float>::infinity();
+        }
+        static Destination inf_value(void*)
+        {
+            return Destination();
+        }
+        static bool is_inf(const std::string &str, double*)
+        {
+            return is_string_inf(str);
+        }
+        static bool is_inf(const std::string &str, float*)
+        {
+            return is_string_inf(str);
+        }
+        static bool is_inf(const std::string&, void*)
+        {
+            return false;
+        }
+        static bool is_string_inf(const std::string &str)
+        {
+            const size_t n = str.length();
+            if(n >= 3 && ::tolower(str[n-3]) =='i' && ::tolower(str[n-2]) == 'n' && ::tolower(str[n-1]) == 'f')
             {
                 return true;
             }
@@ -238,7 +275,7 @@ namespace illumina { namespace interop { namespace util
      * @param fixed if true use fixed not default
      * @return string representation of float
      */
-    inline std::string format(const float val, const int width, const int precision, const char fill = '0',
+    inline std::string format(const float val, const int width, const int precision, const char fill = ' ',
                               const bool fixed = true)
     {
         std::ostringstream oss;
