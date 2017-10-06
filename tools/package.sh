@@ -48,7 +48,7 @@ fi
 if [ ! -z $3 ] ; then
     BUILD_SERVER=$3
     DISABLE_SUBDIR=OFF
-    if [[ "$server" == "travis" ]]; then
+    if [[ "$BUILD_SERVER" == "travis" ]]; then
         DISABLE_SUBDIR=ON
     fi
 else
@@ -103,7 +103,7 @@ fi
 
 
 # Build Python Wheels for a range of Python Versions
-if [ -e /opt/python ] ; then
+if [ -z $PYTHON_VERSION ] && [  -e /opt/python ] ; then
     for PYBUILD in `ls -1 /opt/python`; do
         PYTHON_BIN=/opt/python/${PYBUILD}/bin
         if [[ "$PYBUILD" == cp26* ]]; then
@@ -133,17 +133,23 @@ if [ ! -z $PYTHON_VERSION ] ; then
         echo "Building Python $py_ver"
         if hash pyenv 2> /dev/null; then
             export PATH=$(pyenv root)/shims:${PATH}
-            pyenv install $py_ver || true
+            if [[ "$OSTYPE" == "linux-gnu" ]]; then
+                if hash patchelf 2> /dev/null; then
+                    pyenv install 3.5 -s  || true
+                    pyenv global 3.5 || true
+                    pip3 install auditwheel==1.5
+                fi
+            fi
+            pyenv install $py_ver -s  || true
             pyenv global $py_ver || true
+            if [[ "$OSTYPE" == "darwin"* ]]; then
+                pip install delocate
+            fi
             which python
+            which pip
             python --version
             pip install numpy
             pip install wheel
-            if [[ "$OSTYPE" == "linux-gnu" ]]; then
-                pip install auditwheel==1.5
-            elif [[ "$OSTYPE" == "darwin"* ]]; then
-                pip install delocate
-            fi
         fi
         run "Configure $py_ver" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS} -DENABLE_PYTHON_DYNAMIC_LOAD=ON -DPYTHON_EXECUTABLE=`which python` -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp
         run "Build $py_ver" cmake --build $BUILD_PATH -- -j${THREAD_COUNT}
@@ -155,6 +161,7 @@ if [ ! -z $PYTHON_VERSION ] ; then
             delocate-wheel $ARTIFACT_PATH/tmp/*.whl
             delocate-addplat -c --rm-orig -x 10_9 -x 10_10 $ARTIFACT_PATH/tmp/*.whl -w $ARTIFACT_PATH
         elif hash auditwheel 2> /dev/null; then
+            auditwheel --version
             auditwheel show ${ARTIFACT_PATH}/tmp/*.whl
             auditwheel repair ${ARTIFACT_PATH}/tmp/*.whl -w ${ARTIFACT_PATH}
         fi

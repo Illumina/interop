@@ -116,14 +116,14 @@ install:
         C:/ProgramData/chocolatey/bin/swig.exe -swiglib
         if ($lastexitcode -ne 0) {
           echo "Installing swig"
-          appveyor-retry choco install swig --version 3.0.5 -y > $null
+          appveyor-retry choco install swig --version 3.0.8 --yes --limit-output
         }
         else{
             echo "using swig from cache"
         }
       } else {
           echo "Installing swig"
-          appveyor-retry choco install swig --version 3.0.5 -y > $null
+          appveyor-retry choco install swig --version 3.0.8 --yes --limit-output
       }
 
 build_script:
