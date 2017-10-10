@@ -65,6 +65,8 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         typedef base_read_metric_header header_type;
         /** Define the base type */
         typedef constants::base_read_t base_t;
+        /** Define read type */
+        typedef uint8_t read_t;
     public:
         /** Constructor
          *
@@ -73,7 +75,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          * @param read read number
          */
         base_read_metric(const uint_t lane, const uint_t tile, const uint_t read) :
-                base_metric(lane, tile), m_read(read) { }
+                base_metric(lane, tile), m_read(static_cast<read_t>(read)) { }
 
     public:
         /** Set id
@@ -96,7 +98,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         void set_base(const uint_t lane, const uint_t tile, const uint_t read)
         {
             base_metric::set_base(lane, tile);
-            m_read = read;
+            m_read = static_cast<read_t>(read);
         }
         /** Set the base metric identifiers
          *
@@ -106,7 +108,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         void set_base(const BaseReadMetric &base)
         {
             base_metric::set_base(base);
-            m_read = base.read;
+            m_read = static_cast<read_t>(base.read);
         }
 
         /** Read number
@@ -148,7 +150,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         }
 
     private:
-        uint_t m_read;
+        read_t m_read;
     };
 
     /** Specialization for base_cycle_metric providing sentinel values*/

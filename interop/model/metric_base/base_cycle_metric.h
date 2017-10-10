@@ -78,6 +78,8 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         typedef base_cycle_metric_header header_type;
         /** Define the base type */
         typedef constants::base_cycle_t base_t;
+        /** Define cycle type */
+        typedef uint16_t cycle_t;
     public:
         /** Constructor
          *
@@ -86,7 +88,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          * @param cycle cycle number
          */
         base_cycle_metric(const uint_t lane=0, const uint_t tile=0, const uint_t cycle=0) :
-                base_metric(lane, tile), m_cycle(cycle)
+                base_metric(lane, tile), m_cycle(static_cast<cycle_t>(cycle))
         { }
 
     public:
@@ -109,7 +111,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         void set_base(const uint_t lane, const uint_t tile, const uint_t cycle)
         {
             base_metric::set_base(lane, tile);
-            m_cycle = cycle;
+            m_cycle = static_cast<cycle_t>(cycle);
         }
         /** Set the base metric identifiers
          *
@@ -119,7 +121,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         void set_base(const BaseCycleMetric &base)
         {
             base_metric::set_base(base);
-            m_cycle = base.cycle;
+            m_cycle = static_cast<cycle_t>(base.cycle);
         }
 
         /** Cycle number
@@ -181,7 +183,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         }
 
     private:
-        uint_t m_cycle;
+        cycle_t m_cycle;
     };
 
 

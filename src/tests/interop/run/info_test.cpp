@@ -178,3 +178,215 @@ TEST(run_info_test, test_invalid_run_number)
     run_info.parse(&data[0]);
     EXPECT_THROW(run_info.validate(), model::invalid_run_info_exception);
 }
+
+TEST(run_info_test, test_zero_lane_count_exception)
+{
+    std::string data= "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+            "<RunInfo>\n"
+            "\t<Run Id=\"170208_XXXXXX_0021_YYYYYYYY\" Number=\"21\">\n"
+            "\t\t<Flowcell>YYYYYYYY</Flowcell>\n"
+            "\t\t<Instrument>XXXXXX</Instrument>\n"
+            "\t\t<Date>2/8/2017 4:25:41 PM</Date>\n"
+            "\t\t<Reads>\n"
+            "\t\t\t<Read Number=\"1\" NumCycles=\"151\" IsIndexedRead=\"N\"/>\n"
+            "\t\t\t<Read Number=\"2\" NumCycles=\"8\" IsIndexedRead=\"Y\"/>\n"
+            "\t\t\t<Read Number=\"3\" NumCycles=\"8\" IsIndexedRead=\"Y\"/>\n"
+            "\t\t\t<Read Number=\"4\" NumCycles=\"151\" IsIndexedRead=\"N\"/>\n"
+            "\t\t</Reads>\n"
+            "\t\t<FlowcellLayout LaneCount=\"\" SurfaceCount=\"2\" SwathCount=\"4\" TileCount=\"88\" FlowcellSide=\"1\">\n"
+            "\t\t\t<TileSet TileNamingConvention=\"FourDigit\">\n"
+            "\t\t\t\t<Tiles>\n"
+            "\t\t\t\t\t<Tile>1_2101</Tile>\n"
+            "\t\t\t\t\t<Tile>3_2102</Tile>\n"
+            "\t\t\t\t</Tiles>\n"
+            "\t\t\t</TileSet>\n"
+            "\t\t</FlowcellLayout>\n"
+            "\t\t<AlignToPhiX/>\n"
+            "\t\t<ImageDimensions Width=\"3200\" Height=\"3607\"/>\n"
+            "\t\t<ImageChannels>\n"
+            "\t\t\t<Name>RED</Name>\n"
+            "\t\t\t<Name>GREEN</Name>\n"
+            "\t\t</ImageChannels>\n"
+            "\t</Run>\n"
+            "</RunInfo>";
+    run::info run_info;
+    run_info.parse(&data[0]);
+    EXPECT_THROW(run_info.validate(), model::invalid_run_info_exception);
+}
+
+TEST(run_info_test, test_zero_surface_count_exception)
+{
+    std::string data= "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+            "<RunInfo>\n"
+            "\t<Run Id=\"170208_XXXXXX_0021_YYYYYYYY\" Number=\"21\">\n"
+            "\t\t<Flowcell>YYYYYYYY</Flowcell>\n"
+            "\t\t<Instrument>XXXXXX</Instrument>\n"
+            "\t\t<Date>2/8/2017 4:25:41 PM</Date>\n"
+            "\t\t<Reads>\n"
+            "\t\t\t<Read Number=\"1\" NumCycles=\"151\" IsIndexedRead=\"N\"/>\n"
+            "\t\t\t<Read Number=\"2\" NumCycles=\"8\" IsIndexedRead=\"Y\"/>\n"
+            "\t\t\t<Read Number=\"3\" NumCycles=\"8\" IsIndexedRead=\"Y\"/>\n"
+            "\t\t\t<Read Number=\"4\" NumCycles=\"151\" IsIndexedRead=\"N\"/>\n"
+            "\t\t</Reads>\n"
+            "\t\t<FlowcellLayout LaneCount=\"4\" SurfaceCount=\"\" SwathCount=\"4\" TileCount=\"88\" FlowcellSide=\"1\">\n"
+            "\t\t\t<TileSet TileNamingConvention=\"FourDigit\">\n"
+            "\t\t\t\t<Tiles>\n"
+            "\t\t\t\t\t<Tile>1_2101</Tile>\n"
+            "\t\t\t\t\t<Tile>3_2102</Tile>\n"
+            "\t\t\t\t</Tiles>\n"
+            "\t\t\t</TileSet>\n"
+            "\t\t</FlowcellLayout>\n"
+            "\t\t<AlignToPhiX/>\n"
+            "\t\t<ImageDimensions Width=\"3200\" Height=\"3607\"/>\n"
+            "\t\t<ImageChannels>\n"
+            "\t\t\t<Name>RED</Name>\n"
+            "\t\t\t<Name>GREEN</Name>\n"
+            "\t\t</ImageChannels>\n"
+            "\t</Run>\n"
+            "</RunInfo>";
+    run::info run_info;
+    run_info.parse(&data[0]);
+    EXPECT_THROW(run_info.validate(), model::invalid_run_info_exception);
+}
+
+
+TEST(run_info_test, test_zero_swath_count_exception)
+{
+    std::string data= "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+            "<RunInfo>\n"
+            "\t<Run Id=\"170208_XXXXXX_0021_YYYYYYYY\" Number=\"21\">\n"
+            "\t\t<Flowcell>YYYYYYYY</Flowcell>\n"
+            "\t\t<Instrument>XXXXXX</Instrument>\n"
+            "\t\t<Date>2/8/2017 4:25:41 PM</Date>\n"
+            "\t\t<Reads>\n"
+            "\t\t\t<Read Number=\"1\" NumCycles=\"151\" IsIndexedRead=\"N\"/>\n"
+            "\t\t\t<Read Number=\"2\" NumCycles=\"8\" IsIndexedRead=\"Y\"/>\n"
+            "\t\t\t<Read Number=\"3\" NumCycles=\"8\" IsIndexedRead=\"Y\"/>\n"
+            "\t\t\t<Read Number=\"4\" NumCycles=\"151\" IsIndexedRead=\"N\"/>\n"
+            "\t\t</Reads>\n"
+            "\t\t<FlowcellLayout LaneCount=\"4\" SurfaceCount=\"2\" SwathCount=\"\" TileCount=\"88\" FlowcellSide=\"1\">\n"
+            "\t\t\t<TileSet TileNamingConvention=\"FourDigit\">\n"
+            "\t\t\t\t<Tiles>\n"
+            "\t\t\t\t\t<Tile>1_2101</Tile>\n"
+            "\t\t\t\t\t<Tile>3_2102</Tile>\n"
+            "\t\t\t\t</Tiles>\n"
+            "\t\t\t</TileSet>\n"
+            "\t\t</FlowcellLayout>\n"
+            "\t\t<AlignToPhiX/>\n"
+            "\t\t<ImageDimensions Width=\"3200\" Height=\"3607\"/>\n"
+            "\t\t<ImageChannels>\n"
+            "\t\t\t<Name>RED</Name>\n"
+            "\t\t\t<Name>GREEN</Name>\n"
+            "\t\t</ImageChannels>\n"
+            "\t</Run>\n"
+            "</RunInfo>";
+    run::info run_info;
+    run_info.parse(&data[0]);
+    EXPECT_THROW(run_info.validate(), model::invalid_run_info_exception);
+}
+
+
+TEST(run_info_test, test_zero_tile_count_exception)
+{
+    std::string data= "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+            "<RunInfo>\n"
+            "\t<Run Id=\"170208_XXXXXX_0021_YYYYYYYY\" Number=\"21\">\n"
+            "\t\t<Flowcell>YYYYYYYY</Flowcell>\n"
+            "\t\t<Instrument>XXXXXX</Instrument>\n"
+            "\t\t<Date>2/8/2017 4:25:41 PM</Date>\n"
+            "\t\t<Reads>\n"
+            "\t\t\t<Read Number=\"1\" NumCycles=\"151\" IsIndexedRead=\"N\"/>\n"
+            "\t\t\t<Read Number=\"2\" NumCycles=\"8\" IsIndexedRead=\"Y\"/>\n"
+            "\t\t\t<Read Number=\"3\" NumCycles=\"8\" IsIndexedRead=\"Y\"/>\n"
+            "\t\t\t<Read Number=\"4\" NumCycles=\"151\" IsIndexedRead=\"N\"/>\n"
+            "\t\t</Reads>\n"
+            "\t\t<FlowcellLayout LaneCount=\"4\" SurfaceCount=\"2\" SwathCount=\"4\" TileCount=\"\" FlowcellSide=\"1\">\n"
+            "\t\t\t<TileSet TileNamingConvention=\"FourDigit\">\n"
+            "\t\t\t\t<Tiles>\n"
+            "\t\t\t\t\t<Tile>1_2101</Tile>\n"
+            "\t\t\t\t\t<Tile>3_2102</Tile>\n"
+            "\t\t\t\t</Tiles>\n"
+            "\t\t\t</TileSet>\n"
+            "\t\t</FlowcellLayout>\n"
+            "\t\t<AlignToPhiX/>\n"
+            "\t\t<ImageDimensions Width=\"3200\" Height=\"3607\"/>\n"
+            "\t\t<ImageChannels>\n"
+            "\t\t\t<Name>RED</Name>\n"
+            "\t\t\t<Name>GREEN</Name>\n"
+            "\t\t</ImageChannels>\n"
+            "\t</Run>\n"
+            "</RunInfo>";
+    run::info run_info;
+    run_info.parse(&data[0]);
+    EXPECT_THROW(run_info.validate(), model::invalid_run_info_exception);
+}
+
+TEST(run_info_test, test_zero_sections_per_lane_count_exception)
+{
+    std::string data= "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+            "<RunInfo>\n"
+            "\t<Run Id=\"170208_XXXXXX_0021_YYYYYYYY\" Number=\"21\">\n"
+            "\t\t<Flowcell>YYYYYYYY</Flowcell>\n"
+            "\t\t<Instrument>XXXXXX</Instrument>\n"
+            "\t\t<Date>2/8/2017 4:25:41 PM</Date>\n"
+            "\t\t<Reads>\n"
+            "\t\t\t<Read Number=\"1\" NumCycles=\"151\" IsIndexedRead=\"N\"/>\n"
+            "\t\t\t<Read Number=\"2\" NumCycles=\"8\" IsIndexedRead=\"Y\"/>\n"
+            "\t\t\t<Read Number=\"3\" NumCycles=\"8\" IsIndexedRead=\"Y\"/>\n"
+            "\t\t\t<Read Number=\"4\" NumCycles=\"151\" IsIndexedRead=\"N\"/>\n"
+            "\t\t</Reads>\n"
+            "\t\t<FlowcellLayout LaneCount=\"4\" SurfaceCount=\"2\" SwathCount=\"4\" TileCount=\"88\" SectionPerLane=\"\" LanePerSection=\"2\" FlowcellSide=\"1\">\n"
+            "\t\t\t<TileSet TileNamingConvention=\"FiveDigit\">\n"
+            "\t\t\t\t<Tiles>\n"
+            "\t\t\t\t\t<Tile>1_21101</Tile>\n"
+            "\t\t\t\t\t<Tile>3_21402</Tile>\n"
+            "\t\t\t\t</Tiles>\n"
+            "\t\t\t</TileSet>\n"
+            "\t\t</FlowcellLayout>\n"
+            "\t\t<AlignToPhiX/>\n"
+            "\t\t<ImageDimensions Width=\"3200\" Height=\"3607\"/>\n"
+            "\t\t<ImageChannels>\n"
+            "\t\t\t<Name>RED</Name>\n"
+            "\t\t\t<Name>GREEN</Name>\n"
+            "\t\t</ImageChannels>\n"
+            "\t</Run>\n"
+            "</RunInfo>";
+    run::info run_info;
+    run_info.parse(&data[0]);
+    EXPECT_THROW(run_info.validate(), model::invalid_run_info_exception);
+}
+
+TEST(run_info_test, test_zero_lanes_per_section_count_exception)
+{
+    std::string data= "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+            "<RunInfo>\n"
+            "\t<Run Id=\"170208_XXXXXX_0021_YYYYYYYY\" Number=\"21\">\n"
+            "\t\t<Flowcell>YYYYYYYY</Flowcell>\n"
+            "\t\t<Instrument>XXXXXX</Instrument>\n"
+            "\t\t<Date>2/8/2017 4:25:41 PM</Date>\n"
+            "\t\t<Reads>\n"
+            "\t\t\t<Read Number=\"1\" NumCycles=\"151\" IsIndexedRead=\"N\"/>\n"
+            "\t\t\t<Read Number=\"2\" NumCycles=\"8\" IsIndexedRead=\"Y\"/>\n"
+            "\t\t\t<Read Number=\"3\" NumCycles=\"8\" IsIndexedRead=\"Y\"/>\n"
+            "\t\t\t<Read Number=\"4\" NumCycles=\"151\" IsIndexedRead=\"N\"/>\n"
+            "\t\t</Reads>\n"
+            "\t\t<FlowcellLayout LaneCount=\"4\" SurfaceCount=\"2\" SwathCount=\"4\" TileCount=\"88\" SectionPerLane=\"3\" LanePerSection=\"\" FlowcellSide=\"1\">\n"
+            "\t\t\t<TileSet TileNamingConvention=\"FiveDigit\">\n"
+            "\t\t\t\t<Tiles>\n"
+            "\t\t\t\t\t<Tile>1_21101</Tile>\n"
+            "\t\t\t\t\t<Tile>3_21402</Tile>\n"
+            "\t\t\t\t</Tiles>\n"
+            "\t\t\t</TileSet>\n"
+            "\t\t</FlowcellLayout>\n"
+            "\t\t<AlignToPhiX/>\n"
+            "\t\t<ImageDimensions Width=\"3200\" Height=\"3607\"/>\n"
+            "\t\t<ImageChannels>\n"
+            "\t\t\t<Name>RED</Name>\n"
+            "\t\t\t<Name>GREEN</Name>\n"
+            "\t\t</ImageChannels>\n"
+            "\t</Run>\n"
+            "</RunInfo>";
+    run::info run_info;
+    run_info.parse(&data[0]);
+    EXPECT_THROW(run_info.validate(), model::invalid_run_info_exception);
+}

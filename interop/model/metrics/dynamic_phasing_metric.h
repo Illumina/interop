@@ -79,6 +79,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          *
          * Per tile per read phasing slopes/offsets
          *
+         * @ingroup run_metrics
          * @note This is not actually an InterOp written to disk, but is calculated from EmpiricalPhasingMetricsOut.bin
          * @ref illumina::interop::model::metrics::dynamic_phasing_metric "See full class description"
          * @ingroup run_metrics

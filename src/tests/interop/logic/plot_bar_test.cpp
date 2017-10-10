@@ -35,12 +35,13 @@ TEST_P(bar_plot_tests, plot_data)
     if(skip_test) return;
     ASSERT_TRUE(fixture_test_result);
     const float tol = 1e-4f;
+    EXPECT_NEAR(actual.x_axis().min(), expected.x_axis().min(), tol);
+    EXPECT_NEAR(actual.x_axis().max(), expected.x_axis().max(), tol);
+    EXPECT_NEAR(actual.y_axis().min(), expected.y_axis().min(), tol);
+    EXPECT_NEAR(actual.y_axis().max(), expected.y_axis().max(), tol);
+
     EXPECT_EQ(actual.title(), expected.title());
-    EXPECT_EQ(actual.x_axis().min(), expected.x_axis().min());
-    EXPECT_EQ(actual.x_axis().max(), expected.x_axis().max());
     EXPECT_EQ(actual.x_axis().label(), expected.x_axis().label());
-    EXPECT_EQ(actual.y_axis().min(), expected.y_axis().min());
-    EXPECT_EQ(actual.y_axis().max(), expected.y_axis().max());
     EXPECT_EQ(actual.y_axis().label(), expected.y_axis().label());
     ASSERT_EQ(actual.size(), expected.size());
     for(size_t i=0;i<actual.size();++i)

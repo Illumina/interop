@@ -43,7 +43,7 @@ function(update_dependencies dep_url dep_dir output_var)
     )
     if(NOT EXISTS "${HOME_DIR}/${DEP_FILENAME}.txt")
         set(${output_var} "")
-        message(WARNING "Dependencies failed to download")
+        message(WARNING "Dependencies failed to download - no version file at ${HOME_DIR}/${DEP_FILENAME}.txt")
     endif()
 endfunction()
 

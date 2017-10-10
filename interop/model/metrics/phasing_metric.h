@@ -70,6 +70,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          *
          * Per tile per cycle phasing weights
          *
+         * @ingroup run_metrics
          * @ref illumina::interop::model::metrics::phasing_metric "See full class description"
          * @ingroup run_metrics
          * @{

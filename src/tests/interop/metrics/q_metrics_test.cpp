@@ -139,7 +139,7 @@ TEST(q_metrics_test, test_cumulative)
         qsum += hist_all3[i];
     }
 
-    EXPECT_EQ(q_metric_set.get_metric(7, 1114, 3).sum_qscore_cumulative(), qsum);
+    EXPECT_EQ(q_metric_set[3].sum_qscore_cumulative(), qsum);
 }
 
 TEST(q_metrics_test, test_percent_over_q30_unbinned)

@@ -6,12 +6,12 @@
  *  @copyright GNU Public License.
  */
 #include <vector>
+#include "interop/util/map.h"
 #include "interop/logic/metric/q_metric.h"
 
 
 namespace illumina { namespace interop { namespace logic { namespace metric
 {
-
     /** Populate cumulative q-metric distribution
      *
      * @param metric_set q-metric set
@@ -21,37 +21,39 @@ namespace illumina { namespace interop { namespace logic { namespace metric
     throw( model::index_out_of_bounds_exception )
     {
         if(metric_set.size()==0) return;
-        typedef QMetric q_metric;
-        typedef model::metric_base::metric_set<q_metric> q_metric_set;
-        typedef typename q_metric_set::id_vector id_vector;
-        typedef typename q_metric_set::uint_t uint_t;
-        typedef typename id_vector::const_iterator const_id_iterator;
-        id_vector lane_ids = metric_set.lanes();
-        for(const_id_iterator lane_beg = lane_ids.begin(), lane_end = lane_ids.end();lane_beg != lane_end;++lane_beg)
+        typedef model::metric_base::base_metric::id_t id_t;
+        typedef typename model::metric_base::metric_set<QMetric>::iterator iterator;
+        typedef INTEROP_UNORDERED_MAP(id_t, iterator) lookup_map_t;
+
+        lookup_map_t tile_id_map;
+        for(iterator beg = metric_set.begin();beg != metric_set.end();++beg)
         {
-            const uint_t lane_id = *lane_beg;
-            id_vector tile_ids = metric_set.tile_numbers_for_lane(lane_id);
-            for(const_id_iterator tile_beg = tile_ids.begin(), tile_end = tile_ids.end();tile_beg != tile_end;++tile_beg)
+            const id_t tile_id = beg->tile_hash();
+            if(tile_id_map.find(tile_id) == tile_id_map.end())
             {
-                const uint_t tile_id = *tile_beg;
-                size_t prev_idx = metric_set.find(lane_id, tile_id, 1);
-                if(prev_idx >= metric_set.size()) continue;
-                QMetric& metric = metric_set[prev_idx];
-                metric.accumulate(metric);
-                const uint_t second_cycle_start = 2; // We have to accumulate the first cycle with itself, and every
-                // subsequent with the previous cycle.
-                // Also this is not 0-indexed, so we start with 2, the 2nd cycle
-                for(uint_t cycle = second_cycle_start;cycle <= metric_set.max_cycle();++cycle)
-                {
-                    const size_t cur_idx = metric_set.find(lane_id, tile_id, cycle);
-                    if(cur_idx>=metric_set.size() || prev_idx>=metric_set.size())
-                        continue;// TODO: if this happens zero out following q-scores
-                    metric_set[cur_idx].accumulate(metric_set[prev_idx]);
-                    prev_idx=cur_idx;
-                }
+                tile_id_map[tile_id] = beg;
+                beg->accumulate(*beg);
             }
+            else if(tile_id_map[tile_id]->cycle() >= beg->cycle())
+            {
+                INTEROP_THROW(model::index_out_of_bounds_exception, "Cycle out of order: "
+                        << beg->lane()
+                        << "_"
+                        << beg->tile()
+                        << " = "
+                        << beg->cycle()
+                        << " <= "
+                        << tile_id_map[tile_id]->cycle());
+            }
+            else
+            {
+                beg->accumulate(*tile_id_map[tile_id]);
+                tile_id_map[tile_id] = beg;
+            }
+
         }
     }
+
     /** Populate cumulative by lane q-metric distribution
      *
      * @param q_metric_set q-metric set
@@ -59,31 +61,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
     void populate_cumulative_distribution(model::metric_base::metric_set<model::metrics::q_by_lane_metric>& q_metric_set)
     throw( model::index_out_of_bounds_exception )
     {
-        if(q_metric_set.size()==0) return;
-        typedef model::metrics::q_by_lane_metric q_by_lane_metric;
-        typedef model::metric_base::metric_set<q_by_lane_metric> q_by_lane_metric_set;
-        typedef q_by_lane_metric_set::id_vector id_vector;
-        typedef q_by_lane_metric_set::uint_t uint_t;
-        id_vector lane_ids = q_metric_set.lanes();
-        const size_t tile_id = 0;
-        for(id_vector::const_iterator lane_beg = lane_ids.begin(), lane_end = lane_ids.end();lane_beg != lane_end;++lane_beg)
-        {
-            size_t prev_idx = q_metric_set.find(*lane_beg, tile_id, 1);
-            if(prev_idx >= q_metric_set.size()) continue;
-            q_by_lane_metric& metric = q_metric_set[prev_idx];
-            metric.accumulate(metric);
-            const uint_t second_cycle_start = 2; // We have to accumulate the first cycle with itself, and every
-            // subsequent with the previous cycle.
-            // Also this is not 0-indexed, so we start with 2, the 2nd cycle
-            for(uint_t cycle = second_cycle_start;cycle <= q_metric_set.max_cycle();++cycle)
-            {
-                const size_t cur_idx = q_metric_set.find(*lane_beg, tile_id, cycle);
-                if(cur_idx>=q_metric_set.size() || prev_idx>=q_metric_set.size())
-                    continue;// TODO: if this happens zero out following q-scores
-                q_metric_set[cur_idx].accumulate(q_metric_set[prev_idx]);
-                prev_idx=cur_idx;
-            }
-        }
+        populate_cumulative_distribution_t(q_metric_set);
     }
     /** Populate cumulative q-metric distribution
      *
@@ -226,15 +204,24 @@ namespace illumina { namespace interop { namespace logic { namespace metric
         typedef model::metric_base::metric_set<model::metrics::q_metric>::const_iterator const_iterator;
         typedef model::metric_base::metric_set<model::metrics::q_metric>::header_type header_type;
         typedef model::metric_base::base_cycle_metric::id_t id_t;
+        typedef INTEROP_UNORDERED_MAP(id_t, size_t) lookup_map_t;
+        typedef lookup_map_t::iterator lookup_iterator;
 
+        lookup_map_t tile_id_map;
         bylane = static_cast<const header_type&>(metric_set);
         for(const_iterator beg = metric_set.begin(), end = metric_set.end();beg != end;++beg)
         {
             const id_t id = model::metric_base::base_cycle_metric::create_id(beg->lane(), 0, beg->cycle());
-            if(bylane.has_metric(id))
-                bylane.get_metric_ref(id).accumulate_by_lane(*beg);
-            else
+            lookup_iterator it = tile_id_map.find(id);
+            if(it == tile_id_map.end())
+            {
+                tile_id_map[id] = bylane.size();
                 bylane.insert(model::metrics::q_by_lane_metric(beg->lane(), 0, beg->cycle(), beg->qscore_hist()));
+            }
+            else
+            {
+                bylane[it->second].accumulate_by_lane(*beg);
+            }
         }
     }
 

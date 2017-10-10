@@ -20,6 +20,9 @@ find_package(PkgConfig)
 pkg_check_modules(PC_NUNIT QUIET nunit)
 
 set(NUNIT_ROOT "" CACHE PATH "Set the location of the NUnit library")
+if(NOT NUNIT_ROOT AND NUNIT_DIR)
+    set(NUNIT_ROOT "${NUNIT_DIR}" CACHE PATH "Set the location of the JUnit Jar File" FORCE)
+endif()
 
 set(nunit_search_hints
         ${NUNIT_ROOT}

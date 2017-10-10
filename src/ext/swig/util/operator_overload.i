@@ -13,6 +13,8 @@
 %ignore *::iterator;
 %ignore *::begin;
 %ignore *::end;
+%ignore *::back();
+%ignore *::front();
 
 
 
@@ -27,6 +29,8 @@
     %rename(to_int) operator uint64_t;
     %rename(at) *::operator[];
     %rename(at) *::operator();
+    %rename(to_float) *:: operator float()const;
+    %rename(to_double) *:: operator double()const;
 //#elif defined(SWIGPYTHON)
  /*%rename(__add__)              *::operator+;
 %rename(__pos__)              *::operator+();
