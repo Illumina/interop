@@ -74,7 +74,6 @@ namespace illumina { namespace interop { namespace logic { namespace table
          * @param read read number
          * @param q20_idx index of the q20 value
          * @param q30_idx index of the q30 value
-         * @param cluster_count_k cluster count in kilobases
          * @param naming_method tile naming method
          * @param filled boolean vector of flags indicating when the column is filled with data
          */
@@ -83,7 +82,6 @@ namespace illumina { namespace interop { namespace logic { namespace table
                                           const size_t read,
                                           const size_t q20_idx,
                                           const size_t q30_idx,
-                                          const float cluster_count_k,
                                           const constants::tile_naming_method naming_method,
                                           std::vector<bool> &filled)
         {
@@ -96,7 +94,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
              * set_filled_metric_laneVoid(metric, read, q20_idx, q30_idx, naming_method, filled);
              */
 #           define INTEROP_TUPLE7(Ignore1, Ignore2, Method, Param, Ignore4, Ignore5, Ignored6) \
-                    set_filled_metric_##Method##Param(metric, read, static_cast<uint_t>(q20_idx), static_cast<uint_t>(q30_idx), cluster_count_k, naming_method, filled);
+                    set_filled_metric_##Method##Param(metric, read, static_cast<uint_t>(q20_idx), static_cast<uint_t>(q30_idx), naming_method, filled);
             INTEROP_IMAGING_COLUMN_TYPES
 #           undef INTEROP_TUPLE7 // Reuse this for another conversion
         }
@@ -162,18 +160,16 @@ namespace illumina { namespace interop { namespace logic { namespace table
                                                      const size_t Read,\
                                                      const uint_t Q20,\
                                                      const uint_t Q30,\
-                                                     const float ClusterCountK,\
                                                      const constants::tile_naming_method NamingConvention,\
                                                      std::vector<bool>& filled)\
                 {\
                     if(is_valid(call_adapter(metric, Param, &model:: Metric::Method))) filled[model::table::Id##Column] = true;\
-                    (void)Q20;(void)Q30;(void)NamingConvention;(void)Read;(void)ClusterCountK;\
+                    (void)Q20;(void)Q30;(void)NamingConvention;(void)Read;\
                 }\
                 static void set_filled_metric_##Method##Param(const model::metric_base::empty_metric&,\
                                                      const size_t,\
                                                      const uint_t,\
                                                      const uint_t,\
-                                                     const float,\
                                                      const constants::tile_naming_method,\
                                                      std::vector<bool>&){}
         INTEROP_IMAGING_COLUMN_TYPES

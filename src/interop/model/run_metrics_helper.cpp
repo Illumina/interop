@@ -279,11 +279,11 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                                                  const bool use_out)
                 throw(invalid_run_info_exception)
                 {
-                    const size_t last_cycle = run_info().total_cycles();
-                    if( last_cycle == 0 && bycycle)
-                        INTEROP_THROW(invalid_run_info_exception, "RunInfo is empty: " << last_cycle);
                     if(bycycle)
                     {
+                        const size_t last_cycle = run_info().total_cycles();
+                        if( last_cycle == 0)
+                            INTEROP_THROW(invalid_run_info_exception, "RunInfo is empty: " << last_cycle);
                         files.clear();
                         m_metrics.apply(
                                 list_interop_filenames(constants::UnknownMetricGroup, files, run_folder, last_cycle,

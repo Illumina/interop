@@ -18,6 +18,9 @@ find_package(PkgConfig)
 pkg_check_modules(PC_GMOCK QUIET gmock)
 
 set(GMOCK_ROOT "" CACHE PATH "Set the location of the Google Mock library and header")
+if(NOT GMOCK_ROOT AND GMOCK_DIR)
+    set(GMOCK_ROOT "${GMOCK_DIR}" CACHE PATH "Set the location of the Google Mock library and header" FORCE)
+endif()
 
 find_path(GMOCK_INCLUDE_DIR
         NAMES gmock/gmock.h
@@ -52,11 +55,11 @@ find_library(GMOCK_MAIN_LIBRARY_DEBUG
 if(NOT GMOCK_INCLUDE_DIR OR NOT GMOCK_LIBRARY OR NOT GMOCK_MAIN_LIBRARY)
 
     if(NOT GMOCK_INCLUDE_DIR)
-        message(STATUS "GMock include directory not found")
+        message(STATUS "GMock include directory not found - GMOCK_ROOT: ${GMOCK_ROOT}")
     elseif(NOT GMOCK_LIBRARY)
-        message(STATUS "GMock library not found")
+        message(STATUS "GMock library not found - GMOCK_ROOT: ${GMOCK_ROOT}")
     elseif(NOT GMOCK_MAIN_LIBRARY)
-        message(STATUS "GMock main library not found")
+        message(STATUS "GMock main library not found - GMOCK_ROOT: ${GMOCK_ROOT}")
     endif()
     if(MSVC)
         set(USE_OWN_TR1_TUPLE 0)

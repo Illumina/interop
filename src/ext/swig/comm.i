@@ -84,6 +84,8 @@ METRICS_EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
     %template(read_interop_from_buffer )  illumina::interop::io::read_interop_from_buffer< metric_base::metric_set<metric_t> >;
     %template(read_interop )  illumina::interop::io::read_interop< metric_base::metric_set<metric_t> >;
     %template(write_interop )  illumina::interop::io::write_interop< metric_base::metric_set<metric_t> >;
+    %template(read_interop_by_cycle )  illumina::interop::io::read_interop_by_cycle< metric_base::metric_set<metric_t> >;
+
 %enddef
 
 WRAP_METRICS(WRAP_METRIC_IO)

@@ -5,10 +5,14 @@
 
 Date       | Description
 ---------- | -----------
+2017-09-28 | Add flowcell validation logic to RunInfo.xml parsing
 2017-09-22 | Added additional documentation for index summary 
 2017-08-29 | Improve run info validation
 2017-08-29 | Update build scripts with various bug fixes
 2017-08-29 | IPA-6789: Create NuGet build test
+2017-08-25 | IPA-6646: Fix extraction_metric nan logic
+2017-07-31 | IPA-6641: Audit lookup table usage to reduce memory
+2017-07-31 | Fix bug that caused SAV 2.3.4 to crash when tile metrics was missing or empty
 2017-07-21 | Native shared libraries are now copied to bin folder for NuGet packages on Linux (non-Windows systems)
 2017-07-11 | IPA-6535: Error rate should report NaN for no data
 2017-07-10 | Simplify build scripts, add nuget package and additional MSVC libraries

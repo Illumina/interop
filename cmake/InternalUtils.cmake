@@ -57,7 +57,14 @@ endmacro()
 macro(interop_config_compiler_and_linker)
     fix_default_compiler_settings_()
 
+    include (TestBigEndian)
+    TEST_BIG_ENDIAN(IS_BIG_ENDIAN)
+    if(IS_BIG_ENDIAN)
+        message(FATAL_ERROR "This code does not support big endian systems")
+    endif()
+
     include(CheckIsNaN)
+
 
     if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR CMAKE_COMPILER_IS_GNUCC OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         set(COMPILER_IS_GNUCC_OR_CLANG ON)

@@ -63,6 +63,15 @@
 
 namespace illumina { namespace interop { namespace util
 {
+    /** Cast a number to a float, return NaN if it matches the sentinel
+     *
+     * The default sentinel is the maximum value for the type.
+     *
+     * @tparam T
+     * @param val number to cast
+     * @param sentinel NaN sentinel, default max value
+     * @return
+     */
     template<typename T>
     float float_cast(const T val, const T sentinel = std::numeric_limits<T>::max())
     {

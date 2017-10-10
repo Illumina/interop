@@ -93,7 +93,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         const std::string &sample_proj() const
         { return m_sample_proj; }
 
-        /** Get the number of clusters (per tile) that have this index sequences
+        /** Get the number of clusters (per tile) that have this index sequence
          *
          * @return number of clusters
          */
@@ -171,7 +171,6 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     public:
         /** Constructor
          *
-         * @param channel_count number of channels
          */
         index_metric_header(){}
 
@@ -241,13 +240,17 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         /** Constructor
          */
         index_metric() :
-                metric_base::base_read_metric(0, 0, 0)
+                metric_base::base_read_metric(0, 0, 0),
+                m_cluster_count(std::numeric_limits<float>::quiet_NaN()),
+                m_cluster_count_pf(std::numeric_limits<float>::quiet_NaN())
         {
         }
         /** Constructor
          */
         index_metric(const header_type&) :
-                metric_base::base_read_metric(0, 0, 0)
+                metric_base::base_read_metric(0, 0, 0),
+                m_cluster_count(std::numeric_limits<float>::quiet_NaN()),
+                m_cluster_count_pf(std::numeric_limits<float>::quiet_NaN())
         {
         }
 
@@ -263,7 +266,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                      uint_t read,
                      const index_array_t &indices) :
                 metric_base::base_read_metric(lane, tile, read),
-                m_indices(indices)
+                m_indices(indices),
+                m_cluster_count(std::numeric_limits<float>::quiet_NaN()),
+                m_cluster_count_pf(std::numeric_limits<float>::quiet_NaN())
         {
         }
 
@@ -319,8 +324,33 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         {
             return m_indices.end();
         }
+        /** Number of clusters for each tile
+         *
+         * @note Derived from tile_metric using `populate_indices` in `run_metrics::finalize_after_load`
+         * @return number of clusters
+         */
+        float cluster_count() const
+        { return m_cluster_count; }
+
+        /** Number of clusters passing filter for each tile
+         *
+         * @note Derived from tile_metric using `populate_indices` in `run_metrics::finalize_after_load`
+         * @return number of clusters passing filter
+         */
+        float cluster_count_pf() const
+        { return m_cluster_count_pf; }
 
     public:
+        /** Set the cluster counds dervied from tile_metric
+         *
+         * @param cluster_count number of clusters
+         * @param cluster_count_pf number of PF clusters
+         */
+        void set_cluster_counts(const float cluster_count, const float cluster_count_pf)
+        {
+            m_cluster_count = cluster_count;
+            m_cluster_count_pf = cluster_count_pf;
+        }
         /** Get the prefix of the InterOp filename
          *
          * @return "Index"
@@ -330,6 +360,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
 
     private:
         index_array_t m_indices;
+        float m_cluster_count; // Derived from tile metric
+        float m_cluster_count_pf; // Derived from tile metric
         template<class MetricType, int Version>
         friend
         struct io::generic_layout;

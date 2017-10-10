@@ -160,6 +160,15 @@ namespace illumina { namespace interop { namespace model { namespace run
             return tile_count() * sections_per_lane();
         }
 
+        /** Get total number of tiles for the flowcell
+         *
+         * @return total number of tiles on the flowcell
+         */
+        size_t total_tiles()const
+        {
+            return tiles_per_lane()*swath_count()*surface_count()*lane_count();
+        }
+
         /** Set the tile naming method
          *
          * @param naming_method tile naming method

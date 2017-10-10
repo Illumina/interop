@@ -117,6 +117,12 @@ namespace illumina { namespace interop
     /** Test if two types are the same */
     template<typename T>
     struct is_same<T,T>: true_type {};
+    /** Test if two types have the same exact binary storage type */
+    template<typename T1, typename T2>
+    struct is_exact_binary : false_type {};
+    /** Test if two types have the same exact binary storage type */
+    template<typename T>
+    struct is_exact_binary<T,T>: true_type {};
 
     /** Define a constant of an arbitray type
      */

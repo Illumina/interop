@@ -277,7 +277,7 @@ namespace illumina { namespace interop { namespace io
             {
                 try
                 {
-                    read_metrics(fin, metrics, static_cast<size_t>(file_size(file_name)), false);
+                    read_metrics(fin, metrics, static_cast<size_t>(file_size_in_bytes), false);
                 }
                 catch(const incomplete_file_exception& ex)
                 {

@@ -47,14 +47,17 @@ if NOT '%4' == '' (
 if NOT '%5' == '' (
  set python_version=%5%
 )
+if NOT '%6' == '' (
+ set DIST_DIR=%6%
+)
 set ADDIONAL_CONFIG_OPTIONS=%ADDIONAL_CONFIG_OPTIONS:"=%
 
 set BUILD_PARAM=%BUILD_PARAM% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DPACKAGE_OUTPUT_FILE_PREFIX=%CD%\dist %ADDIONAL_CONFIG_OPTIONS%
 
-if '%python_version' == '' goto SKIP_CONDA_UPDATE
+if '%python_version%' == '' goto SKIP_CONDA_UPDATE
 where /q conda
 if %errorlevel% neq 0 goto SKIP_CONDA_UPDATE
-echo "Create environment"
+echo "Create environment: %python_version%"
 conda create -n py%python_version% python=%python_version% numpy wheel -y || echo "Environment exists"
 echo "Activate py%python_version%"
 call activate py%python_version%

@@ -45,17 +45,39 @@ struct metric_stream_test : public ::testing::Test, public TestSetup
 };
 TYPED_TEST_CASE_P(metric_stream_test);
 
+
+
+void print_actual(std::ostream& out, const std::string& data)
+{
+    for(size_t i=0;i<data.size();++i)
+    {
+        out << "," << int(data[i]);
+        if( i%20 == 0) out << std::endl;
+    }
+    out << std::endl;
+    out << std::endl;
+    out << std::endl;
+}
+
 /**
  * Confirm binary write matches expected binary data
  */
 TYPED_TEST_P(metric_stream_test, test_write_read_binary_data)
 {
+    typedef typename TestFixture::metric_t metric_t;
     if (TypeParam::disable_binary_data_size) return;
     ASSERT_EQ(TestFixture::expected.size(), TestFixture::actual.size());
     if (TypeParam::disable_binary_data) return;
     for (::uint32_t i = 0;i<TestFixture::expected.size(); ++i)
     {
-        ASSERT_EQ(int(TestFixture::expected[i]), int(TestFixture::actual[i])) << " i= " << i;
+        // uncomment
+        //---------------------------------------------------------------
+        //if(int(TestFixture::expected[i]) != int(TestFixture::actual[i]))
+        //    print_actual(std::cout, TestFixture::actual);
+        //---------------------------------------------------------------
+        ASSERT_EQ(int(TestFixture::expected[i]), int(TestFixture::actual[i]))
+                                    << " i= " << i
+                                    << " -> " << metric_t::prefix();
     }
 }
 

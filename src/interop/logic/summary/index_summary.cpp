@@ -36,7 +36,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
 
         summary.clear();
         if(index_metrics.empty() || tile_metrics.empty()) return;
-        logic::metric::populate_indices(index_metrics);
+        logic::metric::populate_indices(tile_metrics, index_metrics);
         index_count_map_t index_count_map;
         ::uint64_t total_mapped_reads = 0;
         read_count_t pf_cluster_count_total = 0;
@@ -44,32 +44,28 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
         for(const_iterator beg = index_metrics.begin();beg != index_metrics.end();++beg)
         {
             if(lane != kAllLanes && beg->lane() != lane) continue;
-            try
-            {
-                const model::metrics::tile_metric &tile_metric = tile_metrics.get_metric(beg->lane(), beg->tile());
-                pf_cluster_count_total += static_cast<read_count_t>(tile_metric.cluster_count_pf());
-                cluster_count_total += static_cast<read_count_t>(tile_metric.cluster_count());
+            if(std::isnan(beg->cluster_count()) || std::isnan(beg->cluster_count_pf()))continue; // TODO: check better
+            pf_cluster_count_total += static_cast<read_count_t>(beg->cluster_count_pf());
+            cluster_count_total += static_cast<read_count_t>(beg->cluster_count());
 
-                for(const_index_iterator ib = beg->indices().begin(), ie = beg->indices().end();ib != ie;++ib)
+            for(const_index_iterator ib = beg->indices().begin(), ie = beg->indices().end();ib != ie;++ib)
+            {
+                map_iterator found_index = index_count_map.find(ib->unique_id());
+                if(found_index == index_count_map.end())
                 {
-                    map_iterator found_index = index_count_map.find(ib->unique_id());
-                    if(found_index == index_count_map.end())
-                    {
-                        index_count_map[ib->unique_id()] = index_count_summary(index_count_map.size()+1,// TODO: get correspondence with plot
-                                                                               ib->index1(),
-                                                                               ib->index2(),
-                                                                               ib->sample_id(),
-                                                                               ib->sample_proj(),
-                                                                               ib->cluster_count());
-                    }
-                    else
-                    {
-                        found_index->second += ib->cluster_count();
-                    }
-                    total_mapped_reads += ib->cluster_count();
+                    index_count_map[ib->unique_id()] = index_count_summary(index_count_map.size()+1,// TODO: get correspondence with plot
+                                                                           ib->index1(),
+                                                                           ib->index2(),
+                                                                           ib->sample_id(),
+                                                                           ib->sample_proj(),
+                                                                           ib->cluster_count());
                 }
+                else
+                {
+                    found_index->second += ib->cluster_count();
+                }
+                total_mapped_reads += ib->cluster_count();
             }
-            catch(const model::index_out_of_bounds_exception&){continue;} // TODO: check better
         }
 
 

@@ -16,6 +16,8 @@ The primary functions used below are:
 C#
 ---
 
+If you have not installed InterOp, see [Install InterOp From NuGet](@ref install)
+
 @snippet src/examples/csharp/SummaryExample.cs Reporting Summary Metrics in CSharp
 
 

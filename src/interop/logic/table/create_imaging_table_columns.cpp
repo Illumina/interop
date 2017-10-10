@@ -48,7 +48,6 @@ namespace illumina { namespace interop { namespace logic { namespace table
                                                                   read_it->number(),
                                                                   q20_idx,
                                                                   q30_idx,
-                                                                  0,
                                                                   naming_method,
                                                                   filled);
             }
@@ -78,7 +77,6 @@ namespace illumina { namespace interop { namespace logic { namespace table
                                                                   read_it->number(),
                                                                   q20_idx,
                                                                   q30_idx,
-                                                                  0,
                                                                   naming_method,
                                                                   filled);
             }
