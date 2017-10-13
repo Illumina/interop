@@ -203,5 +203,11 @@ macro(interop_config_compiler_and_linker)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ANSI_FLAG}")
         message(STATUS "Using C++11: No")
     endif()
+
+    get_property(cxx_features GLOBAL PROPERTY CMAKE_CXX_KNOWN_FEATURES)
+    list(FIND cxx_features "cxx_rvalue_references" HAS_CXX_RVALUE_REFERENCES)
+    if(HAS_CXX_RVALUE_REFERENCES GREATER -1 AND NOT ENABLE_BACKWARDS_COMPATIBILITY)
+        add_definitions(-DHAS_CXX_RVALUE_REFERENCES=1)
+    endif()
 endmacro()
 

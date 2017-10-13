@@ -145,6 +145,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
         typedef typename model::metrics::run_metrics::id_t id_t;
         typedef model::metric_base::metric_set< model::metrics::tile_metric > tile_metric_set_t;
         typedef model::metric_base::metric_set< model::metrics::dynamic_phasing_metric > dynamic_phasing_metric_set_t;
+        typedef model::metric_base::metric_set< model::metrics::extended_tile_metric > extended_tile_metric_set_t;
 
         if(columns.empty())return;
         const size_t column_count = columns.back().column_count();
@@ -236,6 +237,22 @@ namespace illumina { namespace interop { namespace logic { namespace table
                                       cmap,
                                       data_beg+row*column_count,
                                       data_end);
+        }
+        const extended_tile_metric_set_t& extended_tile_metrics = metrics.get<model::metrics::extended_tile_metric>();
+        for(typename row_offset_map_t::const_iterator it = row_offset.begin();it != row_offset.end();++it)
+        {
+            const id_t tid = model::metric_base::base_cycle_metric::tile_hash_from_id(it->first);
+            if (!tile_metrics.has_metric(tid) || !extended_tile_metrics.has_metric(tid)) continue;
+            const id_t cycle = model::metric_base::base_cycle_metric::cycle_from_id(it->first);
+            const ::uint64_t row = it->second;
+            const summary::read_cycle& read = cycle_to_read[static_cast<size_t>(cycle-1)];
+            table_populator::populate(extended_tile_metrics.get_metric(tid),
+                                      read.number,
+                                      q20_idx,
+                                      q30_idx,
+                                      naming_method,
+                                      cmap,
+                                      data_beg+row*column_count, data_end);
         }
         const dynamic_phasing_metric_set_t& dynamic_phasing_metrics =
                 metrics.get<model::metrics::dynamic_phasing_metric>();

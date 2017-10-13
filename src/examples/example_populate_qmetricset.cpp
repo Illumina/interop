@@ -4,7 +4,7 @@
  *  @file
  *  @date 4/6/17
  *  @version 1.0
- *  @copyright Illumina Use Only
+ *  @copyright GNU Public License
  */
 
 #include <iostream>

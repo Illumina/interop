@@ -57,7 +57,6 @@ RUN_METRICS_EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 %template(map_id_offset) std::map<uint64_t, uint64_t>;
 
 // Exceptions
-
 %define TABLE_EXCEPTION_WRAPPER(WRAPPER)
 WRAPPER(illumina::interop::model::, invalid_column_type, invalid_column_type)
 %enddef
@@ -66,6 +65,7 @@ TABLE_EXCEPTION_WRAPPER(WRAP_EXCEPTION)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Imaging model
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 %{
 #include "interop/logic/table/create_imaging_table_columns.h"
 #include "interop/logic/table/create_imaging_table.h"

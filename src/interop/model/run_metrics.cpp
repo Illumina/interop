@@ -16,6 +16,7 @@
 #include "interop/logic/metric/index_metric.h"
 #include "interop/logic/utils/channel.h"
 #include "interop/logic/metric/dynamic_phasing_metric.h"
+#include "interop/logic/metric/extended_tile_metric.h"
 
 namespace illumina { namespace interop { namespace model { namespace metrics
 {
@@ -283,7 +284,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     model::invalid_tile_naming_method,
     model::invalid_tile_list_exception,
     model::invalid_run_info_exception,
-    model::invalid_run_info_cycle_exception)
+    model::invalid_run_info_cycle_exception,
+    model::invalid_parameter)
     {
         clear();
         const size_t count = read_xml(run_folder);
@@ -393,6 +395,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
      */
     void run_metrics::finalize_after_load(size_t count)
     throw(model::invalid_channel_exception,
+    model::invalid_parameter,
     model::invalid_tile_naming_method,
     model::index_out_of_bounds_exception,
     model::invalid_tile_list_exception,
@@ -449,6 +452,11 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                                                             cycle_to_read,
                                                             get<model::metrics::dynamic_phasing_metric>(),
                                                             get<model::metrics::tile_metric>());
+        }
+        if(!get<model::metrics::extended_tile_metric>().empty() && !get<model::metrics::tile_metric>().empty())
+        {
+            logic::metric::populate_percent_occupied(get<model::metrics::tile_metric>(),
+                                                     get<model::metrics::extended_tile_metric>());
         }
 
         if (m_run_info.channels().empty())

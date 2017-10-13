@@ -4,7 +4,7 @@
  *  @file
  *  @date  9/12/2017
  *  @version 1.0
- *  @copyright Illumina Use Only
+ *  @copyright GNU Public License
  */
 #include <gtest/gtest.h>
 #include <vector>

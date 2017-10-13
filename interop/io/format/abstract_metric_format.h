@@ -96,6 +96,11 @@ namespace illumina { namespace interop { namespace io
          * @return true if multiple records make up a single metric
          */
         virtual bool is_multi_record() const = 0;
+        /** Is the format no longer supported
+         *
+         * @return true if this format is no longer supported
+         */
+        virtual bool is_deprecated() const = 0;
     };
 }}}
 

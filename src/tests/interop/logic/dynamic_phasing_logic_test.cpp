@@ -3,7 +3,7 @@
  *  @file
  *  @date  11/28/16
  *  @version 1.0
- *  @copyright Illumina Use Only
+ *  @copyright GNU Public License
  */
 #include <gtest/gtest.h>
 #if (defined(__cplusplus) && __cplusplus >= 201103L)

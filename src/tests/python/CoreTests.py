@@ -236,7 +236,7 @@ class CoreTests(unittest.TestCase):
             run_metrics.read_metrics("", 3, valid_to_load, 1)
             self.fail("invalid_parameter should have been thrown")
         except py_interop_run_metrics.invalid_parameter as ex:
-            self.assertEqual(str(ex).split('\n')[0], "Boolean array valid_to_load does not match expected number of metrics: 2 != 11")
+            self.assertEqual(str(ex).split('\n')[0], "Boolean array valid_to_load does not match expected number of metrics: 2 != 12")
 
     def test_invalid_metric_type(self):
         """

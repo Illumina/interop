@@ -33,7 +33,9 @@ set(SRCS
         model/metrics/dynamic_phasing_metric.cpp
         logic/metric/dynamic_phasing_metric.cpp
         logic/plot/plot_metric_list.cpp
-        logic/metric/index_metric.cpp)
+        logic/metric/index_metric.cpp
+        model/metrics/extended_tile_metric.cpp
+        logic/metric/extended_tile_metric.cpp)
 
 set(HEADERS
         ../../interop/io/paths.h
@@ -164,6 +166,7 @@ set(HEADERS
         ../../interop/logic/summary/phasing_summary.h
         ../../interop/model/metrics/dynamic_phasing_metric.h
         ../../interop/logic/metric/dynamic_phasing_metric.h
+        ../../interop/model/metric_base/point2d.h
         ../../interop/util/base_exception.h
         ../../interop/model/run/run_exceptions.h
         ../../interop/model/metric_base/metric_exceptions.h
@@ -172,6 +175,8 @@ set(HEADERS
         ../../interop/logic/plot/plot_metric_proxy.h
         ../../interop/logic/plot/plot_metric_list.h
         ../../interop/logic/metric/index_metric.h
+        ../../interop/model/metrics/extended_tile_metric.h
+        ../../interop/logic/metric/extended_tile_metric.h
         )
 
 set(INTEROP_HEADERS ${HEADERS} PARENT_SCOPE)
@@ -187,6 +192,10 @@ if(HAVE_STRPTIME)
     add_definitions(-DHAVE_STRPTIME)
 elseif(MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS  -D_SCL_SECURE_NO_WARNINGS)
+endif()
+
+if(WIN32)
+    set_source_files_properties(model/run_metrics.cpp PROPERTIES COMPILE_FLAGS ${ENABLE_BIG_OBJ_FLAG})
 endif()
 
 # Shared libraries on windows are currently not supported, but we may in the future.
@@ -217,6 +226,8 @@ install(TARGETS ${INTEROP_LIB}
 )
 
 if(MSVC)
+
+
     if (NOT BUILD_SHARED_LIBS AND NOT FORCE_SHARED_CRT)
         set_msvc_md()
         set(INTEROP_MSVC interop-md)

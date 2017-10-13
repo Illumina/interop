@@ -22,8 +22,8 @@ namespace illumina { namespace interop { namespace logic { namespace table
      * @param filled destination array that indicates whether a column should be filled
      */
     void determine_filled_columns(model::metrics::run_metrics& metrics,
-                                         const model::metrics::run_metrics::tile_metric_map_t& tile_hash,
-                                         std::vector< bool >& filled)
+                                  const model::metrics::run_metrics::tile_metric_map_t& tile_hash,
+                                  std::vector< bool >& filled)
     {
         typedef model::metrics::run_metrics::tile_metric_map_t tile_metric_map_t;
         filled.assign(model::table::ImagingColumnCount, false);
@@ -51,6 +51,18 @@ namespace illumina { namespace interop { namespace logic { namespace table
                                                                   naming_method,
                                                                   filled);
             }
+        }
+        const model::metric_base::metric_set<model::metrics::extended_tile_metric>& extended_tile_metrics =
+                metrics.get<model::metrics::extended_tile_metric>();
+        for(tile_metric_map_t::const_iterator it = tile_hash.begin();it != tile_hash.end();++it)
+        {
+            if (!extended_tile_metrics.has_metric(it->first) || !tile_metrics.has_metric(it->first)) continue;
+            check_imaging_table_column::set_filled_for_metric(extended_tile_metrics.get_metric(it->first),
+                                                              1,
+                                                              q20_idx,
+                                                              q30_idx,
+                                                              naming_method,
+                                                              filled);
         }
 
         summary::read_cycle_vector_t cycle_to_read;
