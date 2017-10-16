@@ -99,7 +99,7 @@ TEST(dynamic_phasing_logic, populate_dynamic_phasing_metrics_reorder)
     model::metric_base::metric_set<model::metrics::tile_metric> tile_metrics;
     populate_dynamic_phasing_metrics(phasing_metrics_set, cycle_to_read, dynamic_phasing_metrics, tile_metrics);
 
-    const float tol = 1e-4f;
+    const float tol = 1e-3f;
     EXPECT_NEAR(dynamic_phasing_metrics.get_metric(lane, tile, 1).phasing_slope(), R1_phasing_slope, tol);
     EXPECT_NEAR(dynamic_phasing_metrics.get_metric(lane, tile, 1).phasing_offset(), R1_phasing_offset, tol);
     EXPECT_NEAR(dynamic_phasing_metrics.get_metric(lane, tile, 1).prephasing_slope(), R1_prephasing_slope, tol);
