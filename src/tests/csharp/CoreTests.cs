@@ -16,6 +16,14 @@ namespace Illumina.InterOp.Interop.UnitTest
 	/// </summary>
 	public class CoreTests
 	{
+	    [Test]
+	    public void ListAvailablePlotMetrics()
+	    {
+            run_metrics run = new run_metrics();
+            metric_type_description_vector metricTypeList = new metric_type_description_vector();
+	        c_csharp_plot.list_available_plot_metrics(run, metricTypeList);
+	        Assert.AreEqual(0, metricTypeList.Count);
+	    }
 		/// <summary>
 		/// Test Enum parsing
 		/// </summary>
