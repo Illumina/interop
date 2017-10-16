@@ -17,10 +17,10 @@ namespace illumina { namespace interop { namespace logic { namespace metric
      * @param metric_set q-metric set
      */
     template<class QMetric>
-    void populate_cumulative_distribution_t(model::metric_base::metric_set<QMetric>& metric_set)
+    bool populate_cumulative_distribution_sorted(model::metric_base::metric_set<QMetric>& metric_set)
     throw( model::index_out_of_bounds_exception )
     {
-        if(metric_set.size()==0) return;
+        if(metric_set.size()==0) return true;
         typedef model::metric_base::base_metric::id_t id_t;
         typedef typename model::metric_base::metric_set<QMetric>::iterator iterator;
         typedef INTEROP_UNORDERED_MAP(id_t, iterator) lookup_map_t;
@@ -36,14 +36,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
             }
             else if(tile_id_map[tile_id]->cycle() >= beg->cycle())
             {
-                INTEROP_THROW(model::index_out_of_bounds_exception, "Cycle out of order: "
-                        << beg->lane()
-                        << "_"
-                        << beg->tile()
-                        << " = "
-                        << beg->cycle()
-                        << " <= "
-                        << tile_id_map[tile_id]->cycle());
+                return false;
             }
             else
             {
@@ -51,6 +44,35 @@ namespace illumina { namespace interop { namespace logic { namespace metric
                 tile_id_map[tile_id] = beg;
             }
 
+        }
+        return true;
+    }
+    namespace detail
+    {
+        template<class QMetric>
+        struct by_cycle
+        {
+            bool operator()(const QMetric &lhs, const QMetric &rhs) const
+            {
+                return lhs.cycle() < rhs.cycle();
+            }
+        };
+    }
+
+    /** Populate cumulative q-metric distribution
+     *
+     * @param metric_set q-metric set
+     */
+    template<class QMetric>
+    void populate_cumulative_distribution_t(model::metric_base::metric_set<QMetric>& metric_set)
+    throw( model::index_out_of_bounds_exception )
+    {
+        if(metric_set.size()==0) return;
+        if(!populate_cumulative_distribution_sorted(metric_set))
+        {
+            std::sort(metric_set.begin(), metric_set.end(), detail::by_cycle<QMetric>());
+            metric_set.clear_lookup();
+            populate_cumulative_distribution_sorted(metric_set);
         }
     }
 

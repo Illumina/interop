@@ -142,6 +142,36 @@ TEST(q_metrics_test, test_cumulative)
     EXPECT_EQ(q_metric_set[3].sum_qscore_cumulative(), qsum);
 }
 
+TEST(q_metrics_test, test_cumulative_reorder)
+{
+    typedef q_metric::uint_t uint_t;
+    typedef metric_test<q_metric, 0> helper_t;
+
+    uint_t qsum = 0;
+    uint_t hist_all0[] = {0, 267963, 118702, 4281, 2796111, 0, 0};
+    uint_t hist_all1[] = {0, 267962, 118703, 4284, 2796110, 0, 0};
+    uint_t hist_all2[] = {0, 241483, 44960, 1100, 2899568, 0 ,0};
+    uint_t hist_all3[] = {0, 212144, 53942, 427, 2920598, 0, 0};
+
+    std::vector<q_metric> q_metric_vec;
+    q_metric_vec.push_back(q_metric(7, 1114, 2, helper_t::to_vector(hist_all2)));
+    q_metric_vec.push_back(q_metric(7, 1114, 1, helper_t::to_vector(hist_all1)));
+    q_metric_vec.push_back(q_metric(6, 1114, 1, helper_t::to_vector(hist_all0)));
+    q_metric_vec.push_back(q_metric(7, 1114, 3, helper_t::to_vector(hist_all3)));
+
+    metric_set<q_metric> q_metric_set(q_metric_vec, 6, q_metric::header_type());
+    logic::metric::populate_cumulative_distribution(q_metric_set);
+
+    for(uint_t i=0;i<util::length_of(hist_all1);i++)
+    {
+        qsum += hist_all1[i];
+        qsum += hist_all2[i];
+        qsum += hist_all3[i];
+    }
+
+    EXPECT_EQ(q_metric_set[3].sum_qscore_cumulative(), qsum);
+}
+
 TEST(q_metrics_test, test_percent_over_q30_unbinned)
 {
     q_score_header header;

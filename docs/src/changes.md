@@ -5,6 +5,7 @@
 
 Date       | Description
 ---------- | -----------
+2017-10-13 | IPA-7068: Fix q-metric reorder issue
 2017-09-28 | Add flowcell validation logic to RunInfo.xml parsing
 2017-09-22 | Added additional documentation for index summary 
 2017-08-29 | Improve run info validation
