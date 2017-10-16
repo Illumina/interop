@@ -35,6 +35,7 @@ set(SRCS
         logic/plot_heatmap_test.cpp
         logic/plot_flowcell_test.cpp
         logic/index_summary_test.cpp
+        logic/dynamic_phasing_logic_test.cpp
         metrics/coverage_test.cpp
         metrics/metric_stream_error_test.cpp
         metrics/metric_regression_tests.cpp

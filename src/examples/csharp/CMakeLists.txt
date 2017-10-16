@@ -32,6 +32,7 @@ include(${CSBUILD_USE_FILE})
 
 
 function(add_csharp_example _target _source_files)
+    set(CSBUILD_PROJECT_DIR ${_target})
     csharp_add_executable(${_target} ${_source_files} ${SWIG_CSHARP_LIBRARY})
     add_dependencies(${_target} csharp_interop)
     add_custom_command(TARGET ${_target} POST_BUILD
