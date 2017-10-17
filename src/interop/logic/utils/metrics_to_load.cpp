@@ -43,6 +43,11 @@ namespace illumina { namespace interop { namespace logic { namespace utils
             valid_to_load[constants::QCollapsed] = static_cast<unsigned char>(1);
             valid_to_load[constants::QByLane] = static_cast<unsigned char>(1);
         }
+        // Need cluster_count_k in tile metrics to estimate % occupied
+        if(group == constants::ExtendedTile)
+        {
+            valid_to_load[constants::Tile] = static_cast<unsigned char>(1);
+        }
     }
 
     /** List the required on demand metrics

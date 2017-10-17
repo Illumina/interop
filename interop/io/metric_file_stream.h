@@ -317,6 +317,34 @@ namespace illumina { namespace interop { namespace io
         return false;
     }
     /** @} */
+    /** Test if metric format version is deprecated
+     *
+     * @param version
+     * @return true if format version is deprecated
+     */
+    template<class Metric>
+    bool is_deprecated(const int version)
+    {
+        typedef metric_format_factory<Metric> factory_t;
+        typedef typename factory_t::metric_format_map metric_format_map;
+        metric_format_map &format_map = factory_t::metric_formats();
+        if (format_map.find(version) == format_map.end())
+            return false;
+        if(format_map[version]->is_deprecated()) return true;
+        return false;
+    }
+    /** Test if metric format version is deprecated
+     *
+     * @param metrics metric set
+     * @param version
+     * @return true if format version is deprecated
+     */
+    template<class MetricSet>
+    bool is_deprecated_set(MetricSet &metrics)
+    {
+        typedef typename MetricSet::metric_type metric_t;
+        return is_deprecated<metric_t>(metrics.version());
+    }
 
 }}}
 

@@ -20,6 +20,7 @@
 #include "interop/model/metrics/corrected_intensity_metric.h"
 #include "interop/model/metrics/dynamic_phasing_metric.h"
 #include "interop/model/metrics/error_metric.h"
+#include "interop/model/metrics/extended_tile_metric.h"
 #include "interop/model/metrics/extraction_metric.h"
 #include "interop/model/metrics/image_metric.h"
 #include "interop/model/metrics/index_metric.h"
@@ -38,6 +39,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
      * @see corrected_intensity_metrics
      * @see dynamic_phasing_metric
      * @see error_metrics
+     * @see extended_tile_metric
      * @see extraction_metrics
      * @see image_metrics
      * @see index_metrics
@@ -55,6 +57,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                 corrected_intensity_metric,
                 dynamic_phasing_metric,
                 error_metric,
+                extended_tile_metric,
                 extraction_metric,
                 image_metric,
                 index_metric,
@@ -69,7 +72,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         template<class T>
         struct create_metric_set
         {
-            typedef metric_base::metric_set<T> result_t;
+            typedef typename model::metric_base::metric_set_helper<T>::metric_set_t result_t;
         };
         typedef transform_type_list<metric_type_list_t, create_metric_set>::result_t metric_set_list_t;
         typedef object_list<metric_set_list_t> metric_list_t;
@@ -132,7 +135,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         model::invalid_tile_naming_method,
         model::invalid_tile_list_exception,
         model::invalid_run_info_exception,
-        model::invalid_run_info_cycle_exception);
+        model::invalid_run_info_cycle_exception,
+        model::invalid_parameter);
         /** Read binary metrics and XML files from the run folder
          *
          * @note invalid_run_info_cycle_exception and invalid_tile_list_exception can be safely caught and ignored
@@ -206,7 +210,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         model::index_out_of_bounds_exception,
         model::invalid_tile_list_exception,
         model::invalid_run_info_exception,
-        model::invalid_run_info_cycle_exception);
+        model::invalid_run_info_cycle_exception,
+        model::invalid_parameter);
 
         /** Test if all metrics are empty
          *

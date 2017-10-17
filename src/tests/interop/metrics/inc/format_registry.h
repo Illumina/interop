@@ -40,6 +40,7 @@ namespace illumina{ namespace interop { namespace unittest
         void operator()(const MetricType&, int version)
         {
             const std::string name = io::paths::interop_basename<MetricType>();
+            if(io::is_deprecated<MetricType>(version)) return;
             if(m_format_map.find(name) == m_format_map.end())
             {
                 m_format_map[name] = version_set_t();

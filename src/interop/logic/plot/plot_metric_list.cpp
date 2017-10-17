@@ -3,7 +3,7 @@
  *  @file
  *  @date  5/8/17
  *  @version 1.0
- *  @copyright Illumina Use Only
+ *  @copyright GNU Public License
  */
 #include "interop/logic/plot/plot_metric_list.h"
 //

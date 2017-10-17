@@ -217,6 +217,14 @@ namespace illumina { namespace interop { namespace io
         {
             return Layout::MULTI_RECORD > 0;
         }
+        /** Is the format no longer supported
+         *
+         * @return true if this format is no longer supported
+         */
+        bool is_deprecated() const
+        {
+            return Layout::IS_DEPRECATED > 0;
+        }
 
     private:
         typedef typename int_constant_type<0>::pointer_t is_single_record_t;

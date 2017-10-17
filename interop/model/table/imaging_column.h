@@ -80,8 +80,9 @@
         INTEROP_TUPLE7(Surface,               metric_base::base_metric,           surface,                    NamingConvention, UInt, IdType, 0)\
         INTEROP_TUPLE7(Swath,                 metric_base::base_metric,           swath,                      NamingConvention, UInt, IdType, 0)\
         INTEROP_TUPLE7(Section,               metric_base::base_metric,           section,                    NamingConvention, UInt, IdType, 0)\
-        INTEROP_TUPLE7(TileNumber,            metric_base::base_metric,           number,                     NamingConvention, UInt, IdType, 0)
-        //INTEROP_TUPLE7(Time,                  metrics::extraction_metric,         date_time_csharp,           Void, DateTime, StructType, 0)
+        INTEROP_TUPLE7(TileNumber,            metric_base::base_metric,           number,                     NamingConvention, UInt, IdType, 0)\
+        INTEROP_TUPLE7(ClusterCountOccupiedK,  metrics::extended_tile_metric,      cluster_count_occupied_k,   Void, Float, ValueType, 1)\
+        INTEROP_TUPLE7(PercentOccupied,        metrics::extended_tile_metric,      percent_occupied,           Void, Float, ValueType, 1)
 
 namespace illumina { namespace interop { namespace model { namespace table
 {

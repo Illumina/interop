@@ -91,7 +91,6 @@ typedef ::testing::Types<
         constants::plot_colors,
         constants::bar_plot_options,
         constants::metric_data,
-        constants::metric_feature_type,
         constants::plot_types
 > all_enums_t;
 TYPED_TEST_CASE(enum_list_test, all_enums_t);

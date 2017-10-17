@@ -17,6 +17,7 @@
 #include "interop/model/metrics/error_metric.h"
 #include "interop/model/metrics/corrected_intensity_metric.h"
 #include "interop/model/metrics/phasing_metric.h"
+#include "interop/model/metrics/extended_tile_metric.h"
 
 
 namespace illumina { namespace interop { namespace logic { namespace metric

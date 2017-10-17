@@ -3,7 +3,7 @@
  *  @file
  *  @date  5/26/17
  *  @version 1.0
- *  @copyright Illumina Use Only
+ *  @copyright GNU Public License
  */
 #include "interop/logic/metric/index_metric.h"
 #include "interop/util/map.h"

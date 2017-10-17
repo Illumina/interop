@@ -78,7 +78,7 @@ TYPED_TEST_P(metric_stream_error_test, test_hardcoded_incomplete_file_exception_
     metric_set_t metrics;
     EXPECT_THROW(io::read_interop_from_string(
             TestFixture::expected.substr(0, TestFixture::expected.length() - 4), metrics),
-            io::incomplete_file_exception) << metric_set_t::prefix() << metric_set_t::suffix();
+            io::incomplete_file_exception) <<metric_set_t::prefix() << metric_set_t::suffix();
 }
 
 // TODO: Add write header test

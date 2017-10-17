@@ -18,6 +18,7 @@
 #include "src/tests/interop/metrics/inc/q_collapsed_metrics_test.h"
 #include "src/tests/interop/metrics/inc/q_metrics_test.h"
 #include "src/tests/interop/metrics/inc/tile_metrics_test.h"
+#include "src/tests/interop/metrics/inc/extended_tile_metrics_test.h"
 
 namespace illumina{ namespace interop { namespace unittest
 {
@@ -30,6 +31,8 @@ namespace illumina{ namespace interop { namespace unittest
                     corrected_intensity_metric_v4,
                     error_metric_v3,
                     error_metric_v4,
+                    extended_tile_metric_v2,
+                    extended_tile_metric_v3,
                     extraction_metric_v2,
                     extraction_metric_v3,
                     image_metric_v1,

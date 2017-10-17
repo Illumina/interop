@@ -21,6 +21,8 @@ The documentation for the model notes when an attribute is only populated by a s
  - @subpage corrected_v4 "Corrected Intensity v4"
  - @subpage error_v3 "Error v3"
  - @subpage error_v4 "Error v4"
+ - @subpage extended_tile_v2 "Extended Tile Version 2"
+ - @subpage extended_tile_v3 "Extended Tile Version 3"
  - @subpage extraction_v2 "Extraction Version 2"
  - @subpage extraction_v3 "Extraction Version 3"
  - @subpage image_v1 "Image Version 1"

@@ -76,11 +76,15 @@ METRICS_EXCEPTION_WRAPPER(WRAP_EXCEPTION)
 %ignore set_base(const io::layout::base_cycle_metric& base);
 %ignore set_base(const io::layout::base_read_metric& base);
 
+
 %include "interop/util/time.h"
 %include "interop/model/metric_base/base_metric.h"
 %include "interop/model/metric_base/base_cycle_metric.h"
 %include "interop/model/metric_base/base_read_metric.h"
 %include "interop/model/metric_base/metric_set.h"
+
+
+%include "interop/model/metric_base/point2d.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Define shared macros
@@ -128,6 +132,7 @@ METRICS_EXCEPTION_WRAPPER(WRAP_EXCEPTION)
 %define WRAP_METRICS(WRAPPER)
     WRAPPER(corrected_intensity_metric)
     WRAPPER(error_metric)
+    WRAPPER(extended_tile_metric)
     WRAPPER(extraction_metric)
     WRAPPER(image_metric)
     WRAPPER(q_metric)

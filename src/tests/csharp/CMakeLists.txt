@@ -49,6 +49,7 @@ set(TEST_SRCS
         metrics/IndexMetricsTest.cs
         metrics/QMetricsTest.cs
         metrics/TileMetricsTest.cs
+        metrics/ExtendedTileMetricsTest.cs
         run/RunInfoTest.cs
         run/RunParametersTest.cs
         )

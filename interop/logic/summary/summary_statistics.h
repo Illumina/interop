@@ -180,7 +180,6 @@ namespace illumina { namespace interop { namespace logic { namespace summary
      * @param op unary/binary operator for getting a value in a complex object
      * @param comp comparison operator to compare a single value in a complex object
      * @param skip_median skip the median calculation
-     * @param reset_nan reset stat to NaN instead of 0
      * @return number of non-NaN elements
      */
     template<typename I, typename S, typename BinaryOp, typename Compare>
