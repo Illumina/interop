@@ -61,6 +61,8 @@
         INTEROP_TUPLE7(CorrectedIntensity, "Corrected Int", CorrectedInt, CycleFeature|BaseFeature, corrected_intensity_metric, corrected_int_all_float, base)\
         INTEROP_TUPLE7(CalledIntensity, "Called Int", CorrectedInt, CycleFeature|BaseFeature, corrected_intensity_metric, corrected_int_called, base)\
         INTEROP_TUPLE7(SignalToNoise, "Signal to Noise", CorrectedInt, CycleFeature, corrected_intensity_metric, signal_to_noise, Void)\
+        INTEROP_TUPLE7(OccupiedCountK, "Occupied Count (K)", ExtendedTile, TileFeature, extended_tile_metric, cluster_count_occupied_k, Void)\
+        INTEROP_TUPLE7(PercentOccupied, "% Occupied", ExtendedTile, TileFeature, extended_tile_metric, percent_occupied, Void)\
         INTEROP_TUPLE4(MetricTypeCount, "!!!!BAD!!!!", UnknownMetricGroup, UnknownMetricFeature)\
         INTEROP_TUPLE1(UnknownMetricType)
 
@@ -71,17 +73,18 @@
  * @see illumina::interop::constants::metric_group
  */
 #define INTEROP_ENUM_METRIC_GROUPS \
-        INTEROP_TUPLE2(CorrectedInt, CycleFeature|BaseFeature),\
-        INTEROP_TUPLE2(Error, CycleFeature),\
-        INTEROP_TUPLE2(Extraction, CycleFeature|ChannelFeature),\
-        INTEROP_TUPLE2(Image, CycleFeature|ChannelFeature),\
-        INTEROP_TUPLE2(Index, ReadFeature),\
-        INTEROP_TUPLE2(Q, CycleFeature),\
-        INTEROP_TUPLE2(Tile, TileFeature),\
-        INTEROP_TUPLE2(QByLane, LaneFeature),\
-        INTEROP_TUPLE2(QCollapsed, CycleFeature),\
-        INTEROP_TUPLE2(EmpiricalPhasing, CycleFeature),\
-        INTEROP_TUPLE2(DynamicPhasing, CycleFeature),\
+        INTEROP_TUPLE2(CorrectedInt, CycleFeature|BaseFeature), \
+        INTEROP_TUPLE2(Error, CycleFeature), \
+        INTEROP_TUPLE2(Extraction, CycleFeature|ChannelFeature), \
+        INTEROP_TUPLE2(Image, CycleFeature|ChannelFeature), \
+        INTEROP_TUPLE2(Index, ReadFeature), \
+        INTEROP_TUPLE2(Q, CycleFeature), \
+        INTEROP_TUPLE2(Tile, TileFeature), \
+        INTEROP_TUPLE2(QByLane, LaneFeature), \
+        INTEROP_TUPLE2(QCollapsed, CycleFeature), \
+        INTEROP_TUPLE2(EmpiricalPhasing, CycleFeature), \
+        INTEROP_TUPLE2(DynamicPhasing, CycleFeature), \
+        INTEROP_TUPLE2(ExtendedTile, TileFeature), \
         INTEROP_TUPLE1(MetricCount),\
         INTEROP_TUPLE1(UnknownMetricGroup)
 
@@ -192,13 +195,13 @@
  */
 #define INTEROP_ENUM_PLOT_COLORS \
         /** Color for red channel (or A) */\
-        INTEROP_TUPLE1(Red),\
+        INTEROP_TUPLE1(Red), /*#FF0000*/\
         /** Color for green channel or (C) */\
-        INTEROP_TUPLE1(Green),\
+        INTEROP_TUPLE1(Green), /*#00FF00*/\
         /** Color for G */\
-        INTEROP_TUPLE1(Blue),\
+        INTEROP_TUPLE1(Blue), /*#0000FF*/\
         /** Color for T */\
-        INTEROP_TUPLE1(Black),\
+        INTEROP_TUPLE1(Black), /*#000000*/\
         INTEROP_TUPLE1(PlotColorCount), \
         INTEROP_TUPLE1(UnknownColor)
 
@@ -230,9 +233,9 @@
  */
 #define INTEROP_ENUM_BAR_PLOT_OPTIONS \
         /** Bar centered on x-value */\
-        INTEROP_TUPLE1(Centered),\
+        INTEROP_TUPLE1(Centered), \
         /** Bar shifted to start on x-value */\
-        INTEROP_TUPLE1(Shifted),\
+        INTEROP_TUPLE1(Shifted), \
         INTEROP_TUPLE1(UnknownBarPlotOption)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////

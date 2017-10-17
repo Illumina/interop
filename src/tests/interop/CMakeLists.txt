@@ -40,6 +40,7 @@ set(SRCS
         metrics/metric_stream_error_test.cpp
         metrics/metric_regression_tests.cpp
         io/csv_format.cpp
+        metrics/extended_tile_metrics_test.cpp
         )
 
 set(HEADERS
@@ -54,6 +55,7 @@ set(HEADERS
         metrics/inc/q_metrics_test.h
         metrics/inc/tile_metrics_test.h
         metrics/inc/q_collapsed_metrics_test.h
+        metrics/inc/extended_tile_metrics_test.h
         inc/failure_listener.h
         inc/persistent_parameter_generator.h
         inc/generic_fixture.h

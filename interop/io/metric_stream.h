@@ -59,6 +59,7 @@ namespace illumina { namespace interop { namespace io
         metric_format_map &format_map = factory_t::metric_formats();
         for(typename metric_format_map::const_iterator it = format_map.begin();it != format_map.end();++it, ++oit)
         {
+            if(it->second->is_deprecated()) continue;
             *oit = it->first;
         }
     }
@@ -109,6 +110,7 @@ namespace illumina { namespace interop { namespace io
                                                                             << " with version: " << version << " of "
                                                                             << format_map.size() );
         INTEROP_ASSERT(format_map[version]);
+        if(format_map[version]->is_deprecated()) return; // This version of the format is unsupported
         metrics.set_version(static_cast< ::int16_t>(version));
         try
         {

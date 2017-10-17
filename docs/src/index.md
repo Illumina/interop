@@ -46,17 +46,18 @@ List of InterOp Metric Files
 ----------------------------
 
 | Filename                         | Description                                                                                                                                                   |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [CorrectedIntMetricsOut.bin]     | Per tile per cycle per channel average intensity values                                                                                                       |
-| [ErrorMetricsOut.bin]            | Per tile per cycle (after alignment cycle, e.g. 25) percentages of incorrect calls for aligned clusters                                                       |
-| [ExtractionMetricsOut.bin]       | Per tile per cycle per channel 90th percentile of intensity and FWHM values                                                                                   |
-| [ImageMetricsOut.bin]            | Per tile per cycle per channel percentiles of pixel values used to autocontrast thumbnail images                                                              |
-| [QMetricsOut.bin]                | Per tile per cycle subsampled basecall quality score histogram, also contains QScore Binning information in header as of version 5                            |
-| [TileMetricsOut.bin]             | Per tile information about raw density, cluster count, cluster density passed filter, cluster count passed filter, percent aligned, phasing and prephasing    |
-| [IndexMetricsOut.bin]            | Per tile per lane index sequence information                                                                                                                  |
-| [QMetrics2030Out.bin]            | Per tile per cycle Q20/Q30 scores                                                                                                                             |
-| [QMetricsByLaneOut.bin]          | Per tile per cycle Q-score histogram per lane                                                                                                                 |
-| [EmpiricalPhasingMetricsOut.bin] | Phasing weights per tile per cycle                                                                                                                            |
+| -------------------------------- | --------------------------------------------------------------------------------- |
+| [CorrectedIntMetricsOut.bin]     | Per tile per cycle per channel average intensity values                           |
+| [ErrorMetricsOut.bin]            | Per tile per cycle percente of incorrect calls for aligned clusters               |
+| [ExtractionMetricsOut.bin]       | Per tile per cycle per channel 90th percentile of intensity and FWHM values       |
+| [ImageMetricsOut.bin]            | Per tile per cycle per channel pixel value percentile for thumbnail autocontrast  |
+| [QMetricsOut.bin]                | Per tile per cycle subsampled basecall quality score histogram                    |
+| [TileMetricsOut.bin]             | Per tile information about density, cluster count, passed filter, percent aligned |
+| [IndexMetricsOut.bin]            | Per tile per lane index sequence information                                      |
+| [QMetrics2030Out.bin]            | Per tile per cycle Q20/Q30 scores                                                 |
+| [QMetricsByLaneOut.bin]          | Per tile per cycle Q-score histogram per lane                                     |
+| [EmpiricalPhasingMetricsOut.bin] | Phasing weights per tile per cycle                                                |
+| [ExtendedTileMetricsOut.bin]     | Per tile occupancy metrics                                                        |
 
 [CorrectedIntMetricsOut.bin]: @ref corrected_intensity "CorrectedIntMetricsOut.bin"
 [ErrorMetricsOut.bin]: @ref error_metric "ErrorMetricsOut.bin"
@@ -68,6 +69,7 @@ List of InterOp Metric Files
 [QMetrics2030Out.bin]: @ref q_collapsed_metric "QMetrics2030Out.bin"
 [QMetricsByLaneOut.bin]: @ref q_metric_by_lane "QMetricsByLaneOut.bin"
 [EmpiricalPhasingMetricsOut.bin]: @ref phasing_metric "EmpiricalPhasingMetricOut.bin"
+[ExtendedTileMetricsOut.bin]: @ref extended_tile_metric "ExtendedTileMetricsOut.bin"
 
 
 Known Limitations

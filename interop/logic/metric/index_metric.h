@@ -3,7 +3,7 @@
  *  @file
  *  @date  5/26/17
  *  @version 1.0
- *  @copyright Illumina Use Only
+ *  @copyright GNU Public License.
  */
 #pragma once
 #include "interop/model/metrics/index_metric.h"

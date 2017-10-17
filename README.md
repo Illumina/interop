@@ -17,6 +17,7 @@ The InterOp files supported by this library include:
   - CorrectedIntMetricsOut.bin
   - ErrorMetricsOut.bin
   - ExtractionMetricsOut.bin
+  - ExtendedTileMetricsOut.bin
   - ImageMetricsOut.bin
   - QMetricsOut.bin
   - TileMetricsOut.bin
@@ -117,6 +118,7 @@ There are several known limitations to the current library:
   7. MinGW W64 4.9.x and prior will not link properly
   8. Visual Studio 12 2013 is not supported for the C# Bindings (Results in heap corruption)
   9. We support .NET Core 2.x or later
+  10. Big endian systems are currently not supported
 
 SAV Analysis Tab
 ----------------

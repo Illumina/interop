@@ -70,7 +70,8 @@ namespace illumina { namespace interop { namespace model { namespace plot
                        const id_t cycle = ALL_IDS,
                        const id_t tile_number = ALL_IDS,
                        const id_t swath = ALL_IDS,
-                       const id_t section = ALL_IDS) :
+                       const id_t section = ALL_IDS,
+                       const size_t subsample=0) :
                 m_lane(lane),
                 m_channel(channel),
                 m_base(base),
@@ -80,7 +81,8 @@ namespace illumina { namespace interop { namespace model { namespace plot
                 m_tile_number(tile_number),
                 m_swath(swath),
                 m_section(section),
-                m_naming_method(naming_method)
+                m_naming_method(naming_method),
+                m_subsample(subsample)
         { }
 
     public:
@@ -421,6 +423,14 @@ namespace illumina { namespace interop { namespace model { namespace plot
          * @ref illumina::interop::model::plot::filter_options "See full class description"
          * @{
          */
+        /** Number of points to subsample
+         *
+         * @param count maximum number of points
+         */
+        void subsample(const size_t count)
+        {
+            m_subsample = count;
+        }
         /** Set the tile naming method
          *
          * @param naming_method tile naming method enum
@@ -830,6 +840,14 @@ namespace illumina { namespace interop { namespace model { namespace plot
             const size_t surface_count = info.flowcell().surface_count();
             return surface_count > 1;
         }
+        /** Number of points to subsample
+         *
+         * @return maximum number of points
+         */
+        size_t subsample()const
+        {
+            return m_subsample;
+        }
 
     private:
         template<class Metric>
@@ -878,6 +896,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
         id_t m_swath;
         id_t m_section;
         constants::tile_naming_method m_naming_method;
+        size_t m_subsample;
 
     };
 

@@ -70,9 +70,9 @@ namespace illumina{ namespace interop { namespace unittest {
         static std::string name()
         {
             return std::string() +
-                   Metric::prefix()+
-                   Metric::suffix()+
-                   util::lexical_cast<std::string>(VERSION) + ((Variant>0) ? Variant : ' ');
+                    Metric::prefix()+
+                    Metric::suffix()+
+                    util::lexical_cast<std::string>(VERSION) + ((Variant>0) ? Variant : ' ');
         }
         /** Convert an array to a vector
          *

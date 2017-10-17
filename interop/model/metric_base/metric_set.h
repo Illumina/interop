@@ -188,6 +188,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
             if(update_ids) return;
             const constants::metric_group group = static_cast<constants::metric_group>(TYPE);
             if(group != constants::Tile &&                // imaging table
+                    group != constants::ExtendedTile &&
                     group != constants::DynamicPhasing && // Not read in
                     group != constants::CorrectedInt)     // `populate_called_intensities`
             {

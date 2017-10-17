@@ -3,7 +3,7 @@
  *  @file
  *  @date 3/9/16
  *  @version 1.0
- *  @copyright Illumina Use Only
+ *  @copyright GNU Public License
  */
 #include "interop/model/run_metrics.h"
 

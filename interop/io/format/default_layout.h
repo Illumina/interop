@@ -15,7 +15,7 @@ namespace illumina { namespace interop { namespace io
 {
     /** Define default methods and typedefs for a record layout
      */
-    template<int V, int MultiRecord=0>
+    template<int V, int MultiRecord=0,int Deprecated=0>
     struct default_layout
     {
         enum
@@ -23,7 +23,9 @@ namespace illumina { namespace interop { namespace io
             /** Version of the format */
             VERSION = V,
             /** Flag indicating whether metric is split into multiple records in the InterOp file */
-            MULTI_RECORD=MultiRecord
+            MULTI_RECORD=MultiRecord,
+            /** Flag to indicate the format is no longer supported */
+            IS_DEPRECATED=Deprecated
         };
         /** Define a record size type */
         typedef ::uint8_t record_size_t;
