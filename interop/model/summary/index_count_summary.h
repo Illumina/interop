@@ -43,7 +43,7 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         {}
 
     public:
-        /** @defgroup index_count_summary Index Lane Summary
+        /** @defgroup index_count_summary Index Count Summary
          *
          * Information used in the SAV Indexing Tab
          *
