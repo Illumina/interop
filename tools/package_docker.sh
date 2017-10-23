@@ -4,9 +4,15 @@ set -e
 
 image=ezralanglois/interop
 
+if [ ! -z $1 ] ; then
+    image=$1
+fi
+
 if [ ! -e `pwd`/dist ] ; then
     mkdir `pwd`/dist
 fi
+
+sudo systemctl status docker || sudo systemctl start docker || true
 
 docker ps 1>/dev/null 2>&1 || prefix=sudo;
 #${prefix} docker rmi $(docker images --filter "dangling=true") >/dev/null 2>&1 || true
