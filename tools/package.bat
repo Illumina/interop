@@ -86,7 +86,13 @@ rem ----------------------------------------------------------------------------
 
 echo %PREFIX_BEG% Configure %SUFFIX%
 cmake %SOURCE_DIR% -G%COMPILER% -B%BUILD_DIR% %BUILD_PARAM%
-if %errorlevel% neq 0 exit /b %errorlevel%
+if "%errorlevel%" == "0" goto CONFIGURE_SUCCESS
+set level=%errorlevel%
+type %BUILD_DIR%\CMakeFiles\CMakeError.log
+
+exit /b %level%
+
+:CONFIGURE_SUCCESS
 echo %PREFIX_END% Configure %SUFFIX%
 
 goto CONFIGURE_DONE
