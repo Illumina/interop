@@ -1,48 +1,85 @@
+echo off
+rem --------------------------------------------------------------------------------------------------------------------
 rem Software required to build InterOp
+rem Assumes you have the windows package manager installed: https://chocolatey.org/
+rem --------------------------------------------------------------------------------------------------------------------
 
+set MINICONDA_HOME=C:\ProgramData\Miniconda2
+set CMAKE_HOME=C:\Program Files\CMake\bin
+rem set MINGW_HOME=C:\Program Files\mingw-w64\x86_64-5.3.0-posix-seh-rt_v5-rev2\mingw64\bin
+set PATH=%PATH%;%MINICONDA_HOME%;%MINICONDA_HOME%\Scripts;%CMAKE_HOME%
 
-choco install cmake --yes --limit-output --installargs 'ADD_CMAKE_TO_PATH=""User""'
-choco install microsoft-build-tools --yes --limit-output
-choco install jdk8 --yes --limit-output
-choco install swig --yes --limit-output
+rem --------------------------------------------------------------------------------------------------------------------
+rem Install Programs if not found
+rem --------------------------------------------------------------------------------------------------------------------
+
+where /q cmake
+if %errorlevel% neq 0 choco install cmake --yes --limit-output --installargs 'ADD_CMAKE_TO_PATH=""System""'
+where /q conda
+if %errorlevel% neq 0 choco install miniconda --yes --limit-output
+where /q javac
+if %errorlevel% neq 0 choco install jdk8 --yes --limit-output
+where /q nuget
+if %errorlevel% neq 0 choco install nuget.commandline --yes --limit-output
+where /q swig
+if %errorlevel% neq 0 choco install swig --yes --limit-output
+where /q git
+if %errorlevel% neq 0 choco install git.install --yes --limit-output
 choco install nunit --version 2.6.4 --yes --limit-output
-choco install nuget.commandline --yes --limit-output
 
-choco install vcbuildtools -ia "/Full" --yes --limit-output
 
-choco install miniconda --yes --limit-output
-setx path "%PATH%;C:\ProgramData\Miniconda;C:\ProgramData\Miniconda\Scripts"
-setx path "%PATH%;c:\tools\miniconda;C:\tools\miniconda\scripts"
-setx path "%PATH%;c:\ProgramData\chocolaty\lib\miniconda;C:\ProgramData\chocolaty\lib\miniconda\scripts"
+rem --------------------------------------------------------------------------------------------------------------------
+rem Install MinGW if Missing (TODO: So far we are dropping supoprt for MinGW)
+rem --------------------------------------------------------------------------------------------------------------------
+
+rem choco install mingw -params "/exception:seh /threads:posix"
+rem dir C:\Program Files\mingw-w64
+
+
+rem --------------------------------------------------------------------------------------------------------------------
+rem Test if required programs are available
+rem --------------------------------------------------------------------------------------------------------------------
+
+where /q javac
+if %errorlevel% neq 0 exit %errorlevel%
+
 where /q conda
 if %errorlevel% neq 0 exit %errorlevel%
 
-rem Assumes you have the windows package manager installed: https://chocolatey.org/
-rem choco install -y vcbuildtools -ia "/Full" || echo "Already installed Visual Studio 2015"
-rem choco info visualcpp-build-tools || choco install visualcpp-build-tools -y --params "'/IncludeOptional'"
-rem choco install vcbuildtools -y
-rem choco install miniconda -y
-rem choco install jdk8 -y
+where /q activate
+if %errorlevel% neq 0 exit %errorlevel%
 
-rem fails on AWS
-rem choco install windows-sdk-8.1 -y
+where /q swig
+if %errorlevel% neq 0 exit %errorlevel%
 
+where /q nuget
+if %errorlevel% neq 0 exit %errorlevel%
 
-rem Available dependency
+where /q git
+if %errorlevel% neq 0 exit %errorlevel%
 
-
-rem Already supported by build server
-rem choco install git.install -y
-
-rem junit
-rem gtest, gmock
-
-rem Setup Path
-conda install numpy -y
-conda create --name python3 python=3 numpy -y
+rem choco install windows-sdk-8.1 --yes --limit-output
 
 
-rem MinGW
-REM Precompiled Deps
-REM
+rem --------------------------------------------------------------------------------------------------------------------
+rem Version Info
+rem --------------------------------------------------------------------------------------------------------------------
+
+cmake --version
+conda --version
+javac -version
+nuget help
+swig -version
+git --version
+
+rem --------------------------------------------------------------------------------------------------------------------
+rem Install Python Requirements
+rem --------------------------------------------------------------------------------------------------------------------
+
+conda install numpy -y -q
+if %errorlevel% neq 0 exit %errorlevel%
+
+
+activate python3 || conda create --name python3 python=3 numpy -y -q
+
 

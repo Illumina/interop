@@ -1,7 +1,19 @@
 # Changes                                               {#changes}
 
+## v1.1.2 (Master)
 
-## v1.0.26 (Master)
+Date       | Description
+---------- | -----------
+XXX        | XXX
+
+## v1.1.1
+
+
+Date       | Description
+---------- | -----------
+2017-10-24 | Update windows build script
+
+## v1.1.0
 
 Date       | Description
 ---------- | -----------

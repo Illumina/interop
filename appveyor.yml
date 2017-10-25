@@ -106,8 +106,8 @@ before_build:
   - cmd: set PATH=%PYTHON_PATH_DIR%;%PYTHON_PATH_DIR%\Scripts;%PATH%
   - cmd: conda update -q -y conda
   - cmd: conda info -a
-  - cmd: conda install python=%PYTHON_VERSION% -y
-  - cmd: conda install numpy -y
+  - cmd: conda create --name python%PYTHON_VERSION% python=%PYTHON_VERSION% numpy -y -q
+  - cmd: activate python%PYTHON_VERSION%
 
 install:
   - cmd: date /T & time /T
