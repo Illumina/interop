@@ -28,16 +28,8 @@ where /q git
 if %errorlevel% neq 0 choco install git.install --yes --limit-output
 where /q nunit-console.exe
 if %errorlevel% neq 0 choco install nunit --version 2.6.4 --yes --limit-output
-
-
-rem --------------------------------------------------------------------------------------------------------------------
-rem Install MinGW if Missing (TODO: So far we are dropping supoprt for MinGW)
-rem --------------------------------------------------------------------------------------------------------------------
-
-rem set MINGW_HOME=C:\Program Files\mingw-w64\x86_64-5.3.0-posix-seh-rt_v5-rev2\mingw64\bin
-rem choco install mingw -params "/exception:seh /threads:posix"
-rem dir C:\Program Files\mingw-w64
-
+where /q gcc.exe
+if %errorlevel% neq 0 choco install mingw -params "/exception:seh /threads:posix" --yes --limit-output
 
 rem --------------------------------------------------------------------------------------------------------------------
 rem Test if required programs are available
