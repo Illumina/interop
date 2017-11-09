@@ -4,7 +4,8 @@
 
 Date       | Description
 ---------- | -----------
-XXX        | XXX
+2017-11-09 | IPA-7159: Fix bug for BaseSpace read_interop_from_buffer on per-cycle InterOp files
+2017-11-09 | Update Linux build script
 
 ## v1.1.1
 

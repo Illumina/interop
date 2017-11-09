@@ -191,9 +191,15 @@ namespace illumina{ namespace interop { namespace unittest
                 io::write_metrics(fout, expected_metric_set2, Gen::VERSION);
                 expected_binary_data2 = fout.str();
             }
-
-            io::read_interop_from_string(expected_data,actual, false);
-            io::read_interop_from_string(expected_binary_data2,actual);
+            io::read_interop_from_buffer(
+                    reinterpret_cast< ::uint8_t*>(const_cast<char*>(expected_data.c_str()))
+                    , static_cast<size_t>(expected_data.size())
+                    , actual);
+            io::read_interop_from_buffer(
+                    reinterpret_cast< ::uint8_t*>(const_cast<char*>(expected_binary_data2.c_str()))
+                    , static_cast<size_t>(expected_binary_data2.size())
+                    , actual);
+            actual.rebuild_index();
 
             return ::testing::AssertionSuccess();
         }
