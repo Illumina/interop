@@ -141,7 +141,6 @@ branches:
   only:
   - master
   - /v\d\.\d\.\d/
-  - fix-missing-csharp
 
 deploy:
   provider: GitHub
