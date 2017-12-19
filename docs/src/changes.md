@@ -1,9 +1,15 @@
 # Changes                                               {#changes}
 
-## v1.1.2 (Master)
+## v1.1.3 (Master)
 
 Date       | Description
 ---------- | -----------
+
+## v1.1.2
+
+Date       | Description
+---------- | -----------
+2017-12-19 | Fix missing NuGet Package is created for Windows
 2017-11-09 | IPA-7159: Fix bug for BaseSpace read_interop_from_buffer on per-cycle InterOp files
 2017-11-09 | Update Linux build script
 
