@@ -52,7 +52,7 @@ environment:
       BUILD: msvc14_win64_py27
       config_type: win64
       PACKAGE_TARGET: bundle
-      ADDIONAL_CONFIG_OPTIONS: -DENABLE_APPS=OFF -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=OFF -DDISABLE_PACKAGE_SUBDIR=ON
+      ADDIONAL_CONFIG_OPTIONS: -DENABLE_APPS=OFF -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=ON -DDISABLE_PACKAGE_SUBDIR=ON
       PYTHON_PATH_DIR: C:\Miniconda-x64
       PYTHON_VERSION: 2.7
       configuration: Release
@@ -145,7 +145,7 @@ branches:
 deploy:
   provider: GitHub
   description: 'Release description'
-  artifact: /interop-.*\.zip/,/.*\.whl/,/.*\.nupkg
+  artifact: /.*\.nupkg/,/.*\.whl/,/interop-.*\.zip/
   draft: true
   auth_token:
       secure: HcMKUFlziwHVs3kI4ZWKvy9LPKHUoVsaURh9C0yHz7rvMaPD/J7yvlPcTYK7mdrM
