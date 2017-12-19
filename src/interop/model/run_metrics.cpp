@@ -46,7 +46,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             // If the m_load_metric_check is not set, read in the metric
             // Otherwise, check if the metric should be read and that it is not empty
             // This logic is for SAV OnDemand (TM) loading
-            const bool is_index_metrics = static_cast<constants::metric_group>(MetricSet::TYPE) == constants::Index;
+            const constants::metric_group group = static_cast<constants::metric_group>(MetricSet::TYPE);
+            const bool is_aggregated_always = (group == constants::Index || group == constants::QByLane || group == constants::QCollapsed);
             if(m_load_metric_check != 0 && (m_load_metric_check[MetricSet::TYPE] == 0 || !metrics.empty()))
             {
                 return 0;
@@ -62,7 +63,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             try
             {
                 io::read_interop(m_run_folder, metrics);
-                if(m_are_all_files_missing && !is_index_metrics) m_are_all_files_missing=false;
+                if(m_are_all_files_missing && !is_aggregated_always) m_are_all_files_missing=false;
             }
             catch (const io::file_not_found_exception &)
             {
@@ -70,7 +71,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             }
             catch (const io::incomplete_file_exception &)
             {
-                if(m_are_all_files_missing && !is_index_metrics)m_are_all_files_missing=false;
+                if(m_are_all_files_missing && !is_aggregated_always) m_are_all_files_missing=false;
                 return 2;
             }
             return 0;

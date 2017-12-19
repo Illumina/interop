@@ -71,7 +71,7 @@ namespace illumina { namespace interop { namespace io
     {
         detail::membuf sbuf(reinterpret_cast<char*>(buffer), reinterpret_cast<char*>(buffer) + buffer_size);
         std::istream in(&sbuf);
-        read_metrics(in, metrics, buffer_size);
+        read_metrics(in, metrics, buffer_size, /*rebuild=*/ false);
     }
     /** Read the binary InterOp file into the given metric set
      *

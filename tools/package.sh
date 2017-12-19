@@ -105,6 +105,9 @@ else
     mkdir $ARTIFACT_PATH
 fi
 
+if [ "$PYTHON_VERSION" == "None" ] ; then
+    PYTHON_VERSION=
+fi
 
 # Build Python Wheels for a range of Python Versions
 if [ -z $PYTHON_VERSION ] && [  -e /opt/python ] ; then
