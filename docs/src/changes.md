@@ -1,14 +1,22 @@
 # Changes                                               {#changes}
 
-## v1.1.2 (Master)
+## v1.1.4 (Master)
+
+## v1.1.3
+
+Date       | Description
+---------- | -----------
+2018-01-15 | Distribute Python packages to PyPI
+
+## v1.1.2
 
 Date       | Description
 ---------- | -----------
 2017-11-09 | IPA-7159: Fix bug for BaseSpace read_interop_from_buffer on per-cycle InterOp files
 2017-11-09 | Update Linux build script
 
-## v1.1.1
 
+## v1.1.1
 
 Date       | Description
 ---------- | -----------
