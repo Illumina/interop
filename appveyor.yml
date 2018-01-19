@@ -29,8 +29,6 @@ cache:
 image:
 - Visual Studio 2015
 environment:
-  PYPIPASSWORD:
-    secure: 0o7Jl0yDMWW+nbZgvBxpYJxVg00QgeMG6PZw/tQNXas=
   matrix:
     - generator: "MinGW Makefiles"
       COMPILER_PATH: C:\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev1\mingw64\bin
