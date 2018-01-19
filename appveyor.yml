@@ -107,7 +107,7 @@ before_build:
   - cmd: set PATH=%PYTHON_PATH_DIR%;%PYTHON_PATH_DIR%\Scripts;%PATH%
   - cmd: conda update -q -y conda
   - cmd: conda info -a
-  - cmd: conda create --name python%PYTHON_VERSION% python=%PYTHON_VERSION% numpy -y -q
+  - cmd: conda create --name python%PYTHON_VERSION% python=%PYTHON_VERSION% numpy twine -y -q
   - cmd: activate python%PYTHON_VERSION%
 
 install:
@@ -129,6 +129,7 @@ install:
 
 build_script:
   - call tools\package.bat "%configuration%" "%GENERATOR%" %PACKAGE_TARGET% "%ADDIONAL_CONFIG_OPTIONS%"
+  - if "%APPVEYOR_REPO_TAG%"=="true" ( python -m twine upload --skip-existing dist/* ) else ( echo "Not deploying because not a tagged commit." )
 
 artifacts:
   - path: .\dist\*.zip
@@ -154,12 +155,6 @@ deploy:
     appveyor_repo_tag: true
     configuration: Release
     config_type: win64
-
-deploy_script:
-  - "echo [pypi] > %USERPROFILE%\\.pypirc"
-  - "echo username: svc_pipy_bioinfo >> %USERPROFILE%\\.pypirc"
-  - "echo password: %PYPIPASSWORD% >> %USERPROFILE%\\.pypirc"
-  - if "%APPVEYOR_REPO_TAG%"=="true" ( python.exe setup.py bdist_wheel upload ) else ( echo "Not deploying because not a tagged commit." )
 
 
 ########################################################################################################################

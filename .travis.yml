@@ -120,6 +120,7 @@ branches:
 
 notifications:
   email: false
+
 deploy:
   skip_cleanup: true
   provider: releases
