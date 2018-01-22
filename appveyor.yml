@@ -107,7 +107,7 @@ before_build:
   - cmd: conda info -a
   - cmd: conda create --name python%PYTHON_VERSION% python=%PYTHON_VERSION% numpy -y -q
   - cmd: activate python%PYTHON_VERSION%
-  - cmd: conda install -c conda-forge twine
+  - cmd: conda install -c conda-forge twine -y -q
 
 install:
   - cmd: date /T & time /T
