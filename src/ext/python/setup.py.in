@@ -32,7 +32,7 @@ setup(
     'Topic :: Scientific/Engineering :: Bio-Informatics'
     ],
     keywords="Illumina sequencer HiSeqX HiSeq NextSeq MiniSeq NovaSeq MiSeq SBS genome",
-    install_requires=['numpy>=1.9'],
+    install_requires=['numpy>=1.13'],
     distclass=BinaryDistribution
 )
 
