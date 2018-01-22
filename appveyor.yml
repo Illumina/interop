@@ -140,6 +140,7 @@ artifacts:
 branches:
   only:
   - /v\d\.\d\.\d/
+  - deploy-pypi
 
 #  - master
 deploy:
