@@ -105,8 +105,9 @@ before_build:
   - cmd: set PATH=%PYTHON_PATH_DIR%;%PYTHON_PATH_DIR%\Scripts;%PATH%
   - cmd: conda update -q -y conda
   - cmd: conda info -a
-  - cmd: conda create --name python%PYTHON_VERSION% python=%PYTHON_VERSION% numpy twine -y -q
+  - cmd: conda create --name python%PYTHON_VERSION% python=%PYTHON_VERSION% numpy -y -q
   - cmd: activate python%PYTHON_VERSION%
+  - cmd: conda install -c conda-forge twine
 
 install:
   - cmd: date /T & time /T
