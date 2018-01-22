@@ -18,6 +18,12 @@ You can then test the install as follows:
     
     $ python -m interop --test
 
+If you see this error:
+
+    RuntimeError: module compiled against API version 0xb but this version of numpy is 0xa
+
+Then upgrade numpy and try again.
+
 ## Introductory Tutorials
 
  * [SAV Summary Table](https://github.com/Illumina/interop/blob/master/docs/src/Tutorial_01_Intro.ipynb)

@@ -37,6 +37,19 @@ $ pip install -f https://github.com/Illumina/interop/releases/latest interop
 
 Supported versions for binary distribution: 2.7 (UCS-4), 3.4, 3.5 and 3.6.
 
+Test the installation
+
+~~~~~~~~~~~~~{.sh}
+$ python -m interop --test
+~~~~~~~~~~~~~
+
+If you see this error:
+
+    RuntimeError: module compiled against API version 0xb but this version of numpy is 0xa
+
+Then upgrade numpy and try again.
+
+
 ## Build from Source
 
 This section describes the prerequisites for building the source, describes how to download the source and

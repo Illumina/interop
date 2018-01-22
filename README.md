@@ -80,6 +80,18 @@ You should have NumPy already installed.
 $ pip install -f https://github.com/Illumina/interop/releases/latest interop
 ~~~~~~~~~~~~~
 
+Test the installation
+
+~~~~~~~~~~~~~{.sh}
+$ python -m interop --test
+~~~~~~~~~~~~~
+
+If you see this error:
+
+    RuntimeError: module compiled against API version 0xb but this version of numpy is 0xa
+
+Then upgrade numpy and try again.
+
 ### From Source
 
 ~~~~~~~~~~~~~{.sh}
