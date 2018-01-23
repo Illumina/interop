@@ -122,7 +122,8 @@ notifications:
   email: false
 
 before_deploy:
-  - pip install --user pyOpenSSL ndg-httpsclient pyasn1 twine
+  - pip install --user pyOpenSSL ndg-httpsclient pyasn1 twine setuptools
+- if [ "$TRAVIS_TAG" != "" ] && ["$DEPLOY_BUILD" == "true"] ; then twine upload --skip-existing $PWD/dist/*.whl; fi
 
 deploy:
   skip_cleanup: true
@@ -138,17 +139,4 @@ deploy:
     condition:
       - "$DEPLOY_BUILD == true"
 
-deploy:
-  skip_cleanup: true
-  provider: pypi
-  user: "svc_pipy_bioinfo"
-  file_glob: true
-  file: $PWD/dist/*.whl
-  password:
-    secure: GaunUJFjO9ejXVQ4YXU8uGuRlm/WcxH9ycmrkqD/Q03CRDIqeOkFS/M40IpRCgAakLKtZflgk/HoQqwV4Mw1aT3MtcPEKHu+pZ8ndBBAFhGExyHGWrjna98Wg8QYFGD2ly7NKXPGmCrdnI2rP1I3z+wCFF12+C1Us11poas39gXHKDIAWGiJWAZ3b7+nYVh7xUn4EjsbIaSCM7vRLywkgqxMeNodbrBSGx9QEU+ZVZaWZpFzlaDJX0rOO1pbrqalwtjEo41Thv9/vaeHKSakI9z0Yyv3mtgL0i7OiCoSxFpiPT4ohoqpIeGRtKDjh0Wfj/BKIcavkmlcpKmuBsWiZMsI4YuiqFgmd3iyCEfLR0nejSd3p7Hj9CgP+8l7TvacqWtuvjzbQEjdR024G51Q1vUC44cgLPdCY8QZmxcfIAT0XtI2rvD7KeoeHwHlDov5FIyyw03o9ViDr/JwbVlWjvWidoULJGhyCQKH1874FvQlZXY/c5wUO99ARXlFjiMtzSmkJwafqChhGZyXO1zqy3HGKdMgaAZJlRfPtqfcbKbWHe+TkPMrzCea3XrvAtE5ACCYZOQ7U3dOiiK/xab9uN2T/1LuCqcl6awz7Ngpw03LHZ7RTAhDXnVW7rfwmmppTDCei6UGlQA1ZY+gaZtlrPAr+0m0ccZ2Uj1SOm2PHf4=
-  on:
-    repo: Illumina/interop
-    branch: master
-    tags: true
-    condition:
-      - "$DEPLOY_BUILD == true"
+
