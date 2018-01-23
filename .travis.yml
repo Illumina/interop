@@ -122,7 +122,7 @@ notifications:
   email: false
 
 before_deploy:
-  - pip install --user twine
+  - pip install --user pyOpenSSL ndg-httpsclient pyasn1 twine
 
 deploy:
   skip_cleanup: true
