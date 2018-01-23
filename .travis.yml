@@ -123,7 +123,7 @@ notifications:
 
 before_deploy:
   - pip install --user pyOpenSSL ndg-httpsclient pyasn1 twine setuptools
-  - if [ "$TRAVIS_TAG" != "" ] && ["$DEPLOY_BUILD" == "true"] ; then twine upload --skip-existing $PWD/dist/*.whl; fi
+  - if [ "$TRAVIS_TAG" != "" ] && [ "$DEPLOY_BUILD" == "true" ] ; then twine upload --skip-existing $PWD/dist/*.whl; fi
 
 deploy:
   skip_cleanup: true
