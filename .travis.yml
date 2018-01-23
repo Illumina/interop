@@ -121,6 +121,9 @@ branches:
 notifications:
   email: false
 
+before_deploy:
+  - pip install twine
+
 deploy:
   skip_cleanup: true
   provider: releases
