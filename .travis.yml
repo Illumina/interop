@@ -122,7 +122,7 @@ notifications:
   email: false
 
 before_deploy:
-  - pip install twine
+  - pip install --user twine
 
 deploy:
   skip_cleanup: true
