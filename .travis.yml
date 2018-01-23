@@ -122,8 +122,11 @@ notifications:
   email: false
 
 before_deploy:
-  - pip install --user pyOpenSSL ndg-httpsclient pyasn1 twine setuptools
-  - if [ "$TRAVIS_TAG" != "" ] && [ "$DEPLOY_BUILD" == "true" ] ; then twine upload $PWD/dist/*.whl; fi
+  - export PATH=$(pyenv root)/shims:${PATH}
+  - pyenv local 3.5
+  - python --version
+  - pip install --user twine
+  - if [ "$TRAVIS_TAG" != "" ] && [ "$DEPLOY_BUILD" == "true" ] ; then twine upload --skip-existing $PWD/dist/*.whl; fi
 
 deploy:
   skip_cleanup: true
