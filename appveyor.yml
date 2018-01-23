@@ -128,7 +128,9 @@ install:
 
 build_script:
   - call tools\package.bat "%configuration%" "%GENERATOR%" %PACKAGE_TARGET% "%ADDIONAL_CONFIG_OPTIONS%"
-  - if "%APPVEYOR_REPO_TAG%"=="true" ( python -m twine upload --skip-existing dist/*.whl ) else ( echo "Not deploying because not a tagged commit." )
+
+before_deploy:
+  - ps: if ($env:APPVEYOR_REPO_TAG -imatch "true" -And $env:configuration -imatch "Release" -And $env:config_type -imatch "win64") { python -m twine upload --skip-existing dist/*.whl}
 
 artifacts:
   - path: .\dist\*.zip
