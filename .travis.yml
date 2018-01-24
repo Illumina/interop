@@ -123,9 +123,10 @@ notifications:
 
 before_deploy:
   - export PATH=$(pyenv root)/shims:${PATH}
-  - pyenv local 3.5
+  - sudo pyenv install $py_ver -s  || true
+  - sudo pyenv global 3.5
   - python --version
-  - pip install --user twine
+  - sudo pip install twine
   - if [ "$TRAVIS_TAG" != "" ] && [ "$DEPLOY_BUILD" == "true" ] ; then twine upload --skip-existing $PWD/dist/*.whl; fi
 
 deploy:

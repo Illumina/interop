@@ -143,9 +143,8 @@ artifacts:
 branches:
   only:
   - /v\d\.\d\.\d/
-  - deploy-pypi
+  - master
 
-#  - master
 deploy:
   provider: GitHub
   description: 'Release description'
