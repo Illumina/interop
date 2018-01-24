@@ -122,13 +122,13 @@ notifications:
   email: false
 
 before_deploy:
-  - export PATH=/opt/pyenv/bin:/opt/pyenv/shims:${PATH}
-  - which pyenv
+  - sudo export PATH=/opt/pyenv/bin:/opt/pyenv/shims:${PATH}
+  - sudo which pyenv
   - sudo -E pyenv install $py_ver -s  || true
   - sudo -E pyenv global 3.5
-  - python --version
+  - sudo -E python --version
   - sudo -E pip install twine
-  - if [ "$TRAVIS_TAG" != "" ] && [ "$DEPLOY_BUILD" == "true" ] ; then twine upload --skip-existing $PWD/dist/*.whl; fi
+  - if [ "$TRAVIS_TAG" != "" ] && [ "$DEPLOY_BUILD" == "true" ] ; then sudo twine upload --skip-existing $PWD/dist/*.whl; fi
 
 deploy:
   skip_cleanup: true
