@@ -122,6 +122,8 @@ notifications:
   email: false
 
 before_deploy:
+  - export PATH=/opt/pyenv/bin:${PATH}
+  - which pyenv
   - export PATH=$(pyenv root)/shims:${PATH}
   - sudo pyenv install $py_ver -s  || true
   - sudo pyenv global 3.5
