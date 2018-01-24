@@ -122,7 +122,7 @@ notifications:
   email: false
 
 before_deploy:
-  - sudo /opt/pyenv/bin/pyenv install $py_ver -s  || true
+  - sudo /opt/pyenv/bin/pyenv install 3.5 -s  || true
   - sudo /opt/pyenv/bin/pyenv global 3.5
   - sudo /opt/pyenv/shims/python --version
   - sudo /opt/pyenv/shims/pip install twine
