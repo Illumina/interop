@@ -122,8 +122,8 @@ notifications:
   email: false
 
 before_deploy:
-  - sudo /opt/pyenv/bin/pyenv install 3.5 -s  || true
-  - sudo /opt/pyenv/bin/pyenv global 3.5
+  - sudo /opt/pyenv/bin/pyenv install 3.5.4 -s  || true
+  - sudo /opt/pyenv/bin/pyenv global 3.5.4
   - sudo /opt/pyenv/shims/python --version
   - sudo /opt/pyenv/shims/pip install twine
   - if [ "$TRAVIS_TAG" != "" ] && [ "$DEPLOY_BUILD" == "true" ] ; then sudo /opt/pyenv/shims/twine upload --skip-existing $PWD/dist/*.whl; fi
