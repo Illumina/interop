@@ -77,7 +77,7 @@ Supported versions for binary distribution: Python 2.7 and 3.4-3.6.
 You should have NumPy already installed.
 
 ~~~~~~~~~~~~~{.sh}
-$ pip install -f https://github.com/Illumina/interop/releases/latest interop
+$ pip install interop
 ~~~~~~~~~~~~~
 
 Test the installation

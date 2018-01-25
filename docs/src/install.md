@@ -29,10 +29,10 @@ Python 3.4, 3.5 and 3.6.
 
 ### Python<a name="python_install"></a>
 
-For Pythons users, a Wheel package is available on Github Release:
+For Pythons users, a Wheel package is available on Github Releases or PyPI:
 
 ~~~~~~~~~~~~~{.sh}
-$ pip install -f https://github.com/Illumina/interop/releases/latest interop
+$ pip install interop
 ~~~~~~~~~~~~~
 
 Supported versions for binary distribution: 2.7 (UCS-4), 3.4, 3.5 and 3.6.
