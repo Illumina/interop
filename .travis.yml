@@ -126,7 +126,7 @@ before_deploy:
   - sudo env "PATH=$PATH" pyenv install 3.5.4 -s  || true
   - sudo env "PATH=$PATH" pyenv global 3.5.4
   - sudo env "PATH=$PATH" pip install twine
-  - if [ "$TRAVIS_TAG" != "" ] && [ "$DEPLOY_BUILD" == "true" ] ; then sudo env "PATH=$PATH" twine upload --skip-existing $PWD/dist/*.whl; fi
+  - if [ "$TRAVIS_TAG" != "" ] && [ "$DEPLOY_BUILD" == "true" ] ; then sudo env "PATH=$PATH" "TWINE_USERNAME=$TWINE_USERNAME" "TWINE_PASSWORD=TWINE_PASSWORD" twine upload --skip-existing $PWD/dist/*.whl; fi
 
 deploy:
   skip_cleanup: true
