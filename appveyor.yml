@@ -144,7 +144,6 @@ branches:
   only:
   - /v\d\.\d\.\d/
   - master
-  - deploy-pypi
 
 deploy:
   provider: GitHub
