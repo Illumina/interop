@@ -120,6 +120,14 @@ branches:
 
 notifications:
   email: false
+
+before_deploy:
+  - export PATH=/opt/pyenv:/opt/pyenv/shims:$PATH
+  - if [ "$TRAVIS_OS_NAME != "osx ] ; then sudo env "PATH=$PATH" pyenv install 3.5.4 -s  || true; fi
+  - if [ "$TRAVIS_OS_NAME != "osx ] ; then sudo env "PATH=$PATH" pyenv global 3.5.4; fi
+  - if [ "$TRAVIS_OS_NAME != "osx ] ; then sudo env "PATH=$PATH" pip install twine; fi
+  - if [ "$TRAVIS_TAG" != "" ] && [ "$DEPLOY_BUILD" == "true" ] ; then twine upload --skip-existing $PWD/dist/*.whl; fi
+
 deploy:
   skip_cleanup: true
   provider: releases
@@ -133,3 +141,5 @@ deploy:
     tags: true
     condition:
       - "$DEPLOY_BUILD == true"
+
+

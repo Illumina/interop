@@ -28,7 +28,6 @@ cache:
 
 image:
 - Visual Studio 2015
-
 environment:
   matrix:
     - generator: "MinGW Makefiles"
@@ -108,6 +107,7 @@ before_build:
   - cmd: conda info -a
   - cmd: conda create --name python%PYTHON_VERSION% python=%PYTHON_VERSION% numpy -y -q
   - cmd: activate python%PYTHON_VERSION%
+  - cmd: conda install -c conda-forge twine -y -q
 
 install:
   - cmd: date /T & time /T
@@ -129,6 +129,9 @@ install:
 build_script:
   - call tools\package.bat "%configuration%" "%GENERATOR%" %PACKAGE_TARGET% "%ADDIONAL_CONFIG_OPTIONS%"
 
+before_deploy:
+  - ps: if (($env:APPVEYOR_REPO_TAG -imatch "true") -And ($env:configuration -imatch "Release") -And ($env:config_type -imatch "win64") -And (Test-Path .\dist\*.whl)) { & python -m twine upload --skip-existing .\dist\*.whl}
+
 artifacts:
   - path: .\dist\*.zip
     name: Releases
@@ -139,8 +142,8 @@ artifacts:
 
 branches:
   only:
-  - master
   - /v\d\.\d\.\d/
+  - master
 
 deploy:
   provider: GitHub
@@ -153,6 +156,7 @@ deploy:
     appveyor_repo_tag: true
     configuration: Release
     config_type: win64
+
 
 ########################################################################################################################
 #

@@ -77,8 +77,20 @@ Supported versions for binary distribution: Python 2.7 and 3.4-3.6.
 You should have NumPy already installed.
 
 ~~~~~~~~~~~~~{.sh}
-$ pip install -f https://github.com/Illumina/interop/releases/latest interop
+$ pip install interop
 ~~~~~~~~~~~~~
+
+Test the installation
+
+~~~~~~~~~~~~~{.sh}
+$ python -m interop --test
+~~~~~~~~~~~~~
+
+If you see this error:
+
+    RuntimeError: module compiled against API version 0xb but this version of numpy is 0xa
+
+Then upgrade numpy and try again.
 
 ### From Source
 
