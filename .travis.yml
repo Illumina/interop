@@ -123,10 +123,10 @@ notifications:
 
 before_deploy:
   - export PATH=/opt/pyenv:/opt/pyenv/shims:$PATH
-  - sudo env "PATH=$PATH" pyenv install 3.5.4 -s  || true
-  - sudo env "PATH=$PATH" pyenv global 3.5.4
-  - sudo env "PATH=$PATH" pip install twine
-  - if [ "$TRAVIS_TAG" != "" ] && [ "$DEPLOY_BUILD" == "true" ] ; then sudo env "PATH=$PATH" "TWINE_USERNAME=$TWINE_USERNAME" "TWINE_PASSWORD=$TWINE_PASSWORD" twine upload --skip-existing $PWD/dist/*.whl; fi
+  - if [ "$TRAVIS_OS_NAME != "osx ] ; then sudo env "PATH=$PATH" pyenv install 3.5.4 -s  || true; fi
+  - if [ "$TRAVIS_OS_NAME != "osx ] ; then sudo env "PATH=$PATH" pyenv global 3.5.4; fi
+  - if [ "$TRAVIS_OS_NAME != "osx ] ; then sudo env "PATH=$PATH" pip install twine; fi
+  - if [ "$TRAVIS_TAG" != "" ] && [ "$DEPLOY_BUILD" == "true" ] ; then twine upload --skip-existing $PWD/dist/*.whl; fi
 
 deploy:
   skip_cleanup: true
