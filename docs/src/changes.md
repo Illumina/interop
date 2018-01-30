@@ -2,6 +2,12 @@
 
 ## v1.1.4 (Master)
 
+Date       | Description
+---------- | -----------
+2018-01-26 | Fix missing version.h in C++ install
+2018-01-26 | Fix missing apps on Windows
+
+
 ## v1.1.3
 
 Date       | Description

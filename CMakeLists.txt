@@ -159,6 +159,7 @@ if(ENABLE_DOCS)
     add_subdirectory("docs")
 endif()
 install(DIRECTORY interop DESTINATION include)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/interop/version.h DESTINATION include/interop)
 install(FILES README.md docs/src/changes.md DESTINATION .)
 
 find_package(Git)
