@@ -25,6 +25,7 @@ Date       | Description
 
 Date       | Description
 ---------- | -----------
+2018-01-31 | Fix for the MinGW build
 2018-01-28 | Add Imaging Table example in Python
 2018-01-26 | Fix missing version.h in C++ install
 2018-01-26 | Fix missing apps on Windows
