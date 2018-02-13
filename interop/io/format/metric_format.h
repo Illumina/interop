@@ -272,21 +272,26 @@ namespace illumina { namespace interop { namespace io
                 // simplifiy all this logic
             {
                 metric.set_base(id);// TODO replace with static call
+//std::cout << metric.id() << " " << metric.lane() << "_" << metric.tile() << std::endl;
                 if (metric_offset_map.find(metric.id()) == metric_offset_map.end())
                 {
+//std::cout << "Not found!" << std::endl;
                     const size_t offset = metric_offset_map.size();
+//std::cout << "Not found - size: " << offset << std::endl;
                     if(offset>= metric_set.size()) metric_set.resize(offset+1);
                     metric_set[offset].set_base(id);
                     count += Layout::map_stream(in, metric_set[offset], metric_set, true);
                     if(!test_stream(in, metric_offset_map, count, record_size)) return;
                     if(Layout::skip_metric(metric_set[offset]))//Avoid adding control lanes in tile metrics
                     {
+ //std::cout << "Skip!" << std::endl;
                         metric_set.resize(offset);
                     }
                     else metric_offset_map[metric.id()] = offset;
                 }
                 else
                 {
+//std::cout << "Found!" << std::endl;
                     const size_t offset = metric_offset_map[metric.id()];
                     INTEROP_ASSERTMSG(metric_set[offset].lane() != 0, offset);
                     count += Layout::map_stream(in, metric_set[offset], metric_set, false);

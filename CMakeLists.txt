@@ -8,11 +8,11 @@ set(ARCHIVE_VERSION "v3.0.35-src")
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.8")
-        message(FATAL_ERROR "GCC compiler versions less than 4.8 are not supported and do not work")
+        #message(FATAL_ERROR "GCC compiler versions less than 4.8 are not supported and do not work")
     endif()
 endif()
 
-option(ENABLE_PORTABLE "Statically link libraries for GCC compiler" OFF)
+option(ENABLE_PORTABLE "Statically link libraries for GCC compiler and disable OpenMP" OFF)
 find_package(OpenMP)
 if(OPENMP_FOUND AND NOT ENABLE_PORTABLE)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
