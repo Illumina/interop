@@ -8,7 +8,7 @@ set(ARCHIVE_VERSION "v3.0.35-src")
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.8")
-        #message(FATAL_ERROR "GCC compiler versions less than 4.8 are not supported and do not work")
+        message(WARNING "GCC compiler versions less than 4.8 are not supported and may not work")
     endif()
 endif()
 

@@ -4,7 +4,7 @@
 
 Date       | Description
 ---------- | -----------
-2018-02-06 | Disallow GNU compiler versions less than 4.8
+2018-02-06 | Warn GNU compiler versions less than 4.8
 2018-01-31 | Fix for the MinGW build
 2018-01-28 | Add Imaging Table example in Python
 2018-01-26 | Fix missing version.h in C++ install
