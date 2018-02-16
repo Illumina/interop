@@ -133,7 +133,8 @@ TEST(metric_stream_test, list_filenames_aggregated)
     model::metrics::run_metrics metrics;
     std::vector<std::string> files;
     metrics.list_filenames(files, "");
-    EXPECT_EQ(constants::MetricCount, files.size());
+    const size_t metric_count = static_cast<size_t>(constants::MetricCount);
+    EXPECT_EQ(metric_count, files.size());
 }
 
 TEST(metric_stream_test, list_filenames_by_cycle)
@@ -149,7 +150,8 @@ TEST(metric_stream_test, list_filenames_by_cycle)
     ASSERT_NE(0u, metrics.run_info().reads()[0].total_cycles());
     ASSERT_NE(0u, metrics.run_info().total_cycles());
     metrics.list_filenames(files, "", true);
-    EXPECT_EQ(constants::MetricCount*metrics.run_info().total_cycles()+constants::MetricCount, files.size());
+    const size_t metric_count = static_cast<size_t>(constants::MetricCount);
+    EXPECT_EQ(metric_count*metrics.run_info().total_cycles()+metric_count, files.size());
 }
 
 

@@ -131,6 +131,7 @@ There are several known limitations to the current library:
   8. Visual Studio 12 2013 is not supported for the C# Bindings (Results in heap corruption)
   9. We support .NET Core 2.x or later
   10. Big endian systems are currently not supported
+  11. We do not support compilers earlier than 4.8.x - too many compiler bugs
 
 SAV Analysis Tab
 ----------------

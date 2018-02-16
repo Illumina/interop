@@ -10,8 +10,7 @@
 
 #pragma once
 #if (!defined(__cplusplus) || __cplusplus < 201103L) && (!defined(_MSC_VER) || _MSC_VER < 1600)
-    #if !defined(_LIBCPP_HAS_NO_STATIC_ASSERT) && !defined(static_assert)
-        #undef static_assert
+    #if !defined(static_assert)
         /** Define a broken static_assert_ class for the false condition */
         template <bool> struct static_assert_;
         /** Define a working static_assert_ class for the true condition */

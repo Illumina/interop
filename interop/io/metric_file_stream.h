@@ -124,11 +124,21 @@ namespace illumina { namespace interop { namespace io
      */
     template<class MetricSet>
     void read_interop(const std::string& run_directory, MetricSet& metrics, const bool use_out=true)   throw
-                                                                        (io::file_not_found_exception,
-    io::bad_format_exception,
-    io::incomplete_file_exception,
-                                                                        model::index_out_of_bounds_exception)
+                                                                        (   io::file_not_found_exception,
+                                                                            io::bad_format_exception,
+                                                                            io::incomplete_file_exception,
+                                                                            model::index_out_of_bounds_exception)
     {
+#       if __GNUC__ <= 4 && __GNUC_MINOR__ <= 7
+            // ---------------------------------------------------------------------------------------------------------
+            // No operations to get GCC 4.4.x to compile correctly
+            const bool no_op = metrics.offset_map().find(0) != metrics.offset_map().end();
+            (void)no_op;
+            metrics.resize(metrics.size());
+            metrics.trim(metrics.size());
+            // ---------------------------------------------------------------------------------------------------------
+#       endif
+
         std::string file_name = interop_filename<MetricSet>(run_directory, use_out);
         std::ifstream fin(file_name.c_str(), std::ios::binary);
         if(!fin.good())

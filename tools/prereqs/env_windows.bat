@@ -8,7 +8,23 @@ set MINICONDA_HOME=C:\ProgramData\Miniconda2
 set CMAKE_HOME=C:\Program Files\CMake\bin
 set NUNIT_HOME=C:\Program Files (x86)\NUnit 2.6.4\bin
 set JAVA_HOME=C:\Program Files\Java\jdk1.8.0_144\bin
-set PATH=%PATH%;%MINICONDA_HOME%;%MINICONDA_HOME%\Scripts;%CMAKE_HOME%;%NUNIT_HOME%;%JAVA_HOME%
+set MINGW_HOME=C:\mingw\mingw64\bin
+set PATH=%PATH%;%MINICONDA_HOME%;%MINICONDA_HOME%\Scripts;%CMAKE_HOME%;%NUNIT_HOME%;%JAVA_HOME%;%MINGW_HOME%
+
+rem --------------------------------------------------------------------------------------------------------------------
+rem Install MinGW
+rem --------------------------------------------------------------------------------------------------------------------
+set MINGW_ZIP=x86_64-6.2.0-release-posix-seh-rt_v5-rev0.7z
+set MINGW_URL="https://sourceforge.net/projects/mingw-w64/files/Toolchains%%20targetting%%20Win64/Personal%%20Builds/mingw-builds/6.2.0/threads-posix/seh/%MINGW_ZIP%/download"
+
+where /q 7z.exe
+if %errorlevel% neq 0  choco install 7zip.install --yes --limit-output
+
+if exist %MINGW_HOME%\gcc.exe goto SKIP_GCC_UPDATE
+powershell -Command "(New-Object System.Net.WebClient).DownloadFile(\"%MINGW_URL%\", \"%MINGW_ZIP%\")"
+powershell -Command "& 7z.exe x -oc:\mingw %MINGW_ZIP%" -aoa
+:SKIP_GCC_UPDATE
+
 
 rem --------------------------------------------------------------------------------------------------------------------
 rem Install Programs if not found
@@ -28,8 +44,6 @@ where /q git
 if %errorlevel% neq 0 choco install git.install --yes --limit-output
 where /q nunit-console.exe
 if %errorlevel% neq 0 choco install nunit --version 2.6.4 --yes --limit-output
-where /q gcc.exe
-if %errorlevel% neq 0 choco install mingw -params "/exception:seh /threads:posix" --yes --limit-output
 
 rem --------------------------------------------------------------------------------------------------------------------
 rem Test if required programs are available
