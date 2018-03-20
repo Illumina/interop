@@ -156,6 +156,8 @@ endif()
 
 set(NUGET_SYS_ID "${CMAKE_SYSTEM_NAME}${PACKAGE_SUFFIX}")
 set(DOT_NET_FRAMEWORK "net40")
+set(DOT_NET_FRAMEWORK "${CSHARP_TYPE}")
+set(DOT_NET_FRAMEWORK "netstandard")
 get_filename_component(DLL_NAME ${CSBUILD_csharp_interop_BINARY} NAME)
 if(BUILD_NUMBER)
     MATH(EXPR VERSION_PATCHN "${VERSION_PATCH}+1")
@@ -187,6 +189,7 @@ add_custom_target(nuspec
         -DPLATFORM=${NUGET_SYS_ID}
         -DCSHARP_LIBRARY=${CSBUILD_csharp_interop_BINARY_NAME}
         -DCONFIG="${CONFIG_DIR}"
+        -DCSHARP_DLL_PREFIX="${CSBUILD_csharp_interop_BINARY_DIR}"
         -DSHARED_LIB_SEARCH="${SHARED_LIB_SEARCH_STR}"
         -DCONFIG_INPUT_FILE=${CMAKE_CURRENT_SOURCE_DIR}/package.nuspec.in
         -DCONFIG_OUTPUT_FILE=${CMAKE_SWIG_OUTDIR}/package.nuspec
@@ -203,7 +206,7 @@ if(NUGET_EXE)
     endif()
     add_custom_target(nupack
             COMMENT "Creating Nuget package: cd ${NUPACKOUTPUT};${NUGET_EXE} pack ${CMAKE_SWIG_OUTDIR}/package.nuspec"
-            COMMAND ${NUGET_EXE} pack  ${CMAKE_SWIG_OUTDIR}/package.nuspec
+            COMMAND ${NUGET_EXE} pack ${CMAKE_SWIG_OUTDIR}/package.nuspec
             WORKING_DIRECTORY ${NUPACKOUTPUT}
             )
     add_dependencies(nupack nuspec)

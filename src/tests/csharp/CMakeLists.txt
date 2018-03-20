@@ -70,6 +70,10 @@ else()
     add_dependencies(csharp_unittest csharp_interop ${NUNIT_TARGET})
 endif()
 
+# Clear old packages
+# dotnet nuget locals all --clear
+
+
 get_filename_component(CSBUILD_csharp_unittest_BINARY_DIR "${CSBUILD_csharp_unittest_BINARY}" DIRECTORY)
 add_custom_command(TARGET csharp_unittest POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CSBUILD_csharp_unittest_BINARY_DIR} $<TARGET_FILE_DIR:${INTEROP_LIB}>

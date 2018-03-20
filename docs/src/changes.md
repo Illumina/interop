@@ -1,6 +1,13 @@
 # Changes                                               {#changes}
 
-## v1.1.4 (Master)
+## v1.1.5 (Master)
+
+Date       | Description
+---------- | -----------
+2018-03-18 | Add Linux and Windows .NET Core builds
+
+
+## v1.1.4
 
 Date       | Description
 ---------- | -----------

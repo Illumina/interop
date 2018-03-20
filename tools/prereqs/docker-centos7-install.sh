@@ -29,15 +29,19 @@ JUNIT_URL="http://search.maven.org/remotecontent?filepath=junit/junit/4.12/junit
 NUNIT_URL="https://github.com/nunit/nunitv2/releases/download/2.6.4/NUnit-2.6.4.zip"
 JAVA_URL="http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.rpm"
 VALGRIND_URL="ftp://sourceware.org/pub/valgrind/valgrind-3.13.0.tar.bz2"
+DOTNET_URL="https://download.microsoft.com/download/1/1/5/115B762D-2B41-4AF3-9A63-92D9680B9409/dotnet-sdk-2.1.4-linux-x64.tar.gz"
 PROG_HOME=/opt
 SWIG_HOME=${PROG_HOME}/swig3
 JUNIT_HOME=${PROG_HOME}/junit
 NUNIT_HOME=${PROG_HOME}/nunit
 
 #yum -y update
-yum install -y wget which
+yum install -y wget which libunwind lttng-ust libcurl openssl-libs libuuid krb5-libs libicu zlib
 yum install -y gcc gcc-c++ libtool git make rpm-build
 yum install -y python-devel
+
+mkdir /opt/dotnet
+wget --no-check-certificate --quiet -O - ${DOTNET_URL} | tar --strip-components=1 -xz -C /opt/dotnet
 
 curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"
 python get-pip.py
@@ -134,7 +138,13 @@ cd -
 rm -fr tmp_build
 
 
+wget --no-check-certificate --quiet ${NUGET_URL} -O /usr/lib/nuget.exe
+echo "mono /usr/lib/nuget.exe \$@" > /usr/bin/nuget
+chmod +x /usr/bin/nuget
+
+
 export JAVA_HOME=/usr/java/jdk1.8.0_131
+export PATH=${PATH}:/opt/dotnet
 
 which gcc
 which g++
@@ -149,6 +159,7 @@ swig -version
 java -version
 cmake --version
 mono --version
+dotnet --version
 
 yum clean all
 
