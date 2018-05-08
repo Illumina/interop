@@ -1,0 +1,15 @@
+#pragma once
+#ifndef HAVE_STDINT_H
+#cmakedefine HAVE_STDINT_H
+#endif
+#ifndef HAVE_SYS_TYPES_H
+#cmakedefine HAVE_SYS_TYPES_H
+#endif
+#cmakedefine HAVE_UNORDERED_MAP_IN_STD
+#cmakedefine HAVE_NO_STD_ISNAN
+#ifndef HAVE_ISNAN
+#cmakedefine HAVE_ISNAN
+#endif
+#cmakedefine HAVE___ISNAN
+#cmakedefine HAVE_FLOAT_H_ISNAN
+#cmakedefine HAVE_UNIQUE_PTR

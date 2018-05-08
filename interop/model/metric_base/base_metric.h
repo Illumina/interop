@@ -428,6 +428,15 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         {
             return "";
         }
+        /** Comparison operator used to sort the entries in order of their IDs
+         *
+         * @param metric2 metric to compare with the current object
+         * @return true if this object's ID is less than metric2's ID
+         */
+        bool operator< (const base_metric& metric2) const
+        {
+            return id() < metric2.id();
+        }
 
     private:
         lane_t m_lane;

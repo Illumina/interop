@@ -8,6 +8,7 @@
  *  @copyright GNU Public License.
  */
 #pragma once
+#include "interop/config.h"
 
 #ifdef HAVE_UNORDERED_MAP_IN_STD
 #   define INTEROP_HAS_UNORDERED_MAP 1

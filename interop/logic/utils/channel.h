@@ -102,6 +102,11 @@ namespace illumina { namespace interop { namespace logic { namespace utils
         expected.reserve(std::distance(beg, end));
         normalize(beg, end, std::back_inserter(expected));
         std::stable_sort(expected.begin(), expected.end());
+        expected.erase(std::unique(expected.begin(), expected.end()), expected.end());
+        if(expected.size() != static_cast<size_t>(std::distance(beg, end)))
+        {
+            INTEROP_THROW( model::invalid_channel_exception, "Duplicate channel names in the RunInfo");
+        }
         std::string norm = join(expected.begin(), expected.end(), ",");
         if(norm == "a,c,g,t") return expected;
         if(norm == "green,red")
@@ -199,6 +204,12 @@ namespace illumina { namespace interop { namespace logic { namespace utils
                 channels.reserve(2);
                 channels.push_back("Red");
                 channels.push_back("Green");
+                break;
+            case constants::iSeq:
+                channels.clear();
+                channels.reserve(2);
+                channels.push_back("1");
+                channels.push_back("2");
                 break;
             case constants::HiSeq:
             case constants::MiSeq:

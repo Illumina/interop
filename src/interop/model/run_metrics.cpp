@@ -161,6 +161,16 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         const run::info& m_info;
     };
 
+    class rebuild_index
+    {
+    public:
+        template<class MetricSet>
+        void operator()(MetricSet &metrics)const
+        {
+            metrics.rebuild_index();
+        }
+    };
+
     class determine_tile_naming_method
     {
     public:
@@ -262,9 +272,50 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         size_t m_buffer_size;
     };
 
+    class append_tiles_functor
+    {
+    public:
+        append_tiles_functor(const run_metrics& metrics, const metric_base::base_metric& tile_id) :
+                m_metrics(metrics), m_tile_id(tile_id)
+        {
+        }
+
+    public:
+        template<class MetricSet>
+        void operator()(MetricSet &metrics) const
+        {
+            metrics.append_tiles(m_metrics.get<MetricSet>(), m_tile_id);
+        }
+
+    private:
+        const run_metrics& m_metrics;
+        const metric_base::base_metric m_tile_id;
+    };
+
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Definitions
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    /** Copy records only for a specific tile
+     *
+     * @param origin full metric set
+     * @param tile_id selected tile
+     */
+    void run_metrics::copy_tile(const run_metrics& metrics, const metric_base::base_metric& tile_id)
+    {
+        clear();
+        append_tiles(metrics, tile_id);
+    }
+    /** Adds records only for a specific tile
+     *
+     * @param origin full metric set
+     * @param tile_id selected tile
+     */
+    void run_metrics::append_tiles(const run_metrics& metrics, const metric_base::base_metric& tile_id)
+    {
+        m_metrics.apply(append_tiles_functor(metrics, tile_id));
+    }
 
     /** Read binary metrics and XML files from the run folder
      *
@@ -416,6 +467,11 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         if (count == std::numeric_limits<size_t>::max())
         {
             count = count_legacy_bins();
+
+            // BaseSpace calls finalize_after_load with the default argument (SAV does not)
+            // We need to ensure rebuild index is done for BaseSpace
+            // This is already taken care of for SAV by the read_by_cycle function
+            m_metrics.apply(rebuild_index());
         }
         if(logic::metric::requires_legacy_bins(count))
         {

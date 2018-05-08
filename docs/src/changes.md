@@ -6,19 +6,13 @@ Date       | Description
 ---------- | -----------
 2018-06-28 | Future proof throw specification
 2018-06-27 | Fix bug in example example_populate_qmetricset.pp
+2018-05-07 | Fix C++ Linking bug with inconsistent macros
+2018-05-07 | Add percent PF
+2018-05-07 | Add support for iSeq
 2018-03-18 | Add Linux and Windows .NET Core builds
 
 
 ## v1.1.4
-
-Date       | Description
----------- | -----------
-2018-02-06 | Warn GNU compiler versions less than 4.8
-2018-01-31 | Fix for the MinGW build
-2018-01-28 | Add Imaging Table example in Python
-2018-01-26 | Fix missing version.h in C++ install
-2018-01-26 | Fix missing apps on Windows
-
 
 Date       | Description
 ---------- | -----------
