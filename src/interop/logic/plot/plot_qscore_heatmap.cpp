@@ -145,8 +145,8 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                                     model::plot::heatmap_data& data,
                                     float* buffer,
                                     const size_t)
-    throw(model::index_out_of_bounds_exception,
-    model::invalid_filter_option)
+    INTEROP_THROW_SPEC((model::index_out_of_bounds_exception,
+    model::invalid_filter_option))
     {
         data.clear();
         if(options.is_specific_surface())

@@ -28,9 +28,9 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
                                const model::plot::filter_options& options,
                                model::plot::plot_data<model::plot::bar_point>& data,
                                const size_t boundary=0)
-                                throw( model::invalid_read_exception,
+                                INTEROP_THROW_SPEC(( model::invalid_read_exception,
                                 model::index_out_of_bounds_exception,
-                                model::invalid_filter_option);
+                                model::invalid_filter_option));
 
 }}}}
 

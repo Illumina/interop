@@ -35,9 +35,9 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                                   float* buffer=0,
                                   ::uint32_t* tile_buffer=0,
                            const bool skip_empty=true)
-                                  throw(model::invalid_filter_option,
+                                  INTEROP_THROW_SPEC((model::invalid_filter_option,
                                   model::invalid_metric_type,
-                                  model::index_out_of_bounds_exception);
+                                  model::index_out_of_bounds_exception));
     /** Plot a flowcell map
      *
      * @ingroup plot_logic
@@ -60,9 +60,9 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                            ::uint32_t* id_buffer,
                            const size_t id_buffer_size,
                                    const bool skip_empty=true)
-            throw(model::invalid_filter_option,
+            INTEROP_THROW_SPEC((model::invalid_filter_option,
             model::invalid_metric_type,
-            model::index_out_of_bounds_exception)
+            model::index_out_of_bounds_exception))
     {
         (void)buffer_size;
         (void)id_buffer_size;
@@ -87,9 +87,9 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                                   float* buffer=0,
                                   ::uint32_t* tile_buffer=0,
                            const bool skip_empty=true)
-                                  throw(model::invalid_filter_option,
+                                  INTEROP_THROW_SPEC((model::invalid_filter_option,
                                   model::invalid_metric_type,
-                                  model::index_out_of_bounds_exception);
+                                  model::index_out_of_bounds_exception));
     /** Plot a flowcell map
      *
      * @ingroup plot_logic
@@ -112,9 +112,9 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                            ::uint32_t* id_buffer,
                             const size_t id_buffer_size,
                                    const bool skip_empty=true)
-            throw(model::invalid_filter_option,
+            INTEROP_THROW_SPEC((model::invalid_filter_option,
             model::invalid_metric_type,
-            model::index_out_of_bounds_exception)
+            model::index_out_of_bounds_exception))
     {
         (void)buffer_size;
         (void)id_buffer_size;

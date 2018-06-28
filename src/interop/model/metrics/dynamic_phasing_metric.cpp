@@ -39,7 +39,7 @@ namespace illumina{ namespace interop{ namespace io {
          * @return 0
          */
         template<class Stream, class Metric, class Header>
-        static std::streamsize map_stream(Stream&, Metric&, Header&, const bool) throw(bad_format_exception)
+        static std::streamsize map_stream(Stream&, Metric&, Header&, const bool) INTEROP_THROW_SPEC((bad_format_exception))
         {
             INTEROP_THROW(bad_format_exception, "Dynamic phasing metric does not exist as a file");
         }

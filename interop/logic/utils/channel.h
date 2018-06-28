@@ -96,7 +96,7 @@ namespace illumina { namespace interop { namespace logic { namespace utils
      * @return string vector of expected channels
      */
     template<class I>
-    std::vector<std::string> expected_order(I beg, I end) throw( model::invalid_channel_exception )
+    std::vector<std::string> expected_order(I beg, I end) INTEROP_THROW_SPEC(( model::invalid_channel_exception ))
     {
         std::vector<std::string> expected;
         expected.reserve(std::distance(beg, end));

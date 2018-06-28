@@ -60,21 +60,21 @@ namespace illumina { namespace interop { namespace logic { namespace metric
      * @param q_metric_set q-metric set
      */
     void populate_cumulative_distribution(model::metric_base::metric_set<model::metrics::q_by_lane_metric>& q_metric_set)
-                                                                                throw( model::index_out_of_bounds_exception );
+                                                                                INTEROP_THROW_SPEC(( model::index_out_of_bounds_exception ));
     /** Populate cumulative q-metric distribution
      *
      * @note This can exist here or in SWIG. This is a swig interface function.
      * @param q_metric_set q-metric set
      */
     void populate_cumulative_distribution(model::metric_base::metric_set<model::metrics::q_metric>& q_metric_set)
-                    throw( model::index_out_of_bounds_exception );
+                    INTEROP_THROW_SPEC(( model::index_out_of_bounds_exception ));
     /** Populate cumulative cpllapsed q-metric distribution
      *
      * @note This can exist here or in SWIG. This is a swig interface function.
      * @param q_metric_set q-metric set
      */
     void populate_cumulative_distribution(model::metric_base::metric_set<model::metrics::q_collapsed_metric>& q_metric_set)
-                    throw( model::index_out_of_bounds_exception );
+                    INTEROP_THROW_SPEC(( model::index_out_of_bounds_exception ));
     /** Count number of unique counts to determine number
      * of unique bins for legacy binning
      *
@@ -295,6 +295,6 @@ namespace illumina { namespace interop { namespace logic { namespace metric
     void create_q_metrics_by_lane(const model::metric_base::metric_set<model::metrics::q_metric>& metric_set,
                                   model::metric_base::metric_set<model::metrics::q_by_lane_metric>& bylane,
                                   const constants::instrument_type instrument)
-                                        throw(model::index_out_of_bounds_exception);
+                                        INTEROP_THROW_SPEC((model::index_out_of_bounds_exception));
 }}}}
 

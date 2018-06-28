@@ -29,7 +29,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
     void populate_imaging_table_data(const model::metrics::run_metrics& metrics,
                                      const std::vector<model::table::imaging_column>& columns,
                                      const row_offset_map_t& row_offset,
-                                     float* data_beg, const size_t n) throw(model::index_out_of_bounds_exception, model::invalid_parameter);
+                                     float* data_beg, const size_t n) INTEROP_THROW_SPEC((model::index_out_of_bounds_exception, model::invalid_parameter));
     /** Count the number of rows in the imaging table and setup an ordering
      *
      * @param metrics collections of InterOp metric sets
@@ -49,7 +49,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
      * @param table destination imaging table
      */
     void create_imaging_table(model::metrics::run_metrics& metrics, model::table::imaging_table& table)
-    throw(model::invalid_column_type, model::index_out_of_bounds_exception, model::invalid_parameter);
+    INTEROP_THROW_SPEC((model::invalid_column_type, model::index_out_of_bounds_exception, model::invalid_parameter));
 
     /** List the required on demand metrics
      *

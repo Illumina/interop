@@ -104,9 +104,9 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                       const model::plot::filter_options& options,
                       model::plot::plot_data<Point>& data,
                         const bool skip_empty)
-    throw(model::index_out_of_bounds_exception,
+    INTEROP_THROW_SPEC((model::index_out_of_bounds_exception,
     model::invalid_metric_type,
-    model::invalid_filter_option)
+    model::invalid_filter_option))
     {
         data.clear();
         if(skip_empty && metrics.empty()) return;
@@ -164,9 +164,9 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                       const model::plot::filter_options& options,
                       model::plot::plot_data<model::plot::candle_stick_point>& data,
                       const bool skip_empty)
-            throw(model::index_out_of_bounds_exception,
+            INTEROP_THROW_SPEC((model::index_out_of_bounds_exception,
             model::invalid_metric_type,
-            model::invalid_filter_option)
+            model::invalid_filter_option))
     {
         plot_by_lane_t(metrics, type, options, data, skip_empty);
     }
@@ -186,9 +186,9 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                       const model::plot::filter_options& options,
                       model::plot::plot_data<model::plot::candle_stick_point>& data,
                       const bool skip_empty)
-    throw(model::index_out_of_bounds_exception,
+    INTEROP_THROW_SPEC((model::index_out_of_bounds_exception,
     model::invalid_metric_type,
-    model::invalid_filter_option)
+    model::invalid_filter_option))
     {
         const constants::metric_type type = constants::parse<constants::metric_type>(metric_name);
         if(type == constants::UnknownMetricType)

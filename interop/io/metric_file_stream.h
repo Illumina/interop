@@ -29,7 +29,7 @@ namespace illumina { namespace interop { namespace io
      * @return number of bytes required
      */
     template<class MetricSet>
-    size_t compute_buffer_size(const MetricSet& metrics) throw(io::invalid_argument, io::bad_format_exception)
+    size_t compute_buffer_size(const MetricSet& metrics) INTEROP_THROW_SPEC((io::invalid_argument, io::bad_format_exception))
     {
         return size_of_buffer(metrics);
     }
@@ -42,7 +42,7 @@ namespace illumina { namespace interop { namespace io
      */
     template<class MetricSet>
     size_t write_interop_to_buffer(const MetricSet& metrics, ::uint8_t* buffer, size_t buffer_size)
-                        throw(io::invalid_argument, io::bad_format_exception, io::incomplete_file_exception, io::format_exception)
+                        INTEROP_THROW_SPEC((io::invalid_argument, io::bad_format_exception, io::incomplete_file_exception, io::format_exception))
     {
         std::ostringstream fout;
         write_metrics(fout, metrics, metrics.version());
@@ -165,9 +165,9 @@ namespace illumina { namespace interop { namespace io
                        const MetricSet& metrics,
                        const bool use_out=true,
                        const ::int16_t version=-1)
-    throw(io::file_not_found_exception,
+    INTEROP_THROW_SPEC((io::file_not_found_exception,
     io::bad_format_exception,
-    io::incomplete_file_exception)
+    io::incomplete_file_exception))
     {
         if(metrics.empty() || metrics.version() == 0 )return true;
         const std::string file_name = interop_filename<MetricSet>(run_directory, use_out);
@@ -191,9 +191,9 @@ namespace illumina { namespace interop { namespace io
                               const ::int16_t version=-1,
                               const typename MetricType::header_type& header = typename MetricType::header_type(),
                               const bool use_out=true)
-    throw(io::file_not_found_exception,
+    INTEROP_THROW_SPEC((io::file_not_found_exception,
     io::bad_format_exception,
-    io::incomplete_file_exception)
+    io::incomplete_file_exception))
     {
         const std::string file_name = interop_filename<MetricType>(run_directory, use_out);
         std::ofstream fout(file_name.c_str(), std::ios::binary);
@@ -210,10 +210,10 @@ namespace illumina { namespace interop { namespace io
      */
     template<class MetricSet>
     bool interop_exists(const std::string& run_directory, MetricSet&, const bool use_out=true)
-    throw(io::file_not_found_exception,
+    INTEROP_THROW_SPEC((io::file_not_found_exception,
     io::bad_format_exception,
     io::incomplete_file_exception,
-    model::index_out_of_bounds_exception)
+    model::index_out_of_bounds_exception))
     {
         const std::string file_name = interop_filename<MetricSet>(run_directory, use_out);
         std::ifstream fin(file_name.c_str(), std::ios::binary);
@@ -271,10 +271,10 @@ namespace illumina { namespace interop { namespace io
                                MetricSet& metrics,
                                const size_t last_cycle,
                                const bool use_out=true)
-    throw(interop::io::file_not_found_exception,
+    INTEROP_THROW_SPEC((interop::io::file_not_found_exception,
     interop::io::bad_format_exception,
     interop::io::incomplete_file_exception,
-    model::index_out_of_bounds_exception)
+    model::index_out_of_bounds_exception))
     {
         std::string incomplete_file_message;
         for(size_t cycle=1;cycle <= last_cycle;++cycle)
@@ -310,10 +310,10 @@ namespace illumina { namespace interop { namespace io
      */
     template<class MetricSet>
     bool interop_exists(const std::string& run_directory, MetricSet&, const size_t last_cycle, const bool use_out=true)
-    throw(io::file_not_found_exception,
+    INTEROP_THROW_SPEC((io::file_not_found_exception,
     io::bad_format_exception,
     io::incomplete_file_exception,
-    model::index_out_of_bounds_exception)
+    model::index_out_of_bounds_exception))
     {
         std::string file_name = interop_filename<MetricSet>(run_directory, use_out);
         std::ifstream fin(file_name.c_str(), std::ios::binary);

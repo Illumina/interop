@@ -100,7 +100,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                                   const constants::tile_naming_method naming_method,
                                   summary_by_lane_read<float> &read_lane_cache,
                                   summary_by_lane_read<float> &read_lane_surface_cache)
-    throw(model::index_out_of_bounds_exception)
+    INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
     {
         typedef std::pair<size_t, size_t> key_t;
         typedef INTEROP_ORDERED_MAP(key_t, error_cache_element) error_tile_t;
@@ -209,7 +209,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                                  const read_cycle_vector_t &cycle_to_read,
                                  const constants::tile_naming_method naming_method,
                                  model::summary::run_summary &run,
-                                 const bool skip_median=false) throw(model::index_out_of_bounds_exception)
+                                 const bool skip_median=false) INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
     {
         typedef summary_by_lane_read<float> summary_by_lane_read_t;
         typedef void (model::summary::stat_summary::*error_functor_t )(const model::summary::metric_stat&);

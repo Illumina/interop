@@ -29,11 +29,11 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                        const model::plot::filter_options& options,
                        model::plot::plot_data<model::plot::candle_stick_point>& data,
                        const bool skip_empty=true)
-                    throw(model::index_out_of_bounds_exception,
+                    INTEROP_THROW_SPEC((model::index_out_of_bounds_exception,
                     model::invalid_metric_type,
                     model::invalid_channel_exception,
                     model::invalid_filter_option,
-                    model::invalid_read_exception);
+                    model::invalid_read_exception));
 
     /** Plot a specified metric value by cycle using the candle stick model
      *
@@ -50,10 +50,10 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                        const model::plot::filter_options& options,
                        model::plot::plot_data<model::plot::candle_stick_point>& data,
                        const bool skip_empty=true)
-            throw(model::index_out_of_bounds_exception,
+            INTEROP_THROW_SPEC((model::index_out_of_bounds_exception,
             model::invalid_filter_option,
             model::invalid_channel_exception,
-            model::invalid_metric_type);
+            model::invalid_metric_type));
 
     /** List metric types available for by cycle plots
      *

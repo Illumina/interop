@@ -51,7 +51,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          * @param col column index
          * @return value
          */
-        float at(const size_t row, const size_t col) const throw(model::index_out_of_bounds_exception)
+        float at(const size_t row, const size_t col) const INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
         {
             INTEROP_BOUNDS_CHECK(row, m_num_rows, "Row Index out of bounds");
             INTEROP_BOUNDS_CHECK(col, m_num_columns, "Column Index out of bounds");
@@ -67,7 +67,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          * @param idx index
          * @return value
          */
-        float at(const size_t idx) const throw(model::index_out_of_bounds_exception)
+        float at(const size_t idx) const INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
         {
             INTEROP_BOUNDS_CHECK(idx, length(), "Index out of bounds");
             INTEROP_ASSERT(m_data != 0);
@@ -78,7 +78,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          * @param idx index
          * @return value
          */
-        float operator[](const size_t idx) const throw(model::index_out_of_bounds_exception)
+        float operator[](const size_t idx) const INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
         {
             INTEROP_BOUNDS_CHECK(idx, length(), "Index out of bounds");
             INTEROP_ASSERT(m_data != 0);
@@ -93,7 +93,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          * @param col column index
          * @return value
          */
-        float operator()(const size_t row, const size_t col) const throw(model::index_out_of_bounds_exception)
+        float operator()(const size_t row, const size_t col) const INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
         {
             INTEROP_BOUNDS_CHECK(row, m_num_rows, "Row Index out of bounds");
             INTEROP_BOUNDS_CHECK(col, m_num_columns, "Column Index out of bounds");
@@ -111,7 +111,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          * @param col column index
          * @return value
          */
-        float &operator()(const size_t row, const size_t col) throw(model::index_out_of_bounds_exception)
+        float &operator()(const size_t row, const size_t col) INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
         {
             INTEROP_BOUNDS_CHECK(row, m_num_rows, "Row Index out of bounds");
             INTEROP_BOUNDS_CHECK(col, m_num_columns, "Column Index out of bounds");
@@ -162,7 +162,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          *
          * @param data use the given buffer to back the heat map
          */
-        void set_buffer(float* data) throw(model::invalid_parameter)
+        void set_buffer(float* data) INTEROP_THROW_SPEC((model::invalid_parameter))
         {
             if(m_free) INTEROP_THROW( invalid_parameter, "Cannot use internal buffer map with external buffer");
             if(empty()) INTEROP_THROW( invalid_parameter, "Cannot set external buffer to empty map");

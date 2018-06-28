@@ -302,7 +302,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
                                      const std::vector<model::table::imaging_column>& columns,
                                      const row_offset_map_t& row_offset,
                                      float* data_beg,
-                                     const size_t n) throw(model::index_out_of_bounds_exception, model::invalid_parameter)
+                                     const size_t n) INTEROP_THROW_SPEC((model::index_out_of_bounds_exception, model::invalid_parameter))
     {
         std::fill(data_beg, data_beg+n, std::numeric_limits<float>::quiet_NaN());
         create_imaging_table_data(metrics, columns, row_offset, data_beg, data_beg+n);
@@ -339,7 +339,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
      * @param table destination imaging table
      */
     void create_imaging_table(model::metrics::run_metrics& metrics, model::table::imaging_table& table)
-                                        throw(model::invalid_column_type, model::index_out_of_bounds_exception, model::invalid_parameter)
+                                        INTEROP_THROW_SPEC((model::invalid_column_type, model::index_out_of_bounds_exception, model::invalid_parameter))
     {
         typedef model::table::imaging_table::column_vector_t column_vector_t;
         typedef model::table::imaging_table::data_vector_t data_vector_t;

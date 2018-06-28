@@ -8,6 +8,7 @@
  *  @copyright GNU Public License.
  */
 #pragma once
+#include "interop/util/exception_specification.h"
 #include "interop/util/lexical_cast.h"
 
 /** Create a formatted message for the given exception

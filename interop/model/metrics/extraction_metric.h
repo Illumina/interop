@@ -354,7 +354,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @param channel channel index
          * @return median 90th percentile of the intensities
          */
-        ushort_t max_intensity(const size_t channel) const throw(model::index_out_of_bounds_exception)
+        ushort_t max_intensity(const size_t channel) const INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
         {
             INTEROP_BOUNDS_CHECK(channel, m_max_intensity_values.size(), "Channel out of bounds");
             return m_max_intensity_values[channel];
@@ -365,7 +365,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @param channel channel index
          * @return focus metric as measured by FWHM
          */
-        float focus_score(const size_t channel) const throw(model::index_out_of_bounds_exception)
+        float focus_score(const size_t channel) const INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
         {
             INTEROP_BOUNDS_CHECK(channel, m_focus_scores.size(), "Channel out of bounds");
             return m_focus_scores[channel];

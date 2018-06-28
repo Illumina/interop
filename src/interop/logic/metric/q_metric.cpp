@@ -18,7 +18,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
      */
     template<class QMetric>
     bool populate_cumulative_distribution_sorted(model::metric_base::metric_set<QMetric>& metric_set)
-    throw( model::index_out_of_bounds_exception )
+    INTEROP_THROW_SPEC(( model::index_out_of_bounds_exception ))
     {
         if(metric_set.size()==0) return true;
         typedef model::metric_base::base_metric::id_t id_t;
@@ -65,7 +65,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
      */
     template<class QMetric>
     void populate_cumulative_distribution_t(model::metric_base::metric_set<QMetric>& metric_set)
-    throw( model::index_out_of_bounds_exception )
+    INTEROP_THROW_SPEC(( model::index_out_of_bounds_exception ))
     {
         if(metric_set.size()==0) return;
         if(!populate_cumulative_distribution_sorted(metric_set))
@@ -81,7 +81,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
      * @param q_metric_set q-metric set
      */
     void populate_cumulative_distribution(model::metric_base::metric_set<model::metrics::q_by_lane_metric>& q_metric_set)
-    throw( model::index_out_of_bounds_exception )
+    INTEROP_THROW_SPEC(( model::index_out_of_bounds_exception ))
     {
         populate_cumulative_distribution_t(q_metric_set);
     }
@@ -91,7 +91,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
      * @param q_metric_set q-metric set
      */
     void populate_cumulative_distribution(model::metric_base::metric_set<model::metrics::q_metric>& q_metric_set)
-    throw( model::index_out_of_bounds_exception )
+    INTEROP_THROW_SPEC(( model::index_out_of_bounds_exception ))
     {
         populate_cumulative_distribution_t(q_metric_set);
     }
@@ -101,7 +101,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
      * @param q_metric_set q-metric set
      */
     void populate_cumulative_distribution(model::metric_base::metric_set<model::metrics::q_collapsed_metric>& q_metric_set)
-    throw( model::index_out_of_bounds_exception )
+    INTEROP_THROW_SPEC(( model::index_out_of_bounds_exception ))
     {
         populate_cumulative_distribution_t(q_metric_set);
     }
@@ -221,7 +221,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
      */
     void create_q_metrics_by_lane_base(const model::metric_base::metric_set<model::metrics::q_metric>& metric_set,
                                   model::metric_base::metric_set<model::metrics::q_by_lane_metric>& bylane)
-    throw(model::index_out_of_bounds_exception)
+    INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
     {
         typedef model::metric_base::metric_set<model::metrics::q_metric>::const_iterator const_iterator;
         typedef model::metric_base::metric_set<model::metrics::q_metric>::header_type header_type;
@@ -256,7 +256,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
     void create_q_metrics_by_lane(const model::metric_base::metric_set<model::metrics::q_metric>& metric_set,
                                   model::metric_base::metric_set<model::metrics::q_by_lane_metric>& bylane,
                                   const constants::instrument_type instrument)
-    throw(model::index_out_of_bounds_exception)
+    INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
     {
         create_q_metrics_by_lane_base(metric_set, bylane);
         const size_t bin_count = logic::metric::count_legacy_q_score_bins(bylane);

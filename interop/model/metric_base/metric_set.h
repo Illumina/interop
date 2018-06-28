@@ -263,7 +263,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          * @param n index
          * @return metric
          */
-        metric_type &operator[](const size_t n) throw(model::index_out_of_bounds_exception)
+        metric_type &operator[](const size_t n) INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
         {
             INTEROP_BOUNDS_CHECK(n, m_data.size(), "Index out of bounds");
             return m_data[n];
@@ -274,19 +274,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          * @param n index
          * @return metric
          */
-        const metric_type &operator[](const size_t n)const throw(model::index_out_of_bounds_exception)
-        {
-            INTEROP_BOUNDS_CHECK(n, m_data.size(), "Index out of bounds");
-            return m_data[n];
-        }
-
-        /** Get a metric at the given index
-         *
-         * @deprecated Will be removed in next feature version (use operator[] instead for C++ Code)
-         * @param n index
-         * @return metric
-         */
-        metric_type &at(const size_t n) throw(model::index_out_of_bounds_exception)
+        const metric_type &operator[](const size_t n)const INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
         {
             INTEROP_BOUNDS_CHECK(n, m_data.size(), "Index out of bounds");
             return m_data[n];
@@ -298,7 +286,19 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          * @param n index
          * @return metric
          */
-        const metric_type &at(const size_t n)const throw(model::index_out_of_bounds_exception)
+        metric_type &at(const size_t n) INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
+        {
+            INTEROP_BOUNDS_CHECK(n, m_data.size(), "Index out of bounds");
+            return m_data[n];
+        }
+
+        /** Get a metric at the given index
+         *
+         * @deprecated Will be removed in next feature version (use operator[] instead for C++ Code)
+         * @param n index
+         * @return metric
+         */
+        const metric_type &at(const size_t n)const INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
         {
             INTEROP_BOUNDS_CHECK(n, m_data.size(), "Index out of bounds");
             return m_data[n];
@@ -556,7 +556,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          * @return metric
          */
         metric_type &get_metric_ref(uint_t lane, uint_t tile,
-                                    uint_t cycle = 0) throw(model::index_out_of_bounds_exception)
+                                    uint_t cycle = 0) INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
         {
             try
             {
@@ -584,7 +584,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          * @param key unique id built from lane, tile and cycle (if available)
          * @return metric
          */
-        metric_type &get_metric_ref(id_t key) throw(model::index_out_of_bounds_exception)
+        metric_type &get_metric_ref(id_t key) INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
         {
             if(m_id_map.empty())
                 INTEROP_THROW( index_out_of_bounds_exception, "Index map empty: Run rebuild_index(true) on this metric_set" );
@@ -631,7 +631,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          * @return metric
          */
         const metric_type &get_metric(const uint_t lane, const uint_t tile,
-                                      const uint_t cycle = 0) const throw(model::index_out_of_bounds_exception)
+                                      const uint_t cycle = 0) const INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
         {
             try
             {
@@ -669,7 +669,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          * @param key unique id built from lane, tile and cycle (if available)
          * @return metric
          */
-        const metric_type &get_metric(const id_t key) const throw(model::index_out_of_bounds_exception)
+        const metric_type &get_metric(const id_t key) const INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
         {
             if(m_id_map.empty())
                 INTEROP_THROW( index_out_of_bounds_exception, "Index map empty: Run rebuild_index(true) on this metric_set" );

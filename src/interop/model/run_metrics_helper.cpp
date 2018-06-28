@@ -259,7 +259,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                                                  std::vector<std::string>& files,
                                                  const std::string& run_folder,
                                                  const bool use_out)
-                throw(invalid_run_info_exception)
+                INTEROP_THROW_SPEC((invalid_run_info_exception))
                 {
                     const size_t last_cycle = run_info().total_cycles();
                     if( last_cycle == 0 )
@@ -278,7 +278,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                                                  const std::string& run_folder,
                                                  const bool bycycle,
                                                  const bool use_out)
-                throw(invalid_run_info_exception)
+                INTEROP_THROW_SPEC((invalid_run_info_exception))
                 {
                     if(bycycle)
                     {
@@ -303,8 +303,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                  * @param group metric set to write
                  * @return required size of the binary buffer
                  */
-                size_t run_metrics::calculate_buffer_size(const constants::metric_group group)const throw(
-                io::invalid_argument, io::bad_format_exception)
+                size_t run_metrics::calculate_buffer_size(const constants::metric_group group)const INTEROP_THROW_SPEC((
+                io::invalid_argument, io::bad_format_exception))
                 {
                     calculate_metric_set_buffer_size calc(group);
                     m_metrics.apply(calc);

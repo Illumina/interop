@@ -122,7 +122,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @param run_folder run folder path
          * @param thread_count number of threads to use for network loading
          */
-        void read(const std::string &run_folder, const size_t thread_count=1) throw(xml::xml_file_not_found_exception,
+        void read(const std::string &run_folder, const size_t thread_count=1) INTEROP_THROW_SPEC((xml::xml_file_not_found_exception,
         xml::bad_xml_format_exception,
         xml::empty_xml_format_exception,
         xml::missing_xml_element_exception,
@@ -136,7 +136,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         model::invalid_tile_list_exception,
         model::invalid_run_info_exception,
         model::invalid_run_info_cycle_exception,
-        model::invalid_parameter);
+        model::invalid_parameter));
         /** Read binary metrics and XML files from the run folder
          *
          * @note invalid_run_info_cycle_exception and invalid_tile_list_exception can be safely caught and ignored
@@ -150,7 +150,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                   const std::vector<unsigned char>& valid_to_load,
                   const size_t thread_count=1,
                   const bool skip_loaded=false)
-        throw(xml::xml_file_not_found_exception,
+        INTEROP_THROW_SPEC((xml::xml_file_not_found_exception,
         xml::bad_xml_format_exception,
         xml::empty_xml_format_exception,
         xml::missing_xml_element_exception,
@@ -164,54 +164,54 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         model::invalid_tile_list_exception,
         model::invalid_run_info_exception,
         model::invalid_run_info_cycle_exception,
-        model::invalid_parameter);
+        model::invalid_parameter));
 
         /** Read XML files: RunInfo.xml and possibly RunParameters.xml
          *
          * @param run_folder run folder path
          */
-        size_t read_xml(const std::string &run_folder) throw(io::file_not_found_exception,
+        size_t read_xml(const std::string &run_folder) INTEROP_THROW_SPEC((io::file_not_found_exception,
         xml::xml_file_not_found_exception,
         xml::bad_xml_format_exception,
         xml::empty_xml_format_exception,
         xml::missing_xml_element_exception,
-        xml::xml_parse_exception);
+        xml::xml_parse_exception));
 
         /** Read RunInfo.xml
          *
          * @param run_folder run folder path
          */
-        void read_run_info(const std::string &run_folder) throw(xml::xml_file_not_found_exception,
+        void read_run_info(const std::string &run_folder) INTEROP_THROW_SPEC((xml::xml_file_not_found_exception,
         xml::bad_xml_format_exception,
         xml::empty_xml_format_exception,
         xml::missing_xml_element_exception,
-        xml::xml_parse_exception);
+        xml::xml_parse_exception));
 
         /** Read RunParameters.xml if necessary
          *
          * @param run_folder run folder path
          * @param force_load force loading of run parameters
          */
-        size_t read_run_parameters(const std::string &run_folder, const bool force_load=false) throw(
+        size_t read_run_parameters(const std::string &run_folder, const bool force_load=false) INTEROP_THROW_SPEC((
         io::file_not_found_exception,
         xml::xml_file_not_found_exception,
         xml::bad_xml_format_exception,
         xml::empty_xml_format_exception,
         xml::missing_xml_element_exception,
-        xml::xml_parse_exception);
+        xml::xml_parse_exception));
 
         /** Finalize the metric sets after loading from disk
          *
          * @param count number of bins for legacy q-metrics
          */
-        void finalize_after_load(size_t count = std::numeric_limits<size_t>::max()) throw(
+        void finalize_after_load(size_t count = std::numeric_limits<size_t>::max()) INTEROP_THROW_SPEC((
         model::invalid_channel_exception,
         model::invalid_tile_naming_method,
         model::index_out_of_bounds_exception,
         model::invalid_tile_list_exception,
         model::invalid_run_info_exception,
         model::invalid_run_info_cycle_exception,
-        model::invalid_parameter);
+        model::invalid_parameter));
 
         /** Test if all metrics are empty
          *
@@ -293,7 +293,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                             std::vector<std::string>& files,
                             const std::string& run_folder,
                             const bool use_out=true)
-        throw(invalid_run_info_exception);
+        INTEROP_THROW_SPEC((invalid_run_info_exception));
 
         /** List all filenames for all metrics
          *
@@ -306,7 +306,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                             const std::string& run_folder,
                             const bool bycycle=false,
                             const bool use_out=true)
-        throw(invalid_run_info_exception);
+        INTEROP_THROW_SPEC((invalid_run_info_exception));
 
     public:
         /** Set a given metric set
@@ -372,10 +372,10 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @param last_cycle last cycle of run
          * @param thread_count number of threads to use for network loading
          */
-        void read_metrics(const std::string &run_folder, const size_t last_cycle, const size_t thread_count) throw(
+        void read_metrics(const std::string &run_folder, const size_t last_cycle, const size_t thread_count) INTEROP_THROW_SPEC((
         io::file_not_found_exception,
         io::bad_format_exception,
-        io::incomplete_file_exception);
+        io::incomplete_file_exception));
         /** Read binary metrics from the run folder
          *
          * This function ignores:
@@ -393,19 +393,19 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                           const size_t last_cycle,
                           const std::vector<unsigned char>& valid_to_load,
                           const size_t thread_count,
-                          const bool skip_loaded=false) throw(
+                          const bool skip_loaded=false) INTEROP_THROW_SPEC((
         io::file_not_found_exception,
         io::bad_format_exception,
         io::incomplete_file_exception,
-        model::invalid_parameter);
+        model::invalid_parameter));
         /** Write binary metrics to the run folder
          *
          * @param run_folder run folder path
          * @param use_out use the copied version
          */
-        void write_metrics(const std::string &run_folder, const bool use_out=true)const throw(
+        void write_metrics(const std::string &run_folder, const bool use_out=true)const INTEROP_THROW_SPEC((
         io::file_not_found_exception,
-        io::bad_format_exception);
+        io::bad_format_exception));
 
 
         /** Read a single metric set from a binary buffer
@@ -416,11 +416,11 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         void read_metrics_from_buffer(const constants::metric_group group,
                                      uint8_t* buffer,
-                                     const size_t buffer_size) throw(
+                                     const size_t buffer_size) INTEROP_THROW_SPEC((
         io::file_not_found_exception,
         io::bad_format_exception,
         io::incomplete_file_exception,
-        model::index_out_of_bounds_exception);
+        model::index_out_of_bounds_exception));
         /** Write a single metric set to a binary buffer
          *
          * @param group metric set to write
@@ -429,24 +429,24 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         void write_metrics_to_buffer(const constants::metric_group group,
                                      uint8_t* buffer,
-                                     const size_t buffer_size)const throw(
+                                     const size_t buffer_size)const INTEROP_THROW_SPEC((
         io::invalid_argument,
         io::bad_format_exception,
-        io::incomplete_file_exception);
+        io::incomplete_file_exception));
         /** Calculate the required size of the buffer for writing
          *
          * @param group metric set to write
          * @return required size of the binary buffer
          */
-        size_t calculate_buffer_size(const constants::metric_group group)const throw(
-        io::invalid_argument, io::bad_format_exception);
+        size_t calculate_buffer_size(const constants::metric_group group)const INTEROP_THROW_SPEC((
+        io::invalid_argument, io::bad_format_exception));
 
         /** Validate whether the RunInfo.xml matches the InterOp files
          *
          * @throws invalid_run_info_exception
          * @throws invalid_run_info_cycle_exception
          */
-        void validate() throw(invalid_run_info_exception, invalid_run_info_cycle_exception);
+        void validate() INTEROP_THROW_SPEC((invalid_run_info_exception, invalid_run_info_cycle_exception));
 
         /** Read binary metrics and XML files from the run folder
          *

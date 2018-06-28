@@ -31,7 +31,11 @@ namespace std {
 #include "interop/io/stream_exceptions.h"
 #include "interop/model/model_exceptions.h"
 #include "interop/util/xml_exceptions.h"
+#include "interop/util/exception_specification.h"
 %}
+
+%define INTEROP_THROW_SPEC(SPEC) throw SPEC
+%enddef
 
 
 #if defined(SWIGCSHARP)

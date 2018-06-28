@@ -60,7 +60,7 @@ namespace illumina { namespace interop { namespace logic { namespace utils
     void list_metrics_to_load(const std::string& metric_name,
                               std::vector<unsigned char>& valid_to_load,
                               const constants::instrument_type instrument=constants::NovaSeq)
-    throw(model::invalid_metric_type);
+    INTEROP_THROW_SPEC((model::invalid_metric_type));
 
     /** List all required metric groups
      *

@@ -28,11 +28,11 @@ using namespace illumina::interop::xml;
 namespace illumina { namespace interop { namespace model { namespace run
 {
 
-    void parameters::parse(char *data) throw(xml::xml_file_not_found_exception,
+    void parameters::parse(char *data) INTEROP_THROW_SPEC((xml::xml_file_not_found_exception,
     xml::bad_xml_format_exception,
     xml::empty_xml_format_exception,
     xml::missing_xml_element_exception,
-    xml::xml_parse_exception)
+    xml::xml_parse_exception))
     {
         rapidxml::xml_document<> doc;
         try
@@ -98,11 +98,11 @@ namespace illumina { namespace interop { namespace model { namespace run
     }
 
     void parameters::read_file(const std::string &filename)
-    throw(xml::xml_file_not_found_exception,
+    INTEROP_THROW_SPEC((xml::xml_file_not_found_exception,
     xml::bad_xml_format_exception,
     xml::empty_xml_format_exception,
     xml::missing_xml_element_exception,
-    xml::xml_parse_exception)
+    xml::xml_parse_exception))
     {
         try
         {
@@ -115,11 +115,11 @@ namespace illumina { namespace interop { namespace model { namespace run
         }
     }
 
-    void parameters::read(const std::string &run_folder) throw(xml::xml_file_not_found_exception,
+    void parameters::read(const std::string &run_folder) INTEROP_THROW_SPEC((xml::xml_file_not_found_exception,
     xml::bad_xml_format_exception,
     xml::empty_xml_format_exception,
     xml::missing_xml_element_exception,
-    xml::xml_parse_exception)
+    xml::xml_parse_exception))
     {
 
         if (run_folder.find(io::paths::run_parameters()) != std::string::npos ||

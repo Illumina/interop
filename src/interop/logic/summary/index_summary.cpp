@@ -24,7 +24,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
                                  const model::metric_base::metric_set<model::metrics::tile_metric>& tile_metrics,
                                  const size_t lane,
                                  model::summary::index_lane_summary &summary)
-    throw(model::index_out_of_bounds_exception)
+    INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
     {
         typedef model::metric_base::metric_set<model::metrics::index_metric>::const_iterator const_iterator;
         typedef model::summary::index_lane_summary::read_count_t read_count_t;
@@ -112,7 +112,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
     void summarize_index_metrics(model::metrics::run_metrics &metrics,
                                         const size_t lane,
                                         model::summary::index_lane_summary &summary)
-    throw(model::index_out_of_bounds_exception)
+    INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
     {
         summarize_index_metrics(metrics.get<model::metrics::index_metric>(),
                                 metrics.get<model::metrics::tile_metric>(),
@@ -131,7 +131,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
                                         const model::metric_base::metric_set<model::metrics::tile_metric>& tile_metrics,
                                         const size_t lane_count,
                                         model::summary::index_flowcell_summary &summary)
-    throw(model::index_out_of_bounds_exception)
+    INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
     {
         if(index_metrics.empty() || tile_metrics.empty()) return;
         summary.resize(lane_count);
@@ -149,7 +149,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary {
      */
     void summarize_index_metrics(model::metrics::run_metrics &metrics,
                                         model::summary::index_flowcell_summary &summary)
-    throw(model::index_out_of_bounds_exception)
+    INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
     {
         const size_t lane_count = metrics.run_info().flowcell().lane_count();
         summarize_index_metrics(metrics.get<model::metrics::index_metric>(),

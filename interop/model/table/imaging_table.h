@@ -59,7 +59,7 @@ namespace illumina { namespace interop { namespace model { namespace table
          * @param subcol sub column offset
          * @return cell value
          */
-        float operator()(const size_t r, const column_id c, const size_t subcol=0)const throw(model::index_out_of_bounds_exception)
+        float operator()(const size_t r, const column_id c, const size_t subcol=0)const INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
         {
             INTEROP_BOUNDS_CHECK(static_cast<size_t>(c), m_enum_to_index.size(), "Invalid enum id for column (" << constants::to_string(c) << ")");
             const size_t col = m_enum_to_index[static_cast<size_t>(c)];
@@ -73,7 +73,7 @@ namespace illumina { namespace interop { namespace model { namespace table
          * @param subcol sub column offset
          * @return cell value
          */
-        float operator()(const size_t row, const size_t col, const size_t subcol=0)const throw(model::index_out_of_bounds_exception)
+        float operator()(const size_t row, const size_t col, const size_t subcol=0)const INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
         {
             INTEROP_BOUNDS_CHECK(row, m_row_count, "Row index out of bounds");
             INTEROP_BOUNDS_CHECK(col, m_columns.size(), "Column index out of bounds");
@@ -113,7 +113,7 @@ namespace illumina { namespace interop { namespace model { namespace table
          * @param col_index index of column description
          * @return column description
          */
-        const imaging_column& column_at(const size_t col_index)throw(model::index_out_of_bounds_exception)
+        const imaging_column& column_at(const size_t col_index)INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
         {
             INTEROP_BOUNDS_CHECK(col_index, m_columns.size(), "Column index out of bounds");
             return m_columns[col_index];

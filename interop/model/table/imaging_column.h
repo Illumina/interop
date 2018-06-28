@@ -174,7 +174,7 @@ namespace illumina { namespace interop { namespace model { namespace table
          * @param sub_index index of subcolumn
          * @return name of the column
          */
-        std::string full_name(const size_t sub_index)const throw(model::index_out_of_bounds_exception)
+        std::string full_name(const size_t sub_index)const INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
         {
             if (has_children())
             {

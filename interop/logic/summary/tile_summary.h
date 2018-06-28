@@ -145,7 +145,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                                 const constants::tile_naming_method naming_method,
                                 model::summary::run_summary &run,
                                 const bool skip_median=false)
-                                    throw(model::index_out_of_bounds_exception)
+                                    INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
     {
         typedef typename model::metrics::tile_metric::read_metric_vector read_metric_vector_t;
         typedef typename read_metric_vector_t::const_iterator const_read_metric_iterator;

@@ -63,7 +63,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          * @param loc
          * @return tile id
          */
-        ::uint32_t tile_id(const size_t lane_idx, const size_t loc) const throw(model::index_out_of_bounds_exception)
+        ::uint32_t tile_id(const size_t lane_idx, const size_t loc) const INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
         {
             INTEROP_BOUNDS_CHECK(lane_idx, lane_count(), "Lane Index out of bounds");
             INTEROP_BOUNDS_CHECK(loc, column_count(), "Location Index out of bounds");
@@ -137,7 +137,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          * @param value value of the metric
          */
         void set_data(const size_t lane_idx, const size_t loc, const ::uint32_t tile_id, const float value)
-        throw(model::index_out_of_bounds_exception)
+        INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
         {
             INTEROP_BOUNDS_CHECK(lane_idx, lane_count(), "Lane Index out of bounds");
             INTEROP_BOUNDS_CHECK(loc, column_count(), "Location Index out of bounds");
@@ -151,7 +151,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          * @param loc
          * @return tile id
          */
-        ::uint32_t& tile_id(const size_t lane_idx, const size_t loc) throw(model::index_out_of_bounds_exception)
+        ::uint32_t& tile_id(const size_t lane_idx, const size_t loc) INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
         {
             INTEROP_BOUNDS_CHECK(lane_idx, lane_count(), "Lane Index out of bounds");
             INTEROP_BOUNDS_CHECK(loc, column_count(), "Location Index out of bounds");
@@ -206,7 +206,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
                         ::uint32_t *id_buffer,
                         const size_t lanes,
                         const size_t swaths,
-                        const size_t tiles)  throw(model::invalid_parameter)
+                        const size_t tiles)  INTEROP_THROW_SPEC((model::invalid_parameter))
         {
             heatmap_data::set_buffer(data_buffer, lanes, swaths * tiles);
             set_buffer(id_buffer, swaths, tiles);

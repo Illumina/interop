@@ -31,9 +31,9 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                       const model::plot::filter_options& options,
                       model::plot::plot_data<model::plot::candle_stick_point>& data,
                       const bool skip_empty=true)
-                    throw(model::index_out_of_bounds_exception,
+                    INTEROP_THROW_SPEC((model::index_out_of_bounds_exception,
                     model::invalid_metric_type,
-                    model::invalid_filter_option);
+                    model::invalid_filter_option));
 
     /** Plot a specified metric value by cycle
      *
@@ -50,9 +50,9 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                       const model::plot::filter_options& options,
                       model::plot::plot_data<model::plot::candle_stick_point>& data,
                       const bool skip_empty=true)
-            throw(model::index_out_of_bounds_exception,
+            INTEROP_THROW_SPEC((model::index_out_of_bounds_exception,
             model::invalid_metric_type,
-            model::invalid_filter_option);
+            model::invalid_filter_option));
 
     /** List metric types available for by lane plots
      *
