@@ -40,7 +40,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                                       const size_t channel,
                                       const constants::tile_naming_method naming_method,
                                       model::summary::run_summary &run,
-                                      const bool skip_median=false) throw(model::index_out_of_bounds_exception)
+                                      const bool skip_median=false) INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
     {
         typedef typename model::metrics::extraction_metric::ushort_t ushort_t;
         typedef summary_by_lane_read<ushort_t> summary_by_lane_read_t;

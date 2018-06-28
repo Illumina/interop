@@ -38,7 +38,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                                    I end,
                                    model::summary::run_summary &run,
                                    const constants::tile_naming_method naming_method,
-                                   const bool skip_median=false) throw(model::index_out_of_bounds_exception)
+                                   const bool skip_median=false) INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
     {
         typedef summary_by_lane_read<float> summary_by_lane_read_t;
         if (beg == end) return;

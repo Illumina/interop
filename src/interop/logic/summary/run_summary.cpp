@@ -108,9 +108,9 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                                model::summary::run_summary& summary,
                                const bool skip_median,
                                const bool trim)
-    throw( model::index_out_of_bounds_exception,
+    INTEROP_THROW_SPEC(( model::index_out_of_bounds_exception,
     model::invalid_channel_exception,
-    model::invalid_run_info_exception )
+    model::invalid_run_info_exception ))
     {
         using namespace model::metrics;
         if(metrics.empty())

@@ -176,7 +176,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
          * @param n index
          * @return reference to read_summary
          */
-        read_summary & operator[](const size_t n) throw(model::index_out_of_bounds_exception)
+        read_summary & operator[](const size_t n) INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
         {
             INTEROP_BOUNDS_CHECK(n, m_summary_by_read.size(), "Read index exceeds read count");
             return m_summary_by_read[n];
@@ -187,7 +187,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
          * @param n index
          * @return constant reference to read_summary
          */
-        const read_summary & operator[](const size_t n) const throw(model::index_out_of_bounds_exception)
+        const read_summary & operator[](const size_t n) const INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
         {
             INTEROP_BOUNDS_CHECK(n, m_summary_by_read.size(), "Read index exceeds read count");
             return m_summary_by_read[n];
@@ -199,7 +199,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
          * @param n index
          * @return reference to read_summary
          */
-        read_summary &at(const size_t n) throw(model::index_out_of_bounds_exception)
+        read_summary &at(const size_t n) INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
         {
             INTEROP_BOUNDS_CHECK(n, m_summary_by_read.size(), "Read index exceeds read count");
             return m_summary_by_read[n];
@@ -211,7 +211,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
          * @param n index
          * @return constant reference to read_summary
          */
-        const_reference at(const size_type n) const throw(model::index_out_of_bounds_exception)
+        const_reference at(const size_type n) const INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
         {
             INTEROP_BOUNDS_CHECK(n, m_summary_by_read.size(), "Read index exceeds read count");
             return m_summary_by_read[n];

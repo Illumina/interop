@@ -64,7 +64,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
      */
     inline size_t get_last_filtered_cycle(const model::run::info &run_info,
                                           const model::plot::filter_options &options,
-                                          const size_t max_cycle) throw(model::invalid_read_exception)
+                                          const size_t max_cycle) INTEROP_THROW_SPEC((model::invalid_read_exception))
     {
         size_t last_cycle = options.all_reads() ? max_cycle : run_info.read(options.read()).last_cycle();
         if(!options.all_cycles()) last_cycle = std::min(last_cycle, static_cast<size_t>(options.cycle()));
@@ -148,9 +148,9 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                                const model::plot::filter_options& options,
                                model::plot::plot_data<model::plot::bar_point>& data,
                                const size_t boundary)
-    throw( model::invalid_read_exception,
+    INTEROP_THROW_SPEC(( model::invalid_read_exception,
     model::index_out_of_bounds_exception,
-    model::invalid_filter_option)
+    model::invalid_filter_option))
     {
         typedef model::plot::bar_point Point;
         data.clear();

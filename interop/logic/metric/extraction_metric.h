@@ -29,7 +29,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
     void copy_focus(const model::metric_base::metric_set<model::metrics::extraction_metric>& metrics,
                            float *focus_scores,
                            const size_t channel,
-                           const size_t n) throw(model::invalid_parameter, model::index_out_of_bounds_exception);
+                           const size_t n) INTEROP_THROW_SPEC((model::invalid_parameter, model::index_out_of_bounds_exception));
 
 
 }}}}

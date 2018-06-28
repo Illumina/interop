@@ -32,7 +32,7 @@ namespace illumina { namespace interop { namespace model { namespace run
      *
      * @param filename xml file
      */
-    void info::write(const std::string &filename)const throw(xml::xml_file_not_found_exception,xml::bad_xml_format_exception)
+    void info::write(const std::string &filename)const INTEROP_THROW_SPEC((xml::xml_file_not_found_exception,xml::bad_xml_format_exception))
     {
         std::ofstream fout(filename.c_str());
         if(!fout.good()) throw xml::xml_file_not_found_exception("Unable to open RunInfo.xml for writing");
@@ -43,7 +43,7 @@ namespace illumina { namespace interop { namespace model { namespace run
      *
      * @param out output stream
      */
-    void info::write(std::ostream& out)const throw(xml::bad_xml_format_exception)
+    void info::write(std::ostream& out)const INTEROP_THROW_SPEC((xml::bad_xml_format_exception))
     {
         xml_document doc;
         rapidxml::xml_node<>* run_info = doc.add_node("RunInfo");
@@ -103,11 +103,11 @@ namespace illumina { namespace interop { namespace model { namespace run
         out << doc;
     }
 
-    void info::parse(char *data)  throw(xml::xml_file_not_found_exception,
+    void info::parse(char *data)  INTEROP_THROW_SPEC((xml::xml_file_not_found_exception,
     xml::bad_xml_format_exception,
     xml::empty_xml_format_exception,
     xml::missing_xml_element_exception,
-    xml::xml_parse_exception)
+    xml::xml_parse_exception))
     {
         rapidxml::xml_document<> doc;
         try
@@ -224,11 +224,11 @@ namespace illumina { namespace interop { namespace model { namespace run
         m_total_cycle_count = total_cycles();
     }
 
-    void info::read_file(const std::string &filename)  throw(xml::xml_file_not_found_exception,
+    void info::read_file(const std::string &filename)  INTEROP_THROW_SPEC((xml::xml_file_not_found_exception,
     xml::bad_xml_format_exception,
     xml::empty_xml_format_exception,
     xml::missing_xml_element_exception,
-    xml::xml_parse_exception)
+    xml::xml_parse_exception))
     {
         try
         {
@@ -241,13 +241,13 @@ namespace illumina { namespace interop { namespace model { namespace run
         }
     }
 
-    void info::read(const std::string &run_folder) throw(xml::xml_file_not_found_exception,
+    void info::read(const std::string &run_folder) INTEROP_THROW_SPEC((xml::xml_file_not_found_exception,
     util::base_exception,
     xml::xml_format_exception,
     xml::bad_xml_format_exception,
     xml::empty_xml_format_exception,
     xml::missing_xml_element_exception,
-    xml::xml_parse_exception)
+    xml::xml_parse_exception))
     {
         if (run_folder.find(io::paths::run_info()) != std::string::npos)
         {
@@ -265,7 +265,7 @@ namespace illumina { namespace interop { namespace model { namespace run
      * @throws invalid_run_info_exception
      */
     void info::validate_read(const ::uint32_t lane, const ::uint32_t tile, const size_t read, const std::string& metric_name)const
-    throw(model::invalid_run_info_exception)
+    INTEROP_THROW_SPEC((model::invalid_run_info_exception))
     {
         validate(lane, tile, metric_name);
         INTEROP_RANGE_CHECK_GT(read, m_reads.size(), invalid_run_info_exception,
@@ -281,8 +281,8 @@ namespace illumina { namespace interop { namespace model { namespace run
      * @throws invalid_run_info_exception
      */
     void info::validate_cycle(const ::uint32_t lane, const ::uint32_t tile, const size_t cycle, const std::string& metric_name)const
-    throw(model::invalid_run_info_exception,
-          model::invalid_run_info_cycle_exception)
+    INTEROP_THROW_SPEC((model::invalid_run_info_exception,
+          model::invalid_run_info_cycle_exception))
     {
         validate(lane, tile, metric_name);
         INTEROP_RANGE_CHECK_GT(cycle, m_total_cycle_count, invalid_run_info_cycle_exception,
@@ -297,7 +297,7 @@ namespace illumina { namespace interop { namespace model { namespace run
      * @param metric_name name of the metric checked
      * @throws invalid_run_info_exception
      */
-    void info::validate(const ::uint32_t lane, const ::uint32_t tile, const std::string& metric_name)const throw(model::invalid_run_info_exception)
+    void info::validate(const ::uint32_t lane, const ::uint32_t tile, const std::string& metric_name)const INTEROP_THROW_SPEC((model::invalid_run_info_exception))
     {
         INTEROP_RANGE_CHECK_GT(lane, m_flowcell.lane_count(), invalid_run_info_exception,
                              "Lane identifier exceeds number of lanes in RunInfo.xml for record "
@@ -328,7 +328,7 @@ namespace illumina { namespace interop { namespace model { namespace run
      * @throws invalid_run_info_exception
      * @throws invalid_tile_naming_method
      */
-    void info::validate()const throw(model::invalid_run_info_exception, model::invalid_tile_naming_method)
+    void info::validate()const INTEROP_THROW_SPEC((model::invalid_run_info_exception, model::invalid_tile_naming_method))
     {
         if(m_flowcell.naming_method()==constants::UnknownTileNamingMethod)
             INTEROP_THROW(invalid_tile_naming_method, "Unknown tile naming method");
@@ -376,7 +376,7 @@ namespace illumina { namespace interop { namespace model { namespace run
      *
      * @throws invalid_run_info_exception
      */
-    void info::validate_tiles()const throw(model::invalid_tile_list_exception)
+    void info::validate_tiles()const INTEROP_THROW_SPEC((model::invalid_tile_list_exception))
     {
         typedef flowcell_layout::str_vector_t str_vector_t;
         for(str_vector_t::const_iterator it = m_flowcell.tiles().begin();it != m_flowcell.tiles().end();++it)

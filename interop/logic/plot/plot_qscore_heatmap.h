@@ -28,8 +28,8 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                                     model::plot::heatmap_data& data,
                                     float* buffer=0,
                                     const size_t buffer_size=0)
-                                    throw(model::index_out_of_bounds_exception,
-                                    model::invalid_filter_option);
+                                    INTEROP_THROW_SPEC((model::index_out_of_bounds_exception,
+                                    model::invalid_filter_option));
     /** Count number of rows for the heat map
      *
      * @param metrics run metrics

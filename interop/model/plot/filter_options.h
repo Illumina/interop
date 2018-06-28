@@ -106,7 +106,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          */
         void validate(const constants::metric_type type,
                       const run::info& run_info,
-                      const bool check_ignored=false)const throw(model::invalid_filter_option)
+                      const bool check_ignored=false)const INTEROP_THROW_SPEC((model::invalid_filter_option))
         {
             if(m_naming_method == constants::UnknownTileNamingMethod)
                 INTEROP_THROW(model::invalid_filter_option, "Invalid tile naming method: Unknown");

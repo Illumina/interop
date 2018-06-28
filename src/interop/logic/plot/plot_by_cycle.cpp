@@ -382,11 +382,11 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                        const model::plot::filter_options& options,
                        model::plot::plot_data<model::plot::candle_stick_point>& data,
                        const bool skip_empty)
-            throw(model::index_out_of_bounds_exception,
+            INTEROP_THROW_SPEC((model::index_out_of_bounds_exception,
             model::invalid_metric_type,
             model::invalid_channel_exception,
             model::invalid_filter_option,
-            model::invalid_read_exception)
+            model::invalid_read_exception))
     {
         plot_by_cycle_t(metrics, type, options, data, skip_empty);
     }
@@ -406,10 +406,10 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                        const model::plot::filter_options& options,
                        model::plot::plot_data<model::plot::candle_stick_point>& data,
                        const bool skip_empty)
-            throw(model::index_out_of_bounds_exception,
+            INTEROP_THROW_SPEC((model::index_out_of_bounds_exception,
             model::invalid_filter_option,
             model::invalid_channel_exception,
-            model::invalid_metric_type)
+            model::invalid_metric_type))
     {
         plot_by_cycle_t(metrics, metric_name, options, data, skip_empty);
     }

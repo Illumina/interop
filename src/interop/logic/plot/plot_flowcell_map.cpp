@@ -95,9 +95,9 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                            float *buffer,
                            ::uint32_t *tile_buffer,
                            const bool skip_empty)
-    throw(model::invalid_filter_option,
+    INTEROP_THROW_SPEC((model::invalid_filter_option,
     model::invalid_metric_type,
-    model::index_out_of_bounds_exception)
+    model::index_out_of_bounds_exception))
     {
         data.clear();
         if (skip_empty && metrics.empty()) return;
@@ -201,9 +201,9 @@ namespace illumina { namespace interop { namespace logic { namespace plot
                            float *buffer,
                            ::uint32_t *tile_buffer,
                            const bool skip_empty)
-    throw(model::invalid_filter_option,
+    INTEROP_THROW_SPEC((model::invalid_filter_option,
     model::invalid_metric_type,
-    model::index_out_of_bounds_exception)
+    model::index_out_of_bounds_exception))
     {
         const constants::metric_type type = constants::parse<constants::metric_type>(metric_name);
         if (type == constants::UnknownMetricType)

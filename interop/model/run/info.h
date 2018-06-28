@@ -116,25 +116,25 @@ namespace illumina { namespace interop { namespace model { namespace run
          *
          * @param run_folder run folder containing RunInfo.xml
          */
-        void read(const std::string &run_folder) throw(xml::xml_file_not_found_exception,
+        void read(const std::string &run_folder) INTEROP_THROW_SPEC((xml::xml_file_not_found_exception,
         xml::bad_xml_format_exception,
         xml::empty_xml_format_exception,
         xml::missing_xml_element_exception,
         xml::xml_parse_exception,
         xml::xml_format_exception,
-        util::base_exception);
+        util::base_exception));
 
         /** Ensure flowcell layout and reads are valid
          *
          * @throws invalid_run_info_exception
          * @throws invalid_tile_naming_method
          */
-        void validate()const throw(model::invalid_run_info_exception,model::invalid_tile_naming_method);
+        void validate()const INTEROP_THROW_SPEC((model::invalid_run_info_exception,model::invalid_tile_naming_method));
         /** Test if tile list matches flowcell layout
          *
          * @throws invalid_tile_list_exception
          */
-        void validate_tiles()const throw(model::invalid_tile_list_exception);
+        void validate_tiles()const INTEROP_THROW_SPEC((model::invalid_tile_list_exception));
         /** Test if tile list matches flowcell layout
          *
          * @param lane lane number
@@ -143,7 +143,7 @@ namespace illumina { namespace interop { namespace model { namespace run
          * @throws invalid_run_info_exception
          */
         void validate(const ::uint32_t lane, const ::uint32_t tile, const std::string& metric_name)const
-        throw(model::invalid_run_info_exception);
+        INTEROP_THROW_SPEC((model::invalid_run_info_exception));
         /** Test if tile list matches flowcell layout
          *
          * @param lane lane number
@@ -153,8 +153,8 @@ namespace illumina { namespace interop { namespace model { namespace run
          * @throws invalid_run_info_exception
          */
         void validate_cycle(const ::uint32_t lane, const ::uint32_t tile, const size_t cycle, const std::string& metric_name)const
-        throw(model::invalid_run_info_exception,
-              model::invalid_run_info_cycle_exception);
+        INTEROP_THROW_SPEC((model::invalid_run_info_exception,
+              model::invalid_run_info_cycle_exception));
         /** Test if tile list matches flowcell layout
          *
          * @param lane lane number
@@ -164,7 +164,7 @@ namespace illumina { namespace interop { namespace model { namespace run
          * @throws invalid_run_info_exception
          */
         void validate_read(const ::uint32_t lane, const ::uint32_t tile, const size_t read, const std::string& metric_name)const
-        throw(model::invalid_run_info_exception);
+        INTEROP_THROW_SPEC((model::invalid_run_info_exception));
 
     public:
         /** Get the name of the instrument
@@ -288,7 +288,7 @@ namespace illumina { namespace interop { namespace model { namespace run
          * @param read_number number of the read
          * @return read
          */
-        const read_info &read(const size_t read_number) const throw(model::invalid_read_exception)
+        const read_info &read(const size_t read_number) const INTEROP_THROW_SPEC((model::invalid_read_exception))
         {
             for (read_vector_t::const_iterator b = m_reads.begin(), e = m_reads.end(); b != e; ++b)
                 if (b->number() == read_number) return *b;
@@ -357,33 +357,33 @@ namespace illumina { namespace interop { namespace model { namespace run
          *
          * @param filename xml file
          */
-        void read_file(const std::string &filename) throw(xml::xml_file_not_found_exception,
+        void read_file(const std::string &filename) INTEROP_THROW_SPEC((xml::xml_file_not_found_exception,
         xml::bad_xml_format_exception,
         xml::empty_xml_format_exception,
         xml::missing_xml_element_exception,
-        xml::xml_parse_exception);
+        xml::xml_parse_exception));
 
         /** String containing xml data
          *
          * @param data xml string data
          */
-        void parse(char *data) throw(xml::xml_file_not_found_exception,
+        void parse(char *data) INTEROP_THROW_SPEC((xml::xml_file_not_found_exception,
         xml::bad_xml_format_exception,
         xml::empty_xml_format_exception,
         xml::missing_xml_element_exception,
-        xml::xml_parse_exception);
+        xml::xml_parse_exception));
 
         /** Read run information from the given XML file
          *
          * @param filename xml file
          */
-        void write(const std::string &filename)const throw(xml::xml_file_not_found_exception,xml::bad_xml_format_exception);
+        void write(const std::string &filename)const INTEROP_THROW_SPEC((xml::xml_file_not_found_exception,xml::bad_xml_format_exception));
 
         /** String containing xml data
          *
          * @param out output stream
          */
-        void write(std::ostream& out)const throw(xml::bad_xml_format_exception);
+        void write(std::ostream& out)const INTEROP_THROW_SPEC((xml::bad_xml_format_exception));
 
     private:
         std::string m_name;

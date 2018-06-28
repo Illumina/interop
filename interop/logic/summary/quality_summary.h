@@ -173,7 +173,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                                              const read_cycle_vector_t& cycle_to_read,
                                              const constants::tile_naming_method naming_method,
                                              model::summary::run_summary &run)
-                                             throw( model::index_out_of_bounds_exception )
+                                             INTEROP_THROW_SPEC(( model::index_out_of_bounds_exception ))
     {
         typedef model::summary::lane_summary lane_summary;
         if( beg == end ) return;

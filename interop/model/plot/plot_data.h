@@ -56,7 +56,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          * @param index index of point
          * @return data point
          */
-        const series<Point>& at(const size_t index)const throw(model::index_out_of_bounds_exception)
+        const series<Point>& at(const size_t index)const INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
         {
             INTEROP_BOUNDS_CHECK(index,  m_series.size(), "Index out of bounds");
             return m_series[index];
@@ -66,7 +66,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          * @param index index of point
          * @return data point
          */
-        series<Point>& operator[](const size_t index) throw(model::index_out_of_bounds_exception)
+        series<Point>& operator[](const size_t index) INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
         {
             INTEROP_BOUNDS_CHECK(index,  m_series.size(), "Index out of bounds");
             return m_series[index];
@@ -76,7 +76,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          * @param index index of point
          * @return data point
          */
-        const series<Point>& operator[](const size_t index)const throw(model::index_out_of_bounds_exception)
+        const series<Point>& operator[](const size_t index)const INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
         {
             INTEROP_BOUNDS_CHECK(index,  m_series.size(), "Index out of bounds");
             return m_series[index];

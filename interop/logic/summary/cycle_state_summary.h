@@ -36,7 +36,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                                const model::metric_base::metric_set <Metric> &cycle_metrics,
                                const read_cycle_vector_t &cycle_to_read,
                                set_cycle_state_func_t set_cycle_state_fun,
-                               model::summary::run_summary &run) throw(model::index_out_of_bounds_exception)
+                               model::summary::run_summary &run) INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
     {
         typedef model::run::cycle_range cycle_range;
         typedef typename model::metric_base::metric_set<model::metrics::tile_metric>::const_iterator const_tile_iterator;

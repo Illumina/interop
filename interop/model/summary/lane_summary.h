@@ -61,7 +61,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
          * @param n index
          * @return reference to lane_summary
          */
-        surface_summary & operator[](const size_t n) throw(model::index_out_of_bounds_exception)
+        surface_summary & operator[](const size_t n) INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
         {
             INTEROP_BOUNDS_CHECK(n, m_summary_by_surface.size(), "Surface index exceeds surface count");
             return m_summary_by_surface[n];
@@ -73,7 +73,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
          * @param n index
          * @return reference to lane_summary
          */
-        surface_summary &at(const size_t n) throw(model::index_out_of_bounds_exception)
+        surface_summary &at(const size_t n) INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
         {
             INTEROP_BOUNDS_CHECK(n, m_summary_by_surface.size(), "Surface index exceeds surface count");
             return m_summary_by_surface[n];
@@ -163,7 +163,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
          * @param n index
          * @return constant reference to lane_summary
          */
-        const surface_summary& operator[](const size_t n) const throw(model::index_out_of_bounds_exception)
+        const surface_summary& operator[](const size_t n) const INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
         {
             INTEROP_BOUNDS_CHECK(n, m_summary_by_surface.size(), "Surface index exceeds surface count");
             return m_summary_by_surface[n];
@@ -175,7 +175,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
          * @param n index
          * @return constant reference to lane_summary
          */
-        const_reference at(const size_type n) const throw(model::index_out_of_bounds_exception)
+        const_reference at(const size_type n) const INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
         {
             INTEROP_BOUNDS_CHECK(n, m_summary_by_surface.size(), "Surface index exceeds surface count");
             return m_summary_by_surface[n];

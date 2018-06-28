@@ -109,7 +109,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
 {
         void create_q_metrics_by_lane_base(const model::metric_base::metric_set<model::metrics::q_metric> &metric_set,
                                            model::metric_base::metric_set<model::metrics::q_by_lane_metric> &bylane)
-        throw(model::index_out_of_bounds_exception);
+        INTEROP_THROW_SPEC((model::index_out_of_bounds_exception));
 }}}}
 
 TEST(run_metrics_q_by_lane_test, count_legacy_q_score_bins)
