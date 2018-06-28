@@ -21,7 +21,7 @@
 #
 #
 ########################################################################################################################
-set -ex
+set -e
 INTEROP_C89=OFF
 BUILD_TYPE=Release
 
@@ -185,6 +185,8 @@ fi
 
 run "Package" cmake --build $BUILD_PATH --target bundle
 
+# Workaround for OSX
+export PATH=/usr/local/share/dotnet:${PATH}
 if hash dotnet 2> /dev/null; then
     run "Configure DotNetCore" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS} -DCSBUILD_TOOL=DotNetCore && cmake --build $BUILD_PATH --target nupack -- -j${THREAD_COUNT} || true
 fi

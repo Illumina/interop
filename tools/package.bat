@@ -16,10 +16,12 @@ rem To select an older Visual Studio toolset use: cmake -T v120,host=x64
 rem
 rem --------------------------------------------------------------------------------------------------------------------
 
+set MINICONDA_HOME=C:\ProgramData\Miniconda2
 set MINGW_HOME=C:\Program Files\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev2\mingw64\bin
 set CMAKE_HOME=C:\Program Files\CMake\bin
 set MINGW_HOME=C:\mingw\mingw64\bin
-set PATH=%MINGW_HOME%;%PATH%
+set DOTNET_HOME=c:\dotnet
+set PATH=%MINGW_HOME%;%MINICONDA_HOME%;%MINICONDA_HOME%\Scripts;%DOTNET_HOME%;%PATH%
 
 set SOURCE_DIR=%CD%
 set BUILD_DIR=%SOURCE_DIR%\build

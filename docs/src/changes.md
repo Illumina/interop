@@ -1,6 +1,14 @@
 # Changes                                               {#changes}
 
-## v1.1.4 (Master)
+## v1.1.5 (Master)
+
+Date       | Description
+---------- | -----------
+2018-06-27 | Fix bug in example example_populate_qmetricset.pp
+2018-03-18 | Add Linux and Windows .NET Core builds
+
+
+## v1.1.4
 
 Date       | Description
 ---------- | -----------

@@ -9,7 +9,8 @@ set CMAKE_HOME=C:\Program Files\CMake\bin
 set NUNIT_HOME=C:\Program Files (x86)\NUnit 2.6.4\bin
 set JAVA_HOME=C:\Program Files\Java\jdk1.8.0_144\bin
 set MINGW_HOME=C:\mingw\mingw64\bin
-set PATH=%PATH%;%MINICONDA_HOME%;%MINICONDA_HOME%\Scripts;%CMAKE_HOME%;%NUNIT_HOME%;%JAVA_HOME%;%MINGW_HOME%
+set DOTNET_HOME=c:\dotnet
+set PATH=%PATH%;%MINICONDA_HOME%;%MINICONDA_HOME%\Scripts;%CMAKE_HOME%;%NUNIT_HOME%;%JAVA_HOME%;%MINGW_HOME%;%DOTNET_HOME%
 
 rem --------------------------------------------------------------------------------------------------------------------
 rem Install MinGW
@@ -17,14 +18,21 @@ rem ----------------------------------------------------------------------------
 set MINGW_ZIP=x86_64-6.2.0-release-posix-seh-rt_v5-rev0.7z
 set MINGW_URL="https://sourceforge.net/projects/mingw-w64/files/Toolchains%%20targetting%%20Win64/Personal%%20Builds/mingw-builds/6.2.0/threads-posix/seh/%MINGW_ZIP%/download"
 
+set DOTNET_URL="https://download.microsoft.com/download/1/1/5/115B762D-2B41-4AF3-9A63-92D9680B9409/dotnet-sdk-2.1.4-win-x64.zip"
+set DOTNET_ZIP=dotnet-sdk-2.1.4-win-x64.zip
+
 where /q 7z.exe
 if %errorlevel% neq 0  choco install 7zip.install --yes --limit-output
 
 if exist %MINGW_HOME%\gcc.exe goto SKIP_GCC_UPDATE
-powershell -Command "(New-Object System.Net.WebClient).DownloadFile(\"%MINGW_URL%\", \"%MINGW_ZIP%\")"
+powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12;(New-Object System.Net.WebClient).DownloadFile(\"%MINGW_URL%\", \"%MINGW_ZIP%\")"
 powershell -Command "& 7z.exe x -oc:\mingw %MINGW_ZIP%" -aoa
 :SKIP_GCC_UPDATE
 
+if exist %DOTNET_HOME%\dotnet.exe goto SKIP_DOTNET_UPDATE
+powershell -Command "(New-Object System.Net.WebClient).DownloadFile(\"%DOTNET_URL%\", \"%DOTNET_ZIP%\")"
+powershell -Command "& 7z.exe x -oc:\dotnet %DOTNET_ZIP%" -aoa
+:SKIP_DOTNET_UPDATE
 
 rem --------------------------------------------------------------------------------------------------------------------
 rem Install Programs if not found
@@ -96,6 +104,7 @@ javac -version
 nuget help
 swig -version
 git --version
+dotnet --version
 
 rem --------------------------------------------------------------------------------------------------------------------
 rem Install Python Requirements

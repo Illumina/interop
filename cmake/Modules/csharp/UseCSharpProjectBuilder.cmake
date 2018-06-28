@@ -111,16 +111,23 @@ macro( csharp_add_project type name )
     endif()
     # TODO: <RuntimeIdentifier>osx.10.11-x64</RuntimeIdentifier>
     set(CSBUILD_${name}_BINARY "${CSHARP_BUILDER_OUTPUT_PATH}/${CSBUILD_OUPUT_PREFIX}${name}${CSBUILD_OUTPUT_SUFFIX}.${ext}")
+    set(CSBUILD_${name}_BINARY_DIR "${CSBUILD_OUPUT_PREFIX}")
     set(CSBUILD_${name}_BINARY_NAME "${name}${CSBUILD_OUTPUT_SUFFIX}.${ext}")
     if(CSHARP_NUGET_SOURCE)
         set(CSHARP_NUGET_SOURCE_CMD -source ${CSHARP_NUGET_SOURCE})
     endif()
-
+    set(CSBUILD_RESTORE_MORE_FLAGS "")
     if(RESTORE_EXE AND CSHARP_NUGET_SOURCE_CMD)
         set(RESTORE_CMD ${RESTORE_EXE} install ${CSHARP_NUGET_SOURCE_CMD})
     else()
         set(RESTORE_CMD ${CMAKE_COMMAND} -version)
+        if(CSHARP_NUGET_SOURCE)
+            # Note that for .NET Core 2.1.4 or before, the local repo must follow public repo
+            set(CSBUILD_RESTORE_MORE_FLAGS --source https://api.nuget.org/v3/index.json --source ${CSHARP_NUGET_SOURCE} )
+        endif()
     endif()
+
+
 
     set(CSBUILD_${name}_CSPROJ "${name}_${CSBUILD_CSPROJ}")
     file(TO_NATIVE_PATH ${CSHARP_BUILDER_OUTPUT_PATH} CSHARP_BUILDER_OUTPUT_PATH_NATIVE)
@@ -150,10 +157,10 @@ macro( csharp_add_project type name )
 
             COMMAND ${RESTORE_CMD}
 
-            COMMAND ${CSBUILD_EXECUTABLE} ${CSBUILD_RESTORE_FLAGS} ${CSBUILD_${name}_CSPROJ}
+            COMMAND ${CSBUILD_EXECUTABLE} ${CSBUILD_RESTORE_FLAGS} ${CSBUILD_RESTORE_MORE_FLAGS} ${CSBUILD_${name}_CSPROJ}
             COMMAND ${CSBUILD_EXECUTABLE} ${CSBUILD_BUILD_FLAGS} ${CSBUILD_${name}_CSPROJ}
             WORKING_DIRECTORY ${CURRENT_TARGET_BINARY_DIR}
-            COMMENT "${RESTORE_CMD};${CSBUILD_EXECUTABLE} ${CSBUILD_RESTORE_FLAGS} ${CSBUILD_${name}_CSPROJ}; ${CSBUILD_EXECUTABLE} ${CSBUILD_BUILD_FLAGS} ${CSBUILD_${name}_CSPROJ} -> ${CURRENT_TARGET_BINARY_DIR}"
+            COMMENT "${RESTORE_CMD};${CSBUILD_EXECUTABLE} ${CSBUILD_RESTORE_FLAGS} ${CSBUILD_RESTORE_MORE_FLAGS} ${CSBUILD_${name}_CSPROJ}; ${CSBUILD_EXECUTABLE} ${CSBUILD_BUILD_FLAGS} ${CSBUILD_${name}_CSPROJ} -> ${CURRENT_TARGET_BINARY_DIR}"
             DEPENDS ${sources_dep}
     )
     unset(ext)

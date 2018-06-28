@@ -9,14 +9,20 @@
    <AssemblyName>@CSHARP_BUILDER_OUTPUT_NAME@</AssemblyName>
   </PropertyGroup>
 
+  <!-- https://github.com/NuGet/Home/issues/4154 -->
+  <PropertyGroup>
+    <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)obj\$(MSBuildProjectName)\netcore</BaseIntermediateOutputPath>
+  </PropertyGroup>
+
   <ItemGroup>
     @CSHARP_BUILDER_SOURCES@
   </ItemGroup>
+
   <ItemGroup>
     @CSHARP_BUILDER_ADDITIONAL_REFERENCES@
   </ItemGroup>
 
-   <ItemGroup>
+  <ItemGroup>
     @CSHARP_PACKAGE_REFERENCES@
   </ItemGroup>
 

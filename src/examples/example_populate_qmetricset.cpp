@@ -26,10 +26,9 @@ int main(int argc, char** argv)
 
 
 // @ [Reading a single metric set using run_metrics]
-    std::vector<unsigned char> valid_to_load;
+    std::vector<unsigned char> valid_to_load(constants::MetricCount, 0);
     valid_to_load[constants::Q]=1;
     run_metrics metrics;
-    metrics.clear();
     try
     {
         metrics.read(filename, valid_to_load);
