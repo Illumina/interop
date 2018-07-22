@@ -10,9 +10,11 @@
  */
 
 #pragma once
+#include "interop/config.h"
+
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
-#elif HAVE_SYS_TYPES_H
+#elif defined(HAVE_SYS_TYPES_H)
 #include <sys/types.h>
 #else
 #include "interop/util/pstdint.h"

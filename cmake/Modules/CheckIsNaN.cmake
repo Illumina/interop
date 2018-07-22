@@ -9,7 +9,6 @@ CHECK_CXX_SOURCE_COMPILES(
         HAVE_STD_ISNAN)
 
 if(NOT HAVE_STD_ISNAN)
-    add_definitions(-DHAVE_NO_STD_ISNAN)
     return()
 endif()
 
@@ -19,7 +18,6 @@ CHECK_CXX_SOURCE_COMPILES(
         HAVE_ISNAN)
 
 if(HAVE_ISNAN)
-    add_definitions(-DHAVE_ISNAN)
     return()
 endif()
 
@@ -28,7 +26,6 @@ CHECK_CXX_SOURCE_COMPILES(
         HAVE___ISNAN)
 
 if(HAVE___ISNAN)
-    add_definitions(-DHAVE___ISNAN)
     return()
 endif()
 
@@ -38,7 +35,6 @@ CHECK_CXX_SOURCE_COMPILES(
 
 
 if(HAVE_FLOAT_H_ISNAN)
-    add_definitions(-DHAVE_FLOAT_H_ISNAN)
     return()
 endif()
 

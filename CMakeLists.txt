@@ -177,3 +177,6 @@ if(GIT_FOUND)
 endif()
 
 set_target_properties(bundle PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
+
+configure_file(interop/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/include/interop/config.h @ONLY)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/interop/config.h DESTINATION include/interop)

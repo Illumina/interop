@@ -114,6 +114,31 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         }
 
     public:
+        /** Copy records only for a specific tile
+         *
+         * @param origin full metric set
+         * @param tile_id selected tile
+         */
+        void copy_by_tile(const metric_set<T>& origin, const base_metric& tile_id)
+        {
+            clear();
+            append_tiles(origin, tile_id);
+        }
+        /** Adds records only for a specific tile
+         *
+         * @param origin full metric set
+         * @param tile_id selected tile
+         */
+        void append_tiles(const metric_set<T>& origin, const base_metric& tile_id)
+        {
+            reserve(origin.size()+size());
+            for(const_iterator it = origin.begin();it != origin.end();++it)
+            {
+                if(it->lane() != tile_id.lane() || it->tile() != tile_id.tile())
+                    continue;
+                insert(*it);
+            }
+        }
         /** Flag that indicates whether the data source exists
          *
          * @return true if the data source, e.g. file, exists
@@ -164,6 +189,14 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         iterator end()
         {
             return m_data.end();
+        }
+
+        /** Sort the metric collection
+         *
+         */
+        void sort()
+        {
+            std::sort(m_data.begin(), m_data.end());
         }
 
     public:

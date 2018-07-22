@@ -9,6 +9,7 @@
  */
 
 #pragma once
+#include "interop/config.h"
 #include <limits>
 
 #include <cmath>

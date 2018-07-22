@@ -14,7 +14,7 @@
 #include "interop/util/cstdint.h"
 
 /** Sentinel for an unknown enum type */
-#define INTEROP_UNKNOWN 0x200
+#define INTEROP_UNKNOWN 0x400
 
 
 /** Enumeration of specific features that can belong to a metric
@@ -63,6 +63,7 @@
         INTEROP_TUPLE7(SignalToNoise, "Signal to Noise", CorrectedInt, CycleFeature, corrected_intensity_metric, signal_to_noise, Void)\
         INTEROP_TUPLE7(OccupiedCountK, "Occupied Count (K)", ExtendedTile, TileFeature, extended_tile_metric, cluster_count_occupied_k, Void)\
         INTEROP_TUPLE7(PercentOccupied, "% Occupied", ExtendedTile, TileFeature, extended_tile_metric, percent_occupied, Void)\
+        INTEROP_TUPLE7(PercentPF, "% PF", Tile, TileFeature, tile_metric, percent_pf, Void)\
         INTEROP_TUPLE4(MetricTypeCount, "!!!!BAD!!!!", UnknownMetricGroup, UnknownMetricFeature)\
         INTEROP_TUPLE1(UnknownMetricType)
 
@@ -167,6 +168,7 @@
         INTEROP_TUPLE1(NextSeq), \
         INTEROP_TUPLE1(MiniSeq), \
         INTEROP_TUPLE1(NovaSeq), \
+        INTEROP_TUPLE1(iSeq), \
         INTEROP_TUPLE1(InstrumentCount), \
         INTEROP_TUPLE1(UnknownInstrument)
 

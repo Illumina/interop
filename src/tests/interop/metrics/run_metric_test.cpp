@@ -104,13 +104,34 @@ TEST(run_metric_test, summary_subset_of_imaging)
     }
 }
 
+TYPED_TEST_P(run_metric_test, append_tiles)
+{
+    typedef typename TestFixture::metric_set_t metric_set_t;
+    metric_set_t& metric_set = TestFixture::expected. template  get<metric_set_t>();
+
+    const model::metric_base::base_metric tile_id;
+    //tile_id.
+    //= metric_set[0];
+    size_t count_expected = 0;
+    for(size_t i=0;i<metric_set.size();++i)
+    {
+        if(tile_id.lane() == metric_set[i].lane() && tile_id.tile() == metric_set[i].tile())
+            count_expected++;
+    }
+    model::metrics::run_metrics subset;
+    TestFixture::expected.copy_tile(subset, tile_id);
+    metric_set_t& subset_metric_set = TestFixture::expected. template  get<metric_set_t>();
+    EXPECT_EQ(count_expected, subset_metric_set.size());
+}
+
 
 REGISTER_TYPED_TEST_CASE_P(run_metric_test,
                            test_clear,
                            is_group_empty_true,
                            is_group_empty_false,
                            test_expected_get_metric,
-                           on_demand_not_clear
+                           on_demand_not_clear,
+                           append_tiles
 );
 
 

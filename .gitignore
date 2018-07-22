@@ -4,6 +4,8 @@ interop/version.h
 src/ext/csharp/src
 .CMakeLists.txt.bak
 dist
+cmake-build-*
+.ipynb_checkpoints
 
 # Mac OSX Stuff
 .DS_Store
