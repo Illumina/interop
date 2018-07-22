@@ -1,4 +1,4 @@
-# docker build --rm -t ezralanglois/interop -f ./tools/DockerFile tools
+# sudo docker build --rm -t docker-bioinformatics.dockerhub.illumina.com/interop_centos5 -f ./tools/docker/DockerFile_Centos6 tools
 
 FROM quay.io/pypa/manylinux1_x86_64
 

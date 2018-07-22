@@ -153,6 +153,8 @@ endif()
 
 if(NOT PYTHON_WHEEL_PREFIX)
     set(PYTHON_WHEEL_PREFIX "${PACKAGE_OUTPUT_FILE_PREFIX}")
+else()
+    get_filename_component(PYTHON_WHEEL_PREFIX ${PYTHON_WHEEL_PREFIX} ABSOLUTE)
 endif()
 add_custom_target(package_wheel
         COMMENT "Creating Python wheel package in ${PYTHON_WHEEL_PREFIX}"
@@ -164,4 +166,5 @@ if(NOT SKIP_PACKAGE_ALL_WHEEL)
     add_dependencies(bundle package_wheel)
 endif()
 
-set(PYTHON_TARGET_FOUND ON CACHE INTERNAL "Python target is available" FORCE)
+
+set(PYTHON_BUILD_AVAILABLE "Python ${PYTHON_VERSION_STRING}" CACHE INTERNAL "All dependencies are satisfied for the Java Build" FORCE)

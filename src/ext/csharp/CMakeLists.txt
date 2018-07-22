@@ -217,3 +217,5 @@ if(NUGET_EXE)
 else()
     message(STATUS "NuGet not found, nupack target will not be available")
 endif()
+
+set(CSHARP_BUILD_AVAILABLE ${CSHARP_BUILDER_VERSION} CACHE INTERNAL "All dependencies are satisfied for the C# Build" FORCE)

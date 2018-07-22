@@ -171,8 +171,8 @@ find_package(Git)
 if(GIT_FOUND)
     string(REGEX REPLACE "[^v]*(v[0-9]+.[0-9]+.[0-9]+)-.*" "\\1" TAG ${INTEROP_VERSION})
     add_custom_target(history
-        COMMAND ${GIT_EXECUTABLE};log;${TAG}..HEAD;-m;--first-parent;--date=short;"--format='%ad | %b'"
-        COMMENT "List all commits from last tag - ${TAG}"
+        COMMAND ${GIT_EXECUTABLE} log ${TAG}..HEAD -m --first-parent --date=short --format='%ad | %s'
+        COMMENT "${GIT_EXECUTABLE} log ${TAG}..HEAD -m --first-parent --date=short --format=%ad | %s"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 endif()
 
@@ -180,3 +180,16 @@ set_target_properties(bundle PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_
 
 configure_file(interop/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/include/interop/config.h @ONLY)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/interop/config.h DESTINATION include/interop)
+
+
+message(STATUS "Supported Languages")
+message(STATUS "    C++") # Version
+if(PYTHON_BUILD_AVAILABLE)
+    message(STATUS "    ${PYTHON_BUILD_AVAILABLE}")
+endif()
+if(CSHARP_BUILD_AVAILABLE)
+    message(STATUS "    ${CSHARP_BUILD_AVAILABLE}")
+endif()
+if(JAVA_BUILD_AVAILABLE)
+    message(STATUS "    ${JAVA_BUILD_AVAILABLE}")
+endif()

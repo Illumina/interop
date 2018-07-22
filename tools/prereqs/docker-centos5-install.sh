@@ -38,6 +38,7 @@ NUNIT_HOME=${PROG_HOME}/nunit
 if hash cmake  2> /dev/null; then
     echo "Found CMake"
 else
+    echo "Installing CMake"
     wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C /usr
 
 
@@ -56,9 +57,31 @@ else
     "/opt/python/cp36-cp36m/bin/pip" install auditwheel==1.5.0
 fi
 
-if hash swig  2> /dev/null; then
-    echo "Found Swig"
+
+if [ -e /usr/include/gtest/gtest.h ]; then
+    echo "Found GTest and GMock"
 else
+    echo "Installing GTest and GMock"
+    mkdir /gtest
+    curl -L ${GOOGLETEST_URL} -o release-1.8.0.tar.gz
+
+    tar --strip-components=1 -xzf release-1.8.0.tar.gz -C /gtest
+    #curl ${GOOGLETEST_URL} | tar --strip-components=1 -xz -C /gtest
+    mkdir /gtest/build
+    cmake -H/gtest -B/gtest/build
+    cmake --build /gtest/build -- -j4
+    cp -r /gtest/googletest/include/gtest /usr/include/
+    cp -r /gtest/googlemock/include/gmock /usr/include/
+    cp /gtest/build/googlemock/gtest/lib*.a /usr/lib/
+    cp /gtest/build/googlemock/lib*.a /usr/lib/
+
+    rm -fr /gtest release-1.8.0.tar.gz
+fi
+
+if hash swig  2> /dev/null; then
+    echo "Found SWIG"
+else
+    echo "Installing SWIG"
     if [ ! -e ${SWIG_HOME} ]; then
         mkdir ${SWIG_HOME}
     fi
@@ -82,6 +105,7 @@ fi
 if hash mono  2> /dev/null; then
     echo "Found mono"
 else
+    echo "Installing Mono"
     PATH_OLD=$PATH
     export PATH=/opt/python/cp27-cp27mu/bin/:$PATH
     yum install automake autoconf libtool  -y
@@ -123,33 +147,19 @@ else
     nuget help
 fi
 
-if [ -e /usr/include/gtest/gtest.h ]; then
-    echo "Found GTest and GMock"
-else
-    mkdir /gtest
-    wget --no-check-certificate --quiet -O - ${GOOGLETEST_URL} | tar --strip-components=1 -xz -C /gtest
-    mkdir /gtest/build
-    cmake -H/gtest -B/gtest/build
-    cmake --build /gtest/build -- -j4
-    cp -r /gtest/googletest/include/gtest /usr/include/
-    cp -r /gtest/googlemock/include/gmock /usr/include/
-    cp /gtest/build/googlemock/gtest/lib*.a /usr/lib/
-    cp /gtest/build/googlemock/lib*.a /usr/lib/
-
-    rm -fr /gtest
-fi
-
 if hash java  2> /dev/null; then
     echo "Found Java"
 else
+    echo "Installing Java"
     wget --quiet --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "${JAVA_URL}" -O ${JAVA_URL##*/}
     rpm -Uvh ${JAVA_URL##*/}
     rm -f  ${JAVA_URL##*/}
 fi
 
 if [ ! -e ${NUNIT_HOME}/NUnit-2.6.4 ]; then
+    echo "Installing NUnit"
     mkdir ${NUNIT_HOME}
-    wget --no-check-certificate --quiet ${NUNIT_URL} -O  ${NUNIT_HOME}/${NUNIT_URL##*/}
+    curl -L ${NUNIT_URL} -o ${NUNIT_HOME}/${NUNIT_URL##*/}
     unzip ${NUNIT_HOME}/${NUNIT_URL##*/} -d ${NUNIT_HOME}
     rm -f ${NUNIT_HOME}/${JUNIT_URL##*/}
 else
@@ -158,12 +168,14 @@ fi
 NUNIT_HOME=${NUNIT_HOME}/NUnit-2.6.4
 
 if [ ! -e ${JUNIT_HOME}/${JUNIT_URL##*/} ]; then
+    echo "Installing JUnit"
     mkdir ${JUNIT_HOME}
     wget --no-check-certificate --quiet ${JUNIT_URL} -O  ${JUNIT_HOME}/${JUNIT_URL##*/}
 else
     echo "Found JUnit at ${JUNIT_HOME}/${JUNIT_URL##*/}"
 fi
 
+echo "Installing Valgrind"
 mkdir tmp_build
 wget --no-check-certificate --quiet -O - ${VALGRIND_URL} | tar --strip-components=1 -xj -C ./tmp_build
 cd tmp_build
