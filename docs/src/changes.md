@@ -1,9 +1,10 @@
 # Changes                                               {#changes}
 
-## v1.1.5 (Master)
+## v1.1.5
 
 Date       | Description
 ---------- | -----------
+2018-07-22 | Add Python 3.7 support
 2018-06-28 | Future proof throw specification
 2018-06-27 | Fix bug in example example_populate_qmetricset.pp
 2018-05-07 | Fix C++ Linking bug with inconsistent macros

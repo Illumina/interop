@@ -45,6 +45,15 @@ elif [ ! -z $SOURCE_PATH ]; then
     ARTIFACT_PATH=$SOURCE_PATH/dist
 fi
 
+# ARTIFACT_PATH="$(echo $(cd $(dirname "$ARTIFACT_PATH") && pwd -P)/$(basename "$ARTIFACT_PATH"))"
+
+if hash greadlink  2> /dev/null; then
+    readlink="greadlink"
+else
+    readlink="readlink"
+fi
+ARTIFACT_PATH=`$readlink -f $ARTIFACT_PATH`
+
 if [ ! -z $3 ] ; then
     BUILD_SERVER=$3
     DISABLE_SUBDIR=OFF
@@ -105,6 +114,8 @@ else
     mkdir $ARTIFACT_PATH
 fi
 
+
+
 if [ "$PYTHON_VERSION" == "None" ] ; then
     PYTHON_VERSION=
 fi
@@ -132,7 +143,7 @@ fi
 
 if [ "$PYTHON_VERSION" != "" ] ; then
     if [ "$PYTHON_VERSION" == "ALL" ] ; then
-        python_versions="2.7.11 3.4.4 3.5.1 3.6.0"
+        python_versions="2.7.11 3.4.4 3.5.1 3.6.0 3.7.0"
     else
         python_versions="$PYTHON_VERSION"
     fi
@@ -158,14 +169,15 @@ if [ "$PYTHON_VERSION" != "" ] ; then
             pip install numpy
             pip install wheel
         fi
-        run "Configure $py_ver" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS} -DENABLE_PYTHON_DYNAMIC_LOAD=ON -DPYTHON_EXECUTABLE=`which python` -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp
+        run "Configure $py_ver" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS} -DENABLE_PYTHON_DYNAMIC_LOAD=ON -DPYTHON_EXECUTABLE=`which python` -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp
         run "Build $py_ver" cmake --build $BUILD_PATH -- -j${THREAD_COUNT}
         run "Test $py_ver" cmake --build $BUILD_PATH --target check_python -- -j${THREAD_COUNT}
         run "Build Wheel $py_ver" cmake --build $BUILD_PATH --target package_wheel -- -j${THREAD_COUNT}
 
         if hash delocate-wheel 2> /dev/null; then
+            ls ${ARTIFACT_PATH}/tmp/*.whl
             delocate-listdeps ${ARTIFACT_PATH}/tmp/*.whl
-            delocate-wheel $ARTIFACT_PATH/tmp/*.whl
+            delocate-wheel ${ARTIFACT_PATH}/tmp/*.whl
             delocate-addplat -c --rm-orig -x 10_9 -x 10_10 $ARTIFACT_PATH/tmp/*.whl -w $ARTIFACT_PATH
         elif hash auditwheel 2> /dev/null; then
             auditwheel --version

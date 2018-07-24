@@ -68,6 +68,8 @@ macro(interop_config_compiler_and_linker)
 
     if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR CMAKE_COMPILER_IS_GNUCC OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         set(COMPILER_IS_GNUCC_OR_CLANG ON)
+    elseif(NOT WIN32 AND "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
+        set(COMPILER_IS_GNUCC_OR_CLANG ON)
     else()
         set(COMPILER_IS_GNUCC_OR_CLANG OFF)
     endif()

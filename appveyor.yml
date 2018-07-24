@@ -93,7 +93,7 @@ environment:
       PACKAGE_TARGET: package_wheel
       ADDIONAL_CONFIG_OPTIONS: -DENABLE_APPS=OFF -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=OFF
       PYTHON_PATH_DIR: C:\Miniconda36-x64
-      PYTHON_VERSION: 3.5
+      PYTHON_VERSION: 3.7
       configuration: Release
 
 matrix:
@@ -156,7 +156,6 @@ deploy:
     appveyor_repo_tag: true
     configuration: Release
     config_type: win64
-
 
 ########################################################################################################################
 #

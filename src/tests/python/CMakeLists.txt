@@ -9,7 +9,7 @@ if(swig_major_ver LESS "3")
 endif()
 
 find_package(PythonInterp)
-if(NOT PYTHON_TARGET_FOUND)
+if(NOT PYTHON_BUILD_AVAILABLE)
     return()
 endif()
 
