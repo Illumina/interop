@@ -114,6 +114,7 @@ namespace illumina { namespace interop { namespace logic { namespace utils
             std::swap(expected[0], expected[1]);
             return expected;
         }
+        if(norm == "1,2") return expected;
         INTEROP_THROW( model::invalid_channel_exception, "Invalid channel names: " << norm);
     }
 
