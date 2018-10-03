@@ -1,6 +1,13 @@
 # Changes                                               {#changes}
 
 
+## v1.1.7
+
+Date       | Description
+---------- | -----------
+2018-10-03 | Fix MacOSX build
+
+
 ## v1.1.6
 
 Date       | Description
