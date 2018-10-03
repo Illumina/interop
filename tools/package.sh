@@ -163,12 +163,14 @@ if [ "$PYTHON_VERSION" != "" ] ; then
             if [[ "$OSTYPE" == "darwin"* ]]; then
                 pip install setuptools --upgrade
                 pip install delocate
+                # pip install delocate=0.7.3
             fi
             which python
             which pip
             python --version
             pip install numpy
             pip install wheel
+            # pip install wheel=0.30.0
         fi
         run "Configure $py_ver" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS} -DENABLE_PYTHON_DYNAMIC_LOAD=ON -DPYTHON_EXECUTABLE=`which python` -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp
         run "Build $py_ver" cmake --build $BUILD_PATH -- -j${THREAD_COUNT}
