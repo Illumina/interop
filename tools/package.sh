@@ -161,6 +161,7 @@ if [ "$PYTHON_VERSION" != "" ] ; then
             pyenv install $py_ver -s  || true
             pyenv global $py_ver || true
             if [[ "$OSTYPE" == "darwin"* ]]; then
+                pip install setuptools --upgrade
                 pip install delocate
             fi
             which python

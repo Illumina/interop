@@ -1,5 +1,13 @@
 # Changes                                               {#changes}
 
+
+## v1.1.6
+
+Date       | Description
+---------- | -----------
+2018-10-03 | New version of delocate broke MacOSX, need updated setuptools
+
+
 ## v1.1.5
 
 Date       | Description
