@@ -39,7 +39,7 @@ matrix:
     env: DEPLOY_BUILD=true DOCKER_IMAGE=ezralanglois/interop SCRIPT="docker run --rm -v $PWD:/io ezralanglois/interop sh /io/tools/package.sh /io /io/dist travis"
   - os: osx
     compiler: clang
-    env: SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Debug 2.7"
+    env: SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Debug 2.7.11"
   - os: linux
     compiler: gcc
     addons: &1
