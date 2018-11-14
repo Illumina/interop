@@ -18,10 +18,11 @@
 # $ docker rmi $(docker images -f dangling=true -q)
 #
 ########################################################################################################################
-#set -ex
-set -e
+set -ex
+#set -e
 
 CMAKE_URL="http://www.cmake.org/files/v3.4/cmake-3.4.3-Linux-x86_64.tar.gz"
+#CMAKE_URL="https://cmake.org/files/v3.11/cmake-3.11.0-Linux-x86_64.tar.gz"
 SWIG_URL="http://prdownloads.sourceforge.net/swig/swig-3.0.12.tar.gz"
 MONO_URL="https://download.mono-project.com/sources/mono/mono-4.8.1.0.tar.bz2"
 NUGET_URL="https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
@@ -29,17 +30,29 @@ GOOGLETEST_URL="https://github.com/google/googletest/archive/release-1.8.0.tar.g
 JUNIT_URL="http://search.maven.org/remotecontent?filepath=junit/junit/4.12/junit-4.12.jar"
 NUNIT_URL="https://github.com/nunit/nunitv2/releases/download/2.6.4/NUnit-2.6.4.zip"
 JAVA_URL="http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.rpm"
-VALGRIND_URL="ftp://sourceware.org/pub/valgrind/valgrind-3.13.0.tar.bz2"
+VALGRIND_URL="http://www.valgrind.org/downloads/valgrind-3.14.0.tar.bz2"
+DOXYGEN_URL="https://sourceforge.net/projects/doxygen/files/rel-1.8.10/doxygen-1.8.10.linux.bin.tar.gz"
+WGET_URL="http://ftp.gnu.org/gnu/wget/wget-1.19.tar.gz"
 PROG_HOME=/opt
 SWIG_HOME=${PROG_HOME}/swig3
 JUNIT_HOME=${PROG_HOME}/junit
 NUNIT_HOME=${PROG_HOME}/nunit
 
+echo "Installing doxygen"
+wget --no-check-certificate --quiet ${DOXYGEN_URL}/download -O${DOXYGEN_URL##*/}
+tar -xzf ${DOXYGEN_URL##*/}
+cd doxygen-1.8.10
+sh configure --prefix /usr
+cp bin/doxygen /usr/bin
+chmod 755 /usr/bin/doxygen
+cd ..
+rm -fr doxygen-1.8.10 ${DOXYGEN_URL##*/}
+
 if hash cmake  2> /dev/null; then
     echo "Found CMake"
 else
     echo "Installing CMake"
-    wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C /usr
+    curl -L ${CMAKE_URL} | tar --strip-components=1 -xz -C /usr
 
 
     for PYBUILD in `ls -1 /opt/python`; do
@@ -177,7 +190,7 @@ fi
 
 echo "Installing Valgrind"
 mkdir tmp_build
-wget --no-check-certificate --quiet -O - ${VALGRIND_URL} | tar --strip-components=1 -xj -C ./tmp_build
+curl -L ${VALGRIND_URL} | tar --strip-components=1 -xj -C ./tmp_build
 cd tmp_build
 ./configure --prefix=/usr
 make -j 4

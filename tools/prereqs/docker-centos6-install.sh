@@ -28,7 +28,7 @@ GOOGLETEST_URL="https://github.com/google/googletest/archive/release-1.8.0.tar.g
 JUNIT_URL="http://search.maven.org/remotecontent?filepath=junit/junit/4.12/junit-4.12.jar"
 NUNIT_URL="https://github.com/nunit/nunitv2/releases/download/2.6.4/NUnit-2.6.4.zip"
 JAVA_URL="http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.rpm"
-VALGRIND_URL="ftp://sourceware.org/pub/valgrind/valgrind-3.13.0.tar.bz2"
+VALGRIND_URL="http://www.valgrind.org/downloads/valgrind-3.14.0.tar.bz2"
 PROG_HOME=/opt
 SWIG_HOME=${PROG_HOME}/swig3
 JUNIT_HOME=${PROG_HOME}/junit
@@ -48,7 +48,7 @@ yum install -y gcc gcc-c++ libtool git make rpm-build
 if hash cmake  2> /dev/null; then
     echo "Found CMake"
 else
-    wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C /usr
+    curl -L ${CMAKE_URL} | tar --strip-components=1 -xz -C /usr
 fi
 
 #if hash mono  2> /dev/null; then

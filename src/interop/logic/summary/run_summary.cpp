@@ -103,6 +103,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
      * @param metrics source collection of all metrics
      * @param summary destination run summary
      * @param skip_median skip the median calculation
+     * @param trim removed unset lanes
      */
     void summarize_run_metrics(model::metrics::run_metrics& metrics,
                                model::summary::run_summary& summary,

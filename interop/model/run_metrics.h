@@ -355,13 +355,13 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     public:
         /** Copy records only for a specific tile
          *
-         * @param origin full metric set
+         * @param metrics full metric set
          * @param tile_id selected tile
          */
         void copy_tile(const run_metrics& metrics, const metric_base::base_metric& tile_id);
         /** Adds records only for a specific tile
          *
-         * @param origin full metric set
+         * @param metrics full metric set
          * @param tile_id selected tile
          */
         void append_tiles(const run_metrics& metrics, const metric_base::base_metric& tile_id);

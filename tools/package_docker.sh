@@ -28,4 +28,4 @@ docker ps 1>/dev/null 2>&1 || prefix=sudo;
 ${prefix} docker rmi $(${prefix} docker images) >/dev/null 2>&1 || true
 ${prefix} docker system prune -f >/dev/null 2>&1 || true
 ${prefix} docker pull $image
-${prefix} docker run --rm -w /tmp --user `id -u`:`id -g` -v `pwd`:/src:ro -v `pwd`/dist:/dist:rw $image sh /src/tools/package.sh /src /dist teamcity OFF Release $pyver $build_number "$extra"
+${prefix} docker run --rm -w /tmp --user `id -u`:`id -g` -v `pwd`:/src:ro -v `pwd`/dist:/dist:rw $image bash /src/tools/package.sh /src /dist teamcity OFF Release $pyver "$build_number" "$extra"

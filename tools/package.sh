@@ -93,7 +93,16 @@ fi
 
 
 if [ ! -z $ARTIFACT_PATH ] ; then
-    CMAKE_EXTRA_FLAGS="-DPACKAGE_OUTPUT_FILE_PREFIX=${ARTIFACT_PATH} $CMAKE_EXTRA_FLAGS"
+    CMAKE_EXTRA_FLAGS="-DPACKAGE_OUTPUT_FILE_PREFIX=${ARTIFACT_PATH} -DDOCS_OUTPUT_PATH=${ARTIFACT_PATH} $CMAKE_EXTRA_FLAGS"
+fi
+
+if hash cmake  2> /dev/null; then
+    echo "Found CMake"
+else
+    CMAKE_URL="http://www.cmake.org/files/v3.8/cmake-3.8.2-Linux-x86_64.tar.gz"
+    mkdir /tmp/cmake
+    wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C /tmp/cmake
+    export PATH=$PATH:/tmp/cmake/bin
 fi
 
 # Utility macros

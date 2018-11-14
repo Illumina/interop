@@ -63,11 +63,11 @@ namespace illumina { namespace interop { namespace io
      * @throw incomplete_file_exception
      */
     template<class MetricSet>
-    void read_interop_from_buffer(::uint8_t* buffer, size_t buffer_size, MetricSet& metrics)  throw
+    void read_interop_from_buffer(::uint8_t* buffer, size_t buffer_size, MetricSet& metrics)  INTEROP_THROW_SPEC(
                                                                             (interop::io::file_not_found_exception,
                                                                             interop::io::bad_format_exception,
                                                                             interop::io::incomplete_file_exception,
-                                                                            model::index_out_of_bounds_exception)
+                                                                            model::index_out_of_bounds_exception) )
     {
         detail::membuf sbuf(reinterpret_cast<char*>(buffer), reinterpret_cast<char*>(buffer) + buffer_size);
         std::istream in(&sbuf);
@@ -83,10 +83,10 @@ namespace illumina { namespace interop { namespace io
      * @throw model::index_out_of_bounds_exception
      */
     template<class MetricSet>
-    void read_interop_from_string(const std::string& buffer, MetricSet& metrics, const bool rebuild=true)  throw
+    void read_interop_from_string(const std::string& buffer, MetricSet& metrics, const bool rebuild=true)  INTEROP_THROW_SPEC(
     (interop::io::bad_format_exception,
     interop::io::incomplete_file_exception,
-    model::index_out_of_bounds_exception)
+    model::index_out_of_bounds_exception) )
     {
         std::istringstream in(buffer);
         read_metrics(in, metrics, buffer.length(), rebuild);
@@ -100,10 +100,10 @@ namespace illumina { namespace interop { namespace io
      * @throw model::index_out_of_bounds_exception
      */
     template<class MetricSet>
-    size_t read_header_from_string(const std::string& buffer, MetricSet& metrics)  throw
+    size_t read_header_from_string(const std::string& buffer, MetricSet& metrics)  INTEROP_THROW_SPEC(
     (interop::io::bad_format_exception,
     interop::io::incomplete_file_exception,
-    model::index_out_of_bounds_exception)
+    model::index_out_of_bounds_exception))
     {
         std::istringstream in(buffer);
         return read_header(in, metrics);
@@ -123,11 +123,11 @@ namespace illumina { namespace interop { namespace io
      * @throw incomplete_file_exception
      */
     template<class MetricSet>
-    void read_interop(const std::string& run_directory, MetricSet& metrics, const bool use_out=true)   throw
+    void read_interop(const std::string& run_directory, MetricSet& metrics, const bool use_out=true)   INTEROP_THROW_SPEC(
                                                                         (   io::file_not_found_exception,
                                                                             io::bad_format_exception,
                                                                             io::incomplete_file_exception,
-                                                                            model::index_out_of_bounds_exception)
+                                                                            model::index_out_of_bounds_exception))
     {
 #       if __GNUC__ <= 4 && __GNUC_MINOR__ <= 7
             // ---------------------------------------------------------------------------------------------------------
@@ -329,7 +329,7 @@ namespace illumina { namespace interop { namespace io
     /** @} */
     /** Test if metric format version is deprecated
      *
-     * @param version
+     * @param version version of format to check
      * @return true if format version is deprecated
      */
     template<class Metric>
