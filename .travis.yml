@@ -114,7 +114,7 @@ before_script:
 
 script:
 - $SCRIPT
-- if [ ! -z $DEPLOY_DOCS ] ; then cmake . -Bbuild_docs;cmake --build build_docs --target doc fi
+- if [ ! -z $DEPLOY_DOCS ] ; then cmake . -Bbuild_docs;cmake --build build_docs --target doc ; fi
 
 #white list broke the tag push deployment
 
