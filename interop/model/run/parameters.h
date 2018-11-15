@@ -59,6 +59,15 @@ namespace illumina { namespace interop { namespace model { namespace run
         }
 
     public:
+
+        /** @defgroup run_parameters Run Parameters
+         *
+         * Information describing the read
+         *
+         * @ingroup run_metrics
+         * @ref illumina::interop::model::run::read_info "See full class description"
+         * @{
+         */
         /** Get the type of instrument
          *
          * @return type of instrument
@@ -103,6 +112,7 @@ namespace illumina { namespace interop { namespace model { namespace run
         xml::empty_xml_format_exception,
         xml::missing_xml_element_exception,
         xml::xml_parse_exception));
+        /** @} */
 
     private:
         void set_instrument_id(std::string &application_name, std::string &multi_surface);

@@ -60,6 +60,7 @@ namespace illumina { namespace interop { namespace model { namespace plot
          * @param tile_number tile number
          * @param swath swath number
          * @param section section number
+         * @param subsample amount to subsample points
          */
         filter_options(const constants::tile_naming_method naming_method,
                        const id_t lane = ALL_IDS,

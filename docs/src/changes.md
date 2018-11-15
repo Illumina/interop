@@ -5,6 +5,8 @@
 
 Date       | Description
 ---------- | -----------
+2018-11-11 | Improve Python documentation expounding upon the run module
+2018-11-10 | Add auto generation of documentation
 2018-10-03 | Fix MacOSX build
 
 

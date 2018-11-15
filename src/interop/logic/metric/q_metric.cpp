@@ -251,6 +251,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
      *
      * @param metric_set Q-metrics
      * @param bylane bylane Q-metrics
+     * @param instrument instrument type
      * @throws index_out_of_bounds_exception
      */
     void create_q_metrics_by_lane(const model::metric_base::metric_set<model::metrics::q_metric>& metric_set,

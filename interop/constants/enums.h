@@ -262,6 +262,14 @@
 
 namespace illumina { namespace interop { namespace constants
 {
+
+    /** @defgroup constants Enumerated constants
+     *
+     * Enumerated constants
+     *
+     * @ref illumina::interop::model::run::info "See full class description"
+     * @{
+     */
     /** Common codes for all enums */
     enum common
     {
@@ -327,6 +335,7 @@ namespace illumina { namespace interop { namespace constants
     {
         INTEROP_ENUM_PLOT_TYPES = INTEROP_UNKNOWN
     };
+    /** @} */
 
 }}}
 
