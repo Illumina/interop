@@ -16,6 +16,7 @@ brew install nuget
 brew install coreutils || brew install gstat
 which pyenv || brew unlink pyenv
 brew install pyenv
+brew upgrade pyenv
 brew link pyenv
 
 export PATH=/usr/local/share/dotnet:${PATH}

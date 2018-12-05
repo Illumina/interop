@@ -1,6 +1,13 @@
 # Changes                                               {#changes}
 
 
+## v1.1.8
+
+Date       | Description
+---------- | -----------
+2018-12-05 | Fix for Python 3.7 on Mac OSX wheel deployment
+
+
 ## v1.1.7
 
 Date       | Description
