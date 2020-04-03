@@ -32,14 +32,17 @@ NUNIT_URL="https://github.com/nunit/nunitv2/releases/download/2.6.4/NUnit-2.6.4.
 JAVA_URL="http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.rpm"
 VALGRIND_URL="http://www.valgrind.org/downloads/valgrind-3.14.0.tar.bz2"
 DOXYGEN_URL="https://sourceforge.net/projects/doxygen/files/rel-1.8.10/doxygen-1.8.10.linux.bin.tar.gz"
+DOXYGEN_URL="https://sourceforge.net/projects/doxygen/files/rel-1.8.10/doxygen-1.8.10.linux.bin.tar.gz/download?use_mirror=managedway&r=&use_mirror=managedway#"
 WGET_URL="http://ftp.gnu.org/gnu/wget/wget-1.19.tar.gz"
 PROG_HOME=/opt
 SWIG_HOME=${PROG_HOME}/swig3
 JUNIT_HOME=${PROG_HOME}/junit
 NUNIT_HOME=${PROG_HOME}/nunit
 
+curl_cmd="curl -k -L"
+
 echo "Installing doxygen"
-wget --no-check-certificate --quiet ${DOXYGEN_URL}/download -O${DOXYGEN_URL##*/}
+${curl_cmd} ${DOXYGEN_URL} > ${DOXYGEN_URL##*/}
 tar -xzf ${DOXYGEN_URL##*/}
 cd doxygen-1.8.10
 sh configure --prefix /usr
@@ -52,7 +55,7 @@ if hash cmake  2> /dev/null; then
     echo "Found CMake"
 else
     echo "Installing CMake"
-    curl -L ${CMAKE_URL} | tar --strip-components=1 -xz -C /usr
+    ${curl_cmd} ${CMAKE_URL} | tar --strip-components=1 -xz -C /usr
 
 
     for PYBUILD in `ls -1 /opt/python`; do
@@ -76,10 +79,10 @@ if [ -e /usr/include/gtest/gtest.h ]; then
 else
     echo "Installing GTest and GMock"
     mkdir /gtest
-    curl -L ${GOOGLETEST_URL} -o release-1.8.0.tar.gz
+    ${curl_cmd} ${GOOGLETEST_URL} -o release-1.8.0.tar.gz
 
     tar --strip-components=1 -xzf release-1.8.0.tar.gz -C /gtest
-    #curl ${GOOGLETEST_URL} | tar --strip-components=1 -xz -C /gtest
+    #${curl_cmd} ${GOOGLETEST_URL} | tar --strip-components=1 -xz -C /gtest
     mkdir /gtest/build
     cmake -H/gtest -B/gtest/build
     cmake --build /gtest/build -- -j4
@@ -172,7 +175,7 @@ fi
 if [ ! -e ${NUNIT_HOME}/NUnit-2.6.4 ]; then
     echo "Installing NUnit"
     mkdir ${NUNIT_HOME}
-    curl -L ${NUNIT_URL} -o ${NUNIT_HOME}/${NUNIT_URL##*/}
+    ${curl_cmd} ${NUNIT_URL} -o ${NUNIT_HOME}/${NUNIT_URL##*/}
     unzip ${NUNIT_HOME}/${NUNIT_URL##*/} -d ${NUNIT_HOME}
     rm -f ${NUNIT_HOME}/${JUNIT_URL##*/}
 else
@@ -190,7 +193,7 @@ fi
 
 echo "Installing Valgrind"
 mkdir tmp_build
-curl -L ${VALGRIND_URL} | tar --strip-components=1 -xj -C ./tmp_build
+${curl_cmd} ${VALGRIND_URL} | tar --strip-components=1 -xj -C ./tmp_build
 cd tmp_build
 ./configure --prefix=/usr
 make -j 4

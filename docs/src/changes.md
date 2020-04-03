@@ -1,6 +1,12 @@
 # Changes                                               {#changes}
 
 
+## v1.1.9
+
+Date       | Description
+---------- | -----------
+2020-04-03 | Add support for Python 3.8 (Issue-205)
+
 ## v1.1.8
 
 Date       | Description
