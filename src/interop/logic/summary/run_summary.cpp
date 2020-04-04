@@ -136,6 +136,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                                         metrics.get<extended_tile_metric>().end(),
                                         naming_method,
                                         summary);
+        validate_cycle_to_read(metrics.get<error_metric>(), cycle_to_read);
         summarize_error_metrics(metrics.get<error_metric>().begin(),
                                 metrics.get<error_metric>().end(),
                                 cycle_to_read,
