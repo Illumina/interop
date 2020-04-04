@@ -1,6 +1,13 @@
 # Changes                                               {#changes}
 
 
+## v1.1.9
+
+Date       | Description
+---------- | -----------
+2020-04-04 | Switch C# library from .Net Core to .Net Standard
+
+
 ## v1.1.8
 
 Date       | Description

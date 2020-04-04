@@ -65,7 +65,6 @@ macro(interop_config_compiler_and_linker)
 
     include(CheckIsNaN)
 
-
     if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR CMAKE_COMPILER_IS_GNUCC OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         set(COMPILER_IS_GNUCC_OR_CLANG ON)
     elseif(NOT WIN32 AND "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
@@ -103,10 +102,8 @@ macro(interop_config_compiler_and_linker)
     check_type_size(size_t SIZE_T)
     if(MINGW)
         set(CXX11_FLAG_ "-std=gnu++11")
-        #set(CXX0x_FLAG_ "-std=gnu++0x")
     else()
         set(CXX11_FLAG_ "-std=c++11")
-        #set(CXX0x_FLAG_ "-std=c++0x")
     endif()
 
     include(CheckCXXSourceCompiles)
