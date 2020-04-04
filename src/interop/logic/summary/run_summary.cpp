@@ -27,42 +27,46 @@ namespace illumina { namespace interop { namespace logic { namespace summary
     {
         using namespace model::metrics;
         model::metrics::run_metrics::id_set_t tile_count_set;
-        const size_t surface_count = metrics.run_info().flowcell().surface_count();
+        const std::vector<uint32_t> surface_list = metrics.run_info().flowcell().surface_list();
         const constants::tile_naming_method naming_convention = metrics.run_info().flowcell().naming_method();
         for(unsigned int lane=0;lane<summary.lane_count();++lane)
         {
             size_t tile_count_for_lane = 0;
-            for(unsigned int surface=0;surface < surface_count;++surface)
+            for(unsigned int surface_index=0;surface_index < surface_list.size();++surface_index)
             {
                 metrics.get<tile_metric>().populate_tile_numbers_for_lane_surface(tile_count_set,
-                                                                             lane+1,
-                                                                             surface+1,
-                                                                             naming_convention);
+                                                                                  lane+1,
+                                                                                  surface_list[surface_index],
+                                                                                  naming_convention);
                 metrics.get<error_metric>().populate_tile_numbers_for_lane_surface(tile_count_set,
-                                                                             lane+1,
-                                                                             surface+1,
-                                                                             naming_convention);
+                                                                                   lane+1,
+                                                                                   surface_list[surface_index],
+                                                                                   naming_convention);
                 metrics.get<extraction_metric>().populate_tile_numbers_for_lane_surface(tile_count_set,
-                                                                             lane+1,
-                                                                             surface+1,
-                                                                             naming_convention);
+                                                                                        lane+1,
+                                                                                        surface_list[surface_index],
+                                                                                        naming_convention);
                 metrics.get<q_metric>().populate_tile_numbers_for_lane_surface(tile_count_set,
-                                                                             lane+1,
-                                                                             surface+1,
-                                                                             naming_convention);
-                metrics.get<corrected_intensity_metric>().populate_tile_numbers_for_lane_surface(tile_count_set,
                                                                                lane+1,
-                                                                               surface+1,
+                                                                               surface_list[surface_index],
                                                                                naming_convention);
+                metrics.get<corrected_intensity_metric>().populate_tile_numbers_for_lane_surface(tile_count_set,
+                                                                                                 lane+1,
+                                                                                                 surface_list[surface_index],
+                                                                                                 naming_convention);
                 metrics.get<phasing_metric>().populate_tile_numbers_for_lane_surface(tile_count_set,
                                                                                      lane+1,
-                                                                                     surface+1,
+                                                                                     surface_list[surface_index],
                                                                                      naming_convention);
+                metrics.get<extended_tile_metric>().populate_tile_numbers_for_lane_surface(tile_count_set,
+                                                                                           lane+1,
+                                                                                           surface_list[surface_index],
+                                                                                           naming_convention);
 
-                if(surface_count > 1)
+                if(surface_list.size() > 1)
                 {
                     for (size_t read = 0; read < summary.size(); ++read)
-                        summary[read][lane][surface].tile_count(tile_count_set.size());
+                        summary[read][lane][surface_index].tile_count(tile_count_set.size());
                 }
                 tile_count_for_lane += tile_count_set.size();
                 tile_count_set.clear();
@@ -151,6 +155,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
         if(0 == metrics.get<q_collapsed_metric>().size())
             logic::metric::create_collapse_q_metrics(metrics.get<q_metric>(),
                                                      metrics.get<q_collapsed_metric>());
+        validate_cycle_to_read(metrics.get<q_collapsed_metric>(), cycle_to_read);
         summarize_collapsed_quality_metrics(metrics.get<q_collapsed_metric>().begin(),
                                             metrics.get<q_collapsed_metric>().end(),
                                             cycle_to_read,
@@ -168,12 +173,14 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                               cycle_to_read,
                               &model::summary::cycle_state_summary::extracted_cycle_range,
                               summary);
+        validate_cycle_to_read(metrics.get<q_metric>(), cycle_to_read);
         summarize_cycle_state(metrics.get<tile_metric>(),
                               metrics.get<q_metric>(),
                               cycle_to_read,
                               &model::summary::cycle_state_summary::qscored_cycle_range,
                               summary);
         // Summarize called cycle state
+        validate_cycle_to_read(metrics.get<corrected_intensity_metric>(), cycle_to_read);
         summarize_cycle_state(metrics.get<tile_metric>(),
                               metrics.get<corrected_intensity_metric>(),
                               cycle_to_read,
