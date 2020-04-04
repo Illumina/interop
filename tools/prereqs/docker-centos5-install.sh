@@ -46,14 +46,15 @@ NUNIT_HOME=${PROG_HOME}/nunit
 curl_cmd="curl -k -L"
 
 echo "Installing doxygen"
-${curl_cmd} ${DOXYGEN_URL} > ${DOXYGEN_URL##*/}
-tar -xzf ${DOXYGEN_URL##*/}
-cd doxygen-1.8.10
+mkdir /tmp/doxygen
+${curl_cmd} ${DOXYGEN_URL} | tar --strip-components=1 -xz -C /tmp/doxygen
+
+cd /tmp/doxygen
 sh configure --prefix /usr
 cp bin/doxygen /usr/bin
 chmod 755 /usr/bin/doxygen
 cd ..
-rm -fr doxygen-1.8.10 ${DOXYGEN_URL##*/}
+rm -fr /tmp/doxygen
 
 if hash cmake  2> /dev/null; then
     echo "Found CMake"
@@ -171,9 +172,9 @@ if hash java  2> /dev/null; then
     echo "Found Java"
 else
     echo "Installing Java"
-    curl -jkL -H "Cookie: oraclelicense=accept-securebackup-cookie" "${JAVA_URL}" -o ${JAVA_URL##*/}  || true
-    rpm -Uvh ${JAVA_URL##*/}  || true
-    rm -f  ${JAVA_URL##*/}  || true
+    curl -jkL -H "Cookie: oraclelicense=accept-securebackup-cookie" "${JAVA_URL}" -o ${JAVA_URL##*/}
+    rpm -Uvh ${JAVA_URL##*/}
+    rm -f  ${JAVA_URL##*/}
 fi
 
 if [ ! -e ${NUNIT_HOME}/NUnit-2.6.4 ]; then

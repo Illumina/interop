@@ -55,7 +55,7 @@ fi
 ARTIFACT_PATH=`$readlink -f $ARTIFACT_PATH`
 
 if [ ! -z $3 ] ; then
-    BUILD_SERVER=$3
+    BUILD_SERVER="$3"
     DISABLE_SUBDIR=OFF
     if [[ "$BUILD_SERVER" == "travis" ]]; then
         DISABLE_SUBDIR=ON
@@ -66,23 +66,23 @@ else
 fi
 
 if [ ! -z $4 ] ; then
-    INTEROP_C89=$4
+    INTEROP_C89="$4"
 fi
 
 if [ ! -z $5 ] ; then
-    BUILD_TYPE=$5
+    BUILD_TYPE="$5"
 fi
 
 if [ ! -z $6 ] ; then
-    PYTHON_VERSION=$6
+    PYTHON_VERSION="$6"
 fi
 
 if [ ! -z $7 ] ; then
-    BUILD_NUMBER=$7
+    BUILD_NUMBER="$7"
 fi
 
-if [ ! -z $8 ] ; then
-    MORE_FLAGS=$8
+if [ ! -z "$8" ] ; then
+    MORE_FLAGS="$8"
 fi
 
 CMAKE_EXTRA_FLAGS="-DDISABLE_PACKAGE_SUBDIR=${DISABLE_SUBDIR} -DENABLE_PORTABLE=ON -DENABLE_BACKWARDS_COMPATIBILITY=$INTEROP_C89 -DCMAKE_BUILD_TYPE=$BUILD_TYPE $MORE_FLAGS"
@@ -170,7 +170,7 @@ if [ "$PYTHON_VERSION" != "" ] ; then
             pyenv install $py_ver -s  || true
             pyenv global $py_ver || true
             if [[ "$OSTYPE" == "darwin"* ]]; then
-                pip install setuptools --upgrade
+                pip install setuptools==43.0.0
                 pip install delocate
                 # pip install delocate=0.7.3
             fi
@@ -179,8 +179,15 @@ if [ "$PYTHON_VERSION" != "" ] ; then
             python --version
             pip install numpy
             pip install wheel
+            echo "Check setuptools"
+            python -c "import setuptools"
+            echo "Check numpy"
+            python -c "import numpy"
+            echo "Check wheel"
+            python -c "import wheel"
             # pip install wheel=0.30.0
         fi
+        pip uninstall -y interop || true
         run "Configure $py_ver" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS} -DENABLE_PYTHON_DYNAMIC_LOAD=ON -DPYTHON_EXECUTABLE=`which python` -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp
         run "Build $py_ver" cmake --build $BUILD_PATH -- -j${THREAD_COUNT}
         run "Test $py_ver" cmake --build $BUILD_PATH --target check_python -- -j${THREAD_COUNT}
