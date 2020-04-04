@@ -48,6 +48,11 @@ namespace illumina { namespace interop { namespace logic { namespace utils
         {
             valid_to_load[constants::Tile] = static_cast<unsigned char>(1);
         }
+        // Need cluster_count_k in tile metrics to estimate % demultiplexed
+        if(group == constants::Index)
+        {
+            valid_to_load[constants::Tile] = static_cast<unsigned char>(1);
+        }
     }
 
     /** List the required on demand metrics
@@ -135,7 +140,8 @@ namespace illumina { namespace interop { namespace logic { namespace utils
                 static_cast<constants::metric_group >(tile_metric::TYPE),
                 static_cast<constants::metric_group >(error_metric::TYPE),
                 static_cast<constants::metric_group >(extraction_metric::TYPE),
-                static_cast<constants::metric_group >(corrected_intensity_metric::TYPE)
+                static_cast<constants::metric_group >(corrected_intensity_metric::TYPE),
+                static_cast<constants::metric_group >(extended_tile_metric::TYPE)
         };
         groups.assign(group_set, group_set+util::length_of(group_set));
         if(instrument == constants::NovaSeq)

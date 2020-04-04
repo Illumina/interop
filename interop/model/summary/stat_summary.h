@@ -36,7 +36,8 @@ namespace illumina { namespace interop { namespace model { namespace summary
                 m_yield_g(std::numeric_limits<float>::quiet_NaN()),
                 m_projected_yield_g(0),
                 m_reads(std::numeric_limits<float>::quiet_NaN()),
-                m_reads_pf(std::numeric_limits<float>::quiet_NaN())
+                m_reads_pf(std::numeric_limits<float>::quiet_NaN()),
+                m_percent_occupied(std::numeric_limits<float>::quiet_NaN())
 
         {
         }
@@ -270,6 +271,15 @@ namespace illumina { namespace interop { namespace model { namespace summary
         {
             return m_prephasing_offset;
         }
+        /** Get mean summarizing the percent occupied
+         *
+         * @note IUO
+         * @return statistics summarizing the percent occupied
+         */
+        const metric_stat_t &percent_occupied() const
+        {
+            return m_percent_occupied;
+        }
 
         /** @} */
 
@@ -458,6 +468,15 @@ namespace illumina { namespace interop { namespace model { namespace summary
         {
             m_prephasing_offset = stat;
         }
+        /** Set mean summarizing the percent occupied
+         *
+         * @note IUO
+         * @param val statistics summarizing the percent occupied
+         */
+        void percent_occupied(const metric_stat_t& val)
+        {
+            m_percent_occupied = val;
+        }
 
     public:
         /** Resize the underlying data
@@ -492,6 +511,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
         metric_stat_t m_phasing_offset;
         metric_stat_t m_prephasing_slope;
         metric_stat_t m_prephasing_offset;
+        metric_stat_t m_percent_occupied;
         template<class MetricType, int Version>
         friend struct io::generic_layout;
     };
