@@ -26,10 +26,14 @@ CMAKE_URL="http://www.cmake.org/files/v3.4/cmake-3.4.3-Linux-x86_64.tar.gz"
 SWIG_URL="http://prdownloads.sourceforge.net/swig/swig-3.0.12.tar.gz"
 MONO_URL="https://download.mono-project.com/sources/mono/mono-4.8.1.0.tar.bz2"
 NUGET_URL="https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
+NUGET_URL="https://dist.nuget.org/win-x86-commandline/v4.7.3/nuget.exe"
 GOOGLETEST_URL="https://github.com/google/googletest/archive/release-1.8.0.tar.gz"
 JUNIT_URL="http://search.maven.org/remotecontent?filepath=junit/junit/4.12/junit-4.12.jar"
 NUNIT_URL="https://github.com/nunit/nunitv2/releases/download/2.6.4/NUnit-2.6.4.zip"
 JAVA_URL="http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.rpm"
+JAVA_URL="https://download.oracle.com/otn/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.rpm"
+JAVA_URL="https://ussd.artifactory.illumina.com/list/generic-bioinformatics/BuildDeps/interop/jdk-8u131-linux-x64.rpm"
+# TODO use openjdk? yum install java-1.8.0-openjdk
 VALGRIND_URL="http://www.valgrind.org/downloads/valgrind-3.14.0.tar.bz2"
 DOXYGEN_URL="https://sourceforge.net/projects/doxygen/files/rel-1.8.10/doxygen-1.8.10.linux.bin.tar.gz"
 DOXYGEN_URL="https://sourceforge.net/projects/doxygen/files/rel-1.8.10/doxygen-1.8.10.linux.bin.tar.gz/download?use_mirror=managedway&r=&use_mirror=managedway#"
@@ -104,7 +108,7 @@ else
     if [ ! -e ${SWIG_HOME}/src ]; then
         mkdir ${SWIG_HOME}/src
     fi
-    wget --no-check-certificate --quiet -O - ${SWIG_URL} | tar --strip-components=1 -xz -C ${SWIG_HOME}/src
+    ${curl_cmd} ${SWIG_URL} | tar --strip-components=1 -xz -C ${SWIG_HOME}/src
     cd ${SWIG_HOME}/src
 
     # TODO test if on centos or ubuntu
@@ -141,7 +145,7 @@ else
     # }
     #endif
     mkdir /mono_clean
-    wget --no-check-certificate --quiet -O - ${MONO_URL} | tar --strip-components=1 -xj -C /mono_clean
+    ${curl_cmd} ${MONO_URL} | tar --strip-components=1 -xj -C /mono_clean
     patch -p0 < /mono_patch.txt
 
 
@@ -155,7 +159,7 @@ else
     which mono
     mono --version
 
-    wget --no-check-certificate --quiet ${NUGET_URL} -O /usr/lib/nuget.exe
+    ${curl_cmd} ${NUGET_URL} > /usr/lib/nuget.exe
     echo "mono /usr/lib/nuget.exe \$@" > /usr/bin/nuget
     chmod +x /usr/bin/nuget
     export PATH=$PATH_OLD
@@ -167,9 +171,9 @@ if hash java  2> /dev/null; then
     echo "Found Java"
 else
     echo "Installing Java"
-    wget --quiet --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "${JAVA_URL}" -O ${JAVA_URL##*/}
-    rpm -Uvh ${JAVA_URL##*/}
-    rm -f  ${JAVA_URL##*/}
+    curl -jkL -H "Cookie: oraclelicense=accept-securebackup-cookie" "${JAVA_URL}" -o ${JAVA_URL##*/}  || true
+    rpm -Uvh ${JAVA_URL##*/}  || true
+    rm -f  ${JAVA_URL##*/}  || true
 fi
 
 if [ ! -e ${NUNIT_HOME}/NUnit-2.6.4 ]; then
@@ -186,7 +190,7 @@ NUNIT_HOME=${NUNIT_HOME}/NUnit-2.6.4
 if [ ! -e ${JUNIT_HOME}/${JUNIT_URL##*/} ]; then
     echo "Installing JUnit"
     mkdir ${JUNIT_HOME}
-    wget --no-check-certificate --quiet ${JUNIT_URL} -O  ${JUNIT_HOME}/${JUNIT_URL##*/}
+    ${curl_cmd} ${JUNIT_URL} >  ${JUNIT_HOME}/${JUNIT_URL##*/}
 else
     echo "Found JUnit at ${JUNIT_HOME}/${JUNIT_URL##*/}"
 fi
