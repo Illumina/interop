@@ -28,13 +28,13 @@ matrix:
   include:
   - os: osx
     compiler: clang
-    env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release ALL '' '-DCSBUILD_TOOL=DotNetStandard'"
+    env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release ALL \"\" \"-DCSBUILD_TOOL=DotNetStandard\""
   - os: linux
     compiler: clang
-    env: SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis ON Debug None '' '-DENABLE_SWIG=OFF'"
+    env: SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis ON Debug None \"\" \"-DENABLE_SWIG=OFF\""
   - os: linux
     compiler: gcc
-    env: SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis ON Debug None '' '-DENABLE_SWIG=OFF'"
+    env: SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis ON Debug None \"\" \"-DENABLE_SWIG=OFF\""
   - os: linux
     compiler: gcc
     sudo: required
@@ -43,7 +43,7 @@ matrix:
     env: DEPLOY_BUILD=true DEPLOY_DOCS=true DOCKER_IMAGE=ezralanglois/interop SCRIPT="docker run --rm -v $PWD:/io ezralanglois/interop sh /io/tools/package.sh /io /io/dist travis OFF Release None"
   - os: osx
     compiler: clang
-    env: SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Debug None '' '-DENABLE_SWIG=OFF'"
+    env: SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Debug None \"\" \"-DENABLE_SWIG=OFF\""
   - os: linux
     compiler: gcc
     addons: &1
@@ -61,7 +61,7 @@ matrix:
         - mono-complete
         - libgtest-dev
         - python-numpy
-    env: COMPILER_VERSION=-5 SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis ON Debug None '' '-DENABLE_SWIG=OFF'"
+    env: COMPILER_VERSION=-5 SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis ON Debug None \"\" \"-DENABLE_SWIG=OFF\""
   - os: linux
     compiler: clang
     addons: &2
@@ -81,7 +81,7 @@ matrix:
         - mono-complete
         - libgtest-dev
         - python-numpy
-    env: COMPILER_VERSION=-3.7 SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis ON Debug None '' '-DENABLE_SWIG=OFF'"
+    env: COMPILER_VERSION=-3.7 SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis ON Debug None \"\" \"-DENABLE_SWIG=OFF\""
 addons:
   apt:
     sources:
