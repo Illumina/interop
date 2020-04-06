@@ -55,7 +55,7 @@ fi
 ARTIFACT_PATH=`$readlink -f $ARTIFACT_PATH`
 
 if [ ! -z $3 ] ; then
-    BUILD_SERVER=$3
+    BUILD_SERVER="$3"
     DISABLE_SUBDIR=OFF
     if [[ "$BUILD_SERVER" == "travis" ]]; then
         DISABLE_SUBDIR=ON
@@ -66,23 +66,23 @@ else
 fi
 
 if [ ! -z $4 ] ; then
-    INTEROP_C89=$4
+    INTEROP_C89="$4"
 fi
 
 if [ ! -z $5 ] ; then
-    BUILD_TYPE=$5
+    BUILD_TYPE="$5"
 fi
 
 if [ ! -z $6 ] ; then
-    PYTHON_VERSION=$6
+    PYTHON_VERSION="$6"
 fi
 
 if [ ! -z $7 ] ; then
-    BUILD_NUMBER=$7
+    BUILD_NUMBER="$7"
 fi
 
-if [ ! -z $8 ] ; then
-    MORE_FLAGS=$8
+if [ ! -z "$8" ] ; then
+    MORE_FLAGS="$8"
 fi
 
 CMAKE_EXTRA_FLAGS="-DDISABLE_PACKAGE_SUBDIR=${DISABLE_SUBDIR} -DENABLE_PORTABLE=ON -DENABLE_BACKWARDS_COMPATIBILITY=$INTEROP_C89 -DCMAKE_BUILD_TYPE=$BUILD_TYPE $MORE_FLAGS"
@@ -90,11 +90,9 @@ CMAKE_EXTRA_FLAGS="-DDISABLE_PACKAGE_SUBDIR=${DISABLE_SUBDIR} -DENABLE_PORTABLE=
 
 if [ "$PYTHON_VERSION" == "None" ] ; then
     PYTHON_VERSION=
-    CMAKE_EXTRA_FLAGS="-DBUILD_NUMBER=$BUILD_NUMBER -DENABLE_SWIG=OFF $CMAKE_EXTRA_FLAGS"
 fi
 
 if [ "$PYTHON_VERSION" == "Disable" ] ; then
-    PYTHON_VERSION=
     CMAKE_EXTRA_FLAGS="-DENABLE_SWIG=OFF $CMAKE_EXTRA_FLAGS"
 fi
 
@@ -155,7 +153,7 @@ if [ -z $PYTHON_VERSION ] && [  -e /opt/python ] ; then
     done
 fi
 
-if [ "$PYTHON_VERSION" != "" ] ; then
+if [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] ; then
     if [ "$PYTHON_VERSION" == "ALL" ] ; then
         python_versions="2.7.11 3.4.4 3.5.1 3.6.0 3.7.0"
     else
@@ -217,7 +215,9 @@ run "Package" cmake --build $BUILD_PATH --target bundle
 # Workaround for OSX
 export PATH=/usr/local/share/dotnet:${PATH}
 if hash dotnet 2> /dev/null; then
-    run "Configure DotNetCore" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS} -DCSBUILD_TOOL=DotNetStandard && cmake --build $BUILD_PATH --target nupack -- -j${THREAD_COUNT} || true
+    run "Configure DotNetStandard" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS} -DCSBUILD_TOOL=DotNetStandard
+    run "Test DotNetStandard" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
+    run "Package DotNetStandard" cmake --build $BUILD_PATH --target nupack -- -j${THREAD_COUNT}
 fi
 rm -fr ${ARTIFACT_PATH}/tmp
 echo "List Artifacts:"
