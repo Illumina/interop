@@ -131,6 +131,10 @@ fi
 
 # Build Python Wheels for a range of Python Versions
 if [ -z $PYTHON_VERSION ] && [  -e /opt/python ] ; then
+    echo "ManyLinux with: "
+    for PYBUILD in `ls -1 /opt/python`; do
+      echo "Python ${PYBUILD}"
+    done
     for PYBUILD in `ls -1 /opt/python`; do
         PYTHON_BIN=/opt/python/${PYBUILD}/bin
         if [[ "$PYBUILD" == cp26* ]]; then
@@ -144,8 +148,8 @@ if [ -z $PYTHON_VERSION ] && [  -e /opt/python ] ; then
 
         run "Test ${PYBUILD}" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
         run "Build ${PYBUILD}" cmake --build $BUILD_PATH --target package_wheel -- -j${THREAD_COUNT}
-        auditwheel show ${ARTIFACT_PATH}/tmp/interop*${PYBUILD}*linux_x86_64.whl
-        auditwheel repair ${ARTIFACT_PATH}/tmp/interop*${PYBUILD}*linux_x86_64.whl -w ${ARTIFACT_PATH}
+        ${PYTHON_BIN}/auditwheel show ${ARTIFACT_PATH}/tmp/interop*${PYBUILD}*linux_x86_64.whl
+        ${PYTHON_BIN}/auditwheel repair ${ARTIFACT_PATH}/tmp/interop*${PYBUILD}*linux_x86_64.whl -w ${ARTIFACT_PATH}
         rm -fr ${ARTIFACT_PATH}/tmp
     done
 fi
