@@ -11,7 +11,8 @@ brew install zlib
 brew install swig
 brew install doxygen
 brew install wget
-brew install mono
+#brew install mono
+brew remove mono || true
 brew install nuget
 brew install coreutils || brew install gstat
 which pyenv || brew unlink pyenv
