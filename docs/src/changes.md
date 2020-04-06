@@ -1,6 +1,12 @@
 # Changes                                               {#changes}
 
 
+## v1.1.9
+
+Date       | Description
+---------- | -----------
+2020-04-06 | Fix bugs in format of Image and EmpiricalPhasing in dumptext (Issue-206)
+
 ## v1.1.8
 
 Date       | Description
