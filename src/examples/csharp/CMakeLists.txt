@@ -38,7 +38,7 @@ function(add_csharp_example _target _source_files)
     add_custom_command(TARGET ${_target} POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy ${CSBUILD_${_target}_BINARY} $<TARGET_FILE_DIR:${INTEROP_LIB}>
             COMMENT "${CMAKE_COMMAND} -E copy ${CSBUILD_${_target}_BINARY} -> InterOp DIR")
-    if(NOT ENABLE_EXAMPLES)
+    if(NOT ENABLE_EXAMPLES OR NOT ENABLE_CSHARP)
         set_target_properties(${_target} PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
     else()
         install(FILES ${CSBUILD_${_target}_BINARY} ${CSHARP_INTEROP_LIBRARY}

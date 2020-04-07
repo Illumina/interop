@@ -70,6 +70,10 @@ else()
     add_dependencies(csharp_unittest csharp_interop ${NUNIT_TARGET})
 endif()
 
+if(NOT ENABLE_CSHARP)
+    set_target_properties(csharp_unittest PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
+endif()
+
 # Clear old packages
 # dotnet nuget locals all --clear
 
@@ -94,6 +98,10 @@ set(PERF_TEST_SRCS
 
 csharp_add_library(csharp_perftest ${NUNIT_LIBRARIES} ${PERF_TEST_SRCS} ${SWIG_CSHARP_LIBRARY})
 add_dependencies(csharp_perftest csharp_interop ${NUNIT_TARGET})
+if(NOT ENABLE_CSHARP)
+    set_target_properties(csharp_perftest PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
+endif()
+
 
 add_custom_command(TARGET csharp_perftest POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CSBUILD_csharp_perftest_BINARY} $<TARGET_FILE_DIR:${INTEROP_LIB}>

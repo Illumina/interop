@@ -498,18 +498,6 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         logic::metric::populate_cumulative_distribution(get<q_metric>());
         logic::metric::populate_cumulative_distribution(get<q_by_lane_metric>());
         logic::metric::populate_cumulative_distribution(get<q_collapsed_metric>());
-
-        if(!get<model::metrics::phasing_metric>().empty())
-        {
-            logic::summary::read_cycle_vector_t cycle_to_read;
-            logic::summary::map_read_to_cycle_number(run_info().reads().begin(),
-                                                     run_info().reads().end(),
-                                                     cycle_to_read);
-            logic::metric::populate_dynamic_phasing_metrics(get<model::metrics::phasing_metric>(),
-                                                            cycle_to_read,
-                                                            get<model::metrics::dynamic_phasing_metric>(),
-                                                            get<model::metrics::tile_metric>());
-        }
         if(!get<model::metrics::extended_tile_metric>().empty() && !get<model::metrics::tile_metric>().empty())
         {
             logic::metric::populate_percent_occupied(get<model::metrics::tile_metric>(),
@@ -545,6 +533,18 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             m_run_info.validate();
             validate();
             m_run_info.validate_tiles();
+        }
+
+        if(!get<model::metrics::phasing_metric>().empty())
+        {
+            logic::summary::read_cycle_vector_t cycle_to_read;
+            logic::summary::map_read_to_cycle_number(run_info().reads().begin(),
+                                                     run_info().reads().end(),
+                                                     cycle_to_read);
+            logic::metric::populate_dynamic_phasing_metrics(get<model::metrics::phasing_metric>(),
+                                                            cycle_to_read,
+                                                            get<model::metrics::dynamic_phasing_metric>(),
+                                                            get<model::metrics::tile_metric>());
         }
     }
 
