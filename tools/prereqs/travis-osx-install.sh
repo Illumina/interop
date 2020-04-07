@@ -19,16 +19,7 @@ brew install nuget
 brew install coreutils || brew install gstat
 brew install openssl@1.1
 brew outdated pyenv || brew upgrade pyenv
-
-export PATH=/usr/local/share/dotnet:${PATH}
-
-if hash dotnet 2> /dev/null; then
-echo ".NET Core installed"
-else
-wget https://download.microsoft.com/download/1/1/5/115B762D-2B41-4AF3-9A63-92D9680B9409/dotnet-sdk-2.1.4-osx-x64.pkg
-sudo /usr/sbin/installer -pkg dotnet-sdk-2.1.4-osx-x64.pkg -target /
-rm -fr dotnet-sdk-2.1.4-osx-x64.pkg
-fi
+brew install dotnet-sdk
 
 echo "OpenSSL: $(brew --prefix openssl)"
 CFLAGS="-I$(brew --prefix openssl)/include -I$(xcrun --show-sdk-path)/usr/include"
