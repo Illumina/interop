@@ -9,6 +9,8 @@ brew install cmake
 brew link cmake
 brew install zlib
 brew install swig@3
+brew unlink swig || true
+brew link swig@3
 brew install doxygen
 brew install wget
 #brew install mono
