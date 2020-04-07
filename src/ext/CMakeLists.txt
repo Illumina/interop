@@ -17,17 +17,11 @@ if(swig_major_ver LESS "3")
 endif()
 
 # Support earlier and later versions of CMake
-if(CMAKE_VERSION VERSION_LESS 3.8)
-    macro(swig_add_library name)
-        set(options "")
-        set(oneValueArgs LANGUAGE
-                TYPE)
-        set(multiValueArgs SOURCES)
-        cmake_parse_arguments(_SAM "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
-
+if(CMAKE_VERSION VERSION_LESS 3.8 OR EXISTS "${CMAKE_SOURCE_DIR}/cmake/Modules/UseSWIG.cmake")
+    macro(swig_add_library name language)
         swig_add_module(${name}
-                ${_SAM_LANGUAGE}
-                ${_SAM_SOURCES})
+                ${language}
+                ${ARGN})
     endmacro()
 endif()
 
@@ -44,15 +38,11 @@ if("${SIZE_T}" EQUAL 8)
     set(SWIG_WORDSIZE_FLAG "${SWIG_WORDSIZE_FLAG};-DHAVE_UINT64_SIZE_T")
 endif()
 
-if(CMAKE_VERSION VERSION_LESS 3.8)
-    include(${CMAKE_SOURCE_DIR}/cmake/Modules/UseSWIG.cmake)
-else()
-    include(${SWIG_USE_FILE})
-endif()
+#TODO: Check CMake Version (use bug fixed!)
+include(${CMAKE_SOURCE_DIR}/cmake/Modules/UseSWIG.cmake) #${SWIG_USE_FILE})
 set(CMAKE_SWIG_FLAGS "")
 
-include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR}/include)
-set(SWIG_SRCS_TEMP swig/run.i swig/metrics.i swig/run_metrics.i swig/comm.i swig/table.i swig/plot.i swig/summary.i swig/sample_sheet.i)
+set(SWIG_SRCS_TEMP swig/run.i swig/metrics.i swig/run_metrics.i swig/comm.i swig/table.i swig/plot.i swig/summary.i)
 set(SWIG_DEPS_TEMP
         swig/util/operator_overload.i
         swig/exceptions/exceptions_impl.i
