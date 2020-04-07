@@ -4,6 +4,14 @@ if(NOT SWIG_FOUND)
     message(WARNING "Swig not found. Skipping interface generation.")
     return()
 endif()
+
+if(POLICY CMP0078)
+    cmake_policy(SET CMP0078 OLD)
+endif()
+if(POLICY CMP0086)
+    cmake_policy(SET CMP0086 OLD)
+endif()
+
 include(${PROJECT_SOURCE_DIR}/cmake/CheckSWIGVersion.cmake)
 
 check_swig_version(swig_major_ver)
@@ -17,11 +25,17 @@ if(swig_major_ver LESS "3")
 endif()
 
 # Support earlier and later versions of CMake
-if(CMAKE_VERSION VERSION_LESS 3.8 OR EXISTS "${CMAKE_SOURCE_DIR}/cmake/Modules/UseSWIG.cmake")
-    macro(swig_add_library name language)
+if(CMAKE_VERSION VERSION_LESS 3.8)
+    macro(swig_add_library name)
+        set(options "")
+        set(oneValueArgs LANGUAGE
+                TYPE)
+        set(multiValueArgs SOURCES)
+        cmake_parse_arguments(_SAM "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
         swig_add_module(${name}
-                ${language}
-                ${ARGN})
+                ${_SAM_LANGUAGE}
+                ${_SAM_SOURCES})
     endmacro()
 endif()
 
@@ -38,8 +52,11 @@ if("${SIZE_T}" EQUAL 8)
     set(SWIG_WORDSIZE_FLAG "${SWIG_WORDSIZE_FLAG};-DHAVE_UINT64_SIZE_T")
 endif()
 
-#TODO: Check CMake Version (use bug fixed!)
-include(${CMAKE_SOURCE_DIR}/cmake/Modules/UseSWIG.cmake) #${SWIG_USE_FILE})
+if(CMAKE_VERSION VERSION_LESS 3.8)
+    include(${CMAKE_SOURCE_DIR}/cmake/Modules/UseSWIG.cmake)
+else()
+    include(${SWIG_USE_FILE})
+endif()
 set(CMAKE_SWIG_FLAGS "")
 
 set(SWIG_SRCS_TEMP swig/run.i swig/metrics.i swig/run_metrics.i swig/comm.i swig/table.i swig/plot.i swig/summary.i)

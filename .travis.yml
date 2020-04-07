@@ -15,7 +15,7 @@
 # No support for 32-bit Linux
 #
 # TODO: For Python wheels, support: https://github.com/pypa/manylinux
-# TODO: Create individual builds for each language
+## TODO: Create individual builds for each language
 
 language: cpp
 sudo: required
