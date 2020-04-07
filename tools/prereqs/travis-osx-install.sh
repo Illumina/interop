@@ -44,3 +44,5 @@ pip install wheel
 pip install delocate
 
 dotnet --version
+
+dotnet clean
