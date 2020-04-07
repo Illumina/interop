@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-# sw_vers
+sw_vers
 
-brew update
+brew update > /dev/null
 #brew list
 which cmake || brew unlink cmake
 brew install cmake
@@ -17,7 +17,7 @@ brew install wget
 brew remove mono || true
 brew install nuget
 brew install coreutils || brew install gstat
-brew uninstall --ignore-dependencies openssl@1.1
+
 which pyenv || brew unlink pyenv
 brew install pyenv
 brew upgrade pyenv
@@ -33,6 +33,8 @@ sudo /usr/sbin/installer -pkg dotnet-sdk-2.1.4-osx-x64.pkg -target /
 rm -fr dotnet-sdk-2.1.4-osx-x64.pkg
 fi
 
+export CFLAGS="-I$(brew --prefix openssl)/include $CFLAGS"
+export LDFLAGS="-L$(brew --prefix openssl)/lib $LDFLAGS"
 pyenv install 2.7.11
 pyenv global 2.7.11
 export PATH=$(pyenv root)/shims:${PATH}
