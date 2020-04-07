@@ -36,4 +36,3 @@ pip install delocate
 
 dotnet --version
 
-dotnet clean
