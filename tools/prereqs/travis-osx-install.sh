@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 
-sw_vers
+# sw_vers
 
 brew update
-brew list
+#brew list
 which cmake || brew unlink cmake
 brew install cmake
 brew link cmake
 brew install zlib
 brew install swig@3
 brew unlink swig || true
-brew link swig@3
+brew link swig@3 -force
 brew install doxygen
 brew install wget
 #brew install mono
