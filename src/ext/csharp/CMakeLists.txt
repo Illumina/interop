@@ -101,6 +101,9 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/AssemblyInfo.cs.in ${CMAKE_SWIG_OUTDI
 
 csharp_add_library(csharp_interop "${CMAKE_SWIG_OUTDIR}/*.cs")
 add_dependencies(csharp_interop ${SWIG_MODULE_LIST})
+if(NOT ENABLE_CSHARP)
+    set_target_properties(csharp_interop PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
+endif()
 foreach(SRC ${SWIG_SRCS})
     get_filename_component(MODULE ${SRC} NAME_WE)
     add_custom_command(
