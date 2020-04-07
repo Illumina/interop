@@ -19,7 +19,7 @@ brew install nuget
 brew install coreutils || brew install gstat
 brew install openssl@1.1
 brew outdated pyenv || brew upgrade pyenv
-brew install dotnet-sdk
+brew cask install dotnet-sdk
 
 echo "OpenSSL: $(brew --prefix openssl)"
 CFLAGS="-I$(brew --prefix openssl)/include -I$(xcrun --show-sdk-path)/usr/include"
