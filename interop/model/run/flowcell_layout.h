@@ -53,6 +53,10 @@ namespace illumina { namespace interop { namespace model { namespace run
                 , m_swath_count(swath_count), m_tile_count(tile_count), m_sections_per_lane(sections_per_lane)
                 , m_lanes_per_section(lanes_per_section), m_tiles(tiles), m_barcode(barcode)
         {
+            for(uint_t surface_index = 1; surface_index <= m_surface_count; ++surface_index)
+            {
+                m_surface_list.push_back(surface_index);
+            }
         }
 
     public:
@@ -77,6 +81,26 @@ namespace illumina { namespace interop { namespace model { namespace run
          */
         uint_t surface_count() const
         { return m_surface_count; }
+
+        /** Get the actual number of surfaces imaged
+         * This may not match the surface_count in the RunInfo in bottom-only scans (e.g. the NovaSeq SP flowcell)
+         *
+         * @return true if there are 2 surfaces imaged
+         */
+        bool supports_multisurface() const
+        {
+            return m_surface_list.size() > 1;
+        }
+
+        /** Get a list of the surface indices imaged
+         * This may not match the surface_count in the RunInfo in bottom-only scans (e.g. the NovaSeq SP flowcell)
+         *
+         * @return a list of the surface indices imaged
+         */
+        const std::vector<uint_t> &surface_list() const
+        {
+            return m_surface_list;
+        }
 
         /** Get number of swaths
          *
@@ -189,6 +213,7 @@ namespace illumina { namespace interop { namespace model { namespace run
          */
         void surface_count(const uint_t surface_count)
         { m_surface_count = surface_count; }
+
         /** Set number of swathes
          *
          * @param swath_count number of swathes
@@ -224,6 +249,7 @@ namespace illumina { namespace interop { namespace model { namespace run
         uint_t m_lanes_per_section;
         str_vector_t m_tiles;
         std::string m_barcode;
+        std::vector<uint_t> m_surface_list;
 
         friend class info;
     };

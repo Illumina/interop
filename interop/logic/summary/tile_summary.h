@@ -16,7 +16,29 @@
 
 namespace illumina { namespace interop { namespace logic { namespace summary
 {
-    /** Use the cached data to update a stat summary
+     /** Use the cached data to update a stat summary
+     *
+     * @param extended_tile_data cached tile data
+     * @param stat_summary destination stat summary to update
+     * @param skip_median skip the median calculation
+     */
+     template<class ExtendedTileVector>
+     void update_extended_tile_summary_from_cache(std::vector<ExtendedTileVector>& extended_tile_data,
+                                                  model::summary::stat_summary& stat_summary,
+                                                  const bool skip_median)
+     {
+         model::summary::metric_stat stat;
+         nan_summarize(extended_tile_data.begin(),
+                       extended_tile_data.end(),
+                       stat,
+                       util::op::const_member_function(&model::metrics::extended_tile_metric::percent_occupied),
+                       util::op::const_member_function_less(&model::metrics::extended_tile_metric::percent_occupied),
+                       skip_median);
+         stat_summary.percent_occupied(stat);
+     }
+
+
+     /** Use the cached data to update a stat summary
      *
      * @param tile_data cached tile data
      * @param stat_summary destination stat summary to update
@@ -267,6 +289,96 @@ namespace illumina { namespace interop { namespace logic { namespace summary
         run.nonindex_summary().percent_aligned(divide(percent_aligned_nonindex, static_cast<float>(total_nonindex)));
         run.total_summary().percent_aligned(divide(percent_aligned, static_cast<float>(total)));
 
+    }
+
+    /** Summarize a collection extended tile metrics
+     *
+     * @note This must be called after summarize_tile_metrics!
+     *
+     * @param beg iterator to start of a collection of extended tile metrics
+     * @param end iterator to end of a collection of extended tile metrics
+     * @param naming_method tile naming convention
+     * @param run destination run summary
+     */
+    template<typename I>
+    void summarize_extended_tile_metrics(I beg,
+                                         I end,
+                                         const constants::tile_naming_method naming_method,
+                                         model::summary::run_summary &run)
+    INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
+    {
+        typedef std::vector<model::metrics::extended_tile_metric> tile_vector_t;
+        typedef std::vector<tile_vector_t> tile_by_lane_vector_t;
+        if (beg == end) return;
+        if (run.size() == 0)return;
+        const size_t surface_count = run.surface_count();
+        const ptrdiff_t n = std::distance(beg, end);
+        tile_by_lane_vector_t tile_data_by_lane(run.lane_count());
+        reserve(tile_data_by_lane.begin(), tile_data_by_lane.end(), n);
+        tile_by_lane_vector_t tile_data_by_lane_surface(run.lane_count()*surface_count);
+        reserve(tile_data_by_lane_surface.begin(), tile_data_by_lane_surface.end(), n);
+
+        for (; beg != end; ++beg)
+        {
+            const size_t surface = beg->surface(naming_method);
+            INTEROP_ASSERT(surface > 0);
+            const size_t lane = beg->lane() - 1;
+            INTEROP_BOUNDS_CHECK(lane, tile_data_by_lane.size(), "Lane exceeds number of lanes in RunInfo.xml");
+            tile_data_by_lane[beg->lane() - 1].push_back(*beg);// TODO: make more efficient by copying only tile data
+            if(surface_count < 2) continue;
+            const size_t index = lane*surface_count+(surface-1);
+            tile_data_by_lane_surface[index].push_back(*beg);// TODO: make more efficient by copying only tile data
+        }
+
+
+        model::summary::metric_stat count_stat;
+        float total_cluster_occupied = 0;
+        float total_cluster_count = 0;
+        const bool skip_median=false;
+        for (size_t lane = 0; lane < run[0].size(); ++lane)
+        {
+            INTEROP_ASSERT(lane < tile_data_by_lane.size());
+            INTEROP_ASSERT(lane < run[0].size());
+
+            tile_vector_t& tile_lane_data = tile_data_by_lane[lane];
+            tile_vector_t::iterator tile_lane_end = util::remove_nan(tile_lane_data.begin(), tile_lane_data.end(),
+                                                                     util::op::const_member_function(&model::metrics::extended_tile_metric::cluster_count_occupied));
+            const float occupied_mean =
+                    util::mean<float>(tile_lane_data.begin(),
+                                      tile_lane_end,
+                                      util::op::const_member_function(
+                                              &model::metrics::extended_tile_metric::cluster_count_occupied));
+            count_stat = run[0][lane].cluster_count();
+            update_extended_tile_summary_from_cache(tile_data_by_lane[lane], run[0][lane], skip_median);
+            if(!std::isnan(count_stat.mean()) && !std::isnan(occupied_mean))
+            {
+                total_cluster_count += count_stat.mean();
+                total_cluster_occupied += occupied_mean;
+            }
+
+            for (size_t read = 1; read < run.size(); ++read)
+            {
+                INTEROP_ASSERT(read < run.size());
+                run[read][lane].percent_occupied(run[0][lane].percent_occupied());
+            }
+            if(surface_count < 2) continue;
+            for(size_t surface=0;surface<surface_count;++surface)
+            {
+                update_extended_tile_summary_from_cache(tile_data_by_lane_surface[lane * surface_count + surface],
+                                                        run[0][lane][surface], skip_median);
+                for (size_t read = 1; read < run.size(); ++read)
+                {
+                    INTEROP_ASSERT(read < run.size());
+                    run[read][lane][surface].percent_occupied(run[0][lane][surface].percent_occupied());
+                }
+            }
+        }
+        for (size_t read = 0; read < run.size(); ++read)
+        {
+            run[read].summary().percent_occupied(divide(total_cluster_occupied, total_cluster_count)*100);
+        }
+        run.nonindex_summary().percent_occupied(divide(total_cluster_occupied, total_cluster_count)*100);
+        run.total_summary().percent_occupied(divide(total_cluster_occupied, total_cluster_count)*100);
     }
 
 }}}}

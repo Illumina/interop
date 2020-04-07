@@ -251,6 +251,7 @@ void summarize(const metric_summary& summary, std::vector<std::string>& values)
     values[i++] = util::format(summary.error_rate(), 3, 2);
     values[i++] = util::lexical_cast<std::string>(long(summary.first_cycle_intensity()+0.5));
     values[i++] = util::format(summary.percent_gt_q30(), 3, 2);
+    values[i++] = util::format(summary.percent_occupied(), 3, 2);
     if(i != values.size()) INTEROP_THROW(std::runtime_error, "There is a bug in the program, columns do not match header");
 }
 void summarize(const surface_summary& summary, std::vector<std::string>& values, const size_t lane)
@@ -281,6 +282,7 @@ void summarize(const surface_summary& summary, std::vector<std::string>& values,
     values[i++] = format(summary.error_rate_35(), 0, 2);
     values[i++] = format(summary.error_rate_75(), 0, 2);
     values[i++] = format(summary.error_rate_100(), 0, 2);
+    values[i++] = format(summary.percent_occupied(), 0, 2);
     values[i++] = format(summary.first_cycle_intensity(), 0, 0);
     INTEROP_ASSERT(i==values.size());
     if(i != values.size()) INTEROP_THROW(std::runtime_error, "There is a bug in the program, columns do not match header");
@@ -311,6 +313,7 @@ void summarize(const lane_summary& summary, std::vector<std::string>& values)
     values[i++] = format(summary.error_rate_35(), 0, 2);
     values[i++] = format(summary.error_rate_75(), 0, 2);
     values[i++] = format(summary.error_rate_100(), 0, 2);
+    values[i++] = format(summary.percent_occupied(), 0, 2);
     values[i++] = format(summary.first_cycle_intensity(), 0, 0);
     INTEROP_ASSERT(i==values.size());
     if(i != values.size()) INTEROP_THROW(std::runtime_error, "There is a bug in the program, columns do not match header");
@@ -324,7 +327,7 @@ void print_summary(std::ostream& out, const run_summary& summary, const size_t i
 {
     const size_t width=15;
     const char fillch = csv_format ? 0 : ' ';
-    const char* read_header[] = {"Level", "Yield", "Projected Yield", "Aligned", "Error Rate", "Intensity C1", "%>=Q30"};
+    const char* read_header[] = {"Level", "Yield", "Projected Yield", "Aligned", "Error Rate", "Intensity C1", "%>=Q30", "% Occupied"};
     print_array(out, read_header, width, fillch);
     std::vector<std::string> values(util::length_of(read_header));
     INTEROP_ASSERT(values.size()>=1);
@@ -353,7 +356,7 @@ void print_summary(std::ostream& out, const run_summary& summary, const size_t i
         const char *lane_header[] = {"Lane", "Surface", "Tiles", "Density", "Cluster PF", "Legacy Phasing/Prephasing Rate",
                                      "Phasing  slope/offset", "Prephasing slope/offset",
                                      "Reads", "Reads PF", "%>=Q30", "Yield", "Cycles Error", "Aligned", "Error",
-                                     "Error (35)", "Error (75)", "Error (100)", "Intensity C1"};
+                                     "Error (35)", "Error (75)", "Error (100)", "% Occupied", "Intensity C1"};
         values.resize(util::length_of(lane_header));
         for (size_t read = 0; read < summary.size(); ++read)
         {

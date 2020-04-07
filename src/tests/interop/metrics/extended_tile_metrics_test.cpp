@@ -8,6 +8,7 @@
  */
 #include <gtest/gtest.h>
 #include "interop/model/run_metrics.h"
+#include "interop/io/metric_file_stream.h"
 #include "src/tests/interop/metrics/inc/extended_tile_metrics_test.h"
 #include "src/tests/interop/inc/generic_fixture.h"
 #include "src/tests/interop/inc/proxy_parameter_generator.h"
@@ -24,6 +25,12 @@ typedef metric_set< extended_tile_metric > extended_tile_metric_set;
 struct extended_tile_metrics_tests : public generic_test_fixture< extended_tile_metric_set > {};
 
 extended_tile_metrics_tests::generator_type extended_tile_unit_test_generators[] = {
+        // IUO
+        wrap(new hardcoded_metric_generator< extended_tile_metric_v1 >),
+        wrap(new write_read_metric_generator< extended_tile_metric_v1 >),
+        wrap(new by_cycle_metric_generator< extended_tile_metric_v1 >),
+        wrap(new clear_metric_generator< extended_tile_metric_v1 >),
+        // End IUO
         wrap(new hardcoded_metric_generator< extended_tile_metric_v2 >),
         wrap(new by_cycle_metric_generator< extended_tile_metric_v2 >),
         wrap(new write_read_metric_generator< extended_tile_metric_v2 >),
@@ -65,6 +72,19 @@ TEST_P(extended_tile_metrics_tests, test_read_write)
         INTEROP_EXPECT_NEAR(it_expected->upper_left().y(), it_actual->upper_left().y(), tol);
     }
 }
+
+TEST(extended_tile_metrics_tests, test_load_formats_v1)
+{
+    extended_tile_metric_set metrics;
+    std::string tmp;
+    extended_tile_metric_v1::create_binary_data(tmp);
+    io::read_interop_from_string(tmp, metrics, true);
+    EXPECT_EQ(3u, metrics.size());
+
+    io::read_interop_from_string(tmp, metrics, true);
+    EXPECT_EQ(3u, metrics.size());
+}
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

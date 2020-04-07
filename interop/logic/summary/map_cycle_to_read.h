@@ -75,6 +75,25 @@ namespace illumina { namespace interop { namespace logic { namespace summary
         map_read_to_cycle_number(beg, end, cycle_to_read, op::default_get_read());
     }
 
+    /** Validate that the cycle to read matches the metric set
+     *
+     * @tparam Metric
+     * @param set metric set
+     * @param cycle_to_read cycle to read map
+     */
+    template<class Metric>
+    void validate_cycle_to_read(const model::metric_base::metric_set<Metric>& set, const summary::read_cycle_vector_t& cycle_to_read)
+    {
+        if( set.max_cycle() > cycle_to_read.size())
+        {
+            INTEROP_THROW(model::index_out_of_bounds_exception, "Number of expected cycles does not match " << set.prefix() << " metrics");
+        }
+        if( set.size() > 0 && set[set.size()-1].cycle() > cycle_to_read.size())
+        {
+            INTEROP_THROW(model::index_out_of_bounds_exception, "Number of expected cycles does not match " << set.prefix() << " metrics");
+        }
+    }
+
 
 }}}}
 

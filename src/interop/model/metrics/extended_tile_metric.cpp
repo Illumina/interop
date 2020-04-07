@@ -22,30 +22,125 @@ namespace illumina{ namespace interop{ namespace io
 #pragma pack(1)
         /** Extended Tile Metric Record Layout Version 1
          *
-         * This version of the file is deprecated.
+         * This class provides an interface to reading the extended tile metric file:
+         *  - InterOp/ExtendedTileMetrics.bin
+         *  - InterOp/ExtendedTileMetricsOut.bin
+         *
+         * The class takes two template arguments:
+         *
+         *      1. Metric Type: extended_tile_metric
+         *      2. Version: 1
          */
         template<>
-        struct generic_layout<extended_tile_metric, 1> : public default_layout<1, 0/*MultiRecord*/, 1/*Deprecated*/>
+        struct generic_layout<extended_tile_metric, 1> : public default_layout<1>
         {
+            /** @page extended_tile_v1 Extended Tile Version 1
+             *
+             * This class provides an interface to reading the extended tile metric file:
+             *  - InterOp/ExtendedTileMetrics.bin
+             *  - InterOp/ExtendedTileMetricsOut.bin
+             *
+             *  The file format for extended tile metrics is as follows:
+             *
+             *  @b Header
+             *
+             *  illumina::interop::io::metric_format_stream (Class that parses this information)
+             *
+             *          byte 0: version number (1)
+             *          byte 1: record size (10)
+             *
+             *  @b n-Records
+             *
+             *  illumina::interop::io::layout::base_metric (Class that parses this information)
+             *
+             *          2 bytes: lane number (uint16)
+             *          2 bytes: tile number (uint16)
+             *
+             *  illumina::interop::io::generic_layout<extended_tile_metric, 1> (Class that parses this information)
+             *
+             *          2 bytes: code (uint16)
+             *          4 bytes: value (float32)
+             */
             /** Metric ID type */
-            typedef layout::base_metric< ::uint8_t > metric_id_t;
+            typedef layout::base_metric< ::uint16_t > metric_id_t;
+            /** Record type */
+            typedef generic_layout<extended_tile_metric, 1> record_t;
+            /** Code for each extended tile metric
+             */
+            enum ExtendedTileMetricCode
+            {
+                ClusterCountOccupied
+            };
+            /** Tile metric code */
+            ::uint16_t code;
+            /** Tile metric value */
+            float value;
+            /** Read metric from the input stream
+             *
+             * @param stream input stream
+             * @param metric destination metric
+             * @return number of bytes read or total number of bytes written
+             */
             template<class Stream, class Metric, class Header>
-            static std::streamsize map_stream(Stream&, Metric&, Header&, const bool)
+            static std::streamsize map_stream(Stream& stream, Metric& metric, Header&, const bool)
             {
-                INTEROP_THROW(bad_format_exception, "Deprecated version of the Extended Tile Metric v1");
+                typedef is_same<Stream,std::ostream> is_stream_same;
+                static_assert(!is_stream_same::value, "Function does not support output");
+                record_t rec;
+                std::streamsize count = stream_map< record_t >(stream, rec);
+                if(!stream) return count;
+
+                float val = rec.value;
+                if( val != val ) val = 0;
+                switch(rec.code)
+                {
+                    case ClusterCountOccupied:
+                        metric.m_cluster_count_occupied = val;
+                        break;
+                    default:
+                        INTEROP_THROW(bad_format_exception, "Unexpected tile code: "+
+                                                   util::lexical_cast<std::string>(rec.code)+
+                                                   " == "+
+                                                   util::lexical_cast<std::string>(ClusterCountOccupied));
+                };
+
+                return count;
             }
+            /** Write metric to the output stream
+             *
+             * @param stream output stream
+             * @param metric source metric
+             * @return number of bytes read or total number of bytes written
+             */
             template<class Metric, class Header>
-            static std::streamsize map_stream(std::ostream&, Metric&, Header&, const bool)
+            static std::streamsize map_stream(std::ostream& stream, Metric& metric, Header&, const bool)
             {
-                INTEROP_THROW(bad_format_exception, "Deprecated version of the Extended Tile Metric v1");
+                record_t rec;
+                if(metric.m_cluster_count_occupied == metric.m_cluster_count_occupied)
+                {
+                    rec.value = metric.m_cluster_count_occupied;
+                    rec.code = ClusterCountOccupied;
+                    write_binary(stream, rec);
+                }
+                return stream.tellp();
             }
+            /** Compute the size of a single metric record
+             *
+             * @return record size
+             */
             static record_size_t compute_size(const extended_tile_metric::header_type&)
             {
-                INTEROP_THROW(bad_format_exception, "Deprecated version of the Extended Tile Metric v1");
+                return static_cast< record_size_t >(
+                        sizeof(metric_id_t)+sizeof(generic_layout<extended_tile_metric, 1>)
+                );
             }
+            /** Compute header size
+             *
+             * @return header size
+             */
             static record_size_t compute_header_size(const extended_tile_metric::header_type&)
             {
-                INTEROP_THROW(bad_format_exception, "Deprecated version of the Extended Tile Metric v1");
+                return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t));
             }
         };
 
@@ -64,7 +159,6 @@ namespace illumina{ namespace interop{ namespace io
         struct generic_layout<extended_tile_metric, 2> : public default_layout<2>
         {
             /** @page extended_tile_v2 Extended Tile Version 2
-             *
              *
              * This class provides an interface to reading the extended tile metric file:
              *  - InterOp/ExtendedTileMetrics.bin
