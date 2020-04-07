@@ -34,8 +34,8 @@ rm -fr dotnet-sdk-2.1.4-osx-x64.pkg
 fi
 
 echo "OpenSSL: $(brew --prefix openssl)"
-CPPFLAGS="-I/usr/local/opt/openssl/include"
-CFLAGS="-I/usr/local/opt/openssl/include"
+CFLAGS="-I$(brew --prefix openssl)/include -I$(xcrun --show-sdk-path)/usr/include"
+LDFLAGS="-L$(brew --prefix openssl)/lib"
 pyenv install 2.7.11
 pyenv global 2.7.11
 export PATH=$(pyenv root)/shims:${PATH}
