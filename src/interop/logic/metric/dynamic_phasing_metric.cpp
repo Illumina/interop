@@ -5,6 +5,7 @@
  *  @version 1.0
  *  @copyright GNU Public License.
  */
+#include <algorithm>
 #include "interop/logic/metric/dynamic_phasing_metric.h"
 #include "interop/util/map.h"
 
@@ -105,7 +106,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
      * @param cycle_to_read map of cycle to read information
      * @param dynamic_phasing_metrics dynamic phasing metric set (to be populated)
      */
-    void populate_dynamic_phasing_metrics(const model::metric_base::metric_set<model::metrics::phasing_metric>& phasing_metrics,
+    void populate_dynamic_phasing_metrics(model::metric_base::metric_set<model::metrics::phasing_metric>& phasing_metrics,
                                           const logic::summary::read_cycle_vector_t& cycle_to_read,
                                           model::metric_base::metric_set<model::metrics::dynamic_phasing_metric>& dynamic_phasing_metrics,
                                           model::metric_base::metric_set<model::metrics::tile_metric>& tile_metrics)
@@ -114,19 +115,33 @@ namespace illumina { namespace interop { namespace logic { namespace metric
         typedef model::metric_base::metric_set<model::metrics::phasing_metric> phasing_metric_set_t;
         typedef model::metrics::dynamic_phasing_metric::uint_t uint_t;
         typedef phasing_metric_set_t::const_iterator const_iterator;
-        if (phasing_metrics.size() == 0)return;
-        if (phasing_metrics.max_cycle() < 25) return;
+
+        if (phasing_metrics.size() == 0u)
+            return;
+        if (phasing_metrics.max_cycle() < 25u)
+            return;
+        phasing_metrics.sort();
         lookup_map_t fit_map;
+        if( phasing_metrics.max_cycle() > cycle_to_read.size())
+        {
+            INTEROP_THROW(model::index_out_of_bounds_exception, "Number of expected cycles does not match phasing metrics");
+        }
+        if( phasing_metrics.size() > 0 && phasing_metrics[phasing_metrics.size()-1].cycle() > cycle_to_read.size())
+        {
+            INTEROP_THROW(model::index_out_of_bounds_exception, "Number of expected cycles does not match phasing metrics");
+        }
         for(const_iterator beg = phasing_metrics.begin();beg != phasing_metrics.end();++beg)
         {
             const uint_t lane = beg->lane();
             const uint_t tile = beg->tile();
             INTEROP_ASSERT(beg->cycle()-1 < cycle_to_read.size());
             logic::summary::read_cycle_vector_t::const_reference read = cycle_to_read[beg->cycle()-1];
-            const model::metric_base::base_read_metric::id_t id = model::metric_base::base_read_metric::create_id(lane, tile, read.number);
+            const model::metric_base::base_read_metric::id_t id =
+                    model::metric_base::base_read_metric::create_id(lane, tile, read.number);
             lookup_map_t::iterator fit_for_tile = fit_map.find(id);
             if(fit_for_tile == fit_map.end())
             {
+                INTEROP_ASSERTMSG(read.number > 0, "Cycle: " << beg->cycle() << " -> Read: " << read.number);
                 fit_for_tile = fit_map.insert(lookup_map_t::value_type(id, phasing_prephasing_fit(*beg, read.number))).first;
             }
             const float cycle_within_read = static_cast<float>(read.cycle_within_read);
@@ -138,6 +153,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
                 if(tile_offset < tile_metrics.size())
                 {
                     model::metrics::tile_metric& tile_metric = tile_metrics[tile_offset];
+                    INTEROP_ASSERTMSG(read.number > 0, read.number);
                     tile_metric.update_phasing_if_missing(read.number,
                                                           fit_for_tile->second.phasing.slope(),
                                                           fit_for_tile->second.prehasing.slope());
@@ -146,6 +162,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
         }
         for(lookup_map_t::const_iterator beg = fit_map.begin();beg != fit_map.end();++beg)
         {
+            INTEROP_ASSERTMSG(beg->second.id.read() > 0, beg->second.id.read());
             dynamic_phasing_metrics.insert(model::metrics::dynamic_phasing_metric(
                     beg->second.id.lane(), beg->second.id.tile(), beg->second.id.read(),
                     beg->second.phasing.slope(),

@@ -105,6 +105,7 @@ namespace illumina { namespace interop { namespace logic { namespace table
                                               const size_t column_count,
                                               OutputIterator data_beg, OutputIterator data_end)
     {
+        logic::summary::validate_cycle_to_read(metrics, cycle_to_read);
         populate_imaging_table_data_by_cycle(metrics.begin(),
                                              metrics.end(),
                                              q20_idx,

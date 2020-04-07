@@ -6,7 +6,7 @@
 #
 # Build the Image
 #
-# $ docker build --rm -t ezralanglois/interop_centos7 -f ./tools/docker/DockerFile_Centos7 tools
+# $ docker build --rm -t ezralanglois/interop_centos6 -f ./tools/docker/DockerFile_Centos6 tools
 # $ docker images
 # $ docker tag <image-id> ezralanglois/interop:last_good
 # $ docker tag ezralanglois/interop:last_good ezralanglois/interop:latest

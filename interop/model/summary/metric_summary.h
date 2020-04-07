@@ -25,7 +25,8 @@ namespace illumina { namespace interop { namespace model { namespace summary {
                 m_first_cycle_intensity(std::numeric_limits<float>::quiet_NaN()),
                 m_percent_gt_q30(std::numeric_limits<float>::quiet_NaN()),
                 m_yield_g(std::numeric_limits<float>::quiet_NaN()),
-                m_projected_yield_g(0)
+                m_projected_yield_g(0),
+                m_percent_occupied(std::numeric_limits<float>::quiet_NaN())
 
         {}
     public:
@@ -94,6 +95,14 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         {
             return m_projected_yield_g;
         }
+        /** Get the percent occupied
+         *
+         * @return percent occupied
+         */
+        float percent_occupied()const
+        {
+            return m_percent_occupied;
+        }
         /** @} */
         /** Set the first cycle intensity
          *
@@ -144,6 +153,14 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         {
             m_projected_yield_g = val;
         }
+        /** Set the percent occupied
+         *
+         * @param val percent occupied
+         */
+        void percent_occupied(const float val)
+        {
+            m_percent_occupied = val;
+        }
 
         /** Resize the underlying data
          */
@@ -158,6 +175,7 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         float m_percent_gt_q30;
         float m_yield_g;
         float m_projected_yield_g;
+        float m_percent_occupied;
         template<class MetricType, int Version>
         friend struct io::generic_layout;
     };

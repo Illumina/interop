@@ -1,4 +1,5 @@
 from setuptools import setup, Distribution
+from setuptools.command.install import install
 import os
 
 class BinaryDistribution(Distribution):
@@ -8,6 +9,12 @@ class BinaryDistribution(Distribution):
 
     def is_pure(self):
         return False
+
+# Fixes a bug in distutils.command.install.finalize_options() - https://github.com/google/or-tools/issues/616
+class InstallPlatlib(install):
+    def finalize_options(self):
+        install.finalize_options(self)
+        self.install_lib = self.install_platlib
 
 setup(
     name='interop',
@@ -32,7 +39,11 @@ setup(
     'Topic :: Scientific/Engineering :: Bio-Informatics'
     ],
     keywords="Illumina sequencer HiSeqX HiSeq NextSeq MiniSeq NovaSeq MiSeq SBS genome",
-    install_requires=['numpy>=1.13'],
-    distclass=BinaryDistribution
+    install_requires=[
+        'numpy>=1.16.6;python_version>="3.5"',
+        'numpy==1.16.6;python_version<"3.5"',
+    ],
+    distclass=BinaryDistribution,
+    cmdclass={'install': InstallPlatlib},
 )
 

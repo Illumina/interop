@@ -26,7 +26,7 @@ namespace illumina { namespace interop { namespace logic { namespace metric
      * @param dynamic_phasing_metrics dynamic phasing metric set (to be populated)
      * @param tile_metrics tile metric set (to be populated)
      */
-    void populate_dynamic_phasing_metrics(const model::metric_base::metric_set<model::metrics::phasing_metric>& phasing_metrics,
+    void populate_dynamic_phasing_metrics(model::metric_base::metric_set<model::metrics::phasing_metric>& phasing_metrics,
                                           const logic::summary::read_cycle_vector_t& cycle_to_read,
                                           model::metric_base::metric_set<model::metrics::dynamic_phasing_metric>& dynamic_phasing_metrics,
                                           model::metric_base::metric_set<model::metrics::tile_metric>& tile_metrics);
