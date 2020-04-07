@@ -10,7 +10,7 @@ brew link cmake
 brew install zlib
 brew install swig@3
 brew unlink swig || true
-brew link swig@3 -force
+brew link swig@3 --force
 brew install doxygen
 brew install wget
 #brew install mono
@@ -33,11 +33,14 @@ sudo /usr/sbin/installer -pkg dotnet-sdk-2.1.4-osx-x64.pkg -target /
 rm -fr dotnet-sdk-2.1.4-osx-x64.pkg
 fi
 
-export CFLAGS="-I$(brew --prefix openssl)/include $CFLAGS"
-export LDFLAGS="-L$(brew --prefix openssl)/lib $LDFLAGS"
+echo "OpenSSL: $(brew --prefix openssl)"
+CPPFLAGS="-I/usr/local/opt/openssl/include"
+CFLAGS="-I/usr/local/opt/openssl/include"
 pyenv install 2.7.11
 pyenv global 2.7.11
 export PATH=$(pyenv root)/shims:${PATH}
+
+which conda
 
 pip install numpy
 pip install wheel
