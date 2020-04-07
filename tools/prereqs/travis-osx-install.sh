@@ -17,11 +17,8 @@ brew install wget
 brew remove mono || true
 brew install nuget
 brew install coreutils || brew install gstat
-
-which pyenv || brew unlink pyenv
-brew install pyenv
-brew upgrade pyenv
-brew link pyenv
+brew install openssl@1.1
+brew outdated pyenv || brew upgrade pyenv
 
 export PATH=/usr/local/share/dotnet:${PATH}
 
@@ -36,8 +33,8 @@ fi
 echo "OpenSSL: $(brew --prefix openssl)"
 CFLAGS="-I$(brew --prefix openssl)/include -I$(xcrun --show-sdk-path)/usr/include"
 LDFLAGS="-L$(brew --prefix openssl)/lib"
-pyenv install 2.7.11
-pyenv global 2.7.11
+pyenv install 2.7.12
+pyenv global 2.7.12
 export PATH=$(pyenv root)/shims:${PATH}
 
 which conda

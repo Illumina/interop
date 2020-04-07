@@ -155,7 +155,7 @@ fi
 
 if [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] ; then
     if [ "$PYTHON_VERSION" == "ALL" ] ; then
-        python_versions="2.7.11 3.4.4 3.5.1 3.6.0 3.7.0"
+        python_versions="2.7 3.4.4 3.5.1 3.6.0 3.7.0"
     else
         python_versions="$PYTHON_VERSION"
     fi
