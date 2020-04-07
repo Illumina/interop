@@ -17,6 +17,7 @@ brew install wget
 brew remove mono || true
 brew install nuget
 brew install coreutils || brew install gstat
+brew uninstall --ignore-dependencies openssl@1.1
 which pyenv || brew unlink pyenv
 brew install pyenv
 brew upgrade pyenv
