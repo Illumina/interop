@@ -7,10 +7,11 @@ Date       | Description
 ---------- | -----------
 2020-04-07 | Remove Python 3.4 build from Windows
 2020-04-06 | Support more recent versions of CMake
+2020-04-06 | Fix bugs in format of Image and EmpiricalPhasing in dumptext (Issue-206)
 2020-04-04 | Add % Occupied to run summary
 2020-04-04 | Switch C# library from .Net Core to .Net Standard
 2020-04-04 | Support iSeq % Occupancy (Issue-193)
-2020-04-06 | Fix bugs in format of Image and EmpiricalPhasing in dumptext (Issue-206)
+2020-04-03 | Add support for Python 3.8 (Issue-205)
 
 
 

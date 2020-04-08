@@ -26,33 +26,41 @@ CMAKE_URL="http://www.cmake.org/files/v3.4/cmake-3.4.3-Linux-x86_64.tar.gz"
 SWIG_URL="http://prdownloads.sourceforge.net/swig/swig-3.0.12.tar.gz"
 MONO_URL="https://download.mono-project.com/sources/mono/mono-4.8.1.0.tar.bz2"
 NUGET_URL="https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
+NUGET_URL="https://dist.nuget.org/win-x86-commandline/v4.7.3/nuget.exe"
 GOOGLETEST_URL="https://github.com/google/googletest/archive/release-1.8.0.tar.gz"
 JUNIT_URL="http://search.maven.org/remotecontent?filepath=junit/junit/4.12/junit-4.12.jar"
 NUNIT_URL="https://github.com/nunit/nunitv2/releases/download/2.6.4/NUnit-2.6.4.zip"
 JAVA_URL="http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.rpm"
+JAVA_URL="https://download.oracle.com/otn/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.rpm"
+JAVA_URL="https://ussd.artifactory.illumina.com/list/generic-bioinformatics/BuildDeps/interop/jdk-8u131-linux-x64.rpm"
+# TODO use openjdk? yum install java-1.8.0-openjdk
 VALGRIND_URL="http://www.valgrind.org/downloads/valgrind-3.14.0.tar.bz2"
 DOXYGEN_URL="https://sourceforge.net/projects/doxygen/files/rel-1.8.10/doxygen-1.8.10.linux.bin.tar.gz"
+DOXYGEN_URL="https://sourceforge.net/projects/doxygen/files/rel-1.8.10/doxygen-1.8.10.linux.bin.tar.gz/download?use_mirror=managedway&r=&use_mirror=managedway#"
 WGET_URL="http://ftp.gnu.org/gnu/wget/wget-1.19.tar.gz"
 PROG_HOME=/opt
 SWIG_HOME=${PROG_HOME}/swig3
 JUNIT_HOME=${PROG_HOME}/junit
 NUNIT_HOME=${PROG_HOME}/nunit
 
+curl_cmd="curl -k -L"
+
 echo "Installing doxygen"
-wget --no-check-certificate --quiet ${DOXYGEN_URL}/download -O${DOXYGEN_URL##*/}
-tar -xzf ${DOXYGEN_URL##*/}
-cd doxygen-1.8.10
+mkdir /tmp/doxygen
+${curl_cmd} ${DOXYGEN_URL} | tar --strip-components=1 -xz -C /tmp/doxygen
+
+cd /tmp/doxygen
 sh configure --prefix /usr
 cp bin/doxygen /usr/bin
 chmod 755 /usr/bin/doxygen
 cd ..
-rm -fr doxygen-1.8.10 ${DOXYGEN_URL##*/}
+rm -fr /tmp/doxygen
 
 if hash cmake  2> /dev/null; then
     echo "Found CMake"
 else
     echo "Installing CMake"
-    curl -L ${CMAKE_URL} | tar --strip-components=1 -xz -C /usr
+    ${curl_cmd} ${CMAKE_URL} | tar --strip-components=1 -xz -C /usr
 
 
     for PYBUILD in `ls -1 /opt/python`; do
@@ -76,10 +84,10 @@ if [ -e /usr/include/gtest/gtest.h ]; then
 else
     echo "Installing GTest and GMock"
     mkdir /gtest
-    curl -L ${GOOGLETEST_URL} -o release-1.8.0.tar.gz
+    ${curl_cmd} ${GOOGLETEST_URL} -o release-1.8.0.tar.gz
 
     tar --strip-components=1 -xzf release-1.8.0.tar.gz -C /gtest
-    #curl ${GOOGLETEST_URL} | tar --strip-components=1 -xz -C /gtest
+    #${curl_cmd} ${GOOGLETEST_URL} | tar --strip-components=1 -xz -C /gtest
     mkdir /gtest/build
     cmake -H/gtest -B/gtest/build
     cmake --build /gtest/build -- -j4
@@ -101,7 +109,7 @@ else
     if [ ! -e ${SWIG_HOME}/src ]; then
         mkdir ${SWIG_HOME}/src
     fi
-    wget --no-check-certificate --quiet -O - ${SWIG_URL} | tar --strip-components=1 -xz -C ${SWIG_HOME}/src
+    ${curl_cmd} ${SWIG_URL} | tar --strip-components=1 -xz -C ${SWIG_HOME}/src
     cd ${SWIG_HOME}/src
 
     # TODO test if on centos or ubuntu
@@ -138,7 +146,7 @@ else
     # }
     #endif
     mkdir /mono_clean
-    wget --no-check-certificate --quiet -O - ${MONO_URL} | tar --strip-components=1 -xj -C /mono_clean
+    ${curl_cmd} ${MONO_URL} | tar --strip-components=1 -xj -C /mono_clean
     patch -p0 < /mono_patch.txt
 
 
@@ -152,7 +160,7 @@ else
     which mono
     mono --version
 
-    wget --no-check-certificate --quiet ${NUGET_URL} -O /usr/lib/nuget.exe
+    ${curl_cmd} ${NUGET_URL} > /usr/lib/nuget.exe
     echo "mono /usr/lib/nuget.exe \$@" > /usr/bin/nuget
     chmod +x /usr/bin/nuget
     export PATH=$PATH_OLD
@@ -164,7 +172,7 @@ if hash java  2> /dev/null; then
     echo "Found Java"
 else
     echo "Installing Java"
-    wget --quiet --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "${JAVA_URL}" -O ${JAVA_URL##*/}
+    curl -jkL -H "Cookie: oraclelicense=accept-securebackup-cookie" "${JAVA_URL}" -o ${JAVA_URL##*/}
     rpm -Uvh ${JAVA_URL##*/}
     rm -f  ${JAVA_URL##*/}
 fi
@@ -172,7 +180,7 @@ fi
 if [ ! -e ${NUNIT_HOME}/NUnit-2.6.4 ]; then
     echo "Installing NUnit"
     mkdir ${NUNIT_HOME}
-    curl -L ${NUNIT_URL} -o ${NUNIT_HOME}/${NUNIT_URL##*/}
+    ${curl_cmd} ${NUNIT_URL} -o ${NUNIT_HOME}/${NUNIT_URL##*/}
     unzip ${NUNIT_HOME}/${NUNIT_URL##*/} -d ${NUNIT_HOME}
     rm -f ${NUNIT_HOME}/${JUNIT_URL##*/}
 else
@@ -183,14 +191,14 @@ NUNIT_HOME=${NUNIT_HOME}/NUnit-2.6.4
 if [ ! -e ${JUNIT_HOME}/${JUNIT_URL##*/} ]; then
     echo "Installing JUnit"
     mkdir ${JUNIT_HOME}
-    wget --no-check-certificate --quiet ${JUNIT_URL} -O  ${JUNIT_HOME}/${JUNIT_URL##*/}
+    ${curl_cmd} ${JUNIT_URL} >  ${JUNIT_HOME}/${JUNIT_URL##*/}
 else
     echo "Found JUnit at ${JUNIT_HOME}/${JUNIT_URL##*/}"
 fi
 
 echo "Installing Valgrind"
 mkdir tmp_build
-curl -L ${VALGRIND_URL} | tar --strip-components=1 -xj -C ./tmp_build
+${curl_cmd} ${VALGRIND_URL} | tar --strip-components=1 -xj -C ./tmp_build
 cd tmp_build
 ./configure --prefix=/usr
 make -j 4

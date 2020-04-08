@@ -24,6 +24,15 @@ if(MSVC)
     set(PYTHON_GENERATED_COMPILE_FLAGS "/wd4702 /wd4286 /wd4127 /wd4459 /wd4456 /wd4701 /wd4267 /wd4244 /wd4706 /wd4703 ${ENABLE_BIG_OBJ_FLAG}")
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
     set(PYTHON_GENERATED_COMPILE_FLAGS "${_WNO_UNUSED_FUNCTION} ${_WNO_UNUSED_PARAMETER}")
+
+    # TODO: Need to upgrade SWIG FOR Python 3.8 and later and remove this warning suppression
+    include(CheckCXXSourceCompiles)
+    check_cxx_compiler_flag("-Wno-deprecated-declarations" IS_SUPPORTED_FLAG)
+    message(STATUS "Deprecated declarations disable warning: ${IS_SUPPORTED_FLAG}")
+    if(IS_SUPPORTED_FLAG)
+        message(STATUS "Add flag -Wno-deprecated-declarations")
+        set(PYTHON_GENERATED_COMPILE_FLAGS "${PYTHON_GENERATED_COMPILE_FLAGS} -Wno-deprecated-declarations")
+    endif()
 elseif(COMPILER_IS_GNUCC_OR_CLANG)
     set(PYTHON_GENERATED_COMPILE_FLAGS "${_WNO_UNINITIALIZED} ${_WNO_UNUSED_FUNCTION} ${_WNO_UNUSED_PARAMETER} ${_WNO_MAYBE_UNINITIALIZED} ${ENABLE_BIG_OBJ_FLAG} ${_WNO_STRICT_ALIASING} ${_FNO_STRICT_ALIASING}")
     if(WIN32 AND MINGW AND "${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
@@ -31,6 +40,16 @@ elseif(COMPILER_IS_GNUCC_OR_CLANG)
     endif()
     if(WIN32 AND MINGW)
         set(PYTHON_GENERATED_COMPILE_FLAGS "${PYTHON_GENERATED_COMPILE_FLAGS} -D_hypot=hypot")
+    endif()
+
+
+    # TODO: Need to upgrade SWIG FOR Python 3.8 and later and remove this warning suppression
+    include(CheckCXXSourceCompiles)
+    check_cxx_compiler_flag("-Wno-deprecated-declarations" IS_SUPPORTED_FLAG)
+    message(STATUS "Deprecated declarations disable warning: ${IS_SUPPORTED_FLAG}")
+    if(IS_SUPPORTED_FLAG)
+        message(STATUS "Add flag -Wno-deprecated-declarations")
+        set(PYTHON_GENERATED_COMPILE_FLAGS "${PYTHON_GENERATED_COMPILE_FLAGS} -Wno-deprecated-declarations")
     endif()
 endif()
 

@@ -88,12 +88,20 @@ environment:
       PYTHON_VERSION: 3.5
       configuration: Release
     - generator: "Visual Studio 14 2015 Win64"
-      BUILD: msvc14_win64_py35
+      BUILD: msvc14_win64_py37
       config_type: win64
       PACKAGE_TARGET: package_wheel
       ADDIONAL_CONFIG_OPTIONS: -DENABLE_APPS=OFF -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=OFF
       PYTHON_PATH_DIR: C:\Miniconda36-x64
       PYTHON_VERSION: 3.7
+      configuration: Release
+    - generator: "Visual Studio 14 2015 Win64"
+      BUILD: msvc14_win64_py38
+      config_type: win64
+      PACKAGE_TARGET: package_wheel
+      ADDIONAL_CONFIG_OPTIONS: -DENABLE_APPS=OFF -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=OFF
+      PYTHON_PATH_DIR: C:\Miniconda36-x64
+      PYTHON_VERSION: 3.8
       configuration: Release
 
 matrix:
