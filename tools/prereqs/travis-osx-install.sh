@@ -18,7 +18,7 @@ brew remove mono || true
 brew install nuget
 brew install coreutils || brew install gstat
 #brew install openssl@1.1
-brew uninstall openssl && brew install openssl
+brew uninstall openssl && brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/8b9d6d688f483a0f33fcfc93d433de501b9c3513/Formula/openssl.rb
 brew outdated pyenv || brew upgrade pyenv
 brew cask install dotnet-sdk
 brew install readline xz
