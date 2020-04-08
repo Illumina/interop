@@ -17,11 +17,11 @@ brew install wget
 brew remove mono || true
 brew install nuget
 brew install coreutils || brew install gstat
-brew install openssl@1.1
+#brew install openssl@1.1
+brew uninstall openssl && brew install openssl
 brew outdated pyenv || brew upgrade pyenv
 brew cask install dotnet-sdk
 brew install readline xz
-brew install openssl
 
 echo "OpenSSL: $(brew --prefix openssl)"
 

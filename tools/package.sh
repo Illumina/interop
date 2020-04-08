@@ -159,7 +159,7 @@ fi
 
 if [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] ; then
     if [ "$PYTHON_VERSION" == "ALL" ] ; then
-        python_versions="2.7.17 3.4.4 3.5.1 3.6.0 3.7.0 3.8.0"
+        python_versions="2.7.17 3.4.10 3.5.9 3.6.10 3.7.7 3.8.2"
         pyenv install --list | grep " 2.7"
         pyenv install --list | grep " 3\.[45678]"
     else
@@ -170,7 +170,7 @@ if [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] ; then
       LDFLAGS="-L$(brew --prefix openssl)/lib"
     fi
     for py_ver in $python_versions; do
-        echo "Building Python $py_ver"
+        echo "Building Python $py_ver - $CFLAGS"
         if hash pyenv 2> /dev/null; then
             export PATH=$(pyenv root)/shims:${PATH}
             if [[ "$OSTYPE" == "linux-gnu" ]]; then
