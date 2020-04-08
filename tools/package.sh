@@ -134,6 +134,10 @@ fi
 
 # Build Python Wheels for a range of Python Versions
 if [ -z $PYTHON_VERSION ] && [  -e /opt/python ] ; then
+    echo "ManyLinux with: "
+    for PYBUILD in `ls -1 /opt/python`; do
+      echo "Python ${PYBUILD}"
+    done
     for PYBUILD in `ls -1 /opt/python`; do
         PYTHON_BIN=/opt/python/${PYBUILD}/bin
         if [[ "$PYBUILD" == cp26* ]]; then
@@ -155,7 +159,7 @@ fi
 
 if [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] ; then
     if [ "$PYTHON_VERSION" == "ALL" ] ; then
-        python_versions="2.7.17 3.4.4 3.5.1 3.6.0 3.7.0"
+        python_versions="2.7.17 3.4.4 3.5.1 3.6.0 3.7.0 3.8.0"
     else
         python_versions="$PYTHON_VERSION"
     fi
@@ -173,7 +177,7 @@ if [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] ; then
             pyenv install $py_ver -s  || true
             pyenv global $py_ver || true
             if [[ "$OSTYPE" == "darwin"* ]]; then
-                pip install setuptools --upgrade
+                pip install setuptools==43.0.0
                 pip install delocate
                 # pip install delocate=0.7.3
             fi
@@ -182,6 +186,12 @@ if [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] ; then
             python --version
             pip install numpy
             pip install wheel
+            echo "Check setuptools"
+            python -c "import setuptools"
+            echo "Check numpy"
+            python -c "import numpy"
+            echo "Check wheel"
+            python -c "import wheel"
             # pip install wheel=0.30.0
         fi
         run "Configure $py_ver" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS} -DENABLE_CSHARP=OFF -DENABLE_PYTHON_DYNAMIC_LOAD=ON -DPYTHON_EXECUTABLE=`which python` -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp
