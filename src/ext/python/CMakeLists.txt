@@ -32,6 +32,13 @@ elseif(COMPILER_IS_GNUCC_OR_CLANG)
     if(WIN32 AND MINGW)
         set(PYTHON_GENERATED_COMPILE_FLAGS "${PYTHON_GENERATED_COMPILE_FLAGS} -D_hypot=hypot")
     endif()
+    # TODO: Need to upgrade SWIG FOR Python 3.8 and later
+
+    include(CheckCXXSourceCompiles)
+    check_cxx_compiler_flag("-Wno-deprecated-declarations" IS_SUPPORTED_FLAG)
+    if(IS_SUPPORTED_FLAG)
+        set(PYTHON_GENERATED_COMPILE_FLAGS "${PYTHON_GENERATED_COMPILE_FLAGS} -Wno-deprecated-declarations")
+    endif()
 endif()
 
 if(MSVC)
