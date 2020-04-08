@@ -21,7 +21,7 @@ backwards compatible with prior releases.  This means that these common InterOp 
 compatible as well.  There is one exception to this rule: GA systems have been excluded and are not supported with 
 these common InterOp libraries.
 
-> **NovaSeq** is supported.
+> **NextSeq 1k/2k** is supported.
 
 Table of Contents
 -----------------
