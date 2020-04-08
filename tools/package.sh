@@ -175,7 +175,7 @@ if [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] ; then
                 fi
             fi
             pyenv install $py_ver -s  || true
-            pyenv global $py_ver || true
+            pyenv global $py_ver
             if [[ "$OSTYPE" == "darwin"* ]]; then
                 pip install setuptools==43.0.0
                 pip install delocate

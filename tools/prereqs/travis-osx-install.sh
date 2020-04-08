@@ -20,6 +20,8 @@ brew install coreutils || brew install gstat
 brew install openssl@1.1
 brew outdated pyenv || brew upgrade pyenv
 brew cask install dotnet-sdk
+brew install readline
+brew install openssl
 
 echo "OpenSSL: $(brew --prefix openssl)"
 CFLAGS="-I$(brew --prefix openssl)/include -I$(xcrun --show-sdk-path)/usr/include"
