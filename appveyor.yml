@@ -159,7 +159,7 @@ deploy:
   artifact: /.*\.nupkg/,/.*\.whl/,/interop-.*\.zip/
   draft: true
   auth_token:
-      secure: HcMKUFlziwHVs3kI4ZWKvy9LPKHUoVsaURh9C0yHz7rvMaPD/J7yvlPcTYK7mdrM
+      secure: gTsPlICprNtX2Ltmpm7XPlFiBUJkJz1PTAFHhC0qSGvrBPPQoYk+iQaj0BTn3XwI
   on:
     appveyor_repo_tag: true
     configuration: Release
