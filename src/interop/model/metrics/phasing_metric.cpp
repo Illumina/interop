@@ -238,7 +238,7 @@ namespace illumina { namespace interop { namespace io
                                    const char eol,
                                    const char)
         {
-            out << metric.lane() << sep << metric.tile() << sep
+            out << metric.lane() << sep << metric.tile() << sep << metric.cycle() << sep
                 << metric.phasing_weight() << sep << metric.prephasing_weight();
             out << eol;
             return 0;

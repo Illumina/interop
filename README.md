@@ -6,11 +6,11 @@ Quick Start
 [![Coverity_status][covstatus]][covhome]
 
 The Illumina InterOp libraries are a set of common routines used for reading InterOp metric files produced by
-Illumina sequencers including **NovaSeq**. These libraries are backwards compatible and capable of supporting prior releases of the software,
+Illumina sequencers including **NextSeq 1k/2k**. These libraries are backwards compatible and capable of supporting prior releases of the software,
 with one exception: GA systems have been excluded.
 
 ***
->  We now support an interface to Python 2.7 (UCS-4) and 3.4-3.6 (see contents below)
+>  We now support an interface to Python 2.7 (UCS-4) and 3.5-3.8 (see contents below)
 ***
 
 The InterOp files supported by this library include:
@@ -72,7 +72,7 @@ Install
 
 ### Python
 
-Supported versions for binary distribution: Python 2.7 and 3.4-3.6.
+Supported versions for binary distribution: Python 2.7 and 3.5-3.8.
 
 You should have NumPy already installed.
 

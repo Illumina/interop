@@ -456,7 +456,7 @@ namespace illumina { namespace interop { namespace io
         {
             if( header.channel_count() != metric.channel_count() )
                 INTEROP_THROW(bad_format_exception, "Header and metric channel count mismatch");
-            out << metric.lane() << sep << metric.tile() << sep << metric.cycle() << sep;
+            out << metric.lane() << sep << metric.tile() << sep << metric.cycle();
             for(size_t i=0;i<static_cast<size_t>(header.channel_count());i++)
                 out << sep << metric.min_contrast(i);
             for(size_t i=0;i<static_cast<size_t>(header.channel_count());i++)

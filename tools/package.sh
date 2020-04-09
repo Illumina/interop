@@ -159,12 +159,18 @@ fi
 
 if [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] ; then
     if [ "$PYTHON_VERSION" == "ALL" ] ; then
-        python_versions="2.7.17 3.4.4 3.5.1 3.6.0 3.7.0 3.8.0"
+        python_versions="2.7.17 3.5.9 3.6.10 3.7.7 3.8.2"
+        pyenv install --list | grep " 2.7"
+        pyenv install --list | grep " 3\.[45678]"
     else
         python_versions="$PYTHON_VERSION"
     fi
+    if hash brew 2> /dev/null; then
+      CFLAGS="-I$(brew --prefix openssl)/include -I$(xcrun --show-sdk-path)/usr/include"
+      LDFLAGS="-L$(brew --prefix openssl)/lib"
+    fi
     for py_ver in $python_versions; do
-        echo "Building Python $py_ver"
+        echo "Building Python $py_ver - $CFLAGS"
         if hash pyenv 2> /dev/null; then
             export PATH=$(pyenv root)/shims:${PATH}
             if [[ "$OSTYPE" == "linux-gnu" ]]; then
@@ -174,8 +180,8 @@ if [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] ; then
                     pip3 install auditwheel==1.5
                 fi
             fi
-            pyenv install $py_ver -s  || true
-            pyenv global $py_ver || true
+            pyenv install $py_ver -s
+            pyenv global $py_ver
             if [[ "$OSTYPE" == "darwin"* ]]; then
                 pip install setuptools==43.0.0
                 pip install delocate

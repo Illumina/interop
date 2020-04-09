@@ -10,7 +10,7 @@ metric files are produced after a run during secondary analysis (index metrics) 
 the original data (collapsed quality scores).
 
 ***
->  We now support an interface to Python 2.7 (UCS-4), 3.4, 3.5 and 3.6 (see contents below)
+>  We now support an interface to Python 2.7 (UCS-4), 3.5, 3.6, 3.7 and 3.8 (see contents below)
 ***
 
 Compatibility
@@ -21,7 +21,7 @@ backwards compatible with prior releases.  This means that these common InterOp 
 compatible as well.  There is one exception to this rule: GA systems have been excluded and are not supported with 
 these common InterOp libraries.
 
-> **NovaSeq** is supported.
+> **NextSeq 1k/2k** is supported.
 
 Table of Contents
 -----------------
