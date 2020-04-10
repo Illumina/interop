@@ -161,7 +161,7 @@ deploy:
   auth_token:
       secure: 6C7X1zPTuB91c25E59UFpHrwosBxsEkMs1CsXjRtx15Uqowi+KBpS6CkQSWxmgrS
   on:
-    appveyor_repo_tag: true
+    APPVEYOR_REPO_TAG: true
     configuration: Release
     config_type: win64
 
