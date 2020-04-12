@@ -31,6 +31,14 @@ image:
 environment:
   matrix:
     - generator: "Visual Studio 14 2015 Win64"
+      BUILD: msvc14_win64_py35
+      config_type: win64
+      PACKAGE_TARGET: package_wheel
+      ADDIONAL_CONFIG_OPTIONS: -DENABLE_APPS=OFF -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=OFF
+      PYTHON_PATH_DIR: C:\Miniconda36-x64
+      PYTHON_VERSION: 3.5
+      configuration: Release
+    - generator: "Visual Studio 14 2015 Win64"
       BUILD: msvc14_win64_py27
       config_type: win64
       PACKAGE_TARGET: package_wheel
@@ -71,14 +79,6 @@ environment:
       #      PYTHON_VERSION: 3.4
       #      configuration: Release
     - generator: "Visual Studio 14 2015 Win64"
-      BUILD: msvc14_win64_py35
-      config_type: win64
-      PACKAGE_TARGET: package_wheel
-      ADDIONAL_CONFIG_OPTIONS: -DENABLE_APPS=OFF -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=OFF
-      PYTHON_PATH_DIR: C:\Miniconda36-x64
-      PYTHON_VERSION: 3.5
-      configuration: Release
-    - generator: "Visual Studio 14 2015 Win64"
       BUILD: msvc14_win64_py37
       config_type: win64
       PACKAGE_TARGET: package_wheel
@@ -106,7 +106,8 @@ before_build:
   - cmd: conda info -a
   - cmd: conda create --name python%PYTHON_VERSION% python=%PYTHON_VERSION% numpy -y -q
   - cmd: activate python%PYTHON_VERSION%
-  - cmd: conda install -c conda-forge twine readme_renderer  -y -q
+  - cmd: conda install -c conda-forge twine  -y -q
+  - cmd: conda update -c conda-forge readme_renderer  -y -q
 
 install:
   - cmd: date /T & time /T
