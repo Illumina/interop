@@ -37,6 +37,7 @@ environment:
       ADDIONAL_CONFIG_OPTIONS: -DENABLE_APPS=OFF -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=OFF
       PYTHON_PATH_DIR: C:\Miniconda36-x64
       PYTHON_VERSION: 3.5
+      TWINE_VERSION: =1.15.0
       configuration: Release
     - generator: "Visual Studio 14 2015 Win64"
       BUILD: msvc14_win64_py27
@@ -106,7 +107,7 @@ before_build:
   - cmd: conda info -a
   - cmd: conda create --name python%PYTHON_VERSION% python=%PYTHON_VERSION% numpy -y -q
   - cmd: activate python%PYTHON_VERSION%
-  - cmd: conda install -c conda-forge twine==1.15.0  -y -q
+  - cmd: conda install -c conda-forge twine%TWINE_VERSION% -y -q
 
 install:
   - cmd: date /T & time /T
