@@ -1,6 +1,13 @@
 # Changes                                               {#changes}
 
 
+## v1.1.10
+
+Date       | Description
+---------- | -----------
+2020-04-17 | Issue-216: Fix bug where surface list is not updated on read
+
+
 ## v1.1.9
 
 Date       | Description

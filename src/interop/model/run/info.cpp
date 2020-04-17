@@ -32,10 +32,12 @@ namespace illumina { namespace interop { namespace model { namespace run
      *
      * @param filename xml file
      */
-    void info::write(const std::string &filename)const INTEROP_THROW_SPEC((xml::xml_file_not_found_exception,xml::bad_xml_format_exception))
+    void info::write(const std::string &filename)const
+                INTEROP_THROW_SPEC((xml::xml_file_not_found_exception,xml::bad_xml_format_exception))
     {
         std::ofstream fout(filename.c_str());
-        if(!fout.good()) throw xml::xml_file_not_found_exception("Unable to open RunInfo.xml for writing");
+        if(!fout.good())
+            INTEROP_THROW(xml::xml_file_not_found_exception, "Unable to open RunInfo.xml for writing");
         write(fout);
     }
 
@@ -78,9 +80,9 @@ namespace illumina { namespace interop { namespace model { namespace run
         else
         {
             if(m_flowcell.sections_per_lane() > 1)
-                throw bad_xml_format_exception("SectionPerLane not supported before Version 4");
+                INTEROP_THROW(bad_xml_format_exception, "SectionPerLane not supported before Version 4");
             if(m_flowcell.lanes_per_section() > 1)
-                throw bad_xml_format_exception("LanePerSection not supported before Version 4");
+                INTEROP_THROW(bad_xml_format_exception, "LanePerSection not supported before Version 4");
         }
         rapidxml::xml_node<>* tile_set = doc.add_node(flowcell, "TileSet");
         // TODO: check if supported by version
@@ -168,9 +170,14 @@ namespace illumina { namespace interop { namespace model { namespace run
                     if (set_data(attr, "LanePerSection", m_flowcell.m_lanes_per_section)) continue;
                 }
                 xml_node_ptr p_tile_set = p_node->first_node("TileSet");
+                m_flowcell.m_surface_list.clear();
                 if (p_tile_set == 0)
                 {
                     m_flowcell.m_naming_method = constants::UnknownTileNamingMethod;
+                    for(uint_t surface_index = 1; surface_index <= m_flowcell.surface_count(); ++surface_index)
+                    {
+                        m_flowcell.m_surface_list.push_back(surface_index);
+                    }
                 }
                 else
                 {
@@ -178,12 +185,31 @@ namespace illumina { namespace interop { namespace model { namespace run
                     set_data_from_attribute(p_tile_set, "TileNamingConvention", naming_convention);
                     m_flowcell.m_naming_method = constants::parse<constants::tile_naming_method>(naming_convention);
                     set_data(p_tile_set->first_node("Tiles"), "Tiles", "Tile", m_flowcell.m_tiles);
+                    if(!m_flowcell.m_tiles.empty())
+                    {
+                        const uint_t first_tile_surface_index = tile_surface(tile_from_name(m_flowcell.m_tiles[0]), m_flowcell.m_naming_method);
+                        m_flowcell.m_surface_list.push_back(first_tile_surface_index);
+                        for (size_t tile_index = 1; tile_index < m_flowcell.m_tiles.size(); ++tile_index)
+                        {
+                            const uint_t surface_index = tile_surface(tile_from_name(m_flowcell.m_tiles[tile_index]), m_flowcell.m_naming_method);
+                            if(first_tile_surface_index != surface_index)
+                            {
+                                m_flowcell.m_surface_list.push_back(surface_index);
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for(uint_t surface_index = 1; surface_index <= m_flowcell.surface_count(); ++surface_index)
+                        {
+                            m_flowcell.m_surface_list.push_back(surface_index);
+                        }
+                    }
                 }
             }
             else if (set_data(p_node, "ImageChannels", "Name", m_channels))
             {
-                for (size_t i = 0; i < m_channels.size(); ++i)
-                    m_channels[i] = logic::utils::normalize(m_channels[i]);// TODO: remove this
                 continue;
             }
             else if (p_node->name() == std::string("ImageDimensions"))
@@ -265,7 +291,7 @@ namespace illumina { namespace interop { namespace model { namespace run
      * @throws invalid_run_info_exception
      */
     void info::validate_read(const ::uint32_t lane, const ::uint32_t tile, const size_t read, const std::string& metric_name)const
-    INTEROP_THROW_SPEC((model::invalid_run_info_exception))
+    INTEROP_THROW_SPEC(model::invalid_run_info_exception)
     {
         validate(lane, tile, metric_name);
         INTEROP_RANGE_CHECK_GT(read, m_reads.size(), invalid_run_info_exception,
