@@ -490,7 +490,7 @@ namespace illumina{ namespace interop { namespace unittest
         }
     };
 
-    /** Provide an example Vega RunInfo v6
+    /** Provide an example NextSeq 1k2k RunInfo v6
      */
     struct nextseq1k2k_run_info {
         /** Generate a file representation of the RunInfo in a string
