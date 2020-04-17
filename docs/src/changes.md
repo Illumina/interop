@@ -6,6 +6,7 @@
 Date       | Description
 ---------- | -----------
 2020-04-17 | Issue-216: Fix bug where surface list is not updated on read
+2020-04-17 | Add unit test for NextSeq1k2k run info
 
 
 ## v1.1.9
