@@ -64,6 +64,7 @@ typedef ::testing::Types<
         read_fixture<nextseq_550_run_info>,
         read_fixture<hiseq2500_run_info>,
         read_fixture<novaseq_run_info>,
+        read_fixture<nextseq1k2k_run_info>,
 
 
         write_read_fixture<miseq_run_info>,
@@ -71,7 +72,8 @@ typedef ::testing::Types<
         write_read_fixture<miniseq_run_info>,
         write_read_fixture<nextseq_550_run_info>,
         write_read_fixture<hiseq2500_run_info>,
-        write_read_fixture<novaseq_run_info>
+        write_read_fixture<novaseq_run_info>,
+        write_read_fixture<nextseq1k2k_run_info>
 > run_info_list;
 TYPED_TEST_CASE(run_info_fixture, run_info_list);
 
@@ -177,6 +179,8 @@ TEST(run_info_test, test_invalid_run_number)
     run::info run_info;
     run_info.parse(&data[0]);
     EXPECT_THROW(run_info.validate(), model::invalid_run_info_exception);
+    EXPECT_EQ(2u, run_info.flowcell().surface_count());
+    EXPECT_EQ(2u, run_info.flowcell().surface_list().size());
 }
 
 TEST(run_info_test, test_zero_lane_count_exception)
@@ -354,6 +358,8 @@ TEST(run_info_test, test_zero_sections_per_lane_count_exception)
     run::info run_info;
     run_info.parse(&data[0]);
     EXPECT_THROW(run_info.validate(), model::invalid_run_info_exception);
+    EXPECT_EQ(2u, run_info.flowcell().surface_count());
+    EXPECT_EQ(1u, run_info.flowcell().surface_list().size());
 }
 
 TEST(run_info_test, test_zero_lanes_per_section_count_exception)
@@ -389,4 +395,6 @@ TEST(run_info_test, test_zero_lanes_per_section_count_exception)
     run::info run_info;
     run_info.parse(&data[0]);
     EXPECT_THROW(run_info.validate(), model::invalid_run_info_exception);
+    EXPECT_EQ(2u, run_info.flowcell().surface_count());
+    EXPECT_EQ(1u, run_info.flowcell().surface_list().size());
 }

@@ -231,6 +231,8 @@ namespace illumina { namespace interop { namespace model { namespace run
             }
             else if (set_data(p_node, "ImageChannels", "Name", m_channels))
             {
+                for (size_t i = 0; i < m_channels.size(); ++i)
+                    m_channels[i] = logic::utils::normalize(m_channels[i]);// TODO: remove this
                 continue;
             }
             else if (p_node->name() == std::string("ImageDimensions"))

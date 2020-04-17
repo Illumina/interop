@@ -490,6 +490,90 @@ namespace illumina{ namespace interop { namespace unittest
         }
     };
 
+    /** Provide an example Vega RunInfo v6
+     */
+    struct nextseq1k2k_run_info {
+        /** Generate a file representation of the RunInfo in a string
+         *
+         * @param data destination string
+         */
+        static void create_string(std::string &data) {
+            data = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+                   "<RunInfo Version=\"6\">\n"
+                   "\t<Run Id=\"170208_XXXXXX_0021_YYYYYYYY\" Number=\"21\">\n"
+                   "\t\t<Flowcell>YYYYYYYY</Flowcell>\n"
+                   "\t\t<Instrument>XXXXXX</Instrument>\n"
+                   "\t\t<Date>2/8/2017 4:25:41 PM</Date>\n"
+                   "\t\t<Reads>\n"
+                   "\t\t\t<Read Number=\"1\" NumCycles=\"151\" IsIndexedRead=\"N\"/>\n"
+                   "\t\t\t<Read Number=\"2\" NumCycles=\"8\" IsIndexedRead=\"Y\"/>\n"
+                   "\t\t\t<Read Number=\"3\" NumCycles=\"8\" IsIndexedRead=\"Y\" IsReverseComplement=\"Y\" />\n"
+                   "\t\t\t<Read Number=\"4\" NumCycles=\"151\" IsIndexedRead=\"N\"/>\n"
+                   "\t\t</Reads>\n"
+                   "\t\t<FlowcellLayout LaneCount=\"2\" SurfaceCount=\"2\" SwathCount=\"4\" TileCount=\"88\" FlowcellSide=\"1\">\n"
+                   "\t\t\t<TileSet TileNamingConvention=\"FourDigit\">\n"
+                   "\t\t\t\t<Tiles>\n"
+                   "\t\t\t\t\t<Tile>1_2101</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2102</Tile>\n"
+                   "\t\t\t\t</Tiles>\n"
+                   "\t\t\t</TileSet>\n"
+                   "\t\t</FlowcellLayout>\n"
+                   "\t\t<AlignToPhiX/>\n"
+                   "\t\t<ImageDimensions Width=\"3200\" Height=\"3607\"/>\n"
+                   "\t\t<ImageChannels>\n"
+                   "\t\t\t<Name>RED</Name>\n"
+                   "\t\t\t<Name>GREEN</Name>\n"
+                   "\t\t</ImageChannels>\n"
+                   "\t</Run>\n"
+                   "</RunInfo>";
+        }
+
+        /** Generate a standard runinfo with an arbitrary read structure
+         *
+         * @param expected_run_info destination run info
+         * @param reads arbitrary read structure
+         */
+        static void
+        create_expected(model::run::info &expected_run_info, const std::vector<model::run::read_info> &reads) {
+            std::string tiles[] = {
+                    "1_2101",
+                    "1_2102"
+            };
+            const std::string channels[] = {"red", "green"};
+            expected_run_info = model::run::info("170208_XXXXXX_0021_YYYYYYYY" /* run id */,
+                                                 "2/8/2017 4:25:41 PM" /* date */ ,
+                                                 "XXXXXX" /* instrument name*/,
+                                                 21 /* run number */,
+                                                 6 /** RunInfo version */,
+                                                 model::run::flowcell_layout(2 /*lane count*/,
+                                                                             2 /*surface count*/,
+                                                                             4 /*swath count */,
+                                                                             88 /*tile count */,
+                                                                             1 /* sections per lane */,
+                                                                             1 /* lanes per section*/,
+                                                                             util::to_vector(tiles) /* Tiles */,
+                                                                             constants::FourDigit,
+                                                                             "YYYYYYYY" /* flowcell id */),
+                                                 util::to_vector(channels) /*Image channels */,
+                                                 model::run::image_dimensions(/*Width*/ 3200, /*Height*/ 3607),
+                                                 reads);
+        }
+
+        /** Generate expected run info relating to file representation
+         *
+         * @param expected_run_info destination run info
+         */
+        static void create_expected(model::run::info &expected_run_info) {
+            const model::run::read_info reads[] = {
+                    /*Number,    IsIndexedRead, CycleStart, CycleEnd*/
+                    model::run::read_info(1, 1, 151, false),
+                    model::run::read_info(2, 152, 159, true),
+                    model::run::read_info(3, 160, 167, true),
+                    model::run::read_info(4, 168, 318, false)
+            };
+            create_expected(expected_run_info, util::to_vector(reads));
+        }
+    };
 }}}
 
 
