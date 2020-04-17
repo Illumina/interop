@@ -26,7 +26,28 @@ using namespace illumina::interop::xml;
 
 namespace illumina { namespace interop { namespace model { namespace run
 {
-
+        /** Convert string lane/tile identifier (1_1111) to tile hash
+         *
+         * @param tile_name lane/tile identifier (1_1111)
+         * @return tile hash (1111)
+         */
+        inline ::uint32_t tile_from_name(const std::string &tile_name) {
+            if (tile_name == "") return 0;
+            const size_t n = tile_name.find('_');
+            if (n == std::string::npos) return 0;
+            return util::lexical_cast<::uint32_t>(tile_name.substr(n + 1));
+        }
+        /** Surface number
+          *
+          * Calculates the surface of the tile from the tile id.
+          *
+          * @return surface of the tile.
+          */
+        inline ::uint32_t tile_surface(const ::uint32_t tile_id, const constants::tile_naming_method method) {
+            if (method == constants::FiveDigit) return (tile_id / 10000);
+            if (method == constants::FourDigit) return tile_id / 1000;
+            return 1;
+        }
 
     /** Read run information from the given XML file
      *
