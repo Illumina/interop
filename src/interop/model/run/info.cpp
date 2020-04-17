@@ -35,7 +35,7 @@ namespace illumina { namespace interop { namespace model { namespace run
             if (tile_name == "") return 0;
             const size_t n = tile_name.find('_');
             if (n == std::string::npos) return 0;
-            return util::lexical_cast<::uint32_t>(tile_name.substr(n + 1));
+            return util::lexical_cast< ::uint32_t >(tile_name.substr(n + 1));
         }
         /** Surface number
           *
