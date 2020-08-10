@@ -71,7 +71,7 @@ TEST_P(error_metrics_tests, compare_expected_actual)
         EXPECT_EQ(it_expected->cycle(), it_actual->cycle());
         EXPECT_EQ(it_expected->mismatch_count(), it_actual->mismatch_count());
         EXPECT_NEAR(it_expected->error_rate(), it_actual->error_rate(), 1e-5f);
-        EXPECT_NEAR(it_expected->phix_adapter_rate(), it_actual->phix_adapter_rate(), 1e-5f);
+        INTEROP_EXPECT_NEAR(it_expected->phix_adapter_rate(), it_actual->phix_adapter_rate(), 1e-5f);
         for(ptrdiff_t i=0;i<static_cast<ptrdiff_t>(it_expected->mismatch_count());i++)
             EXPECT_EQ(it_expected->mismatch_cluster_count(i), it_actual->mismatch_cluster_count(i));
     }
