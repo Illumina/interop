@@ -1,6 +1,13 @@
 # Changes                                               {#changes}
 
 
+## v1.1.11
+
+Date       | Description
+---------- | -----------
+2020-08-10 | Issue-223: Add missing v5 error metric file format
+
+
 ## v1.1.10
 
 Date       | Description

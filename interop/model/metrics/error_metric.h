@@ -29,7 +29,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
      * The error metric is the calculated error rate, as determined by a spiked in PhiX control sample.
      * This metric is available for each lane and tile for every cycle.
      *
-     * @note Supported versions: 3 and 4
+     * @note Supported versions: 3, 4, and 5
      */
     class error_metric : public metric_base::base_cycle_metric
     {
@@ -41,7 +41,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             /** Unique type code for metric */
             TYPE = constants::Error,
             /** Latest version of the InterOp format */
-            LATEST_VERSION = 4
+            LATEST_VERSION = 5
         };
         /** Define a uint array using an underlying vector
          */
@@ -52,6 +52,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         error_metric() :
                 metric_base::base_cycle_metric(0, 0, 0),
                 m_error_rate(std::numeric_limits<float>::quiet_NaN()),
+                m_phix_adapter_rate(std::numeric_limits<float>::quiet_NaN()),
                 m_mismatch_cluster_count(MAX_MISMATCH, 0)
         {
         }
@@ -60,6 +61,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         error_metric(const header_type&) :
                 metric_base::base_cycle_metric(0, 0, 0),
                 m_error_rate(std::numeric_limits<float>::quiet_NaN()),
+                m_phix_adapter_rate(std::numeric_limits<float>::quiet_NaN()),
                 m_mismatch_cluster_count(MAX_MISMATCH, 0)
         {
         }
@@ -74,9 +76,11 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         error_metric(const uint_t lane,
                      const uint_t tile,
                      const uint_t cycle,
-                     const float error) :
+                     const float error,
+                     const float phix_adapter_rate) :
                 metric_base::base_cycle_metric(lane, tile, cycle),
                 m_error_rate(error),
+                m_phix_adapter_rate(phix_adapter_rate),
                 m_mismatch_cluster_count(MAX_MISMATCH, 0)
         {
         }
@@ -99,6 +103,16 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         float error_rate() const
         {
             return m_error_rate;
+        }
+
+        /** Calculated adapter trim rate of PhiX clusters
+         *
+         * @note Supported by v5
+         * @return adapter trim rate
+         */
+        float phix_adapter_rate() const
+        {
+            return m_phix_adapter_rate;
         }
 
         /** Number of clusters at given number of mismatches
@@ -162,6 +176,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
 
     private:
         float m_error_rate;
+        float m_phix_adapter_rate;
         uint_array_t m_mismatch_cluster_count;
         template<class MetricType, int Version>
         friend

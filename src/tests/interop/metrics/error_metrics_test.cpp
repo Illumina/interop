@@ -29,13 +29,17 @@ struct error_metrics_tests : public generic_test_fixture< error_metric_set > {};
 
 error_metrics_tests::generator_type error_unit_test_generators[] = {
         wrap(new hardcoded_metric_generator< error_metric_v3 >) ,
-        wrap(new write_read_metric_generator< error_metric_v3 >)
-        ,wrap(new hardcoded_metric_generator< error_metric_v4 >),
+        wrap(new hardcoded_metric_generator< error_metric_v4 >),
+        wrap(new hardcoded_metric_generator< error_metric_v5 >),
+        wrap(new write_read_metric_generator< error_metric_v3 >),
         wrap(new write_read_metric_generator< error_metric_v4 >),
+        wrap(new write_read_metric_generator< error_metric_v5 >),
         wrap(new by_cycle_metric_generator< error_metric_v3 >),
         wrap(new by_cycle_metric_generator< error_metric_v4 >),
+        wrap(new by_cycle_metric_generator< error_metric_v5 >),
         wrap(new clear_metric_generator< error_metric_v3 >),
-        wrap(new clear_metric_generator< error_metric_v4 >)
+        wrap(new clear_metric_generator< error_metric_v4 >),
+        wrap(new clear_metric_generator< error_metric_v5 >)
 };
 
 // Setup unit tests for error_metrics_tests
@@ -67,6 +71,7 @@ TEST_P(error_metrics_tests, compare_expected_actual)
         EXPECT_EQ(it_expected->cycle(), it_actual->cycle());
         EXPECT_EQ(it_expected->mismatch_count(), it_actual->mismatch_count());
         EXPECT_NEAR(it_expected->error_rate(), it_actual->error_rate(), 1e-5f);
+        EXPECT_NEAR(it_expected->phix_adapter_rate(), it_actual->phix_adapter_rate(), 1e-5f);
         for(ptrdiff_t i=0;i<static_cast<ptrdiff_t>(it_expected->mismatch_count());i++)
             EXPECT_EQ(it_expected->mismatch_cluster_count(i), it_actual->mismatch_cluster_count(i));
     }
