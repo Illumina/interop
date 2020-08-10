@@ -29,7 +29,7 @@ JUNIT_URL="http://search.maven.org/remotecontent?filepath=junit/junit/4.12/junit
 NUNIT_URL="https://github.com/nunit/nunitv2/releases/download/2.6.4/NUnit-2.6.4.zip"
 JAVA_URL="http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.rpm"
 VALGRIND_URL="http://www.valgrind.org/downloads/valgrind-3.14.0.tar.bz2"
-DOTNET_URL="https://download.microsoft.com/download/1/1/5/115B762D-2B41-4AF3-9A63-92D9680B9409/dotnet-sdk-2.1.4-linux-x64.tar.gz"
+DOTNET_URL="https://download.visualstudio.microsoft.com/download/pr/022d9abf-35f0-4fd5-8d1c-86056df76e89/477f1ebb70f314054129a9f51e9ec8ec/dotnet-sdk-2.2.207-linux-x64.tar.gz"
 PROG_HOME=/opt
 SWIG_HOME=${PROG_HOME}/swig3
 JUNIT_HOME=${PROG_HOME}/junit
@@ -68,10 +68,7 @@ if hash swig  2> /dev/null; then
     echo "Found Swig"
 else
     if [ ! -e ${SWIG_HOME} ]; then
-        mkdir ${SWIG_HOME}
-    fi
-    if [ ! -e ${SWIG_HOME}/src ]; then
-        mkdir ${SWIG_HOME}/src
+        mkdir -p ${SWIG_HOME}/src
     fi
     wget --no-check-certificate --quiet -O - ${SWIG_URL} | tar --strip-components=1 -xz -C ${SWIG_HOME}/src
     cd ${SWIG_HOME}/src
@@ -160,6 +157,7 @@ java -version
 cmake --version
 mono --version
 dotnet --version
+which dotnet
 
 yum clean all
 
