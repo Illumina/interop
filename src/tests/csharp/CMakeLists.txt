@@ -11,7 +11,7 @@ if(NOT CSBUILD_FOUND)
     return()
 endif()
 
-if(NOT DOTNET_CORE_FOUND)
+if(NOT DOTNET_STANDARD_FOUND)
     find_package(NUnit)
     if(NOT NUNIT_FOUND)
         message(WARNING "NUnit not found, C# unit testing will be disabled")
@@ -53,11 +53,11 @@ set(TEST_SRCS
         run/RunInfoTest.cs
         run/RunParametersTest.cs
         )
-if(DOTNET_CORE_FOUND)
+if(DOTNET_STANDARD_FOUND)
     set(TEST_SRCS ${TEST_SRCS} Program.cs)
 endif()
 
-
+set(CSHARP_TARGET_FRAMEWORK "netcoreapp2.0")
 find_program(NUGET_EXE nuget)
 if(NUGET_EXE)
     # Test the NuGet Package
@@ -68,10 +68,6 @@ else()
     # Test the Library
     csharp_add_project(${PROJ_TYPE} csharp_unittest ${NUNIT_LIBRARIES} ${TEST_SRCS} ${SWIG_CSHARP_LIBRARY})
     add_dependencies(csharp_unittest csharp_interop ${NUNIT_TARGET})
-endif()
-
-if(NOT ENABLE_CSHARP)
-    set_target_properties(csharp_unittest PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
 endif()
 
 # Clear old packages
@@ -98,10 +94,6 @@ set(PERF_TEST_SRCS
 
 csharp_add_library(csharp_perftest ${NUNIT_LIBRARIES} ${PERF_TEST_SRCS} ${SWIG_CSHARP_LIBRARY})
 add_dependencies(csharp_perftest csharp_interop ${NUNIT_TARGET})
-if(NOT ENABLE_CSHARP)
-    set_target_properties(csharp_perftest PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
-endif()
-
 
 add_custom_command(TARGET csharp_perftest POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CSBUILD_csharp_perftest_BINARY} $<TARGET_FILE_DIR:${INTEROP_LIB}>
@@ -112,10 +104,11 @@ if(NOT ENABLE_STATIC)
     add_custom_command(TARGET csharp_perftest POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE_DIR:${INTEROP_LIB}> ${CMAKE_CURRENT_BINARY_DIR})
 endif()
+set(CSHARP_TARGET_FRAMEWORK "netstandard2.0" CACHE STRING "C# .NET framework for dotnet" )
 
 add_custom_target(check_csharp
         COMMENT "Running C# unit tests: ${CSHARP_INTERPRETER} $<TARGET_FILE_DIR:${INTEROP_LIB}>/${CSBUILD_csharp_unittest_BINARY_NAME}"
-        COMMAND ${CSHARP_INTERPRETER} $<TARGET_FILE_DIR:${INTEROP_LIB}>/${CSBUILD_csharp_unittest_BINARY_NAME}
+        COMMAND ${CHECKER} ${CSHARP_INTERPRETER} $<TARGET_FILE_DIR:${INTEROP_LIB}>/${CSBUILD_csharp_unittest_BINARY_NAME}
         )
 
 add_dependencies(check_csharp csharp_unittest)
