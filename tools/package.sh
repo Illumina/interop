@@ -160,7 +160,7 @@ fi
 if [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] ; then
     if [ "$PYTHON_VERSION" == "ALL" ] ; then
         # python_versions="2.7.17 3.5.9 3.6.10 3.7.7 3.8.2"
-        python_versions="2.7.17 3.5.9 3.6.10 3.7.7"
+        python_versions="2.7.17 3.5.9"
         pyenv install --list | grep " 2.7"
         pyenv install --list | grep " 3\.[45678]"
     else
