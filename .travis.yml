@@ -29,6 +29,9 @@ matrix:
   - os: osx
     compiler: clang
     env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release ALL"
+  - os: osx
+    compiler: clang
+    env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release 3.8.2"
   - os: linux
     compiler: clang
     env: SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis ON Debug Disable"
