@@ -31,6 +31,7 @@ namespace illumina{ namespace interop { namespace unittest
                     corrected_intensity_metric_v4,
                     error_metric_v3,
                     error_metric_v4,
+                    error_metric_v5,
                     extended_tile_metric_v1,
                     extended_tile_metric_v2,
                     extended_tile_metric_v3,

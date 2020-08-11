@@ -24,9 +24,9 @@ namespace Illumina.InterOp.Interop.UnitTest
 		protected void SetUp()
 		{
 	        base_cycle_metric_header header = new base_cycle_metric_header();
-			expected_metrics.Add(new error_metric(7, 1114, 1, 0.450100899f));
-			expected_metrics.Add(new error_metric(7, 1114, 2, 0.900201797f));
-			expected_metrics.Add(new error_metric(7, 1114, 3, 0.465621591f));
+			expected_metrics.Add(new error_metric(7, 1114, 1, 0.450100899f, 0f));
+			expected_metrics.Add(new error_metric(7, 1114, 2, 0.900201797f, 0f));
+			expected_metrics.Add(new error_metric(7, 1114, 3, 0.465621591f, 0f));
 
 			int[] tmp = new int[]{3,30,7,0,90,4,1,0,-96,115,-26,62,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 				,7,0,90,4,2,0,-96,115,102,63,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0

@@ -382,14 +382,15 @@ TEST(summary_metrics_test, cycle_35_cycle_34_tile)
     model::metric_base::metric_set<model::metrics::error_metric> &actual_error_metrics =
             actual_run_metrics.get<model::metrics::error_metric>();
     typedef model::metrics::error_metric::uint_t uint_t;
+    const float kMissingValue = std::numeric_limits<float>::quiet_NaN();
     for (uint_t cycle_number = 0; cycle_number < 36; ++cycle_number)
     {
-        expected_error_metrics.insert(error_metric(1, 1101, 1 + cycle_number, 3.0f));
-        actual_error_metrics.insert(error_metric(1, 1101, 1 + cycle_number, 3.0f));
+        expected_error_metrics.insert(error_metric(1, 1101, 1 + cycle_number, 3.0f, kMissingValue));
+        actual_error_metrics.insert(error_metric(1, 1101, 1 + cycle_number, 3.0f, kMissingValue));
     }
     for (uint_t cycle_number = 0; cycle_number < 34; ++cycle_number)
     {
-        actual_error_metrics.insert(error_metric(1, 1102, 1 + cycle_number, 1.0f));
+        actual_error_metrics.insert(error_metric(1, 1102, 1 + cycle_number, 1.0f, kMissingValue));
     }
 
     model::summary::run_summary expected;

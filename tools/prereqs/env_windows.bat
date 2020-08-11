@@ -4,13 +4,24 @@ rem Software required to build InterOp
 rem Assumes you have the windows package manager installed: https://chocolatey.org/
 rem --------------------------------------------------------------------------------------------------------------------
 
-set MINICONDA_HOME=C:\ProgramData\Miniconda2
+set python_version=2.7
+set numpy_version=
+if NOT '%1' == '' (
+ set python_version=%1
+)
+if NOT '%2' == '' (
+set conda_version=%2
+)
+if NOT '%3' == '' (
+set numpy_version="=%3"
+)
+set MINICONDA_HOME=C:\tools\miniconda3
 set CMAKE_HOME=C:\Program Files\CMake\bin
 set NUNIT_HOME=C:\Program Files (x86)\NUnit 2.6.4\bin
-set JAVA_HOME=C:\Program Files\Java\jdk1.8.0_144\bin
+set JAVA_BIN=C:\Program Files\Java\jdk1.8.0_144\bin
 set MINGW_HOME=C:\mingw\mingw64\bin
 set DOTNET_HOME=c:\dotnet
-set PATH=%PATH%;%MINICONDA_HOME%;%MINICONDA_HOME%\Scripts;%CMAKE_HOME%;%NUNIT_HOME%;%JAVA_HOME%;%MINGW_HOME%;%DOTNET_HOME%
+set PATH=%PATH%;%CMAKE_HOME%;%NUNIT_HOME%;%JAVA_BIN%;%MINGW_HOME%;%DOTNET_HOME%
 
 rem --------------------------------------------------------------------------------------------------------------------
 rem Install MinGW
@@ -40,18 +51,29 @@ rem ----------------------------------------------------------------------------
 
 where /q cmake
 if %errorlevel% neq 0 choco install cmake --yes --limit-output --installargs 'ADD_CMAKE_TO_PATH=""System""'
-where /q conda
-if %errorlevel% neq 0 choco install miniconda --yes --limit-output
+
+choco upgrade cmake --yes --limit-output --installargs 'ADD_CMAKE_TO_PATH=""System""'  --no-progress
+
+choco uninstall miniconda --yes --limit-output
+choco uninstall miniconda3 --yes --limit-output
+choco install miniconda3 --yes --limit-output  --no-progress
+call %MINICONDA_HOME%\Scripts\\activate.bat
+call conda config --set always_yes yes --set changeps1 no
+call conda info
+
 where /q javac
-if %errorlevel% neq 0 choco install jdk8 --yes --limit-output --version 8.0.144
+if %errorlevel% neq 0 choco install jdk8 --yes --limit-output --version 8.0.144 --force  --no-progress
 where /q nuget
 if %errorlevel% neq 0 choco install nuget.commandline --yes --limit-output
-where /q swig
-if %errorlevel% neq 0 choco install swig --yes --limit-output
+
+choco install swig --yes --limit-output --version 3.0.12 --allow-downgrade --force  --no-progress
+if %errorlevel% neq 0 exit /b %errorlevel%
+
 where /q git
-if %errorlevel% neq 0 choco install git.install --yes --limit-output
+if %errorlevel% neq 0 choco install git.install --yes --limit-output  --no-progress
+
 where /q nunit-console.exe
-if %errorlevel% neq 0 choco install nunit --version 2.6.4 --yes --limit-output
+if %errorlevel% neq 0 choco install nunit --version 2.6.4 --yes --limit-output  --no-progress
 
 rem --------------------------------------------------------------------------------------------------------------------
 rem Test if required programs are available
@@ -59,6 +81,7 @@ rem ----------------------------------------------------------------------------
 
 where /q javac
 if errorlevel 1 (
+     dir C:\Program Files\Java\jdk1.8.0_144\bin
      echo Failed to find javac
      exit /b %errorlevel%
 )
@@ -99,21 +122,32 @@ rem Version Info
 rem --------------------------------------------------------------------------------------------------------------------
 
 cmake --version
-conda --version
 javac -version
 nuget help
 swig -version
 git --version
 dotnet --version
 
-rem --------------------------------------------------------------------------------------------------------------------
-rem Install Python Requirements
-rem --------------------------------------------------------------------------------------------------------------------
 
-conda install numpy -y -q
-if %errorlevel% neq 0 exit %errorlevel%
+echo "Create environment: %python_version% - %conda_version%"
+if '%python_version%' == '' goto SKIP_CONDA_UPDATE
+echo "Configure conda"
+rem call conda config --add channels conda-forge
+rem call conda config --set channel_priority strict
+rem call conda config --set allow_conda_downgrades true
+echo "Update Anaconda"
+call conda update -n base conda
+call conda remove --name py%python_version% --all -y
+rem call conda install conda=4.6.14 -y
+echo "Create environment"
+call conda create --no-default-packages -n py%python_version% python=%python_version% -y || echo "Environment exists"
+echo "Activate py%python_version%"
+call activate py%python_version%
+if %errorlevel% neq 0 exit /b %errorlevel%
+call conda install numpy wheel -y
+if %errorlevel% neq 0 exit /b %errorlevel%
+:SKIP_CONDA_UPDATE
 
-
-activate python3 || conda create --name python3 python=3 numpy -y -q
+echo "Installing requirements complete"
 
 

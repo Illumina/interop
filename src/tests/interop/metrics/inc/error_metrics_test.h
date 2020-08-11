@@ -31,9 +31,10 @@ namespace illumina { namespace interop { namespace unittest
         static void create_expected(metric_set_t &metrics, const model::run::info& =model::run::info())
         {
             metrics = metric_set_t(VERSION);
-            metrics.insert(metric_t(7, 1114, 1, 0.450100899f));
-            metrics.insert(metric_t(7, 1114, 2, 0.900201797f));
-            metrics.insert(metric_t(7, 1114, 3, 0.465621591f));
+            const float kMissingValue = std::numeric_limits<float>::quiet_NaN();
+            metrics.insert(metric_t(7, 1114, 1, 0.450100899f, kMissingValue));
+            metrics.insert(metric_t(7, 1114, 2, 0.900201797f, kMissingValue));
+            metrics.insert(metric_t(7, 1114, 3, 0.465621591f, kMissingValue));
         }
 
         /** Get the expected binary data
@@ -199,7 +200,7 @@ namespace illumina { namespace interop { namespace unittest
             {
                 const size_t cycle_within_read = run_info.cycle_within_read(cycle);
                 const metric_t::uint_t cycle_id = static_cast<metric_t::uint_t >(cycle);
-                metrics.insert(metric_t(7, 1113, cycle_id, kMissingValue));
+                metrics.insert(metric_t(7, 1113, cycle_id, kMissingValue, kMissingValue));
                 if( cycle_within_read <= 5 )
                 {
                     //Doing nothing is the same as adding a record with the missing value sentinel
@@ -207,25 +208,25 @@ namespace illumina { namespace interop { namespace unittest
                 }
                 else if( cycle_within_read <= 35 )
                 {
-                    metrics.insert(metric_t(7, 1114, cycle_id, kAverageError35));
+                    metrics.insert(metric_t(7, 1114, cycle_id, kAverageError35, kMissingValue));
                     sum += kAverageError35;
                 }
                 else if( cycle_within_read <= 50 )
                 {
-                    metrics.insert(metric_t(7, 1114, cycle_id, kAverageError50));
+                    metrics.insert(metric_t(7, 1114, cycle_id, kAverageError50, kMissingValue));
                     sum += kAverageError35;
                 }
                 else if( cycle_within_read <= 75 )
                 {
-                    metrics.insert(metric_t(7, 1114, cycle_id, kAverageError75));
+                    metrics.insert(metric_t(7, 1114, cycle_id, kAverageError75, kMissingValue));
                 }
                 else if( cycle_within_read <= 100 )
                 {
-                    metrics.insert(metric_t(7, 1114, cycle_id, kAverageError100));
+                    metrics.insert(metric_t(7, 1114, cycle_id, kAverageError100, kMissingValue));
                 }
                 else
                 {
-                    metrics.insert(metric_t(7, 1114, cycle_id, kAverageErrorAfter));
+                    metrics.insert(metric_t(7, 1114, cycle_id, kAverageErrorAfter, kMissingValue));
                 }
             }
         }
@@ -306,9 +307,11 @@ namespace illumina { namespace interop { namespace unittest
         static void create_expected(metric_set_t &metrics, const model::run::info& =model::run::info())
         {
             metrics = metric_set_t(VERSION);
-            metrics.insert(metric_t(3, 211011, 1, 0.608985f));
-            metrics.insert(metric_t(3, 211011, 2, 0.298748f));
-            metrics.insert(metric_t(3, 211011, 3, 0.287257f));
+
+            const float kMissingValue = std::numeric_limits<float>::quiet_NaN();
+            metrics.insert(metric_t(3, 211011, 1, 0.608985f, kMissingValue));
+            metrics.insert(metric_t(3, 211011, 2, 0.298748f, kMissingValue));
+            metrics.insert(metric_t(3, 211011, 3, 0.287257f, kMissingValue));
         }
         /** Get the expected binary data
          *
@@ -322,6 +325,42 @@ namespace illumina { namespace interop { namespace unittest
             ,12,3,0,67,56,3,0,1,0,113,-26,27,63,3,0,67,56,3,0,2
             ,0,127,-11,-104,62,3,0,67,56,3,0,3,0,89,19,-109,62
             };
+            buffer.assign(tmp, tmp+util::length_of(tmp));
+        }
+    };
+
+   /** This test writes three records of an InterOp files, then reads them back in and compares
+     * each value to ensure they did not change.
+     *
+     * @see model::metrics::error_metric
+     * @note Version 5
+     */
+    struct error_metric_v5 : metric_test<model::metrics::error_metric, 5>
+    {
+        /** Create the expected metric set
+         *
+         * @param metrics destination metric set
+         */
+        static void create_expected(metric_set_t &metrics, const model::run::info& =model::run::info())
+        {
+            metrics = metric_set_t(VERSION);
+            metrics.insert(metric_t(3, 211011, 1, 0.608985f, 0.298748f));
+            metrics.insert(metric_t(3, 211011, 2, 0.298748f, 0.287257f));
+            metrics.insert(metric_t(3, 211011, 3, 0.287257f, 0.608985f));
+        }
+        /** Get the expected binary data
+         *
+         * @param buffer binary data string
+         */
+        template<class Collection>
+        static void create_binary_data(Collection &buffer)
+        {
+            const int tmp[] =
+                    {5,16,
+                          3,0,67,56,3,0,1,0,113,-26,27,63,127,-11,-104,62,
+                          3,0,67,56,3,0,2,0,127,-11,-104,62,89,19,-109,62,
+                          3,0,67,56,3,0,3,0,89,19,-109,62,113,-26,27,63
+                    };
             buffer.assign(tmp, tmp+util::length_of(tmp));
         }
     };

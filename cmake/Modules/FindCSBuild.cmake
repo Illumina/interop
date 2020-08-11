@@ -97,6 +97,7 @@ if(NOT CSHARP_TARGET_FRAMEWORK)
 endif()
 
 if(CSBUILD_FOUND)
+    message(STATUS "Using Framework: ${CSHARP_TARGET_FRAMEWORK}")
     if(DOTNET_STANDARD_FOUND)
         message(STATUS "Using Framework: ${CSHARP_TARGET_FRAMEWORK}")
         message(STATUS "Using Platform: ${CSHARP_PLATFORM}")
