@@ -200,7 +200,7 @@ namespace illumina{ namespace interop { namespace unittest
                     "1_1101",
                     "1_1102"
             };
-            const std::string channels[] = {"a", "g", "t", "c"};
+            const std::string channels[] = {"A", "G", "T", "C"};
             expected_run_info = model::run::info("160223_196_2371_AH7MF5BBXX" /* run id */,
                                           "160223" /* date */ ,
                                           "196" /* instrument name*/,
@@ -283,7 +283,7 @@ namespace illumina{ namespace interop { namespace unittest
                     "1_11102",
                     "1_21102"
             };
-            const std::string channels[] = {"red", "green"};
+            const std::string channels[] = {"Red", "Green"};
             expected_run_info = model::run::info("160822_ML-P2-01_0042_A000H02MNK" /* run id */,
                                                  "160822" /* date */ ,
                                                  "ML-P2-01" /* instrument name*/,
@@ -368,7 +368,7 @@ namespace illumina{ namespace interop { namespace unittest
                     "1_11101",
                     "1_21101"
             };
-            const std::string channels[] = {"red", "green"};
+            const std::string channels[] = {"Red", "Green"};
             expected_run_info = model::run::info("160630_NS500179_0099_AHW3YTBGXX" /* run id */,
                                                  "160630" /* date */ ,
                                                  "NS500179" /* instrument name*/,
@@ -454,7 +454,7 @@ namespace illumina{ namespace interop { namespace unittest
                     "1_2101",
                     "1_2102"
             };
-            const std::string channels[] = {"red", "green"};
+            const std::string channels[] = {"RED", "GREEN"};
             expected_run_info = model::run::info("170208_XXXXXX_0021_YYYYYYYY" /* run id */,
                                                  "2/8/2017 4:25:41 PM" /* date */ ,
                                                  "XXXXXX" /* instrument name*/,
@@ -539,7 +539,7 @@ namespace illumina{ namespace interop { namespace unittest
                     "1_2101",
                     "1_2102"
             };
-            const std::string channels[] = {"red", "green"};
+            const std::string channels[] = {"RED", "GREEN"};
             expected_run_info = model::run::info("170208_XXXXXX_0021_YYYYYYYY" /* run id */,
                                                  "2/8/2017 4:25:41 PM" /* date */ ,
                                                  "XXXXXX" /* instrument name*/,
@@ -568,8 +568,246 @@ namespace illumina{ namespace interop { namespace unittest
                     /*Number,    IsIndexedRead, CycleStart, CycleEnd*/
                     model::run::read_info(1, 1, 151, false),
                     model::run::read_info(2, 152, 159, true),
-                    model::run::read_info(3, 160, 167, true),
+                    model::run::read_info(3, 160, 167, true, true),
                     model::run::read_info(4, 168, 318, false)
+            };
+            create_expected(expected_run_info, util::to_vector(reads));
+        }
+    };
+
+    /** Provide an example Vega RunInfo v6
+     */
+    struct nextseq1k2k_run_info_large {
+        /** Generate a file representation of the RunInfo in a string
+         *
+         * @param data destination string
+         */
+        static void create_string(std::string &data) {
+            data = "<?xml version=\"1.0\"?>\n"
+                   "<RunInfo Version=\"6\">\n"
+                   "\t<Run Id=\"200308_VH00113_9_AAAAW3GM5\" Number=\"3\">\n"
+                   "\t\t<Flowcell>AAAAW3GM5</Flowcell>\n"
+                   "\t\t<Instrument>VH00113</Instrument>\n"
+                   "\t\t<Date>22020-03-08T01:06:02Z</Date>\n"
+                   "\t\t<Reads>\n"
+                   "\t\t\t<Read Number=\"1\" NumCycles=\"151\" IsIndexedRead=\"N\" IsReverseComplement=\"N\"/>\n"
+                   "\t\t\t<Read Number=\"2\" NumCycles=\"151\" IsIndexedRead=\"N\" IsReverseComplement=\"N\"/>\n"
+                   "\t\t</Reads>\n"
+                   "\t\t<FlowcellLayout LaneCount=\"1\" SurfaceCount=\"2\" SwathCount=\"6\" TileCount=\"12\">\n"
+                   "\t\t\t<TileSet TileNamingConvention=\"FourDigit\">\n"
+                   "\t\t\t\t<Tiles>\n"
+                   "\t\t\t\t\t<Tile>1_1101</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1102</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1103</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1104</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1105</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1106</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1107</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1108</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1109</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1110</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1111</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1112</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1201</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1202</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1203</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1204</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1205</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1206</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1207</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1208</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1209</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1210</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1211</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1212</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1301</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1302</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1303</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1304</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1305</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1306</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1307</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1308</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1309</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1310</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1311</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1312</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1401</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1402</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1403</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1404</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1405</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1406</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1407</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1408</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1409</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1410</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1411</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1412</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1501</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1502</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1503</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1504</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1505</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1506</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1507</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1508</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1509</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1510</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1511</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1512</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1601</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1602</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1603</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1604</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1605</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1606</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1607</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1608</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1609</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1610</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1611</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_1612</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2101</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2102</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2103</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2104</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2105</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2106</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2107</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2108</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2109</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2110</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2111</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2112</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2201</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2202</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2203</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2204</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2205</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2206</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2207</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2208</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2209</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2210</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2211</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2212</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2301</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2302</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2303</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2304</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2305</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2306</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2307</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2308</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2309</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2310</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2311</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2312</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2401</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2402</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2403</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2404</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2405</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2406</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2407</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2408</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2409</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2410</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2411</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2412</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2501</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2502</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2503</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2504</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2505</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2506</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2507</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2508</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2509</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2510</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2511</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2512</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2601</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2602</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2603</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2604</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2605</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2606</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2607</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2608</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2609</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2610</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2611</Tile>\n"
+                   "\t\t\t\t\t<Tile>1_2612</Tile>\n"
+                   "\t\t\t\t</Tiles>\n"
+                   "\t\t\t</TileSet>\n"
+                   "\t\t</FlowcellLayout>\n"
+                   "\t\t<ImageDimensions Width=\"8208\" Height=\"5541\"/>\n"
+                   "\t\t<ImageChannels>\n"
+                   "\t\t\t<Name>green</Name>\n"
+                   "\t\t\t<Name>blue</Name>\n"
+                   "\t\t</ImageChannels>\n"
+                   "\t</Run>\n"
+                   "</RunInfo>\n";
+        }
+
+        /** Generate a standard runinfo with an arbitrary read structure
+         *
+         * @param expected_run_info destination run info
+         * @param reads arbitrary read structure
+         */
+        static void
+        create_expected(model::run::info &expected_run_info, const std::vector<model::run::read_info> &reads) {
+            const size_t lane_count = 1;
+            const size_t surface_count = 2;
+            const size_t swath_count = 6;
+            const size_t tile_count = 12;
+            std::vector<std::string> tiles;
+            for(size_t lane=1;lane<=lane_count;++lane)
+            {
+                const std::string lane_str = util::lexical_cast<std::string>(lane);
+                for(size_t surface=1;surface<=surface_count;++surface)
+                {
+                    for(size_t swath=1;swath<=swath_count;++swath)
+                    {
+                        for(size_t tile=1;tile<=tile_count;++tile)
+                        {
+                            const std::string tile_str = util::lexical_cast<std::string>(surface*1000+swath*100+tile);
+                            tiles.push_back(lane_str+"_"+tile_str);
+                        }
+                    }
+                }
+            }
+            const std::string channels[] = {"green", "blue"};
+            expected_run_info = model::run::info("200308_VH00113_9_AAAAW3GM5" /* run id */,
+                                                 "22020-03-08T01:06:02Z" /* date */ ,
+                                                 "VH00113" /* instrument name*/,
+                                                 3 /* run number */,
+                                                 6 /** RunInfo version */,
+                                                 model::run::flowcell_layout(lane_count,
+                                                                             surface_count,
+                                                                             swath_count,
+                                                                             tile_count,
+                                                                             1 /* sections per lane */,
+                                                                             1 /* lanes per section*/,
+                                                                             tiles /* Tiles */,
+                                                                             constants::FourDigit,
+                                                                             "AAAAW3GM5" /* flowcell id */),
+                                                 util::to_vector(channels) /*Image channels */,
+                                                 model::run::image_dimensions(/*Width*/ 8208, /*Height*/ 5541),
+                                                 reads);
+        }
+
+        /** Generate expected run info relating to file representation
+         *
+         * @param expected_run_info destination run info
+         */
+        static void create_expected(model::run::info &expected_run_info) {
+            const model::run::read_info reads[] = {
+                    /*Number,    IsIndexedRead, CycleStart, CycleEnd*/
+                    model::run::read_info(1, 1, 151, false),
+                    model::run::read_info(2, 152, 302, false)
             };
             create_expected(expected_run_info, util::to_vector(reads));
         }

@@ -55,8 +55,8 @@ TEST(channel_test, expected2actual_4channel_valid)
 
     EXPECT_EQ((size_t) map.size(), (size_t) 4);
     EXPECT_EQ(map[0], (size_t) 3);
-    EXPECT_EQ(map[1], (size_t )0);
-    EXPECT_EQ(map[2], (size_t )1);
+    EXPECT_EQ(map[1], static_cast<size_t>(0));
+    EXPECT_EQ(map[2], static_cast<size_t>(1));
     EXPECT_EQ(map[3], (size_t )2);
 }
 
@@ -70,8 +70,8 @@ TEST(channel_test, expected2actual_2channel_valid)
     logic::utils::expected2actual(channels, map);
 
     EXPECT_EQ((size_t) map.size(), (size_t) 2);
-    EXPECT_EQ(map[0], (size_t )0);
-    EXPECT_EQ(map[1], (size_t )1);
+    EXPECT_EQ(map[0], static_cast<size_t>(0));
+    EXPECT_EQ(map[1], static_cast<size_t>(1));
 }
 
 //Test 4 - check full normalization of all letters in channel name
@@ -85,8 +85,8 @@ TEST(channel_test, expected2actual_valid_4)
     logic::utils::expected2actual(channels, map);
 
     EXPECT_EQ((size_t) map.size(), (size_t) 2);
-    EXPECT_EQ(map[0], (size_t )0);
-    EXPECT_EQ(map[1], (size_t )1);
+    EXPECT_EQ(map[0], static_cast<size_t>(0));
+    EXPECT_EQ(map[1], static_cast<size_t>(1));
 }
 
 //INVALID - bogus channel names
@@ -211,7 +211,7 @@ TEST(channel_test, actual2expected_4channel_valid)
     EXPECT_EQ(map[0], (size_t) 1);
     EXPECT_EQ(map[1], (size_t )2);
     EXPECT_EQ(map[2], (size_t )3);
-    EXPECT_EQ(map[3], (size_t )0);
+    EXPECT_EQ(map[3], static_cast<size_t>(0));
 }
 
 //Standard test, 2 channel system in different order
@@ -224,8 +224,8 @@ TEST(channel_test, actual2expected_2channel_valid)
     logic::utils::actual2expected(channels, map);
 
     EXPECT_EQ((size_t) map.size(), (size_t) 2);
-    EXPECT_EQ(map[0], (size_t )0);
-    EXPECT_EQ(map[1], (size_t )1);
+    EXPECT_EQ(map[0], static_cast<size_t>(0));
+    EXPECT_EQ(map[1], static_cast<size_t>(1));
 }
 
 //Test 4 - check full normalization of all letters in channel name
@@ -238,8 +238,21 @@ TEST(channel_test, actual2expected_valid_4)
     logic::utils::actual2expected(channels, map);
 
     EXPECT_EQ((size_t) map.size(), (size_t) 2);
-    EXPECT_EQ(map[0], (size_t )0);
-    EXPECT_EQ(map[1], (size_t )1);
+    EXPECT_EQ(map[0], static_cast<size_t>(0));
+    EXPECT_EQ(map[1], static_cast<size_t>(1));
+}
+
+TEST(channel_test, actual2expected_ns2k)
+{
+    const std::string channel_array[] = {"green", "blue"};
+    const std::vector<std::string> channels(to_vector(channel_array));
+    std::vector<size_t> map;
+
+    logic::utils::actual2expected(channels, map);
+
+    EXPECT_EQ((size_t) map.size(), (size_t) 2);
+    EXPECT_EQ(map[0], static_cast<size_t>(1));
+    EXPECT_EQ(map[1], static_cast<size_t>(0));
 }
 
 //INVALID - bogus channel names

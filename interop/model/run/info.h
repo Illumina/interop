@@ -241,7 +241,7 @@ namespace illumina { namespace interop { namespace model { namespace run
          */
         bool is_indexed() const
         {
-            for (read_vector_t::const_iterator b = m_reads.begin(), e = m_reads.end(); b != e; ++b)
+            for (read_vector_t::const_iterator b = m_reads.begin(); b != m_reads.end(); ++b)
                 if (b->is_index()) return true;
             return false;
         }
@@ -377,13 +377,17 @@ namespace illumina { namespace interop { namespace model { namespace run
          *
          * @param filename xml file
          */
-        void write(const std::string &filename)const INTEROP_THROW_SPEC((xml::xml_file_not_found_exception,xml::bad_xml_format_exception));
+        void write(const std::string &filename)const INTEROP_THROW_SPEC((xml::xml_file_not_found_exception,
+                                                                         xml::bad_xml_format_exception));
 
         /** String containing xml data
          *
          * @param out output stream
          */
         void write(std::ostream& out)const INTEROP_THROW_SPEC((xml::bad_xml_format_exception));
+
+    private:
+        bool is_bool_attribute_valid(const char c) const;
 
     private:
         std::string m_name;

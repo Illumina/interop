@@ -33,8 +33,10 @@ namespace illumina { namespace interop { namespace model { namespace run
         read_info(const number_t number = 0,
                   const cycle_t first_cycle = 0,
                   const cycle_t last_cycle = 0,
-                  const bool is_index = false) : cycle_range(first_cycle, last_cycle), m_number(number),
-                                                 m_is_index(is_index)
+                  const bool is_index = false,
+                  const bool is_reverse_complement = false) : cycle_range(first_cycle, last_cycle), m_number(number),
+                                                              m_is_index(is_index),
+                                                              m_is_reverse_complement(is_reverse_complement)
         {
         }
 
@@ -65,6 +67,14 @@ namespace illumina { namespace interop { namespace model { namespace run
             return m_is_index;
         }
 
+        /** Check if read is reverse complement
+         *
+         * @return true if read is reverse complement
+         */
+        bool is_reverse_complement() const
+        {
+            return m_is_reverse_complement;
+        }
         /** Get the total number of cycles in the read
          *
          * @return total number of cycles in read
@@ -89,6 +99,7 @@ namespace illumina { namespace interop { namespace model { namespace run
     private:
         size_t m_number;
         bool m_is_index;
+        bool m_is_reverse_complement;
 
         friend class info;
 
