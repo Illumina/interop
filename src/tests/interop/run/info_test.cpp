@@ -49,10 +49,28 @@ struct write_read_fixture
     write_read_fixture()
     {
         T::create_expected(expected_run_info);
+
         std::ostringstream fout;
-        expected_run_info.write(fout);
+        try {
+            expected_run_info.write(fout);
+        }
+        catch(const std::exception& ex)
+        {
+            std::cerr << "Exception in write: " << ex.what() << std::endl;
+            throw ex;
+        }
         std::string tmp = fout.str();
-        run_info.parse(&tmp[0]);
+        try {
+            run_info.parse(&tmp[0]);
+        }
+        catch(const std::exception& ex)
+        {
+            std::cerr << "--" << std::endl;
+            std::cerr << "Exception in parse: " << ex.what() << std::endl;
+            std::cerr << "XML\n" << tmp << std::endl;
+            std::cerr << "--" << std::endl;
+            throw ex;
+        }
     }
     run::info expected_run_info;
     run::info run_info;
@@ -65,6 +83,7 @@ typedef ::testing::Types<
         read_fixture<hiseq2500_run_info>,
         read_fixture<novaseq_run_info>,
         read_fixture<nextseq1k2k_run_info>,
+        read_fixture<nextseq1k2k_run_info_large>,
 
 
         write_read_fixture<miseq_run_info>,
@@ -73,7 +92,8 @@ typedef ::testing::Types<
         write_read_fixture<nextseq_550_run_info>,
         write_read_fixture<hiseq2500_run_info>,
         write_read_fixture<novaseq_run_info>,
-        write_read_fixture<nextseq1k2k_run_info>
+        write_read_fixture<nextseq1k2k_run_info>,
+        write_read_fixture<nextseq1k2k_run_info_large>
 > run_info_list;
 TYPED_TEST_CASE(run_info_fixture, run_info_list);
 
@@ -104,6 +124,7 @@ TYPED_TEST(run_info_fixture, run_info_test)
     {
         EXPECT_EQ(TestFixture::run_info.reads()[i].number(), TestFixture::expected_run_info.reads()[i].number());
         EXPECT_EQ(TestFixture::run_info.reads()[i].is_index(), TestFixture::expected_run_info.reads()[i].is_index());
+        EXPECT_EQ(TestFixture::run_info.reads()[i].is_reverse_complement(), TestFixture::expected_run_info.reads()[i].is_reverse_complement());
         EXPECT_EQ(TestFixture::run_info.reads()[i].first_cycle(), TestFixture::expected_run_info.reads()[i].first_cycle());
         EXPECT_EQ(TestFixture::run_info.reads()[i].last_cycle(), TestFixture::expected_run_info.reads()[i].last_cycle());
     }

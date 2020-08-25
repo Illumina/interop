@@ -1,6 +1,16 @@
 # Changes                                               {#changes}
 
 
+## v1.1.12
+
+Date       | Description
+---------- | -----------
+2020-08-25 | Issue-228: Update RunInfo.xml support for NextSeq2k
+2020-08-25 | Issue-228: Add blue/green channel name support
+2020-08-25 | Issue-228: Add reverse complement support
+2020-08-25 | Issue-228: Fix memory corruption in RunInfo.xml parsing
+
+
 ## v1.1.11
 
 Date       | Description

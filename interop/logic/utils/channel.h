@@ -17,27 +17,13 @@
 #include <vector>
 #include <iterator>
 #include "interop/util/assert.h"
+#include "interop/util/string.h"
 #include "interop/util/exception.h"
 #include "interop/constants/enums.h"
 #include "interop/model/model_exceptions.h"
 
 namespace illumina { namespace interop { namespace logic { namespace utils
 {
-    namespace detail
-    {
-        /** Convert character to lower case
-         *
-         * @note workarond for MSVC  warning C4244: '=': conversion from 'int' to 'char', possible loss of data
-         *
-         * @param ch character
-         * @return lowercase character
-         */
-        inline char tolower(const char ch)
-        {
-            return static_cast<char>(::tolower(ch));
-        }
-    }
-
     /** Normalize a channel name by making it lower case
      *
      * @param channel channel name
@@ -45,9 +31,7 @@ namespace illumina { namespace interop { namespace logic { namespace utils
      */
     inline std::string normalize(const std::string &channel)
     {
-        std::string channel_normalized=channel;
-        std::transform(channel.begin(), channel.end(), channel_normalized.begin(), detail::tolower);
-        return channel_normalized;
+        return util::to_lower(channel);
     }
     /** Normalize a collection of channel names
      *
@@ -114,7 +98,14 @@ namespace illumina { namespace interop { namespace logic { namespace utils
             std::swap(expected[0], expected[1]);
             return expected;
         }
-        if(norm == "1,2") return expected;
+        if(norm == "1,2")
+        {
+            return expected;
+        }
+        if(norm == "blue,green")
+        {
+            return expected;
+        }
         INTEROP_THROW( model::invalid_channel_exception, "Invalid channel names: " << norm);
     }
 

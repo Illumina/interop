@@ -12,6 +12,7 @@
 #include <interop/external/rapidxml.hpp>
 #include <interop/external/rapidxml_utils.hpp>
 #include <interop/external/rapidxml_print.hpp>
+#include <list>
 #include "interop/util/assert.h"
 #include "interop/util/xml_exceptions.h"
 #include "interop/util/exception.h"
@@ -32,7 +33,6 @@ namespace illumina { namespace interop { namespace xml
         xml_document()
         {
             rapidxml::xml_node<>* decl = m_doc.allocate_node(rapidxml::node_declaration);
-            m_backing.reserve(50);
             decl->append_attribute(m_doc.allocate_attribute("version", "1.0"));
             m_doc.append_node(decl);
         }
@@ -99,7 +99,7 @@ namespace illumina { namespace interop { namespace xml
 
     private:
         rapidxml::xml_document<> m_doc;
-        std::vector<std::string> m_backing;
+        std::list<std::string> m_backing;
     };
     /** Check if the xml node matches the target, and, if so, set the value
      *

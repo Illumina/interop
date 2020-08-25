@@ -87,6 +87,9 @@ namespace illumina { namespace interop { namespace model { namespace run
             doc.add_attribute(read, "Number", rit->number());
             doc.add_attribute(read, "NumCycles", rit->total_cycles());
             doc.add_attribute(read, "IsIndexedRead", rit->is_index()?"Y":"N");
+            if (m_version == 6) {
+                doc.add_attribute(read, "IsReverseComplement", rit->m_is_reverse_complement?"Y":"N");
+            }
         }
         rapidxml::xml_node<>* flowcell = doc.add_node(run, "FlowcellLayout");
         doc.add_attribute(flowcell, "LaneCount", m_flowcell.lane_count());
@@ -231,8 +234,6 @@ namespace illumina { namespace interop { namespace model { namespace run
             }
             else if (set_data(p_node, "ImageChannels", "Name", m_channels))
             {
-                for (size_t i = 0; i < m_channels.size(); ++i)
-                    m_channels[i] = logic::utils::normalize(m_channels[i]);// TODO: remove this
                 continue;
             }
             else if (p_node->name() == std::string("ImageDimensions"))
@@ -253,6 +254,7 @@ namespace illumina { namespace interop { namespace model { namespace run
                     read_info rinfo;
                     size_t cycle_count = 0;
                     char is_indexed;
+                    char reverse_complement;
                     for (xml_attr_ptr attr = p_read->first_attribute();
                          attr; attr = attr->next_attribute())
                     {
@@ -262,8 +264,17 @@ namespace illumina { namespace interop { namespace model { namespace run
                             rinfo.m_last_cycle = first_cycle + cycle_count;
                             rinfo.m_first_cycle = first_cycle + 1;
                         }
-                        if (set_data(attr, "IsIndexedRead", is_indexed))
+                        if (set_data(attr, "IsIndexedRead", is_indexed)) {
+                            if (!is_bool_attribute_valid(is_indexed))
+                                INTEROP_THROW(xml::bad_xml_format_exception, "IsIndexedRead attribute of Reads tag must be Y or N");
                             rinfo.m_is_index = std::toupper(is_indexed) == 'Y';
+
+                        }
+                        if (set_data(attr, "IsReverseComplement", reverse_complement)) {
+                            if (!is_bool_attribute_valid(reverse_complement))
+                                INTEROP_THROW(xml::bad_xml_format_exception, "IsReverseComplement attribute of Reads tag must be Y or N");
+                            rinfo.m_is_reverse_complement = std::toupper(reverse_complement) == 'Y';
+                        }
                     }
                     first_cycle += cycle_count;
                     m_reads.push_back(rinfo);
@@ -320,6 +331,11 @@ namespace illumina { namespace interop { namespace model { namespace run
         INTEROP_RANGE_CHECK_GT(read, m_reads.size(), invalid_run_info_exception,
                                "Read number exceeds number of reads in RunInfo.xml for record "
                                        << lane << "_" << tile << " @ " << read << " in file " << metric_name);
+        for (size_t r = 0; r < m_reads.size(); r++) {
+            if (m_reads[r].is_reverse_complement() && !m_reads[r].is_index()) {
+                INTEROP_THROW(model::invalid_run_info_exception, "Non-index read cannot be reverse complement");
+            }
+        }
     }
     /** Test if tile list matches flowcell layout
      *
@@ -330,7 +346,7 @@ namespace illumina { namespace interop { namespace model { namespace run
      * @throws invalid_run_info_exception
      */
     void info::validate_cycle(const ::uint32_t lane, const ::uint32_t tile, const size_t cycle, const std::string& metric_name)const
-    INTEROP_THROW_SPEC((model::invalid_run_info_exception,
+        INTEROP_THROW_SPEC((model::invalid_run_info_exception,
           model::invalid_run_info_cycle_exception))
     {
         validate(lane, tile, metric_name);
@@ -443,6 +459,10 @@ namespace illumina { namespace interop { namespace model { namespace run
                 INTEROP_THROW( invalid_tile_list_exception, ex.what());
             }
         }
+    }
+    bool info::is_bool_attribute_valid(const char c) const {
+        std::string valid_chars = "YN";
+        return (valid_chars.find(std::toupper(c)) != std::string::npos);
     }
 
 }}}}
