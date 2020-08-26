@@ -1,5 +1,13 @@
 # Changes                                               {#changes}
- 
+
+## v1.1.15
+
+Date       | Description
+---------- | -----------
+2020-08-26 | Issue-229: Support % loading concentration
+2020-08-26 | Issue-229: Fix Python binding for read_metrics_from_buffer
+
+
 ## v1.1.14
 
 Date       | Description

@@ -22,6 +22,8 @@ namespace illumina { namespace interop { namespace constants
     typedef constant_type<metric_base_type, BaseReadType> base_read_t;
     /** Define base type for lane metrics */
     typedef constant_type<metric_base_type, BaseLaneType> base_lane_t;
+    /** Define base type for lane metrics */
+    typedef constant_type<metric_base_type, BaseRunType> base_run_t;
 
 }}}
 

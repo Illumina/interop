@@ -148,6 +148,7 @@ namespace illumina { namespace interop { namespace logic { namespace summary
     template<typename I, typename S>
     void summarize(I beg, I end, S &stat, const bool skip_median)
     {
+        stat.clear();
         if (beg == end) return;
         stat.mean(util::mean<float>(beg, end));
         stat.stddev(std::sqrt(util::variance_with_mean<float>(beg, end, stat.mean())));
@@ -194,6 +195,31 @@ namespace illumina { namespace interop { namespace logic { namespace summary
         stat.stddev(std::sqrt(util::variance_with_mean<float>(beg, end, stat.mean(), op)));
         if(!skip_median) stat.median(util::median_interpolated<float>(beg, end, comp, op));
         return size_t(std::distance(beg, end));
+    }
+
+    /** Calculate the sum over a collection of values, ignoring NaNs
+     *
+     * @param beg iterator to start of collection
+     * @param end iterator to end of collection
+     * @param init initial value for accumulate call
+     * @param op unary/binary operator for getting a value in a complex object
+     * @return sum of init + applying op to the range [beg, end)
+     */
+    template<typename I, typename S, typename Op>
+    S nan_accumulate(I beg, I end, const S init, Op op)
+    {
+        S return_value = init;
+        if (beg == end) return init;
+        const float temp_value = 0;
+        for (; beg != end; ++beg)
+        {
+            const float current_value = op(temp_value, *beg);
+            if(!std::isnan(current_value))
+            {
+                return_value += static_cast<S>(current_value);
+            }
+        }
+        return return_value;
     }
 
     /** Safe divide

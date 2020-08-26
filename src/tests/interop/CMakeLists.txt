@@ -20,6 +20,7 @@ set(SRCS
         metrics/tile_metrics_test.cpp
         metrics/q_by_lane_metric_test.cpp
         metrics/q_collapsed_metrics_test.cpp
+        metrics/summary_run_metrics_test.cpp
         metrics/base_metric_tests.cpp
         metrics/run_metric_test.cpp
         metrics/metric_streams_test.cpp
@@ -56,6 +57,7 @@ set(HEADERS
         metrics/inc/tile_metrics_test.h
         metrics/inc/q_collapsed_metrics_test.h
         metrics/inc/extended_tile_metrics_test.h
+        metrics/inc/summary_run_metrics_test.h
         inc/failure_listener.h
         inc/persistent_parameter_generator.h
         inc/generic_fixture.h

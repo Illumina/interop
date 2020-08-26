@@ -14,6 +14,7 @@
 #include "interop/logic/metric/q_metric.h"
 #include "interop/logic/summary/phasing_summary.h"
 #include "interop/logic/metric/dynamic_phasing_metric.h"
+#include "interop/model/metrics/summary_run_metric.h"
 
 
 namespace illumina { namespace interop { namespace logic { namespace summary
@@ -98,6 +99,13 @@ namespace illumina { namespace interop { namespace logic { namespace summary
             return lhs.lane() < rhs.lane();
         }
     }
+
+    void set_run_summary_metric(const model::metrics::summary_run_metric &summary_run, model::summary::metric_summary& summary)
+    {
+        summary.percent_occupied(static_cast<float>(summary_run.percent_occupied()));
+        summary.percent_occupancy_proxy(static_cast<float>(summary_run.percent_occupancy_proxy()));
+    }
+
 
     /** Summarize a collection run metrics
      *
@@ -198,6 +206,16 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                                   naming_method,
                                   skip_median);
 
+        if(!metrics.get<summary_run_metric>().empty())
+        {
+            const summary_run_metric &summary_run = metrics.get<summary_run_metric>().at(0);
+            set_run_summary_metric(summary_run, summary.nonindex_summary());
+            set_run_summary_metric(summary_run, summary.total_summary());
+            for (size_t read = 0; read < summary.size(); ++read)
+            {
+                set_run_summary_metric(summary_run, summary[read].summary());
+            }
+        }
         if(trim)
         {
             // Remove the empty lane summary entries

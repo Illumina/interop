@@ -288,7 +288,6 @@ namespace illumina { namespace interop { namespace io
                 else
                 {
                     const size_t offset = metric_offset_map[metric.id()];
-                    INTEROP_ASSERTMSG(metric_set[offset].lane() != 0, offset);
                     count += Layout::map_stream(in, metric_set[offset], metric_set, false);
                     INTEROP_ASSERT(metric_set[offset].id()>0);
                 }

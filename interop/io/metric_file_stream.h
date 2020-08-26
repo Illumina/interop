@@ -41,14 +41,14 @@ namespace illumina { namespace interop { namespace io
      * @return number of bytes written
      */
     template<class MetricSet>
-    size_t write_interop_to_buffer(const MetricSet& metrics, ::uint8_t* buffer, size_t buffer_size)
+    size_t write_interop_to_buffer(const MetricSet& metrics, ::uint8_t* buffer, const size_t buffer_size)
                         INTEROP_THROW_SPEC((io::invalid_argument, io::bad_format_exception, io::incomplete_file_exception, io::format_exception))
     {
         std::ostringstream fout;
         write_metrics(fout, metrics, metrics.version());
         std::string str = fout.str();
         if(buffer_size < str.length())
-            INTEROP_THROW(invalid_argument, "Buffer size too small");
+            INTEROP_THROW(invalid_argument, "Buffer size too small: " << buffer_size << " < " << str.length());
         size_t i=0;
         for(;i<str.length();++i)
             buffer[i] = static_cast< ::uint8_t >(str[i]);
@@ -63,7 +63,7 @@ namespace illumina { namespace interop { namespace io
      * @throw incomplete_file_exception
      */
     template<class MetricSet>
-    void read_interop_from_buffer(::uint8_t* buffer, size_t buffer_size, MetricSet& metrics)  INTEROP_THROW_SPEC(
+    void read_interop_from_buffer(::uint8_t* buffer, const size_t buffer_size, MetricSet& metrics)  INTEROP_THROW_SPEC(
                                                                             (interop::io::file_not_found_exception,
                                                                             interop::io::bad_format_exception,
                                                                             interop::io::incomplete_file_exception,

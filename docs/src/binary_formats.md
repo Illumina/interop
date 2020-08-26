@@ -44,6 +44,7 @@ The documentation for the model notes when an attribute is only populated by a s
  - @subpage q_collapsed_v4 "Collapsed Q-Metrics Version 4"
  - @subpage q_collapsed_v5 "Collapsed Q-Metrics Version 5"
  - @subpage q_collapsed_v6 "Collapsed Q-Metrics Version 6"
+ - @subpage summary_run_v1 "Summary Run Version 1"
  
  The following are binary formats used only for testing purposes and are not officially supported:
  

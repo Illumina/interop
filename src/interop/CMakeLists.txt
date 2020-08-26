@@ -12,6 +12,7 @@ set(SRCS
         model/metrics/q_metric.cpp
         model/metrics/index_metric.cpp
         model/metrics/q_collapsed_metric.cpp
+        model/metrics/summary_run_metric.cpp
         model/summary/run_summary.cpp
         logic/plot/plot_by_cycle.cpp
         logic/plot/plot_by_lane.cpp
@@ -35,7 +36,8 @@ set(SRCS
         logic/plot/plot_metric_list.cpp
         logic/metric/index_metric.cpp
         model/metrics/extended_tile_metric.cpp
-        logic/metric/extended_tile_metric.cpp)
+        logic/metric/extended_tile_metric.cpp
+        )
 
 set(HEADERS
         ../../interop/io/paths.h
@@ -59,6 +61,7 @@ set(HEADERS
         ../../interop/model/run/read_info.h
         ../../interop/model/metrics/tile_metric.h
         ../../interop/model/metrics/corrected_intensity_metric.h
+        ../../interop/model/metrics/summary_run_metric.h
         ../../interop/io/layout/base_metric.h
         ../../interop/model/metric_base/metric_set.h
         ../../interop/model/metric_base/base_metric.h

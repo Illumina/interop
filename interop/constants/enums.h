@@ -14,7 +14,7 @@
 #include "interop/util/cstdint.h"
 
 /** Sentinel for an unknown enum type */
-#define INTEROP_UNKNOWN 0x400
+#define INTEROP_UNKNOWN 0x800
 
 
 /** Enumeration of specific features that can belong to a metric
@@ -30,6 +30,7 @@
         INTEROP_TUPLE_ASSIGN(BaseFeature, 0x08), \
         INTEROP_TUPLE_ASSIGN(ChannelFeature, 0x10), \
         INTEROP_TUPLE_ASSIGN(LaneFeature, 0x20), \
+        INTEROP_TUPLE_ASSIGN(DiskFeature, 0x400), \
         INTEROP_TUPLE1(UnknownMetricFeature)
 //NOTE: if we add any more features above, we should update the unknown metric value below
 
@@ -74,18 +75,19 @@
  * @see illumina::interop::constants::metric_group
  */
 #define INTEROP_ENUM_METRIC_GROUPS \
-        INTEROP_TUPLE2(CorrectedInt, CycleFeature|BaseFeature), \
-        INTEROP_TUPLE2(Error, CycleFeature), \
-        INTEROP_TUPLE2(Extraction, CycleFeature|ChannelFeature), \
-        INTEROP_TUPLE2(Image, CycleFeature|ChannelFeature), \
-        INTEROP_TUPLE2(Index, ReadFeature), \
-        INTEROP_TUPLE2(Q, CycleFeature), \
-        INTEROP_TUPLE2(Tile, TileFeature), \
+        INTEROP_TUPLE2(CorrectedInt, CycleFeature|BaseFeature|DiskFeature), \
+        INTEROP_TUPLE2(Error, CycleFeature|DiskFeature), \
+        INTEROP_TUPLE2(Extraction, CycleFeature|ChannelFeature|DiskFeature), \
+        INTEROP_TUPLE2(Image, CycleFeature|ChannelFeature|DiskFeature), \
+        INTEROP_TUPLE2(Index, ReadFeature|DiskFeature), \
+        INTEROP_TUPLE2(Q, CycleFeature|DiskFeature), \
+        INTEROP_TUPLE2(Tile, TileFeature|DiskFeature), \
         INTEROP_TUPLE2(QByLane, LaneFeature), \
         INTEROP_TUPLE2(QCollapsed, CycleFeature), \
-        INTEROP_TUPLE2(EmpiricalPhasing, CycleFeature), \
+        INTEROP_TUPLE2(EmpiricalPhasing, CycleFeature|DiskFeature), \
         INTEROP_TUPLE2(DynamicPhasing, CycleFeature), \
-        INTEROP_TUPLE2(ExtendedTile, TileFeature), \
+        INTEROP_TUPLE2(ExtendedTile, TileFeature|DiskFeature), \
+        INTEROP_TUPLE2(SummaryRun, DiskFeature), \
         INTEROP_TUPLE1(MetricCount),\
         INTEROP_TUPLE1(UnknownMetricGroup)
 
@@ -187,6 +189,8 @@
         INTEROP_TUPLE1(BaseReadType),\
         /** Lane base types are written out once for each lane and cycle */\
         INTEROP_TUPLE1(BaseLaneType),\
+        /** Run base types are written out once per run */\
+        INTEROP_TUPLE1(BaseRunType), \
         INTEROP_TUPLE1(BaseMetricCount),\
         INTEROP_TUPLE1(UnknownBaseType)
 

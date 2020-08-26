@@ -26,7 +26,8 @@ namespace illumina { namespace interop { namespace model { namespace summary {
                 m_percent_gt_q30(std::numeric_limits<float>::quiet_NaN()),
                 m_yield_g(std::numeric_limits<float>::quiet_NaN()),
                 m_projected_yield_g(0),
-                m_percent_occupied(std::numeric_limits<float>::quiet_NaN())
+                m_percent_occupied(std::numeric_limits<float>::quiet_NaN()),
+                m_percent_occupancy_proxy(std::numeric_limits<float>::quiet_NaN())
 
         {}
     public:
@@ -103,6 +104,16 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         {
             return m_percent_occupied;
         }
+        /** Get the percent occupancy proxy
+         *
+         * Also known as % loading concentration
+         *
+         * @return percent occupancy proxy
+         */
+        float percent_occupancy_proxy()const
+        {
+            return m_percent_occupancy_proxy;
+        }
         /** @} */
         /** Set the first cycle intensity
          *
@@ -161,6 +172,16 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         {
             m_percent_occupied = val;
         }
+        /** Set the percent occupancy proxy
+         *
+         * Also known as % loading concentration
+         *
+         * @param val percent occupancy proxy
+         */
+        void percent_occupancy_proxy(const float val)
+        {
+            m_percent_occupancy_proxy = val;
+        }
 
         /** Resize the underlying data
          */
@@ -176,6 +197,7 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         float m_yield_g;
         float m_projected_yield_g;
         float m_percent_occupied;
+        float m_percent_occupancy_proxy;
         template<class MetricType, int Version>
         friend struct io::generic_layout;
     };

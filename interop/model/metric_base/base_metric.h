@@ -25,6 +25,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
 
     // Forward declaration
     class base_metric;
+    class empty_metric;
 
     /** Get attributes of the metric */
     template<class Metric>
@@ -58,7 +59,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
          *
          * @todo remove this method
          */
-        void update_max_cycle(const base_metric &)
+        void update_max_cycle(const empty_metric &)
         { }
     };
 
@@ -68,6 +69,58 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
      */
     class empty_metric
     {
+    public:
+        /** id_t type */
+        typedef ::uint32_t id_t;
+        /** Unsigned int
+         */
+        typedef ::uint32_t uint_t;
+        /** Define the base type */
+        typedef constants::base_run_t base_t;
+
+    public:
+        /** Set the base metric identifiers
+         *
+         * @param base layout base
+         */
+        template<class BaseMetric>
+        void set_base(const BaseMetric &/*base*/)
+        {
+        }
+        /** Set id
+         *
+         * @param lane lane number
+         * @param tile tile number
+         */
+        void set_base(const uint_t /*lane*/, const uint_t /*tile*/)
+        {
+        }
+        /** Get the metric name suffix
+         *
+         * @return empty string
+         */
+        static const char *suffix()
+        {
+            return "";
+        }
+
+        /** Comparison operator used to sort the entries in order of their IDs
+         *
+         * @param metric2 metric to compare with the current object
+         * @return true if this object's ID is less than metric2's ID
+         */
+        bool operator< (const empty_metric& /*metric2*/) const
+        {
+            return false;
+        }
+        /** Unique id created from both the lane and tile
+         *
+         * @return 1
+         */
+        static id_t create_id(const id_t, const id_t, const id_t= 0)// TODO: remove hack (const id_t=0)
+        {
+            return 1;// Cannot be zero
+        }
     };
 
     /** Base class for InterOp classes that contain tile specific metrics

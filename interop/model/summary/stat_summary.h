@@ -273,7 +273,6 @@ namespace illumina { namespace interop { namespace model { namespace summary
         }
         /** Get mean summarizing the percent occupied
          *
-         * @note IUO
          * @return statistics summarizing the percent occupied
          */
         const metric_stat_t &percent_occupied() const
@@ -470,7 +469,6 @@ namespace illumina { namespace interop { namespace model { namespace summary
         }
         /** Set mean summarizing the percent occupied
          *
-         * @note IUO
          * @param val statistics summarizing the percent occupied
          */
         void percent_occupied(const metric_stat_t& val)

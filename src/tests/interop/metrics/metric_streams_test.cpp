@@ -15,6 +15,7 @@
 #include "interop/io/metric_stream.h"
 #include "interop/io/metric_file_stream.h"
 #include "src/tests/interop/metrics/inc/metric_format_fixtures.h"
+#include "src/tests/interop/run/info_test.h"
 
 using namespace illumina::interop;
 using namespace illumina::interop::unittest;
