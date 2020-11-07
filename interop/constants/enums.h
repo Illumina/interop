@@ -169,6 +169,7 @@
         INTEROP_TUPLE1(MiniSeq), \
         INTEROP_TUPLE1(NovaSeq), \
         INTEROP_TUPLE1(iSeq), \
+        INTEROP_TUPLE1(NextSeq1k2k), \
         INTEROP_TUPLE1(InstrumentCount), \
         INTEROP_TUPLE1(UnknownInstrument)
 
