@@ -160,4 +160,5 @@ deploy:
       tags: true
       condition:
       - "$DEPLOY_DOCS == true"
+  - edge: true
 
