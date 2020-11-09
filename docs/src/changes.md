@@ -1,11 +1,17 @@
 # Changes                                               {#changes}
+ 
+## v1.1.14
+
+Date       | Description
+---------- | -----------
+2020-11-09 | Travis deployment broke with a warning. The fix broke it further
 
 
 ## v1.1.13
 
 Date       | Description
 ---------- | -----------
-2020-08-25 | Issue-322: Update RunParameters.xml parsing to support iSeq and NextSeq2k
+2020-11-06 | Issue-322: Update RunParameters.xml parsing to support iSeq and NextSeq2k
 
 
 ## v1.1.12
