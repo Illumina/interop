@@ -350,7 +350,7 @@ TEST(RunParameters, ParseXML_HiSeq)
  * @test Confirm NexSeq version of the XML format is properly
  *
  */
-TEST(RunParameters, ParseXML_NextSeq)
+TEST(RunParameters, ParseXML_NextSeq500)
 {
     std::string xml_file = "<?xml version=\"1.0\"?>\n"
             "<RunParameters xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n"
@@ -419,6 +419,161 @@ TEST(RunParameters, ParseXML_NextSeq)
     const run::parameters::instrument_type_t ApplicationName_and_SupportMultipleSurfacesInUI=constants::NextSeq;
     const run::parameters expected_param(Version,
                                    ApplicationName_and_SupportMultipleSurfacesInUI);
+
+    test_helper_run_parameter_parse_xml(expected_param, xml_file);
+}
+
+
+/**https://basespace.illumina.com/run/195891710/iSeq-100-Illumina-RNA-Prep-with-Enrichment-and-RVOPv2-SARS-CoV-2-Synthetic-RNA-Control-/details
+ * @class illumina::interop::model::run::parameters
+ * @test Confirm NexSeq version of the XML format is properly
+ *
+ */
+TEST(RunParameters, ParseXML_iSeq)
+{
+    std::string xml_file = "<?xml version=\"1.0\"?>\n"
+                           "<RunParameters xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n"
+                           "  <InstrumentId>FS10000106</InstrumentId>\n"
+                           "  <RunId>20200624_FS10000106_66_BPA73105-2609</RunId>\n"
+                           "  <RunCounter>66</RunCounter>\n"
+                           "  <ApplicationName>iSeq Control Software</ApplicationName>\n"
+                           "  <ApplicationVersion>1.4.0.500</ApplicationVersion>\n"
+                           "  <ClientVersion>1.4.0.1589</ClientVersion>\n"
+                           "  <FirmwareVersion>1.3.0</FirmwareVersion>\n"
+                           "  <Pdb1FirmwareVersion>1.3.0</Pdb1FirmwareVersion>\n"
+                           "  <Pdb2FirmwareVersion>1.3.0</Pdb2FirmwareVersion>\n"
+                           "  <SibFpgaVersion>0x1300000a</SibFpgaVersion>\n"
+                           "  <SibBoardRevision>PilotvA</SibBoardRevision>\n"
+                           "  <Pdb1BoardRevision>4</Pdb1BoardRevision>\n"
+                           "  <Pdb2BoardRevision>3</Pdb2BoardRevision>\n"
+                           "  <IdbBoardRevision>1</IdbBoardRevision>\n"
+                           "  <RtaVersion>2.12.5.0</RtaVersion>\n"
+                           "  <ExperimentName>RNAEnrichment_RVOPv2_iSeq_2</ExperimentName>\n"
+                           "  <RecipeRelativeFilePath>Protocol\\2Read2Index.xml</RecipeRelativeFilePath>\n"
+                           "  <RecipeFolder>C:\\ProgramData\\Illumina\\iSeq Control Software\\Recipe</RecipeFolder>\n"
+                           "  <RecipeName>2Read2Index</RecipeName>\n"
+                           "  <RecipeVersion>P2BL_6.1.4</RecipeVersion>\n"
+                           "  <LibraryPoolId>X</LibraryPoolId>\n"
+                           "  <LocalRunManagerRunId xsi:nil=\"true\" />\n"
+                           "  <UcsRunId>16F6A4F1C86D7C50</UcsRunId>\n"
+                           "  <ReadType>PairedEnd</ReadType>\n"
+                           "  <RtaSaveThumbnailImages>true</RtaSaveThumbnailImages>\n"
+                           "  <PlannedCycles>\n"
+                           "    <Read1>76</Read1>\n"
+                           "    <Index1>10</Index1>\n"
+                           "    <Index2>10</Index2>\n"
+                           "    <Read2>76</Read2>\n"
+                           "  </PlannedCycles>\n"
+                           "  <CompletedCycles>\n"
+                           "    <Read1>76</Read1>\n"
+                           "    <Index1>10</Index1>\n"
+                           "    <Index2>10</Index2>\n"
+                           "    <Read2>76</Read2>\n"
+                           "  </CompletedCycles>\n"
+                           "  <SequencingMetrics>\n"
+                           "    <Q30Read1>95.26854</Q30Read1>\n"
+                           "    <Q30Read2>93.96231</Q30Read2>\n"
+                           "    <ClusterPf>75.57266</ClusterPf>\n"
+                           "    <Occupancy>88.21739</Occupancy>\n"
+                           "    <ProjectedYield>0.9760842 G</ProjectedYield>\n"
+                           "  </SequencingMetrics>\n"
+                           "  <RunFolderPath>D:\\Illumina\\iSeq Runs\\20200624_FS10000106_66_BPA73105-2609</RunFolderPath>\n"
+                           "  <OutputFolder>D:\\SequencingRuns\\20200624_FS10000106_66_BPA73105-2609</OutputFolder>\n"
+                           "  <SampleSheetPath>\\\\ussd-prd-isi04\\Holodeck\\Runs\\SampleSheets\\iSeq_RNAEnr_RVOPv2_2.csv</SampleSheetPath>\n"
+                           "  <FlowcellEEPROMTag>\n"
+                           "    <SerialNumber>BPA73105-2609</SerialNumber>\n"
+                           "    <PartNumber>20009555</PartNumber>\n"
+                           "    <LotNumber>20411871</LotNumber>\n"
+                           "    <ExpirationDate>2020-11-05T00:00:00</ExpirationDate>\n"
+                           "  </FlowcellEEPROMTag>\n"
+                           "  <ReagentKitRFIDTag>\n"
+                           "    <SerialNumber>FY0027716-FC6</SerialNumber>\n"
+                           "    <PartNumber>20025914</PartNumber>\n"
+                           "    <LotNumber>20405542</LotNumber>\n"
+                           "    <ExpirationDate>2020-11-27T00:00:00</ExpirationDate>\n"
+                           "  </ReagentKitRFIDTag>\n"
+                           "  <RunStartDate>2020-06-24T18:29:14-07:00</RunStartDate>\n"
+                           "  <RunEndDate>2020-06-25T07:12:29-07:00</RunEndDate>\n"
+                           "  <BaseSpaceParameters>\n"
+                           "    <EnvironmentName>use1-prod</EnvironmentName>\n"
+                           "    <DomainName />\n"
+                           "    <BaseSpaceRunId>195891710</BaseSpaceRunId>\n"
+                           "    <Mode>UserAndIlluminaHealth</Mode>\n"
+                           "    <WorkgroupName>Personal</WorkgroupName>\n"
+                           "  </BaseSpaceParameters>\n"
+                           "</RunParameters>";
+
+
+    const run::parameters::uint_t Version = 0;
+    const run::parameters::instrument_type_t ApplicationName_and_SupportMultipleSurfacesInUI=constants::iSeq;
+    const run::parameters expected_param(Version,
+                                         ApplicationName_and_SupportMultipleSurfacesInUI);
+
+    test_helper_run_parameter_parse_xml(expected_param, xml_file);
+}
+
+/**6471489_213Bin1R0I
+ * @class illumina::interop::model::run::parameters
+ * @test Confirm NexSeq version of the XML format is properly
+ *
+ */
+TEST(RunParameters, ParseXML_NextSeq2k)
+{
+    std::string xml_file = "<?xml version=\"1.0\"?>\n"
+                           "<RunParameters xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\n"
+                           "  <SampleSheetFilePath>/usr/local/illumina/runs/setup/2020-06-02_00-50-45_VH00120/SampleSheetImport/SampleSheet.csv</SampleSheetFilePath>\n"
+                           "  <PlannedCycles>\n"
+                           "    <Read1>101</Read1>\n"
+                           "    <Index1>10</Index1>\n"
+                           "    <Index2>10</Index2>\n"
+                           "    <Read2>101</Read2>\n"
+                           "  </PlannedCycles>\n"
+                           "  <CompletedCycles>\n"
+                           "    <Read1>101</Read1>\n"
+                           "    <Index1>10</Index1>\n"
+                           "    <Index2>10</Index2>\n"
+                           "    <Read2>101</Read2>\n"
+                           "  </CompletedCycles>\n"
+                           "  <InstrumentSerialNumber>VH00120</InstrumentSerialNumber>\n"
+                           "  <ApplicationName>NextSeq 1000/2000 Control Software</ApplicationName>\n"
+                           "  <ApplicationVersion>1.1.0.27334</ApplicationVersion>\n"
+                           "  <FlowCellSerialNumber>AAACWM2M5</FlowCellSerialNumber>\n"
+                           "  <FlowCellPartNumber>20034693</FlowCellPartNumber>\n"
+                           "  <FlowCellLotNumber>20444017-D</FlowCellLotNumber>\n"
+                           "  <FlowCellExpirationDate>2020-10-12</FlowCellExpirationDate>\n"
+                           "  <CartridgeSerialNumber>EC0003549-EC05</CartridgeSerialNumber>\n"
+                           "  <CartridgePartNumber>20042419</CartridgePartNumber>\n"
+                           "  <CartridgeLotNumber>20452046</CartridgeLotNumber>\n"
+                           "  <CartridgeExpirationDate>2020-11-18</CartridgeExpirationDate>\n"
+                           "  <ExperimentName>NFE_CEX_Exome_v2</ExperimentName>\n"
+                           "  <RecipeName>MO-Seq_NoPrePurge</RecipeName>\n"
+                           "  <RecipeVersion>1.6</RecipeVersion>\n"
+                           "  <RtaVersion>3.6.14</RtaVersion>\n"
+                           "  <RunStartTime>2020-06-02T01:46:25.8840085Z</RunStartTime>\n"
+                           "  <RunEndTime>2020-06-03T00:58:01.1511824Z</RunEndTime>\n"
+                           "  <RunCounter>33</RunCounter>\n"
+                           "  <CimVersion>cim@1.1.3</CimVersion>\n"
+                           "  <ChmVersion>chm@1.1.3</ChmVersion>\n"
+                           "  <ImbVersion>imb@1.1.3</ImbVersion>\n"
+                           "  <CibFpgaVersion>0x3200000a</CibFpgaVersion>\n"
+                           "  <CopyServiceRunId>16E4948F3B43122F</CopyServiceRunId>\n"
+                           "  <CopyServiceVersion>2.0.8.695</CopyServiceVersion>\n"
+                           "  <BaseSpaceRunId>195525362</BaseSpaceRunId>\n"
+                           "  <PlannedRunId>srn.7efcd556e3fc4f5eb1ce1bc123834ec4</PlannedRunId>\n"
+                           "  <BsshMode>RunMonitoringAndStorage</BsshMode>\n"
+                           "  <SecondaryAnalysisPlatformVersion>3.5.8</SecondaryAnalysisPlatformVersion>\n"
+                           "  <SecondaryAnalysisWorkflow>Cloud_DragenEnrichment</SecondaryAnalysisWorkflow>\n"
+                           "  <RunSetupMode>CloudOrchestrated</RunSetupMode>\n"
+                           "  <SecondaryAnalysisMode>Cloud</SecondaryAnalysisMode>\n"
+                           "  <OutputFolder>/mnt/Vega/SequencingRuns/200602_VH00120_33_AAACWM2M5</OutputFolder>\n"
+                           "  <PurgeReagentCartridge>false</PurgeReagentCartridge>\n"
+                           "</RunParameters>";
+
+
+    const run::parameters::uint_t Version = 0;
+    const run::parameters::instrument_type_t ApplicationName_and_SupportMultipleSurfacesInUI=constants::NextSeq1k2k;
+    const run::parameters expected_param(Version,
+                                         ApplicationName_and_SupportMultipleSurfacesInUI);
 
     test_helper_run_parameter_parse_xml(expected_param, xml_file);
 }

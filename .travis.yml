@@ -18,7 +18,6 @@
 ## TODO: Create individual builds for each language
 
 language: cpp
-sudo: required
 
 env:
   global:
@@ -46,7 +45,6 @@ matrix:
     env: SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis ON Debug Disable"
   - os: linux
     compiler: gcc
-    sudo: required
     services:
       - docker
     env: DEPLOY_BUILD=true DEPLOY_DOCS=true DOCKER_IMAGE=ezralanglois/interop SCRIPT="docker run --rm -v $PWD:/io ezralanglois/interop sh /io/tools/package.sh /io /io/dist travis OFF Release None"
@@ -136,14 +134,13 @@ notifications:
 
 before_deploy:
   - export PATH=/opt/pyenv:/opt/pyenv/shims:$PATH
-  - if [ "$TRAVIS_OS_NAME != "osx ] ; then sudo env "PATH=$PATH" pyenv install 3.5.4 -s  || true; fi
-  - if [ "$TRAVIS_OS_NAME != "osx ] ; then sudo env "PATH=$PATH" pyenv global 3.5.4; fi
-  - if [ "$TRAVIS_OS_NAME != "osx ] ; then sudo env "PATH=$PATH" pip install twine; fi
+  - if [ "$TRAVIS_OS_NAME != "osx ] ; then env "PATH=$PATH" pyenv install 3.5.4 -s  || true; fi
+  - if [ "$TRAVIS_OS_NAME != "osx ] ; then env "PATH=$PATH" pyenv global 3.5.4; fi
+  - if [ "$TRAVIS_OS_NAME != "osx ] ; then env "PATH=$PATH" pip install twine; fi
   - if [ "$TRAVIS_TAG" != "" ] && [ "$DEPLOY_BUILD" == "true" ] ; then twine upload --skip-existing $PWD/dist/*.whl; fi
 
 deploy:
   - provider: releases
-    skip_cleanup: true
     api_key: $GITHUB_TOKEN
     file_glob: true
     file: $PWD/dist/*.*

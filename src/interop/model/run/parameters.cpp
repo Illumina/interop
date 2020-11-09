@@ -58,6 +58,7 @@ namespace illumina { namespace interop { namespace model { namespace run
         for (xml_node_ptr p_node = p_root->first_node(); p_node; p_node = p_node->next_sibling())
         {
             set_data(p_node, "Application", application_name);
+            set_data(p_node, "ApplicationName", application_name);
         }
 
         xml_node_ptr p_setup = p_root->first_node("Setup");
@@ -86,6 +87,11 @@ namespace illumina { namespace interop { namespace model { namespace run
             if (application_name.find(instrument_name) != std::string::npos)
             {
                 m_instrument_type = static_cast<constants::instrument_type>(i);
+                if(constants::NextSeq == m_instrument_type &&
+                application_name.find("nextseq 1000/2000") != std::string::npos)
+                {
+                    m_instrument_type = constants::NextSeq1k2k;
+                }
                 break;
             }
         }

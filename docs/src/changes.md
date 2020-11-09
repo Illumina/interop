@@ -1,6 +1,13 @@
 # Changes                                               {#changes}
 
 
+## v1.1.13
+
+Date       | Description
+---------- | -----------
+2020-08-25 | Issue-322: Update RunParameters.xml parsing to support iSeq and NextSeq2k
+
+
 ## v1.1.12
 
 Date       | Description
