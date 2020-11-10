@@ -141,6 +141,7 @@ before_deploy:
 
 deploy:
   - provider: releases
+    skip_cleanup: true
     api_key: $GITHUB_TOKEN
     file_glob: true
     file: $PWD/dist/*.*
@@ -151,7 +152,7 @@ deploy:
       condition:
         - "$DEPLOY_BUILD == true"
   - provider: pages
-    skip-cleanup: true
+    skip_cleanup: true
     github-token: $GITHUB_TOKEN
     local_dir: $PWD/dist/html
     on:
@@ -160,5 +161,4 @@ deploy:
       tags: true
       condition:
       - "$DEPLOY_DOCS == true"
-  - edge: true
 
