@@ -196,7 +196,27 @@ class CoreTests(unittest.TestCase):
             py_interop_comm.write_interop_to_buffer(run.extraction_metric_set(), buf)
             self.fail("invalid_argument should have been thrown")
         except py_interop_comm.invalid_argument as ex:
-            self.assertEqual(str(ex).split('\n')[0], "Buffer size too small")
+            self.assertEqual(str(ex).split('\n')[0], "Buffer size too small: 3 < 116")
+
+    def test_invalid_argument_run_metrics_read(self):
+        """
+        Test that exceptions can be caught and they have the expected message
+        """
+
+        tmp = numpy.asarray(
+            [2,38
+                ,7,0,90,4,1,0,-12,-56,15,64,-98,35,12,64,0,0,0,0,0,0,0,0,46,1,17,1,0,0,0,0,96,-41,-104,36,122,-86,-46,-120
+                ,7,0,-66,4,1,0,96,-43,14,64,-63,49,13,64,0,0,0,0,0,0,0,0,56,1,17,1,0,0,0,0,112,125,77,38,122,-86,-46,-120
+                ,7,0,66,8,1,0,74,-68,6,64,-118,-7,8,64,0,0,0,0,0,0,0,0,93,1,46,1,0,0,0,0,-47,-104,2,40,122,-86,-46,-120],
+            dtype=numpy.uint8)
+        run = py_interop_run_metrics.run_metrics()
+        run.read_metrics_from_buffer(py_interop_run.Extraction, tmp)
+        try:
+            buf = numpy.zeros(3, dtype=numpy.uint8)
+            py_interop_comm.write_interop_to_buffer(run.extraction_metric_set(), buf)
+            self.fail("invalid_argument should have been thrown")
+        except py_interop_comm.invalid_argument as ex:
+            self.assertEqual(str(ex).split('\n')[0], "Buffer size too small: 3 < 116")
 
     def test_invalid_filter_option(self):
         """
@@ -236,7 +256,7 @@ class CoreTests(unittest.TestCase):
             run_metrics.read_metrics("", 3, valid_to_load, 1)
             self.fail("invalid_parameter should have been thrown")
         except py_interop_run_metrics.invalid_parameter as ex:
-            self.assertEqual(str(ex).split('\n')[0], "Boolean array valid_to_load does not match expected number of metrics: 2 != 12")
+            self.assertEqual(str(ex).split('\n')[0], "Boolean array valid_to_load does not match expected number of metrics: 2 != 13")
 
     def test_invalid_metric_type(self):
         """
@@ -401,6 +421,14 @@ class CoreTests(unittest.TestCase):
         """
 
         self.assertEqual(py_interop_run.to_string_metric_group(py_interop_run.Error), "Error")
+
+    def test_summary_run_metric_set_method(self):
+        """
+        Test if the enum parsing is properly wrapped
+        """
+
+        run = py_interop_run_metrics.run_metrics()
+        summary_run_metric_set = run.summary_run_metric_set()
 
 
 if __name__ == '__main__':

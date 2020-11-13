@@ -140,6 +140,7 @@ METRICS_EXCEPTION_WRAPPER(WRAP_EXCEPTION)
     WRAPPER(index_metric)
     WRAPPER(q_collapsed_metric)
     WRAPPER(q_by_lane_metric)
+    WRAPPER(summary_run_metric)
 %enddef
 
 

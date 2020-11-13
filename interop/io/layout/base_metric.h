@@ -25,6 +25,53 @@ namespace illumina { namespace interop { namespace io { namespace layout
 {
 #pragma pack(1)
 
+    /** Empty class for InterOp records that contain run specific metrics
+     *
+     * These records contain both a lane and tile identifier.
+     *
+     * @note These classes are packed such that there is not padding. Their size reflects the accumulation of their
+     * member fields.
+     */
+    struct base_run_metric
+    {
+        /** Lane integral type */
+        typedef ::uint16_t lane_t;
+        /** Tile integral type */
+        typedef ::uint32_t tile_t;
+        /** Define a record size type */
+        typedef ::uint8_t record_size_t;
+        /** Define base type */
+        typedef constants::base_run_t base_t;
+
+        /** Constructor
+         */
+        base_run_metric() : m_dummy(0)
+        {
+        }
+
+        /** Set the lane and tile id from a base metric
+         *
+         * @param metric a base_metric from the model
+         */
+        template<class BaseMetric>
+        void set(const BaseMetric &/*metric*/)
+        {
+            m_dummy = 0;
+        }
+
+        /** Test if the layout contains valid data
+         *
+         * @return true if data is valid
+         */
+        bool is_valid() const
+        {
+            return true;
+        }
+
+    private:
+        lane_t m_dummy;
+    };
+
     /** Base class for InterOp records that contain tile specific metrics
      *
      * These records contain both a lane and tile identifier.

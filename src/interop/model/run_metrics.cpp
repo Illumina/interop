@@ -193,6 +193,10 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             if (!metrics.empty() && m_naming_method == constants::UnknownTileNamingMethod)
                 m_naming_method = logic::metric::tile_naming_method_from_metric(metrics);
         }
+        template<class MetricSet>
+        void determine(const MetricSet &, const constants::base_run_t *)
+        {
+        }
 
     private:
         constants::tile_naming_method m_naming_method;
@@ -229,7 +233,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     {
     public:
         read_metric_set_from_binary_buffer(const constants::metric_group group,
-                                           uint8_t* buffer,
+                                           ::uint8_t* buffer,
                                            const size_t buffer_size) :
                 m_group(group),
                 m_buffer(buffer),
@@ -747,7 +751,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
      * @param buffer_size size of binary buffer
      */
     void run_metrics::read_metrics_from_buffer(const constants::metric_group group,
-                                               uint8_t* buffer,
+                                               ::uint8_t* buffer,
                                                const size_t buffer_size) INTEROP_THROW_SPEC((
     io::file_not_found_exception,
     io::bad_format_exception,
@@ -763,7 +767,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
      * @param buffer_size size of binary buffer
      */
     void run_metrics::write_metrics_to_buffer(const constants::metric_group group,
-                                              uint8_t* buffer,
+                                              ::uint8_t* buffer,
                                               const size_t buffer_size)const INTEROP_THROW_SPEC((
     io::invalid_argument,
     io::bad_format_exception,

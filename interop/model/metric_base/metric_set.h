@@ -30,6 +30,8 @@
 namespace illumina { namespace interop { namespace model { namespace metric_base
 {
 
+    /** Compare metrics across type */
+    template<class Metric, class Type=typename Metric::base_t> struct metric_comparison;
     /** Metric set holds a collection metrics
      *
      * This class holds a map that maps a unique id to the metric.
@@ -69,6 +71,8 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
 #endif
 
     public:
+        /** Define a safe comparison for ids */
+        typedef metric_comparison<T> metric_comparison_t;
         /** Const metric iterator */
         typedef typename metric_array_t::const_iterator const_iterator;
         /** Metric iterator */
@@ -134,9 +138,9 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
             reserve(origin.size()+size());
             for(const_iterator it = origin.begin();it != origin.end();++it)
             {
-                if(it->lane() != tile_id.lane() || it->tile() != tile_id.tile())
-                    continue;
-                insert(*it);
+                if(metric_comparison_t::to_lane(tile_id) == to_lane(*it) &&
+                   metric_comparison_t::to_tile(tile_id) == to_tile(*it))
+                    insert(*it);
             }
         }
         /** Flag that indicates whether the data source exists
@@ -390,7 +394,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         {
             size_t lane_max = 0;
             for (const_iterator b = begin(); b != end(); ++b)
-                lane_max = std::max(lane_max, static_cast<size_t>(b->lane()));
+                lane_max = std::max(lane_max, static_cast<size_t>(to_lane(*b)));
             return lane_max;
         }
 
@@ -755,17 +759,17 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
     private:
         static id_t to_id(const metric_type &metric)
         {
-            return metric.id();
+            return metric_comparison_t::to_id(metric);
         }
 
         static uint_t to_lane(const metric_type &metric)
         {
-            return metric.lane();
+            return metric_comparison_t::to_lane(metric);
         }
 
         static uint_t to_tile(const metric_type &metric)
         {
-            return metric.tile();
+            return metric_comparison_t::to_tile(metric);
         }
 
         void cycles(id_set_t& cycles_set) const
@@ -829,7 +833,7 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
             { }
 
             bool operator()(const metric_type &metric) const
-            { return metric.lane() == m_lane; }
+            { return metric_comparison_t::to_lane(metric) == m_lane; }
 
             const uint_t m_lane;
         };
@@ -876,6 +880,57 @@ namespace illumina { namespace interop { namespace model { namespace metric_base
         // TODO: remove the following
         /** Map unique identifiers to the index of the metric */
         offset_map_t m_id_map;
+    };
+
+    template<class Metric, class Type>
+    struct metric_comparison
+    {
+        /** Define a ID type */
+        typedef typename Metric::id_t id_t;
+        /** Define a lane/tile/cycle id type  */
+        typedef typename Metric::uint_t uint_t;
+        template<class MetricT>
+        static id_t to_id(const MetricT &metric)
+        {
+            return metric.id();
+        }
+
+        template<class MetricT>
+        static uint_t to_lane(const MetricT &metric)
+        {
+            return metric.lane();
+        }
+
+        template<class MetricT>
+        static uint_t to_tile(const MetricT &metric)
+        {
+            return metric.tile();
+        }
+    };
+    template<class Metric>
+    struct metric_comparison<Metric, constants::base_run_t>
+    {
+        /** Define a ID type */
+        typedef typename Metric::id_t id_t;
+        /** Define a lane/tile/cycle id type  */
+        typedef typename Metric::uint_t uint_t;
+        template<class MetricT>
+        static id_t to_id(const MetricT &)
+        {
+            return 1;// Cannot be zero
+        }
+
+        template<class MetricT>
+        static uint_t to_lane(const MetricT &)
+        {
+            return 1;
+        }
+
+        template<class MetricT>
+        static uint_t to_tile(const MetricT &)
+        {
+            return 1;
+        }
     };
 
     /** Get metric set for a given metric set */

@@ -19,6 +19,7 @@
 #include "src/tests/interop/metrics/inc/q_metrics_test.h"
 #include "src/tests/interop/metrics/inc/tile_metrics_test.h"
 #include "src/tests/interop/metrics/inc/extended_tile_metrics_test.h"
+#include "src/tests/interop/metrics/inc/summary_run_metrics_test.h"
 
 namespace illumina{ namespace interop { namespace unittest
 {
@@ -57,7 +58,8 @@ namespace illumina{ namespace interop { namespace unittest
                     q_metric_v6_unbinned,
                     q_metric_v7,
                     tile_metric_v2,
-                    tile_metric_v3
+                    tile_metric_v3,
+                    summary_run_v1
             > PublicFormats;
 
 

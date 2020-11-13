@@ -63,6 +63,8 @@ private:
             m_run.get<MetricSet>().insert(metrics[i]);
         }
     }
+    template<class MetricSet>
+    void copy(const MetricSet&, const constants::base_run_t *)const{}
 
 private:
     run_metrics& m_run;

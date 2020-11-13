@@ -162,6 +162,7 @@ namespace illumina{ namespace interop { namespace unittest
         {
             typedef typename metric_set_t::metric_type metric_t;
             typedef typename metric_t::uint_t uint_t;
+            typedef typename metric_set_t::metric_comparison_t metric_comparison_t;
 
             std::string expected_data;
             {
@@ -181,10 +182,10 @@ namespace illumina{ namespace interop { namespace unittest
                 metric_t tmp = expected[0];
                 const size_t n = expected.size();
                 for(size_t i=0;i<n;++i)
-                    max_tile_id = std::max(expected[i].tile(), max_tile_id);
+                    max_tile_id = std::max(metric_comparison_t::to_tile(expected[i]), max_tile_id);
                 for(uint_t i=0;i<n;++i)
                 {
-                    tmp.set_base(tmp.lane(), max_tile_id+1+i);
+                    tmp.set_base(metric_comparison_t::to_lane(tmp), max_tile_id+1+i);
                     expected.insert(tmp);
                     expected_metric_set2.insert(tmp);
                 }

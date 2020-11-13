@@ -32,6 +32,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          }
 
          template<class MetricSet>
+         void populate_id(const MetricSet &, const constants::base_run_t *) const {}
+         template<class MetricSet>
          void populate_id(const MetricSet &, const constants::base_lane_t *) const {}
 
          run_metrics::tile_metric_map_t &m_map;

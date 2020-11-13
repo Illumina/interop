@@ -58,6 +58,7 @@ List of InterOp Metric Files
 | [QMetricsByLaneOut.bin]          | Per tile per cycle Q-score histogram per lane                                     |
 | [EmpiricalPhasingMetricsOut.bin] | Phasing weights per tile per cycle                                                |
 | [ExtendedTileMetricsOut.bin]     | Per tile occupancy metrics                                                        |
+| [SummaryRunMetricsOut.bin]       | Per run summary metrics                                                           |
 
 [CorrectedIntMetricsOut.bin]: @ref corrected_intensity "CorrectedIntMetricsOut.bin"
 [ErrorMetricsOut.bin]: @ref error_metric "ErrorMetricsOut.bin"
@@ -70,6 +71,7 @@ List of InterOp Metric Files
 [QMetricsByLaneOut.bin]: @ref q_metric_by_lane "QMetricsByLaneOut.bin"
 [EmpiricalPhasingMetricsOut.bin]: @ref phasing_metric "EmpiricalPhasingMetricOut.bin"
 [ExtendedTileMetricsOut.bin]: @ref extended_tile_metric "ExtendedTileMetricsOut.bin"
+[SummaryRunMetricsOut.bin]: @ref summary_run_metric "SummaryRunMetricsOut.bin"
 
 
 Known Limitations

@@ -99,6 +99,9 @@ TEST(run_metric_test, summary_subset_of_imaging)
     ASSERT_EQ(load_imaging.size(), load_summary.size());
     for(size_t i=0;i<load_summary.size();++i)
     {
+        // This metric is not avaiable in the imaging table
+        if( static_cast<constants::metric_group>(i) == static_cast<constants::metric_group>(model::metrics::summary_run_metric::TYPE))
+            continue;
         EXPECT_TRUE(load_summary[i] == 0 || load_summary[i] == load_imaging[i])
                             << constants::to_string(static_cast<constants::metric_group>(i));
     }
@@ -107,15 +110,18 @@ TEST(run_metric_test, summary_subset_of_imaging)
 TYPED_TEST_P(run_metric_test, append_tiles)
 {
     typedef typename TestFixture::metric_set_t metric_set_t;
+    typedef typename metric_set_t::base_t base_t;
+    typedef typename metric_set_t::metric_comparison_t metric_comparison_t;
+
+    if(base_t::value() == constants::BaseRunType) return;
     metric_set_t& metric_set = TestFixture::expected. template  get<metric_set_t>();
 
     const model::metric_base::base_metric tile_id;
-    //tile_id.
-    //= metric_set[0];
     size_t count_expected = 0;
     for(size_t i=0;i<metric_set.size();++i)
     {
-        if(tile_id.lane() == metric_set[i].lane() && tile_id.tile() == metric_set[i].tile())
+        if(metric_comparison_t::to_lane(tile_id) == metric_comparison_t::to_lane(metric_set[i]) &&
+                metric_comparison_t::to_tile(tile_id) == metric_comparison_t::to_tile(metric_set[i]))
             count_expected++;
     }
     model::metrics::run_metrics subset;

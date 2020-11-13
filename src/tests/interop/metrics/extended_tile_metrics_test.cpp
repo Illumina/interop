@@ -25,12 +25,10 @@ typedef metric_set< extended_tile_metric > extended_tile_metric_set;
 struct extended_tile_metrics_tests : public generic_test_fixture< extended_tile_metric_set > {};
 
 extended_tile_metrics_tests::generator_type extended_tile_unit_test_generators[] = {
-        // IUO
         wrap(new hardcoded_metric_generator< extended_tile_metric_v1 >),
         wrap(new write_read_metric_generator< extended_tile_metric_v1 >),
         wrap(new by_cycle_metric_generator< extended_tile_metric_v1 >),
         wrap(new clear_metric_generator< extended_tile_metric_v1 >),
-        // End IUO
         wrap(new hardcoded_metric_generator< extended_tile_metric_v2 >),
         wrap(new by_cycle_metric_generator< extended_tile_metric_v2 >),
         wrap(new write_read_metric_generator< extended_tile_metric_v2 >),

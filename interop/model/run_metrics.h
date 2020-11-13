@@ -29,6 +29,7 @@
 #include "interop/model/metrics/q_by_lane_metric.h"
 #include "interop/model/metrics/q_collapsed_metric.h"
 #include "interop/model/metrics/tile_metric.h"
+#include "interop/model/metrics/summary_run_metric.h"
 
 namespace illumina { namespace interop { namespace model { namespace metrics
 {
@@ -48,6 +49,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
      * @see tile_metrics
      * @see q_by_lane_metric
      * @see q_collapsed_metric
+     * @see summary_run_metric
      */
     class run_metrics
     {
@@ -65,7 +67,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                 q_metric,
                 q_by_lane_metric,
                 q_collapsed_metric,
-                tile_metric
+                tile_metric,
+                summary_run_metric
         >::result_t metric_type_list_t;
 
     private:
@@ -427,7 +430,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @param buffer_size size of binary buffer
          */
         void read_metrics_from_buffer(const constants::metric_group group,
-                                     uint8_t* buffer,
+                                     ::uint8_t* buffer,
                                      const size_t buffer_size) INTEROP_THROW_SPEC((
         io::file_not_found_exception,
         io::bad_format_exception,
@@ -440,7 +443,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @param buffer_size size of binary buffer
          */
         void write_metrics_to_buffer(const constants::metric_group group,
-                                     uint8_t* buffer,
+                                     ::uint8_t* buffer,
                                      const size_t buffer_size)const INTEROP_THROW_SPEC((
         io::invalid_argument,
         io::bad_format_exception,
