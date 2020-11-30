@@ -44,7 +44,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot {
             util::outliers_lower(beg, end, lower, std::back_inserter(outliers));
             util::outliers_upper(beg, end, upper, std::back_inserter(outliers));
         }
-        size_t count = static_cast<size_t>(std::distance(beg,end));
+        const size_t count = static_cast<size_t>(std::distance(beg,end));
 
         I upper_it = std::lower_bound(beg, end, upper);// Not less
         I lower_it = std::lower_bound(beg, end, lower-(eps*lower));
