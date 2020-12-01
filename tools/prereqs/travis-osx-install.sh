@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-sw_vers
+#sw_vers
 
 #brew update > /dev/null
 #brew list

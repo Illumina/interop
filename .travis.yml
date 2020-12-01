@@ -26,15 +26,19 @@ env:
 matrix:
   include:
   - os: osx
+    osx_image: xcode12.2
     compiler: clang
     env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release ALL"
   - os: osx
+    osx_image: xcode12.2
     compiler: clang
     env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release 3.6.10"
   - os: osx
+    osx_image: xcode12.2
     compiler: clang
     env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release 3.7.7"
   - os: osx
+    osx_image: xcode12.2
     compiler: clang
     env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release 3.8.2"
   - os: linux
@@ -49,6 +53,7 @@ matrix:
       - docker
     env: DEPLOY_BUILD=true DEPLOY_DOCS=true DOCKER_IMAGE=ezralanglois/interop SCRIPT="docker run --rm -v $PWD:/io ezralanglois/interop sh /io/tools/package.sh /io /io/dist travis OFF Release None"
   - os: osx
+    osx_image: xcode12.2
     compiler: clang
     env: SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Debug Disable"
   - os: linux
