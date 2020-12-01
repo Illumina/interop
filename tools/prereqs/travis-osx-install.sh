@@ -2,7 +2,7 @@
 
 sw_vers
 
-brew update > /dev/null
+#brew update > /dev/null
 #brew list
 which cmake || brew unlink cmake
 brew install cmake
