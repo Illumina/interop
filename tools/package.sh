@@ -169,7 +169,7 @@ if [ -z $PYTHON_VERSION ] && [  -e /opt/python ] ; then
     done
 fi
 
-if [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] ; then
+if [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PYTHON_VERSION" != "DotNetStandard" ] ; then
     if [ "$PYTHON_VERSION" == "ALL" ] ; then
         # python_versions="2.7.17 3.5.9 3.6.10 3.7.7 3.8.2"
         python_versions="2.7.17 3.5.9"
@@ -242,7 +242,7 @@ fi
 run "Package" cmake --build $BUILD_PATH --target bundle
 
 
-if [ "$PYTHON_VERSION" != "Disable" ] ; then
+if [ "$PYTHON_VERSION" == "DotNetStandard" ] ; then
   # Workaround for OSX
   export PATH=/usr/local/share/dotnet:${PATH}
   if hash dotnet 2> /dev/null; then
