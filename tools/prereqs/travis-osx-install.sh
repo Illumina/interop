@@ -24,19 +24,13 @@ brew cask list dotnet-sdk > /dev/null || brew cask install dotnet-sdk
 brew list readline > /dev/null || brew install readline
 brew list xz > /dev/null || brew install xz
 
-echo "OpenSSL: $(brew --prefix openssl)"
+curl -o miniconda.sh  https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
+bash miniconda.sh -b -p $HOME/miniconda
+source $HOME/miniconda/etc/profile.d/conda.sh
 
-CFLAGS="-I$(brew --prefix openssl)/include -I$(xcrun --show-sdk-path)/usr/include"
-LDFLAGS="-L$(brew --prefix openssl)/lib"
-pyenv install 2.7.12
-pyenv global 2.7.12
+echo "OpenSSL: $(brew --prefix openssl)"
 export PATH=$(pyenv root)/shims:${PATH}
 
 which conda
-
-pip install numpy
-pip install wheel
-pip install delocate
-
 dotnet --version
 

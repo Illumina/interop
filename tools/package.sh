@@ -182,9 +182,34 @@ if [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PYTH
       CFLAGS="-I$(brew --prefix openssl)/include -I$(xcrun --show-sdk-path)/usr/include"
       LDFLAGS="-L$(brew --prefix openssl)/lib"
     fi
+    if [ -e "$HOME/miniconda/etc/profile.d/conda.sh" ]; then
+      source $HOME/miniconda/etc/profile.d/conda.sh
+      conda config --set channel_priority strict
+      conda update --all
+    fi
     for py_ver in $python_versions; do
         echo "Building Python $py_ver - $CFLAGS"
-        if hash pyenv 2> /dev/null; then
+        if [ -e "/Users/bioinformatics/anaconda3" ]; then
+          python_version=${py_ver}
+          conda remove --name py${python_version} --all -y || echo "py${python_version} not found"
+          echo "Create Python ${python_version}"
+          conda create --no-default-packages -n py${python_version} python=${python_version} -y # || conda create --no-default-packages -n py${python_version} python=${python_version} -y -c conda-forge
+
+          echo "Activate Python ${python_version}"
+          conda activate py${python_version}
+          conda env list
+          python -V
+          which python
+          echo "Install deps"
+          if [[ "$OSTYPE" == "darwin"* ]]; then
+            python -m pip install delocate
+          else
+            python -m pip install auditwheel==1.5
+          fi
+          conda install numpy -y --name py${python_version}
+          conda install wheel -y --name py${python_version}
+
+        elif hash pyenv 2> /dev/null; then
             export PATH=$(pyenv root)/shims:${PATH}
             if [[ "$OSTYPE" == "linux-gnu" ]]; then
                 if hash patchelf 2> /dev/null; then
