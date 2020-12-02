@@ -85,6 +85,18 @@ if [ ! -z "$8" ] ; then
     MORE_FLAGS="$8"
 fi
 
+echo "-------------------------------"
+echo "package.sh Configuration"
+echo "Source path: ${SOURCE_PATH}"
+echo "Artifact path: ${ARTIFACT_PATH}"
+echo "Build server: ${BUILD_SERVER}"
+echo "C89 Support: ${INTEROP_C89}"
+echo "Build Type: ${BUILD_TYPE}"
+echo "Python Version: ${PYTHON_VERSION}"
+echo "Build Number: ${ARTFACT_BUILD_NUMBER}"
+echo "Additional Flags: ${MORE_FLAGS}"
+echo "-------------------------------"
+
 CMAKE_EXTRA_FLAGS="-DDISABLE_PACKAGE_SUBDIR=${DISABLE_SUBDIR} -DENABLE_PORTABLE=ON -DENABLE_BACKWARDS_COMPATIBILITY=$INTEROP_C89 -DCMAKE_BUILD_TYPE=$BUILD_TYPE $MORE_FLAGS"
 
 
@@ -234,7 +246,7 @@ if [ "$PYTHON_VERSION" != "Disable" ] ; then
   # Workaround for OSX
   export PATH=/usr/local/share/dotnet:${PATH}
   if hash dotnet 2> /dev/null; then
-      run "Configure DotNetStandard" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS} -DCSBUILD_TOOL=DotNetStandard
+      run "Configure DotNetStandard" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS} -DCSBUILD_TOOL=DotNetStandard -DENABLE_PYTHON=OFF
       run "Test DotNetStandard" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
       run "Package DotNetStandard" cmake --build $BUILD_PATH --target nupack -- -j${THREAD_COUNT}
   fi
