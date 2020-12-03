@@ -258,14 +258,12 @@ if [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PYTH
     done
 fi
 
-if [ ! -e $BUILD_PATH/CMakeCache.txt ] ; then
-fi
 
 if [ "$PYTHON_VERSION" == "Disable" ] ; then
     run "Configure" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS} -DENABLE_SWIG=OFF
     run "Build" cmake --build $BUILD_PATH -- -j${THREAD_COUNT}
     run "Test" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
-   run "Package" cmake --build $BUILD_PATH --target bundle
+    run "Package" cmake --build $BUILD_PATH --target bundle
 fi
 
 if [ "$PYTHON_VERSION" == "DotNetStandard" ] ; then
