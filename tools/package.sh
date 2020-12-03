@@ -185,7 +185,7 @@ if [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PYTH
     if [ -e "$HOME/miniconda/etc/profile.d/conda.sh" ]; then
       source $HOME/miniconda/etc/profile.d/conda.sh
       conda config --set channel_priority strict
-      conda update --all
+      #conda update --all
     fi
     for py_ver in $python_versions; do
         echo "Building Python $py_ver - $CFLAGS"
