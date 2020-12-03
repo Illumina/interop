@@ -259,15 +259,17 @@ if [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PYTH
 fi
 
 if [ ! -e $BUILD_PATH/CMakeCache.txt ] ; then
-    run "Configure" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS}
-    run "Build" cmake --build $BUILD_PATH -- -j${THREAD_COUNT}
-    run "Test" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
 fi
 
-run "Package" cmake --build $BUILD_PATH --target bundle
-
+if [ "$PYTHON_VERSION" == "Disable" ] ; then
+    run "Configure" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS} -DENABLE_SWIG=OFF
+    run "Build" cmake --build $BUILD_PATH -- -j${THREAD_COUNT}
+    run "Test" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
+   run "Package" cmake --build $BUILD_PATH --target bundle
+fi
 
 if [ "$PYTHON_VERSION" == "DotNetStandard" ] ; then
+
   # Workaround for OSX
   export PATH=/usr/local/share/dotnet:${PATH}
   if hash dotnet 2> /dev/null; then

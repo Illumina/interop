@@ -4,6 +4,7 @@
 
 #brew update > /dev/null
 #brew list
+set +x
 brew list cmake > /dev/null || time brew upgrade cmake
 brew install zlib
 time brew install swig@3
