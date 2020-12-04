@@ -154,7 +154,7 @@ before_deploy:
   - if [ "$TRAVIS_OS_NAME != "osx ] ; then env "PATH=$PATH" pyenv install 3.5.4 -s  || true; fi
   - if [ "$TRAVIS_OS_NAME != "osx ] ; then env "PATH=$PATH" pyenv global 3.5.4; fi
   - if [ "$TRAVIS_OS_NAME != "osx ] ; then env "PATH=$PATH" pip install twine; fi
-  - if [ "$TRAVIS_TAG" != "" ] && [ "$DEPLOY_BUILD" == "true" ] ; then twine upload --skip-existing $PWD/dist/*.whl; fi
+  - if [ "$TRAVIS_TAG" != "" ] && [ "$DEPLOY_BUILD" == "true" ] &&  [ -e $(compgen -G $PWD/dist/*.whl) ] ; then twine upload --skip-existing $PWD/dist/*.whl; fi
 
 deploy:
   - provider: releases

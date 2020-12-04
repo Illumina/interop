@@ -1,5 +1,12 @@
 # Changes                                               {#changes}
 
+## v1.1.17
+
+Date       | Description
+---------- | -----------
+2020-12-04 | Travis reports error when it cannot find a wheel to update on non-Python builds
+
+
 ## v1.1.16
 
 Date       | Description
