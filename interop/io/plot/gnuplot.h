@@ -256,14 +256,29 @@ namespace illumina { namespace interop { namespace io { namespace plot
         {
             if (series.series_type() == model::plot::series<model::plot::candle_stick_point>::Candlestick)
             {
+                size_t max_num_outliers = 0;
                 for (size_t i = 0; i < series.size(); ++i)
                 {
-                    out << table::handle_nan(series[i].x()) << ",";
-                    out << table::handle_nan(series[i].lower()) << ",";
-                    out << table::handle_nan(series[i].p25()) << ",";
-                    out << table::handle_nan(series[i].p50()) << ",";
-                    out << table::handle_nan(series[i].p75()) << ",";
-                    out << table::handle_nan(series[i].upper());
+                    const model::plot::candle_stick_point point = series[i];
+                    const std::vector<float> outliers = point.outliers();
+                    max_num_outliers = std::max(max_num_outliers, outliers.size());
+                }
+
+                for (size_t i = 0; i < series.size(); ++i)
+                {
+                    const model::plot::candle_stick_point point = series[i];
+                    out << table::handle_nan(point.x()) << ",";
+                    out << table::handle_nan(point.lower()) << ",";
+                    out << table::handle_nan(point.p25()) << ",";
+                    out << table::handle_nan(point.p50()) << ",";
+                    out << table::handle_nan(point.p75()) << ",";
+                    out << table::handle_nan(point.upper());
+                    const std::vector<float> outliers = point.outliers();
+                    size_t j=0;
+                    for(;j<outliers.size();++j)
+                        out << "," << table::handle_nan(outliers[j]);
+                    for(;j<max_num_outliers;++j)
+                        out << "," << table::handle_nan(std::numeric_limits<float>::quiet_NaN());
                     out << std::endl;
                 }
             }

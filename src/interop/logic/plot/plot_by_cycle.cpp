@@ -182,7 +182,8 @@ namespace illumina { namespace interop { namespace logic { namespace plot
             size_t j=0;
             for(size_t cycle=0;cycle<m_max_cycle;++cycle)
             {
-                if(tile_by_cycle[cycle].empty())continue;
+                if(tile_by_cycle[cycle].empty())
+                    continue;
                 plot_candle_stick(m_points[j],
                                   tile_by_cycle[cycle].begin(),
                                   tile_by_cycle[cycle].end(),

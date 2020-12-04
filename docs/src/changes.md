@@ -1,11 +1,18 @@
 # Changes                                               {#changes}
 
+## v1.1.16
+
+Date       | Description
+---------- | -----------
+2020-11-30 | Issue-241: Write out outliers to GNUPlot file
+
+
 ## v1.1.15
 
 Date       | Description
 ---------- | -----------
-2020-08-26 | Issue-229: Support % loading concentration
-2020-08-26 | Issue-229: Fix Python binding for read_metrics_from_buffer
+2020-11-13 | Issue-229: Support % loading concentration
+2020-11-13 | Issue-229: Fix Python binding for read_metrics_from_buffer
 
 
 ## v1.1.14
