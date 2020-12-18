@@ -28,7 +28,7 @@ echo "OpenSSL: $(brew --prefix openssl)"
 export PATH=$(pyenv root)/shims:${PATH}
 
 which conda
-dotnet --version
+#dotnet --version
 
 
 
