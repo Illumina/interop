@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+echo "Install requirements using HomeBrew"
 #sw_vers
 
 #brew update > /dev/null
