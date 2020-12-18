@@ -211,33 +211,6 @@ deploy:
       condition:
       - "$DEPLOY_DOCS == true"
 
-before_cache: |
-  if [ -n "$IS_OSX" ]; then
-     # https://github.com/skvark/opencv-python/blob/master/.travis.yml
-     # https://stackoverflow.com/questions/39930171/cache-brew-builds-with-travis-ci
-     # When Taps is cached, this dir causes "Error: file exists" on `brew update`
-     if [ -e "$(brew --repository)/Library/Taps/homebrew/homebrew-cask/homebrew-cask" ]; then
-       rm -rf "$(brew --repository)/Library/Taps/homebrew/homebrew-cask/homebrew-cask"
-     fi
-     brew_cache_cleanup
-  fi
-
-before_install: |
-  if [ -n "$IS_OSX" ]; then
-    export PATH="/usr/local/sbin:$PATH"
-    TAPS="$(brew --repository)/Library/Taps"
-    if [ -e "$TAPS/caskroom/homebrew-cask" -a -e "$TAPS/homebrew/homebrew-cask" ]; then
-      rm -rf "$TAPS/caskroom/homebrew-cask"
-    fi
-    find "$TAPS" -type d -name .git -exec \
-      bash -xec '
-      cd $(dirname '\''{}'\'') || echo "status: $?"
-      git clean -fxd || echo "status: $?"
-      sleep 1 || echo "status: $?"
-      git status || echo "status: $?"' \; || echo "status: $?"
-    brew_cache_cleanup
-  fi
-
 cache:
   directories:
     # `cache: ccache: true` has no effect if `language:` is not `c` or `cpp`
