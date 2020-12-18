@@ -26,31 +26,31 @@ env:
 matrix:
   include:
   - os: osx
-    osx_image: xcode8.3
+    osx_image: xcode10.1
     compiler: clang
     env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release Disable"
   - os: osx
-    osx_image: xcode8.3
+    osx_image: xcode10.1
     compiler: clang
     env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release DotNetStandard"
   - os: osx
-    osx_image: xcode8.3
+    osx_image: xcode10.1
     compiler: clang
     env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release 2.7.17"
   - os: osx
-    osx_image: xcode8.3
+    osx_image: xcode10.1
     compiler: clang
     env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release 3.5.9"
   - os: osx
-    osx_image: xcode8.3
+    osx_image: xcode10.1
     compiler: clang
     env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release 3.6.10"
   - os: osx
-    osx_image: xcode8.3
+    osx_image: xcode10.1
     compiler: clang
     env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release 3.7.7"
   - os: osx
-    osx_image: xcode8.3
+    osx_image: xcode10.1
     compiler: clang
     env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release 3.8.2"
   - os: linux
