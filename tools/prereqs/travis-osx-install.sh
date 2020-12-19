@@ -8,11 +8,11 @@ set +x
 brew update #> /dev/null
 #brew list
 #brew list cmake > /dev/null || time brew upgrade cmake
-#brew install zlib
-#time brew install swig@3
-#brew unlink swig || true
-#brew link swig@3 --force
-#time brew install doxygen
+#brew list zlib || brew install zlib
+brew list swig@3 || brew install swig@3
+brew unlink swig || true
+brew link swig@3 --force
+#brew install doxygen
 #brew install wget
 #brew install nuget
 #brew install coreutils || brew install gstat
