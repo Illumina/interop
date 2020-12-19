@@ -3,9 +3,9 @@
 echo "Install requirements using HomeBrew"
 #sw_vers
 
-set +x
+set -x
 
-brew update #> /dev/null
+#brew update #> /dev/null
 #brew list
 #brew list cmake > /dev/null || time brew upgrade cmake
 #brew list zlib || brew install zlib
@@ -20,15 +20,23 @@ brew link swig@3 --force
 #brew tap isen-ng/dotnet-sdk-versions
 #brew cask list dotnet-sdk > /dev/null || time brew cask install dotnet-sdk2-2-400
 
+brew list miniconda
+
+set +x
+echo "Install Anaconda"
+set -x
 time curl -o miniconda.sh  https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
 time bash miniconda.sh -b -p $HOME/miniconda
 source $HOME/miniconda/etc/profile.d/conda.sh
 
-echo "OpenSSL: $(brew --prefix openssl)"
-export PATH=$(pyenv root)/shims:${PATH}
+#echo "OpenSSL: $(brew --prefix openssl)"
+#export PATH=$(pyenv root)/shims:${PATH}
 
 which conda
 #dotnet --version
+
+set +x
+echo "Finished requirements"
 
 
 

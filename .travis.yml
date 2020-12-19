@@ -159,7 +159,6 @@ addons:
 install:
 - source tools/prereqs/travis-${TRAVIS_OS_NAME}-install.sh
 - if [ ! -z $DOCKER_IMAGE ]; then docker pull $DOCKER_IMAGE ; fi
-- ls $HOME/NUnit-2.6.4
 
 before_script:
 - export CC="${COMPILER_HOME}${CC}${COMPILER_VERSION}"
