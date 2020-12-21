@@ -186,10 +186,11 @@ if [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PYTH
       source $HOME/miniconda/etc/profile.d/conda.sh
       conda config --set channel_priority strict
       #conda update --all
+      echo "Found Miniconda"
     fi
     for py_ver in $python_versions; do
         echo "Building Python $py_ver - $CFLAGS"
-        if [ -e "/Users/bioinformatics/anaconda3" ]; then
+        if hash conda 2> /dev/null; then
           python_version=${py_ver}
           conda remove --name py${python_version} --all -y || echo "py${python_version} not found"
           echo "Create Python ${python_version}"
