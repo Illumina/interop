@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 echo "Install requirements using HomeBrew"
+export HOMEBREW_NO_INSTALL_CLEANUP=1
 #sw_vers
 
 set -x
