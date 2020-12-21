@@ -14,13 +14,13 @@ set -x
 brew list swig@3 || brew install swig@3
 brew unlink swig || true
 brew link swig@3 --force
-#brew install doxygen
+brew install doxygen
 #brew install wget
-#brew install nuget
+brew install nuget
 #brew install coreutils || brew install gstat
 
-#brew tap isen-ng/dotnet-sdk-versions
-#brew cask list dotnet-sdk > /dev/null || time brew cask install dotnet-sdk2-2-400
+brew tap isen-ng/dotnet-sdk-versions
+brew cask list dotnet-sdk > /dev/null || time brew cask install dotnet-sdk2-2-400
 
 brew list miniconda
 
