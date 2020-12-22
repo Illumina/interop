@@ -87,8 +87,6 @@ jobs:
     env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release 3.8.2"
   - os: linux
     compiler: clang
-    workspaces:
-      use: brew_cache
     env: SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis ON Debug Disable"
   - os: linux
     compiler: gcc
