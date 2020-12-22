@@ -22,36 +22,68 @@ language: cpp
 env:
   global:
     secure: "u1PKXB6w4ca3qONKKdMNS7NvPTGyXa9FuSBvM4IC+Yak0k4P8pghA3iwrtzwCkXzT+kijcVpbOvDJjhD1Kfb0fucpYKEbR+QTTBpqXjwWZx6WHSH/ZoPfc40OiGJ5zbdyRZrI2GKdrgeZbDN2FOE7Vvmu/RgxCdSkpeBmRG2uTqgmVA+Gy+BJBtRgwKdmvChaqIQ7Zwbrw26JA1g+iKDNKSw3SyKbRrkCv2i5u2YrVS3XhbCCCJCt1HmsMZfjFhvx4ddnfQ9At/Z1bx58bb607lhKbWT1AR+NIXtbYz7sGGPxLuUply9KVDzE+3yb72zVIa3R8Nl/cBtS3S2rDyDvaLy3zTpF25jHNxEx956yI8n25lA2qtwqAs7sw+neSvivlEQot0GVPy2r0tsezNFt6GSJG92KYT4TsDVZr8EXQr6n0ocDmMQU/tVqxeG6VelqpjJ257gT1ywU7mtod43ye/7FO+5Is2LbGVq5nWHW203joKo2mLyx2p3/l7EW2o6kDhu+ttiaR6YMYMpnpe+IGWMRhKOxtVH4EJuOKB3G6UfSZmXauwXZdxqN03wqvZnXhDp+cr1p6Wj3L5LyENpw/dS38fRTFBJzNYUTtYatiNVUptI9RGSdkcgvgx3e43XIumgvk7/Tea7DjVEMIXMSj/N1c7P8eJZbiXQmmqa65w="
-
-matrix:
+    HOMEBREW_NO_INSTALL_CLEANUP: 1
+jobs:
+  fast_finish: true
   include:
   - os: osx
-    osx_image: xcode12.2
+    osx_image: xcode9.4
     compiler: clang
+    stage: s1
+    workspaces:
+      create:
+        name: brew_cache
+        paths:
+          # https://stackoverflow.com/questions/39930171/cache-brew-builds-with-travis-ci
+          - $HOME/Library/Caches/Homebrew
+          - /usr/local/Homebrew/
+          # used in OSX custom build script dealing with local bottle caching
+          - $HOME/local_bottle_metadata
+    cache:
+      directories:
+        # `cache: ccache: true` has no effect if `language:` is not `c` or `cpp`
+        - $HOME/.ccache
+        # https://stackoverflow.com/questions/39930171/cache-brew-builds-with-travis-ci
+        - $HOME/Library/Caches/Homebrew
+        - /usr/local/Homebrew/
+        # used in OSX custom build script dealing with local bottle caching
+        - $HOME/local_bottle_metadata
     env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release Disable"
   - os: osx
-    osx_image: xcode12.2
+    osx_image: xcode9.4
     compiler: clang
+    workspaces:
+      use: brew_cache
     env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release DotNetStandard"
   - os: osx
-    osx_image: xcode12.2
+    osx_image: xcode9.4
     compiler: clang
+    workspaces:
+      use: brew_cache
     env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release 2.7.17"
   - os: osx
-    osx_image: xcode12.2
+    osx_image: xcode9.4
     compiler: clang
+    workspaces:
+      use: brew_cache
     env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release 3.5.9"
   - os: osx
-    osx_image: xcode12.2
+    osx_image: xcode9.4
     compiler: clang
+    workspaces:
+      use: brew_cache
     env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release 3.6.10"
   - os: osx
-    osx_image: xcode12.2
+    osx_image: xcode9.4
     compiler: clang
+    workspaces:
+      use: brew_cache
     env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release 3.7.7"
   - os: osx
-    osx_image: xcode12.2
+    osx_image: xcode9.4
     compiler: clang
+    workspaces:
+      use: brew_cache
     env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release 3.8.2"
   - os: linux
     compiler: clang
@@ -65,7 +97,9 @@ matrix:
       - docker
     env: DEPLOY_BUILD=true DEPLOY_DOCS=true DOCKER_IMAGE=ezralanglois/interop SCRIPT="docker run --rm -v $PWD:/io ezralanglois/interop sh /io/tools/package.sh /io /io/dist travis OFF Release None"
   - os: osx
-    osx_image: xcode12.2
+    osx_image: xcode9.4
+    workspaces:
+      use: brew_cache
     compiler: clang
     env: SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Debug Disable"
   - os: linux
@@ -119,15 +153,10 @@ addons:
     - mono-complete
     - libgtest-dev
     - python-numpy
-cache:
-  directories:
-    - $HOME/NUnit-2.6.4
-    - $HOME/cmake
 
 install:
 - source tools/prereqs/travis-${TRAVIS_OS_NAME}-install.sh
 - if [ ! -z $DOCKER_IMAGE ]; then docker pull $DOCKER_IMAGE ; fi
-- ls $HOME/NUnit-2.6.4
 
 before_script:
 - export CC="${COMPILER_HOME}${CC}${COMPILER_VERSION}"
@@ -154,7 +183,7 @@ before_deploy:
   - if [ "$TRAVIS_OS_NAME != "osx ] ; then env "PATH=$PATH" pyenv install 3.5.4 -s  || true; fi
   - if [ "$TRAVIS_OS_NAME != "osx ] ; then env "PATH=$PATH" pyenv global 3.5.4; fi
   - if [ "$TRAVIS_OS_NAME != "osx ] ; then env "PATH=$PATH" pip install twine; fi
-  - if [ "$TRAVIS_TAG" != "" ] && [ "$DEPLOY_BUILD" == "true" ] ; then twine upload --skip-existing $PWD/dist/*.whl; fi
+  - if [ "$TRAVIS_TAG" != "" ] && [ "$DEPLOY_BUILD" == "true" ] &&  [ -e $(compgen -G $PWD/dist/*.whl) ] ; then twine upload --skip-existing $PWD/dist/*.whl; fi
 
 deploy:
   - provider: releases
@@ -179,3 +208,13 @@ deploy:
       condition:
       - "$DEPLOY_DOCS == true"
 
+cache:
+  directories:
+    # `cache: ccache: true` has no effect if `language:` is not `c` or `cpp`
+    - $HOME/.ccache
+    - $HOME/NUnit-2.6.4
+    - $HOME/cmake
+
+stages:
+  - s1
+  - final
