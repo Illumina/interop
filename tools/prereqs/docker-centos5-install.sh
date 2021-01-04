@@ -145,17 +145,17 @@ else
     #     return cnt;
     # }
     #endif
-    mkdir /mono_clean
-    ${curl_cmd} ${MONO_URL} | tar --strip-components=1 -xj -C /mono_clean
+    mkdir ./mono_clean
+    ${curl_cmd} ${MONO_URL} | tar --strip-components=1 -xj -C ./mono_clean
     patch -p0 < /mono_patch.txt
 
 
     #cd /io/mono_src
-    cd /mono_clean
+    cd ./mono_clean
     ./configure --prefix=/usr
     make -j4 && make install
     cd -
-    rm -fr /mono_clean
+    rm -fr ./mono_clean
     which dmcs
     which mono
     mono --version

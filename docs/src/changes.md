@@ -1,5 +1,12 @@
 # Changes                                               {#changes}
 
+## v1.1.18
+
+Date       | Description
+---------- | -----------
+2021-01-04 | Issue-245: Support Python 3.9
+
+
 ## v1.1.17
 
 Date       | Description

@@ -85,6 +85,12 @@ jobs:
     workspaces:
       use: brew_cache
     env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release 3.8.2"
+  - os: osx
+    osx_image: xcode9.4
+    compiler: clang
+    workspaces:
+     use: brew_cache
+    env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release 3.9.0"
   - os: linux
     compiler: clang
     env: SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis ON Debug Disable"
