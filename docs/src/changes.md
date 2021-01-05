@@ -1,5 +1,13 @@
 # Changes                                               {#changes}
 
+
+## v1.1.19
+
+Date       | Description
+---------- | -----------
+2021-01-05 | Fix broken deployment of docs and failing tests on deployment
+
+
 ## v1.1.18
 
 Date       | Description

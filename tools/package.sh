@@ -171,7 +171,7 @@ fi
 
 if [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PYTHON_VERSION" != "DotNetStandard" ] ; then
     if [ "$PYTHON_VERSION" == "ALL" ] ; then
-        # python_versions="2.7.17 3.5.9 3.6.10 3.7.7 3.8.2"
+        # python_versions="2.7.17 3.5.9 3.6.10 3.7.7 3.8.2 3.9.x"
         python_versions="2.7.17 3.5.9"
         pyenv install --list | grep " 2.7"
         pyenv install --list | grep " 3\.[45678]"
@@ -265,6 +265,8 @@ if [ "$PYTHON_VERSION" == "Disable" ] ; then
     run "Build" cmake --build $BUILD_PATH -- -j${THREAD_COUNT}
     run "Test" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
     run "Package" cmake --build $BUILD_PATH --target bundle
+elif [ "$PYTHON_VERSION" == "None" ]  ;then
+  run "Package" cmake --build $BUILD_PATH --target bundle
 fi
 
 if [ "$PYTHON_VERSION" == "DotNetStandard" ] ; then

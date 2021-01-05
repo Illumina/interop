@@ -146,7 +146,9 @@ include(CPack)
 #https://stackoverflow.com/questions/12302836/renaming-cpack-automatic-target
 add_custom_target(bundle
         COMMAND ${CMAKE_CPACK_COMMAND} -C $<CONFIG> --config ${CPACK_OUTPUT_CONFIG_FILE})
-
+if(TARGET doc)
+    add_dependencies(bundle doc)
+endif()
 if(ENABLE_STATIC)
     set(LIBRARY_TYPE STATIC)
     set(BUILD_SHARED_LIBS OFF)
