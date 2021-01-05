@@ -21,8 +21,9 @@ language: cpp
 
 env:
   global:
-    secure: "u1PKXB6w4ca3qONKKdMNS7NvPTGyXa9FuSBvM4IC+Yak0k4P8pghA3iwrtzwCkXzT+kijcVpbOvDJjhD1Kfb0fucpYKEbR+QTTBpqXjwWZx6WHSH/ZoPfc40OiGJ5zbdyRZrI2GKdrgeZbDN2FOE7Vvmu/RgxCdSkpeBmRG2uTqgmVA+Gy+BJBtRgwKdmvChaqIQ7Zwbrw26JA1g+iKDNKSw3SyKbRrkCv2i5u2YrVS3XhbCCCJCt1HmsMZfjFhvx4ddnfQ9At/Z1bx58bb607lhKbWT1AR+NIXtbYz7sGGPxLuUply9KVDzE+3yb72zVIa3R8Nl/cBtS3S2rDyDvaLy3zTpF25jHNxEx956yI8n25lA2qtwqAs7sw+neSvivlEQot0GVPy2r0tsezNFt6GSJG92KYT4TsDVZr8EXQr6n0ocDmMQU/tVqxeG6VelqpjJ257gT1ywU7mtod43ye/7FO+5Is2LbGVq5nWHW203joKo2mLyx2p3/l7EW2o6kDhu+ttiaR6YMYMpnpe+IGWMRhKOxtVH4EJuOKB3G6UfSZmXauwXZdxqN03wqvZnXhDp+cr1p6Wj3L5LyENpw/dS38fRTFBJzNYUTtYatiNVUptI9RGSdkcgvgx3e43XIumgvk7/Tea7DjVEMIXMSj/N1c7P8eJZbiXQmmqa65w="
-    HOMEBREW_NO_INSTALL_CLEANUP: 1
+    - HOMEBREW_NO_INSTALL_CLEANUP: 1
+    - secure: "u1PKXB6w4ca3qONKKdMNS7NvPTGyXa9FuSBvM4IC+Yak0k4P8pghA3iwrtzwCkXzT+kijcVpbOvDJjhD1Kfb0fucpYKEbR+QTTBpqXjwWZx6WHSH/ZoPfc40OiGJ5zbdyRZrI2GKdrgeZbDN2FOE7Vvmu/RgxCdSkpeBmRG2uTqgmVA+Gy+BJBtRgwKdmvChaqIQ7Zwbrw26JA1g+iKDNKSw3SyKbRrkCv2i5u2YrVS3XhbCCCJCt1HmsMZfjFhvx4ddnfQ9At/Z1bx58bb607lhKbWT1AR+NIXtbYz7sGGPxLuUply9KVDzE+3yb72zVIa3R8Nl/cBtS3S2rDyDvaLy3zTpF25jHNxEx956yI8n25lA2qtwqAs7sw+neSvivlEQot0GVPy2r0tsezNFt6GSJG92KYT4TsDVZr8EXQr6n0ocDmMQU/tVqxeG6VelqpjJ257gT1ywU7mtod43ye/7FO+5Is2LbGVq5nWHW203joKo2mLyx2p3/l7EW2o6kDhu+ttiaR6YMYMpnpe+IGWMRhKOxtVH4EJuOKB3G6UfSZmXauwXZdxqN03wqvZnXhDp+cr1p6Wj3L5LyENpw/dS38fRTFBJzNYUTtYatiNVUptI9RGSdkcgvgx3e43XIumgvk7/Tea7DjVEMIXMSj/N1c7P8eJZbiXQmmqa65w="
+
 jobs:
   fast_finish: true
   include:
@@ -189,7 +190,7 @@ before_deploy:
   - if [ "$TRAVIS_OS_NAME != "osx ] ; then env "PATH=$PATH" pyenv install 3.5.4 -s  || true; fi
   - if [ "$TRAVIS_OS_NAME != "osx ] ; then env "PATH=$PATH" pyenv global 3.5.4; fi
   - if [ "$TRAVIS_OS_NAME != "osx ] ; then env "PATH=$PATH" pip install twine; fi
-  - if [ "$TRAVIS_TAG" != "" ] && [ "$DEPLOY_BUILD" == "true" ] &&  [ -e $(compgen -G $PWD/dist/*.whl) ] ; then twine upload --skip-existing $PWD/dist/*.whl; fi
+  - if [ "$TRAVIS_TAG" != "" ] && [ "$DEPLOY_BUILD" == "true" ] &&  [ ! -z $(compgen -G $PWD/dist/*.whl) ] ; then twine upload --skip-existing $PWD/dist/*.whl; fi
 
 deploy:
   - provider: releases
