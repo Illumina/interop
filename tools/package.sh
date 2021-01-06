@@ -85,7 +85,7 @@ if [ ! -z "$8" ] ; then
     MORE_FLAGS="$8"
 fi
 
-echo "-------------------------------"
+echo "------------------------------------------------------------"
 echo "package.sh Configuration"
 echo "Source path: ${SOURCE_PATH}"
 echo "Artifact path: ${ARTIFACT_PATH}"
@@ -95,7 +95,7 @@ echo "Build Type: ${BUILD_TYPE}"
 echo "Python Version: ${PYTHON_VERSION}"
 echo "Build Number: ${ARTFACT_BUILD_NUMBER}"
 echo "Additional Flags: ${MORE_FLAGS}"
-echo "-------------------------------"
+echo "------------------------------------------------------------"
 
 CMAKE_EXTRA_FLAGS="-DDISABLE_PACKAGE_SUBDIR=${DISABLE_SUBDIR} -DENABLE_PORTABLE=ON -DENABLE_BACKWARDS_COMPATIBILITY=$INTEROP_C89 -DCMAKE_BUILD_TYPE=$BUILD_TYPE $MORE_FLAGS"
 
@@ -258,14 +258,11 @@ fi
 echo "------------------------------------------------------------"
 echo "Run additional package code: $PYTHON_VERSION"
 echo "------------------------------------------------------------"
-if [ "$PYTHON_VERSION" == "Disable" ] ; then
+if [ "$PYTHON_VERSION" == "Disable" ] || [ "$PYTHON_VERSION" == "None" ] ; then
     run "Configure" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS} -DENABLE_SWIG=OFF
     run "Build" cmake --build $BUILD_PATH -- -j${THREAD_COUNT}
     run "Test" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
     run "Package" cmake --build $BUILD_PATH --target bundle
-elif [ "$PYTHON_VERSION" == "None" ]  ; then
-  echo "Run target: bundle"
-  run "Package" cmake --build $BUILD_PATH --target bundle
 elif [ "$PYTHON_VERSION" == "DotNetStandard" ] ; then
 
   # Workaround for OSX
