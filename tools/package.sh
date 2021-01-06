@@ -265,7 +265,7 @@ if [ "$PYTHON_VERSION" == "Disable" ] ; then
     run "Build" cmake --build $BUILD_PATH -- -j${THREAD_COUNT}
     run "Test" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
     run "Package" cmake --build $BUILD_PATH --target bundle
-elif [ "$PYTHON_VERSION" == "None" ]  ;then
+elif [ "$PYTHON_VERSION" == "None" ]  ; then
   run "Package" cmake --build $BUILD_PATH --target bundle
 fi
 
