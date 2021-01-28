@@ -272,8 +272,8 @@ void summarize(const surface_summary& summary, std::vector<std::string>& values,
     values[i++] = util::format(summary.prephasing_slope().mean(), 3, 3) + " / "
                   + util::format(summary.prephasing_offset().mean(), 3, 3);
 
-    values[i++] = format(summary.reads(), 0, 2, 1e6);
-    values[i++] = format(summary.reads_pf(), 0, 2, 1e6);
+    values[i++] = format(static_cast<float>(summary.reads()), 0, 2, 1e6);
+    values[i++] = format(static_cast<float>(summary.reads_pf()), 0, 2, 1e6);
     values[i++] = format(summary.percent_gt_q30(), 0, 2);
     values[i++] = format(summary.yield_g(), 0, 2);
     values[i++] = "-";
@@ -303,8 +303,8 @@ void summarize(const lane_summary& summary, std::vector<std::string>& values)
                 + util::format(summary.phasing_offset().mean(), 3, 3);
     values[i++] = util::format(summary.prephasing_slope().mean(), 3, 3) + " / "
                 + util::format(summary.prephasing_offset().mean(), 3, 3);
-    values[i++] = format(summary.reads(), 0, 2, 1e6);
-    values[i++] = format(summary.reads_pf(), 0, 2, 1e6);
+    values[i++] = format(static_cast<float>(summary.reads()), 0, 2, 1e6);
+    values[i++] = format(static_cast<float>(summary.reads_pf()), 0, 2, 1e6);
     values[i++] = format(summary.percent_gt_q30(), 0, 2);
     values[i++] = format(summary.yield_g(), 0, 2);
     values[i++] = format(summary.cycle_state().error_cycle_range());

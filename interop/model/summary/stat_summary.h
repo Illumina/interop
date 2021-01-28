@@ -35,8 +35,8 @@ namespace illumina { namespace interop { namespace model { namespace summary
                 m_percent_gt_q30(std::numeric_limits<float>::quiet_NaN()),
                 m_yield_g(std::numeric_limits<float>::quiet_NaN()),
                 m_projected_yield_g(0),
-                m_reads(std::numeric_limits<float>::quiet_NaN()),
-                m_reads_pf(std::numeric_limits<float>::quiet_NaN()),
+                m_reads(0),
+                m_reads_pf(0),
                 m_percent_occupied(std::numeric_limits<float>::quiet_NaN())
 
         {
@@ -89,7 +89,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
          *
          * @return total number of clusters in the lane
          */
-        float reads() const
+        uint64_t reads() const
         {
             return m_reads;
         }
@@ -98,7 +98,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
          *
          * @return total number of clusters passing filter in the lane
          */
-        float reads_pf() const
+        uint64_t reads_pf() const
         {
             return m_reads_pf;
         }
@@ -311,7 +311,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
          *
          * @param val total number of clusters in the lane
          */
-        void reads(const float val)
+        void reads(const uint64_t val)
         {
             m_reads = val;
         }
@@ -319,7 +319,7 @@ namespace illumina { namespace interop { namespace model { namespace summary
          *
          * @param val total number of clusters passing filter in the lane
          */
-        void reads_pf(const float val)
+        void reads_pf(const uint64_t val)
         {
             m_reads_pf = val;
         }
@@ -487,8 +487,8 @@ namespace illumina { namespace interop { namespace model { namespace summary
         float m_percent_gt_q30;
         float m_yield_g;
         float m_projected_yield_g;
-        float m_reads;
-        float m_reads_pf;
+        uint64_t m_reads;
+        uint64_t m_reads_pf;
 
     private:
         metric_stat_t m_density;

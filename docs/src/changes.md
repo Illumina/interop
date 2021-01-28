@@ -5,6 +5,13 @@
 
 Date       | Description
 ---------- | -----------
+2021-01-27 | Issue-250: Improve cluster count precision
+
+
+## v1.1.19
+
+Date       | Description
+---------- | -----------
 2021-01-05 | Fix broken deployment of docs and failing tests on deployment
 
 

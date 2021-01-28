@@ -126,7 +126,7 @@ namespace illumina{ namespace interop { namespace unittest
                 //
                 summary[read][0].tile_count(3);
                 summary[read][0].reads_pf(9738715);
-                summary[read][0].reads(19412848);
+                summary[read][0].reads(19412847);
                 summary[read][0].density(model::summary::metric_stat(2355119.25f, 0, 2355119.25f));
                 summary[read][0].density_pf(model::summary::metric_stat(1181477.125f, 27380.955078125f, 1174757.75f));
                 summary[read][0].cluster_count(model::summary::metric_stat(6470949.5f, 0, 6470949));
