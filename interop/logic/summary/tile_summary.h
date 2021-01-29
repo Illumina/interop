@@ -89,14 +89,14 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                   util::op::const_member_function_less(&model::metrics::tile_metric::percent_pf),
                   skip_median);
         stat_summary.percent_pf(stat);
-        stat_summary.reads(nan_accumulate(tile_data.begin(),
+        stat_summary.reads(std::accumulate(tile_data.begin(),
                                            tile_data.end(),
-                                          float(0),
+                                           uint64_t(0),
                                            util::op::const_member_function(
                                                    &model::metrics::tile_metric::cluster_count)));
-        stat_summary.reads_pf(nan_accumulate(tile_data.begin(),
+        stat_summary.reads_pf(std::accumulate(tile_data.begin(),
                                              tile_data.end(),
-                                             float(0),
+                                              uint64_t(0),
                                              util::op::const_member_function(
                                                      &model::metrics::tile_metric::cluster_count_pf)));
     }

@@ -1,13 +1,12 @@
 # Changes                                               {#changes}
 
 
-
 ## v1.1.20
 
 Date       | Description
 ---------- | -----------
+2021-01-27 | Issue-250: Improve cluster count precision
 2021-01-05 | Fix documentation deployment
-
 
 ## v1.1.19
 

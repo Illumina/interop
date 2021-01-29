@@ -214,10 +214,10 @@ TEST_P(run_summary_tests, lane_summary)
                         expected_lane_summary.yield_g(), tol);
             INTEROP_EXPECT_NEAR(actual_lane_summary.projected_yield_g(),
                         expected_lane_summary.projected_yield_g(), tol);
-            INTEROP_EXPECT_NEAR(actual_lane_summary.reads_pf(),
-                        expected_lane_summary.reads_pf(), tol);
-            INTEROP_EXPECT_NEAR(actual_lane_summary.reads(),
-                        expected_lane_summary.reads(), tol);
+            EXPECT_EQ(actual_lane_summary.reads_pf(),
+                        expected_lane_summary.reads_pf());
+            EXPECT_EQ(actual_lane_summary.reads(),
+                        expected_lane_summary.reads());
             INTEROP_EXPECT_STAT_NEAR(actual_lane_summary.density(), expected_lane_summary.density(), density_tol);
             INTEROP_EXPECT_STAT_NEAR(actual_lane_summary.density_pf(),
                                      expected_lane_summary.density_pf(),
@@ -310,8 +310,8 @@ TEST_P(run_summary_tests, surface_summary)
                 INTEROP_EXPECT_NEAR(actual_surface_summary.yield_g(), expected_surface_summary.yield_g(), tol);
                 INTEROP_EXPECT_NEAR(actual_surface_summary.projected_yield_g(), expected_surface_summary.projected_yield_g(),
                             tol);
-                INTEROP_EXPECT_NEAR(actual_surface_summary.reads_pf(), expected_surface_summary.reads_pf(), tol);
-                INTEROP_EXPECT_NEAR(actual_surface_summary.reads(), expected_surface_summary.reads(), tol);
+                EXPECT_EQ(actual_surface_summary.reads_pf(), expected_surface_summary.reads_pf());
+                EXPECT_EQ(actual_surface_summary.reads(), expected_surface_summary.reads());
                 INTEROP_EXPECT_STAT_NEAR(actual_surface_summary.density(),
                                          expected_surface_summary.density(),
                                          density_tol);
