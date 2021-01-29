@@ -1,5 +1,11 @@
 # Changes                                               {#changes}
 
+## v1.1.21
+
+Date       | Description
+---------- | -----------
+2021-01-20 | Fix linux Python wheel deploy
+
 
 ## v1.1.20
 
