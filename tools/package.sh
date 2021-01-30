@@ -263,6 +263,7 @@ if [ "$PYTHON_VERSION" == "Disable" ] || [ "$PYTHON_VERSION" == "None" ] || [ "$
     run "Build" cmake --build $BUILD_PATH -- -j${THREAD_COUNT}
     run "Test" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
     run "Package" cmake --build $BUILD_PATH --target bundle
+fi
 if [ "$PYTHON_VERSION" == "DotNetStandard" ] || [ "$PYTHON_VERSION" == "" ] ; then
 
   # Workaround for OSX
