@@ -102,7 +102,7 @@ jobs:
     compiler: gcc
     services:
       - docker
-    env: DEPLOY_BUILD=true DEPLOY_DOCS=true DOCKER_IMAGE=ezralanglois/interop SCRIPT="docker run --rm -v $PWD:/io ezralanglois/interop sh /io/tools/package.sh /io /io/dist travis OFF Release None"
+    env: DEPLOY_BUILD=true DEPLOY_DOCS=true DOCKER_IMAGE=ezralanglois/interop SCRIPT="docker run --rm -v $PWD:/io ezralanglois/interop sh /io/tools/package.sh /io /io/dist travis OFF Release"
   - os: osx
     osx_image: xcode9.4
     workspaces:
