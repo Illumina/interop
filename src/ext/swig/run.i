@@ -4,6 +4,7 @@
 %include <std_string.i>
 %include <std_vector.i>
 %include <stdint.i>
+%include "src/ext/swig/arrays/arrays_impl.i"
 %include "src/ext/swig/exceptions/exceptions_impl.i"
 %include "util/operator_overload.i"
 

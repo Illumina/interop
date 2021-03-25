@@ -55,6 +55,7 @@ RUN_METRICS_EXCEPTION_WRAPPER(WRAP_EXCEPTION_IMPORT)
 // Summary model
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 %{
+#include "interop/config.h"
 #include "interop/model/summary/cycle_state_summary.h"
 #include "interop/model/summary/stat_summary.h"
 #include "interop/model/summary/surface_summary.h"

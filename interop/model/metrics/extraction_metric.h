@@ -262,6 +262,33 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         {
         }
 
+        /** Constructor
+         *
+         * @note Version 3
+         * @param lane lane number
+         * @param tile tile number
+         * @param cycle cycle number
+         * @param intensity_values 90th percentile of intensities for the given channel
+         * @param intensity_count number of channels
+         * @param focus_scores focus score for the given channel
+         * @param focus_count number of channels
+         */
+        extraction_metric(const uint_t lane,
+                          const uint_t tile,
+                          const uint_t cycle,
+                          const ::uint16_t* intensity_values,
+                          const size_t intensity_count,
+                          const float* focus_scores,
+                          const size_t focus_count,
+                          const size_t /*dummy*/) :
+                metric_base::base_cycle_metric(lane, tile, cycle),
+                m_date_time_csharp(0),
+                m_date_time(0),
+                m_max_intensity_values(intensity_values, intensity_values+intensity_count),
+                m_focus_scores(focus_scores, focus_scores+focus_count)
+        {
+        }
+
     public:
         /** Setter
          *

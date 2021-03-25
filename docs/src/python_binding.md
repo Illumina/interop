@@ -30,6 +30,14 @@ If you see this error:
 
 Then upgrade numpy and try again.
 
+## New simplified interface
+
+      from interop import *
+      ar = imaging("path/to/run_folder")
+
+See new [interop.core](namespacecore.html) wrapper for the simplified interface
+
+
 ## Tips & Tricks
 
 1. To see which methods/fields are available:

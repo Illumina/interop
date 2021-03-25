@@ -4,7 +4,7 @@ using System.IO;
 using Illumina.InterOp.Metrics;
 using Illumina.InterOp.Comm;
 
-namespace illumina.interop.csharp.unittest
+namespace Illumina.InterOp.Interop.UnitTest
 {
 	/// <summary>
 	/// Confirm that the Extended Tile metrics InterOp works properly in C#

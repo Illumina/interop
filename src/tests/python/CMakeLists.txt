@@ -24,12 +24,12 @@ if(NOT PYTHONINTERP_FOUND)
 endif()
 
 set(PYTHON_TEST_ENABLED ON PARENT_SCOPE)
+
 add_custom_target(check_python
         COMMENT "Running Python Unit tests"
         COMMAND ${CMAKE_COMMAND} -E copy_directory $<TARGET_FILE_DIR:${SWIG_PYTHON_MODULE_TARGET}> ${CMAKE_CURRENT_BINARY_DIR}/interop
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/CoreTests.py ${CMAKE_CURRENT_BINARY_DIR}/interop
         COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/DepTests.py ${CMAKE_CURRENT_BINARY_DIR}/interop
-        COMMAND ${PYTHON_EXECUTABLE} interop/CoreTests.py
+        COMMAND ${PYTHON_EXECUTABLE} -m interop --test
         COMMAND ${PYTHON_EXECUTABLE} interop/DepTests.py
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         )

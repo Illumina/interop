@@ -76,6 +76,7 @@ RUN_METRICS_EXCEPTION_WRAPPER(WRAP_EXCEPTION)
 
 
 %{
+#include "interop/config.h"
 #include "interop/logic/metric/extraction_metric.h"
 #include "interop/logic/metric/q_metric.h"
 #include "interop/logic/utils/metric_type_ext.h"

@@ -35,7 +35,6 @@ JAVA_URL="https://download.oracle.com/otn/java/jdk/8u131-b11/d54c1d3a095b4ff2b66
 JAVA_URL="https://ussd.artifactory.illumina.com/list/generic-bioinformatics/BuildDeps/interop/jdk-8u131-linux-x64.rpm"
 # TODO use openjdk? yum install java-1.8.0-openjdk
 VALGRIND_URL="http://www.valgrind.org/downloads/valgrind-3.14.0.tar.bz2"
-DOXYGEN_URL="https://sourceforge.net/projects/doxygen/files/rel-1.8.10/doxygen-1.8.10.linux.bin.tar.gz"
 DOXYGEN_URL="https://sourceforge.net/projects/doxygen/files/rel-1.8.10/doxygen-1.8.10.linux.bin.tar.gz/download?use_mirror=managedway&r=&use_mirror=managedway#"
 WGET_URL="http://ftp.gnu.org/gnu/wget/wget-1.19.tar.gz"
 PROG_HOME=/opt
@@ -70,7 +69,7 @@ else
         if [[ "$PYBUILD" == cp33* ]]; then
             continue
         fi
-        "/opt/python/${PYBUILD}/bin/pip" install numpy
+        "/opt/python/${PYBUILD}/bin/pip" install numpy pandas
     done
 
     # Current version 1.7.0 of auditwheel fails when building a fake pure Python lib with shared libs in data
