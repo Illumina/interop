@@ -233,7 +233,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                 m_called_counts(called_count),
                 m_signal_to_noise(std::numeric_limits<float>::quiet_NaN())
         {
-            INTEROP_ASSERT(called_count_vec.size() == constants::NUM_OF_BASES_AND_NC);
+            INTEROP_ASSERT(called_count.size() == static_cast<size_t>(constants::NUM_OF_BASES_AND_NC));
         }
         /** Constructor
          *
