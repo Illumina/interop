@@ -614,8 +614,6 @@ def imaging(run_metrics, dtype='f4', **extra):
                (1., 1101., 4., 2., 1., 0.4, 10.,  5., 25. , 16.7, 50. , 33.3, 0., 10.,  5., nan, nan, nan, nan, nan, nan, nan, nan, nan, 1., 1., 1.),
                (1., 1101., 5., 3., 1., 0.5, 15.,  5., 37.5, 20. , 40. , 40. , 0., 15.,  5., nan, nan, nan, nan, nan, nan, nan, nan, nan, 1., 1., 1.)],
               dtype=[('Lane', '<f4'), ('Tile', '<f4'), ('Cycle', '<f4'), ('Read', '<f4'), ('Cycle Within Read', '<f4'), ('Error Rate', '<f4'), ('P90/green', '<f4'), ('P90/blue', '<f4'), ('% No Calls', '<f4'), ('% Base/A', '<f4'), ('% Base/C', '<f4'), ('% Base/G', '<f4'), ('% Base/T', '<f4'), ('Fwhm/green', '<f4'), ('Fwhm/blue', '<f4'), ('Corrected/A', '<f4'), ('Corrected/C', '<f4'), ('Corrected/G', '<f4'), ('Corrected/T', '<f4'), ('Called/A', '<f4'), ('Called/C', '<f4'), ('Called/G', '<f4'), ('Called/T', '<f4'), ('Signal To Noise', '<f4'), ('Surface', '<f4'), ('Swath', '<f4'), ('Tile Number', '<f4')])
-    >>> ar.shape
-    (5,)
 
     >>> ar.dtype
     dtype((numpy.record, [('Lane', '<f4'), ('Tile', '<f4'), ('Cycle', '<f4'), ('Read', '<f4'), ('Cycle Within Read', '<f4'), ('Error Rate', '<f4'), ('P90/green', '<f4'), ('P90/blue', '<f4'), ('% No Calls', '<f4'), ('% Base/A', '<f4'), ('% Base/C', '<f4'), ('% Base/G', '<f4'), ('% Base/T', '<f4'), ('Fwhm/green', '<f4'), ('Fwhm/blue', '<f4'), ('Corrected/A', '<f4'), ('Corrected/C', '<f4'), ('Corrected/G', '<f4'), ('Corrected/T', '<f4'), ('Called/A', '<f4'), ('Called/C', '<f4'), ('Called/G', '<f4'), ('Called/T', '<f4'), ('Signal To Noise', '<f4'), ('Surface', '<f4'), ('Swath', '<f4'), ('Tile Number', '<f4')]))

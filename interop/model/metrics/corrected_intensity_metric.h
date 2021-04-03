@@ -258,7 +258,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                 m_called_counts(called_counts, called_counts + std::min(num_of_counts, static_cast<size_t>(constants::NUM_OF_BASES_AND_NC))),
                 m_signal_to_noise(std::numeric_limits<float>::quiet_NaN())
         {
-            INTEROP_ASSERT(called_counts.size() == constants::NUM_OF_BASES_AND_NC);
+            INTEROP_ASSERT(num_of_counts== static_cast<size_t>(constants::NUM_OF_BASES_AND_NC));
         }
 
     public:
