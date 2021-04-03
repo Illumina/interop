@@ -798,7 +798,7 @@ def create_valid_to_load(interop_prefixes):
     List of validate metric_names can be gotten using `list_interop_files`
 
     >>> from interop import create_valid_to_load
-    >>> create_valid_to_load(['Extraction'])[0]
+    >>> int(create_valid_to_load(['Extraction'])[0])
     0
     >>> create_valid_to_load(0)
     Traceback (most recent call last):
