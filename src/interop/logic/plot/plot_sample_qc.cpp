@@ -80,7 +80,7 @@ namespace illumina { namespace interop { namespace logic { namespace plot
     void plot_sample_qc(model::metrics::run_metrics &metrics,
                         const size_t lane,
                         model::plot::plot_data<model::plot::bar_point> &data)
-    INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
+    INTEROP_THROW_SPEC((model::index_out_of_bounds_exception, std::bad_alloc))
     {
         typedef model::plot::series<model::plot::bar_point> bar_series_t;
         data.clear();

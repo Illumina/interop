@@ -67,6 +67,7 @@ TABLE_EXCEPTION_WRAPPER(WRAP_EXCEPTION)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 %{
+#include "interop/config.h"
 #include "interop/logic/table/create_imaging_table_columns.h"
 #include "interop/logic/table/create_imaging_table.h"
 %}
@@ -74,6 +75,7 @@ TABLE_EXCEPTION_WRAPPER(WRAP_EXCEPTION)
 %include "interop/model/table/imaging_column.h"
 %include "interop/model/table/imaging_table.h"
 %include "interop/model/table/table_exceptions.h"
+
 
 
 %template(imaging_column_vector) std::vector< illumina::interop::model::table::imaging_column >;
@@ -84,3 +86,15 @@ TABLE_EXCEPTION_WRAPPER(WRAP_EXCEPTION)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 %include "interop/logic/table/create_imaging_table.h"
 %include "interop/logic/table/create_imaging_table_columns.h"
+
+%define WRAP_TABLE_ENUM(ENUM)
+%template(list_##ENUM) illumina::interop::constants::list_enum_names< illumina::interop::model::table:: ENUM >;
+%template(parse_##ENUM) illumina::interop::constants::parse< illumina::interop::model::table:: ENUM >;
+#if defined(SWIGPYTHON)
+%template(to_string_##ENUM) illumina::interop::constants::to_string< illumina::interop::model::table:: ENUM >;
+#else
+%template(to_string) illumina::interop::constants::to_string< illumina::interop::model::table:: ENUM >;
+#endif
+%enddef
+
+WRAP_TABLE_ENUM(column_id)

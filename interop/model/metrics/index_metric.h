@@ -358,6 +358,36 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         static const char *prefix()
         { return "Index"; }
 
+        /** Percentage of PF clusters on the tile that have been demultiplexed
+         *
+         * Dependent on tile_metric
+         *
+         * @return percent of demultiplexed PF clusters
+         */
+        float percent_demultiplexed(const std::string& sample_id) const
+        {
+            uint64_t total_demultiplexed_clusters = 0;
+            if (sample_id.empty())
+            {
+                for (size_t index_array_counter = 0; index_array_counter < m_indices.size(); ++index_array_counter)
+                {
+                    total_demultiplexed_clusters += m_indices[index_array_counter].cluster_count();
+                }
+            }
+            else
+            {
+                for (size_t index_array_counter = 0; index_array_counter < m_indices.size(); ++index_array_counter)
+                {
+                    if(m_indices[index_array_counter].sample_id() == sample_id)
+                    {
+                        total_demultiplexed_clusters = m_indices[index_array_counter].cluster_count();
+                        break;
+                    }
+                }
+            }
+            return static_cast<float>(total_demultiplexed_clusters)/m_cluster_count_pf * 100;
+        }
+
     private:
         index_array_t m_indices;
         float m_cluster_count; // Derived from tile metric

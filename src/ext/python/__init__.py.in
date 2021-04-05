@@ -7,3 +7,6 @@ __doc_url__ = "http://illumina.github.io/interop/index.html"
 __version__ = "@INTEROP_VERSION@"
 __maintainer__ = "Illumina, inc."
 __contact__ = "https://github.com/Illumina/interop/issues"
+
+from interop.core import *
+

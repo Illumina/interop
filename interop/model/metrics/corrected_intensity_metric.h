@@ -213,6 +213,28 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             INTEROP_ASSERT(m_corrected_int_called.size() == constants::NUM_OF_BASES);
             INTEROP_ASSERT(m_called_counts.size() == constants::NUM_OF_BASES_AND_NC);
         }
+
+        /** Constructor
+         *
+         * @note Version 4
+         * @param lane lane number
+         * @param tile tile number
+         * @param cycle cycle number
+         * @param called_count_vec number of clusters called per base
+         */
+        corrected_intensity_metric(const uint_t lane,
+                                   const uint_t tile,
+                                   const uint_t cycle,
+                                   const uint_array_t& called_count) :
+                metric_base::base_cycle_metric(lane, tile, cycle),
+                m_average_cycle_intensity(std::numeric_limits<ushort_t>::max()),
+                m_corrected_int_all(constants::NUM_OF_BASES, std::numeric_limits<ushort_t>::max()),
+                m_corrected_int_called(constants::NUM_OF_BASES, std::numeric_limits<float>::quiet_NaN()),
+                m_called_counts(called_count),
+                m_signal_to_noise(std::numeric_limits<float>::quiet_NaN())
+        {
+            INTEROP_ASSERT(called_count.size() == static_cast<size_t>(constants::NUM_OF_BASES_AND_NC));
+        }
         /** Constructor
          *
          * @note Version 4
@@ -220,19 +242,23 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @param tile tile number
          * @param cycle cycle number
          * @param called_counts number of clusters called per base
+         * @param num_of_counts number of bases
          */
         corrected_intensity_metric(const uint_t lane,
                                    const uint_t tile,
                                    const uint_t cycle,
-                                   const uint_array_t& called_counts) :
+                                   const ::uint32_t* called_counts,
+                                   const size_t num_of_counts,
+                                   const size_t /*dummy*/, /* dummy parameters work around swig bug */
+                                   const size_t /*dummy*/) :
                 metric_base::base_cycle_metric(lane, tile, cycle),
                 m_average_cycle_intensity(std::numeric_limits<ushort_t>::max()),
                 m_corrected_int_all(constants::NUM_OF_BASES, std::numeric_limits<ushort_t>::max()),
                 m_corrected_int_called(constants::NUM_OF_BASES, std::numeric_limits<float>::quiet_NaN()),
-                m_called_counts(called_counts),
+                m_called_counts(called_counts, called_counts + std::min(num_of_counts, static_cast<size_t>(constants::NUM_OF_BASES_AND_NC))),
                 m_signal_to_noise(std::numeric_limits<float>::quiet_NaN())
         {
-            INTEROP_ASSERT(called_counts.size() == constants::NUM_OF_BASES_AND_NC);
+            INTEROP_ASSERT(num_of_counts== static_cast<size_t>(constants::NUM_OF_BASES_AND_NC));
         }
 
     public:

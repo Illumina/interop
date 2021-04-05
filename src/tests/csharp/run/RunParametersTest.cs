@@ -4,7 +4,7 @@ using System.IO;
 using System.Collections.Generic;
 using Illumina.InterOp.Run;
 
-namespace illumina.interop.csharp.unittest
+namespace Illumina.InterOp.Interop.UnitTest
 {
 	/// <summary>
 	/// Confirm that the run info XML parsing works properly in C#

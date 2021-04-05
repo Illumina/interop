@@ -37,7 +37,7 @@ set SUFFIX=']
 set python_version=
 
 if NOT "%1" == "" (
-set BUILD_TYPE=%1
+set BUILD_TYPE=%1%
 )
 if NOT '%2' == '' (
 set COMPILER=%2%
@@ -65,7 +65,11 @@ echo "Create environment: %python_version%"
 conda create -n py%python_version% python=%python_version% numpy wheel -y || echo "Environment exists"
 echo "Activate py%python_version%"
 call activate py%python_version%
+if %errorlevel% neq 0 exit /b %errorlevel%
+pip install --upgrade --force-reinstall numpy
+pip install pandas
 :SKIP_CONDA_UPDATE
+
 
 rem Clean build and dist directories
 if exist %BUILD_DIR%  rd /s /q %BUILD_DIR%

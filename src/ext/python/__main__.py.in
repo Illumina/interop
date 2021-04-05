@@ -1,4 +1,5 @@
 import interop
+import interop.core
 import unittest
 import argparse
 from interop import @PY_MOD_NAME_LIST@
@@ -16,6 +17,7 @@ def execute_from_commandline():
     if param.test:
         testsuite = unittest.makeSuite(CoreTests)
         unittest.TextTestRunner(verbosity=1).run(testsuite)
+        interop.core._run_doctests()
 
 if __name__ == "__main__":
     execute_from_commandline();

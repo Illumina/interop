@@ -146,7 +146,7 @@ string(REPLACE ";" "','" PY_GEN_LIST "${py_gens}")
 set(INTEROP_VERSION ${VERSION_SHORT}${VERSION_DEV})
 configure_file(__init__.py.in interop/__init__.py @ONLY)
 configure_file(__main__.py.in interop/__main__.py @ONLY)
-file(COPY ${CMAKE_SOURCE_DIR}/src/tests/python/CoreTests.py DESTINATION interop)
+
 
 add_custom_command( TARGET python_lib POST_BUILD
         COMMAND ${CMAKE_COMMAND}
@@ -155,7 +155,20 @@ add_custom_command( TARGET python_lib POST_BUILD
         -DCONFIG_INPUT_FILE=${CMAKE_CURRENT_SOURCE_DIR}/setup.py.in
         -DCONFIG_OUTPUT_FILE=${CMAKE_CURRENT_BINARY_DIR}/setup.py
         -P ${CMAKE_SOURCE_DIR}/cmake/ConfigureFile.cmake
+        COMMAND ${CMAKE_COMMAND}
+        -DINTEROP_VERSION=${VERSION_SHORT}${VERSION_DEV}
+        -DINTEROP_LIB_LIST="${PY_GEN_LIST}"
+        -DCONFIG_INPUT_FILE=${CMAKE_CURRENT_SOURCE_DIR}/__main__.py.in
+        -DCONFIG_OUTPUT_FILE=${CMAKE_CURRENT_BINARY_DIR}/__main__.py
+        -P ${CMAKE_SOURCE_DIR}/cmake/ConfigureFile.cmake
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${CMAKE_CURRENT_SOURCE_DIR}/core.py
+        ${CMAKE_CURRENT_BINARY_DIR}/interop/core.py
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${CMAKE_SOURCE_DIR}/src/tests/python/CoreTests.py
+        ${CMAKE_CURRENT_BINARY_DIR}/interop/CoreTests.py
 )
+
 
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         DESTINATION share/illumina/interop/src
@@ -173,7 +186,7 @@ set(SWIG_GEN_PYTHON_SOURCE_FILES ${py_files} CACHE INTERNAL "Python scripts gene
 
 
 if(NOT PYTHONINTERP_FOUND)
-    message(WARNING "Cannot find Python Interpretor, cannot create wheel package")
+    message(WARNING "Cannot find Python Interpreter, cannot create wheel package")
     return()
 endif()
 

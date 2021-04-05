@@ -1,5 +1,12 @@
 # Changes                                               {#changes}
 
+## v1.1.22
+
+Date       | Description
+---------- | -----------
+2021-03-24 | Issue-259: Add simple functions with doc test examples
+
+
 ## v1.1.21
 
 Date       | Description

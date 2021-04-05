@@ -4,7 +4,7 @@ using System.IO;
 using Illumina.InterOp.Metrics;
 using Illumina.InterOp.RunMetrics;
 
-namespace Illumina.InterOp.UnitTest
+namespace Illumina.InterOp.Interop.UnitTest
 {
 	/// <summary>
 	/// Test the performance of tabulating a large number of extraction metrics

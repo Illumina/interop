@@ -144,7 +144,7 @@ call conda create --no-default-packages -n py%python_version% python=%python_ver
 echo "Activate py%python_version%"
 call activate py%python_version%
 if %errorlevel% neq 0 exit /b %errorlevel%
-call conda install numpy wheel -y
+call conda install numpy wheel pandas -y
 if %errorlevel% neq 0 exit /b %errorlevel%
 :SKIP_CONDA_UPDATE
 

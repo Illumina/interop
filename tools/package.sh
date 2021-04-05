@@ -154,6 +154,7 @@ if [ -z $PYTHON_VERSION ] && [  -e /opt/python ] ; then
         if [[ "$PYBUILD" == cp33* ]]; then
             continue
         fi
+        ${PYTHON_BIN}/python -m pip install pandas
         rm -fr ${BUILD_PATH}/src/ext/python/*
         run "Configure ${PYBUILD}" cmake $SOURCE_PATH -B${BUILD_PATH} -DPYTHON_EXECUTABLE=${PYTHON_BIN}/python ${CMAKE_EXTRA_FLAGS} -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp
 
@@ -205,6 +206,7 @@ if [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PYTH
           fi
           conda install numpy -y --name py${python_version}
           conda install wheel -y --name py${python_version}
+          conda install pandas -y --name py${python_version}
 
         elif hash pyenv 2> /dev/null; then
             export PATH=$(pyenv root)/shims:${PATH}

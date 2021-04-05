@@ -43,12 +43,6 @@ yum install -y python-devel
 mkdir /opt/dotnet
 wget --no-check-certificate --quiet -O - ${DOTNET_URL} | tar --strip-components=1 -xz -C /opt/dotnet
 
-curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"
-python get-pip.py
-
-pip install auditwheel==1.5.0
-pip install numpy
-
 if hash cmake  2> /dev/null; then
     echo "Found CMake"
 else
@@ -149,7 +143,6 @@ which swig
 which java
 which cmake
 which mono
-
 
 gcc --version
 swig -version
