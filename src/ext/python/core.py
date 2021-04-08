@@ -15,7 +15,7 @@ The core routines include the following:
 
 >>> from interop import index_summary
 >>> index_summary(run_metrics_with_indexing)
-array([(1, 0.4556, 507.7778, 260.3334, 768.1111, 1800., 2000.)],
+array([(1, 0.4556, 1015.5555, 520.6667, 1536.2222, 1800., 2000.)],
       dtype=[('Lane', '<u2'), ('Mapped Reads Cv', '<f4'), ('Max Mapped Reads', '<f4'), ('Min Mapped Reads', '<f4'), ('Total Fraction Mapped Reads', '<f4'), ('Total Pf Reads', '<f4'), ('Total Reads', '<f4')])
 
 >>> from interop import summary
@@ -26,7 +26,9 @@ array([(0.36666667, 6.6666665, 0.)],
 >>> from interop import indexing
 >>> indexing(run_metrics_with_indexing)
 array([(1., 1101., 'ATCACGAC-AAGGTTCA', '1', 4570., 900., 507.77777),
-       (1., 1101., 'ATCACGAC-GGGGGGGG', '2', 2343., 900., 260.33334)],
+       (1., 1101., 'ATCACGAC-GGGGGGGG', '2', 2343., 900., 260.33334),
+       (1., 1102., 'ATCACGAC-AAGGTTCA', '1', 4570.,   0.,   0.     ),
+       (1., 1102., 'ATCACGAC-GGGGGGGG', '2', 2343.,   0.,   0.     )],
       dtype=[('Lane', '<f4'), ('Tile', '<f4'), ('Barcode', 'O'), ('SampleID', 'O'), ('Cluster Count', '<f4'), ('Cluster Count PF', '<f4'), ('% Demux', '<f4')])
 
 >>> from interop import imaging
@@ -69,16 +71,16 @@ def index_summary(run_metrics, level='Lane', columns=None, dtype='f4', **extra):
     >>> ar = index_summary("some/path/run_folder_name") # doctest: +SKIP
 
     >>> index_summary(run_metrics_with_indexing)
-    array([(1, 0.4556, 507.7778, 260.3334, 768.1111, 1800., 2000.)],
+    array([(1, 0.4556, 1015.5555, 520.6667, 1536.2222, 1800., 2000.)],
           dtype=[('Lane', '<u2'), ('Mapped Reads Cv', '<f4'), ('Max Mapped Reads', '<f4'), ('Min Mapped Reads', '<f4'), ('Total Fraction Mapped Reads', '<f4'), ('Total Pf Reads', '<f4'), ('Total Reads', '<f4')])
 
     >>> index_summary(run_metrics_with_indexing, level='Barcode')
-    array([(1, 9140., 507.7778, 1., 'ATCACGAC', 'AAGGTTCA', 'TSCAIndexes', '1'),
-           (1, 4686., 260.3334, 2., 'ATCACGAC', 'GGGGGGGG', 'TSCAIndexes', '2')],
+    array([(1, 18280., 1015.5555, 1., 'ATCACGAC', 'AAGGTTCA', 'TSCAIndexes', '1'),
+           (1,  9372.,  520.6667, 2., 'ATCACGAC', 'GGGGGGGG', 'TSCAIndexes', '2')],
           dtype=[('Lane', '<u2'), ('Cluster Count', '<f4'), ('Fraction Mapped', '<f4'), ('Id', '<f4'), ('Index1', 'O'), ('Index2', 'O'), ('Project Name', 'O'), ('Sample Id', 'O')])
 
     >>> index_summary(run_metrics_with_indexing, columns=['Total Fraction Mapped Reads'])
-    array([(1, 768.1111)],
+    array([(1, 1536.2222)],
           dtype=[('Lane', '<u2'), ('Total Fraction Mapped Reads', '<f4')])
 
     >>> index_summary(run_metrics_with_indexing, columns=['Incorrect'])
@@ -105,7 +107,7 @@ def index_summary(run_metrics, level='Lane', columns=None, dtype='f4', **extra):
         if level not in _index_summary_levels:
             raise ValueError("level={} not in {}".format(str(level), str(_index_summary_levels)))
 
-    extra['valid_to_load'] = create_valid_to_load(('Index', ))
+    extra['valid_to_load'] = create_valid_to_load(('Index', 'Tile', ))
     run_metrics = read(run_metrics, **extra)
     if run_metrics.empty():
         return np.asarray([])
@@ -201,7 +203,7 @@ def index_summary_columns(level='Lane', ret_dict=False):
     if level not in _index_summary_levels:
         raise ValueError("level={} not in {}".format(str(level), str(_index_summary_levels)))
     summary_obj = interop_summary.index_lane_summary() if level == 'Lane' else interop_summary.index_count_summary()
-    exclude_attrs = ('this', '_s', 'at', 'size', 'resize', 'lane', 'surface', 'cycle_state', 'clear', 'reserve', 'sort', 'push_back', 'set', 'add', 'update_fraction_mapped')
+    exclude_attrs = ('thisown', 'this', '_s', 'at', 'size', 'resize', 'lane', 'surface', 'cycle_state', 'clear', 'reserve', 'sort', 'push_back', 'set', 'add', 'update_fraction_mapped')
     methods = tuple([v for v in dir(summary_obj) if not v.startswith('__') and v not in exclude_attrs])
 
     def to_column_name(method):
@@ -466,7 +468,7 @@ def summary_columns(level='Total', ret_dict=False):
         summary_obj = interop_summary.lane_summary()
     else:
         summary_obj = interop_summary.read_summary().summary()
-    exclude_attrs = ('this', '_s', 'at', 'size', 'resize', 'resize_stat', 'lane', 'surface', 'cycle_state')
+    exclude_attrs = ('thisown', 'this', '_s', 'at', 'size', 'resize', 'resize_stat', 'lane', 'surface', 'cycle_state')
     methods = tuple([v for v in dir(summary_obj) if not v.startswith('__') and v not in exclude_attrs])
 
     def to_column_name(method):
@@ -512,14 +514,17 @@ def indexing(run_metrics, per_sample=True, dtype='f4', stype='O', **extra):
     >>> ar = indexing(run_metrics_with_indexing)
     >>> ar
     array([(1., 1101., 'ATCACGAC-AAGGTTCA', '1', 4570., 900., 507.77777),
-           (1., 1101., 'ATCACGAC-GGGGGGGG', '2', 2343., 900., 260.33334)],
+           (1., 1101., 'ATCACGAC-GGGGGGGG', '2', 2343., 900., 260.33334),
+           (1., 1102., 'ATCACGAC-AAGGTTCA', '1', 4570.,   0.,   0.     ),
+           (1., 1102., 'ATCACGAC-GGGGGGGG', '2', 2343.,   0.,   0.     )],
           dtype=[('Lane', '<f4'), ('Tile', '<f4'), ('Barcode', 'O'), ('SampleID', 'O'), ('Cluster Count', '<f4'), ('Cluster Count PF', '<f4'), ('% Demux', '<f4')])
 
     The `indexing` function also provides an overall sample view by setting `per_sample=False`.
 
     >>> ar = indexing(run_metrics_with_indexing, per_sample=False)
     >>> ar
-    array([(1., 1101., 1000., 900., 768.11115)],
+    array([(1., 1101., 1000., 900., 768.11115),
+           (1., 1102.,    0.,   0.,   0.     )],
           dtype=[('Lane', '<f4'), ('Tile', '<f4'), ('Cluster Count', '<f4'), ('Cluster Count PF', '<f4'), ('% Demux', '<f4')])
 
     :param run_metrics: py_interop_run_metrics.run_metrics or string run folder path
@@ -530,7 +535,7 @@ def indexing(run_metrics, per_sample=True, dtype='f4', stype='O', **extra):
     :return: structured with column names and dype - np.array
     """
 
-    extra['valid_to_load'] = create_valid_to_load(('Index', ))
+    extra['valid_to_load'] = create_valid_to_load(('Index', 'Tile'))
     run_metrics = read(run_metrics, **extra)
     if not isinstance(run_metrics, interop_metrics.run_metrics):
         raise ValueError("Expected interop.py_interop_run_metrics.run_metrics or str for `run_metrics`")
@@ -561,22 +566,30 @@ def indexing(run_metrics, per_sample=True, dtype='f4', stype='O', **extra):
             continue
         if per_sample:
             for index_info in metric.indices():
+                if metric.cluster_count_pf() > 0:
+                    percent_demux = float(index_info.cluster_count()) / np.float32(metric.cluster_count_pf()) * 100.0
+                else:
+                    percent_demux = 0
                 table[k] = (metric.lane()
                             , metric.tile()
                             , index_info.index_seq()
                             , index_info.sample_id()
                             , index_info.cluster_count()
                             , metric.cluster_count_pf()
-                            , float(index_info.cluster_count()) / metric.cluster_count_pf() * 100.0
+                            , percent_demux
                             )
                 k += 1
         else:
-            table[i] = (metric.lane()
+            percent_demux = metric.percent_demultiplexed("")
+            if not np.isfinite(percent_demux):
+                percent_demux = 0.0
+            table[k] = (metric.lane()
                         , metric.tile()
                         , metric.cluster_count()
                         , metric.cluster_count_pf()
-                        , metric.percent_demultiplexed("")
+                        , percent_demux
                         )
+            k += 1
     return table
 
 
@@ -667,13 +680,67 @@ def imaging(run_metrics, dtype='f4', **extra):
     if run_metrics.empty():
         return np.asarray([])
 
-    columns = interop_table.imaging_column_vector()
-    interop_table.create_imaging_table_columns(run_metrics, columns)
+    headers, columns = _imaging_columns(run_metrics)
     row_offsets = interop_table.map_id_offset()
     interop_table.count_table_rows(run_metrics, row_offsets)
     column_count = interop_table.count_table_columns(columns)
     data = np.zeros((len(row_offsets), column_count), dtype=dtype)
     interop_table.populate_imaging_table_data(run_metrics, columns, row_offsets, data.ravel())
+
+    if not isinstance(dtype, str):
+        dtype = np.dtype(dtype).str
+
+    return np.core.records.fromarrays(data.transpose()
+                                      , names=",".join(headers)
+                                      , formats=",".join([dtype for _ in headers]))
+
+
+def imaging_columns(run_metrics, **extra):
+    """ Get a list of imaging table columns
+
+    >>> from interop import imaging_columns
+    >>> from interop import load_imaging_metrics
+    >>> import interop.py_interop_run_metrics as interop_metrics
+    >>> import numpy as np
+    >>> ar = imaging_columns("some/path/run_folder_name") # doctest: +SKIP
+
+    The above function is equivalent to
+    >>> ar = imaging_columns("some/path/run_folder_name", valid_to_load=load_imaging_metrics()) # doctest: +SKIP
+
+    We can select a subset of metrics to include based on metric groups
+    >>> ar = imaging_columns("some/path/run_folder_name", valid_to_load=['Error']) # doctest: +SKIP
+
+    See `read` below for more examples.
+
+    The following example will rely on an existing run_metrics object (possibly created by the `read` function below).
+
+    >>> imaging_columns(run_metrics_example)
+    ['Lane', 'Tile', 'Cycle', 'Read', 'Cycle Within Read', 'Error Rate', 'P90/green', 'P90/blue', '% No Calls', '% Base/A', '% Base/C', '% Base/G', '% Base/T', 'Fwhm/green', 'Fwhm/blue', 'Corrected/A', 'Corrected/C', 'Corrected/G', 'Corrected/T', 'Called/A', 'Called/C', 'Called/G', 'Called/T', 'Signal To Noise', 'Surface', 'Swath', 'Tile Number']
+
+    :param run_metrics: py_interop_run_metrics.run_metrics or str file path to a run folder
+    :param extra: all extra parameters are passed to `read` if the first parameter is a str file path to a run folder
+    :return: list of string headers
+    """
+
+    if isinstance(run_metrics, str):
+        if extra.get('valid_to_load', None) is None:
+            extra['valid_to_load'] = load_imaging_metrics()
+        run_metrics = read(run_metrics, **extra)
+    if not isinstance(run_metrics, interop_metrics.run_metrics):
+        raise ValueError("Expected interop.py_interop_run_metrics.run_metrics or str for `run_metrics`")
+
+    return _imaging_columns(run_metrics)[0]
+
+
+def _imaging_columns(run_metrics):
+    """ Internal function for getting the imaging columns
+
+    :param run_metrics: py_interop_run_metrics.run_metrics or str file path to a run folder
+    :return: a tuple including (headers, imaging_column_vector)
+    """
+
+    columns = interop_table.imaging_column_vector()
+    interop_table.create_imaging_table_columns(run_metrics, columns)
 
     headers = []
     for i in range(columns.size()):
@@ -682,13 +749,7 @@ def imaging(run_metrics, dtype='f4', **extra):
             headers.extend([str(column.name()) + "/" + str(subname).strip() for subname in column.subcolumns()])
         else:
             headers.append(str(column.name()))
-
-    if not isinstance(dtype, str):
-        dtype = np.dtype(dtype).str
-
-    return np.core.records.fromarrays(data.transpose()
-                                      , names=",".join(headers)
-                                      , formats=",".join([dtype for _ in headers]))
+    return headers, columns
 
 
 def read(run, valid_to_load=None, requires=None, search_paths=None, **extra):
@@ -951,20 +1012,21 @@ def load_imaging_metrics():
 ########################################################################################################################
 
 
-def _run_info_example_fixture():
+def _run_info_example_fixture(tiles=None):
     """Fixture used for doctests"""
 
     run_name = "111111_UNKNOWN_1_XXYT"
     run_info_version = 6
     run_date, instrument_name, run_number, flowcell_id = run_name.split('_')
-    lane_count = 1
-    surface_count = 1
-    swath_count = 1
-    tile_count = 1
+    if tiles is None:
+        tiles = ['1_1101']
+    lane_count = len(set(tile.split('_')[0] for tile in tiles))
+    surface_count = len(set(tile.split('_')[1][0] for tile in tiles))
+    swath_count = len(set(tile.split('_')[1][1] for tile in tiles))
+    tile_count = len(set(tile.split('_')[1][2:] for tile in tiles))
     sections_per_lane = 1
     lanes_per_section = 1
     naming_method = interop_run.FourDigit
-    tiles = ['1_1101']
     flowcell_layout = interop_run.flowcell_layout(lane_count
                                                   , surface_count
                                                   , swath_count
@@ -1028,7 +1090,7 @@ def _run_metrics_example_fixture():
 def _index_metrics_example_fixture():
     """Fixture used for doctests"""
 
-    run_info = _run_info_example_fixture()
+    run_info = _run_info_example_fixture(['1_1101', '1_1102'])
     metrics = interop_metrics.run_metrics(run_info)
     index_metric_set = metrics.index_metric_set()
 
@@ -1050,6 +1112,23 @@ def _index_metrics_example_fixture():
     cluster_density_pf = 900
     cluster_count = 1000
     cluster_count_pf = 900
+    tile_metric_set.insert(interop_metric_sets.tile_metric(lane_num
+                                                           , tile_num
+                                                           , cluster_density
+                                                           , cluster_density_pf
+                                                           , cluster_count
+                                                           , cluster_count_pf
+                                                           , reads))
+
+    tile_num = 1102
+    lane_num = 1
+    cluster_density = 0
+    cluster_density_pf = 0
+    cluster_count = 0
+    cluster_count_pf = 0
+
+    for read_num in [2, 3]:
+        index_metric_set.insert(interop_metric_sets.index_metric(lane_num, tile_num, read_num, indices));
     tile_metric_set.insert(interop_metric_sets.tile_metric(lane_num
                                                            , tile_num
                                                            , cluster_density

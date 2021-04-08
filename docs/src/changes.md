@@ -1,5 +1,12 @@
 # Changes                                               {#changes}
 
+## v1.1.23
+
+Date       | Description
+---------- | -----------
+2021-4-08 | Issue-262: Fix bugs with index tables in core.py
+
+
 ## v1.1.22
 
 Date       | Description
