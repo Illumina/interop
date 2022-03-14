@@ -1,5 +1,13 @@
 # Changes                                               {#changes}
 
+
+## v1.1.24
+
+Date       | Description
+---------- | -----------
+2022-03-14 | Add support for Python 3.10 for Linux, Windows and Mac OSX
+
+
 ## v1.1.23
 
 Date       | Description

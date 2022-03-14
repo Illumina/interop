@@ -141,29 +141,43 @@ else
 fi
 
 # Build Python Wheels for a range of Python Versions
-if [ -z $PYTHON_VERSION ] && [  -e /opt/python ] ; then
+if [  -e /opt/python ] ; then
     echo "ManyLinux with: "
-    for PYBUILD in `ls -1 /opt/python`; do
-      echo "Python ${PYBUILD}"
-    done
-    for PYBUILD in `ls -1 /opt/python`; do
-        PYTHON_BIN=/opt/python/${PYBUILD}/bin
-        if [[ "$PYBUILD" == cp26* ]]; then
-            continue
-        fi
-        if [[ "$PYBUILD" == cp33* ]]; then
-            continue
-        fi
-        ${PYTHON_BIN}/python -m pip install pandas
-        rm -fr ${BUILD_PATH}/src/ext/python/*
-        run "Configure ${PYBUILD}" cmake $SOURCE_PATH -B${BUILD_PATH} -DPYTHON_EXECUTABLE=${PYTHON_BIN}/python ${CMAKE_EXTRA_FLAGS} -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp
 
-        run "Test ${PYBUILD}" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
-        run "Build ${PYBUILD}" cmake --build $BUILD_PATH --target package_wheel -- -j${THREAD_COUNT}
-        auditwheel show ${ARTIFACT_PATH}/tmp/interop*${PYBUILD}*linux_x86_64.whl
-        auditwheel repair ${ARTIFACT_PATH}/tmp/interop*${PYBUILD}*linux_x86_64.whl -w ${ARTIFACT_PATH}
-        rm -fr ${ARTIFACT_PATH}/tmp
-    done
+    if [ -z "${PYTHON_VERSION}" ] ; then
+      for PYBUILD in `ls -1 /opt/python`; do
+        echo "Python ${PYBUILD}"
+      done
+      for PYBUILD in `ls -1 /opt/python`; do
+          PYTHON_BIN=/opt/python/${PYBUILD}/bin
+          if [[ "$PYBUILD" == cp26* ]]; then
+              continue
+          fi
+          if [[ "$PYBUILD" == cp33* ]]; then
+              continue
+          fi
+          ${PYTHON_BIN}/python -m pip install pandas
+          rm -fr ${BUILD_PATH}/src/ext/python/*
+          run "Configure ${PYBUILD}" cmake $SOURCE_PATH -B${BUILD_PATH} -DPYTHON_EXECUTABLE=${PYTHON_BIN}/python ${CMAKE_EXTRA_FLAGS} -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp
+
+          run "Test ${PYBUILD}" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
+          run "Build ${PYBUILD}" cmake --build $BUILD_PATH --target package_wheel -- -j${THREAD_COUNT}
+          auditwheel show ${ARTIFACT_PATH}/tmp/interop*${PYBUILD}*linux_x86_64.whl
+          auditwheel repair ${ARTIFACT_PATH}/tmp/interop*${PYBUILD}*linux_x86_64.whl -w ${ARTIFACT_PATH}
+          rm -fr ${ARTIFACT_PATH}/tmp
+      done
+    else
+          PYTHON_BIN=/opt/python/${PYTHON_VERSION}/bin
+          ${PYTHON_BIN}/python -m pip install pandas
+          rm -fr ${BUILD_PATH}/src/ext/python/*
+          run "Configure ${PYBUILD}" cmake $SOURCE_PATH -B${BUILD_PATH} -DPYTHON_EXECUTABLE=${PYTHON_BIN}/python ${CMAKE_EXTRA_FLAGS} -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp
+
+          run "Test ${PYBUILD}" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
+          run "Build ${PYBUILD}" cmake --build $BUILD_PATH --target package_wheel -- -j${THREAD_COUNT}
+          auditwheel show ${ARTIFACT_PATH}/tmp/interop*${PYBUILD}*linux_x86_64.whl
+          auditwheel repair ${ARTIFACT_PATH}/tmp/interop*${PYBUILD}*linux_x86_64.whl -w ${ARTIFACT_PATH}
+          rm -fr ${ARTIFACT_PATH}/tmp
+    fi
 fi
 
 if [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PYTHON_VERSION" != "DotNetStandard" ] && [ "$PYTHON_VERSION" != "None" ] ; then
