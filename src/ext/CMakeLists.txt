@@ -1,5 +1,5 @@
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules)
-find_package(SWIG)
+find_package(SWIG 4.0)
 if(NOT SWIG_FOUND)
     message(WARNING "Swig not found. Skipping interface generation.")
     return()
@@ -13,16 +13,6 @@ if(POLICY CMP0086)
 endif()
 
 include(${PROJECT_SOURCE_DIR}/cmake/CheckSWIGVersion.cmake)
-
-check_swig_version(swig_major_ver)
-if(swig_major_ver GREATER "4")
-    message(FATAL_ERROR "Swig version ${swig_major_ver} found, but version 3.x or earlier is required. Skipping interface generation.")
-    return()
-endif()
-if(swig_major_ver LESS "3")
-    message(FATAL_ERROR "Swig version ${swig_major_ver} found, but version 3.x or later is required. Skipping interface generation.")
-    return()
-endif()
 
 # Support earlier and later versions of CMake
 if(CMAKE_VERSION VERSION_LESS 3.8)

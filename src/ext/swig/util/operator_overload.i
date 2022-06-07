@@ -27,7 +27,7 @@
     %rename(is_less) operator< const;
     %rename(copy) operator=;
     %rename(to_int) operator uint64_t;
-    %rename(at) *::operator[];
+    %rename(at) *::operator[]const;
     %rename(at) *::operator();
     %rename(to_float) *:: operator float()const;
     %rename(to_double) *:: operator double()const;
