@@ -1,25 +1,27 @@
-find_package(SWIG)
+find_package(SWIG 4.0)
 if(NOT SWIG_FOUND)
     return()
 endif()
 
 check_swig_version(swig_major_ver)
-if(swig_major_ver LESS "3")
+if(swig_major_ver LESS "4")
     return()
 endif()
 
-find_package(PythonInterp)
-if(NOT PYTHON_BUILD_AVAILABLE)
+find_package (Python COMPONENTS Interpreter Development NumPy)
+
+if(NOT Python_Interpreter_FOUND)
+    message(WARNING "Cannot find Python Interpreter, unit tests will not be run")
     return()
 endif()
 
-find_package(NumPy)
-if(NOT NUMPY_FOUND)
+if(NOT Python_Development_FOUND)
+    message(WARNING "Cannot find Python Development, unit tests will not be run")
     return()
 endif()
 
-if(NOT PYTHONINTERP_FOUND)
-    message(WARNING "Cannot find Python Interpretor, unit tests will not be run")
+if(NOT Python_NumPy_FOUND)
+    message(WARNING "Cannot find Python NumPy, unit tests will not be run")
     return()
 endif()
 
@@ -29,8 +31,8 @@ add_custom_target(check_python
         COMMENT "Running Python Unit tests"
         COMMAND ${CMAKE_COMMAND} -E copy_directory $<TARGET_FILE_DIR:${SWIG_PYTHON_MODULE_TARGET}> ${CMAKE_CURRENT_BINARY_DIR}/interop
         COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/DepTests.py ${CMAKE_CURRENT_BINARY_DIR}/interop
-        COMMAND ${PYTHON_EXECUTABLE} -m interop --test
-        COMMAND ${PYTHON_EXECUTABLE} interop/DepTests.py
+        COMMAND ${Python_EXECUTABLE} -m interop --test
+        COMMAND ${Python_EXECUTABLE} interop/DepTests.py
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         )
 

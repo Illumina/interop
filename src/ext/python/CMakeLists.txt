@@ -1,22 +1,75 @@
-
-find_package(PythonInterp)
+add_library(Python::ModuleInterface INTERFACE IMPORTED)
 if(NOT ENABLE_PYTHON_DYNAMIC_LOAD OR WIN32)
-    find_package(PythonLibs EXACT ${PYTHON_VERSION_STRING})
+    find_package (Python COMPONENTS Interpreter Development NumPy)
+    target_link_libraries(Python::ModuleInterface INTERFACE Python::Module)
+else()
+    if(CMAKE_VERSION VERSION_LESS 3.19.2)
+        find_package (Python COMPONENTS Interpreter NumPy)
+    else()
+        # Development required for CMake 3.19.2 or higher
+        find_package (Python COMPONENTS Interpreter Development NumPy)
+    endif()
+    target_include_directories(Python::ModuleInterface SYSTEM INTERFACE
+            ${Python_INCLUDE_DIRS})
+    target_compile_options(Python::ModuleInterface INTERFACE
+            -Wno-deprecated-declarations)
+    target_link_options(Python::ModuleInterface INTERFACE
+            $<$<CXX_COMPILER_ID:AppleClang>:-undefined dynamic_lookup> -DUNUSED
+            )
 endif()
-if(NOT PYTHONLIBS_FOUND)
-    execute_process(
-            COMMAND ${PYTHON_EXECUTABLE} -c "from distutils import sysconfig; print(sysconfig.get_python_inc())"
-            OUTPUT_VARIABLE
-            PYTHON_INCLUDE_PATH
-            OUTPUT_STRIP_TRAILING_WHITESPACE
-    )
-endif()
-message(STATUS "Found PythonIncludePath: ${PYTHON_INCLUDE_PATH}")
-find_package(NumPy)
-if(NOT NUMPY_FOUND)
-    set(PYTHON_TARGET_FOUND OFF CACHE INTERNAL "Python target is available" FORCE)
-    message(WARNING "Numpy not found, unable to generate Python Binding, interpreter ${PYTHON_EXECUTABLE}")
+
+if(NOT Python_FOUND)
+    if(NOT ENABLE_PYTHON_DYNAMIC_LOAD OR WIN32)
+        if(NOT Python_Development.Module_FOUND)
+            message(WARNING "No Python development libs or headers found")
+        else()
+            message(STATUS "Found Python 3 headers at ${Python_INCLUDE_DIRS}")
+            message(STATUS "Found Python 3 libs at ${Python_LIBRARIES}")
+            message(STATUS "Found Python 3 linker options at ${Python_LINK_OPTIONS}")
+        endif()
+    else()
+        message(STATUS "Found Python 3 headers at ${Python_INCLUDE_DIRS}")
+        message(STATUS "Found Python 3 libs at ${Python_LIBRARIES}")
+        message(STATUS "Found Python 3 linker options at ${Python_LINK_OPTIONS}")
+    endif()
+    if(NOT Python_Interpreter_FOUND)
+        message(WARNING "No Python 3.x interpreterat ${Python_EXECUTABLE}")
+    else()
+        message(STATUS "Found Python 3 interpreter at ${Python_EXECUTABLE}")
+    endif()
+    if(NOT Python_NumPy_FOUND)
+        execute_process(
+                COMMAND ${Python_EXECUTABLE} -c "import numpy; print(numpy.get_include())"
+                OUTPUT_VARIABLE
+                NUMPY_INCLUDE_PATH
+                OUTPUT_STRIP_TRAILING_WHITESPACE
+        )
+        if(NOT Python_NumPy_INCLUDE_DIRS)
+            message(WARNING "Numpy include directory missing: (2nd try: ${NUMPY_INCLUDE_PATH})")
+        elseif(NOT Python_NumPy_VERSION)
+            message(WARNING "Numpy version could not be determined")
+        elseif(NOT Python_Development.Module_FOUND)
+            message(WARNING "No Python development libs or headers found")
+        else()
+            message(WARNING "NumPy not found - reason unknown")
+        endif()
+    else()
+        message(STATUS "Found Python 3 numpy headers at ${Python_NumPy_INCLUDE_DIRS}")
+        message(STATUS "Found Python 3 numpy version ${Python_NumPy_VERSION}")
+    endif()
+    if(REQUIRE_PYTHON)
+        message(FATAL_ERROR "Insufficient Python requirements found")
+    else()
+        message(WARNING "Insufficient Python requirements found")
+    endif()
     return()
+else()
+    message(STATUS "Found Python 3 interpreter at ${Python_EXECUTABLE}")
+    message(STATUS "Found Python 3 headers at ${Python_INCLUDE_DIRS}")
+    message(STATUS "Found Python 3 libs at ${Python_LIBRARIES}")
+    message(STATUS "Found Python 3 link options at ${Python_LINK_OPTIONS}")
+    message(STATUS "Found Python 3 numpy headers at ${Python_NumPy_INCLUDE_DIRS}")
+    message(STATUS "Found Python 3 numpy version ${Python_NumPy_VERSION}")
 endif()
 
 # Workaround for fun little MinGw/Python "feature" for 64-bit systems
@@ -111,11 +164,9 @@ foreach(SRC ${SWIG_SRCS})
         set_target_properties(${SWIG_MODULE} PROPERTIES LINK_FLAGS "${PYTHON_GENERATED_LINK_FLAGS}")
     endif()
 
-    if(PYTHONLIBS_FOUND)
-        swig_link_libraries(${MODULE} ${PYTHON_LIBRARIES} ${INTEROP_DL_LIB})
-    else()
-        swig_link_libraries(${MODULE} ${INTEROP_DL_LIB})
-    endif()
+    swig_link_libraries(${MODULE} ${INTEROP_DL_LIB}
+            Python::ModuleInterface
+            Python::NumPy)
     add_dependencies(${SWIG_MODULE} ${INTEROP_DL_LIB})
     set(swig_py_file "${CMAKE_SWIG_OUTDIR}/${MODULE}.py")
     list(APPEND py_gens "$<TARGET_FILE:${SWIG_MODULE}>")
@@ -138,6 +189,8 @@ foreach(SRC ${SWIG_SRCS})
     add_dependencies(python_lib ${SWIG_MODULE})
     install(TARGETS ${SWIG_MODULE} LIBRARY DESTINATION lib64/python)
     install(FILES ${swig_py_file} DESTINATION lib64/python)
+
+    message(STATUS "Python swig module: ${SWIG_MODULE}")
 endforeach()
 
 string(REPLACE ";" "," PY_MOD_NAME_LIST "${py_mod_names}")
