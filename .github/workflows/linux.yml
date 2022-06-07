@@ -17,9 +17,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Package Python 3.9 and earlier
-        run: docker run --pull
-
-        --rm -v ${{github.workspace}}/:/io ezralanglois/interop sh /io/tools/package.sh /io /io/dist travis OFF
+        run: docker run --pull --rm -v ${{github.workspace}}/:/io ezralanglois/interop sh /io/tools/package.sh /io /io/dist travis OFF
 
       - name: Package Python 3.10
         run: docker run --rm -v ${{github.workspace}}/:/io ezralanglois/interop_centos7 sh /io/tools/package.sh /io /io/dist travis OFF Release cp310-cp310
