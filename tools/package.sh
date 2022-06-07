@@ -157,7 +157,7 @@ if [  -e /opt/python ] ; then
               continue
           fi
           ${PYTHON_BIN}/python -m pip install pandas
-          rm -fr ${BUILD_PATH}/src/ext/python/*
+          rm -fr ${BUILD_PATH}
 
           #-DPython_INCLUDE_DIRS=$(python -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())")  \
           #-DPython_LIBRARY_DIRS=$(python -c "import distutils.sysconfig as sysconfig; print(sysconfig.get_config_var('LIBDIR'))")
