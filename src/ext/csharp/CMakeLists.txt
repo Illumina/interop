@@ -9,6 +9,14 @@ add_custom_target(csharp_lib)
 set_target_properties(csharp_lib PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
 set(SWIG_VERSION_INFO "")
 
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    set(SWIG_SHARED_LIBRARY_SUFFIX ".dylib")
+    set(SWIG_SHARED_LIBRARY_PREFIX "lib")
+else()
+    set(SWIG_SHARED_LIBRARY_SUFFIX "${CMAKE_SHARED_LIBRARY_SUFFIX}")
+    set(SWIG_SHARED_LIBRARY_PREFIX "${CMAKE_SHARED_LIBRARY_PREFIX}")
+endif()
+
 set(SWIG_ADDITIONAL_FLAGS "")
 
 foreach(SRC ${SWIG_SRCS})
@@ -49,6 +57,13 @@ foreach(SRC ${SWIG_SRCS})
     swig_add_library(c_csharp_${MODULE} TYPE SHARED LANGUAGE csharp SOURCES ${SRC} ${SWIG_VERSION_INFO})
     set(SWIG_MODULE ${SWIG_MODULE_c_csharp_${MODULE}_REAL_NAME})
     set(EXTRA_LINKER_FLAGS)
+    set_target_properties(${SWIG_MODULE} PROPERTIES
+            LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_CURRENT_BINARY_DIR}/Release"
+            LIBRARY_OUTPUT_DIRECTORY_DEBUG "${CMAKE_CURRENT_BINARY_DIR}/Debug"
+            LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/Debug"
+            )
+    set_target_properties(${SWIG_MODULE} PROPERTIES PREFIX "${SWIG_SHARED_LIBRARY_PREFIX}")
+    set_target_properties(${SWIG_MODULE} PROPERTIES SUFFIX "${SWIG_SHARED_LIBRARY_SUFFIX}")
     if(MINGW)
         set(EXTRA_LINKER_FLAGS "-Wl,-add-stdcall-alias")
         get_target_property(existing_link_flags ${SWIG_MODULE} LINK_FLAGS)
@@ -64,10 +79,7 @@ foreach(SRC ${SWIG_SRCS})
     elseif(COMPILER_IS_GNUCC_OR_CLANG)
         set_target_properties(${SWIG_MODULE} PROPERTIES COMPILE_FLAGS "${_WNO_UNUSED_FUNCTION} ${_WNO_UNUSED_PARAMETER}")
     endif()
-    if(NOT MSVC OR "${CMAKE_GENERATOR}" STREQUAL "NMake Makefiles")
-        set_target_properties(${SWIG_MODULE} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_SWIG_OUTDIR}/Release")
-        set_target_properties(${SWIG_MODULE} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_DEBUG "${CMAKE_SWIG_OUTDIR}/Debug")
-    endif()
+
     swig_link_libraries(${SWIG_MODULE} ${INTEROP_DL_LIB})
 
     if(WIN32)

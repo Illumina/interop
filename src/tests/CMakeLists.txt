@@ -31,8 +31,8 @@ if(NOT ENABLE_SWIG)
     return()
 endif()
 
-add_subdirectory("csharp")
 if(CSHARP_TEST_ENABLED AND ENABLE_CSHARP)
+    add_subdirectory("csharp")
     add_dependencies(check check_csharp)
 endif()
 

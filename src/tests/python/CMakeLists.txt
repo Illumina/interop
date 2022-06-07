@@ -15,7 +15,7 @@ if(NOT Python_Interpreter_FOUND)
     return()
 endif()
 
-if(NOT Python_Development_FOUND)
+if(NOT Python_Development.Module_FOUND)
     message(WARNING "Cannot find Python Development, unit tests will not be run")
     return()
 endif()
