@@ -169,19 +169,18 @@ if [  -e /opt/python ] ; then
           rm -fr ${ARTIFACT_PATH}/tmp
       done
     else
+        echo "Build with specific Python Version: ${PYTHON_VERSION}"
           PYTHON_BIN=/opt/python/${PYTHON_VERSION}/bin
           rm -fr ${BUILD_PATH}/src/ext/python/*
-          run "Configure ${PYBUILD}" cmake $SOURCE_PATH -B${BUILD_PATH} -DPython_EXECUTABLE=${PYTHON_BIN}/python ${CMAKE_EXTRA_FLAGS} -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp -DENABLE_CSHARP=OFF
+          run "Configure ${PYTHON_VERSION}" cmake $SOURCE_PATH -B${BUILD_PATH} -DPython_EXECUTABLE=${PYTHON_BIN}/python ${CMAKE_EXTRA_FLAGS} -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp -DENABLE_CSHARP=OFF
 
-          run "Test ${PYBUILD}" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
-          run "Build ${PYBUILD}" cmake --build $BUILD_PATH --target package_wheel -- -j${THREAD_COUNT}
-          auditwheel show ${ARTIFACT_PATH}/tmp/interop*${PYBUILD}*linux_x86_64.whl
-          auditwheel repair ${ARTIFACT_PATH}/tmp/interop*${PYBUILD}*linux_x86_64.whl -w ${ARTIFACT_PATH}
+          run "Test ${PYTHON_VERSION}" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
+          run "Build ${PYTHON_VERSION}" cmake --build $BUILD_PATH --target package_wheel -- -j${THREAD_COUNT}
+          auditwheel show ${ARTIFACT_PATH}/tmp/interop*${PYTHON_VERSION}*linux_x86_64.whl
+          auditwheel repair ${ARTIFACT_PATH}/tmp/interop*${PYTHON_VERSION}*linux_x86_64.whl -w ${ARTIFACT_PATH}
           rm -fr ${ARTIFACT_PATH}/tmp
     fi
-fi
-
-if [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PYTHON_VERSION" != "DotNetStandard" ] && [ "$PYTHON_VERSION" != "None" ] ; then
+elif [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PYTHON_VERSION" != "DotNetStandard" ] && [ "$PYTHON_VERSION" != "None" ] ; then
     if [ "$PYTHON_VERSION" == "ALL" ] ; then
         # python_versions="2.7.17 3.5.9 3.6.10 3.7.7 3.8.2 3.9.x"
         python_versions="2.7.17 3.5.9"
