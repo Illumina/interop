@@ -1,5 +1,4 @@
 add_library(Python::ModuleInterface INTERFACE IMPORTED)
-message(STATUS "Set Python 3 headers at ${Python_INCLUDE_DIRS}")
 if(NOT ENABLE_PYTHON_DYNAMIC_LOAD OR WIN32)
     find_package (Python COMPONENTS Interpreter Development.Module NumPy)
     target_link_libraries(Python::ModuleInterface INTERFACE Python::Module)

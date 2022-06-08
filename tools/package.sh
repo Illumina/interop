@@ -156,11 +156,8 @@ if [  -e /opt/python ] ; then
           if [[ "$PYBUILD" == cp33* ]]; then
               continue
           fi
-          #${PYTHON_BIN}/python -m pip install pandas
           rm -fr ${BUILD_PATH}
 
-          #-DPython_INCLUDE_DIRS=$(python -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())")  \
-          #-DPython_LIBRARY_DIRS=$(python -c "import distutils.sysconfig as sysconfig; print(sysconfig.get_config_var('LIBDIR'))")
           run "Configure ${PYBUILD}" cmake $SOURCE_PATH -B${BUILD_PATH} -DPython_EXECUTABLE=${PYTHON_BIN}/python ${CMAKE_EXTRA_FLAGS} -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp -DENABLE_CSHARP=OFF
 
           run "Test ${PYBUILD}" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
@@ -171,7 +168,6 @@ if [  -e /opt/python ] ; then
       done
     else
           PYTHON_BIN=/opt/python/${PYTHON_VERSION}/bin
-          #${PYTHON_BIN}/python -m pip install pandas
           rm -fr ${BUILD_PATH}/src/ext/python/*
           run "Configure ${PYBUILD}" cmake $SOURCE_PATH -B${BUILD_PATH} -DPython_EXECUTABLE=${PYTHON_BIN}/python ${CMAKE_EXTRA_FLAGS} -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp -DENABLE_CSHARP=OFF
 

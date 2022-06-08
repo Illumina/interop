@@ -22,16 +22,20 @@
 set -e
 
 CMAKE_URL="http://www.cmake.org/files/v3.8/cmake-3.8.2-Linux-x86_64.tar.gz"
+CMAKE_URL="https://github.com/Kitware/CMake/releases/download/v3.20.5/cmake-3.20.5-linux-x86_64.tar.gz"
 SWIG_URL="http://prdownloads.sourceforge.net/swig/swig-3.0.12.tar.gz"
+SWIG_URL="http://prdownloads.sourceforge.net/swig/swig-4.0.2.tar.gz"
 NUGET_URL="https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
 GOOGLETEST_URL="https://github.com/google/googletest/archive/release-1.8.0.tar.gz"
 JUNIT_URL="http://search.maven.org/remotecontent?filepath=junit/junit/4.12/junit-4.12.jar"
 NUNIT_URL="https://github.com/nunit/nunitv2/releases/download/2.6.4/NUnit-2.6.4.zip"
 JAVA_URL="http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.rpm"
-VALGRIND_URL="http://www.valgrind.org/downloads/valgrind-3.14.0.tar.bz2"
+#VALGRIND_URL="http://www.valgrind.org/downloads/valgrind-3.14.0.tar.bz2"
 DOTNET_URL="https://download.visualstudio.microsoft.com/download/pr/022d9abf-35f0-4fd5-8d1c-86056df76e89/477f1ebb70f314054129a9f51e9ec8ec/dotnet-sdk-2.2.207-linux-x64.tar.gz"
+DOTNET_URL="https://download.visualstudio.microsoft.com/download/pr/42f39f2f-3f24-4340-8c57-0a3133620c21/0a353696275b00cbddc9f60069867cfc/dotnet-sdk-2.2.110-linux-x64.tar.gz"
+#DOTNET_URL="https://download.visualstudio.microsoft.com/download/pr/c505a449-9ecf-4352-8629-56216f521616/bd6807340faae05b61de340c8bf161e8/dotnet-sdk-6.0.201-linux-x64.tar.gz"
 PROG_HOME=/opt
-SWIG_HOME=${PROG_HOME}/swig3
+SWIG_HOME=${PROG_HOME}/swig4
 JUNIT_HOME=${PROG_HOME}/junit
 NUNIT_HOME=${PROG_HOME}/nunit
 
@@ -44,7 +48,7 @@ mkdir /opt/dotnet
 wget --no-check-certificate --quiet -O - ${DOTNET_URL} | tar --strip-components=1 -xz -C /opt/dotnet
 
 if hash cmake  2> /dev/null; then
-    echo "Found CMake"
+    wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C /opt/_internal/tools
 else
     wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C /usr
 fi
@@ -119,19 +123,23 @@ else
     echo "Found JUnit at ${JUNIT_HOME}/${JUNIT_URL##*/}"
 fi
 
-mkdir tmp_build
-wget --no-check-certificate --quiet -O - ${VALGRIND_URL} | tar --strip-components=1 -xj -C ./tmp_build
-cd tmp_build
-./configure --prefix=/usr
-make -j 4
-make install
-cd -
-rm -fr tmp_build
+#mkdir tmp_build
+#wget --no-check-certificate --quiet -O - ${VALGRIND_URL} | tar --strip-components=1 -xj -C ./tmp_build
+#cd tmp_build
+#./configure --prefix=/usr
+#make -j 4
+#make install
+#cd -
+#rm -fr tmp_build
 
 
 wget --no-check-certificate --quiet ${NUGET_URL} -O /usr/lib/nuget.exe
 echo "mono /usr/lib/nuget.exe \$@" > /usr/bin/nuget
 chmod +x /usr/bin/nuget
+
+    for PYBUILD in `ls -1 /opt/python`; do
+        "/opt/python/${PYBUILD}/bin/pip" install numpy pandas
+    done
 
 
 export JAVA_HOME=/usr/java/jdk1.8.0_131

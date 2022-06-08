@@ -1,6 +1,6 @@
 # docker build --rm -t ezralanglois/interop_centos7 -f ./tools/docker/DockerFile_Centos7 tools
 
-FROM centos:7
+FROM docker-bioinformatics.dockerhub.illumina.com/manylinux2014_x86_64
 
 ENV JAVA_HOME /usr/java/jdk1.8.0_131
 ENV JUNIT_HOME /opt/junit
