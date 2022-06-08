@@ -298,5 +298,5 @@ echo "----"
 
 rm -fr $BUILD_PATH
 
-setuser $SOURCE_PATH $ARTIFACT_PATH
+setuser $SOURCE_PATH $ARTIFACT_PATH || true
 
