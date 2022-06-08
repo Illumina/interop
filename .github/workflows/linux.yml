@@ -16,11 +16,23 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      #- name: Package Python 3.9 and earlier
-      #  run: docker run --rm -v ${{github.workspace}}/:/io ezralanglois/interop sh /io/tools/package.sh /io /io/dist travis OFF
+      - name: Package Python 3.9 and earlier
+        run: docker run --rm -v ${{github.workspace}}/:/io ezralanglois/interop sh /io/tools/package.sh /io /io/dist travis OFF
 
       - name: Package Python 3.10
         run: docker run --rm -v ${{github.workspace}}/:/io ezralanglois/interop_centos7 sh /io/tools/package.sh /io /io/dist travis OFF Release cp310-cp310
 
       - name: Package Python 3.11
         run: docker run --rm -v ${{github.workspace}}/:/io ezralanglois/interop_centos7 sh /io/tools/package.sh /io /io/dist travis OFF Release cp311-cp311
+
+      - name: List wheels
+        run: ls ./dist/*.whl
+
+
+  - name: Publish a Python distribution to PyPI
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+    uses: pypa/gh-action-pypi-publish@release/v1
+    with:
+      user: __token__
+      password: ${{ secrets.PYPI_API_TOKEN }}
+      packages_dir: ./dist
