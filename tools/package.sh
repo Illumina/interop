@@ -97,6 +97,8 @@ echo "Build Number: ${ARTFACT_BUILD_NUMBER}"
 echo "Additional Flags: ${MORE_FLAGS}"
 echo "------------------------------------------------------------"
 
+git config --global --add safe.directory ${SOURCE_PATH}
+
 CMAKE_EXTRA_FLAGS="-DDISABLE_PACKAGE_SUBDIR=${DISABLE_SUBDIR} -DENABLE_PORTABLE=ON -DENABLE_BACKWARDS_COMPATIBILITY=$INTEROP_C89 -DCMAKE_BUILD_TYPE=$BUILD_TYPE $MORE_FLAGS"
 
 

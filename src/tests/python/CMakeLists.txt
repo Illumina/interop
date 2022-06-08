@@ -8,7 +8,7 @@ if(swig_major_ver LESS "4")
     return()
 endif()
 
-find_package (Python COMPONENTS Interpreter Development NumPy)
+find_package (Python COMPONENTS Interpreter Development.Module NumPy)
 
 if(NOT Python_Interpreter_FOUND)
     message(WARNING "Cannot find Python Interpreter, unit tests will not be run")
