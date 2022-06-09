@@ -15,8 +15,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        # [ubuntu-latest, windows-2016, macOS-latest]
-        os: [windows-2016]
+        os: [ubuntu-latest, windows-2016, macOS-latest]
         #, '3.11-dev'
         pyver: ['3.9', '3.10']
 
