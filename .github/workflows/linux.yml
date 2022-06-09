@@ -35,7 +35,7 @@ jobs:
       - name: Windows Package Python
         if: matrix.os == 'windows-2016' && matrix.pyver == '3.11'
         shell: cmd
-        run: tools\package.bat Release "Visual Studio 14 2015 Win64" package_wheel "-DENABLE_APPS=OFF -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=OFF"
+        run: tools\package.bat Release "Visual Studio 15 2017 Win64" package_wheel "-DENABLE_APPS=OFF -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=OFF"
 
       - name: Mac OSX Package Python
         if: matrix.os == 'macOS-latest' && matrix.pyver == '3.11'
