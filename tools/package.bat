@@ -93,7 +93,6 @@ rem Configure for MSVC
 rem --------------------------------------------------------------------------------------------------------------------
 
 rem https://github.com/actions/setup-python/issues/121
-echo %BUILD_PARAM%
 echo %PREFIX_BEG% Configure %SUFFIX%
 cmake %SOURCE_DIR% -G%COMPILER% -B%BUILD_DIR% %BUILD_PARAM%
 if "%errorlevel%" == "0" goto CONFIGURE_SUCCESS
