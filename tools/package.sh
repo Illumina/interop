@@ -136,9 +136,7 @@ if [ -e $BUILD_PATH ] ; then
 fi
 mkdir $BUILD_PATH
 
-if [ -e $ARTIFACT_PATH ] ; then
-    rm -fr $ARTIFACT_PATH/*
-else
+if [ ! -e $ARTIFACT_PATH ] ; then
     mkdir $ARTIFACT_PATH
 fi
 
