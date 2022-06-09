@@ -32,6 +32,11 @@ if(NOT GMOCK_LIBRARY)
     if(GMOCK_TARGET)
         add_dependencies(${GMOCK_LIBRARY} ${GMOCK_TARGET})
     endif()
+    if(MSVC)
+        target_compile_definitions(${GMOCK_LIBRARY}
+                PRIVATE _CRT_SECURE_NO_WARNINGS _SCL_SECURE_NO_WARNINGS _SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING
+                )
+    endif()
     set_target_properties(${GMOCK_LIBRARY} PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
 endif()
 
