@@ -33,6 +33,7 @@ jobs:
         run: docker run --rm -v ${{github.workspace}}/:/io ezralanglois/interop_centos7 sh /io/tools/package.sh /io /io/dist travis OFF Release cp311-cp311
 
       - name: List wheels
+        if: matrix.os == 'ubuntu-latest'
         run: ls ./dist/*.whl
 
       - name: Publish a Python distribution to PyPI
