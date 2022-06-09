@@ -15,17 +15,27 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-2016, macOS-latest]
+        os: [windows-2016] # [ubuntu-latest, windows-2016, macOS-latest]
         pyver: ['3.9', '3.10']
         #, '3.11-dev']
 
     steps:
       - uses: actions/checkout@v3
+        fetch-depth: 2
 
       - uses: actions/setup-python@v3
         if: matrix.os != 'ubuntu-latest'
         with:
           python-version: ${{matrix.pyver}}
+
+      -name: Check Git
+        run: |
+          git --version
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
+          git status
+          git tag
+          git describe
 
       - name: Package Python 3.9 and earlier
         if: matrix.os == 'ubuntu-latest' && matrix.pyver == '3.9'
@@ -42,7 +52,9 @@ jobs:
       - name: Windows Package Python
         if: matrix.os == 'windows-2016'
         shell: cmd
-        run: tools\package.bat Release "Visual Studio 15 2017 Win64" package_wheel "-DENABLE_APPS=OFF -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=OFF -DPython_EXECUTABLE=${{ env.pythonLocation }}\bin\python"
+        run: |
+          python -m pip install --upgrade pip setuptools wheel numpy
+          tools\package.bat Release "Visual Studio 15 2017 Win64" package_wheel "-DENABLE_APPS=OFF -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=OFF -DPython_EXECUTABLE=${{ env.pythonLocation }}\bin\python"
 
       - name: Mac OSX Package Python
         if: matrix.os == 'macOS-latest'
