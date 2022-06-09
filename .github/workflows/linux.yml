@@ -30,13 +30,13 @@ jobs:
         with:
           python-version: ${{matrix.pyver}}
 
-      #-name: Set Git name
-      #  run: git config user.name "GitHub Actions Bot"
+      - name: Set Git name
+        run: git config user.name "GitHub Actions Bot"
 
-      #-name: Set Git email
-      #  run: git config user.email "<>"
+      - name: Set Git email
+        run: git config user.email "<>"
 
-      -name: Check Git Version
+      - name: Check Git Version
         run: git --version
 
       - name: Package Python 3.9 and earlier
