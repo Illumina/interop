@@ -30,14 +30,11 @@ jobs:
         with:
           python-version: ${{matrix.pyver}}
 
-      - name: Set Git name
-        run: git config user.name "GitHub Actions Bot"
-
-      - name: Set Git email
-        run: git config user.email "<>"
-
-      - name: Check Git Version
-        run: git --version
+      - name: Setup Git name
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
+          git --version
 
       - name: Package Python 3.9 and earlier
         if: matrix.os == 'ubuntu-latest' && matrix.pyver == '3.9'
@@ -54,7 +51,9 @@ jobs:
       - name: Windows Package Python
         if: matrix.os == 'windows-2016'
         shell: cmd
-        run: tools\package.bat Release "Visual Studio 15 2017 Win64" package_wheel "-DENABLE_APPS=OFF -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=OFF -DPython_EXECUTABLE=${{ env.pythonLocation }}\bin\python"
+        run: |
+          python -m pip install --upgrade pip setuptools wheel numpy
+          tools\package.bat Release "Visual Studio 15 2017 Win64" package_wheel "-DENABLE_APPS=OFF -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=OFF -DPython_EXECUTABLE=${{ env.pythonLocation }}\bin\python"
 
       - name: Mac OSX Package Python
         if: matrix.os == 'macOS-latest'

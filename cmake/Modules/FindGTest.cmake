@@ -111,7 +111,7 @@ if(NOT GTEST_INCLUDE_DIR OR NOT GTEST_LIBRARY OR NOT GTEST_MAIN_LIBRARY OR NOT G
             #SOURCE_DIR ${GTEST_PREFIX}/src/gtest
             LOG_DOWNLOAD ON
             LOG_CONFIGURE ON
-            LOG_BUILD ON)
+            LOG_BUILD OFF)
     ExternalProject_Get_Property(gtest source_dir)
     set(GTEST_INCLUDE_DIR ${source_dir}/include)
     set(GTEST_LIBRARY OFF)
