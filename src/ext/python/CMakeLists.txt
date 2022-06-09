@@ -1,5 +1,6 @@
 add_library(Python::ModuleInterface INTERFACE IMPORTED)
 message(STATUS "Python_ROOT_DIR=${Python_ROOT_DIR}")
+message(STATUS "Python_EXECUTABLE=${Python_EXECUTABLE}")
 if(NOT ENABLE_PYTHON_DYNAMIC_LOAD OR WIN32)
     find_package (Python COMPONENTS Interpreter Development.Module NumPy)
     target_link_libraries(Python::ModuleInterface INTERFACE Python::Module)
