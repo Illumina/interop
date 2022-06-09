@@ -59,14 +59,8 @@ set ADDIONAL_CONFIG_OPTIONS=%ADDIONAL_CONFIG_OPTIONS:"=%
 set BUILD_PARAM=%BUILD_PARAM% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DPACKAGE_OUTPUT_FILE_PREFIX=%CD%\dist %ADDIONAL_CONFIG_OPTIONS%
 
 if '%python_version%' == '' goto SKIP_CONDA_UPDATE
-
-choco uninstall miniconda --yes --limit-output
-choco uninstall miniconda3 --yes --limit-output
-choco install miniconda3 --yes --limit-output  --no-progress
-call %MINICONDA_HOME%\Scripts\\activate.bat
-call conda config --set always_yes yes --set changeps1 no
-call conda info
-
+where /q conda
+if %errorlevel% neq 0 goto SKIP_CONDA_UPDATE
 echo "Create environment: %python_version%"
 conda create -n py%python_version% python=%python_version% numpy wheel -y || echo "Environment exists"
 echo "Activate py%python_version%"
