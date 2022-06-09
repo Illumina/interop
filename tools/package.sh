@@ -52,7 +52,7 @@ if hash greadlink  2> /dev/null; then
 else
     readlink="readlink"
 fi
-ARTIFACT_PATH=`$readlink -f $ARTIFACT_PATH`
+#ARTIFACT_PATH=`$readlink -f $ARTIFACT_PATH`
 
 if [ ! -z $3 ] ; then
     BUILD_SERVER="$3"
