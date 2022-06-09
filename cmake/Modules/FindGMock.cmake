@@ -91,9 +91,9 @@ if(NOT GMOCK_INCLUDE_DIR OR NOT GMOCK_LIBRARY OR NOT GMOCK_MAIN_LIBRARY)
             -DCMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE=${GMOCK_PREFIX}/lib64
             -Dgtest_force_shared_crt=${gtest_force_shared_crt}
             INSTALL_COMMAND ""
-            LOG_DOWNLOAD ON
-            LOG_CONFIGURE ON
-            LOG_BUILD ON)
+            LOG_DOWNLOAD OFF
+            LOG_CONFIGURE OFF
+            LOG_BUILD OFF)
     add_dependencies(googlemock libgtest)
     ExternalProject_Get_Property(googlemock source_dir)
     set(GMOCK_INCLUDE_DIR ${source_dir}/include)
