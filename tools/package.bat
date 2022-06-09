@@ -115,7 +115,7 @@ set PATH=%MINGW_HOME%;%PATH%
 :SKIP_MINGW_PATH
 
 echo %PREFIX_BEG% Configure %SUFFIX%
-cmake %SOURCE_DIR% -G"MinGW Makefiles" -B%BUILD_DIR% -DENABLE_PYTHON=OFF %BUILD_PARAM%
+cmake %SOURCE_DIR% -G"MinGW Makefiles" -B%BUILD_DIR% -DENABLE_PYTHON=OFF %BUILD_PARAM% -DPython_FIND_FRAMEWORK=LAST
 if %errorlevel% neq 0 exit /b %errorlevel%
 echo %PREFIX_END% Configure %SUFFIX%
 
