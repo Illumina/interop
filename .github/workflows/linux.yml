@@ -15,9 +15,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-2016, macOS-latest]
-        pyver: ['3.9', '3.10']
+        # [ubuntu-latest, windows-2016, macOS-latest]
+        os: [windows-2016]
         #, '3.11-dev'
+        pyver: ['3.9', '3.10']
 
     steps:
       - uses: actions/checkout@v3
