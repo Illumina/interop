@@ -34,7 +34,7 @@ if(NOT GTEST_LIBRARY)
     endif()
     set_target_properties(${GTEST_LIBRARY} PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
     if(MSVC)
-        target_compile_definitions(${GTEST_LIBRARY}
+        target_compile_definitions(${GTEST_LIBRARY} INTERFACE
                 PRIVATE _CRT_SECURE_NO_WARNINGS _SCL_SECURE_NO_WARNINGS _SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING
                 )
     endif()

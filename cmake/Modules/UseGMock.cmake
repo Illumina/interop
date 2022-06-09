@@ -33,7 +33,7 @@ if(NOT GMOCK_LIBRARY)
         add_dependencies(${GMOCK_LIBRARY} ${GMOCK_TARGET})
     endif()
     if(MSVC)
-        target_compile_definitions(${GMOCK_LIBRARY}
+        target_compile_definitions(${GMOCK_LIBRARY} INTERFACE
                 PRIVATE _CRT_SECURE_NO_WARNINGS _SCL_SECURE_NO_WARNINGS _SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING
                 )
     endif()
