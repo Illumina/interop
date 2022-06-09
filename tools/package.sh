@@ -204,7 +204,7 @@ elif [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PY
           python_version=${py_ver}
           conda remove --name py${python_version} --all -y || echo "py${python_version} not found"
           echo "Create Python ${python_version}"
-          conda create --no-default-packages -n py${python_version} python=${python_version} -y # || conda create --no-default-packages -n py${python_version} python=${python_version} -y -c conda-forge
+          conda create --no-default-packages -n py${python_version} python=${python_version} -y  || conda create --no-default-packages -n py${python_version} python=${python_version} -y -c conda-forge
 
           echo "Activate Python ${python_version}"
           conda activate py${python_version}
