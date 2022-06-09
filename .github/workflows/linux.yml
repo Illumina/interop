@@ -15,13 +15,15 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-2016] # [ubuntu-latest, windows-2016, macOS-latest]
+        # [ubuntu-latest, windows-2016, macOS-latest]
+        os: [windows-2016]
+        #, '3.11-dev'
         pyver: ['3.9', '3.10']
-        #, '3.11-dev']
 
     steps:
       - uses: actions/checkout@v3
-        fetch-depth: 2
+        with:
+          fetch-depth: 2
 
       - uses: actions/setup-python@v3
         if: matrix.os != 'ubuntu-latest'
