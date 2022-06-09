@@ -30,14 +30,14 @@ jobs:
         with:
           python-version: ${{matrix.pyver}}
 
-      -name: Check Git
-        run: >-
-          git --version
-          git config user.name "GitHub Actions Bot"
-          git config user.email "<>"
-          git status
-          git tag
-          git describe
+      -name: Set Git name
+        run: git config user.name "GitHub Actions Bot"
+
+      -name: Set Git email
+        run: git config user.email "<>"
+
+      -name: Check Git Version
+        run: git --version
 
       - name: Package Python 3.9 and earlier
         if: matrix.os == 'ubuntu-latest' && matrix.pyver == '3.9'
