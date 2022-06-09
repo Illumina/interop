@@ -21,7 +21,7 @@ set MINGW_HOME=C:\Program Files\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev2\ming
 set CMAKE_HOME=C:\Program Files\CMake\bin
 set MINGW_HOME=C:\mingw\mingw64\bin
 set DOTNET_HOME=c:\dotnet
-set PATH=%MINGW_HOME%;%MINICONDA_HOME%;%MINICONDA_HOME%\Scripts;%DOTNET_HOME%;%PATH%
+rem set PATH=%MINGW_HOME%;%MINICONDA_HOME%;%MINICONDA_HOME%\Scripts;%DOTNET_HOME%;%PATH%
 
 set SOURCE_DIR=%CD%
 set BUILD_DIR=%SOURCE_DIR%\build
@@ -93,6 +93,7 @@ rem Configure for MSVC
 rem --------------------------------------------------------------------------------------------------------------------
 
 rem https://github.com/actions/setup-python/issues/121
+echo %BUILD_PARAM%
 echo %PREFIX_BEG% Configure %SUFFIX%
 cmake %SOURCE_DIR% -G%COMPILER% -B%BUILD_DIR% %BUILD_PARAM%
 if "%errorlevel%" == "0" goto CONFIGURE_SUCCESS
