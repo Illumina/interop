@@ -16,7 +16,9 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-2016, macOS-latest]
-        pyver: [3.9, 3.10] #, 3.11-dev]
+        pyver: [3.9, 3.10]
+        #, 3.11-dev]
+
     steps:
       - uses: actions/checkout@v3
 
