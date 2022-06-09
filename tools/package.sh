@@ -197,18 +197,20 @@ elif [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PY
       #conda update --all
       echo "Found Miniconda"
     fi
-    conda init bash
+    if [ -z "${CONDA}" ] ; then
+      CONDA=conda
+    fi
     for py_ver in $python_versions ; do
         echo "Building Python $py_ver - $CFLAGS"
-        if hash conda 2> /dev/null; then
+        if hash ${CONDA} 2> /dev/null; then
           python_version=${py_ver}
-          conda remove --name py${python_version} --all -y || echo "py${python_version} not found"
+          ${CONDA} remove --name py${python_version} --all -y || echo "py${python_version} not found"
           echo "Create Python ${python_version}"
-          conda create --no-default-packages -n py${python_version} python=${python_version} -y  || conda create --no-default-packages -n py${python_version} python=${python_version} -y -c conda-forge
+          ${CONDA} create --no-default-packages -n py${python_version} python=${python_version} -y  || ${CONDA} create --no-default-packages -n py${python_version} python=${python_version} -y -c conda-forge
 
           echo "Activate Python ${python_version}"
-          conda activate py${python_version}
-          conda env list
+          ${CONDA} activate py${python_version}
+          ${CONDA} env list
           python -V
           which python
           echo "Install deps"
@@ -217,9 +219,9 @@ elif [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PY
           else
             python -m pip install auditwheel==1.5
           fi
-          conda install numpy -y --name py${python_version}
-          conda install wheel -y --name py${python_version}
-          conda install pandas -y --name py${python_version}
+          ${CONDA} install numpy -y --name py${python_version}
+          ${CONDA} install wheel -y --name py${python_version}
+          ${CONDA} install pandas -y --name py${python_version}
 
         elif hash pyenv 2> /dev/null; then
             export PATH=$(pyenv root)/shims:${PATH}
