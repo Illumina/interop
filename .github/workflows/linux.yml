@@ -12,18 +12,24 @@ jobs:
     # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
     # You can convert this to a matrix build if you need cross-platform coverage.
     # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
-    runs-on: ubuntu-latest
-
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+        pyver: [3.9, 3.10, 3.11]
     steps:
       - uses: actions/checkout@v3
 
       - name: Package Python 3.9 and earlier
+        if: matrix.os == 'ubuntu-latest' && matrix.pyver == '3.9'
         run: docker run --rm -v ${{github.workspace}}/:/io ezralanglois/interop sh /io/tools/package.sh /io /io/dist travis OFF
 
       - name: Package Python 3.10
+        if: matrix.os == 'ubuntu-latest' && matrix.pyver == '3.10'
         run: docker run --rm -v ${{github.workspace}}/:/io ezralanglois/interop_centos7 sh /io/tools/package.sh /io /io/dist travis OFF Release cp310-cp310
 
       - name: Package Python 3.11
+        if: matrix.os == 'ubuntu-latest' && matrix.pyver == '3.11'
         run: docker run --rm -v ${{github.workspace}}/:/io ezralanglois/interop_centos7 sh /io/tools/package.sh /io /io/dist travis OFF Release cp311-cp311
 
       - name: List wheels
