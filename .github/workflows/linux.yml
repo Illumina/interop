@@ -31,7 +31,7 @@ jobs:
           python-version: ${{matrix.pyver}}
 
       -name: Check Git
-        run: |
+        run: >-
           git --version
           git config user.name "GitHub Actions Bot"
           git config user.email "<>"
