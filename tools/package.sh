@@ -200,6 +200,8 @@ elif [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PY
     if [ -z "${CONDA}" ] ; then
       CONDA=conda
     fi
+    ${CONDA} init
+    source ~/.bash_profile
     for py_ver in $python_versions ; do
         echo "Building Python $py_ver - $CFLAGS"
         if hash ${CONDA} 2> /dev/null; then
