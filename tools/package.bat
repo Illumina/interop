@@ -93,7 +93,7 @@ rem Configure for MSVC
 rem --------------------------------------------------------------------------------------------------------------------
 
 echo %PREFIX_BEG% Configure %SUFFIX%
-cmake %SOURCE_DIR% -G%COMPILER% -B%BUILD_DIR% %BUILD_PARAM%
+cmake %SOURCE_DIR% -G%COMPILER% -B%BUILD_DIR% %BUILD_PARAM% -DPython_FIND_FRAMEWORK=LAST
 if "%errorlevel%" == "0" goto CONFIGURE_SUCCESS
 set level=%errorlevel%
 type %BUILD_DIR%\CMakeFiles\CMakeError.log
@@ -114,8 +114,10 @@ if not exist %MINGW_HOME% goto SKIP_MINGW_PATH
 set PATH=%MINGW_HOME%;%PATH%
 :SKIP_MINGW_PATH
 
+rem https://github.com/actions/setup-python/issues/121
+rem -DPython3_ROOT_DIR="${{ env.pythonLocation }}"
 echo %PREFIX_BEG% Configure %SUFFIX%
-cmake %SOURCE_DIR% -G"MinGW Makefiles" -B%BUILD_DIR% -DENABLE_PYTHON=OFF %BUILD_PARAM% -DPython_FIND_FRAMEWORK=LAST
+cmake %SOURCE_DIR% -G"MinGW Makefiles" -B%BUILD_DIR% -DENABLE_PYTHON=OFF %BUILD_PARAM%
 if %errorlevel% neq 0 exit /b %errorlevel%
 echo %PREFIX_END% Configure %SUFFIX%
 
