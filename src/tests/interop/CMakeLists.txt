@@ -76,14 +76,14 @@ set(HEADERS
 
 add_executable(interop_gtests ${SRCS} ${HEADERS})
 
-target_link_libraries(interop_gtests ${INTEROP_LIB}  ${GTEST_LIBRARY} ${GMOCK_LIBRARY}  ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(interop_gtests ${INTEROP_LIB} ${GTEST_LIBRARY} ${GMOCK_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
 add_test(NAME interop_gtests WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/testBin
               COMMAND ${CMAKE_BINARY_DIR}/testBin/${INTEROP_TESTS} )
 
 
 
 if(NOT ENABLE_STATIC)
-add_custom_command(TARGET interop_gtests POST_BUILD
+    add_custom_command(TARGET interop_gtests POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE_DIR:${INTEROP_LIB}> ${CMAKE_CURRENT_BINARY_DIR})
 endif()
 
