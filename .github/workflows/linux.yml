@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         # [ubuntu-latest, windows-2016, macOS-latest]
-        os: [windows-2016]
+        os: [macOS-latest]
         #, '3.11-dev'
         pyver: ['3.9', '3.10']
 
