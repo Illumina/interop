@@ -92,6 +92,9 @@ if(NOT GTEST_INCLUDE_DIR OR NOT GTEST_LIBRARY OR NOT GTEST_MAIN_LIBRARY OR NOT G
     if(FORCE_X86)
         set(EXTRA_FLAGS " -m32")
     endif()
+    if(MSVC)
+        set(EXTRA_FLAGS "${EXTRA_FLAGS} -D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING=1")
+    endif()
     include(ExternalProject)
     ExternalProject_Add(
             gtest
@@ -109,9 +112,9 @@ if(NOT GTEST_INCLUDE_DIR OR NOT GTEST_LIBRARY OR NOT GTEST_MAIN_LIBRARY OR NOT G
                 -Dgtest_force_shared_crt=${gtest_force_shared_crt}
             INSTALL_COMMAND ""
             #SOURCE_DIR ${GTEST_PREFIX}/src/gtest
-            LOG_DOWNLOAD ON
-            LOG_CONFIGURE ON
-            LOG_BUILD ON)
+            LOG_DOWNLOAD OFF
+            LOG_CONFIGURE OFF
+            LOG_BUILD OFF)
     ExternalProject_Get_Property(gtest source_dir)
     set(GTEST_INCLUDE_DIR ${source_dir}/include)
     set(GTEST_LIBRARY OFF)

@@ -27,6 +27,6 @@ add_example(example4 example4.cpp)
 add_example(example_q_metric example_q_metric.cpp)
 add_example(example_populate_qmetricset example_populate_qmetricset.cpp)
 
-if(ENABLE_SWIG)
+if(ENABLE_SWIG AND ENABLE_CSHARP)
     add_subdirectory("csharp")
 endif()

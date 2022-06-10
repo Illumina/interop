@@ -92,6 +92,12 @@ jobs:
     workspaces:
      use: brew_cache
     env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release 3.9.0"
+  - os: osx
+    osx_image: xcode9.4
+    compiler: clang
+    workspaces:
+      use: brew_cache
+    env: DEPLOY_BUILD=true SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis OFF Release 3.10.0"
   - os: linux
     compiler: clang
     env: SCRIPT="bash ./tools/package.sh $PWD $PWD/dist travis ON Debug Disable"
@@ -103,6 +109,11 @@ jobs:
     services:
       - docker
     env: DEPLOY_BUILD=true DEPLOY_DOCS=true DOCKER_IMAGE=ezralanglois/interop SCRIPT="docker run --rm -v $PWD:/io ezralanglois/interop sh /io/tools/package.sh /io /io/dist travis OFF Release"
+  - os: linux
+    compiler: gcc
+    services:
+      - docker
+    env: DEPLOY_BUILD=true DEPLOY_DOCS=true DOCKER_IMAGE=ezralanglois/interop_centos7 SCRIPT="docker run --rm -v $PWD:/io ezralanglois/interop_centos7 sh /io/tools/package.sh /io /io/dist travis OFF Release cp310-cp310"
   - os: osx
     osx_image: xcode9.4
     workspaces:

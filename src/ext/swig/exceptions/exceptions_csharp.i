@@ -61,8 +61,8 @@ WRAP_EXCEPTION_IMPORT1(NAMESPACE, EXCEPTION_CPLUS_PLUS, EXCEPTION_CSHARP, ENTRY_
 %typemap(csinterfaces) NAMESPACE EXCEPTION_CPLUS_PLUS ""
 %typemap(csbase, replace="1") NAMESPACE EXCEPTION_CPLUS_PLUS "global::System.ApplicationException"
 %typemap(csbody) NAMESPACE EXCEPTION_CPLUS_PLUS ""
-%typemap(csdestruct) NAMESPACE EXCEPTION_CPLUS_PLUS ""
-%typemap(csfinalize) NAMESPACE EXCEPTION_CPLUS_PLUS ""
+%typemap(csdisposing) NAMESPACE EXCEPTION_CPLUS_PLUS ""
+%typemap(csdispose) NAMESPACE EXCEPTION_CPLUS_PLUS ""
 %typemap(cscode) NAMESPACE EXCEPTION_CPLUS_PLUS %{
     public $csclassname(string mesg) : base(mesg){}
     public $csclassname(string mesg, global::System.Exception inner) : base(mesg, inner){}

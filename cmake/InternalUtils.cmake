@@ -131,8 +131,10 @@ macro(interop_config_compiler_and_linker)
 
     check_cxx_compiler_flag("-Wpedantic" COMPILER_SUPPORTS_PEDANTIC)
     if(COMPILER_SUPPORTS_PEDANTIC)
+        message(STATUS "Adding -Wpedantic - -${COMPILER_SUPPORTS_PEDANTIC}-")
         set(CXX_PEDANTIC_FLAG "-Wpedantic")
     endif()
+    message(STATUS "CXX_PEDANTIC_FLAG=${CXX_PEDANTIC_FLAG}")
 
     if(FORCE_X86)
         if(MSVC)

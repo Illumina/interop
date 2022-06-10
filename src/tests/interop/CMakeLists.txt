@@ -76,21 +76,19 @@ set(HEADERS
 
 add_executable(interop_gtests ${SRCS} ${HEADERS})
 
-target_link_libraries(interop_gtests ${INTEROP_LIB}  ${GTEST_LIBRARY} ${GMOCK_LIBRARY}  ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(interop_gtests ${INTEROP_LIB} ${GTEST_LIBRARY} ${GMOCK_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
 add_test(NAME interop_gtests WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/testBin
               COMMAND ${CMAKE_BINARY_DIR}/testBin/${INTEROP_TESTS} )
 
-if(MSVC)
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS)
-endif()
+
 
 if(NOT ENABLE_STATIC)
-add_custom_command(TARGET interop_gtests POST_BUILD
+    add_custom_command(TARGET interop_gtests POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE_DIR:${INTEROP_LIB}> ${CMAKE_CURRENT_BINARY_DIR})
 endif()
 
 if(MSVC)
-    set_target_properties(interop_gtests PROPERTIES COMPILE_FLAGS "${ENABLE_BIG_OBJ_FLAG}")
+    set_target_properties(interop_gtests PROPERTIES COMPILE_FLAGS "${ENABLE_BIG_OBJ_FLAG} -D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS -D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING")
 elseif(MINGW)
     set_target_properties(interop_gtests PROPERTIES COMPILE_FLAGS "${ENABLE_BIG_OBJ_FLAG} ${_WNO_UNUSED_FUNCTION} ${_WNO_UNUSED_PARAMETER}")
 elseif(COMPILER_IS_GNUCC_OR_CLANG)

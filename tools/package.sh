@@ -52,7 +52,7 @@ if hash greadlink  2> /dev/null; then
 else
     readlink="readlink"
 fi
-ARTIFACT_PATH=`$readlink -f $ARTIFACT_PATH`
+#ARTIFACT_PATH=`$readlink -f $ARTIFACT_PATH`
 
 if [ ! -z $3 ] ; then
     BUILD_SERVER="$3"
@@ -97,6 +97,8 @@ echo "Build Number: ${ARTFACT_BUILD_NUMBER}"
 echo "Additional Flags: ${MORE_FLAGS}"
 echo "------------------------------------------------------------"
 
+git config --global --add safe.directory ${SOURCE_PATH}
+
 CMAKE_EXTRA_FLAGS="-DDISABLE_PACKAGE_SUBDIR=${DISABLE_SUBDIR} -DENABLE_PORTABLE=ON -DENABLE_BACKWARDS_COMPATIBILITY=$INTEROP_C89 -DCMAKE_BUILD_TYPE=$BUILD_TYPE $MORE_FLAGS"
 
 
@@ -134,39 +136,49 @@ if [ -e $BUILD_PATH ] ; then
 fi
 mkdir $BUILD_PATH
 
-if [ -e $ARTIFACT_PATH ] ; then
-    rm -fr $ARTIFACT_PATH/*
-else
+if [ ! -e $ARTIFACT_PATH ] ; then
     mkdir $ARTIFACT_PATH
 fi
 
 # Build Python Wheels for a range of Python Versions
-if [ -z $PYTHON_VERSION ] && [  -e /opt/python ] ; then
+if [  -e /opt/python ] ; then
     echo "ManyLinux with: "
-    for PYBUILD in `ls -1 /opt/python`; do
-      echo "Python ${PYBUILD}"
-    done
-    for PYBUILD in `ls -1 /opt/python`; do
-        PYTHON_BIN=/opt/python/${PYBUILD}/bin
-        if [[ "$PYBUILD" == cp26* ]]; then
-            continue
-        fi
-        if [[ "$PYBUILD" == cp33* ]]; then
-            continue
-        fi
-        ${PYTHON_BIN}/python -m pip install pandas
-        rm -fr ${BUILD_PATH}/src/ext/python/*
-        run "Configure ${PYBUILD}" cmake $SOURCE_PATH -B${BUILD_PATH} -DPYTHON_EXECUTABLE=${PYTHON_BIN}/python ${CMAKE_EXTRA_FLAGS} -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp
 
-        run "Test ${PYBUILD}" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
-        run "Build ${PYBUILD}" cmake --build $BUILD_PATH --target package_wheel -- -j${THREAD_COUNT}
-        auditwheel show ${ARTIFACT_PATH}/tmp/interop*${PYBUILD}*linux_x86_64.whl
-        auditwheel repair ${ARTIFACT_PATH}/tmp/interop*${PYBUILD}*linux_x86_64.whl -w ${ARTIFACT_PATH}
-        rm -fr ${ARTIFACT_PATH}/tmp
-    done
-fi
+    if [ -z "${PYTHON_VERSION}" ] ; then
+      for PYBUILD in `ls -1 /opt/python`; do
+        echo "Python ${PYBUILD}"
+      done
+      for PYBUILD in `ls -1 /opt/python`; do
+          PYTHON_BIN=/opt/python/${PYBUILD}/bin
+          if [[ "$PYBUILD" == cp26* ]]; then
+              continue
+          fi
+          if [[ "$PYBUILD" == cp33* ]]; then
+              continue
+          fi
+          rm -fr ${BUILD_PATH}
 
-if [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PYTHON_VERSION" != "DotNetStandard" ] && [ "$PYTHON_VERSION" != "None" ] ; then
+          run "Configure ${PYBUILD}" cmake $SOURCE_PATH -B${BUILD_PATH} -DPython_EXECUTABLE=${PYTHON_BIN}/python ${CMAKE_EXTRA_FLAGS} -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp -DENABLE_CSHARP=OFF
+
+          run "Test ${PYBUILD}" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
+          run "Build ${PYBUILD}" cmake --build $BUILD_PATH --target package_wheel -- -j${THREAD_COUNT}
+          auditwheel show ${ARTIFACT_PATH}/tmp/interop*${PYBUILD}*linux_x86_64.whl
+          auditwheel repair ${ARTIFACT_PATH}/tmp/interop*${PYBUILD}*linux_x86_64.whl -w ${ARTIFACT_PATH}
+          rm -fr ${ARTIFACT_PATH}/tmp
+      done
+    else
+        echo "Build with specific Python Version: ${PYTHON_VERSION}"
+          PYTHON_BIN=/opt/python/${PYTHON_VERSION}/bin
+          rm -fr ${BUILD_PATH}/src/ext/python/*
+          run "Configure ${PYTHON_VERSION}" cmake $SOURCE_PATH -B${BUILD_PATH} -DPython_EXECUTABLE=${PYTHON_BIN}/python ${CMAKE_EXTRA_FLAGS} -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp -DENABLE_CSHARP=OFF
+
+          run "Test ${PYTHON_VERSION}" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
+          run "Build ${PYTHON_VERSION}" cmake --build $BUILD_PATH --target package_wheel -- -j${THREAD_COUNT}
+          auditwheel show ${ARTIFACT_PATH}/tmp/interop*${PYTHON_VERSION}*linux_x86_64.whl
+          auditwheel repair ${ARTIFACT_PATH}/tmp/interop*${PYTHON_VERSION}*linux_x86_64.whl -w ${ARTIFACT_PATH}
+          rm -fr ${ARTIFACT_PATH}/tmp
+    fi
+elif [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PYTHON_VERSION" != "DotNetStandard" ] && [ "$PYTHON_VERSION" != "None" ] ; then
     if [ "$PYTHON_VERSION" == "ALL" ] ; then
         # python_versions="2.7.17 3.5.9 3.6.10 3.7.7 3.8.2 3.9.x"
         python_versions="2.7.17 3.5.9"
@@ -185,13 +197,16 @@ if [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PYTH
       #conda update --all
       echo "Found Miniconda"
     fi
-    for py_ver in $python_versions; do
+
+    conda init --all
+    source ~/.bash_profile
+    for py_ver in $python_versions ; do
         echo "Building Python $py_ver - $CFLAGS"
         if hash conda 2> /dev/null; then
-          python_version=${py_ver%.*}
+          python_version=${py_ver}
           conda remove --name py${python_version} --all -y || echo "py${python_version} not found"
           echo "Create Python ${python_version}"
-          conda create --no-default-packages -n py${python_version} python=${python_version} -y # || conda create --no-default-packages -n py${python_version} python=${python_version} -y -c conda-forge
+          conda create --no-default-packages -n py${python_version} python=${python_version} -y  || conda create --no-default-packages -n py${python_version} python=${python_version} -y -c conda-forge
 
           echo "Activate Python ${python_version}"
           conda activate py${python_version}
@@ -237,7 +252,7 @@ if [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PYTH
             python -c "import wheel"
             # pip install wheel=0.30.0
         fi
-        run "Configure $py_ver" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS} -DENABLE_CSHARP=OFF -DENABLE_PYTHON_DYNAMIC_LOAD=ON -DPYTHON_EXECUTABLE=`which python` -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp
+        run "Configure $py_ver" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS} -DENABLE_CSHARP=OFF -DENABLE_PYTHON_DYNAMIC_LOAD=ON -DPython_EXECUTABLE=`which python` -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp
         run "Build $py_ver" cmake --build $BUILD_PATH -- -j${THREAD_COUNT}
         run "Test $py_ver" cmake --build $BUILD_PATH --target check_python -- -j${THREAD_COUNT}
         run "Build Wheel $py_ver" cmake --build $BUILD_PATH --target package_wheel -- -j${THREAD_COUNT}
@@ -284,5 +299,5 @@ echo "----"
 
 rm -fr $BUILD_PATH
 
-setuser $SOURCE_PATH $ARTIFACT_PATH
+setuser $SOURCE_PATH $ARTIFACT_PATH || true
 
