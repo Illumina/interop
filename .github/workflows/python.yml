@@ -26,10 +26,6 @@ jobs:
           python-version: ${{matrix.pyver}}
         id: cpver
 
-      - uses: actions/upload-artifact@v3
-        with:
-          path: dist/*
-
       - name: Setup Git name
         run: |
           git config user.name "GitHub Actions Bot"
@@ -58,6 +54,10 @@ jobs:
       - name: Mac OSX Package Python
         if: matrix.os == 'macOS-latest'
         run: bash ./tools/package.sh ${{github.workspace}} ${{github.workspace}}/dist travis OFF Release ${{matrix.pyver}}
+
+      - uses: actions/upload-artifact@v3
+        with:
+          path: dist/*
 
   publishtest:
     needs: [build]
