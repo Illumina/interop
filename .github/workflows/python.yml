@@ -57,7 +57,7 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          path: dist/*
+          path: dist/*.whl
 
   publishtest:
     needs: [build]
