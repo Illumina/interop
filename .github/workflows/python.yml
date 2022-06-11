@@ -55,9 +55,9 @@ jobs:
         if: matrix.os == 'macOS-latest'
         run: bash ./tools/package.sh ${{github.workspace}} ${{github.workspace}}/dist travis OFF Release ${{matrix.pyver}}
 
-      - uses: actions/upload-artifact@v3
-        with:
-          path: dist/*
+#      - uses: actions/upload-artifact@v3
+#        with:
+#          path: dist/*
 
   publishtest:
     needs: [build]
