@@ -60,7 +60,7 @@ jobs:
         run: bash ./tools/package.sh ${{github.workspace}} ${{github.workspace}}/dist travis OFF Release ${{matrix.pyver}}
 
   publishtest:
-#    needs: [build]
+    needs: [build]
     runs-on: ubuntu-latest
 #    if: !startsWith(github.ref, 'refs/tags')
 
