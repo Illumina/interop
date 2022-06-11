@@ -59,8 +59,8 @@ jobs:
         with:
           path: dist/*
 
-#  publishtest:
-#    needs: [build]
+  publishtest:
+    needs: [build]
 #    runs-on: ubuntu-latest
 #    if: !startsWith(github.ref, 'refs/tags')
 #
