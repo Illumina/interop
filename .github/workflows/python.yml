@@ -59,16 +59,11 @@ jobs:
         with:
           path: dist/*
 
-      #-name: Deploy documentation to GitHub Pages
-      #  uses: JamesIves/github-pages-deploy-action@v4.3.3
-      #    with:
-      #      branch: gh-pages
-      #      folder: site
-      #      ssh-key: ${{ secrets.DEPLOY_KEY }}
-  publish_test:
+  publishtest:
     needs: [build]
     runs-on: ubuntu-latest
     if: !startsWith(github.ref, 'refs/tags')
+
     steps:
       - uses: actions/download-artifact@v3
         with:
@@ -81,10 +76,12 @@ jobs:
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
           packages_dir: ./dist
           repository_url: https://test.pypi.org/legacy/
+
   publish:
     needs: [build]
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+
     steps:
       - uses: actions/download-artifact@v3
         with:
@@ -97,3 +94,12 @@ jobs:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
           packages_dir: ./dist
+
+
+
+      #-name: Deploy documentation to GitHub Pages
+      #  uses: JamesIves/github-pages-deploy-action@v4.3.3
+      #    with:
+      #      branch: gh-pages
+      #      folder: site
+      #      ssh-key: ${{ secrets.DEPLOY_KEY }}
