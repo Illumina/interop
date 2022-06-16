@@ -1,6 +1,7 @@
-/** @page dumptext Dump Interop data into a text format
+/** @page dumptext (Deprecated in favor of imaging_table) Dump Interop data into a text format
  *
  *
+ * Deprecated in favor of imaging_table
  * This developer application is to help debug InterOp files.
  *
  * ### Running the Program
