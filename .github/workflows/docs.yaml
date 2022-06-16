@@ -15,7 +15,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Build Documentation
-        run: docker run --rm -v ${{github.workspace}}/:/io ezralanglois/interop bash -c "cmake /io -Bbuild && cmake --build build --target doc"
+        run: docker run --rm -v ${{github.workspace}}/:/io ezralanglois/interop bash -c "cmake /io -Bbuild && cmake --build build --target doc -DDOCS_OUTPUT_PATH=/io/dist"
       - name: Test Documentation
         run: ls dist/html
 
