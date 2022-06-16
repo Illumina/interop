@@ -12,7 +12,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-2016, macOS-latest]
+        os: [ubuntu-latest, windows-latest, macOS-latest]
         buildtype: ["Debug", "Release"]
 
     steps:
@@ -26,9 +26,13 @@ jobs:
           git config user.email "<>"
           git --version
 
-      - name: Configure OSX and Windows
-        if: matrix.os != 'ubuntu-latest'
+      - name: Configure Windows
+        if: matrix.os == 'windows-latest'
         run: cmake ${{github.workspace}} -Ax64 -B${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.buildtype}} -DPACKAGE_OUTPUT_FILE_PREFIX=${{github.workspace}}/dist -DENABLE_SWIG=OFF
+
+      - name: Configure OSX
+        if: matrix.os == 'macOS-latest'
+        run: cmake ${{github.workspace}} -B${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.buildtype}} -DPACKAGE_OUTPUT_FILE_PREFIX=${{github.workspace}}/dist -DENABLE_SWIG=OFF
 
       - name: Build OSX and Windows
         if: matrix.os != 'ubuntu-latest'
