@@ -57,7 +57,7 @@ namespace illumina{ namespace interop { namespace unittest
         template<class Collection>
         static void create_binary_data(Collection& buffer)
         {
-            const int tmp[] =
+            const signed char tmp[] =
             {
                 1
                 ,7,0,90,4,3,0
@@ -136,7 +136,7 @@ namespace illumina{ namespace interop { namespace unittest
         template<class Collection>
         static void create_binary_data(Collection& buffer)
         {
-            const int tmp[] =
+            const signed char tmp[] =
             {
                 2
                 ,1,0,18,-39,1,0,3,0,17,0,65,84,67,65,67,71,65,67,45,65
