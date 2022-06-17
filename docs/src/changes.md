@@ -5,13 +5,13 @@
 
 Date       | Description
 ---------- | -----------
+2022-06-16 | Deploy C++ applications on public repo using Github Actions
 2022-06-15 | IPA-10585: Add github action support for deploying docs
 
 ## v1.1.24
 
 Date       | Description
 ---------- | -----------
-2022-06-16 | Deploy C++ applications on public repo using Github Actions
 2022-03-14 | Add support for Python 3.10 for Linux, Windows and Mac OSX
 2022-06-07 | Add support for Github Actions
 

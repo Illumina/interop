@@ -54,3 +54,19 @@ jobs:
         if: matrix.buildtype == 'Release'
         with:
           path: dist/*.*
+
+  publish:
+    needs: [build]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: artifact
+          path: dist
+      - name: Publish Artifacts to Github Releases
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+        uses: fnkr/github-action-ghr@v1
+        env:
+          GHR_PATH: dist/
