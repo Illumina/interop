@@ -84,8 +84,8 @@ namespace illumina{ namespace interop { namespace unittest
                 ,7,0,66,8,-56,0,123,22,-100,58
                 ,7,0,66,8,-55,0,85,6,115,58
                 ,7,0,66,8,44,1,57,97,31,64
-                ,7,0,66,8,144,1,0,0,0,0   // Test whether control lane accidentally clears data
-                ,6,0,66,8,144,1,0,0,0,0   // Test whether control lane for empty tile shows up
+                ,7,0,66,8,-112,1,0,0,0,0   // Test whether control lane accidentally clears data
+                ,6,0,66,8,-112,1,0,0,0,0   // Test whether control lane for empty tile shows up
             };
             buffer.assign(tmp, tmp+util::length_of(tmp));
         }/** Get the summary for these metrics

@@ -44,10 +44,9 @@ namespace illumina{ namespace interop { namespace unittest
         {
             const signed char tmp[] =
             {
-                1,10,
-                7,0,90,4,0,0,208,142,192,74,
-                7,0,190,4,0,0,110,17,191,74,
-                7,0,66,8,0,0,64,54,190,74
+                1
+                ,10,7,0,90,4,0,0,-48,-114,-64,74,7,0,-66,4,0,0,110,17,-65
+                ,74,7,0,66,8,0,0,64,54,-66,74
             };
             buffer.assign(tmp, tmp+util::length_of(tmp));
         }
