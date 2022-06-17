@@ -1,6 +1,12 @@
 # Changes                                               {#changes}
 
 
+## v1.1.25
+
+Date       | Description
+---------- | -----------
+2022-06-15 | IPA-10585: Add github action support for deploying docs
+
 ## v1.1.24
 
 Date       | Description
