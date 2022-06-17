@@ -596,6 +596,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     io::bad_format_exception,
     io::incomplete_file_exception))
     {
+        (void)thread_count;
 #ifdef _OPENMP
         if(thread_count > 1)
         {
@@ -638,7 +639,8 @@ namespace illumina { namespace interop { namespace model { namespace metrics
     io::incomplete_file_exception,
     model::invalid_parameter))
     {
-        if(valid_to_load.empty())return;
+        (void)thread_count;
+        if(valid_to_load.empty()) return;
         if(valid_to_load.size() != constants::MetricCount)
             INTEROP_THROW(invalid_parameter, "Boolean array valid_to_load does not match expected number of metrics: "
                     << valid_to_load.size() << " != " << constants::MetricCount);

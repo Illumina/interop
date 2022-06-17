@@ -54,7 +54,7 @@ namespace illumina{ namespace interop { namespace unittest
         template<class Collection>
         static void create_binary_data(Collection& buffer)
         {
-            const int tmp[] =
+            const signed char tmp[] =
             {
                 2,10
                 ,7,0,90,4,100,0,-67,-66,15,74
@@ -84,8 +84,8 @@ namespace illumina{ namespace interop { namespace unittest
                 ,7,0,66,8,-56,0,123,22,-100,58
                 ,7,0,66,8,-55,0,85,6,115,58
                 ,7,0,66,8,44,1,57,97,31,64
-                ,7,0,66,8,144,1,0,0,0,0   // Test whether control lane accidentally clears data
-                ,6,0,66,8,144,1,0,0,0,0   // Test whether control lane for empty tile shows up
+                ,7,0,66,8,-112,1,0,0,0,0   // Test whether control lane accidentally clears data
+                ,6,0,66,8,-112,1,0,0,0,0   // Test whether control lane for empty tile shows up
             };
             buffer.assign(tmp, tmp+util::length_of(tmp));
         }/** Get the summary for these metrics
@@ -196,7 +196,7 @@ namespace illumina{ namespace interop { namespace unittest
         template<class Collection>
         static void create_binary_data(Collection &buffer)
         {
-            const int tmp[] =
+            const signed char tmp[] =
             {
                     3,15,-41,-40,47,64,7,0,-90,-79,1,0,116,74,122,-59,74,16,54,66
                     ,74,7,0,-90,-79,1,0,114,1,0,0,0,-102,113,39,64,7,0,-90,-79,1

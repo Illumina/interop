@@ -41,12 +41,12 @@ namespace illumina{ namespace interop { namespace unittest
         template<class Collection>
         static void create_binary_data(Collection &buffer)
         {
-            const int tmp[] =
+            const signed char tmp[] =
             {
-                1,14,
-                4,0,92,4,2,0,6,0,149,63,205,250,246,63,
-                4,0,92,4,3,0,6,0,21,63,197,233,7,64,
-                4,0,92,4,4,0,6,0,149,62,236,22,13,64
+                    1
+                    ,14,4,0,92,4,2,0,6,0,-107,63,-51,-6,-10,63,4,0,92,4,3
+                    ,0,6,0,21,63,-59,-23,7,64,4,0,92,4,4,0,6,0,-107,62,-20
+                    ,22,13,64
             };
             buffer.assign(tmp, tmp+util::length_of(tmp));
         }
@@ -94,7 +94,7 @@ namespace illumina{ namespace interop { namespace unittest
         template<class Collection>
         static void create_binary_data(Collection &buffer)
         {
-            const int tmp[] =
+            const signed char tmp[] =
             {
                 2,16,4,0,92,4,0,0,2,0,6,0,-107,63,-51,-6,-10,63,4,0,92,4,0
                 ,0,3,0,6,0,21,63,-59,-23,7,64,4,0,92,4,0,0,4,0,6,0,-107,62

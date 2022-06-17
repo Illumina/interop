@@ -53,20 +53,16 @@ namespace illumina{ namespace interop { namespace unittest
         template<class Collection>
         static void create_binary_data(Collection& buffer)
         {
-            const int tmp[] =
-            {1,12,
-             1,0,77,4,1,0,0,0,128,3,232,18,
-             1,0,77,4,1,0,1,0,189,6,208,31,
-             1,0,77,4,1,0,2,0,226,2,236,12,
-             1,0,77,4,1,0,3,0,44,3,110,19,
-             1,0,78,4,1,0,0,0,140,3,221,18,
-             1,0,78,4,1,0,1,0,234,6,223,31,
-             1,0,78,4,1,0,2,0,227,2,230,12,
-             1,0,78,4,1,0,3,0,38,3,121,19,
-             1,0,79,4,1,0,0,0,155,3,221,18,
-             1,0,79,4,1,0,1,0,37,7,44,32,
-             1,0,79,4,1,0,2,0,222,2,232,12,
-             1,0,79,4,1,0,3,0,34,3,83,19
+            const signed char tmp[] =
+            {1
+                    ,12,1,0,77,4,1,0,0,0,-128,3,-24,18,1,0,77,4,1,0,1
+                    ,0,-67,6,-48,31,1,0,77,4,1,0,2,0,-30,2,-20,12,1,0,77
+                    ,4,1,0,3,0,44,3,110,19,1,0,78,4,1,0,0,0,-116,3,-35
+                    ,18,1,0,78,4,1,0,1,0,-22,6,-33,31,1,0,78,4,1,0,2
+                    ,0,-29,2,-26,12,1,0,78,4,1,0,3,0,38,3,121,19,1,0,79
+                    ,4,1,0,0,0,-101,3,-35,18,1,0,79,4,1,0,1,0,37,7,44
+                    ,32,1,0,79,4,1,0,2,0,-34,2,-24,12,1,0,79,4,1,0,3
+                    ,0,34,3,83,19
             };
             buffer.assign(tmp, tmp+util::length_of(tmp));
         }
@@ -106,7 +102,7 @@ namespace illumina{ namespace interop { namespace unittest
         template<class Collection>
         static void create_binary_data(Collection& buffer)
         {
-            const int tmp[] =
+            const signed char tmp[] =
             {
                 2,14,2
                 ,7,0,90,4,1,0,-25,0,-49,0,-50,1,-125,1
@@ -152,7 +148,7 @@ namespace illumina{ namespace interop { namespace unittest
         template<class Collection>
         static void create_binary_data(Collection& buffer)
         {
-            const int tmp[] =
+            const signed char tmp[] =
                     {3,16,2,7,0,-90,-79,1,0,1,0,-25,0,-49,0,-50,1,-125,1,7,0,-74
                             ,-40,1,0,1,0,-27,0,-51,0,-55,1,-125,1,7,0,70,56,3,0,1,0,-25
                             ,0,-34,0,-39,1,-96,1
