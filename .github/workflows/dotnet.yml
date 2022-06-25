@@ -1,4 +1,4 @@
-name: Applications
+name: .NET Standard C#
 
 on:
   push:
@@ -25,6 +25,7 @@ jobs:
           git config user.name "GitHub Actions Bot"
           git config user.email "<>"
           git --version
+          mkdir dist
 
       - name: Configure Windows
         if: matrix.os == 'windows-latest'
