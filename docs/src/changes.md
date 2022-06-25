@@ -5,6 +5,7 @@
 
 Date       | Description
 ---------- | -----------
+2022-06-16 | Deploy .NET Standard Nuget package on public repo using Github Actions
 2022-06-16 | Deploy C++ applications on public repo using Github Actions
 2022-06-15 | IPA-10585: Add github action support for deploying docs
 
