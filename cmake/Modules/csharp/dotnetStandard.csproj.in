@@ -7,6 +7,8 @@
    <OutputPath>@CSHARP_BUILDER_OUTPUT_PATH@</OutputPath>
    <PlatformTarget>@CSHARP_PLATFORM@</PlatformTarget>
    <AssemblyName>@CSHARP_BUILDER_OUTPUT_NAME@</AssemblyName>
+   <!-- HACK: Workaround for msbuild error -->
+   <ResolveNuGetPackages>false</ResolveNuGetPackages>
   </PropertyGroup>
 
   <!-- https://github.com/NuGet/Home/issues/4154 -->
