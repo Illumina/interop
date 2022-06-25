@@ -13,9 +13,8 @@ macro( csharp_add_library name )
 endmacro()
 
 macro( csharp_add_executable name )
-    csharp_add_project( "Exe" ${name} ${ARGN} )
+    csharp_add_project("Exe" ${name} ${ARGN})
 endmacro()
-
 
 macro( csharp_add_project type name )
     if(CSBUILD_PROJECT_DIR)
@@ -29,6 +28,13 @@ macro( csharp_add_project type name )
         if( ${it} MATCHES "(.*)(dll)" )
             file(TO_NATIVE_PATH ${it} nit)
             list( APPEND refs "<Reference;Include=\\\"${nit}\\\";/>" )
+        elseif( ${it} MATCHES "(.*)(nuspec)" )
+            list(APPEND deps ${it})
+            if(NOT CSBUILD_NUSPEC_FILE)
+                set(CSBUILD_NUSPEC_FILE ${it})
+            else()
+                message(FATAL_ERROR "Nuspec file cannot be specified twice, already using: ${CSBUILD_NUSPEC_FILE}, but trying to add ${it}")
+            endif()
         elseif( ${it} MATCHES "(.*)(nupkg)" )
             file(TO_NATIVE_PATH ${it} nit)
             list( APPEND pkgs "<package;id=\\\"${nit}\\\";version=;/>" )
@@ -53,7 +59,7 @@ macro( csharp_add_project type name )
                 list( APPEND sources "<Compile;Include=\\\"${nit}\\\";/>" )
                 list( APPEND sources_dep ${CSHARP_SOURCE_DIRECTORY}/${it} )
             elseif( EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${it}" )
-                if(DOTNET_FOUND)
+                if(DotNet_FOUND)
                     string(REPLACE "/" "\\" nit "${CMAKE_CURRENT_SOURCE_DIR}/${it}")
                 else()
                     file(TO_NATIVE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/${it} nit)
@@ -86,12 +92,9 @@ macro( csharp_add_project type name )
     endif()
     if(PACKAGE_COUNT GREATER 0)
         set(CSHARP_PACKAGE_REFERENCES "${packages}")
-    else()
-        set(CSHARP_PACKAGE_REFERENCES "")
-    endif()
-    if(PACKAGE_COUNT GREATER 0)
         set(CSHARP_LEGACY_PACKAGE_REFERENCES "${legacy_packages}")
     else()
+        set(CSHARP_PACKAGE_REFERENCES "")
         set(CSHARP_LEGACY_PACKAGE_REFERENCES "")
     endif()
     if(IMPORT_COUNT GREATER 0)
@@ -103,22 +106,26 @@ macro( csharp_add_project type name )
     if( ${type} MATCHES "library" )
         set( ext "dll" )
     elseif( ${type} MATCHES "Exe" )
-        if(DOTNET_STANDARD_FOUND)
+        if(DotNetStandard_FOUND)
             set( ext "dll" )
         else()
             set( ext "exe" )
         endif()
     endif()
     # TODO: <RuntimeIdentifier>osx.10.11-x64</RuntimeIdentifier>
-    set(CSBUILD_${name}_BINARY_DIR "${CSBUILD_OUPUT_PREFIX}")
-    if(DOTNET_STANDARD_FOUND)
-        set(CSBUILD_${name}_BINARY_DIR "${CSBUILD_OUPUT_PREFIX}${CSHARP_TARGET_FRAMEWORK}/publish/")
+    set(CSBUILD_${name}_BINARY_DIR "${CSHARP_BUILDER_OUTPUT_PATH}")
+    if(DotNetStandard_FOUND)
+        set(CSBUILD_${name}_BINARY_DIR "${CSHARP_BUILDER_OUTPUT_PATH}/${CSHARP_TARGET_FRAMEWORK}/publish")
     endif()
-    set(CSBUILD_${name}_BINARY "${CSHARP_BUILDER_OUTPUT_PATH}/${CSBUILD_${name}_BINARY_DIR}${name}${CSBUILD_OUTPUT_SUFFIX}.${ext}")
+    set(CSBUILD_${name}_BINARY_FILE "${CSBUILD_OUPUT_PREFIX}${name}${CSBUILD_OUTPUT_SUFFIX}")
+    set(CSBUILD_${name}_BINARY_NAME "${CSBUILD_${name}_BINARY_FILE}.${ext}")
+    set(CSBUILD_${name}_BINARY "${CSBUILD_${name}_BINARY_DIR}/${CSBUILD_${name}_BINARY_NAME}")
+    message(STATUS "CSHARP_BUILDER_OUTPUT_PATH=${CSHARP_BUILDER_OUTPUT_PATH}")
     message(STATUS "CSBUILD_${name}_BINARY_DIR=${CSBUILD_${name}_BINARY_DIR}")
-    set(CSBUILD_${name}_BINARY_NAME "${name}${CSBUILD_OUTPUT_SUFFIX}.${ext}")
     if(CSHARP_NUGET_SOURCE)
         set(CSHARP_NUGET_SOURCE_CMD -source ${CSHARP_NUGET_SOURCE})
+    else()
+        set(CSHARP_NUGET_SOURCE_CMD  -source ${CMAKE_CURRENT_BINARY_DIR}/cache)
     endif()
     set(CSBUILD_RESTORE_MORE_FLAGS "")
     if(RESTORE_EXE AND CSHARP_NUGET_SOURCE_CMD)
@@ -127,12 +134,30 @@ macro( csharp_add_project type name )
         set(RESTORE_CMD ${CMAKE_COMMAND} -version)
         if(CSHARP_NUGET_SOURCE)
             # Note that for .NET Core 2.1.4 or before, the local repo must follow public repo
-            set(CSBUILD_RESTORE_MORE_FLAGS --source https://api.nuget.org/v3/index.json --source ${CSHARP_NUGET_SOURCE} --no-cache )
+            set(CSBUILD_RESTORE_MORE_FLAGS --source https://api.nuget.org/v3/index.json --source ${CSHARP_NUGET_SOURCE} --no-cache)
         endif()
     endif()
 
+    if(CSBUILD_DISABLE_CONFIG)
+        set(CSBUILD_CONFIG "")
+    endif()
 
+    set(PACK_EXE ${CSBUILD_EXECUTABLE})
+    if(DotNetStandard_FOUND AND CSBUILD_NUSPEC_FILE)
+        if(NOT CSHARP_NUGET_PREFIX)
+            set(CSHARP_NUGET_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/dist)
+        endif()
+        set(CSBUILD_PACK_FLAGS pack -p:NuspecFile=${CSBUILD_NUSPEC_FILE} --output ${CSHARP_NUGET_PREFIX} ${CSBUILD_CONFIG} ${CSBUILD_${name}_CSPROJ})
+        set(PACK_EXE ${CSBUILD_EXECUTABLE})
+    elseif(CSBUILD_NUSPEC_FILE)
+        set(PACK_EXE ${RESTORE_EXE})
+        set(CSBUILD_PACK_FLAGS pack ${CSBUILD_NUSPEC_FILE} -OutputDirectory ${CSHARP_NUGET_PREFIX})
+    endif()
+    message(STATUS "CSBUILD_PACK_FLAGS=${CSBUILD_PACK_FLAGS}")
+    message(STATUS "DotNetStandard_FOUND=${DotNetStandard_FOUND}")
+    message(STATUS "CSBUILD_NUSPEC_FILE=${CSBUILD_NUSPEC_FILE}")
 
+    file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/cmake/ConfigureFile.cmake "configure_file(\${CONFIG_INPUT_FILE} \${CONFIG_OUTPUT_FILE} @ONLY)")
     set(CSBUILD_${name}_CSPROJ "${name}_${CSBUILD_CSPROJ}")
     file(TO_NATIVE_PATH ${CSHARP_BUILDER_OUTPUT_PATH} CSHARP_BUILDER_OUTPUT_PATH_NATIVE)
     add_custom_target(
@@ -142,7 +167,7 @@ macro( csharp_add_project type name )
             -DCSHARP_BUILDER_OUTPUT_TYPE="${type}"
             -DCSHARP_BUILDER_OUTPUT_PATH="${CSHARP_BUILDER_OUTPUT_PATH_NATIVE}"
             -DCSHARP_PLATFORM="${CSHARP_PLATFORM}"
-            -DCSHARP_BUILDER_OUTPUT_NAME="${name}${CSBUILD_OUTPUT_SUFFIX}"
+            -DCSHARP_BUILDER_OUTPUT_NAME="${CSBUILD_${name}_BINARY_FILE}"
             -DCSHARP_BUILDER_ADDITIONAL_REFERENCES="${CSHARP_BUILDER_ADDITIONAL_REFERENCES}"
             -DCSHARP_BUILDER_SOURCES="${CSHARP_BUILDER_SOURCES}"
             -DCSHARP_TARGET_FRAMEWORK_VERSION="${CSHARP_TARGET_FRAMEWORK_VERSION}"
@@ -151,21 +176,24 @@ macro( csharp_add_project type name )
             -DCSHARP_IMPORTS="${CSHARP_IMPORTS}"
             -DCONFIG_INPUT_FILE="${CSBUILD_CSPROJ_IN}"
             -DCONFIG_OUTPUT_FILE="${CURRENT_TARGET_BINARY_DIR}/${CSBUILD_${name}_CSPROJ}"
-            -P ${CMAKE_SOURCE_DIR}/cmake/ConfigureFile.cmake
+            -P ${CMAKE_CURRENT_BINARY_DIR}/cmake/ConfigureFile.cmake
 
             COMMAND ${CMAKE_COMMAND}
             -DCSHARP_PACKAGE_REFERENCES="${CSHARP_LEGACY_PACKAGE_REFERENCES}"
-            -DCONFIG_INPUT_FILE="${CMAKE_SOURCE_DIR}/cmake/Modules/csharp/packages.config.in"
+            -DCONFIG_INPUT_FILE="${CSBUILD_ROOT_DIR}/packages.config.in"
             -DCONFIG_OUTPUT_FILE="${CURRENT_TARGET_BINARY_DIR}/packages.config"
-            -P ${CMAKE_SOURCE_DIR}/cmake/ConfigureFile.cmake
+            -P ${CMAKE_CURRENT_BINARY_DIR}/cmake/ConfigureFile.cmake
 
             COMMAND ${RESTORE_CMD}
 
+            COMMAND ${CSBUILD_CLEAR_NUGET_CACHE}
             COMMAND ${CSBUILD_EXECUTABLE} ${CSBUILD_RESTORE_FLAGS} ${CSBUILD_RESTORE_MORE_FLAGS} ${CSBUILD_${name}_CSPROJ}
+            COMMAND ${CSBUILD_EXECUTABLE} ${CSBUILD_CLEAN_FLAGS} ${CSBUILD_${name}_CSPROJ}
             COMMAND ${CSBUILD_EXECUTABLE} ${CSBUILD_BUILD_FLAGS} ${CSBUILD_${name}_CSPROJ}
+            COMMAND ${PACK_EXE} ${CSBUILD_PACK_FLAGS}
             WORKING_DIRECTORY ${CURRENT_TARGET_BINARY_DIR}
-            COMMENT "${RESTORE_CMD};${CSBUILD_EXECUTABLE} ${CSBUILD_RESTORE_FLAGS} ${CSBUILD_RESTORE_MORE_FLAGS} ${CSBUILD_${name}_CSPROJ}; ${CSBUILD_EXECUTABLE} ${CSBUILD_BUILD_FLAGS} ${CSBUILD_${name}_CSPROJ} -> ${CURRENT_TARGET_BINARY_DIR}"
-            DEPENDS ${sources_dep}
+            COMMENT "${RESTORE_CMD};${CSBUILD_EXECUTABLE} ${CSBUILD_RESTORE_FLAGS} ${CSBUILD_RESTORE_MORE_FLAGS} ${CSBUILD_${name}_CSPROJ}; ${CSBUILD_EXECUTABLE} ${CSBUILD_BUILD_FLAGS} ${CSBUILD_${name}_CSPROJ}; ${PACK_EXE} ${CSBUILD_PACK_FLAGS} -> ${CURRENT_TARGET_BINARY_DIR}"
+            DEPENDS ${sources_dep} ${deps}
     )
     unset(ext)
     unset(CSHARP_BUILDER_SOURCES)

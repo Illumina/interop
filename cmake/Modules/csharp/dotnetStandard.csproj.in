@@ -1,4 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project>
+
+  <!-- https://github.com/NuGet/Home/issues/4154 -->
+  <PropertyGroup>
+    <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)obj\$(MSBuildProjectName)\netcore</BaseIntermediateOutputPath>
+  </PropertyGroup>
+
+<!-- Implicit top import -->
+<Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
 
   <PropertyGroup>
    <TargetFramework>@CSHARP_TARGET_FRAMEWORK@</TargetFramework>
@@ -7,13 +15,10 @@
    <OutputPath>@CSHARP_BUILDER_OUTPUT_PATH@</OutputPath>
    <PlatformTarget>@CSHARP_PLATFORM@</PlatformTarget>
    <AssemblyName>@CSHARP_BUILDER_OUTPUT_NAME@</AssemblyName>
-   <!-- HACK: Workaround for msbuild error -->
-   <ResolveNuGetPackages>false</ResolveNuGetPackages>
-  </PropertyGroup>
-
-  <!-- https://github.com/NuGet/Home/issues/4154 -->
-  <PropertyGroup>
-    <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)obj\$(MSBuildProjectName)\netcore</BaseIntermediateOutputPath>
+   <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+   <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+   <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+   <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
   </PropertyGroup>
 
   <ItemGroup>
@@ -36,4 +41,6 @@
      <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
      <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
   </PropertyGroup>
+  <!-- Implicit last import-->
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
 </Project>
