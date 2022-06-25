@@ -249,7 +249,7 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${NUGET_PACKAGE_ID}.target
         -DCONFIG_OUTPUT_FILE=${CMAKE_CURRENT_BINARY_DIR}/package.nuspec
         -P ${CMAKE_CURRENT_BINARY_DIR}/cmake/ConfigureFile.cmake
         )
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/LICENSE.txt "Illumina Use Only")
+file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/LICENSE.txt "GPL v3")
 
 
 set(CSHARP_BUILD_AVAILABLE ${CSHARP_BUILDER_VERSION} CACHE INTERNAL "All dependencies are satisfied for the C# Build" FORCE)
