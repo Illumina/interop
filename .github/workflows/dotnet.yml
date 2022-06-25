@@ -29,7 +29,7 @@ jobs:
 
       - name: Configure Windows
         if: matrix.os == 'windows-latest'
-        run: cmake ${{github.workspace}} -Ax64 -B${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.buildtype}} -DPACKAGE_OUTPUT_FILE_PREFIX=${{github.workspace}}/dist -DENABLE_SWIG=ON -DENABLE_PORTABLE=ON -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=ON -DENABLE_PYTHON=OFF
+        run: cmake ${{github.workspace}} -Ax64 -B${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.buildtype}} -DPACKAGE_OUTPUT_FILE_PREFIX=${{github.workspace}}/dist -DENABLE_SWIG=ON -DENABLE_PORTABLE=ON -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=ON -DENABLE_PYTHON=OFF -DCSHARP_TEST_FRAMEWORK=netcoreapp3
 
       - name: Configure OSX
         if: matrix.os == 'macOS-latest'
