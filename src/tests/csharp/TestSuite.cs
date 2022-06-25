@@ -12,7 +12,7 @@ namespace Illumina.InterOp.Interop.UnitTest
 	{
         public static int Main(string[] args)
         {
-           return new AutoRun(typeof(CoreTests).GetTypeInfo().Assembly).Execute(args);
+            return new AutoRun(Assembly.GetCallingAssembly()).Execute(args);
         }
     }
 }

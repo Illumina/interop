@@ -39,11 +39,11 @@ The documentation for the model notes when an attribute is only populated by a s
  - @subpage q_v7 "Q-Metrics Version 7"
  - @subpage tile_v2 "Tile Version 2"
  - @subpage tile_v3 "Tile Version 3"
- - @subpage q_collapsed_v2 "Collapsed Q-Metrics Version 2"
- - @subpage q_collapsed_v3 "Collapsed Q-Metrics Version 3"
- - @subpage q_collapsed_v4 "Collapsed Q-Metrics Version 4"
- - @subpage q_collapsed_v5 "Collapsed Q-Metrics Version 5"
- - @subpage q_collapsed_v6 "Collapsed Q-Metrics Version 6"
+ - @subpage q_collapsed_v2 "Collapsed Q-Metrics Version 2 (BaseSpace)"
+ - @subpage q_collapsed_v3 "Collapsed Q-Metrics Version 3 (BaseSpace)"
+ - @subpage q_collapsed_v4 "Collapsed Q-Metrics Version 4 (BaseSpace)"
+ - @subpage q_collapsed_v5 "Collapsed Q-Metrics Version 5 (BaseSpace)"
+ - @subpage q_collapsed_v6 "Collapsed Q-Metrics Version 6 (BaseSpace)"
  - @subpage summary_run_v1 "Summary Run Version 1"
  
  The following are binary formats used only for testing purposes and are not officially supported:

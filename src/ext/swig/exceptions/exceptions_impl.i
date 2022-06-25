@@ -1,5 +1,10 @@
 %include "std_except.i"
 %include "exception.i"
+
+namespace std{
+    %std_exception_map(bad_alloc, SWIG_MemoryError);
+}
+
 #if defined(SWIGCSHARP)
 namespace std
 {

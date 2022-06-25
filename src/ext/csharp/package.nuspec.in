@@ -26,9 +26,10 @@
         <tags>native, Illumina, InterOp, C++, C#, @PLATFORM@, @CSHARP_TYPE@ </tags>
     </metadata>
     <files>
-       <file src="@CONFIG@/@CSHARP_DLL_PREFIX@@CSHARP_LIBRARY@" target="@NUGET_PLATFORM@" />
-       <file src="illumina_interop_@CSHARP_TYPE@_@PLATFORM@.targets" target="build" />
+       <file src="@CSHARP_LIBRARY@" target="@NUGET_PLATFORM@" />
+       <file src="@NUGET_PACKAGE_ID@.targets" target="build" />
        <file src="@CONFIG@@SHARED_LIB_SEARCH@" target="build" />
+        <file src="LICENSE.txt" target="" />
     </files>
 </package>
 

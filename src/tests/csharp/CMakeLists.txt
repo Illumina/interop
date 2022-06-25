@@ -6,25 +6,20 @@
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Modules)
 find_package(CSBuild)
+if(NOT DEFINED CSHARP_TEST_FRAMEWORK)
+    set(CSHARP_TEST_FRAMEWORK "netcoreapp2.0")
+endif()
+set(CSHARP_TARGET_FRAMEWORK "${CSHARP_TEST_FRAMEWORK}")
+set(CSHARP_NUGET_SOURCE "${CSHARP_NUGET_PREFIX}")
 
 if(NOT CSBUILD_FOUND)
     return()
 endif()
 
-if(NOT DOTNET_STANDARD_FOUND)
-    find_package(NUnit)
-    if(NOT NUNIT_FOUND)
-        message(WARNING "NUnit not found, C# unit testing will be disabled")
-        message(WARNING "You may set the location of NUNIT with NUNIT_ROOT or the NUNIT_DIR environment variable")
-        return()
-    endif()
-    set(CSHARP_INTERPRETER "${NUNIT_COMMAND}")
-    set(PROJ_TYPE "library")
-else()
-    set(NUNIT_LIBRARIES "NUnit=3.7.1;NunitLite=3.7.1;System.dll")
-    set(NUNIT_TARGET "")
-    set(PROJ_TYPE "Exe")
-endif()
+set(CSHARP_TEST_FRAMEWORK "netcoreapp2.0" CACHE STRING "Framework for unit tests")
+set(CSHARP_TARGET_FRAMEWORK "${CSHARP_TEST_FRAMEWORK}")
+
+message(STATUS "CSHARP_TEST_FRAMEWORK=${CSHARP_TEST_FRAMEWORK}")
 
 set(CSHARP_TEST_ENABLED ON PARENT_SCOPE)
 
@@ -53,23 +48,51 @@ set(TEST_SRCS
         run/RunInfoTest.cs
         run/RunParametersTest.cs
         )
-if(DOTNET_STANDARD_FOUND)
-    set(TEST_SRCS ${TEST_SRCS} Program.cs)
-endif()
 
-set(CSHARP_TARGET_FRAMEWORK "netcoreapp2.0")
-find_program(NUGET_EXE nuget)
-if(NUGET_EXE)
-    # Test the NuGet Package
-    set(CSHARP_NUGET_SOURCE "${SWIG_CSHARP_PACKAGE_PATH}")
-    csharp_add_project(${PROJ_TYPE} csharp_unittest ${NUNIT_LIBRARIES} ${TEST_SRCS} ${NUGET_PACKAGE_ID}=${NUGET_VERSION_STR})
-    add_dependencies(csharp_unittest nupack ${NUNIT_TARGET})
+if(NOT DotNetStandard_FOUND)
+    include(ExternalProject)
+    ExternalProject_Add(
+            NUnit
+            DOWNLOAD_DIR ${CSHARP_NUGET_SOURCE}
+            URL https://github.com/nunit/nunit/releases/download/3.7.1/NUnit.3.7.1.nupkg
+            DOWNLOAD_NAME NUnit.3.7.1.nupkg
+            UPDATE_COMMAND ""
+            CONFIGURE_COMMAND ""
+            BUILD_COMMAND ""
+            INSTALL_COMMAND ""
+            INSTALL_COMMAND ""
+            DOWNLOAD_NO_EXTRACT 1
+    )
+    ExternalProject_Add(
+            NUnitLite
+            DOWNLOAD_DIR ${CSHARP_NUGET_SOURCE}
+            URL https://github.com/nunit/nunit/releases/download/3.7.1/NUnitLite.3.7.1.nupkg
+            DOWNLOAD_NAME NUnitLite.3.7.1.nupkg
+            UPDATE_COMMAND ""
+            CONFIGURE_COMMAND ""
+            BUILD_COMMAND ""
+            INSTALL_COMMAND ""
+            DOWNLOAD_NO_EXTRACT 1
+    )
+    set(NUNIT_LIBRARIES "NUnit=3.7.1;NUnitLite=3.7.1")
+    set(TEST_SRCS ${TEST_SRCS} TestSuite.cs)
 else()
-    # Test the Library
-    csharp_add_project(${PROJ_TYPE} csharp_unittest ${NUNIT_LIBRARIES} ${TEST_SRCS} ${SWIG_CSHARP_LIBRARY})
-    add_dependencies(csharp_unittest csharp_interop ${NUNIT_TARGET})
+    set(TEST_SRCS ${TEST_SRCS} TestSuite.cs)
+    add_custom_target(NUnit)
+    add_custom_target(NUnitLite)
+    set(NUNIT_LIBRARIES "NUnit=3.7.1;NUnitLite=3.7.1;System.dll")
 endif()
 
+
+
+csharp_add_project(Exe csharp_unittest ${NUNIT_LIBRARIES} ${TEST_SRCS} ${NUGET_PACKAGE_ID}=${NUGET_VERSION_STR})
+add_custom_command(TARGET csharp_unittest
+        POST_BUILD
+        COMMENT "Remove directory: ${CMAKE_CURRENT_BINARY_DIR}/obj"
+        COMMAND ${CMAKE_COMMAND} -E echo "Remove directory: ${CMAKE_CURRENT_BINARY_DIR}/obj"
+        COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_BINARY_DIR}/obj
+        )
+add_dependencies(csharp_unittest csharp_interop NUnit NUnitLite)
 # Clear old packages
 # dotnet nuget locals all --clear
 
