@@ -35,7 +35,7 @@
  <div class="container">
   <div class="navbar-header">
    <a class="navbar-brand" href="https://www.illumina.com/"><img style='margin-top: -8px !important;height: 40px !important;' src='ILLUMINA_LOGO_RGB_new_200_45.png' /></a>
-   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.1.24-8-gd431517</span>  </a>
+   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.1.25</span>  </a>
   </div>
   <div class="collapse navbar-collapse">
    <!-- Left -->
@@ -103,12 +103,12 @@
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> Collection&gt;</div>
 <div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="structillumina_1_1interop_1_1unittest_1_1phasing__metric__v1.html#afe9fe5eabc3b6eabfcdbd78fcc38570e">   42</a></span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="structillumina_1_1interop_1_1unittest_1_1phasing__metric__v1.html#afe9fe5eabc3b6eabfcdbd78fcc38570e">create_binary_data</a>(Collection &amp;buffer)</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        {</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;            <span class="keyword">const</span> <span class="keywordtype">int</span> tmp[] =</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;            <span class="keyword">const</span> <span class="keywordtype">signed</span> <span class="keywordtype">char</span> tmp[] =</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;            {</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;                1,14,</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;                4,0,92,4,2,0,6,0,149,63,205,250,246,63,</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                4,0,92,4,3,0,6,0,21,63,197,233,7,64,</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                4,0,92,4,4,0,6,0,149,62,236,22,13,64</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;                    1</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;                    ,14,4,0,92,4,2,0,6,0,-107,63,-51,-6,-10,63,4,0,92,4,3</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                    ,0,6,0,21,63,-59,-23,7,64,4,0,92,4,4,0,6,0,-107,62,-20</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                    ,22,13,64</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;            };</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;            buffer.assign(tmp, tmp+<a class="code" href="namespaceillumina_1_1interop_1_1util.html#aba0e191a6382d97a3931c087e05d2907">util::length_of</a>(tmp));</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        }</div>
@@ -139,7 +139,7 @@
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> Collection&gt;</div>
 <div class="line"><a name="l00095"></a><span class="lineno"><a class="line" href="structillumina_1_1interop_1_1unittest_1_1phasing__metric__v2.html#afe9fe5eabc3b6eabfcdbd78fcc38570e">   95</a></span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="structillumina_1_1interop_1_1unittest_1_1phasing__metric__v2.html#afe9fe5eabc3b6eabfcdbd78fcc38570e">create_binary_data</a>(Collection &amp;buffer)</div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        {</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;            <span class="keyword">const</span> <span class="keywordtype">int</span> tmp[] =</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;            <span class="keyword">const</span> <span class="keywordtype">signed</span> <span class="keywordtype">char</span> tmp[] =</div>
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;            {</div>
 <div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;                2,16,4,0,92,4,0,0,2,0,6,0,-107,63,-51,-6,-10,63,4,0,92,4,0</div>
 <div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;                ,0,3,0,6,0,21,63,-59,-23,7,64,4,0,92,4,0,0,4,0,6,0,-107,62</div>

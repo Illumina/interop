@@ -35,7 +35,7 @@
  <div class="container">
   <div class="navbar-header">
    <a class="navbar-brand" href="https://www.illumina.com/"><img style='margin-top: -8px !important;height: 40px !important;' src='ILLUMINA_LOGO_RGB_new_200_45.png' /></a>
-   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.1.24-8-gd431517</span>  </a>
+   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.1.25</span>  </a>
   </div>
   <div class="collapse navbar-collapse">
    <!-- Left -->
@@ -114,7 +114,7 @@
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> Collection&gt;</div>
 <div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="structillumina_1_1interop_1_1unittest_1_1tile__metric__v2.html#afe9fe5eabc3b6eabfcdbd78fcc38570e">   55</a></span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="structillumina_1_1interop_1_1unittest_1_1tile__metric__v2.html#afe9fe5eabc3b6eabfcdbd78fcc38570e">create_binary_data</a>(Collection&amp; buffer)</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        {</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;            <span class="keyword">const</span> <span class="keywordtype">int</span> tmp[] =</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;            <span class="keyword">const</span> <span class="keywordtype">signed</span> <span class="keywordtype">char</span> tmp[] =</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;            {</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                2,10</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                ,7,0,90,4,100,0,-67,-66,15,74</div>
@@ -144,8 +144,8 @@
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                ,7,0,66,8,-56,0,123,22,-100,58</div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;                ,7,0,66,8,-55,0,85,6,115,58</div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                ,7,0,66,8,44,1,57,97,31,64</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                ,7,0,66,8,144,1,0,0,0,0   <span class="comment">// Test whether control lane accidentally clears data</span></div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                ,6,0,66,8,144,1,0,0,0,0   <span class="comment">// Test whether control lane for empty tile shows up</span></div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                ,7,0,66,8,-112,1,0,0,0,0   <span class="comment">// Test whether control lane accidentally clears data</span></div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                ,6,0,66,8,-112,1,0,0,0,0   <span class="comment">// Test whether control lane for empty tile shows up</span></div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;            };</div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;            buffer.assign(tmp, tmp+<a class="code" href="namespaceillumina_1_1interop_1_1util.html#aba0e191a6382d97a3931c087e05d2907">util::length_of</a>(tmp));</div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        }</div>
@@ -239,7 +239,7 @@
 <div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> Collection&gt;</div>
 <div class="line"><a name="l00197"></a><span class="lineno"><a class="line" href="structillumina_1_1interop_1_1unittest_1_1tile__metric__v3.html#afe9fe5eabc3b6eabfcdbd78fcc38570e">  197</a></span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="structillumina_1_1interop_1_1unittest_1_1tile__metric__v3.html#afe9fe5eabc3b6eabfcdbd78fcc38570e">create_binary_data</a>(Collection &amp;buffer)</div>
 <div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;        {</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;            <span class="keyword">const</span> <span class="keywordtype">int</span> tmp[] =</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;            <span class="keyword">const</span> <span class="keywordtype">signed</span> <span class="keywordtype">char</span> tmp[] =</div>
 <div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;            {</div>
 <div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;                    3,15,-41,-40,47,64,7,0,-90,-79,1,0,116,74,122,-59,74,16,54,66</div>
 <div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;                    ,74,7,0,-90,-79,1,0,114,1,0,0,0,-102,113,39,64,7,0,-90,-79,1</div>
