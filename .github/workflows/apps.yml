@@ -28,11 +28,11 @@ jobs:
 
       - name: Configure Windows
         if: matrix.os == 'windows-latest'
-        run: cmake ${{github.workspace}} -Ax64 -B${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.buildtype}} -DPACKAGE_OUTPUT_FILE_PREFIX=${{github.workspace}}/dist -DENABLE_SWIG=OFF -DENABLE_PORTABLE=ON
+        run: cmake ${{github.workspace}} -Ax64 -B${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.buildtype}} -DPACKAGE_OUTPUT_FILE_PREFIX=${{github.workspace}}/dist -DENABLE_SWIG=OFF -DENABLE_PORTABLE=ON -DDISABLE_PACKAGE_SUBDIR=ON
 
       - name: Configure OSX
         if: matrix.os == 'macOS-latest'
-        run: cmake ${{github.workspace}} -B${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.buildtype}} -DPACKAGE_OUTPUT_FILE_PREFIX=${{github.workspace}}/dist -DENABLE_SWIG=OFF -DENABLE_PORTABLE=ON
+        run: cmake ${{github.workspace}} -B${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.buildtype}} -DPACKAGE_OUTPUT_FILE_PREFIX=${{github.workspace}}/dist -DENABLE_SWIG=OFF -DENABLE_PORTABLE=ON -DDISABLE_PACKAGE_SUBDIR=ON
 
       - name: Build OSX and Windows
         if: matrix.os != 'ubuntu-latest'
@@ -48,7 +48,10 @@ jobs:
 
       - name: Linux Build, Test and Package in Docker
         if: matrix.os == 'ubuntu-latest'
-        run: docker run --rm -v ${{github.workspace}}/:/io ezralanglois/interop bash -c "cmake /io -Bbuild -DCMAKE_BUILD_TYPE=${{matrix.buildtype}} -DPACKAGE_OUTPUT_FILE_PREFIX=/io/dist -DENABLE_SWIG=OFF -DENABLE_PORTABLE=ON && cmake --build build && cmake --build build --target check && cmake --build build --target bundle"
+        run: docker run --rm -v ${{github.workspace}}/:/io ezralanglois/interop bash -c "cmake /io -Bbuild -DCMAKE_BUILD_TYPE=${{matrix.buildtype}} -DPACKAGE_OUTPUT_FILE_PREFIX=/io/dist -DENABLE_SWIG=OFF -DENABLE_PORTABLE=ON -DDISABLE_PACKAGE_SUBDIR=ON && cmake --build build && cmake --build build --target check && cmake --build build --target bundle"
+
+      - name: Test Artifacts
+        run: ls dist/*
 
       - uses: actions/upload-artifact@v3
         if: matrix.buildtype == 'Release'
@@ -70,3 +73,4 @@ jobs:
         uses: fnkr/github-action-ghr@v1
         env:
           GHR_PATH: dist/
+          GITHUB_TOKEN: ${{ secrets.RELEASES_TOKEN }}
