@@ -51,6 +51,9 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: docker run --rm -v ${{github.workspace}}/:/io ezralanglois/interop bash -c "cmake /io -Bbuild -DCMAKE_BUILD_TYPE=${{matrix.buildtype}} -DPACKAGE_OUTPUT_FILE_PREFIX=/io/dist -DENABLE_SWIG=ON -DENABLE_PORTABLE=ON -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=ON -DENABLE_PYTHON=OFF && cmake --build build && cmake --build build --target check && cmake --build build --target nupack"
 
+      - name: Test Artifacts
+        run: ls dist/*
+
       - uses: actions/upload-artifact@v3
         if: matrix.buildtype == 'Release'
         with:
