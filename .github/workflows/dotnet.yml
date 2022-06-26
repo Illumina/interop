@@ -57,7 +57,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         if: matrix.buildtype == 'Release'
         with:
-          path: dist/*.*
+          path: dist/illumina*.*
 
   publish:
     needs: [build]
@@ -74,3 +74,4 @@ jobs:
         uses: fnkr/github-action-ghr@v1
         env:
           GHR_PATH: dist/
+          GITHUB_TOKEN: ${{ secrets.RELEASES_TOKEN }}
