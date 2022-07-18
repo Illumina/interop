@@ -1,6 +1,12 @@
 # Changes                                               {#changes}
 
 
+## v1.1.26
+
+Date       | Description
+---------- | -----------
+2022-07-18 | Fix InterOp Python Wheels do not run on Mac OS X High Sierra 10.13 since v1.1.24
+
 ## v1.1.25
 
 Date       | Description
