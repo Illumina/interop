@@ -39,6 +39,7 @@ namespace illumina { namespace interop { namespace io
     {
         /** @page summary_run_v1 SummaryRun Version 1
          *
+         *
          * This class provides an interface to reading the SummaryRun metric file:
          *  - InterOp/SummaryRun.bin
          *  - InterOp/SummaryRunOut.bin
@@ -190,3 +191,5 @@ INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(summary_run_metric, 1)
 
 // Text formats
 INTEROP_REGISTER_METRIC_TEXT_LAYOUT(summary_run_metric, 1)
+
+
