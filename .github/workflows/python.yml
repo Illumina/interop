@@ -1,5 +1,8 @@
 name: Python Wheels
 
+env:
+  MACOSX_DEPLOYMENT_TARGET: 10.9
+
 on:
   push:
     branches: [ "master" ]

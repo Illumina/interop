@@ -7,6 +7,7 @@ Date       | Description
 ---------- | -----------
 2022-08-09 | Support parsing error metrics v6
 2022-08-09 | Fix potential bugs when parsing Q-metrics
+2022-07-18 | Fix InterOp Python Wheels do not run on Mac OS X High Sierra 10.13 since v1.1.24
 
 ## v1.1.25
 
