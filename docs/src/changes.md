@@ -5,7 +5,7 @@
 
 Date       | Description
 ---------- | -----------
-2022-08-09 | Support future platforms using error metrics v6
+2022-08-09 | Support parsing error metrics v6
 2022-08-09 | Fix potential bugs when parsing Q-metrics
 
 ## v1.1.25
