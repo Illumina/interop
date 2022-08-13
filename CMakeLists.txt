@@ -1,9 +1,13 @@
 cmake_minimum_required(VERSION 3.4)
+
+if(APPLE AND NOT DEFINED CMAKE_OSX_ARCHITECTURES)
+    set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64" CACHE STRING "Build architectures for Mac OS X" FORCE)
+    message(STATUS "Building on mac with universal binaries")
+endif()
+
 project(InterOp)
 
-IF(APPLE)
-    SET(CMAKE_OSX_ARCHITECTURES "x86_64;arm64" CACHE STRING "Build architectures for Mac OS X" FORCE)
-ENDIF(APPLE)
+
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules)
 enable_testing()
