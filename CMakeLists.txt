@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 3.4)
 project(InterOp)
+
+IF(APPLE)
+    SET(CMAKE_OSX_ARCHITECTURES "x86_64;arm64" CACHE STRING "Build architectures for Mac OS X" FORCE)
+ENDIF(APPLE)
+
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules)
 enable_testing()
 include(${PROJECT_SOURCE_DIR}/cmake/Modules/UseGitVersion.cmake)
