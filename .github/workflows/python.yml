@@ -15,7 +15,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-2016, macOS-latest]
+        os: [ubuntu-latest, windows-2019, macOS-latest]
         pyver: ['2.7', '3.5', '3.6', '3.7', '3.8', '3.9', '3.10'] #, '3.11-dev'
 
     steps:
