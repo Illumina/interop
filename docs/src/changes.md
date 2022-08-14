@@ -7,6 +7,7 @@ Date       | Description
 ---------- | -----------
 2022-08-13 | Issue-282: Support universal build for M1 mac
 2022-08-13 | Issue-282: Remove support for Python 3.5 (not working on Mac M1)
+2022-08-13 | Issue-282: Update Windows Agent to 2019 from 2016 (2016 discontinued)
 2022-07-18 | Fix InterOp Python Wheels do not run on Mac OS X High Sierra 10.13 since v1.1.24
 
 ## v1.1.25
