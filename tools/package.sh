@@ -181,7 +181,7 @@ if [  -e /opt/python ] ; then
 elif [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PYTHON_VERSION" != "DotNetStandard" ] && [ "$PYTHON_VERSION" != "None" ] ; then
     if [ "$PYTHON_VERSION" == "ALL" ] ; then
         # python_versions="2.7.17 3.5.9 3.6.10 3.7.7 3.8.2 3.9.x"
-        python_versions="2.7.17 3.5.9"
+        python_versions="2.7.17"
         pyenv install --list | grep " 2.7"
         pyenv install --list | grep " 3\.[45678]"
     else

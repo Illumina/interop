@@ -10,7 +10,7 @@ Illumina sequencers including **NextSeq 1k/2k**. These libraries are backwards c
 with one exception: GA systems have been excluded.
 
 ***
-> We now support an interface to Python 2.7 (UCS-4) and 3.5-3.10
+> We now support an interface to Python 2.7 (UCS-4) and 3.6-3.10
 > Note that 3.10 is CentOS 7 or later while ealier versions support Centos 5 or later
 ***
 
