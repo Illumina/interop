@@ -239,7 +239,6 @@ namespace illumina{ namespace interop{ namespace io
     {
         /** @page extended_tile_v3 Extended Tile Version 3
          *
-         *
          * This class provides an interface to reading the extended tile metric file:
          *  - InterOp/ExtendedTileMetrics.bin
          *  - InterOp/ExtendedTileMetricsOut.bin

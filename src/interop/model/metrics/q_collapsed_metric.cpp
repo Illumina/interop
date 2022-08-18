@@ -373,7 +373,7 @@ namespace illumina{ namespace interop{ namespace io {
             /** Define the size of the record with the ID */
             TOTAL_RECORD_SIZE = RECORD_SIZE+sizeof(metric_id_t),
             /** Alternative record size*/
-            ALT_RECORD_SIZE=TOTAL_RECORD_SIZE+sizeof(median_t)
+            ALT_RECORD_SIZE=TOTAL_RECORD_SIZE+sizeof(median_t) //22
             };
 
         /** Map reading/writing to stream
@@ -460,15 +460,17 @@ namespace illumina{ namespace interop{ namespace io {
          *
          * @return header size
          */
-        static record_size_t compute_header_size(const q_collapsed_metric::header_type& header)
+        static record_size_t compute_header_size(const q_collapsed_metric::header_type& /*header*/)
         {
-            if (header.bin_count() == 0)
+            return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t) + sizeof(bool_t));
+            // Never write the header
+            /*if (header.bin_count() == 0)
                 return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t) + sizeof(bool_t));
             return static_cast<record_size_t>(sizeof(record_size_t) +
                                               sizeof(version_t) + // version
                                               sizeof(bool_t) + // has bins
                                               sizeof(bin_count_t) + // number of bins
-                                              header.bin_count() * 3 * sizeof(bin_t));
+                                              header.bin_count() * 3 * sizeof(bin_t));*/
         }
         /** Does not read/write record size, this is done in `map_stream_for_header`
          *

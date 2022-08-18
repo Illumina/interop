@@ -91,6 +91,26 @@ namespace illumina { namespace interop { namespace io
         std::istringstream in(buffer);
         read_metrics(in, metrics, buffer.length(), rebuild);
     }
+    /** Write the binary InterOp file into the given string using the given metric set
+     *
+     * @param buffer string holding a byte buffer
+     * @param metrics metric set
+     * @param version version of the format to write (-1 means use latest)
+     * @throw bad_format_exception
+     * @throw incomplete_file_exception
+     * @throw model::index_out_of_bounds_exception
+     */
+    template<class MetricSet>
+    void write_interop_to_string(std::string& buffer
+            , const MetricSet& metrics, const ::int16_t version = -1)  INTEROP_THROW_SPEC(
+            (interop::io::bad_format_exception,
+                    interop::io::incomplete_file_exception,
+                    model::index_out_of_bounds_exception))
+    {
+        std::ostringstream out;
+        write_metrics(out, metrics, version);
+        buffer = out.str();
+    }
     /** Read the binary InterOp file into the given metric set
      *
      * @param buffer string holding a byte buffer
@@ -107,6 +127,25 @@ namespace illumina { namespace interop { namespace io
     {
         std::istringstream in(buffer);
         return read_header(in, metrics);
+    }
+    /** Write the binary InterOp file header into a string from the given metric set
+     *
+     * @param buffer string holding a byte buffer
+     * @param metrics metric set
+     * @throw bad_format_exception
+     * @throw incomplete_file_exception
+     * @throw model::index_out_of_bounds_exception
+     */
+    template<class MetricSet>
+    void write_header_to_string(std::string& buffer, const MetricSet& metrics, ::int16_t version=-1)  INTEROP_THROW_SPEC(
+            (interop::io::bad_format_exception,
+                    interop::io::incomplete_file_exception,
+                    model::index_out_of_bounds_exception))
+    {
+        if(version == -1) version = metrics.version();
+        std::ostringstream out;
+        write_metric_header<typename MetricSet::metric_type>(out, version, metrics);
+        buffer = out.str();
     }
     /** Read the binary InterOp file into the given metric set
      *

@@ -52,7 +52,7 @@ void print_actual(std::ostream& out, const std::string& data)
 {
     for(size_t i=0;i<data.size();++i)
     {
-        out << "," << int(data[i]);
+        out << "," << int(char(data[i]));
         if( i%20 == 0) out << std::endl;
     }
     out << std::endl;
@@ -86,9 +86,12 @@ TYPED_TEST_P(metric_stream_test, test_write_read_binary_data)
  */
 TYPED_TEST_P(metric_stream_test, test_header_size)
 {
-    std::string tmp = std::string(TestFixture::expected);
+    std::string tmp;
     typename TypeParam::metric_set_t metrics;
-    const size_t actual_size = io::read_header_from_string(tmp, metrics);
+    TypeParam::create_expected(metrics);
+    io::write_header_to_string(tmp, metrics);
+    const size_t actual_size = tmp.length();
+
     const size_t expected_size = io::header_size(metrics);
     EXPECT_EQ(expected_size, actual_size);
 }
@@ -97,14 +100,12 @@ TYPED_TEST_P(metric_stream_test, test_header_size)
  */
 TYPED_TEST_P(metric_stream_test, test_read_data_size)
 {
-    typedef typename TestFixture::metric_t metric_t;
-    std::string tmp = std::string(TestFixture::expected);
+    std::string tmp;
     typename TypeParam::metric_set_t metrics;
-    io::read_interop_from_string(tmp, metrics);
-    if(static_cast<constants::metric_group>(metric_t::TYPE) == constants::Tile && TypeParam::VERSION == 2)
-        return; // This contrived exampled is not supported, it includes things like control metrics, which are ignored
-    const size_t expected_size = io::compute_buffer_size(metrics);
-    EXPECT_EQ(tmp.size(), expected_size);
+    TypeParam::create_expected(metrics);
+    io::write_interop_to_string(tmp, metrics);
+    const size_t computed_size = io::compute_buffer_size(metrics);
+    EXPECT_EQ(tmp.size(), computed_size);
 }
 
 /** Confirm the header size matches what is read

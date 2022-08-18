@@ -220,7 +220,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @param lane lane number
          * @param tile tile number
          * @param cycle cycle number
-         * @param called_count_vec number of clusters called per base
+         * @param called_count number of clusters called per base
          */
         corrected_intensity_metric(const uint_t lane,
                                    const uint_t tile,
@@ -434,10 +434,10 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         float percent_base(const constants::dna_bases index) const INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
         {
-            uint_t total = total_calls(index == constants::NC);
+            const uint_t total = total_calls(index == constants::NC );
             if (total == 0)
                 return std::numeric_limits<float>::quiet_NaN();
-            return called_counts(index) / static_cast<float>(total) * 100;
+            return called_counts(index) / static_cast<float>(total) * 100.0f;
         }
 
         /** Get the percentage per base (does not include no calls)
@@ -447,11 +447,14 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          */
         float_array_t percent_bases() const
         {
-            uint_t total = total_calls();
-            float_array_t percent_bases(called_counts_array().size() - 1);
+            if(m_called_counts.empty())
+            {
+                return float_array_t();
+            }
+            const uint_t total = total_calls();
+            float_array_t percent_bases(constants::NUM_OF_BASES);
             for (size_t i = 0; i < percent_bases.size(); ++i)
-                percent_bases[i] = (total == 0) ? std::numeric_limits<float>::quiet_NaN() :
-                                   called_counts_array()[i + 1] / static_cast<float>(total) * 100;
+                percent_bases[i] = static_cast<float>(m_called_counts[i + 1]) / static_cast<float>(total) * 100.0f;
             return percent_bases;
         }
 

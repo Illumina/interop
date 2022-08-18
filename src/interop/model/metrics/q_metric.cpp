@@ -278,6 +278,7 @@ namespace illumina { namespace interop { namespace io
 
             copy_value_write(header.m_qscore_bins, tmp);
             count += stream_map<bin_t>(stream, tmp, bin_count);
+            if(stream.fail()) return count;
             copy_value_read(header.m_qscore_bins, tmp);
 
             return count;
@@ -346,7 +347,10 @@ namespace illumina { namespace interop { namespace io
         static void copy_value_read(std::vector<q_score_bin> &bins, bin_t (&tmp)[N])
         {
             INTEROP_ASSERT(bins.size() <= N);
-            for (size_t i = 0; i < bins.size(); ++i) bins[i].m_value = tmp[i];
+            for (size_t i = 0; i < bins.size(); ++i)
+            {
+                bins[i].m_value = tmp[i];
+            }
         }
 
         static void copy_value_read(const std::vector<q_score_bin> &, bin_t *)
@@ -492,6 +496,7 @@ namespace illumina { namespace interop { namespace io
 
             copy_value_write(header.m_qscore_bins, tmp);
             count += stream_map<bin_t>(stream, tmp, bin_count);
+            if(stream.fail()) return count;
             copy_value_read(header.m_qscore_bins, tmp);
 
             return count;
@@ -560,7 +565,10 @@ namespace illumina { namespace interop { namespace io
         static void copy_value_read(std::vector<q_score_bin> &bins, bin_t (&tmp)[N])
         {
             INTEROP_ASSERT(bins.size() <= N);
-            for (size_t i = 0; i < bins.size(); ++i) bins[i].m_value = tmp[i];
+            for (size_t i = 0; i < bins.size(); ++i)
+            {
+                bins[i].m_value = tmp[i];
+            }
         }
 
         static void copy_value_read(const std::vector<q_score_bin> &, bin_t *)

@@ -689,7 +689,6 @@ def imaging(run_metrics, dtype='f4', **extra):
 
     if not isinstance(dtype, str):
         dtype = np.dtype(dtype).str
-
     return np.core.records.fromarrays(data.transpose()
                                       , names=",".join(headers)
                                       , formats=",".join([dtype for _ in headers]))
