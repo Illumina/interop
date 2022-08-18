@@ -35,7 +35,7 @@
  <div class="container">
   <div class="navbar-header">
    <a class="navbar-brand" href="https://www.illumina.com/"><img style='margin-top: -8px !important;height: 40px !important;' src='ILLUMINA_LOGO_RGB_new_200_45.png' /></a>
-   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.1.25</span>  </a>
+   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.1.26</span>  </a>
   </div>
   <div class="collapse navbar-collapse">
    <!-- Left -->
@@ -114,9 +114,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a7a2fb9d870a57869d01a499d00838a8b"><td class="memTemplParams" colspan="2">template&lt;class Stream , class Metric , class Header &gt; </td></tr>
 <tr class="memitem:a7a2fb9d870a57869d01a499d00838a8b"><td class="memTemplItemLeft" align="right" valign="top">static std::streamsize&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structillumina_1_1interop_1_1io_1_1generic__layout_3_01error__metric_00_015_01_4.html#a7a2fb9d870a57869d01a499d00838a8b">map_stream</a> (Stream &amp;stream, Metric &amp;metric, Header &amp;, const bool)</td></tr>
 <tr class="separator:a7a2fb9d870a57869d01a499d00838a8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a06aa1001f0cf7c852868096a9dee9916"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structillumina_1_1interop_1_1io_1_1default__layout.html#a4dd400203da7cbacb48f60d22bacbd9b">record_size_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structillumina_1_1interop_1_1io_1_1generic__layout_3_01error__metric_00_015_01_4.html#a06aa1001f0cf7c852868096a9dee9916">compute_size</a> (const error_metric::header_type &amp;)</td></tr>
+<tr class="memitem:a06aa1001f0cf7c852868096a9dee9916"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structillumina_1_1interop_1_1io_1_1default__layout.html#a4dd400203da7cbacb48f60d22bacbd9b">record_size_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structillumina_1_1interop_1_1io_1_1generic__layout_3_01error__metric_00_015_01_4.html#a06aa1001f0cf7c852868096a9dee9916">compute_size</a> (const <a class="el" href="classillumina_1_1interop_1_1model_1_1metrics_1_1error__metric.html#aeb36b8d41a3b13154200c3cbfc42257c">error_metric::header_type</a> &amp;)</td></tr>
 <tr class="separator:a06aa1001f0cf7c852868096a9dee9916"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3d6d9ef7e3703f640363f999ed946d5f"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structillumina_1_1interop_1_1io_1_1default__layout.html#a4dd400203da7cbacb48f60d22bacbd9b">record_size_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structillumina_1_1interop_1_1io_1_1generic__layout_3_01error__metric_00_015_01_4.html#a3d6d9ef7e3703f640363f999ed946d5f">compute_header_size</a> (const error_metric::header_type &amp;)</td></tr>
+<tr class="memitem:a3d6d9ef7e3703f640363f999ed946d5f"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structillumina_1_1interop_1_1io_1_1default__layout.html#a4dd400203da7cbacb48f60d22bacbd9b">record_size_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structillumina_1_1interop_1_1io_1_1generic__layout_3_01error__metric_00_015_01_4.html#a3d6d9ef7e3703f640363f999ed946d5f">compute_header_size</a> (const <a class="el" href="classillumina_1_1interop_1_1model_1_1metrics_1_1error__metric.html#aeb36b8d41a3b13154200c3cbfc42257c">error_metric::header_type</a> &amp;)</td></tr>
 <tr class="separator:a3d6d9ef7e3703f640363f999ed946d5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_static_methods_structillumina_1_1interop_1_1io_1_1default__layout"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_structillumina_1_1interop_1_1io_1_1default__layout')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="structillumina_1_1interop_1_1io_1_1default__layout.html">default_layout&lt; 5 &gt;</a></td></tr>
 <tr class="memitem:a4fd7b27967a3c844bbabbc57328dbded inherit pub_static_methods_structillumina_1_1interop_1_1io_1_1default__layout"><td class="memItemLeft" align="right" valign="top">static std::streamsize&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structillumina_1_1interop_1_1io_1_1default__layout.html#a4fd7b27967a3c844bbabbc57328dbded">map_stream_for_header</a> (Stream &amp;, Header &amp;)</td></tr>
@@ -176,7 +176,7 @@ struct illumina::interop::io::generic_layout&lt; error_metric, 5 &gt;</h3>
         <tr>
           <td class="memname">static <a class="el" href="structillumina_1_1interop_1_1io_1_1default__layout.html#a4dd400203da7cbacb48f60d22bacbd9b">record_size_t</a> compute_header_size </td>
           <td>(</td>
-          <td class="paramtype">const error_metric::header_type &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classillumina_1_1interop_1_1model_1_1metrics_1_1error__metric.html#aeb36b8d41a3b13154200c3cbfc42257c">error_metric::header_type</a> &amp;&#160;</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
@@ -202,7 +202,7 @@ struct illumina::interop::io::generic_layout&lt; error_metric, 5 &gt;</h3>
         <tr>
           <td class="memname">static <a class="el" href="structillumina_1_1interop_1_1io_1_1default__layout.html#a4dd400203da7cbacb48f60d22bacbd9b">record_size_t</a> compute_size </td>
           <td>(</td>
-          <td class="paramtype">const error_metric::header_type &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classillumina_1_1interop_1_1model_1_1metrics_1_1error__metric.html#aeb36b8d41a3b13154200c3cbfc42257c">error_metric::header_type</a> &amp;&#160;</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>

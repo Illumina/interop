@@ -35,7 +35,7 @@
  <div class="container">
   <div class="navbar-header">
    <a class="navbar-brand" href="https://www.illumina.com/"><img style='margin-top: -8px !important;height: 40px !important;' src='ILLUMINA_LOGO_RGB_new_200_45.png' /></a>
-   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.1.25</span>  </a>
+   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.1.26</span>  </a>
   </div>
   <div class="collapse navbar-collapse">
    <!-- Left -->
@@ -79,6 +79,12 @@ Functions</h2></td></tr>
 <tr class="separator:ga197bd032ff7167fec9c16ff5e5ca49e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga133f2ecec2c3fcbc45012c8d8e25a1a5"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__error__metric.html#ga133f2ecec2c3fcbc45012c8d8e25a1a5">phix_adapter_rate</a> () const </td></tr>
 <tr class="separator:ga133f2ecec2c3fcbc45012c8d8e25a1a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga932706ad154dac164ff61e355f3ec231"><td class="memItemLeft" align="right" valign="top">const float_vector &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__error__metric.html#ga932706ad154dac164ff61e355f3ec231">phix_adapter_rates</a> () const </td></tr>
+<tr class="separator:ga932706ad154dac164ff61e355f3ec231"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5e90cc966a2f219ea3ddc6e87611997b"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__error__metric.html#ga5e90cc966a2f219ea3ddc6e87611997b">phix_adapter_rate_at</a> (const size_t n) const <a class="el" href="exception__specification_8h.html#aff57a57f70bd067a95a801be66b24b4e">INTEROP_THROW_SPEC</a>((model</td></tr>
+<tr class="separator:ga5e90cc966a2f219ea3ddc6e87611997b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1c1aeb24c04c4b99d3fd2cc1909426ae"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__error__metric.html#ga1c1aeb24c04c4b99d3fd2cc1909426ae">phix_adapter_count</a> () const </td></tr>
+<tr class="separator:ga1c1aeb24c04c4b99d3fd2cc1909426ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gadee124acd582a9d232e6dfd97a02f1bb"><td class="memItemLeft" align="right" valign="top">uint_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__error__metric.html#gadee124acd582a9d232e6dfd97a02f1bb">mismatch_cluster_count</a> (const size_t n) const <a class="el" href="exception__specification_8h.html#aff57a57f70bd067a95a801be66b24b4e">INTEROP_THROW_SPEC</a>((model</td></tr>
 <tr class="separator:gadee124acd582a9d232e6dfd97a02f1bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga4f1ae87c0cfca32201435dd025d1193b"><td class="memItemLeft" align="right" valign="top">uint_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__error__metric.html#ga4f1ae87c0cfca32201435dd025d1193b">mismatch_count</a> () const </td></tr>
@@ -203,6 +209,29 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ga1c1aeb24c04c4b99d3fd2cc1909426ae"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t phix_adapter_count </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a class="anchor" id="ga133f2ecec2c3fcbc45012c8d8e25a1a5"></a>
 <div class="memitem">
 <div class="memproto">
@@ -226,6 +255,53 @@ Functions</h2></td></tr>
 <p>Calculated adapter trim rate of PhiX clusters</p>
 <dl class="section note"><dt>Note</dt><dd>Supported by v5 </dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>adapter trim rate </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga5e90cc966a2f219ea3ddc6e87611997b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float phix_adapter_rate_at </td>
+          <td>(</td>
+          <td class="paramtype">const size_t&#160;</td>
+          <td class="paramname"><em>n</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ga932706ad154dac164ff61e355f3ec231"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float_vector&amp; phix_adapter_rates </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>

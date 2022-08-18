@@ -35,7 +35,7 @@
  <div class="container">
   <div class="navbar-header">
    <a class="navbar-brand" href="https://www.illumina.com/"><img style='margin-top: -8px !important;height: 40px !important;' src='ILLUMINA_LOGO_RGB_new_200_45.png' /></a>
-   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.1.25</span>  </a>
+   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.1.26</span>  </a>
   </div>
   <div class="collapse navbar-collapse">
    <!-- Left -->
@@ -124,6 +124,8 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structillumina_1_1interop_1_1io_1_1generic__layout_3_01error__metric_00_014_01_4.html">generic_layout&lt; error_metric, 4 &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structillumina_1_1interop_1_1io_1_1generic__layout_3_01error__metric_00_015_01_4.html">generic_layout&lt; error_metric, 5 &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structillumina_1_1interop_1_1io_1_1generic__layout_3_01error__metric_00_016_01_4.html">generic_layout&lt; error_metric, 6 &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structillumina_1_1interop_1_1io_1_1generic__layout_3_01extended__tile__metric_00_011_01_4.html">generic_layout&lt; extended_tile_metric, 1 &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -216,6 +218,8 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structillumina_1_1interop_1_1io_1_1text__layout_3_01error__metric_00_011_01_4.html">text_layout&lt; error_metric, 1 &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structillumina_1_1interop_1_1io_1_1text__layout_3_01error__metric_00_012_01_4.html">text_layout&lt; error_metric, 2 &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structillumina_1_1interop_1_1io_1_1text__layout_3_01error__metric_00_013_01_4.html">text_layout&lt; error_metric, 3 &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structillumina_1_1interop_1_1io_1_1text__layout_3_01extended__tile__metric_00_011_01_4.html">text_layout&lt; extended_tile_metric, 1 &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -364,9 +368,15 @@ Functions</h2></td></tr>
 <tr class="memitem:ga23e73d0ae156777e479c4ab8386cd590"><td class="memTemplParams" colspan="2">template&lt;class MetricSet &gt; </td></tr>
 <tr class="memitem:ga23e73d0ae156777e479c4ab8386cd590"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__file__io.html#ga23e73d0ae156777e479c4ab8386cd590">read_interop_from_string</a> (const std::string &amp;buffer, MetricSet &amp;metrics, const bool rebuild=true) <a class="el" href="exception__specification_8h.html#aff57a57f70bd067a95a801be66b24b4e">INTEROP_THROW_SPEC</a>((interop</td></tr>
 <tr class="separator:ga23e73d0ae156777e479c4ab8386cd590"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7a94430039612672eba96ebd3681889f"><td class="memTemplParams" colspan="2">template&lt;class MetricSet &gt; </td></tr>
+<tr class="memitem:ga7a94430039612672eba96ebd3681889f"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__file__io.html#ga7a94430039612672eba96ebd3681889f">write_interop_to_string</a> (std::string &amp;buffer, const MetricSet &amp;metrics, const ::int16_t version=-1) <a class="el" href="exception__specification_8h.html#aff57a57f70bd067a95a801be66b24b4e">INTEROP_THROW_SPEC</a>((interop</td></tr>
+<tr class="separator:ga7a94430039612672eba96ebd3681889f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga610e94718d8fed0e7ef129f3a0b36f8f"><td class="memTemplParams" colspan="2">template&lt;class MetricSet &gt; </td></tr>
 <tr class="memitem:ga610e94718d8fed0e7ef129f3a0b36f8f"><td class="memTemplItemLeft" align="right" valign="top">size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__file__io.html#ga610e94718d8fed0e7ef129f3a0b36f8f">read_header_from_string</a> (const std::string &amp;buffer, MetricSet &amp;metrics) <a class="el" href="exception__specification_8h.html#aff57a57f70bd067a95a801be66b24b4e">INTEROP_THROW_SPEC</a>((interop</td></tr>
 <tr class="separator:ga610e94718d8fed0e7ef129f3a0b36f8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga64736a5bd610e6b4485c0d3548af1983"><td class="memTemplParams" colspan="2">template&lt;class MetricSet &gt; </td></tr>
+<tr class="memitem:ga64736a5bd610e6b4485c0d3548af1983"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__file__io.html#ga64736a5bd610e6b4485c0d3548af1983">write_header_to_string</a> (std::string &amp;buffer, const MetricSet &amp;metrics,::int16_t version=-1) <a class="el" href="exception__specification_8h.html#aff57a57f70bd067a95a801be66b24b4e">INTEROP_THROW_SPEC</a>((interop</td></tr>
+<tr class="separator:ga64736a5bd610e6b4485c0d3548af1983"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaa0f95ce88cda948fb40abe52723e7d57"><td class="memTemplParams" colspan="2">template&lt;class MetricSet &gt; </td></tr>
 <tr class="memitem:gaa0f95ce88cda948fb40abe52723e7d57"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__file__io.html#gaa0f95ce88cda948fb40abe52723e7d57">read_interop</a> (const std::string &amp;run_directory, MetricSet &amp;metrics, const bool use_out=true) <a class="el" href="exception__specification_8h.html#aff57a57f70bd067a95a801be66b24b4e">INTEROP_THROW_SPEC</a>((io</td></tr>
 <tr class="separator:gaa0f95ce88cda948fb40abe52723e7d57"><td class="memSeparator" colspan="2">&#160;</td></tr>

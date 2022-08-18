@@ -35,7 +35,7 @@
  <div class="container">
   <div class="navbar-header">
    <a class="navbar-brand" href="https://www.illumina.com/"><img style='margin-top: -8px !important;height: 40px !important;' src='ILLUMINA_LOGO_RGB_new_200_45.png' /></a>
-   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.1.25</span>  </a>
+   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.1.26</span>  </a>
   </div>
   <div class="collapse navbar-collapse">
    <!-- Left -->
@@ -135,6 +135,12 @@
 <li>accumulate_into()
 : <a class="el" href="classillumina_1_1interop_1_1model_1_1metrics_1_1q__metric.html#ac246360c9800382d4c61c30c2182bd2a">q_metric</a>
 </li>
+<li>adapter_length()
+: <a class="el" href="classillumina_1_1interop_1_1model_1_1metrics_1_1error__metric__header.html#a52db13770459764c775e8fddd59db83e">error_metric_header</a>
+</li>
+<li>adapter_sequences()
+: <a class="el" href="classillumina_1_1interop_1_1model_1_1metrics_1_1error__metric__header.html#a71b4052e5ac20180a82182601cb4eda2">error_metric_header</a>
+</li>
 <li>add()
 : <a class="el" href="structillumina_1_1interop_1_1io_1_1text__format__factory.html#a2ba6726093c6450652f10fc4a8c99659">text_format_factory&lt; Metric &gt;</a>
 , <a class="el" href="classillumina_1_1interop_1_1logic_1_1metric_1_1linear__fit.html#a7c0aca9e41708429c84f124feaca4863">linear_fit</a>
@@ -148,7 +154,7 @@
 : <a class="el" href="classillumina_1_1interop_1_1unittest_1_1regression__test__data.html#a5305b0919c2e4459534953450ce213fc">regression_test_data</a>
 </li>
 <li>add_node()
-: <a class="el" href="classillumina_1_1interop_1_1xml_1_1xml__document.html#aac7b908c74e849a7c673925c388c98f3">xml_document</a>
+: <a class="el" href="classillumina_1_1interop_1_1xml_1_1xml__document.html#a65e3b975657bf6be95229e3123094bf7">xml_document</a>
 </li>
 <li>add_option()
 : <a class="el" href="classillumina_1_1interop_1_1model_1_1plot_1_1series.html#a7fdee4004cd92b4fa8543ea7c2d4fd98">series&lt; Point &gt;</a>
@@ -178,7 +184,7 @@
 , <a class="el" href="classillumina_1_1interop_1_1util_1_1indirect__range__iterator.html#a8903a4e9f3d5fb42d0faa9d53e21d85c">indirect_range_iterator&lt; T, Storage &gt;</a>
 </li>
 <li>all_bases()
-: <a class="el" href="classillumina_1_1interop_1_1model_1_1plot_1_1filter__options.html#a39cfe870ffb458bb9bf9b04b68453d5d">filter_options</a>
+: <a class="el" href="classillumina_1_1interop_1_1model_1_1plot_1_1filter__options.html#a5ab50775c92d6aff7cec8ac31d143fc7">filter_options</a>
 </li>
 <li>all_channels()
 : <a class="el" href="classillumina_1_1interop_1_1model_1_1plot_1_1filter__options.html#aa972bdadae992d616ad805defb1e9358">filter_options</a>
@@ -212,7 +218,7 @@
 : <a class="el" href="classillumina_1_1interop_1_1model_1_1metrics_1_1append__tiles__functor.html#a32f1509ca1b64fb9711c12739b197881">append_tiles_functor</a>
 </li>
 <li>apply()
-: <a class="el" href="classillumina_1_1interop_1_1object__list.html#a9b140980ad75336f590e59c327d92b2f">object_list&lt; TypeList &gt;</a>
+: <a class="el" href="classillumina_1_1interop_1_1object__list.html#a07e9524343b931dd8b180e9edefd4d6b">object_list&lt; TypeList &gt;</a>
 </li>
 <li>are_all_files_missing()
 : <a class="el" href="structillumina_1_1interop_1_1model_1_1metrics_1_1read__func.html#ace8273869c357e5534900e01ce00c376">read_func</a>
@@ -230,12 +236,12 @@
 <li>at()
 : <a class="el" href="classillumina_1_1interop_1_1model_1_1metric__base_1_1metric__set.html#af607a542757389b3e88d8bf5e5b1e428">metric_set&lt; T &gt;</a>
 , <a class="el" href="group__data__point__collection.html#ga509f7ad3476ae9c3a1689cffc70ff8e2">data_point_collection&lt; Point &gt;</a>
-, <a class="el" href="group__heatmap__data.html#ga5d7c30479ad1cf8cf43bed0f2616be52">heatmap_data</a>
+, <a class="el" href="group__heatmap__data.html#gaea41685de19e74d7d0ca402887b326ab">heatmap_data</a>
 , <a class="el" href="group__plot__data.html#ga5d50c86c2b2709914d90065acecba49e">plot_data&lt; Point &gt;</a>
 , <a class="el" href="group__index__flowcell__summary.html#gac746d3fddfd142f7b5750eef10013114">index_flowcell_summary</a>
 , <a class="el" href="group__index__lane__summary.html#ga83cac5494be20f72d6c1b83a68fddc63">index_lane_summary</a>
 , <a class="el" href="group__lane__summary.html#gac746d3fddfd142f7b5750eef10013114">lane_summary</a>
-, <a class="el" href="group__read__summary.html#gac746d3fddfd142f7b5750eef10013114">read_summary</a>
+, <a class="el" href="classillumina_1_1interop_1_1model_1_1summary_1_1read__summary.html#ab46efd3d774395add0e0603f8309417c">read_summary</a>
 , <a class="el" href="group__run__summary.html#ga3cff4fcbe0505da54b33e5d0f2f71b98">run_summary</a>
 </li>
 <li>average()

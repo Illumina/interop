@@ -35,7 +35,7 @@
  <div class="container">
   <div class="navbar-header">
    <a class="navbar-brand" href="https://www.illumina.com/"><img style='margin-top: -8px !important;height: 40px !important;' src='ILLUMINA_LOGO_RGB_new_200_45.png' /></a>
-   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.1.25</span>  </a>
+   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.1.26</span>  </a>
   </div>
   <div class="collapse navbar-collapse">
    <!-- Left -->
@@ -108,11 +108,15 @@ Inheritance diagram for error_metric:</div>
 Public Types</h2></td></tr>
 <tr class="memitem:a726ca809ffd3d67ab4b8476646f26635"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="classillumina_1_1interop_1_1model_1_1metrics_1_1error__metric.html#a726ca809ffd3d67ab4b8476646f26635a1ac9a96a5a313c4c061097bf2558da37">MAX_MISMATCH</a> = 5, 
 <a class="el" href="classillumina_1_1interop_1_1model_1_1metrics_1_1error__metric.html#a726ca809ffd3d67ab4b8476646f26635ab47ea8bb955afd0adc0ef98517dd6084">TYPE</a> = constants::Error, 
-<a class="el" href="classillumina_1_1interop_1_1model_1_1metrics_1_1error__metric.html#a726ca809ffd3d67ab4b8476646f26635a60b878ff76704f573652d4b995df036b">LATEST_VERSION</a> = 5
+<a class="el" href="classillumina_1_1interop_1_1model_1_1metrics_1_1error__metric.html#a726ca809ffd3d67ab4b8476646f26635a60b878ff76704f573652d4b995df036b">LATEST_VERSION</a> = 6
  }<tr class="separator:a726ca809ffd3d67ab4b8476646f26635"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </td></tr>
 <tr class="memitem:aa848283467d95560ebf1a7249215ff4d"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; <a class="el" href="classillumina_1_1interop_1_1model_1_1metric__base_1_1empty__metric.html#a50ea70ec632c7beb784fd921f59f900f">uint_t</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classillumina_1_1interop_1_1model_1_1metrics_1_1error__metric.html#aa848283467d95560ebf1a7249215ff4d">uint_array_t</a></td></tr>
 <tr class="separator:aa848283467d95560ebf1a7249215ff4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:accd0e5525214af25a3865942f272844d"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classillumina_1_1interop_1_1model_1_1metrics_1_1error__metric.html#accd0e5525214af25a3865942f272844d">float_vector</a></td></tr>
+<tr class="separator:accd0e5525214af25a3865942f272844d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeb36b8d41a3b13154200c3cbfc42257c"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classillumina_1_1interop_1_1model_1_1metrics_1_1error__metric__header.html">error_metric_header</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classillumina_1_1interop_1_1model_1_1metrics_1_1error__metric.html#aeb36b8d41a3b13154200c3cbfc42257c">header_type</a></td></tr>
+<tr class="separator:aeb36b8d41a3b13154200c3cbfc42257c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_types_classillumina_1_1interop_1_1model_1_1metric__base_1_1base__cycle__metric"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classillumina_1_1interop_1_1model_1_1metric__base_1_1base__cycle__metric')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classillumina_1_1interop_1_1model_1_1metric__base_1_1base__cycle__metric.html">base_cycle_metric</a></td></tr>
 <tr class="memitem:ab0b5a558f5baf701248fbac525beb7bd inherit pub_types_classillumina_1_1interop_1_1model_1_1metric__base_1_1base__cycle__metric"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classillumina_1_1interop_1_1model_1_1metric__base_1_1base__cycle__metric__header.html">base_cycle_metric_header</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classillumina_1_1interop_1_1model_1_1metric__base_1_1base__cycle__metric.html#ab0b5a558f5baf701248fbac525beb7bd">header_type</a></td></tr>
 <tr class="separator:ab0b5a558f5baf701248fbac525beb7bd inherit pub_types_classillumina_1_1interop_1_1model_1_1metric__base_1_1base__cycle__metric"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -164,14 +168,22 @@ Public Types</h2></td></tr>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a36c64fbaa3ce28bcda160b4ad0e72487"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classillumina_1_1interop_1_1model_1_1metrics_1_1error__metric.html#a36c64fbaa3ce28bcda160b4ad0e72487">error_metric</a> ()</td></tr>
 <tr class="separator:a36c64fbaa3ce28bcda160b4ad0e72487"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adb0691e5be86a023fff27a568208feee"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classillumina_1_1interop_1_1model_1_1metrics_1_1error__metric.html#adb0691e5be86a023fff27a568208feee">error_metric</a> (const <a class="el" href="classillumina_1_1interop_1_1model_1_1metric__base_1_1base__cycle__metric.html#ab0b5a558f5baf701248fbac525beb7bd">header_type</a> &amp;)</td></tr>
-<tr class="separator:adb0691e5be86a023fff27a568208feee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e60a361480da7dd3009006bba1d09df"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classillumina_1_1interop_1_1model_1_1metrics_1_1error__metric.html#a1e60a361480da7dd3009006bba1d09df">error_metric</a> (const <a class="el" href="classillumina_1_1interop_1_1model_1_1metric__base_1_1base__cycle__metric.html#ab0b5a558f5baf701248fbac525beb7bd">header_type</a> &amp;header)</td></tr>
+<tr class="separator:a1e60a361480da7dd3009006bba1d09df"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a695dba2d801ceff79e1c5f33c9156c10"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classillumina_1_1interop_1_1model_1_1metrics_1_1error__metric.html#a695dba2d801ceff79e1c5f33c9156c10">error_metric</a> (const <a class="el" href="classillumina_1_1interop_1_1model_1_1metric__base_1_1empty__metric.html#a50ea70ec632c7beb784fd921f59f900f">uint_t</a> <a class="el" href="classillumina_1_1interop_1_1model_1_1metric__base_1_1base__metric.html#aa7c9c12eb912d5079418c4bc63484834">lane</a>, const <a class="el" href="classillumina_1_1interop_1_1model_1_1metric__base_1_1empty__metric.html#a50ea70ec632c7beb784fd921f59f900f">uint_t</a> <a class="el" href="classillumina_1_1interop_1_1model_1_1metric__base_1_1base__metric.html#a09e1e30e77d457e21228e51a8baff124">tile</a>, const <a class="el" href="classillumina_1_1interop_1_1model_1_1metric__base_1_1empty__metric.html#a50ea70ec632c7beb784fd921f59f900f">uint_t</a> <a class="el" href="classillumina_1_1interop_1_1model_1_1metric__base_1_1base__cycle__metric.html#a1dd098303f296dca75c1fb63ffded9fc">cycle</a>, const float error, const float <a class="el" href="group__error__metric.html#ga133f2ecec2c3fcbc45012c8d8e25a1a5">phix_adapter_rate</a>)</td></tr>
 <tr class="separator:a695dba2d801ceff79e1c5f33c9156c10"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa788850352c8385a1df70d5ebc08b69c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classillumina_1_1interop_1_1model_1_1metrics_1_1error__metric.html#aa788850352c8385a1df70d5ebc08b69c">error_metric</a> (const <a class="el" href="classillumina_1_1interop_1_1model_1_1metric__base_1_1empty__metric.html#a50ea70ec632c7beb784fd921f59f900f">uint_t</a> <a class="el" href="classillumina_1_1interop_1_1model_1_1metric__base_1_1base__metric.html#aa7c9c12eb912d5079418c4bc63484834">lane</a>, const <a class="el" href="classillumina_1_1interop_1_1model_1_1metric__base_1_1empty__metric.html#a50ea70ec632c7beb784fd921f59f900f">uint_t</a> <a class="el" href="classillumina_1_1interop_1_1model_1_1metric__base_1_1base__metric.html#a09e1e30e77d457e21228e51a8baff124">tile</a>, const <a class="el" href="classillumina_1_1interop_1_1model_1_1metric__base_1_1empty__metric.html#a50ea70ec632c7beb784fd921f59f900f">uint_t</a> <a class="el" href="classillumina_1_1interop_1_1model_1_1metric__base_1_1base__cycle__metric.html#a1dd098303f296dca75c1fb63ffded9fc">cycle</a>, const float error, const <a class="el" href="classillumina_1_1interop_1_1model_1_1metrics_1_1error__metric.html#accd0e5525214af25a3865942f272844d">float_vector</a> &amp;<a class="el" href="group__error__metric.html#ga932706ad154dac164ff61e355f3ec231">phix_adapter_rates</a>)</td></tr>
+<tr class="separator:aa788850352c8385a1df70d5ebc08b69c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga197bd032ff7167fec9c16ff5e5ca49e8"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__error__metric.html#ga197bd032ff7167fec9c16ff5e5ca49e8">error_rate</a> () const </td></tr>
 <tr class="separator:ga197bd032ff7167fec9c16ff5e5ca49e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga133f2ecec2c3fcbc45012c8d8e25a1a5"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__error__metric.html#ga133f2ecec2c3fcbc45012c8d8e25a1a5">phix_adapter_rate</a> () const </td></tr>
 <tr class="separator:ga133f2ecec2c3fcbc45012c8d8e25a1a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga932706ad154dac164ff61e355f3ec231"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classillumina_1_1interop_1_1model_1_1metrics_1_1error__metric.html#accd0e5525214af25a3865942f272844d">float_vector</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__error__metric.html#ga932706ad154dac164ff61e355f3ec231">phix_adapter_rates</a> () const </td></tr>
+<tr class="separator:ga932706ad154dac164ff61e355f3ec231"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5e90cc966a2f219ea3ddc6e87611997b"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__error__metric.html#ga5e90cc966a2f219ea3ddc6e87611997b">phix_adapter_rate_at</a> (const size_t n) const <a class="el" href="exception__specification_8h.html#aff57a57f70bd067a95a801be66b24b4e">INTEROP_THROW_SPEC</a>((model</td></tr>
+<tr class="separator:ga5e90cc966a2f219ea3ddc6e87611997b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1c1aeb24c04c4b99d3fd2cc1909426ae"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__error__metric.html#ga1c1aeb24c04c4b99d3fd2cc1909426ae">phix_adapter_count</a> () const </td></tr>
+<tr class="separator:ga1c1aeb24c04c4b99d3fd2cc1909426ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gadee124acd582a9d232e6dfd97a02f1bb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classillumina_1_1interop_1_1model_1_1metric__base_1_1empty__metric.html#a50ea70ec632c7beb784fd921f59f900f">uint_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__error__metric.html#gadee124acd582a9d232e6dfd97a02f1bb">mismatch_cluster_count</a> (const size_t n) const <a class="el" href="exception__specification_8h.html#aff57a57f70bd067a95a801be66b24b4e">INTEROP_THROW_SPEC</a>((model</td></tr>
 <tr class="separator:gadee124acd582a9d232e6dfd97a02f1bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga4f1ae87c0cfca32201435dd025d1193b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classillumina_1_1interop_1_1model_1_1metric__base_1_1empty__metric.html#a50ea70ec632c7beb784fd921f59f900f">uint_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__error__metric.html#ga4f1ae87c0cfca32201435dd025d1193b">mismatch_count</a> () const </td></tr>
@@ -282,11 +294,37 @@ Friends</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Error rate for a spiked in PhiX control sample. </p>
 <p>The error metric is the calculated error rate, as determined by a spiked in PhiX control sample. This metric is available for each lane and tile for every cycle.</p>
-<dl class="section note"><dt>Note</dt><dd>Supported versions: 3, 4, and 5</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Supported versions: 3, 4, 5 and 6</dd></dl>
 <dl class="test"><dt><b><a class="el" href="test.html#_test000004">Test:</a></b></dt><dd><p class="startdd">Confirm version 3 of the metric can be written to and read from a stream </p>
 <p class="enddd">Confirm version 3 of the metric matches known binary file </p>
 </dd></dl>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
+<a class="anchor" id="accd0e5525214af25a3865942f272844d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef std::vector&lt;float&gt; <a class="el" href="classillumina_1_1interop_1_1model_1_1metrics_1_1error__metric.html#accd0e5525214af25a3865942f272844d">float_vector</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Vector of floats points </p>
+
+</div>
+</div>
+<a class="anchor" id="aeb36b8d41a3b13154200c3cbfc42257c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef <a class="el" href="classillumina_1_1interop_1_1model_1_1metrics_1_1error__metric__header.html">error_metric_header</a> <a class="el" href="classillumina_1_1interop_1_1model_1_1metric__base_1_1base__cycle__metric.html#ab0b5a558f5baf701248fbac525beb7bd">header_type</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Error metric set header </p>
+
+</div>
+</div>
 <a class="anchor" id="aa848283467d95560ebf1a7249215ff4d"></a>
 <div class="memitem">
 <div class="memproto">
@@ -318,7 +356,7 @@ Friends</h2></td></tr>
 <p>Unique type code for metric </p>
 </td></tr>
 <tr><td class="fieldname"><a class="anchor" id="a726ca809ffd3d67ab4b8476646f26635a60b878ff76704f573652d4b995df036b"></a>LATEST_VERSION&#160;</td><td class="fielddoc">
-<p>Latest version of the InterOp format </p>
+<p>Latest version of the I nterOp format </p>
 </td></tr>
 </table>
 
@@ -349,7 +387,7 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="adb0691e5be86a023fff27a568208feee"></a>
+<a class="anchor" id="a1e60a361480da7dd3009006bba1d09df"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -360,7 +398,7 @@ Friends</h2></td></tr>
           <td class="memname"><a class="el" href="classillumina_1_1interop_1_1model_1_1metrics_1_1error__metric.html">error_metric</a> </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classillumina_1_1interop_1_1model_1_1metric__base_1_1base__cycle__metric.html#ab0b5a558f5baf701248fbac525beb7bd">header_type</a> &amp;&#160;</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramname"><em>header</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -430,6 +468,69 @@ Friends</h2></td></tr>
     <tr><td class="paramname">tile</td><td>tile number </td></tr>
     <tr><td class="paramname">cycle</td><td>cycle number </td></tr>
     <tr><td class="paramname">error</td><td>error rate for current cycle </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="aa788850352c8385a1df70d5ebc08b69c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classillumina_1_1interop_1_1model_1_1metrics_1_1error__metric.html">error_metric</a> </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classillumina_1_1interop_1_1model_1_1metric__base_1_1empty__metric.html#a50ea70ec632c7beb784fd921f59f900f">uint_t</a>&#160;</td>
+          <td class="paramname"><em>lane</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classillumina_1_1interop_1_1model_1_1metric__base_1_1empty__metric.html#a50ea70ec632c7beb784fd921f59f900f">uint_t</a>&#160;</td>
+          <td class="paramname"><em>tile</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classillumina_1_1interop_1_1model_1_1metric__base_1_1empty__metric.html#a50ea70ec632c7beb784fd921f59f900f">uint_t</a>&#160;</td>
+          <td class="paramname"><em>cycle</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const float&#160;</td>
+          <td class="paramname"><em>error</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classillumina_1_1interop_1_1model_1_1metrics_1_1error__metric.html#accd0e5525214af25a3865942f272844d">float_vector</a> &amp;&#160;</td>
+          <td class="paramname"><em>phix_adapter_rates</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Constructor</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">lane</td><td>lane number </td></tr>
+    <tr><td class="paramname">tile</td><td>tile number </td></tr>
+    <tr><td class="paramname">cycle</td><td>cycle number </td></tr>
+    <tr><td class="paramname">error</td><td>error rate for current cycle </td></tr>
+    <tr><td class="paramname">phix_adapter_rates</td><td>rates of each adapter </td></tr>
   </table>
   </dd>
 </dl>

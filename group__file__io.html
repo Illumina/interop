@@ -35,7 +35,7 @@
  <div class="container">
   <div class="navbar-header">
    <a class="navbar-brand" href="https://www.illumina.com/"><img style='margin-top: -8px !important;height: 40px !important;' src='ILLUMINA_LOGO_RGB_new_200_45.png' /></a>
-   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.1.25</span>  </a>
+   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.1.26</span>  </a>
   </div>
   <div class="collapse navbar-collapse">
    <!-- Left -->
@@ -87,9 +87,15 @@ Functions</h2></td></tr>
 <tr class="memitem:ga23e73d0ae156777e479c4ab8386cd590"><td class="memTemplParams" colspan="2">template&lt;class MetricSet &gt; </td></tr>
 <tr class="memitem:ga23e73d0ae156777e479c4ab8386cd590"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__file__io.html#ga23e73d0ae156777e479c4ab8386cd590">read_interop_from_string</a> (const std::string &amp;buffer, MetricSet &amp;metrics, const bool rebuild=true) <a class="el" href="exception__specification_8h.html#aff57a57f70bd067a95a801be66b24b4e">INTEROP_THROW_SPEC</a>((interop</td></tr>
 <tr class="separator:ga23e73d0ae156777e479c4ab8386cd590"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7a94430039612672eba96ebd3681889f"><td class="memTemplParams" colspan="2">template&lt;class MetricSet &gt; </td></tr>
+<tr class="memitem:ga7a94430039612672eba96ebd3681889f"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__file__io.html#ga7a94430039612672eba96ebd3681889f">write_interop_to_string</a> (std::string &amp;buffer, const MetricSet &amp;metrics, const ::int16_t version=-1) <a class="el" href="exception__specification_8h.html#aff57a57f70bd067a95a801be66b24b4e">INTEROP_THROW_SPEC</a>((interop</td></tr>
+<tr class="separator:ga7a94430039612672eba96ebd3681889f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga610e94718d8fed0e7ef129f3a0b36f8f"><td class="memTemplParams" colspan="2">template&lt;class MetricSet &gt; </td></tr>
 <tr class="memitem:ga610e94718d8fed0e7ef129f3a0b36f8f"><td class="memTemplItemLeft" align="right" valign="top">size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__file__io.html#ga610e94718d8fed0e7ef129f3a0b36f8f">read_header_from_string</a> (const std::string &amp;buffer, MetricSet &amp;metrics) <a class="el" href="exception__specification_8h.html#aff57a57f70bd067a95a801be66b24b4e">INTEROP_THROW_SPEC</a>((interop</td></tr>
 <tr class="separator:ga610e94718d8fed0e7ef129f3a0b36f8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga64736a5bd610e6b4485c0d3548af1983"><td class="memTemplParams" colspan="2">template&lt;class MetricSet &gt; </td></tr>
+<tr class="memitem:ga64736a5bd610e6b4485c0d3548af1983"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__file__io.html#ga64736a5bd610e6b4485c0d3548af1983">write_header_to_string</a> (std::string &amp;buffer, const MetricSet &amp;metrics,::int16_t version=-1) <a class="el" href="exception__specification_8h.html#aff57a57f70bd067a95a801be66b24b4e">INTEROP_THROW_SPEC</a>((interop</td></tr>
+<tr class="separator:ga64736a5bd610e6b4485c0d3548af1983"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaa0f95ce88cda948fb40abe52723e7d57"><td class="memTemplParams" colspan="2">template&lt;class MetricSet &gt; </td></tr>
 <tr class="memitem:gaa0f95ce88cda948fb40abe52723e7d57"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__file__io.html#gaa0f95ce88cda948fb40abe52723e7d57">read_interop</a> (const std::string &amp;run_directory, MetricSet &amp;metrics, const bool use_out=true) <a class="el" href="exception__specification_8h.html#aff57a57f70bd067a95a801be66b24b4e">INTEROP_THROW_SPEC</a>((io</td></tr>
 <tr class="separator:gaa0f95ce88cda948fb40abe52723e7d57"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -605,6 +611,54 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ga64736a5bd610e6b4485c0d3548af1983"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void illumina::interop::io::write_header_to_string </td>
+          <td>(</td>
+          <td class="paramtype">std::string &amp;&#160;</td>
+          <td class="paramname"><em>buffer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const MetricSet &amp;&#160;</td>
+          <td class="paramname"><em>metrics</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">::int16_t&#160;</td>
+          <td class="paramname"><em>version</em> = <code>-1</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Write the binary InterOp file header into a string from the given metric set</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">buffer</td><td>string holding a byte buffer </td></tr>
+    <tr><td class="paramname">metrics</td><td>metric set </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">bad_format_exception</td><td></td></tr>
+    <tr><td class="paramname">incomplete_file_exception</td><td></td></tr>
+    <tr><td class="paramname">model::index_out_of_bounds_exception</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a class="anchor" id="ga37c1b7dd8f477d87603cb024f54ca667"></a>
 <div class="memitem">
 <div class="memproto">
@@ -743,6 +797,55 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>number of bytes written </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga7a94430039612672eba96ebd3681889f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void illumina::interop::io::write_interop_to_string </td>
+          <td>(</td>
+          <td class="paramtype">std::string &amp;&#160;</td>
+          <td class="paramname"><em>buffer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const MetricSet &amp;&#160;</td>
+          <td class="paramname"><em>metrics</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const ::int16_t&#160;</td>
+          <td class="paramname"><em>version</em> = <code>-1</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Write the binary InterOp file into the given string using the given metric set</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">buffer</td><td>string holding a byte buffer </td></tr>
+    <tr><td class="paramname">metrics</td><td>metric set </td></tr>
+    <tr><td class="paramname">version</td><td>version of the format to write (-1 means use latest) </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">bad_format_exception</td><td></td></tr>
+    <tr><td class="paramname">incomplete_file_exception</td><td></td></tr>
+    <tr><td class="paramname">model::index_out_of_bounds_exception</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

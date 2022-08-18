@@ -35,7 +35,7 @@
  <div class="container">
   <div class="navbar-header">
    <a class="navbar-brand" href="https://www.illumina.com/"><img style='margin-top: -8px !important;height: 40px !important;' src='ILLUMINA_LOGO_RGB_new_200_45.png' /></a>
-   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.1.25</span>  </a>
+   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.1.26</span>  </a>
   </div>
   <div class="collapse navbar-collapse">
    <!-- Left -->
@@ -110,6 +110,10 @@ Functions</h2></td></tr>
 <tr class="separator:a6fa35eed2a68cc2ede685da2dee75f9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68a178ce20588d983a08ed423072c70b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="error__metrics__test_8cpp.html#a68a178ce20588d983a08ed423072c70b">TEST</a> (error_metrics_single_test, test_tile_metric_count_for_lane)</td></tr>
 <tr class="separator:a68a178ce20588d983a08ed423072c70b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e627e50410277263f99ebbd2e17f16a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="error__metrics__test_8cpp.html#a1e627e50410277263f99ebbd2e17f16a">TEST</a> (error_metrics_single_test, test_error_header_v6)</td></tr>
+<tr class="separator:a1e627e50410277263f99ebbd2e17f16a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f7cf866c40e759a470c03f785254bea"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="error__metrics__test_8cpp.html#a4f7cf866c40e759a470c03f785254bea">TEST</a> (error_metrics_single_test, test_error_rates_v6)</td></tr>
+<tr class="separator:a4f7cf866c40e759a470c03f785254bea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ae56d0b5ce938928d21479f104622f8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="error__metrics__test_8cpp.html#a0ae56d0b5ce938928d21479f104622f8">INSTANTIATE_TEST_CASE_P</a> (error_metric_regression_test, <a class="el" href="structerror__metrics__tests.html">error_metrics_tests</a>, ProxyValuesIn(<a class="el" href="error__metrics__test_8cpp.html#ab0546b7154ee96ae1212582e0aaf662e">error_regression_gen</a>, regression_test_data::instance().files()))</td></tr>
 <tr class="separator:a0ae56d0b5ce938928d21479f104622f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -230,6 +234,60 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a1e627e50410277263f99ebbd2e17f16a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST </td>
+          <td>(</td>
+          <td class="paramtype">error_metrics_single_test&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">test_error_header_v6&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="test"><dt><b><a class="el" href="test.html#_test000006">Test:</a></b></dt><dd>Ensure the adapter sequences are correct in header </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a4f7cf866c40e759a470c03f785254bea"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST </td>
+          <td>(</td>
+          <td class="paramtype">error_metrics_single_test&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">test_error_rates_v6&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="test"><dt><b><a class="el" href="test.html#_test000007">Test:</a></b></dt><dd>Ensure the rates per sequences are correct </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a6fa35eed2a68cc2ede685da2dee75f9d"></a>
 <div class="memitem">
 <div class="memproto">
@@ -282,15 +340,19 @@ Variables</h2></td></tr>
 <div class="line">        <a class="code" href="namespaceillumina_1_1interop_1_1unittest.html#a071277bc40e3abb06353c12067eb6b12">wrap</a>(<span class="keyword">new</span> <a class="code" href="classillumina_1_1interop_1_1unittest_1_1hardcoded__metric__generator.html">hardcoded_metric_generator&lt; error_metric_v3 &gt;</a>) ,</div>
 <div class="line">        <a class="code" href="namespaceillumina_1_1interop_1_1unittest.html#a071277bc40e3abb06353c12067eb6b12">wrap</a>(<span class="keyword">new</span> <a class="code" href="classillumina_1_1interop_1_1unittest_1_1hardcoded__metric__generator.html">hardcoded_metric_generator&lt; error_metric_v4 &gt;</a>),</div>
 <div class="line">        <a class="code" href="namespaceillumina_1_1interop_1_1unittest.html#a071277bc40e3abb06353c12067eb6b12">wrap</a>(<span class="keyword">new</span> <a class="code" href="classillumina_1_1interop_1_1unittest_1_1hardcoded__metric__generator.html">hardcoded_metric_generator&lt; error_metric_v5 &gt;</a>),</div>
+<div class="line">        <a class="code" href="namespaceillumina_1_1interop_1_1unittest.html#a071277bc40e3abb06353c12067eb6b12">wrap</a>(<span class="keyword">new</span> <a class="code" href="classillumina_1_1interop_1_1unittest_1_1hardcoded__metric__generator.html">hardcoded_metric_generator&lt; error_metric_v6 &gt;</a>),</div>
 <div class="line">        <a class="code" href="namespaceillumina_1_1interop_1_1unittest.html#a071277bc40e3abb06353c12067eb6b12">wrap</a>(<span class="keyword">new</span> <a class="code" href="classillumina_1_1interop_1_1unittest_1_1write__read__metric__generator.html">write_read_metric_generator&lt; error_metric_v3 &gt;</a>),</div>
 <div class="line">        <a class="code" href="namespaceillumina_1_1interop_1_1unittest.html#a071277bc40e3abb06353c12067eb6b12">wrap</a>(<span class="keyword">new</span> <a class="code" href="classillumina_1_1interop_1_1unittest_1_1write__read__metric__generator.html">write_read_metric_generator&lt; error_metric_v4 &gt;</a>),</div>
 <div class="line">        <a class="code" href="namespaceillumina_1_1interop_1_1unittest.html#a071277bc40e3abb06353c12067eb6b12">wrap</a>(<span class="keyword">new</span> <a class="code" href="classillumina_1_1interop_1_1unittest_1_1write__read__metric__generator.html">write_read_metric_generator&lt; error_metric_v5 &gt;</a>),</div>
+<div class="line">        <a class="code" href="namespaceillumina_1_1interop_1_1unittest.html#a071277bc40e3abb06353c12067eb6b12">wrap</a>(<span class="keyword">new</span> <a class="code" href="classillumina_1_1interop_1_1unittest_1_1write__read__metric__generator.html">write_read_metric_generator&lt; error_metric_v6 &gt;</a>),</div>
 <div class="line">        <a class="code" href="namespaceillumina_1_1interop_1_1unittest.html#a071277bc40e3abb06353c12067eb6b12">wrap</a>(<span class="keyword">new</span> <a class="code" href="classillumina_1_1interop_1_1unittest_1_1by__cycle__metric__generator.html">by_cycle_metric_generator&lt; error_metric_v3 &gt;</a>),</div>
 <div class="line">        <a class="code" href="namespaceillumina_1_1interop_1_1unittest.html#a071277bc40e3abb06353c12067eb6b12">wrap</a>(<span class="keyword">new</span> <a class="code" href="classillumina_1_1interop_1_1unittest_1_1by__cycle__metric__generator.html">by_cycle_metric_generator&lt; error_metric_v4 &gt;</a>),</div>
 <div class="line">        <a class="code" href="namespaceillumina_1_1interop_1_1unittest.html#a071277bc40e3abb06353c12067eb6b12">wrap</a>(<span class="keyword">new</span> <a class="code" href="classillumina_1_1interop_1_1unittest_1_1by__cycle__metric__generator.html">by_cycle_metric_generator&lt; error_metric_v5 &gt;</a>),</div>
+<div class="line">        <a class="code" href="namespaceillumina_1_1interop_1_1unittest.html#a071277bc40e3abb06353c12067eb6b12">wrap</a>(<span class="keyword">new</span> <a class="code" href="classillumina_1_1interop_1_1unittest_1_1by__cycle__metric__generator.html">by_cycle_metric_generator&lt; error_metric_v6 &gt;</a>),</div>
 <div class="line">        <a class="code" href="namespaceillumina_1_1interop_1_1unittest.html#a071277bc40e3abb06353c12067eb6b12">wrap</a>(<span class="keyword">new</span> <a class="code" href="classillumina_1_1interop_1_1unittest_1_1clear__metric__generator.html">clear_metric_generator&lt; error_metric_v3 &gt;</a>),</div>
 <div class="line">        <a class="code" href="namespaceillumina_1_1interop_1_1unittest.html#a071277bc40e3abb06353c12067eb6b12">wrap</a>(<span class="keyword">new</span> <a class="code" href="classillumina_1_1interop_1_1unittest_1_1clear__metric__generator.html">clear_metric_generator&lt; error_metric_v4 &gt;</a>),</div>
-<div class="line">        <a class="code" href="namespaceillumina_1_1interop_1_1unittest.html#a071277bc40e3abb06353c12067eb6b12">wrap</a>(<span class="keyword">new</span> <a class="code" href="classillumina_1_1interop_1_1unittest_1_1clear__metric__generator.html">clear_metric_generator&lt; error_metric_v5 &gt;</a>)</div>
+<div class="line">        <a class="code" href="namespaceillumina_1_1interop_1_1unittest.html#a071277bc40e3abb06353c12067eb6b12">wrap</a>(<span class="keyword">new</span> <a class="code" href="classillumina_1_1interop_1_1unittest_1_1clear__metric__generator.html">clear_metric_generator&lt; error_metric_v5 &gt;</a>),</div>
+<div class="line">        <a class="code" href="namespaceillumina_1_1interop_1_1unittest.html#a071277bc40e3abb06353c12067eb6b12">wrap</a>(<span class="keyword">new</span> <a class="code" href="classillumina_1_1interop_1_1unittest_1_1clear__metric__generator.html">clear_metric_generator&lt; error_metric_v6 &gt;</a>)</div>
 <div class="line">}</div>
 <div class="ttc" id="classillumina_1_1interop_1_1unittest_1_1hardcoded__metric__generator_html"><div class="ttname"><a href="classillumina_1_1interop_1_1unittest_1_1hardcoded__metric__generator.html">illumina::interop::unittest::hardcoded_metric_generator</a></div><div class="ttdef"><b>Definition:</b> metric_generator.h:17</div></div>
 <div class="ttc" id="classillumina_1_1interop_1_1unittest_1_1clear__metric__generator_html"><div class="ttname"><a href="classillumina_1_1interop_1_1unittest_1_1clear__metric__generator.html">illumina::interop::unittest::clear_metric_generator</a></div><div class="ttdef"><b>Definition:</b> metric_generator.h:29</div></div>
