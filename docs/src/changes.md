@@ -1,6 +1,13 @@
 # Changes                                               {#changes}
 
 
+## v1.1.27
+
+Date       | Description
+---------- | -----------
+2022-08-23 | Fix issue where wheels cannot be updated
+
+
 ## v1.1.26
 
 Date       | Description
