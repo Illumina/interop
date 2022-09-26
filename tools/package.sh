@@ -261,7 +261,7 @@ elif [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PY
             ls ${ARTIFACT_PATH}/tmp/*.whl
             delocate-listdeps ${ARTIFACT_PATH}/tmp/*.whl
             delocate-wheel ${ARTIFACT_PATH}/tmp/*.whl
-            delocate-addplat -c --rm-orig -x 10_9 -x 10_10 $ARTIFACT_PATH/tmp/*.whl -w $ARTIFACT_PATH
+            delocate-addplat -c --rm-orig -x 10_9 -x 10_10 $ARTIFACT_PATH/tmp/*.whl -w $ARTIFACT_PATH -d universal2
         elif hash auditwheel 2> /dev/null; then
             auditwheel --version
             auditwheel show ${ARTIFACT_PATH}/tmp/*.whl

@@ -1,6 +1,13 @@
 # Changes                                               {#changes}
 
 
+## v1.1.28
+
+Date       | Description
+---------- | -----------
+2022-09-26 | Ensure Python wheels support ARM M1 with universal2
+
+
 ## v1.1.27
 
 Date       | Description
