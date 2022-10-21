@@ -114,6 +114,39 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         {
             return m_percent_occupancy_proxy;
         }
+        /** Get the cluster count
+         *
+         * @return cluster count
+         */
+        double cluster_count()const
+        {
+            return m_cluster_count_raw;
+        }
+
+        /** Get the cluster count PF
+         *
+         * @return cluster count PF
+         */
+        double cluster_count_pf()const
+        {
+            return m_cluster_count_pf;
+        }
+        /** Get the reads PF value for run
+         *
+         * @return reads PF val for run
+         */
+        uint64_t reads()const
+        {
+            return m_reads_raw;
+        }
+        /** Get the reads PF value for run
+         *
+         * @return reads PF val for run
+         */
+        uint64_t reads_pf()const
+        {
+            return m_reads_pf;
+        }
         /** @} */
         /** Set the first cycle intensity
          *
@@ -189,6 +222,42 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         {
         }
 
+        /** Set the cluster count of the run
+         *
+         * @param val cluster count of the run.
+         */
+        void cluster_count(const double val)
+        {
+            m_cluster_count_raw = val;
+        }
+
+        /** Set the cluster count PF of the run
+         *
+         * @param val cluster count PF of the run.
+         */
+        void cluster_count_pf(const double val)
+        {
+            m_cluster_count_pf = val;
+        }
+
+        /** Set the total reads for the run
+         *
+         * @param val total reads for run
+         */
+        void reads(const uint64_t val)
+        {
+            m_reads_raw = val;
+        }
+
+        /** Set the reads PF for the run
+         *
+         * @param val reads PF for run
+         */
+        void reads_pf(const uint64_t val)
+        {
+            m_reads_pf = val;
+        }
+
     private:
         float m_error_rate;
         float m_percent_aligned;
@@ -198,6 +267,10 @@ namespace illumina { namespace interop { namespace model { namespace summary {
         float m_projected_yield_g;
         float m_percent_occupied;
         float m_percent_occupancy_proxy;
+        uint64_t m_reads_raw;
+        uint64_t m_reads_pf;
+        double m_cluster_count_raw;
+        double m_cluster_count_pf;
         template<class MetricType, int Version>
         friend struct io::generic_layout;
     };
