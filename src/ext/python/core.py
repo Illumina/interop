@@ -20,8 +20,8 @@ array([(1, 0.4556, 1015.5555, 520.6667, 1536.2222, 1800., 2000.)],
 
 >>> from interop import summary
 >>> summary(run_metrics_example)
-array([(0.36666667, 6.6666665, 0.)],
-      dtype=[('Error Rate', '<f4'), ('First Cycle Intensity', '<f4'), ('Projected Yield G', '<f4')])
+array([(0.36666667, 6.6666665, 0., 0., 0.)],
+      dtype=[('Error Rate', '<f4'), ('First Cycle Intensity', '<f4'), ('Projected Yield G', '<f4'), ('Reads', '<f4'), ('Reads Pf', '<f4')])
 
 >>> from interop import indexing
 >>> indexing(run_metrics_with_indexing)
@@ -233,21 +233,21 @@ def summary(run_metrics, level='Total', columns=None, dtype='f4', ignore_missing
 
 
     >>> summary(run_metrics_example)
-    array([(0.36666667, 6.6666665, 0.)],
-          dtype=[('Error Rate', '<f4'), ('First Cycle Intensity', '<f4'), ('Projected Yield G', '<f4')])
+    array([(0.36666667, 6.6666665, 0., 0., 0.)],
+          dtype=[('Error Rate', '<f4'), ('First Cycle Intensity', '<f4'), ('Projected Yield G', '<f4'), ('Reads', '<f4'), ('Reads Pf', '<f4')])
 
     >>> summary(run_metrics_example, 'Total')
-    array([(0.36666667, 6.6666665, 0.)],
-          dtype=[('Error Rate', '<f4'), ('First Cycle Intensity', '<f4'), ('Projected Yield G', '<f4')])
+    array([(0.36666667, 6.6666665, 0., 0., 0.)],
+          dtype=[('Error Rate', '<f4'), ('First Cycle Intensity', '<f4'), ('Projected Yield G', '<f4'), ('Reads', '<f4'), ('Reads Pf', '<f4')])
 
     >>> summary(run_metrics_example, 'NonIndex')
-    array([(0.2, 10., 0.)],
-          dtype=[('Error Rate', '<f4'), ('First Cycle Intensity', '<f4'), ('Projected Yield G', '<f4')])
+    array([(0.2, 10., 0., 0., 0.)],
+          dtype=[('Error Rate', '<f4'), ('First Cycle Intensity', '<f4'), ('Projected Yield G', '<f4'), ('Reads', '<f4'), ('Reads Pf', '<f4')])
 
     >>> summary(run_metrics_example, 'Read')
-    array([(1, 78, 0.2, 10., 0.), (2, 89, 0.4,  5., 0.),
-           (3, 89, 0.5,  5., 0.)],
-          dtype=[('ReadNumber', '<u2'), ('IsIndex', 'u1'), ('Error Rate', '<f4'), ('First Cycle Intensity', '<f4'), ('Projected Yield G', '<f4')])
+    array([(1, 78, 0.2, 10., 0., 0., 0.), (2, 89, 0.4,  5., 0., 0., 0.),
+           (3, 89, 0.5,  5., 0., 0., 0.)],
+          dtype=[('ReadNumber', '<u2'), ('IsIndex', 'u1'), ('Error Rate', '<f4'), ('First Cycle Intensity', '<f4'), ('Projected Yield G', '<f4'), ('Reads', '<f4'), ('Reads Pf', '<f4')])
 
     >>> summary(run_metrics_example, 'Lane')
     array([(1, 78, 1, 0.2, 10., 0., 0., 0., 1.),
@@ -443,13 +443,13 @@ def summary_columns(level='Total', ret_dict=False):
 
     The default columns are for the Run/Read level
     >>> summary_columns()
-    ('Error Rate', 'First Cycle Intensity', '% Aligned', '% >= Q30', '% Occupancy Proxy', '% Occupied', 'Projected Yield G', 'Yield G')
+    ('Cluster Count', 'Cluster Count Pf', 'Error Rate', 'First Cycle Intensity', '% Aligned', '% >= Q30', '% Occupancy Proxy', '% Occupied', 'Projected Yield G', 'Reads', 'Reads Pf', 'Yield G')
     >>> summary_columns(level='Total')
-    ('Error Rate', 'First Cycle Intensity', '% Aligned', '% >= Q30', '% Occupancy Proxy', '% Occupied', 'Projected Yield G', 'Yield G')
+    ('Cluster Count', 'Cluster Count Pf', 'Error Rate', 'First Cycle Intensity', '% Aligned', '% >= Q30', '% Occupancy Proxy', '% Occupied', 'Projected Yield G', 'Reads', 'Reads Pf', 'Yield G')
     >>> summary_columns(level='NonIndex')
-    ('Error Rate', 'First Cycle Intensity', '% Aligned', '% >= Q30', '% Occupancy Proxy', '% Occupied', 'Projected Yield G', 'Yield G')
+    ('Cluster Count', 'Cluster Count Pf', 'Error Rate', 'First Cycle Intensity', '% Aligned', '% >= Q30', '% Occupancy Proxy', '% Occupied', 'Projected Yield G', 'Reads', 'Reads Pf', 'Yield G')
     >>> summary_columns(level='Read')
-    ('Error Rate', 'First Cycle Intensity', '% Aligned', '% >= Q30', '% Occupancy Proxy', '% Occupied', 'Projected Yield G', 'Yield G')
+    ('Cluster Count', 'Cluster Count Pf', 'Error Rate', 'First Cycle Intensity', '% Aligned', '% >= Q30', '% Occupancy Proxy', '% Occupied', 'Projected Yield G', 'Reads', 'Reads Pf', 'Yield G')
 
     The lane/surface level give another set of columns for the summary table
     >>> summary_columns(level='Lane')

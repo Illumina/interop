@@ -455,6 +455,98 @@ TEST(summary_metrics_test, empty_run_metrics)
     EXPECT_EQ(summary.size(), 0u);
 }
 
+/*
+ def _run_info_example_fixture(tiles=None):
+    """Fixture used for doctests"""
+
+    run_name = "111111_UNKNOWN_1_XXYT"
+    run_info_version = 6
+    run_date, instrument_name, run_number, flowcell_id = run_name.split('_')
+    if tiles is None:
+        tiles = ['1_1101']
+    lane_count = len(set(tile.split('_')[0] for tile in tiles))
+    surface_count = len(set(tile.split('_')[1][0] for tile in tiles))
+    swath_count = len(set(tile.split('_')[1][1] for tile in tiles))
+    tile_count = len(set(tile.split('_')[1][2:] for tile in tiles))
+    sections_per_lane = 1
+    lanes_per_section = 1
+    naming_method = interop_run.FourDigit
+    flowcell_layout = interop_run.flowcell_layout(lane_count
+                                                  , surface_count
+                                                  , swath_count
+                                                  , tile_count
+                                                  , sections_per_lane
+                                                  , lanes_per_section
+                                                  , tiles
+                                                  , naming_method
+                                                  , flowcell_id)
+    channels = ['green', 'blue']
+    width = 7875
+    height = 10500
+    image_dimensions = interop_run.image_dimensions(width, height)
+    reads = interop_run.read_info_vector()
+    is_reverse_complement = False
+    first_cycle = 1
+    for read_num, cycle_count, is_index in [(1, 3, False), (2, 1, True), (3, 1, True)]:
+        last_cycle = first_cycle + cycle_count
+        reads.push_back(interop_run.read_info(read_num, first_cycle, last_cycle, is_index, is_reverse_complement))
+        first_cycle = last_cycle
+    run_info = interop_run.info(run_name
+                                , run_date
+                                , instrument_name
+                                , int(run_number)
+                                , run_info_version
+                                , flowcell_layout
+                                , channels
+                                , image_dimensions
+                                , reads)
+    return run_info
+ */
+
+/*TEST(summary_metrics_test, partial_run)
+{
+    const float tol = 1e-9f;
+    std::vector<std::string> channels(2, "");
+    std::vector<model::run::read_info> reads;
+    const bool is_reverse_complement = false;
+    size_t first_cycle = 1;
+    size_t last_cycle = first_cycle + 3;
+    reads.push_back(model::run::read_info(1, first_cycle, last_cycle, false, is_reverse_complement));
+    first_cycle = last_cycle;
+    last_cycle = first_cycle + 1;
+    reads.push_back(model::run::read_info(1, first_cycle, last_cycle, true, is_reverse_complement));
+    first_cycle = last_cycle;
+    last_cycle = first_cycle + 1;
+    reads.push_back(model::run::read_info(1, first_cycle, last_cycle, true, is_reverse_complement));
+    model::run::image_dimensions dimensions(7875, 10500);
+    model::run::flowcell_layout layout(1
+                                       , 1
+                                       , 1
+                                       , 1
+                                       , 1
+                                       , 1
+                                       , std::vector<std::string>(1, "1_1101")
+                                       , constants::FourDigit
+                                       , "XXYT");
+
+    model::run::info run_info("111111_UNKNOWN_1_XXYT"
+                              , "111111"
+                              , "UNKNOWN"
+                              , 1
+                              , 6
+                              , layout
+                              , channels
+                              , dimensions
+                              , reads);
+
+    model::metrics::run_metrics metrics(run_info);
+
+    model::summary::run_summary summary;
+    logic::summary::summarize_run_metrics(metrics, summary);
+    INTEROP_EXPECT_NEAR(summary.total_summary().percent_aligned(), std::numeric_limits<float>::quiet_NaN(), tol);
+    EXPECT_EQ(summary.size(), 0u);
+}*/
+
 //---------------------------------------------------------------------------------------------------------------------
 // Unit test section
 //---------------------------------------------------------------------------------------------------------------------

@@ -27,7 +27,11 @@ namespace illumina { namespace interop { namespace model { namespace summary {
                 m_yield_g(std::numeric_limits<float>::quiet_NaN()),
                 m_projected_yield_g(0),
                 m_percent_occupied(std::numeric_limits<float>::quiet_NaN()),
-                m_percent_occupancy_proxy(std::numeric_limits<float>::quiet_NaN())
+                m_percent_occupancy_proxy(std::numeric_limits<float>::quiet_NaN()),
+                m_reads_raw(0),
+                m_reads_pf(0),
+                m_cluster_count_raw(std::numeric_limits<float>::quiet_NaN()),
+                m_cluster_count_pf(std::numeric_limits<float>::quiet_NaN())
 
         {}
     public:
