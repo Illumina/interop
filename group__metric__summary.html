@@ -35,7 +35,7 @@
  <div class="container">
   <div class="navbar-header">
    <a class="navbar-brand" href="https://www.illumina.com/"><img style='margin-top: -8px !important;height: 40px !important;' src='ILLUMINA_LOGO_RGB_new_200_45.png' /></a>
-   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.1.28</span>  </a>
+   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.2.0</span>  </a>
   </div>
   <div class="collapse navbar-collapse">
    <!-- Left -->
@@ -91,11 +91,69 @@ Functions</h2></td></tr>
 <tr class="separator:gaea3f7acc28181edd8023925a08b22877"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaec2db2f9b352dd3a1757b62d5c98b25c"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__metric__summary.html#gaec2db2f9b352dd3a1757b62d5c98b25c">percent_occupancy_proxy</a> () const </td></tr>
 <tr class="separator:gaec2db2f9b352dd3a1757b62d5c98b25c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac03573bb96cf5f3ed83e08553db829de"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__metric__summary.html#gac03573bb96cf5f3ed83e08553db829de">cluster_count</a> () const </td></tr>
+<tr class="separator:gac03573bb96cf5f3ed83e08553db829de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga01428b2b47b7ba2ea70ea8b5e62762ec"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__metric__summary.html#ga01428b2b47b7ba2ea70ea8b5e62762ec">cluster_count_pf</a> () const </td></tr>
+<tr class="separator:ga01428b2b47b7ba2ea70ea8b5e62762ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa55899d6e71405e3f42235bceefb28ca"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__metric__summary.html#gaa55899d6e71405e3f42235bceefb28ca">reads</a> () const </td></tr>
+<tr class="separator:gaa55899d6e71405e3f42235bceefb28ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5aacda5e35ea3751bbccaf5e81980c07"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__metric__summary.html#ga5aacda5e35ea3751bbccaf5e81980c07">reads_pf</a> () const </td></tr>
+<tr class="separator:ga5aacda5e35ea3751bbccaf5e81980c07"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Summary of key metrics</p>
 <p><a class="el" href="classillumina_1_1interop_1_1model_1_1summary_1_1metric__summary.html">See full class description</a> </p>
 <h2 class="groupheader">Function Documentation</h2>
+<a class="anchor" id="gac03573bb96cf5f3ed83e08553db829de"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double cluster_count </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Get the cluster count</p>
+<dl class="section return"><dt>Returns</dt><dd>cluster count </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga01428b2b47b7ba2ea70ea8b5e62762ec"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double cluster_count_pf </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Get the cluster count PF</p>
+<dl class="section return"><dt>Returns</dt><dd>cluster count PF </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="ga197bd032ff7167fec9c16ff5e5ca49e8"></a>
 <div class="memitem">
 <div class="memproto">
@@ -272,6 +330,56 @@ Functions</h2></td></tr>
 <p>Get the projected yield of the run in gigabases over all "usable cycles"</p>
 <p>A "usable cycle" is a cycle that is fully corrected, so the last cycle of a read is excluded.</p>
 <dl class="section return"><dt>Returns</dt><dd>projected yield of the run in gigabases over all "usable cycles" </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="gaa55899d6e71405e3f42235bceefb28ca"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint64_t reads </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Get the reads PF value for run</p>
+<dl class="section return"><dt>Returns</dt><dd>reads PF val for run </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga5aacda5e35ea3751bbccaf5e81980c07"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint64_t reads_pf </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Get the reads PF value for run</p>
+<dl class="section return"><dt>Returns</dt><dd>reads PF val for run </dd></dl>
 
 </div>
 </div>

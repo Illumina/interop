@@ -35,7 +35,7 @@
  <div class="container">
   <div class="navbar-header">
    <a class="navbar-brand" href="https://www.illumina.com/"><img style='margin-top: -8px !important;height: 40px !important;' src='ILLUMINA_LOGO_RGB_new_200_45.png' /></a>
-   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.1.28</span>  </a>
+   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.2.0</span>  </a>
   </div>
   <div class="collapse navbar-collapse">
    <!-- Left -->
@@ -142,8 +142,8 @@ array([(1, 0.4556, 1015.5555, 520.6667, 1536.2222, 1800., 2000.)],
 
 &gt;&gt;&gt; from interop import summary
 &gt;&gt;&gt; summary(run_metrics_example)
-array([(0.36666667, 6.6666665, 0.)],
-  dtype=[('Error Rate', '&lt;f4'), ('First Cycle Intensity', '&lt;f4'), ('Projected Yield G', '&lt;f4')])
+array([(0.36666667, 6.6666665, 0., 0., 0.)],
+  dtype=[('Error Rate', '&lt;f4'), ('First Cycle Intensity', '&lt;f4'), ('Projected Yield G', '&lt;f4'), ('Reads', '&lt;f4'), ('Reads Pf', '&lt;f4')])
 
 &gt;&gt;&gt; from interop import indexing
 &gt;&gt;&gt; indexing(run_metrics_with_indexing)
@@ -909,21 +909,21 @@ The following examples show the different levels that one can summarize the data
 
 
 &gt;&gt;&gt; summary(run_metrics_example)
-array([(0.36666667, 6.6666665, 0.)],
-      dtype=[('Error Rate', '&lt;f4'), ('First Cycle Intensity', '&lt;f4'), ('Projected Yield G', '&lt;f4')])
+array([(0.36666667, 6.6666665, 0., 0., 0.)],
+      dtype=[('Error Rate', '&lt;f4'), ('First Cycle Intensity', '&lt;f4'), ('Projected Yield G', '&lt;f4'), ('Reads', '&lt;f4'), ('Reads Pf', '&lt;f4')])
 
 &gt;&gt;&gt; summary(run_metrics_example, 'Total')
-array([(0.36666667, 6.6666665, 0.)],
-      dtype=[('Error Rate', '&lt;f4'), ('First Cycle Intensity', '&lt;f4'), ('Projected Yield G', '&lt;f4')])
+array([(0.36666667, 6.6666665, 0., 0., 0.)],
+      dtype=[('Error Rate', '&lt;f4'), ('First Cycle Intensity', '&lt;f4'), ('Projected Yield G', '&lt;f4'), ('Reads', '&lt;f4'), ('Reads Pf', '&lt;f4')])
 
 &gt;&gt;&gt; summary(run_metrics_example, 'NonIndex')
-array([(0.2, 10., 0.)],
-      dtype=[('Error Rate', '&lt;f4'), ('First Cycle Intensity', '&lt;f4'), ('Projected Yield G', '&lt;f4')])
+array([(0.2, 10., 0., 0., 0.)],
+      dtype=[('Error Rate', '&lt;f4'), ('First Cycle Intensity', '&lt;f4'), ('Projected Yield G', '&lt;f4'), ('Reads', '&lt;f4'), ('Reads Pf', '&lt;f4')])
 
 &gt;&gt;&gt; summary(run_metrics_example, 'Read')
-array([(1, 78, 0.2, 10., 0.), (2, 89, 0.4,  5., 0.),
-       (3, 89, 0.5,  5., 0.)],
-      dtype=[('ReadNumber', '&lt;u2'), ('IsIndex', 'u1'), ('Error Rate', '&lt;f4'), ('First Cycle Intensity', '&lt;f4'), ('Projected Yield G', '&lt;f4')])
+array([(1, 78, 0.2, 10., 0., 0., 0.), (2, 89, 0.4,  5., 0., 0., 0.),
+       (3, 89, 0.5,  5., 0., 0., 0.)],
+      dtype=[('ReadNumber', '&lt;u2'), ('IsIndex', 'u1'), ('Error Rate', '&lt;f4'), ('First Cycle Intensity', '&lt;f4'), ('Projected Yield G', '&lt;f4'), ('Reads', '&lt;f4'), ('Reads Pf', '&lt;f4')])
 
 &gt;&gt;&gt; summary(run_metrics_example, 'Lane')
 array([(1, 78, 1, 0.2, 10., 0., 0., 0., 1.),
@@ -994,13 +994,13 @@ ValueError: Column `Incorrect` not found in: ['Error Rate', 'First Cycle Intensi
 
 The default columns are for the Run/Read level
 &gt;&gt;&gt; summary_columns()
-('Error Rate', 'First Cycle Intensity', '% Aligned', '% &gt;= Q30', '% Occupancy Proxy', '% Occupied', 'Projected Yield G', 'Yield G')
+('Cluster Count', 'Cluster Count Pf', 'Error Rate', 'First Cycle Intensity', '% Aligned', '% &gt;= Q30', '% Occupancy Proxy', '% Occupied', 'Projected Yield G', 'Reads', 'Reads Pf', 'Yield G')
 &gt;&gt;&gt; summary_columns(level='Total')
-('Error Rate', 'First Cycle Intensity', '% Aligned', '% &gt;= Q30', '% Occupancy Proxy', '% Occupied', 'Projected Yield G', 'Yield G')
+('Cluster Count', 'Cluster Count Pf', 'Error Rate', 'First Cycle Intensity', '% Aligned', '% &gt;= Q30', '% Occupancy Proxy', '% Occupied', 'Projected Yield G', 'Reads', 'Reads Pf', 'Yield G')
 &gt;&gt;&gt; summary_columns(level='NonIndex')
-('Error Rate', 'First Cycle Intensity', '% Aligned', '% &gt;= Q30', '% Occupancy Proxy', '% Occupied', 'Projected Yield G', 'Yield G')
+('Cluster Count', 'Cluster Count Pf', 'Error Rate', 'First Cycle Intensity', '% Aligned', '% &gt;= Q30', '% Occupancy Proxy', '% Occupied', 'Projected Yield G', 'Reads', 'Reads Pf', 'Yield G')
 &gt;&gt;&gt; summary_columns(level='Read')
-('Error Rate', 'First Cycle Intensity', '% Aligned', '% &gt;= Q30', '% Occupancy Proxy', '% Occupied', 'Projected Yield G', 'Yield G')
+('Cluster Count', 'Cluster Count Pf', 'Error Rate', 'First Cycle Intensity', '% Aligned', '% &gt;= Q30', '% Occupancy Proxy', '% Occupied', 'Projected Yield G', 'Reads', 'Reads Pf', 'Yield G')
 
 The lane/surface level give another set of columns for the summary table
 &gt;&gt;&gt; summary_columns(level='Lane')
