@@ -233,6 +233,17 @@ namespace illumina { namespace interop { namespace logic { namespace summary
         static const float eps = 1e-9f;
         return (div < eps) ? 0 : num / div;
     }
+    /** Safe divide
+     *
+     * @param num numerator
+     * @param div divisor
+     * @return result of division
+     */
+    inline double divide(const double num, const double div)
+    {
+        static const double eps = 1e-9;
+        return (div < eps) ? 0 : num / div;
+    }
 
     namespace op
     {

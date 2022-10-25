@@ -397,10 +397,10 @@ namespace illumina { namespace interop { namespace logic { namespace summary
         }
         for (size_t read = 0; read < run.size(); ++read)
         {
-            run[read].summary().percent_occupied(divide(total_cluster_occupied, total_cluster_count)*100);
+            run[read].summary().percent_occupied(static_cast<float>(divide(total_cluster_occupied, total_cluster_count))*100);
         }
-        run.nonindex_summary().percent_occupied(divide(total_cluster_occupied, total_cluster_count)*100);
-        run.total_summary().percent_occupied(divide(total_cluster_occupied, total_cluster_count)*100);
+        run.nonindex_summary().percent_occupied(static_cast<float>(divide(total_cluster_occupied, total_cluster_count))*100);
+        run.total_summary().percent_occupied(static_cast<float>(divide(total_cluster_occupied, total_cluster_count))*100);
     }
 
 }}}}
