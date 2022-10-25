@@ -89,12 +89,12 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                   util::op::const_member_function_less(&model::metrics::tile_metric::percent_pf),
                   skip_median);
         stat_summary.percent_pf(stat);
-        stat_summary.reads(std::accumulate(tile_data.begin(),
+        stat_summary.reads(nan_accumulate(tile_data.begin(),
                                            tile_data.end(),
                                            uint64_t(0),
                                            util::op::const_member_function(
                                                    &model::metrics::tile_metric::cluster_count)));
-        stat_summary.reads_pf(std::accumulate(tile_data.begin(),
+        stat_summary.reads_pf(nan_accumulate(tile_data.begin(),
                                              tile_data.end(),
                                               uint64_t(0),
                                              util::op::const_member_function(
@@ -254,6 +254,10 @@ namespace illumina { namespace interop { namespace logic { namespace summary
         size_t total = 0;
         float percent_aligned_nonindex = 0;
         size_t total_nonindex = 0;
+        double cluster_count_raw = 0;
+        double cluster_count_pf = 0;
+        uint64_t total_reads_raw = 0;
+        uint64_t total_reads_pf = 0;
         for (size_t read = 0; read < run.size(); ++read)
         {
             INTEROP_ASSERT(read < run.size());
@@ -262,6 +266,11 @@ namespace illumina { namespace interop { namespace logic { namespace summary
             for (size_t lane = 0; lane < run[read].size(); ++lane)
             {
                 INTEROP_ASSERT(lane < run[0].size());
+                if(read == 0)
+                {
+                    cluster_count_pf += run[read][lane].reads_pf();
+                    cluster_count_raw += run[read][lane].reads();
+                }
                 const size_t non_nan = update_read_summary(read_data_by_lane_read(read, lane),
                                                            run[read][lane],
                                                            skip_median);
@@ -277,6 +286,12 @@ namespace illumina { namespace interop { namespace logic { namespace summary
                                      skip_median);
                 }
             }
+            run[read].summary().reads(static_cast<uint64_t>(cluster_count_raw));
+            run[read].summary().reads_pf(static_cast<uint64_t>(cluster_count_pf));
+            run[read].summary().cluster_count(cluster_count_raw);
+            run[read].summary().cluster_count_pf(cluster_count_pf);
+            total_reads_raw = static_cast<uint64_t>(cluster_count_raw);
+            total_reads_pf = static_cast<uint64_t>(cluster_count_pf);
             run[read].summary().percent_aligned(divide(percent_aligned_by_read, float(total_by_read)));
             percent_aligned += percent_aligned_by_read;
             total += total_by_read;
@@ -288,7 +303,14 @@ namespace illumina { namespace interop { namespace logic { namespace summary
         }
         run.nonindex_summary().percent_aligned(divide(percent_aligned_nonindex, static_cast<float>(total_nonindex)));
         run.total_summary().percent_aligned(divide(percent_aligned, static_cast<float>(total)));
-
+        run.nonindex_summary().reads(total_reads_raw);
+        run.total_summary().reads(total_reads_raw);
+        run.nonindex_summary().reads_pf(total_reads_pf);
+        run.total_summary().reads_pf(total_reads_pf);
+        run.nonindex_summary().cluster_count(cluster_count_raw);
+        run.total_summary().cluster_count(cluster_count_raw);
+        run.nonindex_summary().cluster_count_pf(cluster_count_pf);
+        run.total_summary().cluster_count_pf(cluster_count_pf);
     }
 
     /** Summarize a collection extended tile metrics
@@ -332,8 +354,8 @@ namespace illumina { namespace interop { namespace logic { namespace summary
 
 
         model::summary::metric_stat count_stat;
-        float total_cluster_occupied = 0;
-        float total_cluster_count = 0;
+        double total_cluster_occupied = 0;
+        double total_cluster_count = 0;
         const bool skip_median=false;
         for (size_t lane = 0; lane < run[0].size(); ++lane)
         {
@@ -375,10 +397,10 @@ namespace illumina { namespace interop { namespace logic { namespace summary
         }
         for (size_t read = 0; read < run.size(); ++read)
         {
-            run[read].summary().percent_occupied(divide(total_cluster_occupied, total_cluster_count)*100);
+            run[read].summary().percent_occupied(static_cast<float>(divide(total_cluster_occupied, total_cluster_count))*100);
         }
-        run.nonindex_summary().percent_occupied(divide(total_cluster_occupied, total_cluster_count)*100);
-        run.total_summary().percent_occupied(divide(total_cluster_occupied, total_cluster_count)*100);
+        run.nonindex_summary().percent_occupied(static_cast<float>(divide(total_cluster_occupied, total_cluster_count))*100);
+        run.total_summary().percent_occupied(static_cast<float>(divide(total_cluster_occupied, total_cluster_count))*100);
     }
 
 }}}}

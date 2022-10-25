@@ -1,5 +1,11 @@
 # Changes                                               {#changes}
 
+## v1.2.0
+
+| Date       | Description                                                |
+|------------|------------------------------------------------------------|
+| 2022-10-21 | Add missing read-level and run-level cluster count metrics |
+
 
 ## v1.1.28
 
