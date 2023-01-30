@@ -181,7 +181,7 @@ def index_summary(run_metrics, level='Lane', columns=None, dtype='f4', **extra):
     if len(data) == 0:
         return np.asarray([])
     _str_types = ('Index1', 'Index2', 'Sample Id', 'Project Name')
-    return np.asarray(data, dtype=extra_cols+[(col, dtype if col not in _str_types else np.object) for col in header])
+    return np.asarray(data, dtype=extra_cols+[(col, dtype if col not in _str_types else np.dtype(object)) for col in header])
 
 
 def index_summary_columns(level='Lane', ret_dict=False):
