@@ -194,7 +194,7 @@ namespace illumina { namespace interop { namespace unittest
             const float kAverageError100 = 26.0f;
             const float kAverageErrorAfter = 36.0f;
 
-            float sum = 0.0f;
+            //float sum = 0.0f;
             const size_t cycle_count = run_info.total_cycles();
             for (size_t cycle = 1; cycle <= cycle_count; ++cycle)
             {
@@ -209,12 +209,12 @@ namespace illumina { namespace interop { namespace unittest
                 else if( cycle_within_read <= 35 )
                 {
                     metrics.insert(metric_t(7, 1114, cycle_id, kAverageError35, kMissingValue));
-                    sum += kAverageError35;
+                    //sum += kAverageError35;
                 }
                 else if( cycle_within_read <= 50 )
                 {
                     metrics.insert(metric_t(7, 1114, cycle_id, kAverageError50, kMissingValue));
-                    sum += kAverageError35;
+                    //sum += kAverageError35;
                 }
                 else if( cycle_within_read <= 75 )
                 {
