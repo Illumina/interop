@@ -1,10 +1,6 @@
 %include "std_except.i"
 %include "exception.i"
 
-namespace std{
-    %std_exception_map(bad_alloc, SWIG_MemoryError);
-}
-
 #if defined(SWIGCSHARP)
 namespace std
 {
@@ -30,6 +26,10 @@ namespace std {
     virtual ~runtime_error() throw();
     virtual const char* what() const throw();
   };
+}
+#else
+namespace std{
+        %std_exception_map(bad_alloc, SWIG_MemoryError);
 }
 #endif
 %{
