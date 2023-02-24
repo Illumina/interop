@@ -106,7 +106,7 @@ int main(int argc, const char** argv)
         int ret = read_run_metrics(argv[i], run, valid_to_load, thread_count);
         if(ret != SUCCESS)
         {
-            continue;
+            return UNEXPECTED_EXCEPTION;
         }
         run_summary summary;
         try
@@ -116,7 +116,7 @@ int main(int argc, const char** argv)
         catch(const std::exception& ex)
         {
             std::cerr << ex.what() << std::endl;
-            continue;
+            return UNEXPECTED_EXCEPTION;
         }
         try
         {

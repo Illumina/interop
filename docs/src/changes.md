@@ -1,5 +1,12 @@
 # Changes {#changes}
 
+## v1.2.2
+
+| Date       | Description                                                              |
+|------------|--------------------------------------------------------------------------|
+| 2023-02-23 | Issue-312: Fix return code when summary fails to read or summarize a run |
+| 2023-02-23 | Fix typo Issue-311                                                       |
+
 ## v1.2.1
 
 | Date       | Description                                            |
