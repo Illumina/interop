@@ -1,5 +1,11 @@
 # Changes {#changes}
 
+## v1.2.3
+
+| Date       | Description                                                             |
+|------------|-------------------------------------------------------------------------|
+| 2023-04-02 | Issue-315: Fix documentation for error and extended tile metric formats |
+
 ## v1.2.2
 
 | Date       | Description                                                              |
