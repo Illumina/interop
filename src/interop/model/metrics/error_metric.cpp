@@ -602,7 +602,7 @@ namespace illumina{ namespace interop{ namespace io
          */
         static size_t write_metric(std::ostream& out,
                                    const error_metric& metric,
-                                   const header_type& header,
+                                   const header_type& /*header*/,
                                    const char sep,
                                    const char eol,
                                    const char)
