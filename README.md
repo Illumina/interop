@@ -6,12 +6,13 @@ Quick Start
 [![Coverity_status][covstatus]][covhome]
 
 The Illumina InterOp libraries are a set of common routines used for reading InterOp metric files produced by
-Illumina sequencers including **NextSeq 1k/2k**. These libraries are backwards compatible and capable of supporting prior releases of the software,
+Illumina sequencers including **NextSeq 1k/2k** and NovaSeqX. These libraries are backwards compatible and capable of supporting prior releases of the software,
 with one exception: GA systems have been excluded.
 
 ***
 > We now support an interface to Python 2.7 (UCS-4) and 3.6-3.10
-> Note that 3.10 is CentOS 7 or later while ealier versions support Centos 5 or later
+> Note that 3.10 is CentOS 7 or later while earlier versions support Centos 5 or later
+> Note: dumptext has been deprecated in favor of imaging_table and will be removed in the next version
 ***
 
 The InterOp files supported by this library include:
