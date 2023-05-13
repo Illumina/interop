@@ -602,14 +602,17 @@ namespace illumina{ namespace interop{ namespace io
          */
         static size_t write_metric(std::ostream& out,
                                    const error_metric& metric,
-                                   const header_type& header,
+                                   const header_type& /*header*/,
                                    const char sep,
                                    const char eol,
                                    const char)
         {
             out << metric.lane() << sep << metric.tile() << sep << metric.cycle() << sep;
-            out << metric.error_rate() << sep << metric.phix_adapter_rates()[0];
-            for(size_t i=1;i<static_cast<size_t>(header.number_adapters());++i)
+            if(metric.phix_adapter_rates().size() > 0)
+                out << metric.error_rate() << sep << metric.phix_adapter_rates()[0];
+            else
+                out << metric.error_rate();
+            for(size_t i=1;i<static_cast<size_t>(metric.phix_adapter_rates().size());++i)
                 out << sep << metric.phix_adapter_rates()[i];
             out << eol;
             return 0;

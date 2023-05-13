@@ -1,5 +1,11 @@
 # Changes {#changes}
 
+## v1.2.4
+
+| Date       | Description                                                                            |
+|------------|----------------------------------------------------------------------------------------|
+| 2023-05-12 | Issue-322: Fix segfault with dumptext when writing out adapter, but no adapter present |
+
 ## v1.2.3
 
 | Date       | Description                                                             |
