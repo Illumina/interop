@@ -35,7 +35,7 @@ For Pythons users, a Wheel package is available on Github Releases or PyPI:
 $ pip install interop
 ~~~~~~~~~~~~~
 
-Supported versions for binary distribution: 2.7 (UCS-4), 3.6, 3.7, 3.8, 3.9 and 3.10.
+Supported versions for binary distribution: 3.6 to 3.11.
 
 Test the installation
 

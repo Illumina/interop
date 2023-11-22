@@ -1,5 +1,11 @@
 # Changes {#changes}
 
+## v1.3.0
+
+| Date       | Description                        |
+|------------|------------------------------------|
+| 2023-11-22 | Issue-330: Add Python 3.11 Support |
+
 ## v1.2.4
 
 | Date       | Description                                                                            |
