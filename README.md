@@ -74,7 +74,9 @@ Install
 
 ### Python
 
-Supported versions for binary distribution: Python 2.7 and 3.5-3.10.
+Supported versions for binary distribution: 3.5-3.10.
+
+** Python 2.7 support has been removed **
 
 You should have NumPy already installed.
 

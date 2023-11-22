@@ -18,7 +18,7 @@ In addition to the binary archive below, there are language specific packages in
  - Wheel for Python
  
 Note, we only distribute from GitHub currently, and not PyPi or NuGet.org. These should
-be compatible with most Linux Versions, Mac OSX and Windows. We support Python 2.7,
+be compatible with most Linux Versions, Mac OSX and Windows. We support
 Python 3.6 to 3.11.
 
 ### Binary Archive (C++, C#, Python, Java)
