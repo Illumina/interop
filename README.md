@@ -10,7 +10,7 @@ Illumina sequencers including **NextSeq 1k/2k** and NovaSeqX. These libraries ar
 with one exception: GA systems have been excluded.
 
 ***
-> We now support an interface to Python 2.7 (UCS-4) and 3.6-3.11
+> We now support an interface to 3.6-3.11
 > Note that 3.10 and 3.11 are CentOS 7 or later while earlier versions support Centos 5 or later
 > Note: dumptext has been deprecated in favor of imaging_table and will be removed in the next version
 ***
