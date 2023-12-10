@@ -1,5 +1,11 @@
 # Changes {#changes}
 
+## v1.3.1
+
+| Date       | Description                                                       |
+|------------|-------------------------------------------------------------------|
+| 2023-12-10 | Issue-332: Improve documentation and remove old python 2 examples |
+
 ## v1.3.0
 
 | Date       | Description                        |
