@@ -27,7 +27,7 @@ Python
 
 If you have not installed InterOp, see [Install InterOp From a Wheel](@ref install)
 
-@snippet src/examples/python/summary.py Reporting Summary Metrics in Python
+See new [interop.core](namespacecore.html)
 
 C++
 ---

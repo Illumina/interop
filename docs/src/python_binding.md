@@ -45,15 +45,6 @@ See new [interop.core](namespacecore.html) wrapper for the simplified interface
     $ dir(python_swig_object_instance)
 
 
-## Introductory Tutorials
-
- * [SAV Summary Table](https://github.com/Illumina/interop/blob/master/docs/src/Tutorial_01_Intro.ipynb)
- * [Q-Score Histogram](https://github.com/Illumina/interop/blob/master/docs/src/Tutorial_02_Plot_Bar.ipynb)
- * [Low-level Extraction](https://github.com/Illumina/interop/blob/master/docs/src/Tutorial_03_Low_Level.ipynb)
- * [Indexing Metrics](https://github.com/Illumina/interop/blob/master/docs/src/Tutorial_04_Indexing_Metrics.ipynb)
- * [Imaging Table](https://github.com/Illumina/interop/blob/master/docs/src/Tutorial_05_Imaging_Table.ipynb)
-
-
 ## Introduction to the API
 
 The following is a list of all modulates available in the Python API:
