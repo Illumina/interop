@@ -35,7 +35,7 @@
  <div class="container">
   <div class="navbar-header">
    <a class="navbar-brand" href="https://www.illumina.com/"><img style='margin-top: -8px !important;height: 40px !important;' src='ILLUMINA_LOGO_RGB_new_200_45.png' /></a>
-   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.3.0</span>  </a>
+   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.3.1</span>  </a>
   </div>
   <div class="collapse navbar-collapse">
    <!-- Left -->
@@ -90,14 +90,6 @@ $ pip install -f https://github.com/Illumina/interop/releases/latest interop
 <p class="startli">$ dir(python_swig_object_instance)</p>
 </li>
 </ol>
-<h2>Introductory Tutorials</h2>
-<ul>
-<li><a href="https://github.com/Illumina/interop/blob/master/docs/src/Tutorial_01_Intro.ipynb">SAV Summary Table</a></li>
-<li><a href="https://github.com/Illumina/interop/blob/master/docs/src/Tutorial_02_Plot_Bar.ipynb">Q-Score Histogram</a></li>
-<li><a href="https://github.com/Illumina/interop/blob/master/docs/src/Tutorial_03_Low_Level.ipynb">Low-level Extraction</a></li>
-<li><a href="https://github.com/Illumina/interop/blob/master/docs/src/Tutorial_04_Indexing_Metrics.ipynb">Indexing Metrics</a></li>
-<li><a href="https://github.com/Illumina/interop/blob/master/docs/src/Tutorial_05_Imaging_Table.ipynb">Imaging Table</a></li>
-</ul>
 <h2>Introduction to the API</h2>
 <p>The following is a list of all modulates available in the Python API: </p><pre class="fragment">from interop import py_interop_run
 from interop import py_interop_metrics
@@ -123,7 +115,7 @@ interop/logic/utils/enums.h
 <li>read_info_vector</li>
 </ul>
 <h4>interop/model/run</h4>
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="keyword">from</span> interop <span class="keyword">import</span> py_interop_run</div>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;from interop <span class="keyword">import</span> py_interop_run</div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;</div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;run_info = py_interop_run.info()</div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;run_info.read(<span class="stringliteral">&quot;RunFolder&quot;</span>)</div>

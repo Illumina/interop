@@ -35,7 +35,7 @@
  <div class="container">
   <div class="navbar-header">
    <a class="navbar-brand" href="https://www.illumina.com/"><img style='margin-top: -8px !important;height: 40px !important;' src='ILLUMINA_LOGO_RGB_new_200_45.png' /></a>
-   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.3.0</span>  </a>
+   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.3.1</span>  </a>
   </div>
   <div class="collapse navbar-collapse">
    <!-- Left -->
@@ -111,7 +111,7 @@
 <div class="line">        metrics.read(args[0]);</div>
 <div class="line"></div>
 <div class="line"></div>
-<div class="line">        run_summary <a class="code" href="namespacesummary.html">summary</a> = <span class="keyword">new</span> run_summary();</div>
+<div class="line">        run_summary <a class="code" href="namespacecore.html#a7299ac8ed2d54e8738cbd72c3fc6b3e8">summary</a> = <span class="keyword">new</span> run_summary();</div>
 <div class="line">        c_csharp_summary.summarize_run_metrics(metrics, summary);</div>
 <div class="line"></div>
 <div class="line"></div>
@@ -121,54 +121,8 @@
 <div class="line">}</div>
 </div><!-- fragment --><h2>Python </h2>
 <p>If you have not installed InterOp, see <a class="el" href="install.html">Install InterOp From a Wheel</a></p>
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;</div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="keyword">from</span> interop <span class="keyword">import</span> py_interop_run_metrics</div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="keyword">from</span> interop <span class="keyword">import</span> py_interop_summary</div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="keyword">from</span> interop <span class="keyword">import</span> py_interop_run</div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="keyword">import</span> numpy</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">import</span> logging</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">import</span> sys</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">import</span> os</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">def </span><a class="code" href="aggregate_8cpp.html#a217dbf8b442f20279ea00b898af96f52">main</a>():</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    <span class="stringliteral">&quot;&quot;&quot; Retrieve run folder paths from the command line</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="stringliteral">    Ensure only metrics required for summary are loaded</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="stringliteral">    Load the run metrics</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="stringliteral">    Calculate the summary metrics</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="stringliteral">    Display error by lane, read</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="stringliteral">    &quot;&quot;&quot;</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    logging.basicConfig(level=logging.INFO)</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    run_metrics = py_interop_run_metrics.run_metrics()</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    summary = py_interop_summary.run_summary()</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    valid_to_load = py_interop_run.uchar_vector(py_interop_run.MetricCount, 0)</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    py_interop_run_metrics.list_summary_metrics_to_load(valid_to_load)</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keywordflow">for</span> run_folder_path <span class="keywordflow">in</span> sys.argv[1:]:</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        run_folder = os.path.basename(run_folder_path)</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <span class="keywordflow">try</span>:</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;            run_metrics.read(run_folder_path, valid_to_load)</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <span class="keywordflow">except</span> Exception, ex:</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;            logging.warn(<span class="stringliteral">&quot;Skipping - cannot read RunInfo.xml: %s - %s&quot;</span>%(run_folder, str(ex)))</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;            <span class="keywordflow">continue</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        py_interop_summary.summarize_run_metrics(run_metrics, summary)</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        error_rate_read_lane_surface = numpy.zeros((summary.size(), summary.lane_count(), summary.surface_count()))</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="keywordflow">for</span> read_index <span class="keywordflow">in</span> xrange(summary.size()):</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;            <span class="keywordflow">for</span> lane_index <span class="keywordflow">in</span> xrange(summary.lane_count()):</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                <span class="keywordflow">for</span> surface_index <span class="keywordflow">in</span> xrange(summary.surface_count()):</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                    error_rate_read_lane_surface[read_index, lane_index, surface_index] = \</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                        summary.at(read_index).at(lane_index).at(surface_index).error_rate().<a class="code" href="namespaceillumina_1_1interop_1_1util.html#a2031849375ca583266a2b24181c9e2be">mean</a>()</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        logging.info(<span class="stringliteral">&quot;Run Folder: &quot;</span>+run_folder)</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="keywordflow">for</span> read_index <span class="keywordflow">in</span> xrange(summary.size()):</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;            read_summary = summary.at(read_index)</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            logging.info(<span class="stringliteral">&quot;Read &quot;</span>+str(read_summary.read().<a class="code" href="namespaceillumina_1_1interop_1_1logic_1_1metric.html#a7a6ff64f1c38a893a5abf1f7a1fa3dfe">number</a>())+<span class="stringliteral">&quot; - Top Surface Mean Error: &quot;</span>+str(error_rate_read_lane_surface[read_index, :, 0].<a class="code" href="namespaceillumina_1_1interop_1_1util.html#a2031849375ca583266a2b24181c9e2be">mean</a>()))</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="keywordflow">if</span> __name__ == <span class="stringliteral">&#39;__main__&#39;</span>:</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <a class="code" href="aggregate_8cpp.html#a217dbf8b442f20279ea00b898af96f52">main</a>()</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
-</div><!-- fragment --> <h2>C++ </h2>
+<p>See new <a href="namespacecore.html">interop.core</a></p>
+<h2>C++ </h2>
 <p>The following shows how to calculate the summary metrics:</p>
 <div class="fragment"><div class="line">    std::vector&lt;unsigned char&gt; valid_to_load;</div>
 <div class="line">    <a class="code" href="namespaceillumina_1_1interop_1_1logic_1_1utils.html#a0d4a5750249dce9ffd136c17684822fe">logic::utils::list_summary_metrics_to_load</a>(valid_to_load); <span class="comment">// Only load the InterOp files required</span></div>

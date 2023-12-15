@@ -35,7 +35,7 @@
  <div class="container">
   <div class="navbar-header">
    <a class="navbar-brand" href="https://www.illumina.com/"><img style='margin-top: -8px !important;height: 40px !important;' src='ILLUMINA_LOGO_RGB_new_200_45.png' /></a>
-   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.3.0</span>  </a>
+   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.3.1</span>  </a>
   </div>
   <div class="collapse navbar-collapse">
    <!-- Left -->
@@ -88,21 +88,21 @@
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="metrics__to__load_8h.html">interop/logic/utils/metrics_to_load.h</a>&quot;</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespaceillumina.html">illumina</a> { <span class="keyword">namespace </span>interop { <span class="keyword">namespace </span>logic { <span class="keyword">namespace </span><a class="code" href="namespacesummary.html">summary</a></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespaceillumina.html">illumina</a> { <span class="keyword">namespace </span>interop { <span class="keyword">namespace </span>logic { <span class="keyword">namespace </span><a class="code" href="namespacecore.html#a7299ac8ed2d54e8738cbd72c3fc6b3e8">summary</a></div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;{</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="namespaceillumina_1_1interop_1_1logic_1_1summary.html#a1955ede76bbb7e5137de2e7d9c517c53">summarize_index_metrics</a>(model::metrics::run_metrics &amp;metrics,</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                                        <span class="keyword">const</span> <span class="keywordtype">size_t</span> lane,</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                                        model::summary::index_lane_summary &amp;<a class="code" href="namespacesummary.html">summary</a>)</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                                        model::summary::index_lane_summary &amp;<a class="code" href="namespacecore.html#a7299ac8ed2d54e8738cbd72c3fc6b3e8">summary</a>)</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;                                        <a class="code" href="exception__specification_8h.html#aff57a57f70bd067a95a801be66b24b4e">INTEROP_THROW_SPEC</a>((model::index_out_of_bounds_exception));</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="namespaceillumina_1_1interop_1_1logic_1_1summary.html#a1955ede76bbb7e5137de2e7d9c517c53">summarize_index_metrics</a>(model::metric_base::metric_set&lt;model::metrics::index_metric&gt;&amp; index_metrics,</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                                        <span class="keyword">const</span> model::metric_base::metric_set&lt;model::metrics::tile_metric&gt;&amp; tile_metrics,</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                                        <span class="keyword">const</span> <span class="keywordtype">size_t</span> lane_count,</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                                        model::summary::index_flowcell_summary &amp;<a class="code" href="namespacesummary.html">summary</a>)</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                                        model::summary::index_flowcell_summary &amp;<a class="code" href="namespacecore.html#a7299ac8ed2d54e8738cbd72c3fc6b3e8">summary</a>)</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                                        <a class="code" href="exception__specification_8h.html#aff57a57f70bd067a95a801be66b24b4e">INTEROP_THROW_SPEC</a>((model::index_out_of_bounds_exception));</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="namespaceillumina_1_1interop_1_1logic_1_1summary.html#a1955ede76bbb7e5137de2e7d9c517c53">summarize_index_metrics</a>(model::metrics::run_metrics &amp;metrics,</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                                        model::summary::index_flowcell_summary &amp;<a class="code" href="namespacesummary.html">summary</a>)</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                                        model::summary::index_flowcell_summary &amp;<a class="code" href="namespacecore.html#a7299ac8ed2d54e8738cbd72c3fc6b3e8">summary</a>)</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                                            <a class="code" href="exception__specification_8h.html#aff57a57f70bd067a95a801be66b24b4e">INTEROP_THROW_SPEC</a>((model::index_out_of_bounds_exception));</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;}}}}</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
@@ -110,7 +110,7 @@
 <div class="ttc" id="exception__specification_8h_html_aff57a57f70bd067a95a801be66b24b4e"><div class="ttname"><a href="exception__specification_8h.html#aff57a57f70bd067a95a801be66b24b4e">INTEROP_THROW_SPEC</a></div><div class="ttdeci">#define INTEROP_THROW_SPEC(SPEC)</div><div class="ttdef"><b>Definition:</b> exception_specification.h:15</div></div>
 <div class="ttc" id="run__metrics_8h_html"><div class="ttname"><a href="run__metrics_8h.html">run_metrics.h</a></div></div>
 <div class="ttc" id="index__flowcell__summary_8h_html"><div class="ttname"><a href="index__flowcell__summary_8h.html">index_flowcell_summary.h</a></div></div>
-<div class="ttc" id="namespacesummary_html"><div class="ttname"><a href="namespacesummary.html">summary</a></div><div class="ttdef"><b>Definition:</b> summary.py:1</div></div>
+<div class="ttc" id="namespacecore_html_a7299ac8ed2d54e8738cbd72c3fc6b3e8"><div class="ttname"><a href="namespacecore.html#a7299ac8ed2d54e8738cbd72c3fc6b3e8">core.summary</a></div><div class="ttdeci">def summary(run_metrics, level='Total', columns=None, dtype='f4', ignore_missing_columns=True, extra)</div><div class="ttdef"><b>Definition:</b> core.py:217</div></div>
 <div class="ttc" id="namespaceillumina_1_1interop_1_1logic_1_1summary_html_a1955ede76bbb7e5137de2e7d9c517c53"><div class="ttname"><a href="namespaceillumina_1_1interop_1_1logic_1_1summary.html#a1955ede76bbb7e5137de2e7d9c517c53">illumina::interop::logic::summary::summarize_index_metrics</a></div><div class="ttdeci">void summarize_index_metrics(model::metric_base::metric_set&lt; model::metrics::index_metric &gt; &amp;index_metrics, const model::metric_base::metric_set&lt; model::metrics::tile_metric &gt; &amp;tile_metrics, const size_t lane, model::summary::index_lane_summary &amp;summary)</div><div class="ttdef"><b>Definition:</b> index_summary.cpp:23</div></div>
 <div class="ttc" id="model__exceptions_8h_html"><div class="ttname"><a href="model__exceptions_8h.html">model_exceptions.h</a></div></div>
 <div class="ttc" id="metrics__to__load_8h_html"><div class="ttname"><a href="metrics__to__load_8h.html">metrics_to_load.h</a></div></div>

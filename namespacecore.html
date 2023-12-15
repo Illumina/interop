@@ -35,7 +35,7 @@
  <div class="container">
   <div class="navbar-header">
    <a class="navbar-brand" href="https://www.illumina.com/"><img style='margin-top: -8px !important;height: 40px !important;' src='ILLUMINA_LOGO_RGB_new_200_45.png' /></a>
-   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.3.0</span>  </a>
+   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.3.1</span>  </a>
   </div>
   <div class="collapse navbar-collapse">
    <!-- Left -->
@@ -138,29 +138,29 @@ The core routines include the following:
 &gt;&gt;&gt; from interop import index_summary
 &gt;&gt;&gt; index_summary(run_metrics_with_indexing)
 array([(1, 0.4556, 1015.5555, 520.6667, 1536.2222, 1800., 2000.)],
-  dtype=[('Lane', '&lt;u2'), ('Mapped Reads Cv', '&lt;f4'), ('Max Mapped Reads', '&lt;f4'), ('Min Mapped Reads', '&lt;f4'), ('Total Fraction Mapped Reads', '&lt;f4'), ('Total Pf Reads', '&lt;f4'), ('Total Reads', '&lt;f4')])
+      dtype=[('Lane', '&lt;u2'), ('Mapped Reads Cv', '&lt;f4'), ('Max Mapped Reads', '&lt;f4'), ('Min Mapped Reads', '&lt;f4'), ('Total Fraction Mapped Reads', '&lt;f4'), ('Total Pf Reads', '&lt;f4'), ('Total Reads', '&lt;f4')])
 
 &gt;&gt;&gt; from interop import summary
 &gt;&gt;&gt; summary(run_metrics_example)
 array([(0.36666667, 6.6666665, 0., 0., 0.)],
-  dtype=[('Error Rate', '&lt;f4'), ('First Cycle Intensity', '&lt;f4'), ('Projected Yield G', '&lt;f4'), ('Reads', '&lt;f4'), ('Reads Pf', '&lt;f4')])
+      dtype=[('Error Rate', '&lt;f4'), ('First Cycle Intensity', '&lt;f4'), ('Projected Yield G', '&lt;f4'), ('Reads', '&lt;f4'), ('Reads Pf', '&lt;f4')])
 
 &gt;&gt;&gt; from interop import indexing
 &gt;&gt;&gt; indexing(run_metrics_with_indexing)
 array([(1., 1101., 'ATCACGAC-AAGGTTCA', '1', 4570., 900., 507.77777),
-   (1., 1101., 'ATCACGAC-GGGGGGGG', '2', 2343., 900., 260.33334),
-   (1., 1102., 'ATCACGAC-AAGGTTCA', '1', 4570.,   0.,   0.     ),
-   (1., 1102., 'ATCACGAC-GGGGGGGG', '2', 2343.,   0.,   0.     )],
-  dtype=[('Lane', '&lt;f4'), ('Tile', '&lt;f4'), ('Barcode', 'O'), ('SampleID', 'O'), ('Cluster Count', '&lt;f4'), ('Cluster Count PF', '&lt;f4'), ('% Demux', '&lt;f4')])
+       (1., 1101., 'ATCACGAC-GGGGGGGG', '2', 2343., 900., 260.33334),
+       (1., 1102., 'ATCACGAC-AAGGTTCA', '1', 4570.,   0.,   0.     ),
+       (1., 1102., 'ATCACGAC-GGGGGGGG', '2', 2343.,   0.,   0.     )],
+      dtype=[('Lane', '&lt;f4'), ('Tile', '&lt;f4'), ('Barcode', 'O'), ('SampleID', 'O'), ('Cluster Count', '&lt;f4'), ('Cluster Count PF', '&lt;f4'), ('% Demux', '&lt;f4')])
 
 &gt;&gt;&gt; from interop import imaging
 &gt;&gt;&gt; imaging(run_metrics_example)
 rec.array([(1., 1101., 1., 1., 1., 0.1, 10., 10., 25. , 33.3, 33.3, 33.3, 0., 10., 10., nan, nan, nan, nan, nan, nan, nan, nan, nan, 1., 1., 1.),
-       (1., 1101., 2., 1., 2., 0.2,  5., 15., 12.5, 42.9, 28.6, 28.6, 0.,  5., 15., nan, nan, nan, nan, nan, nan, nan, nan, nan, 1., 1., 1.),
-       (1., 1101., 3., 1., 3., 0.3, 10., 10., 25. , 33.3, 50. , 16.7, 0., 10., 10., nan, nan, nan, nan, nan, nan, nan, nan, nan, 1., 1., 1.),
-       (1., 1101., 4., 2., 1., 0.4, 10.,  5., 25. , 16.7, 50. , 33.3, 0., 10.,  5., nan, nan, nan, nan, nan, nan, nan, nan, nan, 1., 1., 1.),
-       (1., 1101., 5., 3., 1., 0.5, 15.,  5., 37.5, 20. , 40. , 40. , 0., 15.,  5., nan, nan, nan, nan, nan, nan, nan, nan, nan, 1., 1., 1.)],
-      dtype=[('Lane', '&lt;f4'), ('Tile', '&lt;f4'), ('Cycle', '&lt;f4'), ('Read', '&lt;f4'), ('Cycle Within Read', '&lt;f4'), ('Error Rate', '&lt;f4'), ('P90/green', '&lt;f4'), ('P90/blue', '&lt;f4'), ('% No Calls', '&lt;f4'), ('% Base/A', '&lt;f4'), ('% Base/C', '&lt;f4'), ('% Base/G', '&lt;f4'), ('% Base/T', '&lt;f4'), ('Fwhm/green', '&lt;f4'), ('Fwhm/blue', '&lt;f4'), ('Corrected/A', '&lt;f4'), ('Corrected/C', '&lt;f4'), ('Corrected/G', '&lt;f4'), ('Corrected/T', '&lt;f4'), ('Called/A', '&lt;f4'), ('Called/C', '&lt;f4'), ('Called/G', '&lt;f4'), ('Called/T', '&lt;f4'), ('Signal To Noise', '&lt;f4'), ('Surface', '&lt;f4'), ('Swath', '&lt;f4'), ('Tile Number', '&lt;f4')])
+           (1., 1101., 2., 1., 2., 0.2,  5., 15., 12.5, 42.9, 28.6, 28.6, 0.,  5., 15., nan, nan, nan, nan, nan, nan, nan, nan, nan, 1., 1., 1.),
+           (1., 1101., 3., 1., 3., 0.3, 10., 10., 25. , 33.3, 50. , 16.7, 0., 10., 10., nan, nan, nan, nan, nan, nan, nan, nan, nan, 1., 1., 1.),
+           (1., 1101., 4., 2., 1., 0.4, 10.,  5., 25. , 16.7, 50. , 33.3, 0., 10.,  5., nan, nan, nan, nan, nan, nan, nan, nan, nan, 1., 1., 1.),
+           (1., 1101., 5., 3., 1., 0.5, 15.,  5., 37.5, 20. , 40. , 40. , 0., 15.,  5., nan, nan, nan, nan, nan, nan, nan, nan, nan, 1., 1., 1.)],
+          dtype=[('Lane', '&lt;f4'), ('Tile', '&lt;f4'), ('Cycle', '&lt;f4'), ('Read', '&lt;f4'), ('Cycle Within Read', '&lt;f4'), ('Error Rate', '&lt;f4'), ('P90/green', '&lt;f4'), ('P90/blue', '&lt;f4'), ('% No Calls', '&lt;f4'), ('% Base/A', '&lt;f4'), ('% Base/C', '&lt;f4'), ('% Base/G', '&lt;f4'), ('% Base/T', '&lt;f4'), ('Fwhm/green', '&lt;f4'), ('Fwhm/blue', '&lt;f4'), ('Corrected/A', '&lt;f4'), ('Corrected/C', '&lt;f4'), ('Corrected/G', '&lt;f4'), ('Corrected/T', '&lt;f4'), ('Called/A', '&lt;f4'), ('Called/C', '&lt;f4'), ('Called/G', '&lt;f4'), ('Called/T', '&lt;f4'), ('Signal To Noise', '&lt;f4'), ('Surface', '&lt;f4'), ('Swath', '&lt;f4'), ('Tile Number', '&lt;f4')])
 
 Any of the core routines above can take a `run_metrics` object or a string containing a file path to a valid run folder.
 
