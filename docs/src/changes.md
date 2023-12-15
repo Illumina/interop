@@ -4,6 +4,7 @@
 
 | Date       | Description                                                       |
 |------------|-------------------------------------------------------------------|
+| 2023-12-14 | Issue-333: Fix missing Python 3.9 wheel for manylinux             |
 | 2023-12-10 | Issue-332: Improve documentation and remove old python 2 examples |
 
 ## v1.3.0
