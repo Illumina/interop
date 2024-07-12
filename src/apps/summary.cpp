@@ -10,6 +10,9 @@
  *
  * In this sample, 140131_1287_0851_A01n401drr is a run folder and the summary is written to the standard output.
  *
+ * Note that an exhausive list of metrics can be found here:
+ *   https://support-docs.illumina.com/SW/SAV/Content/SW/SAV/Metrics.htm
+ *
  * The InterOp sub folder may contain any of the following files:
  *
  *  - ErrorMetricsOut.bin

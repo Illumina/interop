@@ -1,5 +1,15 @@
 # Changes {#changes}
 
+## v1.3.2
+
+| Date       | Description                                           |
+|------------|-------------------------------------------------------|
+| 2024-07-12 | Issue-348: Interop is not compatible with Numpy 2.0.0 |
+| 2024-07-12 | Add support for Python 3.12                           |
+| 2024-07-12 | Issue-340: Update simplified interface documentation  |
+| 2024-07-12 | Issue-339: Add link to document metrics on summary    |
+| 2024-07-12 | Issue-338: Improve imaging_table documentation        |
+
 ## v1.3.1
 
 | Date       | Description                                                       |

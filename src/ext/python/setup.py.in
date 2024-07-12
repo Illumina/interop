@@ -44,8 +44,8 @@ setup(
     ],
     keywords="Illumina sequencer HiSeqX HiSeq NextSeq MiniSeq NovaSeq MiSeq SBS genome",
     install_requires=[
-        'numpy>=1.16.6;python_version>="3.5"',
-        'numpy==1.16.6;python_version<"3.5"',
+        'numpy>=1.23.3;python_version>="3.9"',
+        'numpy>=1.16.6,<2.0;python_version<="3.8"',
     ],
     distclass=BinaryDistribution,
     cmdclass={'install': InstallPlatlib},
