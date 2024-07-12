@@ -231,16 +231,13 @@ elif [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PY
                     python -m pip install auditwheel==1.5
                 fi
             fi
-            if [[ "$OSTYPE" == "darwin"* ]]; then
-                pip install setuptools==43.0.0
-                pip install delocate
-                # pip install delocate=0.7.3
-            fi
             which python
             which pip
+            pip install delocate || true
             python --version
             pip install numpy
             pip install wheel
+            pip install setuptools
             echo "Check setuptools"
             python -c "import setuptools"
             echo "Check numpy"
