@@ -16,7 +16,7 @@ Older versions (prior to 1.1.3) can be installed using:
     $ pip install -f https://github.com/Illumina/interop/releases/tag/v1.1.2 interop
     $ pip install -f https://github.com/Illumina/interop/releases/latest interop
 
-Note, only Python versions 3.6 to 3.11 are currently 
+Note, only Python versions 3.7 to 3.12 are currently 
 supported as binary builds. Other Python versions must be built 
 from source.
 
