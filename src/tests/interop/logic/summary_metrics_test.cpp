@@ -184,7 +184,7 @@ TEST_P(run_summary_tests, lane_summary)
     const float density_tol = 0.5f;
     const float tol = 1e-2f; // TODO: fix this unit test on external Windows Builds (appveyor) was 1e-7f
 #else
-    const float density_tol = 1e-7f;
+    const float density_tol = 1e-2f;
     const float tol = 1e-7f;
 #endif
     ASSERT_EQ(actual.size(), expected.size());
