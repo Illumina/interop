@@ -198,7 +198,9 @@ elif [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PY
       echo "Found Miniconda"
     fi
 
-    conda init --all
+    if hash conda 2> /dev/null; then
+      conda init --all
+    fi
     source ~/.bash_profile
     for py_ver in $python_versions ; do
         echo "Building Python $py_ver - $CFLAGS"
@@ -223,17 +225,12 @@ elif [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PY
           conda install wheel -y --name py${python_version}
           conda install pandas -y --name py${python_version}
 
-        elif hash pyenv 2> /dev/null; then
-            export PATH=$(pyenv root)/shims:${PATH}
+        else
             if [[ "$OSTYPE" == "linux-gnu" ]]; then
                 if hash patchelf 2> /dev/null; then
-                    pyenv install 3.5 -s  || true
-                    pyenv global 3.5 || true
-                    pip3 install auditwheel==1.5
+                    python -m pip install auditwheel==1.5
                 fi
             fi
-            pyenv install $py_ver -s
-            pyenv global $py_ver
             if [[ "$OSTYPE" == "darwin"* ]]; then
                 pip install setuptools==43.0.0
                 pip install delocate
