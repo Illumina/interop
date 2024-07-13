@@ -253,7 +253,9 @@ elif [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PY
             # pip install wheel=0.30.0
         fi
         pip install swig --prefix ./usr
-        export PATH=$(pwd)/usr/bin:$PATH
+        swig_bin=$(ls tmp/lib/python3.*/site-packages/swig/data/bin/swig)
+        swig_path=$(dirname $swig_bin)
+        export PATH=${swig_path}:$PATH
         run "Configure $py_ver" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS} -DENABLE_CSHARP=OFF -DENABLE_PYTHON_DYNAMIC_LOAD=ON -DPython_EXECUTABLE=`which python` -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp
         run "Build $py_ver" cmake --build $BUILD_PATH -- -j${THREAD_COUNT}
         run "Test $py_ver" cmake --build $BUILD_PATH --target check_python -- -j${THREAD_COUNT}
