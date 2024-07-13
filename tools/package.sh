@@ -167,7 +167,13 @@ if [  -e /opt/python ] ; then
           rm -fr ${ARTIFACT_PATH}/tmp
       done
     else
-        echo "Build with specific Python Version: ${PYTHON_VERSION}"
+        /opt/python/cp38-cp38/bin/python -m pip install numpy==1.17.3
+        /opt/python/cp39-cp39/bin/python -m pip install numpy==2.0.0
+        /opt/python/cp310-cp310/bin/python -m pip install numpy==2.0.0
+        /opt/python/cp311-cp311/bin/python -m pip install numpy==2.0.0
+        /opt/python/cp312-cp312/bin/python -m pip install numpy==2.0.0
+
+          echo "Build with specific Python Version: ${PYTHON_VERSION}"
           PYTHON_BIN=/opt/python/${PYTHON_VERSION}/bin
           rm -fr ${BUILD_PATH}/src/ext/python/*
           run "Configure ${PYTHON_VERSION}" cmake $SOURCE_PATH -B${BUILD_PATH} -DPython_EXECUTABLE=${PYTHON_BIN}/python ${CMAKE_EXTRA_FLAGS} -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp -DENABLE_CSHARP=OFF
