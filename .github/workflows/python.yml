@@ -29,8 +29,6 @@ jobs:
           python-version: ${{matrix.pyver}}
         id: cpver
 
-      - uses: mmomtchev/setup-swig@v1
-
       - name: Setup Git name
         run: |
           git config user.name "GitHub Actions Bot"
