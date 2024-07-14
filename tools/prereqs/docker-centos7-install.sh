@@ -140,9 +140,12 @@ wget --no-check-certificate --quiet ${NUGET_URL} -O /usr/lib/nuget.exe
 echo "mono /usr/lib/nuget.exe \$@" > /usr/bin/nuget
 chmod +x /usr/bin/nuget
 
-    for PYBUILD in `ls -1 /opt/python`; do
-        "/opt/python/${PYBUILD}/bin/pip" install numpy pandas
-    done
+        /opt/python/cp38-cp38/bin/python -m pip install numpy==1.17.3 pandas
+        /opt/python/cp39-cp39/bin/python -m pip install numpy==2.0.0 pandas
+        /opt/python/cp310-cp310/bin/python -m pip install numpy==2.0.0 pandas
+        /opt/python/cp311-cp311/bin/python -m pip install numpy==2.0.0 pandas
+        /opt/python/cp312-cp312/bin/python -m pip install numpy==2.0.0 pandas
+
 
 
 export JAVA_HOME=/usr/java/jdk1.8.0_131
