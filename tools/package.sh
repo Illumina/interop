@@ -167,11 +167,11 @@ if [  -e /opt/python ] ; then
           rm -fr ${ARTIFACT_PATH}/tmp
       done
     else
-        /opt/python/cp38-cp38/bin/python -m pip install numpy==1.17.3
-        /opt/python/cp39-cp39/bin/python -m pip install numpy==2.0.0
-        /opt/python/cp310-cp310/bin/python -m pip install numpy==2.0.0
-        /opt/python/cp311-cp311/bin/python -m pip install numpy==2.0.0
-        /opt/python/cp312-cp312/bin/python -m pip install numpy==2.0.0
+        /opt/python/cp38-cp38/bin/python -m pip install numpy==1.17.3 pandas
+        /opt/python/cp39-cp39/bin/python -m pip install numpy==2.0.0 pandas
+        /opt/python/cp310-cp310/bin/python -m pip install numpy==2.0.0 pandas
+        /opt/python/cp311-cp311/bin/python -m pip install numpy==2.0.0 pandas
+        /opt/python/cp312-cp312/bin/python -m pip install numpy==2.0.0 pandas
 
           echo "Build with specific Python Version: ${PYTHON_VERSION}"
           PYTHON_BIN=/opt/python/${PYTHON_VERSION}/bin

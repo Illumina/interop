@@ -50,11 +50,11 @@ yum install -y wget libicu
 mkdir /opt/dotnet
 wget --no-check-certificate --quiet -O - ${DOTNET_URL} | tar --strip-components=1 -xz -C /opt/dotnet
 
-if hash cmake  2> /dev/null; then
-    wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C /opt/_internal/tools
-else
-    wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C /usr
-fi
+#if hash cmake  2> /dev/null; then
+#    wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C /opt/_internal/tools
+#else
+#    wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C /usr
+#fi
 
 if hash mono  2> /dev/null; then
     echo "Found mono"
@@ -140,13 +140,11 @@ wget --no-check-certificate --quiet ${NUGET_URL} -O /usr/lib/nuget.exe
 echo "mono /usr/lib/nuget.exe \$@" > /usr/bin/nuget
 chmod +x /usr/bin/nuget
 
-        /opt/python/cp38-cp38/bin/python -m pip install numpy==1.17.3 pandas
-        /opt/python/cp39-cp39/bin/python -m pip install numpy==2.0.0 pandas
-        /opt/python/cp310-cp310/bin/python -m pip install numpy==2.0.0 pandas
-        /opt/python/cp311-cp311/bin/python -m pip install numpy==2.0.0 pandas
-        /opt/python/cp312-cp312/bin/python -m pip install numpy==2.0.0 pandas
-
-
+/opt/python/cp38-cp38/bin/python -m pip install numpy==1.17.3 pandas
+/opt/python/cp39-cp39/bin/python -m pip install numpy==2.0.0 pandas
+/opt/python/cp310-cp310/bin/python -m pip install numpy==2.0.0 pandas
+/opt/python/cp311-cp311/bin/python -m pip install numpy==2.0.0 pandas
+/opt/python/cp312-cp312/bin/python -m pip install numpy==2.0.0 pandas
 
 export JAVA_HOME=/usr/java/jdk1.8.0_131
 export PATH=${PATH}:/opt/dotnet
