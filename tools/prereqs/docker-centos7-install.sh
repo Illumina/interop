@@ -39,10 +39,12 @@ SWIG_HOME=${PROG_HOME}/swig4
 JUNIT_HOME=${PROG_HOME}/junit
 NUNIT_HOME=${PROG_HOME}/nunit
 
+#sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+#sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
 #yum -y update
-yum install -y wget which libunwind lttng-ust libcurl openssl-libs libuuid krb5-libs libicu zlib
-yum install -y gcc gcc-c++ libtool git make rpm-build
-yum install -y python-devel
+#yum install -y wget which libunwind lttng-ust libcurl openssl-libs libuuid krb5-libs libicu zlib
+#yum install -y gcc gcc-c++ libtool git make rpm-build
+#yum install -y python-devel
 
 mkdir /opt/dotnet
 wget --no-check-certificate --quiet -O - ${DOTNET_URL} | tar --strip-components=1 -xz -C /opt/dotnet
