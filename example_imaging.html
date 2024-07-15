@@ -35,7 +35,7 @@
  <div class="container">
   <div class="navbar-header">
    <a class="navbar-brand" href="https://www.illumina.com/"><img style='margin-top: -8px !important;height: 40px !important;' src='ILLUMINA_LOGO_RGB_new_200_45.png' /></a>
-   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.3.1</span>  </a>
+   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.3.2</span>  </a>
   </div>
   <div class="collapse navbar-collapse">
    <!-- Left -->
@@ -165,7 +165,11 @@
 <div class="line">        run_metrics run;</div>
 <div class="line">        std::cout &lt;&lt; <span class="stringliteral">&quot;# Run Folder: &quot;</span> &lt;&lt; <a class="code" href="namespaceillumina_1_1interop_1_1io.html#a6756bd9187285c7ab722bf11faf68e68">io::basename</a>(argv[i]) &lt;&lt; std::endl;</div>
 <div class="line">        <span class="keywordtype">int</span> ret = <a class="code" href="application_8h.html#a269c48c655d3d194f44aaf61dcd02e27">read_run_metrics</a>(argv[i], run, valid_to_load, thread_count);</div>
-<div class="line">        <span class="keywordflow">if</span> (ret != <a class="code" href="application_8h.html#aefca73bf66400b86ea60e81c294be7d6ac7f69f7c9e5aea9b8f54cf02870e2bf8">SUCCESS</a>) <span class="keywordflow">return</span> ret;</div>
+<div class="line">        <span class="keywordflow">if</span> (ret != <a class="code" href="application_8h.html#aefca73bf66400b86ea60e81c294be7d6ac7f69f7c9e5aea9b8f54cf02870e2bf8">SUCCESS</a>)</div>
+<div class="line">        {</div>
+<div class="line">            std::cout &lt;&lt; <span class="stringliteral">&quot;Expected: $ imaging_table &lt;run-folder1&gt; &lt;run-folder2&gt; ... &lt;run-folderN&gt;&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line">            <span class="keywordflow">return</span> ret;</div>
+<div class="line">        }</div>
 <div class="line"></div>
 <div class="line"><span class="preprocessor">#ifdef INTEROP_TEST_CSHARP_BINDING</span></div>
 <div class="line">        std::vector&lt;model::table::imaging_column&gt; columns;</div>

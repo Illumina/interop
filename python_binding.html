@@ -35,7 +35,7 @@
  <div class="container">
   <div class="navbar-header">
    <a class="navbar-brand" href="https://www.illumina.com/"><img style='margin-top: -8px !important;height: 40px !important;' src='ILLUMINA_LOGO_RGB_new_200_45.png' /></a>
-   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.3.1</span>  </a>
+   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.3.2</span>  </a>
   </div>
   <div class="collapse navbar-collapse">
    <!-- Left -->
@@ -76,13 +76,27 @@
 </pre><p>Older versions (prior to 1.1.3) can be installed using:</p>
 <pre class="fragment">$ pip install -f https://github.com/Illumina/interop/releases/tag/v1.1.2 interop
 $ pip install -f https://github.com/Illumina/interop/releases/latest interop
-</pre><p>Note, only Python versions 3.6 to 3.11 are currently supported as binary builds. Other Python versions must be built from source.</p>
+</pre><p>Note, only Python versions 3.8 to 3.12 are currently supported as binary builds. Other Python versions must be built from source.</p>
 <p>You can then test the install as follows: </p><pre class="fragment">$ python -m interop --test
 </pre><p>If you see this error: </p><pre class="fragment">RuntimeError: module compiled against API version 0xb but this version of numpy is 0xa
 </pre><p>Then upgrade numpy and try again.</p>
 <h2>New simplified interface</h2>
-<pre class="fragment">  from interop import *
+<p>The following will return a structured numpy array </p><pre class="fragment">  from interop.core import *
   ar = imaging("path/to/run_folder")
+</pre><p>This can be converted to pandas as follows </p><pre class="fragment">  import interop.core as ic
+
+  df = pd.DataFrame(ic.imaging(run_folder))
+  change_data_type = {
+  'Lane'             : int,
+  'Tile'             : int,
+  'Tile Number'      : int,
+  'Read'             : int,
+  'Cycle'            : int,
+  'Cycle Within Read': int,
+  'Swath'            : int,
+  'Surface'          : int
+  }
+  df = df.astype(change_data_type)
 </pre><p>See new <a href="namespacecore.html">interop.core</a> wrapper for the simplified interface</p>
 <h2>Tips &amp; Tricks</h2>
 <ol type="1">
