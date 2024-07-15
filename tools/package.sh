@@ -254,14 +254,12 @@ elif [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PY
             # pip install wheel=0.30.0
         fi
         pip install swig==4.0.2 --prefix="$(pwd)/usr"
-        # ./usr/lib/python3.9/site-packages/swig/data/share/swig/4.0.2/
         swig_bin=$(ls $(pwd)/usr/lib/python3.*/site-packages/swig/data/bin/swig)
         swig_path=$(dirname $swig_bin)
         swig_dir=$(dirname $swig_path)/share/swig/4.0.2/
-       ${swig_bin} -version
+        ${swig_bin} -version
         echo "${swig_bin}"
         echo "${swig_dir}"
-        ls ${swig_dir}
         run "Configure $py_ver" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS} -DENABLE_CSHARP=OFF -DENABLE_PYTHON_DYNAMIC_LOAD=ON -DPython_EXECUTABLE=`which python` -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp -DSWIG_EXECUTABLE=${swig_bin} -DSWIG_DIR=${swig_dir}
         run "Build $py_ver" cmake --build $BUILD_PATH -- -j${THREAD_COUNT}
         run "Test $py_ver" cmake --build $BUILD_PATH --target check_python -- -j${THREAD_COUNT}
@@ -296,7 +294,11 @@ if [ "$PYTHON_VERSION" == "DotNetStandard" ] || [ "$PYTHON_VERSION" == "" ] ; th
   # Workaround for OSX
   export PATH=/usr/local/share/dotnet:${PATH}
   if hash dotnet 2> /dev/null; then
-      run "Configure DotNetStandard" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS} -DCSBUILD_TOOL=DotNetStandard -DENABLE_PYTHON=OFF
+      pip install swig==4.0.2 --prefix="$(pwd)/usr"
+      swig_bin=$(ls $(pwd)/usr/lib/python3.*/site-packages/swig/data/bin/swig)
+      swig_path=$(dirname $swig_bin)
+      swig_dir=$(dirname $swig_path)/share/swig/4.0.2/
+      run "Configure DotNetStandard" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS} -DCSBUILD_TOOL=DotNetStandard -DENABLE_PYTHON=OFF  -DSWIG_EXECUTABLE=${swig_bin} -DSWIG_DIR=${swig_dir}
       run "Test DotNetStandard" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
       run "Package DotNetStandard" cmake --build $BUILD_PATH --target nupack -- -j${THREAD_COUNT}
   fi
