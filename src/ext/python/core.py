@@ -266,12 +266,11 @@ def summary(run_metrics, level='Total', columns=None, dtype='f4', ignore_missing
 
     If a column values are NaN, or missing, then it will automatically be excluded
     >>> summary(run_metrics_example, 'Total', columns=['% Aligned', 'Error Rate'])
-     array([(0.37,)], dtype=[('Error Rate', '<f4')])
+    array([(0.37,)], dtype=[('Error Rate', '<f4')])
 
     To include missing columns, set `ignore_missing_columns=False`
     >>> summary(run_metrics_example, 'Total', ignore_missing_columns=False, columns=['% Aligned', 'Error Rate'])
-    array([(nan, 0.37)],
-          dtype=[('% Aligned', '<f4'), ('Error Rate', '<f4')])
+    array([(nan, 0.37)], dtype=[('% Aligned', '<f4'), ('Error Rate', '<f4')])
 
     >>> summary(run_metrics_example, 'Total', columns=['Incorrect'])
     Traceback (most recent call last):
