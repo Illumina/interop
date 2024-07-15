@@ -253,12 +253,11 @@ elif [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PY
             python -c "import wheel"
             # pip install wheel=0.30.0
         fi
-        pip install swig --prefix ./usr
+        pip install swig==4.0.2 --prefix=$(pwd)/usr
         swig_bin=$(ls ./usr/lib/python3.*/site-packages/swig/data/bin/swig)
-        #swig_path=$(dirname $swig_bin)
-        #swig_dir=$(dirname $swig_path)
-        #export SWIG_DIR=${swig_dir}
-        run "Configure $py_ver" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS} -DENABLE_CSHARP=OFF -DENABLE_PYTHON_DYNAMIC_LOAD=ON -DPython_EXECUTABLE=`which python` -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp -DSWIG_EXECUTABLE=${swig_bin}
+        swig_path=$(dirname $swig_bin)
+        swig_dir=$(dirname $swig_path)/share/swig/4.0.2/
+        run "Configure $py_ver" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS} -DENABLE_CSHARP=OFF -DENABLE_PYTHON_DYNAMIC_LOAD=ON -DPython_EXECUTABLE=`which python` -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp -DSWIG_EXECUTABLE=${swig_bin} -DSWIG_DIR=${swig_dir}
         run "Build $py_ver" cmake --build $BUILD_PATH -- -j${THREAD_COUNT}
         run "Test $py_ver" cmake --build $BUILD_PATH --target check_python -- -j${THREAD_COUNT}
         run "Build Wheel $py_ver" cmake --build $BUILD_PATH --target package_wheel -- -j${THREAD_COUNT}
