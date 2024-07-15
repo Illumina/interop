@@ -152,7 +152,7 @@ class CoreTests(unittest.TestCase):
             ,7,0,90,4,1,0,-12,-56,15,64,-98,35,12,64,0,0,0,0,0,0,0,0,46,1,17,1,0,0,0,0,96,-41,-104,36,122,-86,-46,-120
             ,7,0,-66,4,1,0,96,-43,14,64,-63,49,13,64,0,0,0,0,0,0,0,0,56,1,17,1,0,0,0,0,112,125,77,38,122,-86,-46,-120
             ,7,0,66,8,1,0,74,-68,6,64,-118,-7,8,64,0,0,0,0,0,0,0,0,93,1,46,1,0,0,0,0,-47,-104,2,40,122,-86,-46,-120],
-            dtype=numpy.uint8)
+            dtype=numpy.uint8, casting='unsafe')
         run = py_interop_run_metrics.run_metrics()
         try:
             py_interop_comm.read_interop_from_buffer(tmp, run.extraction_metric_set())
@@ -170,7 +170,7 @@ class CoreTests(unittest.TestCase):
                 ,7,0,90,4,1,0,-12,-56,15,64,-98,35,12,64,0,0,0,0,0,0,0,0,46,1,17,1,0,0,0,0,96,-41,-104,36,122,-86,-46,-120
                 ,7,0,-66,4,1,0,96,-43,14,64,-63,49,13,64,0,0,0,0,0,0,0,0,56,1,17,1,0,0,0,0,112,125,77,38,122,-86,-46,-120
                 ,7,0,66,8,1,0,74,-68,6,64,-118,-7,8,64,0,0,0,0,0,0,0,0,93,1,46,1,0,0,0,0,-47,-104,2,40,122,-86,-46,-120],
-            dtype=numpy.uint8)
+            dtype=numpy.uint8, casting='unsafe')
         run = py_interop_run_metrics.run_metrics()
         try:
             py_interop_comm.read_interop_from_buffer(tmp, run.extraction_metric_set())
@@ -188,7 +188,7 @@ class CoreTests(unittest.TestCase):
                 ,7,0,90,4,1,0,-12,-56,15,64,-98,35,12,64,0,0,0,0,0,0,0,0,46,1,17,1,0,0,0,0,96,-41,-104,36,122,-86,-46,-120
                 ,7,0,-66,4,1,0,96,-43,14,64,-63,49,13,64,0,0,0,0,0,0,0,0,56,1,17,1,0,0,0,0,112,125,77,38,122,-86,-46,-120
                 ,7,0,66,8,1,0,74,-68,6,64,-118,-7,8,64,0,0,0,0,0,0,0,0,93,1,46,1,0,0,0,0,-47,-104,2,40,122,-86,-46,-120],
-                dtype=numpy.uint8)
+                dtype=numpy.uint8, casting='unsafe')
         run = py_interop_run_metrics.run_metrics()
         py_interop_comm.read_interop_from_buffer(tmp, run.extraction_metric_set())
         try:
@@ -208,7 +208,7 @@ class CoreTests(unittest.TestCase):
                 ,7,0,90,4,1,0,-12,-56,15,64,-98,35,12,64,0,0,0,0,0,0,0,0,46,1,17,1,0,0,0,0,96,-41,-104,36,122,-86,-46,-120
                 ,7,0,-66,4,1,0,96,-43,14,64,-63,49,13,64,0,0,0,0,0,0,0,0,56,1,17,1,0,0,0,0,112,125,77,38,122,-86,-46,-120
                 ,7,0,66,8,1,0,74,-68,6,64,-118,-7,8,64,0,0,0,0,0,0,0,0,93,1,46,1,0,0,0,0,-47,-104,2,40,122,-86,-46,-120],
-            dtype=numpy.uint8)
+            dtype=numpy.uint8, casting='unsafe')
         run = py_interop_run_metrics.run_metrics()
         run.read_metrics_from_buffer(py_interop_run.Extraction, tmp)
         try:
@@ -355,7 +355,7 @@ class CoreTests(unittest.TestCase):
             ,7,0,90,4,1,0,-12,-56,15,64,-98,35,12,64,0,0,0,0,0,0,0,0,46,1,17,1,0,0,0,0,96,-41,-104,36,122,-86,-46,-120
             ,7,0,-66,4,1,0,96,-43,14,64,-63,49,13,64,0,0,0,0,0,0,0,0,56,1,17,1,0,0,0,0,112,125,77,38,122,-86,-46,-120
             ,7,0,66,8,1,0,74,-68,6,64,-118,-7,8,64,0,0,0,0,0,0,0,0,93,1,46,1,0,0,0,0,-47,-104,2,40,122,-86,-46,-120],
-                            dtype=numpy.uint8)
+                            dtype=numpy.uint8, casting='unsafe')
         run = py_interop_run_metrics.run_metrics()
         py_interop_comm.read_interop_from_buffer(tmp, run.extraction_metric_set())
         self.assertEqual(run.extraction_metric_set().size(), 3)
