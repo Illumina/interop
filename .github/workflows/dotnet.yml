@@ -37,7 +37,7 @@ jobs:
 
       - name: Configure OSX
         if: matrix.os == 'macOS-13'
-        run: cmake ${{github.workspace}} -B${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.buildtype}} -DPACKAGE_OUTPUT_FILE_PREFIX=${{github.workspace}}/dist -DENABLE_SWIG=ON -DENABLE_PORTABLE=ON -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=ON -DENABLE_PYTHON=OFF -DCSHARP_TEST_FRAMEWORK=netcoreapp6 -DSWIG_EXECUTABLE=$(ls $(pwd)/usr/lib/python3.*/site-packages/swig/data/bin/swig) -DSWIG_DIR=$(ls $(pwd)/usr/lib/python3.*/site-packages/swig/data/bin/swig)/../../share/swig/4.0.2/
+        run: cmake ${{github.workspace}} -B${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.buildtype}} -DPACKAGE_OUTPUT_FILE_PREFIX=${{github.workspace}}/dist -DENABLE_SWIG=ON -DENABLE_PORTABLE=ON -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=ON -DENABLE_PYTHON=OFF -DCSHARP_TEST_FRAMEWORK=netcoreapp6 -DSWIG_EXECUTABLE=$(ls $(pwd)/usr/lib/python3.*/site-packages/swig/data/bin/swig) -DSWIG_DIR=$( cd "$(pwd)/usr/lib/python3.*/site-packages/swig/data/share/swig/4.0.2" ; pwd -P )
 
       - name: Build OSX and Windows
         if: matrix.os != 'ubuntu-latest'
