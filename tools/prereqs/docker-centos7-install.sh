@@ -39,19 +39,22 @@ SWIG_HOME=${PROG_HOME}/swig4
 JUNIT_HOME=${PROG_HOME}/junit
 NUNIT_HOME=${PROG_HOME}/nunit
 
+sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+yum install -y wget libicu
 #yum -y update
-yum install -y wget which libunwind lttng-ust libcurl openssl-libs libuuid krb5-libs libicu zlib
-yum install -y gcc gcc-c++ libtool git make rpm-build
-yum install -y python-devel
+#yum install -y wget which libunwind lttng-ust libcurl openssl-libs libuuid krb5-libs libicu zlib
+#yum install -y gcc gcc-c++ libtool git make rpm-build
+#yum install -y python-devel
 
 mkdir /opt/dotnet
 wget --no-check-certificate --quiet -O - ${DOTNET_URL} | tar --strip-components=1 -xz -C /opt/dotnet
 
-if hash cmake  2> /dev/null; then
-    wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C /opt/_internal/tools
-else
-    wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C /usr
-fi
+#if hash cmake  2> /dev/null; then
+#    wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C /opt/_internal/tools
+#else
+#    wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C /usr
+#fi
 
 if hash mono  2> /dev/null; then
     echo "Found mono"
@@ -137,10 +140,11 @@ wget --no-check-certificate --quiet ${NUGET_URL} -O /usr/lib/nuget.exe
 echo "mono /usr/lib/nuget.exe \$@" > /usr/bin/nuget
 chmod +x /usr/bin/nuget
 
-    for PYBUILD in `ls -1 /opt/python`; do
-        "/opt/python/${PYBUILD}/bin/pip" install numpy pandas
-    done
-
+/opt/python/cp38-cp38/bin/python -m pip install numpy==1.17.3 pandas
+/opt/python/cp39-cp39/bin/python -m pip install numpy==2.0.0 pandas
+/opt/python/cp310-cp310/bin/python -m pip install numpy==2.0.0 pandas
+/opt/python/cp311-cp311/bin/python -m pip install numpy==2.0.0 pandas
+/opt/python/cp312-cp312/bin/python -m pip install numpy==2.0.0 pandas
 
 export JAVA_HOME=/usr/java/jdk1.8.0_131
 export PATH=${PATH}:/opt/dotnet

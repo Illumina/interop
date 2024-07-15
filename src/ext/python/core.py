@@ -15,20 +15,20 @@ The core routines include the following:
 
 >>> from interop import index_summary
 >>> index_summary(run_metrics_with_indexing)
-array([(1, 0.4556, 1015.5555, 520.6667, 1536.2222, 1800., 2000.)],
+array([(1, 0.46, 1015.56, 520.67, 1536.22, 1800., 2000.)],
       dtype=[('Lane', '<u2'), ('Mapped Reads Cv', '<f4'), ('Max Mapped Reads', '<f4'), ('Min Mapped Reads', '<f4'), ('Total Fraction Mapped Reads', '<f4'), ('Total Pf Reads', '<f4'), ('Total Reads', '<f4')])
 
 >>> from interop import summary
 >>> summary(run_metrics_example)
-array([(0.36666667, 6.6666665, 0., 0., 0.)],
+array([(0.37, 6.67, 0., 0., 0.)],
       dtype=[('Error Rate', '<f4'), ('First Cycle Intensity', '<f4'), ('Projected Yield G', '<f4'), ('Reads', '<f4'), ('Reads Pf', '<f4')])
 
 >>> from interop import indexing
 >>> indexing(run_metrics_with_indexing)
-array([(1., 1101., 'ATCACGAC-AAGGTTCA', '1', 4570., 900., 507.77777),
-       (1., 1101., 'ATCACGAC-GGGGGGGG', '2', 2343., 900., 260.33334),
-       (1., 1102., 'ATCACGAC-AAGGTTCA', '1', 4570.,   0.,   0.     ),
-       (1., 1102., 'ATCACGAC-GGGGGGGG', '2', 2343.,   0.,   0.     )],
+array([(1., 1101., 'ATCACGAC-AAGGTTCA', '1', 4570., 900., 507.78),
+       (1., 1101., 'ATCACGAC-GGGGGGGG', '2', 2343., 900., 260.33),
+       (1., 1102., 'ATCACGAC-AAGGTTCA', '1', 4570.,   0.,   0.  ),
+       (1., 1102., 'ATCACGAC-GGGGGGGG', '2', 2343.,   0.,   0.  )],
       dtype=[('Lane', '<f4'), ('Tile', '<f4'), ('Barcode', 'O'), ('SampleID', 'O'), ('Cluster Count', '<f4'), ('Cluster Count PF', '<f4'), ('% Demux', '<f4')])
 
 >>> from interop import imaging
@@ -71,16 +71,16 @@ def index_summary(run_metrics, level='Lane', columns=None, dtype='f4', **extra):
     >>> ar = index_summary("some/path/run_folder_name") # doctest: +SKIP
 
     >>> index_summary(run_metrics_with_indexing)
-    array([(1, 0.4556, 1015.5555, 520.6667, 1536.2222, 1800., 2000.)],
+    array([(1, 0.46, 1015.56, 520.67, 1536.22, 1800., 2000.)],
           dtype=[('Lane', '<u2'), ('Mapped Reads Cv', '<f4'), ('Max Mapped Reads', '<f4'), ('Min Mapped Reads', '<f4'), ('Total Fraction Mapped Reads', '<f4'), ('Total Pf Reads', '<f4'), ('Total Reads', '<f4')])
 
     >>> index_summary(run_metrics_with_indexing, level='Barcode')
-    array([(1, 18280., 1015.5555, 1., 'ATCACGAC', 'AAGGTTCA', 'TSCAIndexes', '1'),
-           (1,  9372.,  520.6667, 2., 'ATCACGAC', 'GGGGGGGG', 'TSCAIndexes', '2')],
+    array([(1, 18280., 1015.56, 1., 'ATCACGAC', 'AAGGTTCA', 'TSCAIndexes', '1'),
+           (1,  9372.,  520.67, 2., 'ATCACGAC', 'GGGGGGGG', 'TSCAIndexes', '2')],
           dtype=[('Lane', '<u2'), ('Cluster Count', '<f4'), ('Fraction Mapped', '<f4'), ('Id', '<f4'), ('Index1', 'O'), ('Index2', 'O'), ('Project Name', 'O'), ('Sample Id', 'O')])
 
     >>> index_summary(run_metrics_with_indexing, columns=['Total Fraction Mapped Reads'])
-    array([(1, 1536.2222)],
+    array([(1, 1536.22)],
           dtype=[('Lane', '<u2'), ('Total Fraction Mapped Reads', '<f4')])
 
     >>> index_summary(run_metrics_with_indexing, columns=['Incorrect'])
@@ -233,11 +233,11 @@ def summary(run_metrics, level='Total', columns=None, dtype='f4', ignore_missing
 
 
     >>> summary(run_metrics_example)
-    array([(0.36666667, 6.6666665, 0., 0., 0.)],
+    array([(0.37, 6.67, 0., 0., 0.)],
           dtype=[('Error Rate', '<f4'), ('First Cycle Intensity', '<f4'), ('Projected Yield G', '<f4'), ('Reads', '<f4'), ('Reads Pf', '<f4')])
 
     >>> summary(run_metrics_example, 'Total')
-    array([(0.36666667, 6.6666665, 0., 0., 0.)],
+    array([(0.37, 6.67, 0., 0., 0.)],
           dtype=[('Error Rate', '<f4'), ('First Cycle Intensity', '<f4'), ('Projected Yield G', '<f4'), ('Reads', '<f4'), ('Reads Pf', '<f4')])
 
     >>> summary(run_metrics_example, 'NonIndex')
@@ -261,17 +261,16 @@ def summary(run_metrics, level='Total', columns=None, dtype='f4', ignore_missing
 
     We can select specific columns using the `columns` parameter
     >>> summary(run_metrics_example, 'Total', columns=['First Cycle Intensity', 'Error Rate'])
-    array([(6.6666665, 0.36666667)],
+    array([(6.67, 0.37)],
           dtype=[('First Cycle Intensity', '<f4'), ('Error Rate', '<f4')])
 
     If a column values are NaN, or missing, then it will automatically be excluded
     >>> summary(run_metrics_example, 'Total', columns=['% Aligned', 'Error Rate'])
-    array([(0.36666667,)], dtype=[('Error Rate', '<f4')])
+    array([(0.37,)], dtype=[('Error Rate', '<f4')])
 
     To include missing columns, set `ignore_missing_columns=False`
     >>> summary(run_metrics_example, 'Total', ignore_missing_columns=False, columns=['% Aligned', 'Error Rate'])
-    array([(nan, 0.36666667)],
-          dtype=[('% Aligned', '<f4'), ('Error Rate', '<f4')])
+    array([(nan, 0.37)], dtype=[('% Aligned', '<f4'), ('Error Rate', '<f4')])
 
     >>> summary(run_metrics_example, 'Total', columns=['Incorrect'])
     Traceback (most recent call last):
@@ -513,18 +512,17 @@ def indexing(run_metrics, per_sample=True, dtype='f4', stype='O', **extra):
     We can also convert a `run_metrics` object to an indexing table as follows
     >>> ar = indexing(run_metrics_with_indexing)
     >>> ar
-    array([(1., 1101., 'ATCACGAC-AAGGTTCA', '1', 4570., 900., 507.77777),
-           (1., 1101., 'ATCACGAC-GGGGGGGG', '2', 2343., 900., 260.33334),
-           (1., 1102., 'ATCACGAC-AAGGTTCA', '1', 4570.,   0.,   0.     ),
-           (1., 1102., 'ATCACGAC-GGGGGGGG', '2', 2343.,   0.,   0.     )],
+    array([(1., 1101., 'ATCACGAC-AAGGTTCA', '1', 4570., 900., 507.78),
+           (1., 1101., 'ATCACGAC-GGGGGGGG', '2', 2343., 900., 260.33),
+           (1., 1102., 'ATCACGAC-AAGGTTCA', '1', 4570.,   0.,   0.  ),
+           (1., 1102., 'ATCACGAC-GGGGGGGG', '2', 2343.,   0.,   0.  )],
           dtype=[('Lane', '<f4'), ('Tile', '<f4'), ('Barcode', 'O'), ('SampleID', 'O'), ('Cluster Count', '<f4'), ('Cluster Count PF', '<f4'), ('% Demux', '<f4')])
 
     The `indexing` function also provides an overall sample view by setting `per_sample=False`.
 
     >>> ar = indexing(run_metrics_with_indexing, per_sample=False)
     >>> ar
-    array([(1., 1101., 1000., 900., 768.11115),
-           (1., 1102.,    0.,   0.,   0.     )],
+    array([(1., 1101., 1000., 900., 768.11), (1., 1102.,    0.,   0.,   0.  )],
           dtype=[('Lane', '<f4'), ('Tile', '<f4'), ('Cluster Count', '<f4'), ('Cluster Count PF', '<f4'), ('% Demux', '<f4')])
 
     :param run_metrics: py_interop_run_metrics.run_metrics or string run folder path
@@ -1159,6 +1157,7 @@ def _run_doctests():
     import interop.core
     import doctest
     import sys
+    np.set_printoptions(precision=2)
     failure_count, test_count = doctest.testmod(interop.core
                                                 , optionflags=doctest.IGNORE_EXCEPTION_DETAIL
                                                 , globs=dict(

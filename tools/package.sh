@@ -167,10 +167,17 @@ if [  -e /opt/python ] ; then
           rm -fr ${ARTIFACT_PATH}/tmp
       done
     else
-        echo "Build with specific Python Version: ${PYTHON_VERSION}"
+        /opt/python/cp38-cp38/bin/python -m pip install numpy==1.17.3 pandas
+        /opt/python/cp39-cp39/bin/python -m pip install numpy==2.0.0 pandas
+        /opt/python/cp310-cp310/bin/python -m pip install numpy==2.0.0 pandas
+        /opt/python/cp311-cp311/bin/python -m pip install numpy==2.0.0 pandas
+        /opt/python/cp312-cp312/bin/python -m pip install numpy==2.0.0 pandas
+        /opt/python/cp310-cp310/bin/python -m pip install swig==4.0.2 --prefix=/tmp/usr
+
+          echo "Build with specific Python Version: ${PYTHON_VERSION}"
           PYTHON_BIN=/opt/python/${PYTHON_VERSION}/bin
           rm -fr ${BUILD_PATH}/src/ext/python/*
-          run "Configure ${PYTHON_VERSION}" cmake $SOURCE_PATH -B${BUILD_PATH} -DPython_EXECUTABLE=${PYTHON_BIN}/python ${CMAKE_EXTRA_FLAGS} -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp -DENABLE_CSHARP=OFF
+          run "Configure ${PYTHON_VERSION}" cmake $SOURCE_PATH -B${BUILD_PATH} -DPython_EXECUTABLE=${PYTHON_BIN}/python ${CMAKE_EXTRA_FLAGS} -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp -DENABLE_CSHARP=OFF -DSWIG_EXECUTABLE=/tmp/usr/lib/python3.10/site-packages/swig/data/bin/swig  -DSWIG_DIR=/tmp/usr/lib/python3.10/site-packages/swig/data/share/swig/4.0.2/
 
           run "Test ${PYTHON_VERSION}" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
           run "Build ${PYTHON_VERSION}" cmake --build $BUILD_PATH --target package_wheel -- -j${THREAD_COUNT}
@@ -198,7 +205,9 @@ elif [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PY
       echo "Found Miniconda"
     fi
 
-    conda init --all
+    if hash conda 2> /dev/null; then
+      conda init --all
+    fi
     source ~/.bash_profile
     for py_ver in $python_versions ; do
         echo "Building Python $py_ver - $CFLAGS"
@@ -223,27 +232,19 @@ elif [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PY
           conda install wheel -y --name py${python_version}
           conda install pandas -y --name py${python_version}
 
-        elif hash pyenv 2> /dev/null; then
-            export PATH=$(pyenv root)/shims:${PATH}
+        else
             if [[ "$OSTYPE" == "linux-gnu" ]]; then
                 if hash patchelf 2> /dev/null; then
-                    pyenv install 3.5 -s  || true
-                    pyenv global 3.5 || true
-                    pip3 install auditwheel==1.5
+                    python -m pip install auditwheel==1.5
                 fi
-            fi
-            pyenv install $py_ver -s
-            pyenv global $py_ver
-            if [[ "$OSTYPE" == "darwin"* ]]; then
-                pip install setuptools==43.0.0
-                pip install delocate
-                # pip install delocate=0.7.3
             fi
             which python
             which pip
+            pip install delocate || true
             python --version
             pip install numpy
             pip install wheel
+            pip install setuptools
             echo "Check setuptools"
             python -c "import setuptools"
             echo "Check numpy"
@@ -252,7 +253,14 @@ elif [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PY
             python -c "import wheel"
             # pip install wheel=0.30.0
         fi
-        run "Configure $py_ver" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS} -DENABLE_CSHARP=OFF -DENABLE_PYTHON_DYNAMIC_LOAD=ON -DPython_EXECUTABLE=`which python` -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp
+        pip install swig==4.0.2 --prefix="$(pwd)/usr"
+        swig_bin=$(ls $(pwd)/usr/lib/python3.*/site-packages/swig/data/bin/swig)
+        swig_path=$(dirname $swig_bin)
+        swig_dir=$(dirname $swig_path)/share/swig/4.0.2/
+        ${swig_bin} -version
+        echo "${swig_bin}"
+        echo "${swig_dir}"
+        run "Configure $py_ver" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS} -DENABLE_CSHARP=OFF -DENABLE_PYTHON_DYNAMIC_LOAD=ON -DPython_EXECUTABLE=`which python` -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp -DSWIG_EXECUTABLE=${swig_bin} -DSWIG_DIR=${swig_dir}
         run "Build $py_ver" cmake --build $BUILD_PATH -- -j${THREAD_COUNT}
         run "Test $py_ver" cmake --build $BUILD_PATH --target check_python -- -j${THREAD_COUNT}
         run "Build Wheel $py_ver" cmake --build $BUILD_PATH --target package_wheel -- -j${THREAD_COUNT}
@@ -286,7 +294,11 @@ if [ "$PYTHON_VERSION" == "DotNetStandard" ] || [ "$PYTHON_VERSION" == "" ] ; th
   # Workaround for OSX
   export PATH=/usr/local/share/dotnet:${PATH}
   if hash dotnet 2> /dev/null; then
-      run "Configure DotNetStandard" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS} -DCSBUILD_TOOL=DotNetStandard -DENABLE_PYTHON=OFF
+      pip install swig==4.0.2 --prefix="$(pwd)/usr"
+      swig_bin=$(ls $(pwd)/usr/lib/python3.*/site-packages/swig/data/bin/swig)
+      swig_path=$(dirname $swig_bin)
+      swig_dir=$(dirname $swig_path)/share/swig/4.0.2/
+      run "Configure DotNetStandard" cmake $SOURCE_PATH -B${BUILD_PATH} ${CMAKE_EXTRA_FLAGS} -DCSBUILD_TOOL=DotNetStandard -DENABLE_PYTHON=OFF  -DSWIG_EXECUTABLE=${swig_bin} -DSWIG_DIR=${swig_dir}
       run "Test DotNetStandard" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
       run "Package DotNetStandard" cmake --build $BUILD_PATH --target nupack -- -j${THREAD_COUNT}
   fi

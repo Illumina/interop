@@ -16,7 +16,7 @@ Older versions (prior to 1.1.3) can be installed using:
     $ pip install -f https://github.com/Illumina/interop/releases/tag/v1.1.2 interop
     $ pip install -f https://github.com/Illumina/interop/releases/latest interop
 
-Note, only Python versions 3.6 to 3.11 are currently 
+Note, only Python versions 3.8 to 3.12 are currently 
 supported as binary builds. Other Python versions must be built 
 from source.
 
@@ -32,8 +32,27 @@ Then upgrade numpy and try again.
 
 ## New simplified interface
 
-      from interop import *
+The following will return a structured numpy array
+
+      from interop.core import *
       ar = imaging("path/to/run_folder")
+
+This can be converted to pandas as follows
+
+      import interop.core as ic
+
+      df = pd.DataFrame(ic.imaging(run_folder))
+      change_data_type = {
+      'Lane'             : int,
+      'Tile'             : int,
+      'Tile Number'      : int,
+      'Read'             : int,
+      'Cycle'            : int,
+      'Cycle Within Read': int,
+      'Swath'            : int,
+      'Surface'          : int
+      }
+      df = df.astype(change_data_type)
 
 See new [interop.core](namespacecore.html) wrapper for the simplified interface
 

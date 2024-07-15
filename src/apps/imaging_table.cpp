@@ -36,6 +36,7 @@ int main(int argc, char** argv)
     if (argc == 0)
     {
         std::cerr << "No arguments specified!" << std::endl;
+        std::cout << "Expected: $ imaging_table <run-folder1> <run-folder2> ... <run-folderN>" << std::endl;
         return INVALID_ARGUMENTS;
     }
     const size_t thread_count = 1;
@@ -51,7 +52,11 @@ int main(int argc, char** argv)
         run_metrics run;
         std::cout << "# Run Folder: " << io::basename(argv[i]) << std::endl;
         int ret = read_run_metrics(argv[i], run, valid_to_load, thread_count);
-        if (ret != SUCCESS) return ret;
+        if (ret != SUCCESS)
+        {
+            std::cout << "Expected: $ imaging_table <run-folder1> <run-folder2> ... <run-folderN>" << std::endl;
+            return ret;
+        }
 
 #ifdef INTEROP_TEST_CSHARP_BINDING
         std::vector<model::table::imaging_column> columns;
