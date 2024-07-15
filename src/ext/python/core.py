@@ -1159,6 +1159,7 @@ def _run_doctests():
     import interop.core
     import doctest
     import sys
+    np.set_printoptions(precision=2)
     failure_count, test_count = doctest.testmod(interop.core
                                                 , optionflags=doctest.IGNORE_EXCEPTION_DETAIL
                                                 , globs=dict(
