@@ -25,10 +25,10 @@ array([(0.37, 6.67, 0., 0., 0.)],
 
 >>> from interop import indexing
 >>> indexing(run_metrics_with_indexing)
-array([(1., 1101., 'ATCACGAC-AAGGTTCA', '1', 4570., 900., 507.77777),
-       (1., 1101., 'ATCACGAC-GGGGGGGG', '2', 2343., 900., 260.33334),
-       (1., 1102., 'ATCACGAC-AAGGTTCA', '1', 4570.,   0.,   0.     ),
-       (1., 1102., 'ATCACGAC-GGGGGGGG', '2', 2343.,   0.,   0.     )],
+array([(1., 1101., 'ATCACGAC-AAGGTTCA', '1', 4570., 900., 507.78),
+       (1., 1101., 'ATCACGAC-GGGGGGGG', '2', 2343., 900., 260.33),
+       (1., 1102., 'ATCACGAC-AAGGTTCA', '1', 4570.,   0.,   0.  ),
+       (1., 1102., 'ATCACGAC-GGGGGGGG', '2', 2343.,   0.,   0.  )],
       dtype=[('Lane', '<f4'), ('Tile', '<f4'), ('Barcode', 'O'), ('SampleID', 'O'), ('Cluster Count', '<f4'), ('Cluster Count PF', '<f4'), ('% Demux', '<f4')])
 
 >>> from interop import imaging
