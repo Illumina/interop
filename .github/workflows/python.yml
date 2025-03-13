@@ -85,6 +85,8 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           path: dist
+      - name: Print dist
+        run: ls -lR dist
       - name: Test Publish a Python distribution to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
