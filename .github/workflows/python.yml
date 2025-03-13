@@ -84,7 +84,6 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: artifact_${{matrix.pyver}}_${{matrix.os}}
           path: dist
       - name: Test Publish a Python distribution to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
@@ -103,7 +102,6 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: artifact_${{matrix.pyver}}_${{matrix.os}}
           path: dist
       - name: Publish a Python distribution to PyPI
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
