@@ -1,5 +1,11 @@
 # Changes {#changes}
 
+## v1.4.0
+
+| Date       | Description                    |
+|------------|--------------------------------|
+| 2025-03-13 | Issue-356: Support Python 3.13 |
+
 ## v1.3.2
 
 | Date       | Description                                           |

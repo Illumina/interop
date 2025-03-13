@@ -29,7 +29,7 @@ jobs:
 
       - name: Configure Windows
         if: matrix.os == 'windows-latest'
-        run: cmake ${{github.workspace}} -Ax64 -B${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.buildtype}} -DPACKAGE_OUTPUT_FILE_PREFIX=${{github.workspace}}/dist -DENABLE_SWIG=ON -DENABLE_PORTABLE=ON -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=ON -DENABLE_PYTHON=OFF -DCSHARP_TEST_FRAMEWORK=netcoreapp6
+        run: cmake ${{github.workspace}} -Ax64 -B${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.buildtype}} -DPACKAGE_OUTPUT_FILE_PREFIX=${{github.workspace}}/dist -DENABLE_SWIG=ON -DENABLE_PORTABLE=ON -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=ON -DENABLE_PYTHON=OFF -DCSHARP_TEST_FRAMEWORK=netcoreapp8
 
       - name: Install Swig
         if: matrix.os == 'macOS-13'
@@ -37,7 +37,7 @@ jobs:
 
       - name: Configure OSX
         if: matrix.os == 'macOS-13'
-        run: cmake ${{github.workspace}} -B${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.buildtype}} -DPACKAGE_OUTPUT_FILE_PREFIX=${{github.workspace}}/dist -DENABLE_SWIG=ON -DENABLE_PORTABLE=ON -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=ON -DENABLE_PYTHON=OFF -DCSHARP_TEST_FRAMEWORK=netcoreapp7 -DSWIG_EXECUTABLE=$(ls $(pwd)/usr/lib/python3.*/site-packages/swig/data/bin/swig) -DSWIG_DIR=$(dirname $(ls $(pwd)/usr/lib/python3.*/site-packages/swig/data/share/swig/4.0.2/swig.swg))
+        run: cmake ${{github.workspace}} -B${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.buildtype}} -DPACKAGE_OUTPUT_FILE_PREFIX=${{github.workspace}}/dist -DENABLE_SWIG=ON -DENABLE_PORTABLE=ON -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=ON -DENABLE_PYTHON=OFF -DCSHARP_TEST_FRAMEWORK=netcoreapp8 -DSWIG_EXECUTABLE=$(ls $(pwd)/usr/lib/python3.*/site-packages/swig/data/bin/swig) -DSWIG_DIR=$(dirname $(ls $(pwd)/usr/lib/python3.*/site-packages/swig/data/share/swig/4.0.2/swig.swg))
 
       - name: Build OSX and Windows
         if: matrix.os != 'ubuntu-latest'
@@ -58,9 +58,10 @@ jobs:
       - name: Test Artifacts
         run: ls dist/*
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: matrix.buildtype == 'Release'
         with:
+          name: artifact_${{matrix.os}}
           path: dist/illumina*.*
 
   publish:
@@ -69,10 +70,10 @@ jobs:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
 
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
-          name: artifact
           path: dist
+          merge-multiple: true
       - name: Publish Artifacts to Github Releases
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
         uses: fnkr/github-action-ghr@v1

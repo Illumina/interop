@@ -17,7 +17,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-2019, macOS-13]
-        pyver: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        pyver: ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13']
 
     steps:
       - uses: actions/checkout@v3
@@ -37,7 +37,7 @@ jobs:
           git --version
 
       - name: Package Python 3.8 and earlier
-        if: matrix.os == 'ubuntu-latest' && matrix.pyver != '3.9' && matrix.pyver != '3.10' && matrix.pyver != '3.11' && matrix.pyver != '3.12'
+        if: matrix.os == 'ubuntu-latest' && matrix.pyver != '3.9' && matrix.pyver != '3.10' && matrix.pyver != '3.11' && matrix.pyver != '3.12' && matrix.pyver != '3.13'
         run: docker run --rm -v ${{github.workspace}}/:/io ezralanglois/interop sh /io/tools/package.sh /io /io/dist travis OFF
 
       - name: Package Python 3.9
@@ -52,9 +52,13 @@ jobs:
         if: matrix.os == 'ubuntu-latest' && matrix.pyver == '3.11'
         run: docker run --rm -v ${{github.workspace}}/:/io $DOCKER_IMAGE sh /io/tools/package.sh /io /io/dist travis OFF Release cp311-cp311
 
-      - name: Package Python 3.11
+      - name: Package Python 3.12
         if: matrix.os == 'ubuntu-latest' && matrix.pyver == '3.12'
         run: docker run --rm -v ${{github.workspace}}/:/io $DOCKER_IMAGE sh /io/tools/package.sh /io /io/dist travis OFF Release cp312-cp312
+
+      - name: Package Python 3.13
+        if: matrix.os == 'ubuntu-latest' && matrix.pyver == '3.13'
+        run: docker run --rm -v ${{github.workspace}}/:/io $DOCKER_IMAGE sh /io/tools/package.sh /io /io/dist travis OFF Release cp313-cp313
 
       - name: Windows Package Python
         if: matrix.os == 'windows-2019'
@@ -67,8 +71,9 @@ jobs:
         if: matrix.os == 'macOS-latest' || matrix.os == 'macOS-13'
         run: bash ./tools/package.sh ${{github.workspace}} ${{github.workspace}}/dist travis OFF Release ${{matrix.pyver}}
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
+          name: artifact_${{matrix.pyver}}_${{matrix.os}}
           path: dist/*.whl
 
   publishtest:
@@ -77,10 +82,12 @@ jobs:
     if: startsWith(github.ref, 'refs/tags') != true
 
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
-          name: artifact
           path: dist
+          merge-multiple: true
+      - name: Print dist
+        run: ls -lR dist
       - name: Test Publish a Python distribution to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
@@ -89,6 +96,7 @@ jobs:
           packages_dir: ./dist
           repository_url: https://test.pypi.org/legacy/
           skip_existing: true
+          verbose: true
 
   publish:
     needs: [build]
@@ -96,10 +104,10 @@ jobs:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
 
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
-          name: artifact
           path: dist
+          merge-multiple: true
       - name: Publish a Python distribution to PyPI
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
         uses: pypa/gh-action-pypi-publish@release/v1

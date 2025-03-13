@@ -15,7 +15,7 @@ def execute_from_commandline():
     parser.set_defaults(test=False)
     param = parser.parse_args()
     if param.test:
-        testsuite = unittest.makeSuite(CoreTests)
+        testsuite = unittest.defaultTestLoader.loadTestsFromTestCase(CoreTests)
         unittest.TextTestRunner(verbosity=1).run(testsuite)
         interop.core._run_doctests()
 
