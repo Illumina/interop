@@ -19,9 +19,7 @@ class InstallPlatlib(install):
 setup(
     name='interop',
     version='@INTEROP_VERSION@',
-    description="""The Illumina InterOp libraries are a set of common routines used for reading InterOp metric files
-                   produced by Illumina sequencers. These libraries are backwards compatible and capable of supporting
-                   prior releases of the software, with one exception: GA systems have been excluded.""",
+    description="The Illumina InterOp libraries are a set of common routines used for reading InterOp metric files.",
     long_description="""The Illumina InterOp libraries are a set of common routines used for reading InterOp metric files
                    produced by Illumina sequencers. These libraries are backwards compatible and capable of supporting
                    prior releases of the software, with one exception: GA systems have been excluded.""",
