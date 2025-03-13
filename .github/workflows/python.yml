@@ -91,8 +91,6 @@ jobs:
       - name: Test Publish a Python distribution to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          user: __token__
-          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
           packages_dir: ./dist
           repository_url: https://test.pypi.org/legacy/
           skip_existing: true
@@ -111,8 +109,6 @@ jobs:
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          user: __token__
-          password: ${{ secrets.PYPI_API_TOKEN }}
           packages_dir: ./dist
           skip_existing: true
 
