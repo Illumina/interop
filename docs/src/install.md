@@ -19,7 +19,7 @@ In addition to the binary archive below, there are language specific packages in
  
 Note, we only distribute from GitHub currently, and not PyPi or NuGet.org. These should
 be compatible with most Linux Versions, Mac OSX and Windows. We support
-Python 3.8 to 3.12.
+Python 3.8 to 3.13.
 
 ### Binary Archive (C++, C#, Python, Java)
 
@@ -35,7 +35,7 @@ For Pythons users, a Wheel package is available on Github Releases or PyPI:
 $ pip install interop
 ~~~~~~~~~~~~~
 
-Supported versions for binary distribution: 3.8 to 3.12.
+Supported versions for binary distribution: 3.8 to 3.13.
 
 Test the installation
 

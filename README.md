@@ -10,8 +10,8 @@ Illumina sequencers including **NextSeq 1k/2k** and NovaSeqX. These libraries ar
 with one exception: GA systems have been excluded.
 
 ***
-> We now support an interface to 3.8-3.12
-> Note that 3.10-3.12 are CentOS 7 or later while earlier versions support Centos 5 or later
+> We now support an interface to 3.8-3.13
+> Note that 3.10-3.13 are CentOS 7 or later while earlier versions support Centos 5 or later
 > Note: dumptext has been deprecated in favor of imaging_table and will be removed in the next version
 ***
 
@@ -74,9 +74,9 @@ Install
 
 ### Python
 
-Supported versions for binary distribution: 3.5-3.10.
+Supported versions for binary distribution: 3.8-3.13.
 
-** Python 2.7 support has been removed **
+** Python 2.7, 3.5, 3.6, 3.7 support has been removed **
 
 You should have NumPy already installed.
 
