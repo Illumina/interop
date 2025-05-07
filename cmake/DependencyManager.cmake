@@ -21,7 +21,7 @@ function(update_dependencies dep_url dep_dir output_var)
     message(STATUS "Dependencies not found")
 
     file(WRITE ${CMAKE_BINARY_DIR}/deps/CMakeLists.txt
-            " cmake_minimum_required(VERSION 3.4)
+            " cmake_minimum_required(VERSION 3.12)
             include(ExternalProject)
             ExternalProject_Add(
             update_deps
