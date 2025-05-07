@@ -1,5 +1,11 @@
 # Changes {#changes}
 
+## v1.5.0
+
+| Date       | Description                                  |
+|------------|----------------------------------------------|
+| 2025-05-07 | Issue-360: Fix python version deployment bug |
+
 ## v1.4.0
 
 | Date       | Description                    |
