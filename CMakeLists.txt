@@ -5,9 +5,6 @@ if(APPLE AND NOT DEFINED CMAKE_OSX_ARCHITECTURES)
     message(STATUS "Building on mac with universal binaries")
 endif()
 
-project(InterOp)
-
-
 project(interop)
 message(STATUS "CMake Version: ${CMAKE_VERSION}")
 message(STATUS "CMake Generator: ${CMAKE_GENERATOR} ${CMAKE_GENERATOR_PLATFORM} ${CMAKE_GENERATOR_TOOLSET}")
