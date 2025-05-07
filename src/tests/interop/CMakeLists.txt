@@ -1,7 +1,7 @@
 find_package(GTest)
-find_package(GMock)
-include(${GTEST_USE_FILE})
-include(${GMOCK_USE_FILE})
+#find_package(GMock)
+#include(${GTEST_USE_FILE})
+#include(${GMOCK_USE_FILE})
 find_package(Threads)
 
 set(SRCS
@@ -76,7 +76,7 @@ set(HEADERS
 
 add_executable(interop_gtests ${SRCS} ${HEADERS})
 
-target_link_libraries(interop_gtests ${INTEROP_LIB} ${GTEST_LIBRARY} ${GMOCK_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(interop_gtests ${INTEROP_LIB} gtest ${CMAKE_THREAD_LIBS_INIT})
 add_test(NAME interop_gtests WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/testBin
               COMMAND ${CMAKE_BINARY_DIR}/testBin/${INTEROP_TESTS} )
 

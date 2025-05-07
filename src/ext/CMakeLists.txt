@@ -6,10 +6,10 @@ if(NOT SWIG_FOUND)
 endif()
 
 if(POLICY CMP0078)
-    cmake_policy(SET CMP0078 OLD)
+    cmake_policy(SET CMP0078 OLD) # UseSWIG generates standard target names.
 endif()
 if(POLICY CMP0086)
-    cmake_policy(SET CMP0086 OLD)
+    cmake_policy(SET CMP0086 OLD) # UseSWIG honors SWIG_MODULE_NAME via -module flag.
 endif()
 
 include(${PROJECT_SOURCE_DIR}/cmake/CheckSWIGVersion.cmake)
