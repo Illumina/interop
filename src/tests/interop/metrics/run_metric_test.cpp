@@ -31,7 +31,7 @@ struct run_metric_test : public ::testing::Test, public TestSetup
     /** Expected metric set */
     model::metrics::run_metrics expected;
 };
-TYPED_TEST_CASE_P(run_metric_test);
+TYPED_TEST_SUITE_P(run_metric_test);
 
 /** Confirm the clear function works
  */
@@ -131,7 +131,7 @@ TYPED_TEST_P(run_metric_test, append_tiles)
 }
 
 
-REGISTER_TYPED_TEST_CASE_P(run_metric_test,
+REGISTER_TYPED_TEST_SUITE_P(run_metric_test,
                            test_clear,
                            is_group_empty_true,
                            is_group_empty_false,
@@ -141,5 +141,5 @@ REGISTER_TYPED_TEST_CASE_P(run_metric_test,
 );
 
 
-INSTANTIATE_TYPED_TEST_CASE_P(Public, run_metric_test, PublicFormats);
+INSTANTIATE_TYPED_TEST_SUITE_P(Public, run_metric_test, PublicFormats);
 

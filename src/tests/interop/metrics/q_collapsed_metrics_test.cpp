@@ -60,7 +60,7 @@ q_collapsed_metrics_tests::generator_type q_collapsed_unit_test_generators[] = {
 };
 
 // Setup unit tests for q_collapsed_metrics_tests
-INSTANTIATE_TEST_CASE_P(q_collapsed_metric_unit_test,
+INSTANTIATE_TEST_SUITE_P(q_collapsed_metric_unit_test,
                         q_collapsed_metrics_tests,
                         ::testing::ValuesIn(q_collapsed_unit_test_generators));
 
@@ -155,7 +155,7 @@ TEST(q_collapsed_metrics_test, compute_buffer_size)
 // Setup regression test
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 regression_test_metric_generator<q_collapsed_metric_set> q_collapsed_regression_gen;
-INSTANTIATE_TEST_CASE_P(q_collapsed_metric_regression_test,
+INSTANTIATE_TEST_SUITE_P(q_collapsed_metric_regression_test,
                         q_collapsed_metrics_tests,
                         ProxyValuesIn(q_collapsed_regression_gen, regression_test_data::instance().files()));
 

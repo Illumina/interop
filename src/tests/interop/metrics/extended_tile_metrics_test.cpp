@@ -40,7 +40,7 @@ extended_tile_metrics_tests::generator_type extended_tile_unit_test_generators[]
 };
 
 // Setup unit tests for extended_tile_metrics_tests
-INSTANTIATE_TEST_CASE_P(extended_tile_metric_unit_test,
+INSTANTIATE_TEST_SUITE_P(extended_tile_metric_unit_test,
                         extended_tile_metrics_tests,
                         ::testing::ValuesIn(extended_tile_unit_test_generators));
 
@@ -89,7 +89,7 @@ TEST(extended_tile_metrics_tests, test_load_formats_v1)
 // Setup regression test
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 regression_test_metric_generator<extended_tile_metric_set> extended_tile_regression_gen;
-INSTANTIATE_TEST_CASE_P(extended_tile_metric_regression_test,
+INSTANTIATE_TEST_SUITE_P(extended_tile_metric_regression_test,
                         extended_tile_metrics_tests,
                         ProxyValuesIn(extended_tile_regression_gen, regression_test_data::instance().files()));
 

@@ -71,7 +71,7 @@ const constants::plot_types bar_types[] = {constants::QHistogramPlot, constants:
 std::vector<constants::plot_types> plot_bar_gen_data(bar_types,
                                                           bar_types+util::length_of(bar_types));
 // Setup unit tests for run summary tests
-INSTANTIATE_TEST_CASE_P(bar_plot_unit_test,
+INSTANTIATE_TEST_SUITE_P(bar_plot_unit_test,
                         bar_plot_tests,
                         ProxyValuesIn(plot_bar_gen, plot_bar_gen_data));
 
@@ -131,7 +131,7 @@ bar_plot_tests::generator_type plot_bar_generators[] = {
 };
 
 // Setup unit tests
-INSTANTIATE_TEST_CASE_P(bar_plot_add_unit_tests,
+INSTANTIATE_TEST_SUITE_P(bar_plot_add_unit_tests,
                         bar_plot_tests,
                         ::testing::ValuesIn(plot_bar_generators));
 
@@ -142,14 +142,14 @@ INSTANTIATE_TEST_CASE_P(bar_plot_add_unit_tests,
 
 plot_regression_test_generator<bar_plot_data> qscore_histogram_regression_test_gen("plot", constants::QHistogramPlot);
 
-INSTANTIATE_TEST_CASE_P(qscore_histogram_regression_test,
+INSTANTIATE_TEST_SUITE_P(qscore_histogram_regression_test,
                         bar_plot_tests,
                         ProxyValuesIn(qscore_histogram_regression_test_gen, regression_test_data::instance().files()));
 
 
 plot_regression_test_generator<bar_plot_data> sample_qc_regression_test_gen("plot", constants::QHistogramPlot);
 
-INSTANTIATE_TEST_CASE_P(sample_qc_regression_test,
+INSTANTIATE_TEST_SUITE_P(sample_qc_regression_test,
                         bar_plot_tests,
                         ProxyValuesIn(sample_qc_regression_test_gen, regression_test_data::instance().files()));
 

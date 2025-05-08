@@ -99,13 +99,13 @@ const constants::plot_types candle_stick_types[] = {constants::ByCyclePlot,
 std::vector<constants::plot_types> plot_by_cycle_gen_data(candle_stick_types,
                                                           candle_stick_types+util::length_of(candle_stick_types));
 // Setup unit tests for run summary tests
-INSTANTIATE_TEST_CASE_P(candle_stick_unit_test,
+INSTANTIATE_TEST_SUITE_P(candle_stick_unit_test,
                         candle_stick_tests,
         ProxyValuesIn(plot_by_cycle_gen, plot_by_cycle_gen_data));
 
 
 collapsed_q_plot_test_generator <candle_stick_plot_data> collapsed_plot_by_cycle_gen;
-INSTANTIATE_TEST_CASE_P(collapsed_candle_stick_unit_test,
+INSTANTIATE_TEST_SUITE_P(collapsed_candle_stick_unit_test,
                         candle_stick_tests,
                         ProxyValuesIn(collapsed_plot_by_cycle_gen, plot_by_cycle_gen_data));
 
@@ -167,7 +167,7 @@ candle_stick_tests::generator_type plot_candle_stick_generators[] = {
 };
 
 // Setup unit tests
-INSTANTIATE_TEST_CASE_P(candle_stick_unit_tests,
+INSTANTIATE_TEST_SUITE_P(candle_stick_unit_tests,
                         candle_stick_tests,
                         ::testing::ValuesIn(plot_candle_stick_generators));
 
@@ -179,14 +179,14 @@ INSTANTIATE_TEST_CASE_P(candle_stick_unit_tests,
 
 plot_regression_test_generator<candle_stick_plot_data> by_cycle_regression_test_gen("plot", constants::ByCyclePlot);
 
-INSTANTIATE_TEST_CASE_P(plot_by_cycle_regression_test,
+INSTANTIATE_TEST_SUITE_P(plot_by_cycle_regression_test,
                         candle_stick_tests,
                         ProxyValuesIn(by_cycle_regression_test_gen, regression_test_data::instance().files()));
 
 
 plot_regression_test_generator<candle_stick_plot_data>  by_lane_regression_test_gen("plot", constants::ByLanePlot);
 
-INSTANTIATE_TEST_CASE_P(plot_by_lane_regression_test,
+INSTANTIATE_TEST_SUITE_P(plot_by_lane_regression_test,
                         candle_stick_tests,
                         ProxyValuesIn(by_lane_regression_test_gen, regression_test_data::instance().files()));
 

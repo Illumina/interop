@@ -41,7 +41,7 @@ image_metrics_tests::generator_type image_unit_test_generators[] = {
 };
 
 // Setup unit tests for image_metrics_tests
-INSTANTIATE_TEST_CASE_P(image_metric_unit_test,
+INSTANTIATE_TEST_SUITE_P(image_metric_unit_test,
                         image_metrics_tests,
                         ::testing::ValuesIn(image_unit_test_generators));
 
@@ -83,7 +83,7 @@ TEST_P(image_metrics_tests, test_read_write)
 // Setup regression test
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 regression_test_metric_generator<image_metric_set> image_regression_gen;
-INSTANTIATE_TEST_CASE_P(image_metric_regression_test,
+INSTANTIATE_TEST_SUITE_P(image_metric_regression_test,
                         image_metrics_tests,
                         ProxyValuesIn(image_regression_gen, regression_test_data::instance().files()));
 

@@ -75,7 +75,7 @@ const constants::plot_types heatmap_types[] = {constants::QHeatmapPlot};
 std::vector<constants::plot_types> heatmap_gen_data(heatmap_types,
                                                      heatmap_types+util::length_of(heatmap_types));
 // Setup unit tests for run summary tests
-INSTANTIATE_TEST_CASE_P(plot_heatmap_unit_test,
+INSTANTIATE_TEST_SUITE_P(plot_heatmap_unit_test,
                         heatmap_plot_tests,
                         ProxyValuesIn(plot_heatmap_gen, heatmap_gen_data));
 
@@ -128,7 +128,7 @@ heatmap_plot_tests::generator_type plot_heatmap_generators[] = {
 };
 
 // Setup unit tests
-INSTANTIATE_TEST_CASE_P(heatmap_unit_tests,
+INSTANTIATE_TEST_SUITE_P(heatmap_unit_tests,
                         heatmap_plot_tests,
                         ::testing::ValuesIn(plot_heatmap_generators));
 
@@ -139,6 +139,6 @@ INSTANTIATE_TEST_CASE_P(heatmap_unit_tests,
 
 plot_regression_test_generator<heatmap_data> qscore_heatmap_regression_test_gen("plot", constants::QHeatmapPlot);
 
-INSTANTIATE_TEST_CASE_P(qscore_heatmap_regression_test,
+INSTANTIATE_TEST_SUITE_P(qscore_heatmap_regression_test,
                         heatmap_plot_tests,
                         ProxyValuesIn(qscore_heatmap_regression_test_gen, regression_test_data::instance().files()));

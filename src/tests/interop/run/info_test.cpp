@@ -95,7 +95,7 @@ typedef ::testing::Types<
         write_read_fixture<nextseq1k2k_run_info>,
         write_read_fixture<nextseq1k2k_run_info_large>
 > run_info_list;
-TYPED_TEST_CASE(run_info_fixture, run_info_list);
+TYPED_TEST_SUITE(run_info_fixture, run_info_list);
 
 /** Confirm that every enum does not conflict with unknown */
 TYPED_TEST(run_info_fixture, run_info_test)

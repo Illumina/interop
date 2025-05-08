@@ -55,7 +55,7 @@ corrected_intensity_metrics_tests::generator_type corrected_intensity_unit_test_
 };
 
 // Specificy the fixtures used for corrected_intensity_metrics_tests TEST_P functions
-INSTANTIATE_TEST_CASE_P(corrected_intensity_metric_unit_test,
+INSTANTIATE_TEST_SUITE_P(corrected_intensity_metric_unit_test,
                         corrected_intensity_metrics_tests,
                         ::testing::ValuesIn(corrected_intensity_unit_test_generators));
 
@@ -137,7 +137,7 @@ regression_test_metric_generator<corrected_intensity_metric_set> corrected_inten
  *
  * The `ProxyValuesIn` function is a hack in GTest that allows the population of the files to be deferred.
  */
-INSTANTIATE_TEST_CASE_P(corrected_intensity_metric_regression_test,
+INSTANTIATE_TEST_SUITE_P(corrected_intensity_metric_regression_test,
                         corrected_intensity_metrics_tests,
                         ProxyValuesIn(corrected_intensity_regression_gen, regression_test_data::instance().files()));
 

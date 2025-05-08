@@ -20,7 +20,7 @@ pkg_check_modules(PC_GTEST QUIET gtest)
 set(GTEST_ROOT "" CACHE PATH "Set the location of the Google Test library and header")
 
 if(NOT DEFINED GTEST_TAG)
-    set(GTEST_TAG "release-1.8.1" CACHE PATH "Git tag for automatic download of GTest")
+    set(GTEST_TAG "v1.14.0" CACHE PATH "Git tag for automatic download of GTest")
 endif()
 string(REGEX REPLACE "release-" "" GTEST_VERSION_NUM ${GTEST_TAG})
 
@@ -44,13 +44,6 @@ if(NOT GTEST_INCLUDE_DIR OR NOT GTEST_LIBRARY OR NOT GTEST_MAIN_LIBRARY)
 
     set(GTEST_PREFIX ${CMAKE_BINARY_DIR}/external/gtest)
 
-    if(FORCE_X86)
-        set(EXTRA_FLAGS " -m32")
-    endif()
-
-    if(MSVC)
-        set(EXTRA_FLAGS "${EXTRA_FLAGS} -D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING=1")
-    endif()
     #if(${GTEST_VERSION_NUM} VERSION_LESS_EQUAL "1.8.1")
     set(GTEST_LIBRARY_PATH ${GTEST_PREFIX}/dist/lib CACHE INTERNAL "Path to Google Test Library")
     set(GTEST_MAIN_LIBRARY_DEBUG ${GTEST_LIBRARY_PATH}/${CMAKE_STATIC_LIBRARY_PREFIX}gtest_maind${CMAKE_STATIC_LIBRARY_SUFFIX})
@@ -67,7 +60,7 @@ if(NOT GTEST_INCLUDE_DIR OR NOT GTEST_LIBRARY OR NOT GTEST_MAIN_LIBRARY)
     set(GTEST_MAIN_LIBRARY_RELEASE ${GTEST_LIBRARY_PATH}/${CMAKE_STATIC_LIBRARY_PREFIX}gtest_main${CMAKE_STATIC_LIBRARY_SUFFIX})
     set(GTEST_INCLUDE_DIR ${GTEST_PREFIX}/dist/include)
 
-    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    if(MSVC AND CMAKE_BUILD_TYPE STREQUAL "Debug")
         set(GMOCK_LIBRARY ${GMOCK_LIBRARY_DEBUG})
         set(GTEST_LIBRARY ${GTEST_LIBRARY_DEBUG})
         set(GTEST_MAIN_LIBRARY ${GTEST_MAIN_LIBRARY_DEBUG})
@@ -130,13 +123,14 @@ mark_as_advanced(GTEST_LIBRARIES GTEST_INCLUDE_DIRS)
 message(STATUS "GTEST_INCLUDE_DIRS=${GTEST_INCLUDE_DIRS}")
 message(STATUS "GTEST_LIBRARY=${GTEST_LIBRARY}")
 message(STATUS "GTEST_MAIN_LIBRARY=${GTEST_MAIN_LIBRARY}")
+message(STATUS "GMOCK_LIBRARY=${GMOCK_LIBRARY}")
 message(STATUS "GTEST_HAS_TR1_TUPLE=${GTEST_HAS_TR1_TUPLE}")
 
 if(NOT TARGET gtest)
-    add_library(gtest INTERFACE IMPORTED)
+    add_library(gtest INTERFACE)
     target_link_libraries(gtest INTERFACE
-            ${GTEST_LIBRARY}
-            ${GMOCK_LIBRARY}
+            $<BUILD_INTERFACE:${GTEST_LIBRARY}>
+            $<BUILD_INTERFACE:${GMOCK_LIBRARY}>
     )
     target_include_directories(gtest
             SYSTEM INTERFACE ${GTEST_INCLUDE_DIRS}
@@ -148,8 +142,10 @@ if(NOT TARGET gtest)
         add_dependencies(gtest gtest_download)
     endif()
 
-    add_library(gtest_main INTERFACE IMPORTED)
-    target_link_libraries(gtest_main INTERFACE ${GTEST_MAIN_LIBRARY})
+    add_library(gtest_main INTERFACE)
+    target_link_libraries(gtest_main INTERFACE
+            $<BUILD_INTERFACE:${GTEST_MAIN_LIBRARY}>
+    )
     target_include_directories(gtest_main
             SYSTEM INTERFACE ${GTEST_INCLUDE_DIRS}
     )
