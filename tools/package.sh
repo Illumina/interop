@@ -251,20 +251,20 @@ elif [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PY
             fi
             which python
             which pip
-            pip install delocate || true
+            pyton -m pip install delocate || true
             python --version
-            pip install numpy
-            pip install wheel
-            pip install setuptools
+            pyton -m pip install numpy
+            pyton -m pip install wheel
+            pyton -m pip install setuptools
             echo "Check setuptools"
             python -c "import setuptools"
             echo "Check numpy"
             python -c "import numpy"
             echo "Check wheel"
             python -c "import wheel"
-            # pip install wheel=0.30.0
+            # pyton -m pip install wheel=0.30.0
         fi
-        pip install swig==4.0.2 --prefix="$(pwd)/usr"
+        pyton -m pip install swig==4.0.2 --prefix="$(pwd)/usr"
         swig_bin=$(ls $(pwd)/usr/lib/python3.*/site-packages/swig/data/bin/swig)
         swig_path=$(dirname $swig_bin)
         swig_dir=$(dirname $swig_path)/share/swig/4.0.2/
@@ -305,7 +305,7 @@ if [ "$PYTHON_VERSION" == "DotNetStandard" ] || [ "$PYTHON_VERSION" == "" ] ; th
   # Workaround for OSX
   export PATH=/usr/local/share/dotnet:${PATH}
   if hash dotnet 2> /dev/null; then
-      pip install swig==4.0.2 --prefix="$(pwd)/usr"
+      pyton -m pip install swig==4.0.2 --prefix="$(pwd)/usr"
       swig_bin=$(ls $(pwd)/usr/lib/python3.*/site-packages/swig/data/bin/swig)
       swig_path=$(dirname $swig_bin)
       swig_dir=$(dirname $swig_path)/share/swig/4.0.2/
