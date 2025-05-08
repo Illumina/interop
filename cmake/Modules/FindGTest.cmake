@@ -27,21 +27,6 @@ string(REGEX REPLACE "release-" "" GTEST_VERSION_NUM ${GTEST_TAG})
 
 # OR NOT GMOCK_INCLUDE_DIR_TEST OR NOT GMOCK_LIBRARY_TEST OR NOT GMOCK_MAIN_LIBRARY_TEST
 if(NOT GTEST_INCLUDE_DIR OR NOT GTEST_LIBRARY OR NOT GTEST_MAIN_LIBRARY)
-    if(MSVC)
-        if(NOT DEFINED GTEST_USE_OWN_TR1_TUPLE)
-            set(GTEST_USE_OWN_TR1_TUPLE 0)
-        endif()
-        if(NOT DEFINED GTEST_HAS_TR1_TUPLE)
-            set(GTEST_HAS_TR1_TUPLE 0)
-        endif()
-    else()
-        if(NOT DEFINED GTEST_USE_OWN_TR1_TUPLE)
-            set(GTEST_USE_OWN_TR1_TUPLE 0)
-        endif()
-        if(NOT DEFINED GTEST_HAS_TR1_TUPLE)
-            set(GTEST_HAS_TR1_TUPLE 0)
-        endif()
-    endif()
     if(NOT GTEST_INCLUDE_DIR)
         message(STATUS "GTest include directory not found - GTEST_ROOT: ${GTEST_ROOT}")
     elseif(NOT GTEST_LIBRARY)
@@ -100,7 +85,7 @@ if(NOT GTEST_INCLUDE_DIR OR NOT GTEST_LIBRARY OR NOT GTEST_MAIN_LIBRARY)
             GIT_REPOSITORY https://github.com/google/googletest.git
             GIT_TAG ${GTEST_TAG}
             CMAKE_ARGS
-            "-DCMAKE_CXX_FLAGS=-DGTEST_USE_OWN_TR1_TUPLE=${GTEST_HAS_TR1_TUPLE} ${CMAKE_CXX_FLAGS}"
+            "-DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}"
             "-DCMAKE_SHARED_LINKER_FLAGS=${CMAKE_SHARED_LINKER_FLAGS}"
             "-DCMAKE_STATIC_LINKER_FLAGS=${CMAKE_STATIC_LINKER_FLAGS}"
             "-DCMAKE_EXE_LINKER_FLAGS=${CMAKE_EXE_LINKER_FLAGS}"
@@ -145,7 +130,6 @@ mark_as_advanced(GTEST_LIBRARIES GTEST_INCLUDE_DIRS)
 message(STATUS "GTEST_INCLUDE_DIRS=${GTEST_INCLUDE_DIRS}")
 message(STATUS "GTEST_LIBRARY=${GTEST_LIBRARY}")
 message(STATUS "GTEST_MAIN_LIBRARY=${GTEST_MAIN_LIBRARY}")
-message(STATUS "GTEST_USE_OWN_TR1_TUPLE=${GTEST_USE_OWN_TR1_TUPLE}")
 message(STATUS "GTEST_HAS_TR1_TUPLE=${GTEST_HAS_TR1_TUPLE}")
 
 if(NOT TARGET gtest)
@@ -160,7 +144,6 @@ if(NOT TARGET gtest)
     target_include_directories(gtest
             SYSTEM INTERFACE ${GMOCK_INCLUDE_DIRS}
     )
-    target_compile_definitions(gtest INTERFACE -DGTEST_USE_OWN_TR1_TUPLE=${GTEST_USE_OWN_TR1_TUPLE} -DGTEST_HAS_TR1_TUPLE=${GTEST_HAS_TR1_TUPLE})
     if(TARGET gtest_download)
         add_dependencies(gtest gtest_download)
     endif()
@@ -169,10 +152,6 @@ if(NOT TARGET gtest)
     target_link_libraries(gtest_main INTERFACE ${GTEST_MAIN_LIBRARY})
     target_include_directories(gtest_main
             SYSTEM INTERFACE ${GTEST_INCLUDE_DIRS}
-    )
-    target_compile_definitions(gtest_main INTERFACE
-            -DGTEST_USE_OWN_TR1_TUPLE=${GTEST_USE_OWN_TR1_TUPLE}
-            -DGTEST_HAS_TR1_TUPLE=${GTEST_HAS_TR1_TUPLE}
     )
 
     if(TARGET gtest_download)
