@@ -235,7 +235,7 @@ elif [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PY
 
         else
             pycurr=$(python -c "import sys;print(str(sys.version_info.major)+'.'+str(sys.version_info.minor ))")
-            if [[ "${pycurr}" != "${py_ver}" ]]] ; then
+            if [[ "${pycurr}" != "${py_ver}" ]] ; then
                 echo "Expected $py_ver, but got ${pycurr}"
                 echo "pythonLocation=${pythonLocation}"
                 which python
