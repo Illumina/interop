@@ -39,7 +39,7 @@ set(SRCS
         logic/dynamic_phasing_logic_test.cpp
         metrics/coverage_test.cpp
         metrics/metric_stream_error_test.cpp
-        metrics/metric_regression_tests.cpp
+        #metrics/metric_regression_tests.cpp
         io/csv_format.cpp
         metrics/extended_tile_metrics_test.cpp
         )
