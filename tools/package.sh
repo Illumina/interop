@@ -234,6 +234,9 @@ elif [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PY
           conda install pandas -y --name py${python_version}
 
         else
+            if [ -d ${pythonLocation} ] ; then
+                export PATH=${pythonLocation}:${PATH}
+            fi
             pycurr=$(python -c "import sys;print(str(sys.version_info.major)+'.'+str(sys.version_info.minor ))")
             if [[ "${pycurr}" != "${py_ver}" ]] ; then
                 echo "Expected $py_ver, but got ${pycurr}"
