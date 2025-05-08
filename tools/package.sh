@@ -234,6 +234,13 @@ elif [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PY
           conda install pandas -y --name py${python_version}
 
         else
+            pycurr=$(python -c "import sys;print(str(sys.version_info.major)+'.'+str(sys.version_info.minor ))")
+            if [[ "${pycurr}" != "${py_ver}" ]]] ; then
+                echo "Expected $py_ver, but got ${pycurr}"
+                echo "pythonLocation=${pythonLocation}"
+                which python
+                exit 1
+            fi
             if [[ "$OSTYPE" == "linux-gnu" ]]; then
                 if hash patchelf 2> /dev/null; then
                     python -m pip install auditwheel==1.5
