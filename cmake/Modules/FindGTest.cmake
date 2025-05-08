@@ -20,7 +20,7 @@ pkg_check_modules(PC_GTEST QUIET gtest)
 set(GTEST_ROOT "" CACHE PATH "Set the location of the Google Test library and header")
 
 if(NOT DEFINED GTEST_TAG)
-    set(GTEST_TAG "v1.14.0" CACHE PATH "Git tag for automatic download of GTest")
+    set(GTEST_TAG "v1.15.2" CACHE PATH "Git tag for automatic download of GTest")
 endif()
 string(REGEX REPLACE "release-" "" GTEST_VERSION_NUM ${GTEST_TAG})
 

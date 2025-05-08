@@ -6,7 +6,7 @@
 |------------|----------------------------------------------|
 | 2025-05-07 | Issue-360: Fix python version deployment bug |
 | 2025-05-07 | Update minimum CMake version to 3.13         |
-| 2025-05-07 | Update GTest to v1.14.0                      |
+| 2025-05-07 | Update GTest to v1.15.2                      |
 
 ## v1.4.0
 
