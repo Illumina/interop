@@ -20,7 +20,8 @@ pkg_check_modules(PC_GTEST QUIET gtest)
 set(GTEST_ROOT "" CACHE PATH "Set the location of the Google Test library and header")
 
 if(NOT DEFINED GTEST_TAG)
-    set(GTEST_TAG "v1.16.0" CACHE PATH "Git tag for automatic download of GTest")
+    #set(GTEST_TAG "v1.16.0" CACHE PATH "Git tag for automatic download of GTest")
+    set(GTEST_TAG "release-1.8.1" CACHE PATH "Git tag for automatic download of GTest")
 endif()
 string(REGEX REPLACE "release-" "" GTEST_VERSION_NUM ${GTEST_TAG})
 
@@ -84,6 +85,7 @@ if(NOT GTEST_INCLUDE_DIR OR NOT GTEST_LIBRARY OR NOT GTEST_MAIN_LIBRARY)
             "-DCMAKE_EXE_LINKER_FLAGS=${CMAKE_EXE_LINKER_FLAGS}"
             "-DCMAKE_MODULE_LINKER_FLAGS=${CMAKE_MODULE_LINKER_FLAGS}"
             -G${CMAKE_GENERATOR}
+            -DCMAKE_POLICY_VERSION_MINIMUM=3.5
             -DCMAKE_GENERATOR_PLATFORM=${CMAKE_GENERATOR_PLATFORM}
             -DCMAKE_GENERATOR_TOOLSET=${CMAKE_GENERATOR_TOOLSET}
             -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
