@@ -121,7 +121,7 @@ else
     CMAKE_URL="http://www.cmake.org/files/v3.8/cmake-3.8.2-Linux-x86_64.tar.gz"
     mkdir /tmp/cmake
     wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C /tmp/cmake
-    export PATH=$PATH:/tmp/cmake/bin
+    export PATH="$PATH:/tmp/cmake/bin"
 fi
 
 # Utility macros
@@ -235,7 +235,7 @@ elif [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PY
 
         else
             if [ -d ${pythonLocation} ] ; then
-                export PATH=${pythonLocation}:${PATH}
+                export PATH="${pythonLocation}:${PATH}"
             fi
             pycurr=$(python -c "import sys;print(str(sys.version_info.major)+'.'+str(sys.version_info.minor ))")
             if [[ "${pycurr}" != "${py_ver}" ]] ; then
@@ -303,7 +303,7 @@ fi
 if [ "$PYTHON_VERSION" == "DotNetStandard" ] || [ "$PYTHON_VERSION" == "" ] ; then
 
   # Workaround for OSX
-  export PATH=/usr/local/share/dotnet:${PATH}
+  export PATH="/usr/local/share/dotnet:${PATH}"
   if hash dotnet 2> /dev/null; then
       python -m pip install swig==4.0.2 --prefix="$(pwd)/usr"
       swig_bin=$(ls $(pwd)/usr/lib/python3.*/site-packages/swig/data/bin/swig)
