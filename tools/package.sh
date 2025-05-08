@@ -121,7 +121,7 @@ else
     CMAKE_URL="http://www.cmake.org/files/v3.8/cmake-3.8.2-Linux-x86_64.tar.gz"
     mkdir /tmp/cmake
     wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C /tmp/cmake
-    export PATH=$PATH:/tmp/cmake/bin
+    export PATH="$PATH:/tmp/cmake/bin"
 fi
 
 # Utility macros
@@ -234,6 +234,16 @@ elif [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PY
           conda install pandas -y --name py${python_version}
 
         else
+            if [ -d ${pythonLocation} ] ; then
+                export PATH="${pythonLocation}:${PATH}"
+            fi
+            pycurr=$(python -c "import sys;print(str(sys.version_info.major)+'.'+str(sys.version_info.minor ))")
+            if [[ "${pycurr}" != "${py_ver}" ]] ; then
+                echo "Expected $py_ver, but got ${pycurr}"
+                echo "pythonLocation=${pythonLocation}"
+                which python
+                exit 1
+            fi
             if [[ "$OSTYPE" == "linux-gnu" ]]; then
                 if hash patchelf 2> /dev/null; then
                     python -m pip install auditwheel==1.5
@@ -241,20 +251,20 @@ elif [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PY
             fi
             which python
             which pip
-            pip install delocate || true
+            python -m pip install delocate || true
             python --version
-            pip install numpy
-            pip install wheel
-            pip install setuptools
+            python -m pip install numpy
+            python -m pip install wheel
+            python -m pip install setuptools
             echo "Check setuptools"
             python -c "import setuptools"
             echo "Check numpy"
             python -c "import numpy"
             echo "Check wheel"
             python -c "import wheel"
-            # pip install wheel=0.30.0
+            # python -m pip install wheel=0.30.0
         fi
-        pip install swig==4.0.2 --prefix="$(pwd)/usr"
+        python -m pip install swig==4.0.2 --prefix="$(pwd)/usr"
         swig_bin=$(ls $(pwd)/usr/lib/python3.*/site-packages/swig/data/bin/swig)
         swig_path=$(dirname $swig_bin)
         swig_dir=$(dirname $swig_path)/share/swig/4.0.2/
@@ -293,9 +303,9 @@ fi
 if [ "$PYTHON_VERSION" == "DotNetStandard" ] || [ "$PYTHON_VERSION" == "" ] ; then
 
   # Workaround for OSX
-  export PATH=/usr/local/share/dotnet:${PATH}
+  export PATH="/usr/local/share/dotnet:${PATH}"
   if hash dotnet 2> /dev/null; then
-      pip install swig==4.0.2 --prefix="$(pwd)/usr"
+      python -m pip install swig==4.0.2 --prefix="$(pwd)/usr"
       swig_bin=$(ls $(pwd)/usr/lib/python3.*/site-packages/swig/data/bin/swig)
       swig_path=$(dirname $swig_bin)
       swig_dir=$(dirname $swig_path)/share/swig/4.0.2/

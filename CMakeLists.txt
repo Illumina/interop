@@ -1,12 +1,10 @@
-cmake_minimum_required(VERSION 3.4)
+cmake_minimum_required(VERSION 3.13)
+set(CMAKE_CXX_STANDARD 11)
 
 if(APPLE AND NOT DEFINED CMAKE_OSX_ARCHITECTURES)
     set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64" CACHE STRING "Build architectures for Mac OS X" FORCE)
     message(STATUS "Building on mac with universal binaries")
 endif()
-
-project(InterOp)
-
 
 project(interop)
 message(STATUS "CMake Version: ${CMAKE_VERSION}")

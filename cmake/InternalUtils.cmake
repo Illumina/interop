@@ -100,11 +100,6 @@ macro(interop_config_compiler_and_linker)
         add_definitions(-DHAVE_LONG64)
     endif()
     check_type_size(size_t SIZE_T)
-    if(MINGW)
-        set(CXX11_FLAG_ "-std=gnu++11")
-    else()
-        set(CXX11_FLAG_ "-std=c++11")
-    endif()
 
     include(CheckCXXSourceCompiles)
     check_cxx_source_compiles("#include <unordered_map>
@@ -119,15 +114,6 @@ macro(interop_config_compiler_and_linker)
 
     set(ANSI_FLAG "-std=c++98")
     check_cxx_compiler_flag("${ANSI_FLAG}" COMPILER_SUPPORTS_ANSI) #-ansi (does not work on CLang 3.4)
-    check_cxx_compiler_flag("${CXX11_FLAG_}" COMPILER_SUPPORTS_CXX11)
-
-    # This breaks GTest with GCC 4.4.x
-    #check_cxx_compiler_flag("${CXX0x_FLAG_}" COMPILER_SUPPORTS_CXX0X)
-    if(COMPILER_SUPPORTS_CXX11)
-        set(CXX_CX11_FLAG "${CXX11_FLAG_}")
-    #elseif(COMPILER_SUPPORTS_CXX0X)
-        #set(CXX_CX11_FLAG "${CXX0x_FLAG_}")
-    endif()
 
     check_cxx_compiler_flag("-Wpedantic" COMPILER_SUPPORTS_PEDANTIC)
     if(COMPILER_SUPPORTS_PEDANTIC)

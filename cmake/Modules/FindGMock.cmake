@@ -84,7 +84,7 @@ if(NOT GMOCK_INCLUDE_DIR OR NOT GMOCK_LIBRARY OR NOT GMOCK_MAIN_LIBRARY)
             googlemock
             PREFIX ${GMOCK_PREFIX}
             GIT_REPOSITORY https://github.com/google/googlemock.git
-            GIT_TAG release-1.7.0
+            GIT_TAG release-1.8.1
             CMAKE_ARGS "-DCMAKE_CXX_FLAGS=-DGMOCK_USE_OWN_TR1_TUPLE=${USE_OWN_TR1_TUPLE}${EXTRA_FLAGS}"
             -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
             -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY=${GMOCK_PREFIX}/lib64
