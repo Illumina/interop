@@ -36,7 +36,7 @@ index_metrics_tests::generator_type index_unit_test_generators[] = {
 };
 
 // Setup unit tests for index_metrics_tests
-INSTANTIATE_TEST_SUITE_P(index_metric_unit_test,
+INSTANTIATE_TEST_CASE_P(index_metric_unit_test,
                         index_metrics_tests,
                         ::testing::ValuesIn(index_unit_test_generators));
 
@@ -76,7 +76,7 @@ TEST_P(index_metrics_tests, test_read_write)
 // Setup regression test
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 regression_test_metric_generator<index_metric_set> index_regression_gen;
-INSTANTIATE_TEST_SUITE_P(index_metric_regression_test,
+INSTANTIATE_TEST_CASE_P(index_metric_regression_test,
                         index_metrics_tests,
                         ProxyValuesIn(index_regression_gen, regression_test_data::instance().files()));
 

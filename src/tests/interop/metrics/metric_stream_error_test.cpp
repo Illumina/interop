@@ -35,7 +35,7 @@ struct metric_stream_error_test : public ::testing::Test, public TestSetup
     std::string expected;
 };
 
-TYPED_TEST_SUITE_P(metric_stream_error_test);
+TYPED_TEST_CASE_P(metric_stream_error_test);
 
 /** Confirm bad_format_exception is thrown when version is unsupported
  */
@@ -126,7 +126,7 @@ TEST(metric_stream_error_test, image_metric_out_of_bounds)
     EXPECT_THROW(io::write_metrics(fout, metric_set), io::bad_format_exception);
 }
 
-REGISTER_TYPED_TEST_SUITE_P(metric_stream_error_test,
+REGISTER_TYPED_TEST_CASE_P(metric_stream_error_test,
         test_hardcoded_bad_format_exception,
         test_hardcoded_incomplete_file_exception,
         test_hardcoded_incomplete_file_exception_last_metric,
@@ -136,5 +136,5 @@ REGISTER_TYPED_TEST_SUITE_P(metric_stream_error_test,
 );
 
 
-INSTANTIATE_TYPED_TEST_SUITE_P(Public, metric_stream_error_test, PublicFormats);
+INSTANTIATE_TYPED_TEST_CASE_P(Public, metric_stream_error_test, PublicFormats);
 

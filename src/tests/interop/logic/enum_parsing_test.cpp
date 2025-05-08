@@ -93,7 +93,7 @@ typedef ::testing::Types<
         constants::metric_data,
         constants::plot_types
 > all_enums_t;
-TYPED_TEST_SUITE(enum_list_test, all_enums_t);
+TYPED_TEST_CASE(enum_list_test, all_enums_t);
 
 /** Confirm that every enum does not conflict with unknown */
 TYPED_TEST(enum_list_test, names)

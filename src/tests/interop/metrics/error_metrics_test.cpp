@@ -47,7 +47,7 @@ error_metrics_tests::generator_type error_unit_test_generators[] = {
 };
 
 // Setup unit tests for error_metrics_tests
-INSTANTIATE_TEST_SUITE_P(error_metric_unit_test,
+INSTANTIATE_TEST_CASE_P(error_metric_unit_test,
                         error_metrics_tests,
                         ::testing::ValuesIn(error_unit_test_generators));
 
@@ -134,7 +134,7 @@ TEST(error_metrics_single_test, test_error_rates_v6)
 // Setup regression test
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 regression_test_metric_generator<error_metric_set> error_regression_gen;
-INSTANTIATE_TEST_SUITE_P(error_metric_regression_test,
+INSTANTIATE_TEST_CASE_P(error_metric_regression_test,
                         error_metrics_tests,
                         ProxyValuesIn(error_regression_gen, regression_test_data::instance().files()));
 

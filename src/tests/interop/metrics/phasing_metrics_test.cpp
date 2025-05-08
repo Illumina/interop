@@ -36,7 +36,7 @@ phasing_metrics_tests::generator_type phasing_unit_test_generators[] = {
 };
 
 // Setup unit tests for phasing_metrics_tests
-INSTANTIATE_TEST_SUITE_P(phasing_metric_unit_test,
+INSTANTIATE_TEST_CASE_P(phasing_metric_unit_test,
                         phasing_metrics_tests,
                         ::testing::ValuesIn(phasing_unit_test_generators));
 /**
@@ -68,7 +68,7 @@ TEST_P(phasing_metrics_tests, test_read_write)
 // Setup regression test
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 regression_test_metric_generator<phasing_metric_set> phasing_regression_gen;
-INSTANTIATE_TEST_SUITE_P(phasing_metric_regression_test,
+INSTANTIATE_TEST_CASE_P(phasing_metric_regression_test,
                         phasing_metrics_tests,
                         ProxyValuesIn(phasing_regression_gen, regression_test_data::instance().files()));
 

@@ -37,17 +37,17 @@ struct metric_coverage_test : public ::testing::Test, public TestSetup
     }
 };
 
-TYPED_TEST_SUITE_P(metric_coverage_test);
+TYPED_TEST_CASE_P(metric_coverage_test);
 
 
 TYPED_TEST_P(metric_coverage_test, sentinel){}
 
-REGISTER_TYPED_TEST_SUITE_P(metric_coverage_test,
+REGISTER_TYPED_TEST_CASE_P(metric_coverage_test,
                            sentinel
 );
 
 
-INSTANTIATE_TYPED_TEST_SUITE_P(Public, metric_coverage_test, PublicFormats);
+INSTANTIATE_TYPED_TEST_CASE_P(Public, metric_coverage_test, PublicFormats);
 
 /** Confirm that every metric and every version of their format is being tested here */
 TEST(metric_coverage_test, stream_tests)
@@ -87,7 +87,7 @@ typedef ::testing::Types<
         by_cycle_metric_registry_t,
         clear_metric_registry_t
 > generators_t;
-TYPED_TEST_SUITE(format_coverage_test, generators_t);
+TYPED_TEST_CASE(format_coverage_test, generators_t);
 
 /** Confirm that every metric and every version of their format is being tested here */
 TYPED_TEST(format_coverage_test, format)

@@ -36,7 +36,7 @@ summary_run_metrics_tests::generator_type summary_run_unit_test_generators[] = {
 };
 
 // Setup unit tests for summary_run_metrics_tests
-INSTANTIATE_TEST_SUITE_P(summary_run_metric_unit_test,
+INSTANTIATE_TEST_CASE_P(summary_run_metric_unit_test,
                         summary_run_metrics_tests,
                         ::testing::ValuesIn(summary_run_unit_test_generators));
 
@@ -68,7 +68,7 @@ TEST_P(summary_run_metrics_tests, test_read_write)
 // Setup regression test
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 regression_test_metric_generator<summary_run_metric_set> summary_run_regression_gen;
-INSTANTIATE_TEST_SUITE_P(summary_run_metric_regression_test,
+INSTANTIATE_TEST_CASE_P(summary_run_metric_regression_test,
                         summary_run_metrics_tests,
                         ProxyValuesIn(summary_run_regression_gen, regression_test_data::instance().files()));
 

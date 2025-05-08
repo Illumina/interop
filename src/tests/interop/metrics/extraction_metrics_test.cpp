@@ -39,7 +39,7 @@ extraction_metrics_tests::generator_type extraction_unit_test_generators[] = {
 };
 
 // Setup unit tests for extraction_metrics_tests
-INSTANTIATE_TEST_SUITE_P(extraction_metric_unit_test,
+INSTANTIATE_TEST_CASE_P(extraction_metric_unit_test,
                         extraction_metrics_tests,
                         ::testing::ValuesIn(extraction_unit_test_generators));
 
@@ -86,7 +86,7 @@ TEST_P(extraction_metrics_tests, test_read_write)
 // Setup regression test
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 regression_test_metric_generator<extraction_metric_set> extraction_regression_gen;
-INSTANTIATE_TEST_SUITE_P(extraction_metric_regression_test,
+INSTANTIATE_TEST_CASE_P(extraction_metric_regression_test,
                         extraction_metrics_tests,
                         ProxyValuesIn(extraction_regression_gen, regression_test_data::instance().files()));
 

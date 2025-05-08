@@ -615,7 +615,7 @@ run_summary_tests::generator_type run_summary_unit_test_generators[] = {
 
 
 // Setup unit tests for run summary tests
-INSTANTIATE_TEST_SUITE_P(run_summary_unit_test,
+INSTANTIATE_TEST_CASE_P(run_summary_unit_test,
                         run_summary_tests,
                         ::testing::ValuesIn(run_summary_unit_test_generators));
 
@@ -720,7 +720,7 @@ protected:
 
 regression_test_summary_generator<summary_logic> run_summary_regression_gen("summary");
 
-INSTANTIATE_TEST_SUITE_P(run_summary_regression_test,
+INSTANTIATE_TEST_CASE_P(run_summary_regression_test,
                         run_summary_tests,
                         ProxyValuesIn(run_summary_regression_gen, regression_test_data::instance().files()));
 

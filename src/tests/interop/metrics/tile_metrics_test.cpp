@@ -90,7 +90,7 @@ tile_metrics_tests::generator_type tile_unit_test_generators[] = {
 };
 
 // Setup unit tests for tile_metrics_tests
-INSTANTIATE_TEST_SUITE_P(tile_metric_unit_test,
+INSTANTIATE_TEST_CASE_P(tile_metric_unit_test,
                         tile_metrics_tests,
                         ::testing::ValuesIn(tile_unit_test_generators));
 
@@ -219,7 +219,7 @@ TEST(tile_metrics_test, test_tile_metric_for_lane)
 // Setup regression test
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 regression_test_metric_generator<tile_metric_set> tile_regression_gen;
-INSTANTIATE_TEST_SUITE_P(tile_metric_regression_test,
+INSTANTIATE_TEST_CASE_P(tile_metric_regression_test,
                         tile_metrics_tests,
                         ProxyValuesIn(tile_regression_gen, regression_test_data::instance().files()));
 

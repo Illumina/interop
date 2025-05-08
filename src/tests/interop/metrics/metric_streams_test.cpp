@@ -44,7 +44,7 @@ struct metric_stream_test : public ::testing::Test, public TestSetup
     /** Actual binary data */
     std::string actual;
 };
-TYPED_TEST_SUITE_P(metric_stream_test);
+TYPED_TEST_CASE_P(metric_stream_test);
 
 
 
@@ -159,7 +159,7 @@ TEST(metric_stream_test, list_filenames_by_cycle)
 
 
 
-REGISTER_TYPED_TEST_SUITE_P(metric_stream_test,
+REGISTER_TYPED_TEST_CASE_P(metric_stream_test,
                            test_read_data_size,
                            test_header_size,
                            test_write_read_binary_data,
@@ -167,5 +167,5 @@ REGISTER_TYPED_TEST_SUITE_P(metric_stream_test,
 );
 
 
-INSTANTIATE_TYPED_TEST_SUITE_P(Public, metric_stream_test, PublicFormats);
+INSTANTIATE_TYPED_TEST_CASE_P(Public, metric_stream_test, PublicFormats);
 

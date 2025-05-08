@@ -51,7 +51,7 @@ q_metrics_tests::generator_type q_unit_test_generators[] = {
 };
 
 // Setup unit tests for q_metrics_tests
-INSTANTIATE_TEST_SUITE_P(q_metric_unit_test,
+INSTANTIATE_TEST_CASE_P(q_metric_unit_test,
                         q_metrics_tests,
                         ::testing::ValuesIn(q_unit_test_generators));
 
@@ -211,7 +211,7 @@ TEST(q_metrics_test, test_percent_over_q30_binned)
 // Setup regression test
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 regression_test_metric_generator<q_metric_set> q_regression_gen;
-INSTANTIATE_TEST_SUITE_P(q_metric_regression_test,
+INSTANTIATE_TEST_CASE_P(q_metric_regression_test,
                         q_metrics_tests,
                         ProxyValuesIn(q_regression_gen, regression_test_data::instance().files()));
 

@@ -139,7 +139,7 @@ imaging_table_tests::generator_type imaging_io_generators[] = {
 };
 
 // Setup unit tests
-INSTANTIATE_TEST_SUITE_P(imaging_unit_tests,
+INSTANTIATE_TEST_CASE_P(imaging_unit_tests,
                         imaging_table_tests,
                         ::testing::ValuesIn(imaging_io_generators));
 
@@ -238,7 +238,7 @@ protected:
 
 imaging_table_regression_test imaging_table_regression_gen("imaging");
 
-INSTANTIATE_TEST_SUITE_P(imaging_table_regression_test,
+INSTANTIATE_TEST_CASE_P(imaging_table_regression_test,
                         imaging_table_tests,
                         ProxyValuesIn(imaging_table_regression_gen, regression_test_data::instance().files()));
 

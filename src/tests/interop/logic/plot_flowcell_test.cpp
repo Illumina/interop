@@ -60,13 +60,13 @@ const constants::plot_types flowcell_types[] = {constants::FlowcellPlot};
 std::vector<constants::plot_types> flowcell_gen_data(flowcell_types,
                                                     flowcell_types+util::length_of(flowcell_types));
 // Setup unit tests for run summary tests
-INSTANTIATE_TEST_SUITE_P(plot_flowcell_unit_test,
+INSTANTIATE_TEST_CASE_P(plot_flowcell_unit_test,
                         flowcell_plot_tests,
                         ProxyValuesIn(plot_flowcell_gen, flowcell_gen_data));
 
 
 collapsed_q_plot_test_generator<flowcell_data> plot_collpased_flowcell_gen;
-INSTANTIATE_TEST_SUITE_P(plot_flowcell_collapsed_unit_test,
+INSTANTIATE_TEST_CASE_P(plot_flowcell_collapsed_unit_test,
                         flowcell_plot_tests,
                         ProxyValuesIn(plot_collpased_flowcell_gen, flowcell_gen_data));
 
@@ -125,7 +125,7 @@ flowcell_plot_tests::generator_type plot_flowcell_generators[] = {
 };
 
 // Setup unit tests
-INSTANTIATE_TEST_SUITE_P(flowcell_unit_tests,
+INSTANTIATE_TEST_CASE_P(flowcell_unit_tests,
                         flowcell_plot_tests,
                         ::testing::ValuesIn(plot_flowcell_generators));
 
@@ -137,6 +137,6 @@ INSTANTIATE_TEST_SUITE_P(flowcell_unit_tests,
 
 plot_regression_test_generator<flowcell_data> flowcell_regression_test_gen("plot", constants::FlowcellPlot);
 
-INSTANTIATE_TEST_SUITE_P(flowcell_regression_test,
+INSTANTIATE_TEST_CASE_P(flowcell_regression_test,
                         flowcell_plot_tests,
                         ProxyValuesIn(flowcell_regression_test_gen, regression_test_data::instance().files()));

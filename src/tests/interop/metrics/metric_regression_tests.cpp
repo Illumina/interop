@@ -116,6 +116,6 @@ protected:
 
 regression_test_metric_generator run_metrics_regression_gen("empty");
 
-INSTANTIATE_TEST_SUITE_P(run_metrics_regression_test,
+INSTANTIATE_TEST_CASE_P(run_metrics_regression_test,
         run_metrics_tests,
         ProxyValuesIn(run_metrics_regression_gen, regression_test_data::instance().files()));
