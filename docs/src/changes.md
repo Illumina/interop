@@ -5,6 +5,7 @@
 | Date       | Description                             |
 |------------|-----------------------------------------|
 | 2025-06-10 | Upgrade github actions agents to latest |
+| 2025-06-10 | Update to Visual Studio 17 2022         |
 
 ## v1.5.0
 

@@ -65,7 +65,7 @@ jobs:
         shell: cmd
         run: |
           python -m pip install --upgrade pip setuptools wheel numpy
-          tools\package.bat Release "Visual Studio 16 2019" package_wheel "-DENABLE_APPS=OFF -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=OFF -DPython_EXECUTABLE=${{ steps.cpver.outputs.python-path }}" -DENABLE_PORTABLE=ON -A x64
+          tools\package.bat Release "Visual Studio 17 2022" package_wheel "-DENABLE_APPS=OFF -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=OFF -DPython_EXECUTABLE=${{ steps.cpver.outputs.python-path }}" -DENABLE_PORTABLE=ON -A x64
 
       - name: Mac OSX Package Python
         if: matrix.os == 'macOS-latest' || matrix.os == 'macOS-latest'
