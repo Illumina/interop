@@ -12,7 +12,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
+        os: [ubuntu-latest, windows-latest, macOS-13]
         buildtype: ["Debug", "Release"]
 
     steps:
@@ -28,31 +28,31 @@ jobs:
           mkdir dist
 
       - name: Configure Windows
-        if: matrix.os == 'windows-latest'
+        if: ${{ startsWith(matrix.os, 'windows') }}
         run: cmake ${{github.workspace}} -Ax64 -B${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.buildtype}} -DPACKAGE_OUTPUT_FILE_PREFIX=${{github.workspace}}/dist -DENABLE_SWIG=ON -DENABLE_PORTABLE=ON -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=ON -DENABLE_PYTHON=OFF -DCSHARP_TEST_FRAMEWORK=netcoreapp8
 
       - name: Install Swig
-        if: matrix.os == 'macOS-latest'
+        if: ${{ startsWith(matrix.os, 'macOS') }}
         run: pip install swig==4.0.2 --prefix="$(pwd)/usr"
 
       - name: Configure OSX
-        if: matrix.os == 'macOS-latest'
+        if: ${{ startsWith(matrix.os, 'macOS') }}
         run: cmake ${{github.workspace}} -B${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.buildtype}} -DPACKAGE_OUTPUT_FILE_PREFIX=${{github.workspace}}/dist -DENABLE_SWIG=ON -DENABLE_PORTABLE=ON -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=ON -DENABLE_PYTHON=OFF -DCSHARP_TEST_FRAMEWORK=netcoreapp8 -DSWIG_EXECUTABLE=$(ls $(pwd)/usr/lib/python3.*/site-packages/swig/data/bin/swig) -DSWIG_DIR=$(dirname $(ls $(pwd)/usr/lib/python3.*/site-packages/swig/data/share/swig/4.0.2/swig.swg))
 
       - name: Build OSX and Windows
-        if: matrix.os != 'ubuntu-latest'
+        if: ${{ !startsWith(matrix.os, 'ubuntu') }}
         run: cmake --build build --config ${{matrix.buildtype}}
 
       - name: Test OSX and Windows
-        if: matrix.os != 'ubuntu-latest'
+        if: ${{ !startsWith(matrix.os, 'ubuntu') }}
         run: cmake --build build --config ${{matrix.buildtype}} --target check
 
       - name: Package OSX and Windows
-        if: matrix.os != 'ubuntu-latest'
+        if: ${{ !startsWith(matrix.os, 'ubuntu') }}
         run: cmake --build build --config ${{matrix.buildtype}} --target nupack
 
       - name: Linux Build, Test and Package in Docker
-        if: matrix.os == 'ubuntu-latest'
+        if: ${{ startsWith(matrix.os, 'ubuntu') }}
         run: docker run --rm -v ${{github.workspace}}/:/io ezralanglois/interop bash -c "cmake /io -Bbuild -DCMAKE_BUILD_TYPE=${{matrix.buildtype}} -DPACKAGE_OUTPUT_FILE_PREFIX=/io/dist -DENABLE_SWIG=ON -DENABLE_PORTABLE=ON -DENABLE_EXAMPLES=OFF -DENABLE_CSHARP=ON -DENABLE_PYTHON=OFF && cmake --build build && cmake --build build --target check && cmake --build build --target nupack"
 
       - name: Test Artifacts
