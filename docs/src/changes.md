@@ -1,5 +1,11 @@
 # Changes {#changes}
 
+## v1.6.0
+
+| Date       | Description                             |
+|------------|-----------------------------------------|
+| 2025-06-10 | Upgrade github actions agents to latest |
+
 ## v1.5.0
 
 | Date       | Description                                  |
