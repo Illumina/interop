@@ -37,27 +37,27 @@ jobs:
           git --version
 
       - name: Package Python 3.8 and earlier
-        if: matrix.os == 'ubuntu-latest' && matrix.pyver != '3.9' && matrix.pyver != '3.10' && matrix.pyver != '3.11' && matrix.pyver != '3.12' && matrix.pyver != '3.13'
+        if: ${{ startsWith(matrix.os, 'ubuntu') && matrix.pyver != '3.9' && matrix.pyver != '3.10' && matrix.pyver != '3.11' && matrix.pyver != '3.12' && matrix.pyver != '3.13' }}
         run: docker run --rm -v ${{github.workspace}}/:/io ezralanglois/interop sh /io/tools/package.sh /io /io/dist travis OFF
 
       - name: Package Python 3.9
-        if: matrix.os == 'ubuntu-latest' && matrix.pyver == '3.9'
+        if: ${{ startsWith(matrix.os, 'ubuntu') && matrix.pyver == '3.9' }}
         run: docker run --rm -v ${{github.workspace}}/:/io $DOCKER_IMAGE sh /io/tools/package.sh /io /io/dist travis OFF Release cp39-cp39
 
       - name: Package Python 3.10
-        if: matrix.os == 'ubuntu-latest' && matrix.pyver == '3.10'
+        if: ${{ startsWith(matrix.os, 'ubuntu') &&  && matrix.pyver == '3.10' }}
         run: docker run --rm -v ${{github.workspace}}/:/io $DOCKER_IMAGE sh /io/tools/package.sh /io /io/dist travis OFF Release cp310-cp310
 
       - name: Package Python 3.11
-        if: matrix.os == 'ubuntu-latest' && matrix.pyver == '3.11'
+        if: ${{ startsWith(matrix.os, 'ubuntu') && matrix.pyver == '3.11' }}
         run: docker run --rm -v ${{github.workspace}}/:/io $DOCKER_IMAGE sh /io/tools/package.sh /io /io/dist travis OFF Release cp311-cp311
 
       - name: Package Python 3.12
-        if: matrix.os == 'ubuntu-latest' && matrix.pyver == '3.12'
+        if: ${{ startsWith(matrix.os, 'ubuntu') &&  matrix.pyver == '3.12' }}
         run: docker run --rm -v ${{github.workspace}}/:/io $DOCKER_IMAGE sh /io/tools/package.sh /io /io/dist travis OFF Release cp312-cp312
 
       - name: Package Python 3.13
-        if: matrix.os == 'ubuntu-latest' && matrix.pyver == '3.13'
+        if: ${{ startsWith(matrix.os, 'ubuntu') &&  matrix.pyver == '3.13' }}
         run: docker run --rm -v ${{github.workspace}}/:/io $DOCKER_IMAGE sh /io/tools/package.sh /io /io/dist travis OFF Release cp313-cp313
 
       - name: Windows Package Python
