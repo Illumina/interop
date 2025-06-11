@@ -24,7 +24,7 @@ jobs:
           dotnet-version: '8.x'
 
       - name: Check DotNET version
-        run: ls /Users/runner/.dotnet
+        run: ls /Users/runner/.dotnet || true
 
       - name: Setup Git name
         run: |
