@@ -23,8 +23,8 @@ jobs:
         with:
           dotnet-version: '8.x'
 
-      - name: Check DotNET version
-        run: ls /Users/runner/.dotnet || true
+      - name: Check Dotnet env
+        run: echo $DOTNET_INSTALL_DIR
 
       - name: Setup Git name
         run: |
