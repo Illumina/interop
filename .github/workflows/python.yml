@@ -45,7 +45,7 @@ jobs:
         run: docker run --rm -v ${{github.workspace}}/:/io $DOCKER_IMAGE sh /io/tools/package.sh /io /io/dist travis OFF Release cp39-cp39
 
       - name: Package Python 3.10
-        if: ${{ startsWith(matrix.os, 'ubuntu') &&  && matrix.pyver == '3.10' }}
+        if: ${{ startsWith(matrix.os, 'ubuntu') && matrix.pyver == '3.10' }}
         run: docker run --rm -v ${{github.workspace}}/:/io $DOCKER_IMAGE sh /io/tools/package.sh /io /io/dist travis OFF Release cp310-cp310
 
       - name: Package Python 3.11
