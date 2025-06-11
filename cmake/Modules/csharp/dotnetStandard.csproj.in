@@ -15,6 +15,7 @@
    <OutputPath>@CSHARP_BUILDER_OUTPUT_PATH@</OutputPath>
    <PlatformTarget>@CSHARP_PLATFORM@</PlatformTarget>
    <AssemblyName>@CSHARP_BUILDER_OUTPUT_NAME@</AssemblyName>
+   <PlatformTarget>@DotNetCore_PLATFORM@</PlatformTarget>
    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
