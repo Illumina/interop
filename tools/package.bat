@@ -129,7 +129,8 @@ rem Build
 rem --------------------------------------------------------------------------------------------------------------------
 
 echo %PREFIX_BEG% Build %SUFFIX%
-cmake --build %BUILD_DIR% --config %BUILD_TYPE% rem -- %MT%
+cmake --build %BUILD_DIR% --config %BUILD_TYPE%
+rem -- %MT%
 if %errorlevel% neq 0 exit /b %errorlevel%
 echo %PREFIX_END% Build %SUFFIX%
 
