@@ -129,7 +129,7 @@ rem Build
 rem --------------------------------------------------------------------------------------------------------------------
 
 echo %PREFIX_BEG% Build %SUFFIX%
-cmake --build %BUILD_DIR% --config %BUILD_TYPE%
+cmake --build %BUILD_DIR% --config %BUILD_TYPE% -- -p:CL_MPcount=1
 rem -- %MT%
 if %errorlevel% neq 0 exit /b %errorlevel%
 echo %PREFIX_END% Build %SUFFIX%
@@ -139,7 +139,7 @@ rem Test
 rem --------------------------------------------------------------------------------------------------------------------
 
 echo %PREFIX_BEG% Test %SUFFIX%
-cmake --build %BUILD_DIR% --config %BUILD_TYPE% --target check -- %MT%
+cmake --build %BUILD_DIR% --config %BUILD_TYPE% --target check -- -p:CL_MPcount=1
 if %errorlevel% neq 0 exit /b %errorlevel%
 echo %PREFIX_END% Test %SUFFIX%
 
