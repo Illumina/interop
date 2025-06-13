@@ -128,7 +128,7 @@ rem ----------------------------------------------------------------------------
 rem Build
 rem --------------------------------------------------------------------------------------------------------------------
 
-echo %PREFIX_BEG% Build %SUFFIX%
+echo %PREFIX_BEG% Build with 1 processor %SUFFIX%
 cmake --build %BUILD_DIR% --config %BUILD_TYPE% --parallel 1
 rem -- %MT%
 if %errorlevel% neq 0 exit /b %errorlevel%
