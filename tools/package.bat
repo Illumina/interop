@@ -128,9 +128,8 @@ rem ----------------------------------------------------------------------------
 rem Build
 rem --------------------------------------------------------------------------------------------------------------------
 
-echo %PREFIX_BEG% Build with 1 processor %SUFFIX%
-cmake --build %BUILD_DIR% --config %BUILD_TYPE% --parallel 1
-rem -- %MT%
+echo %PREFIX_BEG% Build %SUFFIX%
+cmake --build %BUILD_DIR% --config %BUILD_TYPE% -- %MT%
 if %errorlevel% neq 0 exit /b %errorlevel%
 echo %PREFIX_END% Build %SUFFIX%
 
@@ -139,7 +138,7 @@ rem Test
 rem --------------------------------------------------------------------------------------------------------------------
 
 echo %PREFIX_BEG% Test %SUFFIX%
-cmake --build %BUILD_DIR% --config %BUILD_TYPE% --target check -- -p:CL_MPcount=1
+cmake --build %BUILD_DIR% --config %BUILD_TYPE% --target check -- %MT%
 if %errorlevel% neq 0 exit /b %errorlevel%
 echo %PREFIX_END% Test %SUFFIX%
 
