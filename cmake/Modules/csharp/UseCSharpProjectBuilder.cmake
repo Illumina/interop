@@ -157,6 +157,13 @@ macro( csharp_add_project type name )
     message(STATUS "DotNetStandard_FOUND=${DotNetStandard_FOUND}")
     message(STATUS "CSBUILD_NUSPEC_FILE=${CSBUILD_NUSPEC_FILE}")
 
+    set(IPA_VALID_ARM64_PROCESSORS "aarch64;ARM64;arm64")
+    if(CMAKE_SYSTEM_PROCESSOR IN_LIST IPA_VALID_ARM64_PROCESSORS)
+        set(DotNetCore_PLATFORM "arm64" CACHE STRING "C# target platform: x86, x64, anycpu, or itanium")
+    else()
+        set(DotNetCore_PLATFORM "x64" CACHE STRING "C# target platform: x86, x64, anycpu, or itanium")
+    endif()
+
     file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/cmake/ConfigureFile.cmake "configure_file(\${CONFIG_INPUT_FILE} \${CONFIG_OUTPUT_FILE} @ONLY)")
     set(CSBUILD_${name}_CSPROJ "${name}_${CSBUILD_CSPROJ}")
     file(TO_NATIVE_PATH ${CSHARP_BUILDER_OUTPUT_PATH} CSHARP_BUILDER_OUTPUT_PATH_NATIVE)
@@ -172,6 +179,7 @@ macro( csharp_add_project type name )
             -DCSHARP_BUILDER_SOURCES="${CSHARP_BUILDER_SOURCES}"
             -DCSHARP_TARGET_FRAMEWORK_VERSION="${CSHARP_TARGET_FRAMEWORK_VERSION}"
             -DCSHARP_PACKAGE_REFERENCES="${CSHARP_PACKAGE_REFERENCES}"
+            -DDotNetCore_PLATFORM="${DotNetCore_PLATFORM}"
             -DMSBUILD_TOOLSET="${MSBUILD_TOOLSET}"
             -DCSHARP_IMPORTS="${CSHARP_IMPORTS}"
             -DCONFIG_INPUT_FILE="${CSBUILD_CSPROJ_IN}"

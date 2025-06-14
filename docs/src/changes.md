@@ -1,5 +1,13 @@
 # Changes {#changes}
 
+## v1.6.0
+
+| Date       | Description                                                            |
+|------------|------------------------------------------------------------------------|
+| 2025-06-11 | Add support for ARM Mac                                                |
+| 2025-06-10 | Upgrade github actions agents to latest                                |
+| 2025-06-10 | Update to Visual Studio 17 2022 (workaround segfault in MSVC compiler) |
+
 ## v1.5.0
 
 | Date       | Description                                  |

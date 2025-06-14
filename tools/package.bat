@@ -94,7 +94,7 @@ rem ----------------------------------------------------------------------------
 
 rem https://github.com/actions/setup-python/issues/121
 echo %PREFIX_BEG% Configure %SUFFIX%
-cmake %SOURCE_DIR% -G%COMPILER% -B%BUILD_DIR% %BUILD_PARAM%
+cmake %SOURCE_DIR% -G%COMPILER% -B%BUILD_DIR% %BUILD_PARAM% -A x64
 if "%errorlevel%" == "0" goto CONFIGURE_SUCCESS
 set level=%errorlevel%
 type %BUILD_DIR%\CMakeFiles\CMakeError.log

@@ -159,7 +159,15 @@ foreach(SRC ${SWIG_SRCS})
     set(SWIG_MODULE ${SWIG_MODULE_${MODULE}_REAL_NAME})
 
     if(PYTHON_GENERATED_COMPILE_FLAGS)
-        set_target_properties(${SWIG_MODULE} PROPERTIES COMPILE_FLAGS "${PYTHON_GENERATED_COMPILE_FLAGS}")
+        if(MSVC) # Workaround compiler bug
+            if(SRC MATCHES "metrics.i$")
+                set_target_properties(${SWIG_MODULE} PROPERTIES COMPILE_FLAGS "${PYTHON_GENERATED_COMPILE_FLAGS} /Od")
+            else()
+                set_target_properties(${SWIG_MODULE} PROPERTIES COMPILE_FLAGS "${PYTHON_GENERATED_COMPILE_FLAGS}")
+            endif()
+        else()
+            set_target_properties(${SWIG_MODULE} PROPERTIES COMPILE_FLAGS "${PYTHON_GENERATED_COMPILE_FLAGS}")
+        endif()
     endif()
 
     if(PYTHON_GENERATED_LINK_FLAGS)

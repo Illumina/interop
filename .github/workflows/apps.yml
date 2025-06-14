@@ -27,27 +27,27 @@ jobs:
           git --version
 
       - name: Configure Windows
-        if: matrix.os == 'windows-latest'
+        if: ${{ startsWith(matrix.os, 'windows') }}
         run: cmake ${{github.workspace}} -Ax64 -B${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.buildtype}} -DPACKAGE_OUTPUT_FILE_PREFIX=${{github.workspace}}/dist -DENABLE_SWIG=OFF -DENABLE_PORTABLE=ON -DDISABLE_PACKAGE_SUBDIR=ON
 
       - name: Configure OSX
-        if: matrix.os == 'macOS-latest'
+        if: ${{ startsWith(matrix.os, 'macOS') }}
         run: cmake ${{github.workspace}} -B${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.buildtype}} -DPACKAGE_OUTPUT_FILE_PREFIX=${{github.workspace}}/dist -DENABLE_SWIG=OFF -DENABLE_PORTABLE=ON -DDISABLE_PACKAGE_SUBDIR=ON
 
       - name: Build OSX and Windows
-        if: matrix.os != 'ubuntu-latest'
+        if: ${{ !startsWith(matrix.os, 'ubuntu') }}
         run: cmake --build build --config ${{matrix.buildtype}}
 
       - name: Test OSX and Windows
-        if: matrix.os != 'ubuntu-latest'
+        if: ${{ !startsWith(matrix.os, 'ubuntu') }}
         run: cmake --build build --config ${{matrix.buildtype}} --target check
 
       - name: Package OSX and Windows
-        if: matrix.os != 'ubuntu-latest'
+        if: ${{ !startsWith(matrix.os, 'ubuntu') }}
         run: cmake --build build --config ${{matrix.buildtype}} --target bundle
 
       - name: Linux Build, Test and Package in Docker
-        if: matrix.os == 'ubuntu-latest'
+        if: ${{ startsWith(matrix.os, 'ubuntu') }}
         run: docker run --rm -v ${{github.workspace}}/:/io ezralanglois/interop bash -c "cmake /io -Bbuild -DCMAKE_BUILD_TYPE=${{matrix.buildtype}} -DPACKAGE_OUTPUT_FILE_PREFIX=/io/dist -DENABLE_SWIG=OFF -DENABLE_PORTABLE=ON -DDISABLE_PACKAGE_SUBDIR=ON && cmake --build build && cmake --build build --target check && cmake --build build --target bundle"
 
       - name: Test Artifacts
