@@ -220,7 +220,7 @@ namespace illumina { namespace interop { namespace io
                     INTEROP_ASSERT(header.m_qscore_bins[i].value() > 0);
                     INTEROP_ASSERTMSG((header.m_qscore_bins[i].value() - 1) < q_metric::MAX_Q_BINS,
                                       header.m_qscore_bins[i].value() - 1 << " < " << q_metric::MAX_Q_BINS);
-                    hist[header.m_qscore_bins[i].value() - 1] = metric.m_qscore_hist[i];
+                    hist[header.m_qscore_bins[i].value() - 1] = static_cast<count_t>(metric.m_qscore_hist[i]);
                 }
                 return stream_map<count_t>(stream, hist, q_metric::MAX_Q_BINS);
             }
@@ -757,6 +757,295 @@ namespace illumina { namespace interop { namespace io
         }
     };
 
+
+    /** Q-score Metric Record Layout Version 8
+     *
+     * This class provides an interface to reading the q-metric file:
+     *  - InterOp/QMetrics.bin
+     *  - InterOp/QMetricsOut.bin
+     *
+     * The class takes two template arguments:
+     *
+     *      1. Metric Type: q_metric
+     *      2. Version: 8
+     */
+    template<>
+    struct generic_layout<q_metric, 8> : public default_layout<8>
+    {
+        /** @page q_v8 Q-Metrics Version 8
+         *
+         * This class provides an interface to reading the q-metric file:
+         *  - InterOp/QMetrics.bin
+         *  - InterOp/QMetricsOut.bin
+         *
+         *  Bug: this does not support no header or 50 bins
+         *
+         *  The file format for q-metrics is as follows:
+         *
+         *  @b Header
+         *
+         *  illumina::interop::io::read_metrics (Function that parses this information)
+         *
+         *          byte 0: version number (8)
+         *          byte 1: record size (8 + 4*binCount if flag is true otherwise 208)
+         *
+         *  @b Extended Header
+         *
+         *  illumina::interop::io::generic_layout<q_metric, 7> (Class that parses this information)
+         *
+         *          byte 2:                         flag indicating whether is has bins (bool)
+         *
+         *     If byte 2 is true, then the following information is also in the header:
+         *
+         *          byte 3:              number of bins (uint8)
+         *          byte 4-4+binCount*3: array of (low, high, value) for each bin (uint8)
+         *
+         *  @b n-Records
+         *
+         *  illumina::interop::io::layout::base_cycle_metric (Class that parses this information)
+         *
+         *          2 bytes: lane number (uint16)
+         *          4 bytes: tile number (uint32)
+         *          2 bytes: cycle number (uint16)
+         *
+         *  illumina::interop::io::generic_layout<q_metric, 8> (Class that parses this information)
+         *
+         *          4*binCount bytes: q-score histogram (uint32_t*binCount)
+         *
+         *  Note, if the header has no bins, then binCount is 50 for the records
+         */
+        /** Metric ID type */
+        typedef layout::base_cycle_metric< ::uint32_t > metric_id_t;
+        /** Histogram count type */
+        typedef ::uint64_t count_t;
+        /** Bool type */
+        typedef ::uint8_t bool_t;
+        /** Bin count type */
+        typedef ::uint8_t bin_count_t;
+        /** Bin type */
+        typedef q_score_bin_layout::bin_t bin_t;
+        /** Record size */
+        typedef uint8_t record_size_t;
+
+        /** Map reading/writing to stream
+         *
+         * Reading and writing are symmetric operations, map it once
+         *
+         * @param stream input/output stream
+         * @param metric source/destination metric
+         * @param header metric header layout
+         * @return number of bytes read or total number of bytes written
+         */
+        template<class Stream, class Metric, class Header>
+        static size_t map_stream(Stream &stream, Metric &metric, Header &header, const bool)
+        {
+            return stream_map<count_t>(stream, metric.m_qscore_hist, header.bin_count());
+        }
+
+        /** Compute the layout size
+         *
+         * @return size of the record
+         */
+        static record_size_t compute_size(const q_metric::header_type &header)
+        {
+            return static_cast<record_size_t>(sizeof(metric_id_t) + sizeof(count_t) * header.bin_count());
+        }
+
+        /** Map reading/writing a header to a stream
+         *
+         * Reading and writing are symmetric operations, map it once
+         *
+         * @param stream input/output stream
+         * @param header source/destination header
+         * @return number of bytes read or total number of bytes written
+         */
+        template<class Stream, class Header>
+        static size_t map_stream_for_header(Stream &stream, Header &header)
+        {
+            bool_t has_bins = header.bin_count() > 0;
+            size_t count = 0;
+            count += stream_map<bool_t>(stream, has_bins);
+            if (stream.fail())
+            {
+                return count;
+            }
+            if (!has_bins)
+            {
+                return count;
+            }
+            bin_count_t bin_count = static_cast<bin_count_t>(header.bin_count());
+            count += stream_map<bin_count_t>(stream, bin_count);
+            if (stream.fail()) return count;
+            if(bin_count > q_metric::MAX_Q_BINS)
+                INTEROP_THROW(bad_format_exception, "Bin count exceeds max: " << bin_count << " > " << q_metric::MAX_Q_BINS);
+            if(bin_count==0)
+                INTEROP_THROW(bad_format_exception, "Zero bins is not supported");
+            count += stream_map<q_score_bin_layout>(stream, header.m_qscore_bins, bin_count);
+            return count;
+        }
+
+        /** Compute header size
+         *
+         * @param header q-metric header
+         * @return header size
+         */
+        static record_size_t compute_header_size(const q_metric::header_type &header)
+        {
+            if (header.bin_count() == 0)
+                return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t) + sizeof(bool_t));
+            return static_cast<record_size_t>(sizeof(record_size_t) +
+                                              sizeof(version_t) + // version
+                                              sizeof(bool_t) + // has bins
+                                              sizeof(bin_count_t) + // number of bins
+                                              header.bin_count() * sizeof(q_score_bin_layout));
+        }
+    };
+
+
+
+    /** Q-score Metric Record Layout Version 9
+     *
+     * This class provides an interface to reading the q-metric file:
+     *  - InterOp/QMetrics.bin
+     *  - InterOp/QMetricsOut.bin
+     *
+     * The class takes two template arguments:
+     *
+     *      1. Metric Type: q_metric
+     *      2. Version: 9
+     */
+    template<>
+    struct generic_layout<q_metric, 9> : public default_layout<9>
+    {
+        /** @page q_v9 Q-Metrics Version 9
+         *
+         * This class provides an interface to reading the q-metric file:
+         *  - InterOp/QMetrics.bin
+         *  - InterOp/QMetricsOut.bin
+         *
+         *  The file format for q-metrics is as follows:
+         *
+         *  @b Header
+         *
+         *  illumina::interop::io::read_metrics (Function that parses this information)
+         *
+         *          byte 0: version number (9)
+         *          byte 1-2: record size (8 + 4*binCount if flag is true otherwise 208)
+         *
+         *  @b Extended Header
+         *
+         *  illumina::interop::io::generic_layout<q_metric, 7> (Class that parses this information)
+         *
+         *          byte 3:                         flag indicating whether is has bins (bool)
+         *
+         *     If byte 2 is true, then the following information is also in the header:
+         *
+         *          byte 4:              number of bins (uint8)
+         *          byte 5-5+binCount*3: array of (low, high, value) for each bin (uint8)
+         *
+         *  @b n-Records
+         *
+         *  illumina::interop::io::layout::base_cycle_metric (Class that parses this information)
+         *
+         *          2 bytes: lane number (uint16)
+         *          4 bytes: tile number (uint32)
+         *          2 bytes: cycle number (uint16)
+         *
+         *  illumina::interop::io::generic_layout<q_metric, 9> (Class that parses this information)
+         *
+         *          4*binCount bytes: q-score histogram (uint32_t*binCount)
+         *
+         *  Note, if the header has no bins, then binCount is 50 for the records
+         */
+        /** Metric ID type */
+        typedef layout::base_cycle_metric< ::uint32_t > metric_id_t;
+        /** Histogram count type */
+        typedef ::uint64_t count_t;
+        /** Bool type */
+        typedef ::uint8_t bool_t;
+        /** Bin count type */
+        typedef ::uint8_t bin_count_t;
+        /** Bin type */
+        typedef q_score_bin_layout::bin_t bin_t;
+        /** Record size */
+        typedef uint16_t record_size_t;
+
+        /** Map reading/writing to stream
+         *
+         * Reading and writing are symmetric operations, map it once
+         *
+         * @param stream input/output stream
+         * @param metric source/destination metric
+         * @param header metric header layout
+         * @return number of bytes read or total number of bytes written
+         */
+        template<class Stream, class Metric, class Header>
+        static size_t map_stream(Stream &stream, Metric &metric, Header &header, const bool)
+        {
+            const size_t bin_count = (header.bin_count() == 0) ? static_cast<size_t>(q_metric::MAX_Q_BINS) : header.bin_count();
+            return stream_map<count_t>(stream, metric.m_qscore_hist, bin_count);
+        }
+
+        /** Compute the layout size
+         *
+         * @return size of the record
+         */
+        static record_size_t compute_size(const q_metric::header_type &header)
+        {
+            const size_t bin_count = (header.bin_count() == 0) ? static_cast<size_t>(q_metric::MAX_Q_BINS) : header.bin_count();
+            return static_cast<record_size_t>(sizeof(metric_id_t) + sizeof(count_t) * bin_count);
+        }
+
+        /** Map reading/writing a header to a stream
+         *
+         * Reading and writing are symmetric operations, map it once
+         *
+         * @param stream input/output stream
+         * @param header source/destination header
+         * @return number of bytes read or total number of bytes written
+         */
+        template<class Stream, class Header>
+        static size_t map_stream_for_header(Stream &stream, Header &header)
+        {
+            bool_t has_bins = header.bin_count() > 0;
+            size_t count = 0;
+            count += stream_map<bool_t>(stream, has_bins);
+            if (stream.fail())
+            {
+                return count;
+            }
+            if (!has_bins)
+            {
+                return count;
+            }
+            bin_count_t bin_count = static_cast<bin_count_t>(header.bin_count());
+            count += stream_map<bin_count_t>(stream, bin_count);
+            if (stream.fail()) return count;
+            if(bin_count > q_metric::MAX_Q_BINS)
+                INTEROP_THROW(bad_format_exception, "Bin count exceeds max: " << bin_count << " > " << q_metric::MAX_Q_BINS);
+            if(bin_count==0)
+                INTEROP_THROW(bad_format_exception, "Zero bins is not supported");
+            count += stream_map<q_score_bin_layout>(stream, header.m_qscore_bins, bin_count);
+            return count;
+        }
+
+        /** Compute header size
+         *
+         * @param header q-metric header
+         * @return header size
+         */
+        static record_size_t compute_header_size(const q_metric::header_type &header)
+        {
+            if (header.bin_count() == 0)
+                return static_cast<record_size_t>(sizeof(record_size_t) + sizeof(version_t) + sizeof(bool_t));
+            return static_cast<record_size_t>(sizeof(record_size_t) +
+                                              sizeof(version_t) + // version
+                                              sizeof(bool_t) + // has bins
+                                              sizeof(bin_count_t) + // number of bins
+                                              header.bin_count() * sizeof(q_score_bin_layout));
+        }
+    };
+
     /** Q-score by lane Metric Record Layout Version 4
      *
      * This class provides an interface to reading the q_by_lane_metric file:
@@ -824,6 +1113,60 @@ namespace illumina { namespace interop { namespace io
      */
     template<>
     struct generic_layout<q_by_lane_metric, 6> : public generic_layout<q_metric, 6>
+    {
+        /** Skip inserting this metric into the metric set
+         *
+         * This function was originally added to skip control records in tile metrics.
+         *
+         * @param id metric to check
+         * @return true, if the metric id is 0
+         */
+        template<class LayoutId>
+        static bool is_valid(const LayoutId& id)
+        {
+            return id.lane > 0;
+        }
+    };
+    /** Q-score by lane Metric Record Layout Version 8
+     *
+     * This class provides an interface to reading the q_by_lane_metric file:
+     *  - InterOp/QMetricsByLane.bin
+     *  - InterOp/QMetricsByLaneOut.bin
+     *
+     * The class takes two template arguments:
+     *
+     *      1. Metric Type: q_by_lane_metric
+     *      2. Version: 8
+     */
+    template<>
+    struct generic_layout<q_by_lane_metric, 8> : public generic_layout<q_metric, 8>
+    {
+        /** Skip inserting this metric into the metric set
+         *
+         * This function was originally added to skip control records in tile metrics.
+         *
+         * @param id metric to check
+         * @return true, if the metric id is 0
+         */
+        template<class LayoutId>
+        static bool is_valid(const LayoutId& id)
+        {
+            return id.lane > 0;
+        }
+    };
+    /** Q-score by lane Metric Record Layout Version 9
+     *
+     * This class provides an interface to reading the q_by_lane_metric file:
+     *  - InterOp/QMetricsByLane.bin
+     *  - InterOp/QMetricsByLaneOut.bin
+     *
+     * The class takes two template arguments:
+     *
+     *      1. Metric Type: q_by_lane_metric
+     *      2. Version: 9
+     */
+    template<>
+    struct generic_layout<q_by_lane_metric, 9> : public generic_layout<q_metric, 9>
     {
         /** Skip inserting this metric into the metric set
          *
@@ -945,11 +1288,15 @@ INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(q_metric, 4)
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(q_metric, 5)
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(q_metric, 6)
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(q_metric, 7)
+INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(q_metric, 8)
+INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(q_metric, 9)
 
 INTEROP_FORCE_LINK_DEF(q_by_lane_metric)
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(q_by_lane_metric, 4)
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(q_by_lane_metric, 5)
 INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(q_by_lane_metric, 6)
+INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(q_by_lane_metric, 8)
+INTEROP_REGISTER_METRIC_GENERIC_LAYOUT(q_by_lane_metric, 9)
 
 // Text formats
 INTEROP_REGISTER_METRIC_TEXT_LAYOUT(q_metric, 1)

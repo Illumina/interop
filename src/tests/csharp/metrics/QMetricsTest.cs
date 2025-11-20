@@ -78,9 +78,9 @@ namespace Illumina.InterOp.Interop.UnitTest
 		/// <summary>
 		/// Convert sparse representation of histogram to to dense vector
 		/// </summary>
-		protected uint[] ToHist(QVal[] hist)
+		protected ulong[] ToHist(QVal[] hist)
 		{
-		    uint[] bins = new uint[50];
+		    ulong[] bins = new ulong[50];
 		    for(int i=0;i<hist.Length;i++) bins[hist[i].Key] = hist[i].Value;
 		    return bins;
 		}
@@ -193,9 +193,9 @@ namespace Illumina.InterOp.Interop.UnitTest
 		[SetUp]
 		protected override void SetUp()
 		{
-		    uint[] hist1 = new uint[]{0, 267962, 118703, 4284, 2796110, 0, 0};
-		    uint[] hist2 = new uint[]{0,241483, 44960, 1100, 2899568, 0 ,0};
-		    uint[] hist3 = new uint[]{0,212144, 53942, 427, 2920598, 0, 0};
+		    ulong[] hist1 = new ulong[]{0, 267962, 118703, 4284, 2796110, 0, 0};
+		    ulong[] hist2 = new ulong[]{0,241483, 44960, 1100, 2899568, 0 ,0};
+		    ulong[] hist3 = new ulong[]{0,212144, 53942, 427, 2920598, 0, 0};
 
             expected_metrics.Add(new q_metric(7, 1114, 1, hist1, (uint)hist1.Length));
             expected_metrics.Add(new q_metric(7, 1114, 2, hist2, (uint)hist2.Length));

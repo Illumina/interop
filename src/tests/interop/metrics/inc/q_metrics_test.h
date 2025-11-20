@@ -31,8 +31,7 @@ namespace illumina{ namespace interop { namespace unittest
         {
             metrics = metric_set_t(VERSION);
 
-            typedef metric_t::uint_t uint_t;
-            typedef sparse_value<uint_t, metric_t::MAX_Q_BINS> q_val;
+            typedef sparse_value<uint64_t, metric_t::MAX_Q_BINS> q_val;
             const q_val hist1[] = {q_val(6,21208), q_val(19,8227), q_val(32,73051), q_val(37,2339486)};
             const q_val hist2[] = {q_val(6,22647), q_val(19,9570), q_val(32,81839), q_val(37,2413227)};
             const q_val hist3[] = {q_val(6,18878), q_val(19,8168), q_val(32,72634), q_val(37,2342292)};
@@ -146,7 +145,7 @@ namespace illumina{ namespace interop { namespace unittest
                 headervec.push_back(bin_t(lower[i], upper[i], value[i]));
             metrics = metric_set_t(header_t(headervec), VERSION);
             typedef metric_t::uint_t uint_t;
-            typedef sparse_value<uint_t, 7> q_val;
+            typedef sparse_value<uint64_t, 7> q_val;
 
             const q_val hist1[] = {q_val(1,45272), q_val(3,33369), q_val(4,1784241)};
             const q_val hist2[] = {q_val(1,45229), q_val(3,34304), q_val(4,1792186)};
@@ -264,9 +263,9 @@ namespace illumina{ namespace interop { namespace unittest
             metrics = metric_set_t(header_t(headervec), VERSION);
             typedef metric_t::uint_t uint_t;
 
-            const uint_t hist_all1[] = {0, 267962, 118703, 4284, 2796110, 0, 0};
-            const uint_t hist_all2[] = {0,241483, 44960, 1100, 2899568, 0 ,0};
-            const uint_t hist_all3[] = {0,212144, 53942, 427, 2920598, 0, 0};
+            const uint64_t hist_all1[] = {0, 267962, 118703, 4284, 2796110, 0, 0};
+            const uint64_t hist_all2[] = {0,241483, 44960, 1100, 2899568, 0 ,0};
+            const uint64_t hist_all3[] = {0,212144, 53942, 427, 2920598, 0, 0};
 
             metrics.insert(metric_t(7, 1114, 1, to_vector(hist_all1)));
             metrics.insert(metric_t(7, 1114, 2, to_vector(hist_all2)));
@@ -336,9 +335,8 @@ namespace illumina{ namespace interop { namespace unittest
         static void create_expected(metric_set_t& metrics, const model::run::info& =model::run::info())
         {
             metrics = metric_set_t(VERSION);
-            typedef metric_t::uint_t uint_t;
 
-            std::vector<uint_t> hist_tmp(model::metrics::q_metric::MAX_Q_BINS, 0);
+            std::vector<uint64_t> hist_tmp(model::metrics::q_metric::MAX_Q_BINS, 0);
 
             metrics.insert(metric_t(1, 1110, 1, hist_tmp));
             metrics.insert(metric_t(1, 1110, 2, hist_tmp));
@@ -493,9 +491,9 @@ namespace illumina{ namespace interop { namespace unittest
             const ::uint32_t kValue1 = static_cast< ::uint32_t>(1e7);
             const ::uint32_t kValue2 = static_cast< ::uint32_t>(2e7);
             // >= Q30 -> 50.0
-            const ::uint32_t hist[] = {kValue2, kValue2, kValue1, 0, kValue1, kValue2, kValue2};
+            const ::uint64_t hist[] = {kValue2, kValue2, kValue1, 0, kValue1, kValue2, kValue2};
             // >= Q30 -> 42.85 // 3/7
-            const ::uint32_t hist_last_cycle_of_read[] = {kValue2, kValue2, kValue2, kValue1, kValue1, kValue1, kValue1};
+            const ::uint64_t hist_last_cycle_of_read[] = {kValue2, kValue2, kValue2, kValue1, kValue1, kValue1, kValue1};
             for(size_t cycle=1;cycle<=run_info.total_cycles();++cycle)
             {
                 if(run_info.is_last_cycle_of_read(cycle))
@@ -597,9 +595,9 @@ namespace illumina{ namespace interop { namespace unittest
             metrics = metric_set_t(header_t(headervec), VERSION);
             typedef metric_t::uint_t uint_t;
 
-            const uint_t hist_all1[] = {0, 267962, 118703, 4284, 2796110, 0, 0};
-            const uint_t hist_all2[] = {0,241483, 44960, 1100, 2899568, 0 ,0};
-            const uint_t hist_all3[] = {0,212144, 53942, 427, 2920598, 0, 0};
+            const uint64_t hist_all1[] = {0, 267962, 118703, 4284, 2796110, 0, 0};
+            const uint64_t hist_all2[] = {0,241483, 44960, 1100, 2899568, 0 ,0};
+            const uint64_t hist_all3[] = {0,212144, 53942, 427, 2920598, 0, 0};
 
             metrics.insert(metric_t(7, 111014, 1, to_vector(hist_all1)));
             metrics.insert(metric_t(7, 111014, 2, to_vector(hist_all2)));
@@ -620,6 +618,138 @@ namespace illumina{ namespace interop { namespace unittest
                     ,2,0,0,0,0,0,75,-81,3,0,-96,-81,0,0,76,4,0,0,112,62,44,0,0
                     ,0,0,0,0,0,0,0,7,0,-90,-79,1,0,3,0,0,0,0,0,-80,60,3,0,-74
                     ,-46,0,0,-85,1,0,0,-106,-112,44,0,0,0,0,0,0,0,0,0
+            };
+            buffer.assign(tmp, tmp+util::length_of(tmp));
+        }
+    };
+
+
+
+
+    /** This test writes three records of an InterOp files, then reads them back in and compares
+     * each value to ensure they did not change.
+     *
+     * @see model::metrics::q_metric
+     * @note Version 8
+     */
+    struct q_metric_v8 : metric_test<model::metrics::q_metric, 8>
+    {
+        /** Create the expected metric set
+         *
+         * @param metrics destination metric set
+         */
+        static void create_expected(metric_set_t &metrics, const model::run::info& =model::run::info())
+        {
+            typedef header_t::qscore_bin_vector_type qscore_bin_vector_type;
+            typedef header_t::bin_t bin_t;
+            typedef bin_t::bin_type ushort_t;
+            typedef metric_t::uint_t uint_t;
+            const uint_t bin_count = 7;
+
+            const ushort_t lower[] = {2, 10, 20, 25, 30, 35, 40};
+            const ushort_t upper[] = {9, 19, 24, 29, 34, 39, 40};
+            const ushort_t value[] = {2, 14, 21, 27, 32, 36, 40};
+            qscore_bin_vector_type headervec;
+            for(uint_t i=0;i<bin_count;i++)
+                headervec.push_back(bin_t(lower[i], upper[i], value[i]));
+            metrics = metric_set_t(header_t(headervec), VERSION);
+            typedef metric_t::uint_t uint_t;
+
+            const uint64_t hist_all1[] = {0, 267962, 118703, 4284, 2796110, 0, 0};
+            const uint64_t hist_all2[] = {0,241483, 44960, 1100, 2899568, 0 ,0};
+            const uint64_t hist_all3[] = {0,212144, 53942, 427, 2920598, 0, 0};
+
+            metrics.insert(metric_t(7, 111014, 1, to_vector(hist_all1)));
+            metrics.insert(metric_t(7, 111014, 2, to_vector(hist_all2)));
+            metrics.insert(metric_t(7, 111014, 3,to_vector(hist_all3)));
+        }
+        /** Get the expected binary data
+         *
+         * @param buffer binary data string
+         */
+        template<class Collection>
+        static void create_binary_data(Collection &buffer)
+        {
+            const signed char tmp[] =
+            {
+                8
+,64,1,7,2,9,2,10,19,14,20,24,21,25,29,27,30,34,32,35,39
+,36,40,40,40,7,0,-90,-79,1,0,1,0,0,0,0,0,0,0,0,0
+,-70,22,4,0,0,0,0,0,-81,-49,1,0,0,0,0,0,-68,16,0,0
+,0,0,0,0,78,-86,42,0,0,0,0,0,0,0,0,0,0,0,0,0
+,0,0,0,0,0,0,0,0,7,0,-90,-79,1,0,2,0,0,0,0,0
+,0,0,0,0,75,-81,3,0,0,0,0,0,-96,-81,0,0,0,0,0,0
+,76,4,0,0,0,0,0,0,112,62,44,0,0,0,0,0,0,0,0,0
+,0,0,0,0,0,0,0,0,0,0,0,0,7,0,-90,-79,1,0,3,0
+,0,0,0,0,0,0,0,0,-80,60,3,0,0,0,0,0,-74,-46,0,0
+,0,0,0,0,-85,1,0,0,0,0,0,0,-106,-112,44,0,0,0,0,0
+,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+            };
+            buffer.assign(tmp, tmp+util::length_of(tmp));
+        }
+    };
+
+
+
+
+    /** This test writes three records of an InterOp files, then reads them back in and compares
+     * each value to ensure they did not change.
+     *
+     * @see model::metrics::q_metric
+     * @note Version 9
+     */
+    struct q_metric_v9 : metric_test<model::metrics::q_metric, 9>
+    {
+        /** Create the expected metric set
+         *
+         * @param metrics destination metric set
+         */
+        static void create_expected(metric_set_t &metrics, const model::run::info& =model::run::info())
+        {
+            typedef header_t::qscore_bin_vector_type qscore_bin_vector_type;
+            typedef header_t::bin_t bin_t;
+            typedef bin_t::bin_type ushort_t;
+            typedef metric_t::uint_t uint_t;
+            const uint_t bin_count = 7;
+
+            const ushort_t lower[] = {2, 10, 20, 25, 30, 35, 40};
+            const ushort_t upper[] = {9, 19, 24, 29, 34, 39, 40};
+            const ushort_t value[] = {2, 14, 21, 27, 32, 36, 40};
+            qscore_bin_vector_type headervec;
+            for(uint_t i=0;i<bin_count;i++)
+                headervec.push_back(bin_t(lower[i], upper[i], value[i]));
+            metrics = metric_set_t(header_t(headervec), VERSION);
+            typedef metric_t::uint_t uint_t;
+
+            const uint64_t hist_all1[] = {0, 267962, 118703, 4284, 2796110, 0, 0};
+            const uint64_t hist_all2[] = {0,241483, 44960, 1100, 2899568, 0 ,0};
+            const uint64_t hist_all3[] = {0,212144, 53942, 427, 2920598, 0, 0};
+
+            metrics.insert(metric_t(7, 111014, 1, to_vector(hist_all1)));
+            metrics.insert(metric_t(7, 111014, 2, to_vector(hist_all2)));
+            metrics.insert(metric_t(7, 111014, 3,to_vector(hist_all3)));
+        }
+        /** Get the expected binary data
+         *
+         * @param buffer binary data string
+         */
+        template<class Collection>
+        static void create_binary_data(Collection &buffer)
+        {
+            const signed char tmp[] =
+            {
+                9
+,64,0,1,7,2,9,2,10,19,14,20,24,21,25,29,27,30,34,32,35
+,39,36,40,40,40,7,0,-90,-79,1,0,1,0,0,0,0,0,0,0,0
+,0,-70,22,4,0,0,0,0,0,-81,-49,1,0,0,0,0,0,-68,16,0
+,0,0,0,0,0,78,-86,42,0,0,0,0,0,0,0,0,0,0,0,0
+,0,0,0,0,0,0,0,0,0,7,0,-90,-79,1,0,2,0,0,0,0
+,0,0,0,0,0,75,-81,3,0,0,0,0,0,-96,-81,0,0,0,0,0
+,0,76,4,0,0,0,0,0,0,112,62,44,0,0,0,0,0,0,0,0
+,0,0,0,0,0,0,0,0,0,0,0,0,0,7,0,-90,-79,1,0,3
+,0,0,0,0,0,0,0,0,0,-80,60,3,0,0,0,0,0,-74,-46,0
+,0,0,0,0,0,-85,1,0,0,0,0,0,0,-106,-112,44,0,0,0,0
+,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
             };
             buffer.assign(tmp, tmp+util::length_of(tmp));
         }

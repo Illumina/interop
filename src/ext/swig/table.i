@@ -16,6 +16,12 @@
 %import "src/ext/swig/metrics.i"
 %import "src/ext/swig/run_metrics.i"
 
+%ignore operator<<;
+%ignore operator>>;
+%ignore *::operator<<;
+%ignore *::operator>>;
+%ignore illumina::interop::model::table::operator<<;
+%ignore illumina::interop::model::table::operator>>;
 
 // Ensure all the modules import the shared namespace
 %pragma(csharp) moduleimports=%{

@@ -67,6 +67,10 @@ TYPED_TEST_P(metric_stream_test, test_write_read_binary_data)
 {
     typedef typename TestFixture::metric_t metric_t;
     if (TypeParam::disable_binary_data_size) return;
+    if (TestFixture::expected.size() != TestFixture::actual.size())
+    {
+        print_actual(std::cout, TestFixture::actual);
+    }
     ASSERT_EQ(TestFixture::expected.size(), TestFixture::actual.size());
     if (TypeParam::disable_binary_data) return;
     for (::uint32_t i = 0;i<TestFixture::expected.size(); ++i)

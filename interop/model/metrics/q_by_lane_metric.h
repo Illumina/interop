@@ -26,7 +26,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
             /** Unique type code for metric */
             TYPE = constants::QByLane,
             /** Latest version of the InterOp format */
-            LATEST_VERSION = 6
+            LATEST_VERSION = 9
         };
         /** Define the base type */
         typedef constants::base_lane_t base_t;

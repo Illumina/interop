@@ -1,5 +1,12 @@
 # Changes {#changes}
 
+## v1.7.0
+
+| Date       | Description                                                                  |
+|------------|------------------------------------------------------------------------------|
+| 2025-11-19 | Add support for QMetrics v8 and v9 as well as QByLane v8 and v9              |
+| 2025-11-19 | Bug fix for NovaSeqX 25B flow cells and certain plotting logic using QByLane |
+
 ## v1.6.0
 
 | Date       | Description                                                            |
