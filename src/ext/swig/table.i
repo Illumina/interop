@@ -18,6 +18,10 @@
 
 %ignore operator<<;
 %ignore operator>>;
+%ignore *::operator<<;
+%ignore *::operator>>;
+%ignore illumina::interop::model::table::operator<<;
+%ignore illumina::interop::model::table::operator>>
 
 // Ensure all the modules import the shared namespace
 %pragma(csharp) moduleimports=%{

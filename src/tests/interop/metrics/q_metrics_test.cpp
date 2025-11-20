@@ -155,7 +155,7 @@ TEST(q_metrics_test, test_cumulative_reorder)
     typedef q_metric::uint_t uint_t;
     typedef metric_test<q_metric, 0> helper_t;
 
-    uint_t qsum = 0;
+    uint64_t qsum = 0;
     uint64_t hist_all0[] = {0, 267963, 118702, 4281, 2796111, 0, 0};
     uint64_t hist_all1[] = {0, 267962, 118703, 4284, 2796110, 0, 0};
     uint64_t hist_all2[] = {0, 241483, 44960, 1100, 2899568, 0 ,0};

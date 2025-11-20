@@ -78,9 +78,9 @@ namespace Illumina.InterOp.Interop.UnitTest
 		/// <summary>
 		/// Convert sparse representation of histogram to to dense vector
 		/// </summary>
-		protected uint[] ToHist(QVal[] hist)
+		protected ulong[] ToHist(QVal[] hist)
 		{
-		    uint[] bins = new uint[50];
+		    ulong[] bins = new ulong[50];
 		    for(int i=0;i<hist.Length;i++) bins[hist[i].Key] = hist[i].Value;
 		    return bins;
 		}
