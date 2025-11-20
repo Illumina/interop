@@ -35,7 +35,7 @@
  <div class="container">
   <div class="navbar-header">
    <a class="navbar-brand" href="https://www.illumina.com/"><img style='margin-top: -8px !important;height: 40px !important;' src='ILLUMINA_LOGO_RGB_new_200_45.png' /></a>
-   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.5.0</span>  </a>
+   <a class="navbar-brand">InterOp <span style="font-size: 10pt">v1.7.0</span>  </a>
   </div>
   <div class="collapse navbar-collapse">
    <!-- Left -->
@@ -782,12 +782,6 @@ Read in a run folder that is not found
 Traceback (most recent call last):
 ...
 interop.py_interop_run.xml_file_not_found_exception: cannot open file some/non/existing/run_folder_name/RunInfo.xml
-
-Read from a None object
-&gt;&gt;&gt; metrics = read(None)
-Traceback (most recent call last):
-...
-ValueError: invalid null reference in method 'run_metrics_read', argument 2 of type 'std::string const &amp;'
 
 :param run: string path including name of run folder (or run_metrics object)
 :param valid_to_load: list of strings containing InterOp metric names (Default: None, load everything)
