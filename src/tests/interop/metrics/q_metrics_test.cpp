@@ -125,11 +125,11 @@ TEST(q_metrics_test, test_cumulative)
     typedef q_metric::uint_t uint_t;
     typedef metric_test<q_metric, 0> helper_t;
 
-    uint_t qsum = 0;
-    uint_t hist_all0[] = {0, 267963, 118702, 4281, 2796111, 0, 0};
-    uint_t hist_all1[] = {0, 267962, 118703, 4284, 2796110, 0, 0};
-    uint_t hist_all2[] = {0, 241483, 44960, 1100, 2899568, 0 ,0};
-    uint_t hist_all3[] = {0, 212144, 53942, 427, 2920598, 0, 0};
+    uint64_t qsum = 0;
+    uint64_t hist_all0[] = {0, 267963, 118702, 4281, 2796111, 0, 0};
+    uint64_t hist_all1[] = {0, 267962, 118703, 4284, 2796110, 0, 0};
+    uint64_t hist_all2[] = {0, 241483, 44960, 1100, 2899568, 0 ,0};
+    uint64_t hist_all3[] = {0, 212144, 53942, 427, 2920598, 0, 0};
 
     std::vector<q_metric> q_metric_vec;
     q_metric_vec.push_back(q_metric(7, 1114, 1, helper_t::to_vector(hist_all1)));
@@ -156,10 +156,10 @@ TEST(q_metrics_test, test_cumulative_reorder)
     typedef metric_test<q_metric, 0> helper_t;
 
     uint_t qsum = 0;
-    uint_t hist_all0[] = {0, 267963, 118702, 4281, 2796111, 0, 0};
-    uint_t hist_all1[] = {0, 267962, 118703, 4284, 2796110, 0, 0};
-    uint_t hist_all2[] = {0, 241483, 44960, 1100, 2899568, 0 ,0};
-    uint_t hist_all3[] = {0, 212144, 53942, 427, 2920598, 0, 0};
+    uint64_t hist_all0[] = {0, 267963, 118702, 4281, 2796111, 0, 0};
+    uint64_t hist_all1[] = {0, 267962, 118703, 4284, 2796110, 0, 0};
+    uint64_t hist_all2[] = {0, 241483, 44960, 1100, 2899568, 0 ,0};
+    uint64_t hist_all3[] = {0, 212144, 53942, 427, 2920598, 0, 0};
 
     std::vector<q_metric> q_metric_vec;
     q_metric_vec.push_back(q_metric(7, 1114, 2, helper_t::to_vector(hist_all2)));

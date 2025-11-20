@@ -266,16 +266,16 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         typedef header_type::qscore_bin_vector_type qscore_bin_vector_type;
         /** Defines a vector of unsigned 32-bit ints
          */
-        typedef std::vector< ::uint32_t > uint32_vector;
+        typedef std::vector< ::uint64_t > uint32_vector;
         /** Defines a vector of unsigned 32-bit ints (TODO: remove this def)
          */
-        typedef std::vector< ::uint32_t > uint_vector;
+        typedef std::vector< ::uint64_t > uint_vector;
         /** Defines a vector of unsigned 64-bit ints
         */
         typedef std::vector< ::uint64_t > uint64_vector;
         /** Define a uint pointer to a uint array
          */
-        typedef ::uint32_t *uint_pointer_t;
+        typedef ::uint64_t *uint_pointer_t;
     public:
         /** Constructor
          */
@@ -358,7 +358,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          *
          * @return q-score value of the histogram
          */
-        uint_t qscore_hist(const size_t n) const INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
+        uint64_t qscore_hist(const size_t n) const INTEROP_THROW_SPEC((model::index_out_of_bounds_exception))
         {
             INTEROP_BOUNDS_CHECK(n, m_qscore_hist.size(), "Index out of bounds");
             return m_qscore_hist[n];
@@ -386,9 +386,9 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          *
          * @return q-score histogram sum
          */
-        uint_t sum_qscore() const
+        uint64_t sum_qscore() const
         {
-            return std::accumulate(m_qscore_hist.begin(), m_qscore_hist.end(), 0);
+            return std::accumulate(m_qscore_hist.begin(), m_qscore_hist.end(), uint64_t(0));
         }
 
         /** Sum the cumulative q-score histogram
@@ -416,10 +416,10 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @param bins q-score histogram bins
          * @return total of clusters over the given q-score
          */
-        uint_t total_over_qscore(const uint_t qscore,
+        uint64_t total_over_qscore(const uint_t qscore,
                                  const qscore_bin_vector_type &bins) const
         {
-            uint_t total_count = 0;
+            uint64_t total_count = 0;
             for (size_t i = 0; i < bins.size(); i++)
             {
                 if (bins[i].value() >= qscore)
@@ -439,11 +439,11 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @param qscore_index index of the q-score (for unbinned 29 is Q30)
          * @return total of clusters over the given q-score
          */
-        uint_t total_over_qscore(const size_t qscore_index) const
+        uint64_t total_over_qscore(const size_t qscore_index) const
         {
-            uint_t total_count = 0;
+            uint64_t total_count = 0;
             if(qscore_index <= m_qscore_hist.size())
-                total_count = std::accumulate(m_qscore_hist.begin() + qscore_index, m_qscore_hist.end(), 0);
+                total_count = std::accumulate(m_qscore_hist.begin() + qscore_index, m_qscore_hist.end(), uint64_t(0));
             return total_count;
         }
 
@@ -482,7 +482,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         {
             const float total = static_cast<float>(sum_qscore());
             if (total == 0.0f) return std::numeric_limits<float>::quiet_NaN();
-            const uint_t total_count = total_over_qscore(qscore_index);
+            const uint64_t total_count = total_over_qscore(qscore_index);
             return 100 * total_count / total;
         }
 
@@ -548,7 +548,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
         {
             const float total = static_cast<float>(sum_qscore());
             if (total == 0.0f) return std::numeric_limits<float>::quiet_NaN();
-            const uint_t total_count = total_over_qscore(qscore_index, bins);
+            const uint64_t total_count = total_over_qscore(qscore_index, bins);
             return 100.0f * total_count / total;
         }
 
@@ -584,12 +584,12 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @param bins header bins
          * @return median q-score
          */
-        uint_t median(const qscore_bin_vector_type &bins = qscore_bin_vector_type()) const
+        uint64_t median(const qscore_bin_vector_type &bins = qscore_bin_vector_type()) const
         {
-            const uint_t total = sum_qscore();
-            const uint_t position = total % 2 == 0 ? total / 2 + 1 : (total + 1) / 2;
+            const uint64_t total = sum_qscore();
+            const uint64_t position = total % 2 == 0 ? total / 2 + 1 : (total + 1) / 2;
             uint_t i = 0;
-            uint_t sum = 0;
+            uint64_t sum = 0;
             for (; i < m_qscore_hist.size(); i++)
             {
                 sum += m_qscore_hist[i];
@@ -600,7 +600,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
                     break;
                 }
             }
-            return std::numeric_limits<uint_t>::max();
+            return std::numeric_limits<uint64_t>::max();
         }
 
         /** Check if the cumulative histogram has not been populated
@@ -665,7 +665,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics
          * @deprecated Will be removed in 1.1.x (use qscore_hist instead)
          * @return q-score value of the histogram
          */
-        uint_t qscoreHist(const size_t n) const
+        uint64_t qscoreHist(const size_t n) const
         {
             INTEROP_ASSERT(n < m_qscore_hist.size());
             return m_qscore_hist[n];

@@ -31,8 +31,7 @@ namespace illumina{ namespace interop { namespace unittest
         {
             metrics = metric_set_t(VERSION);
 
-            typedef metric_t::uint_t uint_t;
-            typedef sparse_value<uint_t, metric_t::MAX_Q_BINS> q_val;
+            typedef sparse_value<uint64_t, metric_t::MAX_Q_BINS> q_val;
             const q_val hist1[] = {q_val(6,21208), q_val(19,8227), q_val(32,73051), q_val(37,2339486)};
             const q_val hist2[] = {q_val(6,22647), q_val(19,9570), q_val(32,81839), q_val(37,2413227)};
             const q_val hist3[] = {q_val(6,18878), q_val(19,8168), q_val(32,72634), q_val(37,2342292)};
@@ -146,7 +145,7 @@ namespace illumina{ namespace interop { namespace unittest
                 headervec.push_back(bin_t(lower[i], upper[i], value[i]));
             metrics = metric_set_t(header_t(headervec), VERSION);
             typedef metric_t::uint_t uint_t;
-            typedef sparse_value<uint_t, 7> q_val;
+            typedef sparse_value<uint64_t, 7> q_val;
 
             const q_val hist1[] = {q_val(1,45272), q_val(3,33369), q_val(4,1784241)};
             const q_val hist2[] = {q_val(1,45229), q_val(3,34304), q_val(4,1792186)};
@@ -264,9 +263,9 @@ namespace illumina{ namespace interop { namespace unittest
             metrics = metric_set_t(header_t(headervec), VERSION);
             typedef metric_t::uint_t uint_t;
 
-            const uint_t hist_all1[] = {0, 267962, 118703, 4284, 2796110, 0, 0};
-            const uint_t hist_all2[] = {0,241483, 44960, 1100, 2899568, 0 ,0};
-            const uint_t hist_all3[] = {0,212144, 53942, 427, 2920598, 0, 0};
+            const uint64_t hist_all1[] = {0, 267962, 118703, 4284, 2796110, 0, 0};
+            const uint64_t hist_all2[] = {0,241483, 44960, 1100, 2899568, 0 ,0};
+            const uint64_t hist_all3[] = {0,212144, 53942, 427, 2920598, 0, 0};
 
             metrics.insert(metric_t(7, 1114, 1, to_vector(hist_all1)));
             metrics.insert(metric_t(7, 1114, 2, to_vector(hist_all2)));
@@ -336,9 +335,8 @@ namespace illumina{ namespace interop { namespace unittest
         static void create_expected(metric_set_t& metrics, const model::run::info& =model::run::info())
         {
             metrics = metric_set_t(VERSION);
-            typedef metric_t::uint_t uint_t;
 
-            std::vector<uint_t> hist_tmp(model::metrics::q_metric::MAX_Q_BINS, 0);
+            std::vector<uint64_t> hist_tmp(model::metrics::q_metric::MAX_Q_BINS, 0);
 
             metrics.insert(metric_t(1, 1110, 1, hist_tmp));
             metrics.insert(metric_t(1, 1110, 2, hist_tmp));
@@ -493,9 +491,9 @@ namespace illumina{ namespace interop { namespace unittest
             const ::uint32_t kValue1 = static_cast< ::uint32_t>(1e7);
             const ::uint32_t kValue2 = static_cast< ::uint32_t>(2e7);
             // >= Q30 -> 50.0
-            const ::uint32_t hist[] = {kValue2, kValue2, kValue1, 0, kValue1, kValue2, kValue2};
+            const ::uint64_t hist[] = {kValue2, kValue2, kValue1, 0, kValue1, kValue2, kValue2};
             // >= Q30 -> 42.85 // 3/7
-            const ::uint32_t hist_last_cycle_of_read[] = {kValue2, kValue2, kValue2, kValue1, kValue1, kValue1, kValue1};
+            const ::uint64_t hist_last_cycle_of_read[] = {kValue2, kValue2, kValue2, kValue1, kValue1, kValue1, kValue1};
             for(size_t cycle=1;cycle<=run_info.total_cycles();++cycle)
             {
                 if(run_info.is_last_cycle_of_read(cycle))
@@ -597,9 +595,9 @@ namespace illumina{ namespace interop { namespace unittest
             metrics = metric_set_t(header_t(headervec), VERSION);
             typedef metric_t::uint_t uint_t;
 
-            const uint_t hist_all1[] = {0, 267962, 118703, 4284, 2796110, 0, 0};
-            const uint_t hist_all2[] = {0,241483, 44960, 1100, 2899568, 0 ,0};
-            const uint_t hist_all3[] = {0,212144, 53942, 427, 2920598, 0, 0};
+            const uint64_t hist_all1[] = {0, 267962, 118703, 4284, 2796110, 0, 0};
+            const uint64_t hist_all2[] = {0,241483, 44960, 1100, 2899568, 0 ,0};
+            const uint64_t hist_all3[] = {0,212144, 53942, 427, 2920598, 0, 0};
 
             metrics.insert(metric_t(7, 111014, 1, to_vector(hist_all1)));
             metrics.insert(metric_t(7, 111014, 2, to_vector(hist_all2)));
@@ -657,9 +655,9 @@ namespace illumina{ namespace interop { namespace unittest
             metrics = metric_set_t(header_t(headervec), VERSION);
             typedef metric_t::uint_t uint_t;
 
-            const uint_t hist_all1[] = {0, 267962, 118703, 4284, 2796110, 0, 0};
-            const uint_t hist_all2[] = {0,241483, 44960, 1100, 2899568, 0 ,0};
-            const uint_t hist_all3[] = {0,212144, 53942, 427, 2920598, 0, 0};
+            const uint64_t hist_all1[] = {0, 267962, 118703, 4284, 2796110, 0, 0};
+            const uint64_t hist_all2[] = {0,241483, 44960, 1100, 2899568, 0 ,0};
+            const uint64_t hist_all3[] = {0,212144, 53942, 427, 2920598, 0, 0};
 
             metrics.insert(metric_t(7, 111014, 1, to_vector(hist_all1)));
             metrics.insert(metric_t(7, 111014, 2, to_vector(hist_all2)));
@@ -723,9 +721,9 @@ namespace illumina{ namespace interop { namespace unittest
             metrics = metric_set_t(header_t(headervec), VERSION);
             typedef metric_t::uint_t uint_t;
 
-            const uint_t hist_all1[] = {0, 267962, 118703, 4284, 2796110, 0, 0};
-            const uint_t hist_all2[] = {0,241483, 44960, 1100, 2899568, 0 ,0};
-            const uint_t hist_all3[] = {0,212144, 53942, 427, 2920598, 0, 0};
+            const uint64_t hist_all1[] = {0, 267962, 118703, 4284, 2796110, 0, 0};
+            const uint64_t hist_all2[] = {0,241483, 44960, 1100, 2899568, 0 ,0};
+            const uint64_t hist_all3[] = {0,212144, 53942, 427, 2920598, 0, 0};
 
             metrics.insert(metric_t(7, 111014, 1, to_vector(hist_all1)));
             metrics.insert(metric_t(7, 111014, 2, to_vector(hist_all2)));
