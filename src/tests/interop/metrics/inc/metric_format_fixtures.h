@@ -58,6 +58,8 @@ namespace illumina{ namespace interop { namespace unittest
                     q_metric_v6,
                     q_metric_v6_unbinned,
                     q_metric_v7,
+                    q_metric_v8,
+                    q_metric_v9,
                     tile_metric_v2,
                     tile_metric_v3,
                     summary_run_v1
