@@ -220,7 +220,7 @@ namespace illumina { namespace interop { namespace io
                     INTEROP_ASSERT(header.m_qscore_bins[i].value() > 0);
                     INTEROP_ASSERTMSG((header.m_qscore_bins[i].value() - 1) < q_metric::MAX_Q_BINS,
                                       header.m_qscore_bins[i].value() - 1 << " < " << q_metric::MAX_Q_BINS);
-                    hist[header.m_qscore_bins[i].value() - 1] = metric.m_qscore_hist[i];
+                    hist[header.m_qscore_bins[i].value() - 1] = static_cast<count_t>(metric.m_qscore_hist[i]);
                 }
                 return stream_map<count_t>(stream, hist, q_metric::MAX_Q_BINS);
             }
