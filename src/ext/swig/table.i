@@ -16,6 +16,8 @@
 %import "src/ext/swig/metrics.i"
 %import "src/ext/swig/run_metrics.i"
 
+%ignore operator<<;
+%ignore operator>>;
 
 // Ensure all the modules import the shared namespace
 %pragma(csharp) moduleimports=%{
