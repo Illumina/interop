@@ -198,10 +198,10 @@ namespace illumina { namespace interop { namespace logic { namespace metric
         collapsed.set_version(model::metrics::q_collapsed_metric::LATEST_VERSION);
         for(const_iterator beg = metric_set.begin(), end = metric_set.end();beg != end;++beg)
         {
-            const uint_t q20 = beg->total_over_qscore(q20_idx);
-            const uint_t q30 = beg->total_over_qscore(q30_idx);
-            const uint_t total = beg->sum_qscore();
-            const uint_t median = beg->median(metric_set.get_bins());
+            const uint64_t q20 = beg->total_over_qscore(q20_idx);
+            const uint64_t q30 = beg->total_over_qscore(q30_idx);
+            const uint64_t total = beg->sum_qscore();
+            const uint64_t median = beg->median(metric_set.get_bins());
             collapsed.insert(model::metrics::q_collapsed_metric(beg->lane(),
                                                                 beg->tile(),
                                                                 beg->cycle(),

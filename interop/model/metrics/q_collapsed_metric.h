@@ -105,10 +105,10 @@ namespace illumina { namespace interop { namespace model { namespace metrics {
         q_collapsed_metric(const uint_t lane,
                            const uint_t tile,
                            const uint_t cycle,
-                           const uint_t q20,
-                           const uint_t q30,
-                           const uint_t total,
-                           const uint_t median_qscore) :
+                           const uint64_t q20,
+                           const uint64_t q30,
+                           const uint64_t total,
+                           const uint64_t median_qscore) :
                 metric_base::base_cycle_metric(lane, tile, cycle),
                 m_q20(q20),
                 m_q30(q30),
@@ -135,7 +135,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics {
          *
          * @return number of q20 clusters
          */
-        uint_t q20()const
+        uint64_t q20()const
         {
             return m_q20;
         }
@@ -143,7 +143,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics {
          *
          * @return number of q30 clusters
          */
-        uint_t q30()const
+        uint64_t q30()const
         {
             return m_q30;
         }
@@ -151,7 +151,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics {
          *
          * @return total number of q-scored clusters
          */
-        uint_t total()const
+        uint64_t total()const
         {
             return m_total;
         }
@@ -159,7 +159,7 @@ namespace illumina { namespace interop { namespace model { namespace metrics {
          *
          * @return median q-score
          */
-        uint_t median_qscore()const
+        uint64_t median_qscore()const
         {
             return m_median_qscore;
         }
@@ -261,10 +261,10 @@ namespace illumina { namespace interop { namespace model { namespace metrics {
         static const char* suffix(){return "2030";}
 
     private:
-        uint_t m_q20;
-        uint_t m_q30;
-        uint_t m_total;
-        uint_t m_median_qscore;
+        uint64_t m_q20;
+        uint64_t m_q30;
+        uint64_t m_total;
+        uint64_t m_median_qscore;
         ulong_t m_cumulative_q20;
         ulong_t m_cumulative_q30;
         ulong_t m_cumulative_total;
