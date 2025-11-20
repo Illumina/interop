@@ -776,7 +776,7 @@ def read(run, valid_to_load=None, requires=None, search_paths=None, **extra):
     interop.py_interop_run.xml_file_not_found_exception: cannot open file some/non/existing/run_folder_name/RunInfo.xml
 
     Read from a None object
-    >>> metrics = read(None)
+    >>> metrics = read("")
     Traceback (most recent call last):
     ...
     ValueError: invalid null reference in method 'run_metrics_read', argument 2 of type 'std::string const &'
