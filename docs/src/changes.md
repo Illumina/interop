@@ -1,5 +1,11 @@
 # Changes {#changes}
 
+## v1.8.0
+
+| Date       | Description                 |
+|------------|-----------------------------|
+| 2025-12-09 | Add support for Python 3.14 |
+
 ## v1.7.0
 
 | Date       | Description                                                                  |

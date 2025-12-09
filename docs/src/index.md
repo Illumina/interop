@@ -10,7 +10,7 @@ metric files are produced after a run during secondary analysis (index metrics) 
 the original data (collapsed quality scores).
 
 ***
->  We now support an interface to Python 3.8 to 3.13 (see contents below)
+>  We now support an interface to Python 3.8 to 3.14 (see contents below)
 ***
 
 Compatibility
