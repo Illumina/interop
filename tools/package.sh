@@ -173,6 +173,7 @@ if [  -e /opt/python ] ; then
         /opt/python/cp311-cp311/bin/python -m pip install numpy==2.0.0 pandas setuptools
         /opt/python/cp312-cp312/bin/python -m pip install numpy==2.0.0 pandas setuptools
         /opt/python/cp313-cp313/bin/python -m pip install numpy==2.0.0 pandas setuptools
+        /opt/python/cp314-cp314/bin/python -m pip install numpy==2.0.0 pandas setuptools
         /opt/python/cp310-cp310/bin/python -m pip install swig==4.0.2 --prefix=/tmp/usr
 
           echo "Build with specific Python Version: ${PYTHON_VERSION}"
