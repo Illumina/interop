@@ -167,30 +167,31 @@ if [  -e /opt/python ] ; then
           rm -fr ${ARTIFACT_PATH}/tmp
       done
     else
+
+        echo "Build with specific Python Version: ${PYTHON_VERSION}"
+        if [[ "$PYTHON_VERSION" != "cp"* ]]; then
+          pyver="cp${PYTHON_VERSION/./}"
+          PYTHON_VERSION="${pyver}-${pyver}"
+          echo "Converted to PYTHON_VERSION=${PYTHON_VERSION}"
+        fi
         /opt/python/cp38-cp38/bin/python -m pip install numpy==1.17.3 pandas setuptools  --only-binary numpy,pandas
         /opt/python/cp39-cp39/bin/python -m pip install numpy==2.0.0 pandas setuptools  --only-binary numpy,pandas
         /opt/python/cp310-cp310/bin/python -m pip install numpy==2.0.0 pandas setuptools  --only-binary numpy,pandas
         /opt/python/cp311-cp311/bin/python -m pip install numpy==2.0.0 pandas setuptools  --only-binary numpy,pandas
         /opt/python/cp312-cp312/bin/python -m pip install numpy==2.0.0 pandas setuptools  --only-binary numpy,pandas
-        /opt/python/cp313-cp313/bin/python -m pip install numpy==2.0.0 pandas setuptools  --only-binary numpy,pandas
+        /opt/python/cp313-cp313/bin/python -m pip install numpy==2.1.0 pandas setuptools  --only-binary numpy,pandas
         /opt/python/cp314-cp314/bin/python -m pip install numpy==2.1.0 pandas setuptools  --only-binary numpy,pandas
         /opt/python/cp310-cp310/bin/python -m pip install swig==4.0.2 --prefix=/tmp/usr
 
-          echo "Build with specific Python Version: ${PYTHON_VERSION}"
-          if [[ "$PYTHON_VERSION" != "cp"* ]]; then
-              pyver="cp${PYTHON_VERSION/./}"
-              PYTHON_VERSION="${pyver}-${pyver}"
-              echo "Converted to PYTHON_VERSION=${PYTHON_VERSION}"
-          fi
-          PYTHON_BIN=/opt/python/${PYTHON_VERSION}/bin
-          rm -fr ${BUILD_PATH}/src/ext/python/*
-          run "Configure ${PYTHON_VERSION}" cmake $SOURCE_PATH -B${BUILD_PATH} -DPython_EXECUTABLE=${PYTHON_BIN}/python ${CMAKE_EXTRA_FLAGS} -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp -DENABLE_CSHARP=OFF -DSWIG_EXECUTABLE=/tmp/usr/lib/python3.10/site-packages/swig/data/bin/swig  -DSWIG_DIR=/tmp/usr/lib/python3.10/site-packages/swig/data/share/swig/4.0.2/
+        PYTHON_BIN=/opt/python/${PYTHON_VERSION}/bin
+        rm -fr ${BUILD_PATH}/src/ext/python/*
+        run "Configure ${PYTHON_VERSION}" cmake $SOURCE_PATH -B${BUILD_PATH} -DPython_EXECUTABLE=${PYTHON_BIN}/python ${CMAKE_EXTRA_FLAGS} -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp -DENABLE_CSHARP=OFF -DSWIG_EXECUTABLE=/tmp/usr/lib/python3.10/site-packages/swig/data/bin/swig  -DSWIG_DIR=/tmp/usr/lib/python3.10/site-packages/swig/data/share/swig/4.0.2/
 
-          run "Test ${PYTHON_VERSION}" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
-          run "Build ${PYTHON_VERSION}" cmake --build $BUILD_PATH --target package_wheel -- -j${THREAD_COUNT}
-          auditwheel show ${ARTIFACT_PATH}/tmp/interop*${PYTHON_VERSION}*linux_x86_64.whl
-          auditwheel repair ${ARTIFACT_PATH}/tmp/interop*${PYTHON_VERSION}*linux_x86_64.whl -w ${ARTIFACT_PATH}
-          rm -fr ${ARTIFACT_PATH}/tmp
+        run "Test ${PYTHON_VERSION}" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
+        run "Build ${PYTHON_VERSION}" cmake --build $BUILD_PATH --target package_wheel -- -j${THREAD_COUNT}
+        auditwheel show ${ARTIFACT_PATH}/tmp/interop*${PYTHON_VERSION}*linux_x86_64.whl
+        auditwheel repair ${ARTIFACT_PATH}/tmp/interop*${PYTHON_VERSION}*linux_x86_64.whl -w ${ARTIFACT_PATH}
+        rm -fr ${ARTIFACT_PATH}/tmp
     fi
 elif [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PYTHON_VERSION" != "DotNetStandard" ] && [ "$PYTHON_VERSION" != "None" ] ; then
     if [ "$PYTHON_VERSION" == "ALL" ] ; then
