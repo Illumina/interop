@@ -79,7 +79,7 @@ macro(interop_config_compiler_and_linker)
         endif()
     endif()
 
-    if(CMAKE_SYSTEM_PROCESSOR NOT MATCHES "(^aarch64)|(^arm64)|(^ARM64)")
+    if(NOT CMAKE_SYSTEM_PROCESSOR MATCHES "(^aarch64)|(^arm64)|(^ARM64)")
         include(CheckTypeSize)
         check_type_size("float" SIZEOF_FLOAT)
         if( "${SIZEOF_FLOAT}" STREQUAL "" )
