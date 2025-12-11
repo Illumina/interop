@@ -177,6 +177,10 @@ if [  -e /opt/python ] ; then
         /opt/python/cp310-cp310/bin/python -m pip install swig==4.0.2 --prefix=/tmp/usr
 
           echo "Build with specific Python Version: ${PYTHON_VERSION}"
+          if [[ "$PYTHON_VERSION" != "cp"* ]]; then
+              pyver="cp${PYTHON_VERSION/./}"
+              PYTHON_VERSION="${pyver}-${pyver}"
+          fi
           PYTHON_BIN=/opt/python/${PYTHON_VERSION}/bin
           rm -fr ${BUILD_PATH}/src/ext/python/*
           run "Configure ${PYTHON_VERSION}" cmake $SOURCE_PATH -B${BUILD_PATH} -DPython_EXECUTABLE=${PYTHON_BIN}/python ${CMAKE_EXTRA_FLAGS} -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp -DENABLE_CSHARP=OFF -DSWIG_EXECUTABLE=/tmp/usr/lib/python3.10/site-packages/swig/data/bin/swig  -DSWIG_DIR=/tmp/usr/lib/python3.10/site-packages/swig/data/share/swig/4.0.2/

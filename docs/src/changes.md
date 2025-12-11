@@ -1,5 +1,11 @@
 # Changes {#changes}
 
+## v1.9.0
+
+| Date       | Description                                 |
+|------------|---------------------------------------------|
+| 2025-12-11 | Add support for Linux ARM for Python wheels |
+
 ## v1.8.0
 
 | Date       | Description                 |
