@@ -176,17 +176,20 @@ if [  -e /opt/python ] ; then
         fi
 
         if [[ "$PYTHON_VERSION" == "cp314-cp314" ]]; then
-            /opt/python/cp314-cp314/bin/python -m pip install numpy==2.3.2 pandas setuptools
+            /opt/python/cp314-cp314/bin/python -m pip install numpy==2.0.0 pandas setuptools
         else
             ver=(${PYTHON_VERSION//-/ })
             ver="${ver[0]}"
+            ver_ref=NUMPY_VERSION_${ver}
+            ver=${!ver_ref}
             NUMPY_VERSION_cp38="1.17.3"
             NUMPY_VERSION_cp39="2.0.0"
             NUMPY_VERSION_cp310="2.0.0"
             NUMPY_VERSION_cp311="2.0.0"
             NUMPY_VERSION_cp312="2.0.0"
             NUMPY_VERSION_cp313="2.1.0"
-            /opt/python/cp38-cp38/bin/python -m pip install numpy==${NUMPY_VERSION_${ver}} pandas setuptools --only-binary numpy,pandas
+            echo "Numpy version: ${ver}"
+            /opt/python/cp38-cp38/bin/python -m pip install numpy==${ver} pandas setuptools --only-binary numpy,pandas
         fi
         /opt/python/cp310-cp310/bin/python -m pip install swig==4.0.2 --prefix=/tmp/usr
 
