@@ -174,13 +174,20 @@ if [  -e /opt/python ] ; then
           PYTHON_VERSION="${pyver}-${pyver}"
           echo "Converted to PYTHON_VERSION=${PYTHON_VERSION}"
         fi
-        /opt/python/cp38-cp38/bin/python -m pip install numpy==1.17.3 pandas setuptools  --only-binary numpy,pandas
-        /opt/python/cp39-cp39/bin/python -m pip install numpy==2.0.0 pandas setuptools  --only-binary numpy,pandas
-        /opt/python/cp310-cp310/bin/python -m pip install numpy==2.0.0 pandas setuptools  --only-binary numpy,pandas
-        /opt/python/cp311-cp311/bin/python -m pip install numpy==2.0.0 pandas setuptools  --only-binary numpy,pandas
-        /opt/python/cp312-cp312/bin/python -m pip install numpy==2.0.0 pandas setuptools  --only-binary numpy,pandas
-        /opt/python/cp313-cp313/bin/python -m pip install numpy==2.1.0 pandas setuptools  --only-binary numpy,pandas
-        /opt/python/cp314-cp314/bin/python -m pip install numpy==2.3.2 pandas setuptools  --only-binary numpy,pandas
+
+        if [[ "$PYTHON_VERSION" == "cp314-cp314" ]]; then
+            /opt/python/cp314-cp314/bin/python -m pip install numpy==2.3.2 pandas setuptools
+        else
+            ver=(${PYTHON_VERSION//-/ })
+            ver="${ver[0]}"
+            NUMPY_VERSION_cp38="1.17.3"
+            NUMPY_VERSION_cp39="2.0.0"
+            NUMPY_VERSION_cp310="2.0.0"
+            NUMPY_VERSION_cp311="2.0.0"
+            NUMPY_VERSION_cp312="2.0.0"
+            NUMPY_VERSION_cp313="2.1.0"
+            /opt/python/cp38-cp38/bin/python -m pip install numpy==${NUMPY_VERSION_${ver}} pandas setuptools --only-binary numpy,pandas
+        fi
         /opt/python/cp310-cp310/bin/python -m pip install swig==4.0.2 --prefix=/tmp/usr
 
         PYTHON_BIN=/opt/python/${PYTHON_VERSION}/bin
