@@ -162,8 +162,10 @@ if [  -e /opt/python ] ; then
 
           run "Test ${PYBUILD}" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
           run "Build ${PYBUILD}" cmake --build $BUILD_PATH --target package_wheel -- -j${THREAD_COUNT}
-          auditwheel show ${ARTIFACT_PATH}/tmp/interop*${PYBUILD}*linux_x86_64.whl
-          auditwheel repair ${ARTIFACT_PATH}/tmp/interop*${PYBUILD}*linux_x86_64.whl -w ${ARTIFACT_PATH}
+          # Detect architecture dynamically
+          WHEEL_ARCH=$(uname -m)
+          auditwheel show ${ARTIFACT_PATH}/tmp/interop*${PYBUILD}*linux_${WHEEL_ARCH}.whl
+          auditwheel repair ${ARTIFACT_PATH}/tmp/interop*${PYBUILD}*linux_${WHEEL_ARCH}.whl -w ${ARTIFACT_PATH}
           rm -fr ${ARTIFACT_PATH}/tmp
       done
     else
@@ -183,8 +185,10 @@ if [  -e /opt/python ] ; then
 
           run "Test ${PYTHON_VERSION}" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
           run "Build ${PYTHON_VERSION}" cmake --build $BUILD_PATH --target package_wheel -- -j${THREAD_COUNT}
-          auditwheel show ${ARTIFACT_PATH}/tmp/interop*${PYTHON_VERSION}*linux_x86_64.whl
-          auditwheel repair ${ARTIFACT_PATH}/tmp/interop*${PYTHON_VERSION}*linux_x86_64.whl -w ${ARTIFACT_PATH}
+          # Detect architecture dynamically
+          WHEEL_ARCH=$(uname -m)
+          auditwheel show ${ARTIFACT_PATH}/tmp/interop*${PYTHON_VERSION}*linux_${WHEEL_ARCH}.whl
+          auditwheel repair ${ARTIFACT_PATH}/tmp/interop*${PYTHON_VERSION}*linux_${WHEEL_ARCH}.whl -w ${ARTIFACT_PATH}
           rm -fr ${ARTIFACT_PATH}/tmp
     fi
 elif [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PYTHON_VERSION" != "DotNetStandard" ] && [ "$PYTHON_VERSION" != "None" ] ; then

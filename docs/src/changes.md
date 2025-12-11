@@ -1,5 +1,11 @@
 # Changes {#changes}
 
+## v1.9.0
+
+| Date       | Description                                                 |
+|------------|-------------------------------------------------------------|
+| 2025-12-11 | Add ARM64 (aarch64) Linux wheel support for Python 3.8-3.14 |
+
 ## v1.8.0
 
 | Date       | Description                 |

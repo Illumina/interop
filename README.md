@@ -11,6 +11,7 @@ with one exception: GA systems have been excluded.
 
 ***
 > We now support an interface to 3.8-3.14
+> Linux wheels are available for both x86_64 and ARM64 (aarch64) architectures
 > Note that 3.10-3.14 are CentOS 7 or later while earlier versions support Centos 5 or later
 > Note: dumptext has been deprecated in favor of imaging_table and will be removed in the next version
 ***
