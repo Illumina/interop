@@ -3,6 +3,7 @@ name: Python Wheels
 env:
   MACOSX_DEPLOYMENT_TARGET: 10.9
   DOCKER_IMAGE: quay.io/pypa/manylinux2014_x86_64
+  DOCKER_IMAGE_AARCH64: quay.io/pypa/manylinux2014_aarch64
 
 on:
   push:
@@ -36,13 +37,17 @@ jobs:
           git config user.email "<>"
           git --version
 
-      - name: Package Python 3.8 and earlier
+      - name: Package Python 3.8 and earlier for Linux x86_64
         if: ${{ startsWith(matrix.os, 'ubuntu') && matrix.pyver == '3.8' }}
         run: docker run --rm -v ${{github.workspace}}/:/io ezralanglois/interop sh /io/tools/package.sh /io /io/dist travis OFF
 
-      - name: Package Python 3.9
+      - name: Package Python 3.9-3.x Linux x86_64
         if: ${{ startsWith(matrix.os, 'ubuntu') }}
         run: docker run --rm -v ${{github.workspace}}/:/io $DOCKER_IMAGE sh /io/tools/package.sh /io /io/dist travis OFF Release ${{ matrix.pyver }}
+
+      - name: Package Python 3.9-3.x Linux Arm64
+        if: ${{ startsWith(matrix.os, 'ubuntu') }}
+        run: docker run --rm -v ${{github.workspace}}/:/io $DOCKER_IMAGE_AARCH64 sh /io/tools/package.sh /io /io/dist travis OFF Release ${{ matrix.pyver }}
 
       - name: Windows Package Python
         if: ${{ startsWith(matrix.os, 'windows') }}

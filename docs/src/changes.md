@@ -2,9 +2,10 @@
 
 ## v1.9.0
 
-| Date       | Description                                 |
-|------------|---------------------------------------------|
-| 2025-12-11 | Add support for Linux ARM for Python wheels |
+| Date       | Description                                                             |
+|------------|-------------------------------------------------------------------------|
+| 2025-12-11 | Add support for Linux ARM for Python wheels                             |
+| 2025-12-11 | Speed up linux build by using only binary packages for numpy and pandas |
 
 ## v1.8.0
 

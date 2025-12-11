@@ -167,19 +167,20 @@ if [  -e /opt/python ] ; then
           rm -fr ${ARTIFACT_PATH}/tmp
       done
     else
-        /opt/python/cp38-cp38/bin/python -m pip install numpy==1.17.3 pandas setuptools
-        /opt/python/cp39-cp39/bin/python -m pip install numpy==2.0.0 pandas setuptools
-        /opt/python/cp310-cp310/bin/python -m pip install numpy==2.0.0 pandas setuptools
-        /opt/python/cp311-cp311/bin/python -m pip install numpy==2.0.0 pandas setuptools
-        /opt/python/cp312-cp312/bin/python -m pip install numpy==2.0.0 pandas setuptools
-        /opt/python/cp313-cp313/bin/python -m pip install numpy==2.0.0 pandas setuptools
-        /opt/python/cp314-cp314/bin/python -m pip install numpy==2.0.0 pandas setuptools
+        /opt/python/cp38-cp38/bin/python -m pip install numpy==1.17.3 pandas setuptools  --only-binary numpy,pandas
+        /opt/python/cp39-cp39/bin/python -m pip install numpy==2.0.0 pandas setuptools  --only-binary numpy,pandas
+        /opt/python/cp310-cp310/bin/python -m pip install numpy==2.0.0 pandas setuptools  --only-binary numpy,pandas
+        /opt/python/cp311-cp311/bin/python -m pip install numpy==2.0.0 pandas setuptools  --only-binary numpy,pandas
+        /opt/python/cp312-cp312/bin/python -m pip install numpy==2.0.0 pandas setuptools  --only-binary numpy,pandas
+        /opt/python/cp313-cp313/bin/python -m pip install numpy==2.0.0 pandas setuptools  --only-binary numpy,pandas
+        /opt/python/cp314-cp314/bin/python -m pip install numpy==2.0.0 pandas setuptools  --only-binary numpy,pandas
         /opt/python/cp310-cp310/bin/python -m pip install swig==4.0.2 --prefix=/tmp/usr
 
           echo "Build with specific Python Version: ${PYTHON_VERSION}"
           if [[ "$PYTHON_VERSION" != "cp"* ]]; then
               pyver="cp${PYTHON_VERSION/./}"
               PYTHON_VERSION="${pyver}-${pyver}"
+              echo "Converted to PYTHON_VERSION=${PYTHON_VERSION}"
           fi
           PYTHON_BIN=/opt/python/${PYTHON_VERSION}/bin
           rm -fr ${BUILD_PATH}/src/ext/python/*
@@ -258,7 +259,7 @@ elif [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PY
             which pip
             python -m pip install delocate || true
             python --version
-            python -m pip install numpy
+            python -m pip install numpy --only-binary numpy,pandas
             python -m pip install wheel
             python -m pip install setuptools
             echo "Check setuptools"
