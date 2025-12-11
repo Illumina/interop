@@ -181,13 +181,15 @@ if [  -e /opt/python ] ; then
             ver=(${PYTHON_VERSION//-/ })
             ver="${ver[0]}"
             ver_ref=NUMPY_VERSION_${ver}
-            ver=${!ver_ref}
+            echo "Numpy python version: ${ver}"
+            echo "Numpy version ref: ${ver_ref}"
             NUMPY_VERSION_cp38="1.17.3"
             NUMPY_VERSION_cp39="2.0.0"
             NUMPY_VERSION_cp310="2.0.0"
             NUMPY_VERSION_cp311="2.0.0"
             NUMPY_VERSION_cp312="2.0.0"
             NUMPY_VERSION_cp313="2.1.0"
+            ver=${!ver_ref}
             echo "Numpy version: ${ver}"
             /opt/python/cp38-cp38/bin/python -m pip install numpy==${ver} pandas setuptools --only-binary numpy,pandas
         fi
