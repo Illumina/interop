@@ -191,6 +191,11 @@ if [  -e /opt/python ] ; then
         rm -fr ${BUILD_PATH}/src/ext/python/*
         run "Configure ${PYTHON_VERSION}" cmake $SOURCE_PATH -B${BUILD_PATH} -DPython_EXECUTABLE=${PYTHON_BIN}/python ${CMAKE_EXTRA_FLAGS} -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp -DENABLE_CSHARP=OFF -DSWIG_EXECUTABLE=/tmp/usr/lib/python3.10/site-packages/swig/data/bin/swig  -DSWIG_DIR=/tmp/usr/lib/python3.10/site-packages/swig/data/share/swig/4.0.2/
 
+        set +e
+        for attempt in 1 2 3; do
+            run "Test ${PYTHON_VERSION}" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
+        done
+        set -e
         run "Test ${PYTHON_VERSION}" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
 
         set +e
