@@ -26,7 +26,7 @@ jobs:
           fetch-depth: 0
 
       - uses: actions/setup-python@v4
-        if: matrix.os != 'ubuntu-latest'
+        if: ${{ !startsWith(matrix.os, 'ubuntu') }}
         with:
           python-version: ${{matrix.pyver}}
         id: cpver
