@@ -50,7 +50,7 @@ jobs:
 
       - name: Package Python 3.9-3.x Linux Arm64
         if: ${{ startsWith(matrix.os, 'ubuntu') }}
-        run: docker run --rm -v ${{github.workspace}}/:/io --platform linux/arm64 $DOCKER_IMAGE_AARCH64 sh /io/tools/package.sh /io /io/dist travis OFF Release ${{ matrix.pyver }}
+        run: docker run --rm -v ${{github.workspace}}/:/io $DOCKER_IMAGE_AARCH64 sh /io/tools/package.sh /io /io/dist travis OFF Release ${{ matrix.pyver }}
 
       - name: Windows Package Python
         if: ${{ startsWith(matrix.os, 'windows') }}
