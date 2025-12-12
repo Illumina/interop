@@ -31,7 +31,7 @@ whoami 1>/dev/null 2>&1 || export HOME=$PWD
 
 # Get value from environment for low memory vms
 if [ -z $THREAD_COUNT ] ; then
-    THREAD_COUNT=1
+    THREAD_COUNT=4
 fi
 
 if [ ! -z $1 ] ; then
