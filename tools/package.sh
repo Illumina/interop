@@ -178,7 +178,7 @@ if [  -e /opt/python ] ; then
             /opt/python/${PYTHON_VERSION}/bin/python -m pip install numpy==1.17.3 pandas setuptools --only-binary numpy,pandas
         else
             # We are using an older CentOS 7 image, so we should rebuild numpy and pandas from source
-            /opt/python/${PYTHON_VERSION}/bin/python -m pip install numpy setuptools
+            /opt/python/${PYTHON_VERSION}/bin/python -m pip install numpy>=2.0.0 setuptools
             #/opt/python/${PYTHON_VERSION}/bin/python -m pip install pandas
         fi
         /opt/python/cp310-cp310/bin/python -m pip install swig==4.0.2 --prefix=/tmp/usr
