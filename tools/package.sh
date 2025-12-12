@@ -175,7 +175,12 @@ if [  -e /opt/python ] ; then
           echo "Converted to PYTHON_VERSION=${PYTHON_VERSION}"
         fi
         if [[ "$PYTHON_VERSION" == "cp38-cp38" ]]; then
+            set +e
             /opt/python/${PYTHON_VERSION}/bin/python -m pip install numpy==1.17.3 pandas setuptools --only-binary numpy,pandas
+            if [ $? -ne 0 ] ; then
+                /opt/python/${PYTHON_VERSION}/bin/python -m pip install numpy==1.19.0 pandas setuptools --only-binary numpy,pandas
+            fi
+            set -e
         else
             # We are using an older CentOS 7 image, so we should rebuild numpy and pandas from source
             /opt/python/${PYTHON_VERSION}/bin/python -m pip install numpy>=2.0.0 setuptools
