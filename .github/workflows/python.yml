@@ -39,7 +39,7 @@ jobs:
           git config user.email "<>"
           git --version
 
-      - name: Package Python 3.9-3.x Linux x86_64
+      - name: Package Python 3.8-3.x Linux x86_64
         if: ${{ startsWith(matrix.os, 'ubuntu') }}
         run: docker run --rm -v ${{github.workspace}}/:/io $DOCKER_IMAGE sh /io/tools/package.sh /io /io/dist travis OFF Release ${{ matrix.pyver }}
 
