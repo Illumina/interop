@@ -156,7 +156,7 @@ if [  -e /opt/python ] ; then
           if [[ "$PYBUILD" == cp33* ]]; then
               continue
           fi
-          rm -fr ${BUILD_PATH}
+          rm -fr "${BUILD_PATH}"
 
           run "Configure ${PYBUILD}" cmake $SOURCE_PATH -B${BUILD_PATH} -DPython_EXECUTABLE=${PYTHON_BIN}/python ${CMAKE_EXTRA_FLAGS} -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp -DENABLE_CSHARP=OFF
 
@@ -164,7 +164,7 @@ if [  -e /opt/python ] ; then
           run "Build ${PYBUILD}" cmake --build $BUILD_PATH --target package_wheel -- -j${THREAD_COUNT}
           auditwheel show ${ARTIFACT_PATH}/tmp/interop*${PYBUILD}*linux_*.whl
           auditwheel repair ${ARTIFACT_PATH}/tmp/interop*${PYBUILD}*linux_*.whl -w ${ARTIFACT_PATH}
-          rm -fr ${ARTIFACT_PATH}/tmp
+          rm -fr "${ARTIFACT_PATH}/tmp"
       done
     else
 
@@ -187,8 +187,8 @@ if [  -e /opt/python ] ; then
         fi
         /opt/python/cp310-cp310/bin/python -m pip install swig==4.0.2 --prefix=/tmp/usr
 
-        PYTHON_BIN=/opt/python/${PYTHON_VERSION}/bin
-        rm -fr ${BUILD_PATH}/src/ext/python/*
+        PYTHON_BIN="/opt/python/${PYTHON_VERSION}/bin"
+        rm -fr "${BUILD_PATH}/src/ext/python/*"
         run "Configure ${PYTHON_VERSION}" cmake $SOURCE_PATH -B${BUILD_PATH} -DPython_EXECUTABLE=${PYTHON_BIN}/python ${CMAKE_EXTRA_FLAGS} -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp -DENABLE_CSHARP=OFF -DSWIG_EXECUTABLE=/tmp/usr/lib/python3.10/site-packages/swig/data/bin/swig  -DSWIG_DIR=/tmp/usr/lib/python3.10/site-packages/swig/data/share/swig/4.0.2/
 
         set +e
@@ -206,7 +206,7 @@ if [  -e /opt/python ] ; then
         run "Build ${PYTHON_VERSION}" cmake --build $BUILD_PATH --target package_wheel -- -j${THREAD_COUNT}
         auditwheel show ${ARTIFACT_PATH}/tmp/interop*${PYTHON_VERSION}*linux_*.whl
         auditwheel repair ${ARTIFACT_PATH}/tmp/interop*${PYTHON_VERSION}*linux_*.whl -w ${ARTIFACT_PATH}
-        rm -fr ${ARTIFACT_PATH}/tmp
+        rm -fr "${ARTIFACT_PATH}/tmp"
     fi
 elif [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PYTHON_VERSION" != "DotNetStandard" ] && [ "$PYTHON_VERSION" != "None" ] ; then
     if [ "$PYTHON_VERSION" == "ALL" ] ; then
