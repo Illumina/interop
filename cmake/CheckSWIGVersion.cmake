@@ -9,7 +9,8 @@ function(check_swig_version _major_ver)
             VERSION
             OUTPUT_STRIP_TRAILING_WHITESPACE
     )
-    string(REGEX REPLACE "SWIG Version ([0-9]+)\\.[0-9]+\\.[0-9]+.*" "\\1" swig_major_ver ${VERSION})
+    message(STATUS "SWIG version output: ${VERSION}")
+    string(REGEX REPLACE "SWIG Version ([0-9]+)\\.[0-9]+\\.[0-9]+.*" "\\1" swig_major_ver "${VERSION}")
     string(STRIP ${swig_major_ver} swig_major_ver)
     set(${_major_ver} ${swig_major_ver} PARENT_SCOPE)
 endfunction()

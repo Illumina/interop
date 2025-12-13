@@ -156,36 +156,57 @@ if [  -e /opt/python ] ; then
           if [[ "$PYBUILD" == cp33* ]]; then
               continue
           fi
-          rm -fr ${BUILD_PATH}
+          rm -fr "${BUILD_PATH}"
 
           run "Configure ${PYBUILD}" cmake $SOURCE_PATH -B${BUILD_PATH} -DPython_EXECUTABLE=${PYTHON_BIN}/python ${CMAKE_EXTRA_FLAGS} -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp -DENABLE_CSHARP=OFF
 
           run "Test ${PYBUILD}" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
           run "Build ${PYBUILD}" cmake --build $BUILD_PATH --target package_wheel -- -j${THREAD_COUNT}
-          auditwheel show ${ARTIFACT_PATH}/tmp/interop*${PYBUILD}*linux_x86_64.whl
-          auditwheel repair ${ARTIFACT_PATH}/tmp/interop*${PYBUILD}*linux_x86_64.whl -w ${ARTIFACT_PATH}
-          rm -fr ${ARTIFACT_PATH}/tmp
+          auditwheel show ${ARTIFACT_PATH}/tmp/interop*${PYBUILD}*linux_*.whl
+          auditwheel repair ${ARTIFACT_PATH}/tmp/interop*${PYBUILD}*linux_*.whl -w ${ARTIFACT_PATH}
+          rm -fr "${ARTIFACT_PATH}/tmp"
       done
     else
-        /opt/python/cp38-cp38/bin/python -m pip install numpy==1.17.3 pandas setuptools
-        /opt/python/cp39-cp39/bin/python -m pip install numpy==2.0.0 pandas setuptools
-        /opt/python/cp310-cp310/bin/python -m pip install numpy==2.0.0 pandas setuptools
-        /opt/python/cp311-cp311/bin/python -m pip install numpy==2.0.0 pandas setuptools
-        /opt/python/cp312-cp312/bin/python -m pip install numpy==2.0.0 pandas setuptools
-        /opt/python/cp313-cp313/bin/python -m pip install numpy==2.0.0 pandas setuptools
-        /opt/python/cp314-cp314/bin/python -m pip install numpy==2.0.0 pandas setuptools
+
+        echo "Build with specific Python Version: ${PYTHON_VERSION}"
+        if [[ "$PYTHON_VERSION" != "cp"* ]]; then
+          pyver="cp${PYTHON_VERSION/./}"
+          PYTHON_VERSION="${pyver}-${pyver}"
+          echo "Converted to PYTHON_VERSION=${PYTHON_VERSION}"
+        fi
+        if [[ "$PYTHON_VERSION" == "cp38-cp38" ]]; then
+            set +e
+            /opt/python/${PYTHON_VERSION}/bin/python -m pip install numpy==1.17.3 pandas setuptools --only-binary numpy,pandas
+            if [ $? -ne 0 ] ; then
+                /opt/python/${PYTHON_VERSION}/bin/python -m pip install numpy==1.19.0 pandas setuptools --only-binary numpy,pandas
+            fi
+            set -e
+        else
+            # We are using an older CentOS 7 image, so we should rebuild numpy and pandas from source
+            /opt/python/${PYTHON_VERSION}/bin/python -m pip install numpy>=2.0.0 setuptools
+        fi
         /opt/python/cp310-cp310/bin/python -m pip install swig==4.0.2 --prefix=/tmp/usr
 
-          echo "Build with specific Python Version: ${PYTHON_VERSION}"
-          PYTHON_BIN=/opt/python/${PYTHON_VERSION}/bin
-          rm -fr ${BUILD_PATH}/src/ext/python/*
-          run "Configure ${PYTHON_VERSION}" cmake $SOURCE_PATH -B${BUILD_PATH} -DPython_EXECUTABLE=${PYTHON_BIN}/python ${CMAKE_EXTRA_FLAGS} -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp -DENABLE_CSHARP=OFF -DSWIG_EXECUTABLE=/tmp/usr/lib/python3.10/site-packages/swig/data/bin/swig  -DSWIG_DIR=/tmp/usr/lib/python3.10/site-packages/swig/data/share/swig/4.0.2/
+        PYTHON_BIN="/opt/python/${PYTHON_VERSION}/bin"
+        rm -fr "${BUILD_PATH}/src/ext/python/*"
+        run "Configure ${PYTHON_VERSION}" cmake $SOURCE_PATH -B${BUILD_PATH} -DPython_EXECUTABLE=${PYTHON_BIN}/python ${CMAKE_EXTRA_FLAGS} -DSKIP_PACKAGE_ALL_WHEEL=ON -DPYTHON_WHEEL_PREFIX=${ARTIFACT_PATH}/tmp -DENABLE_CSHARP=OFF -DSWIG_EXECUTABLE=/tmp/usr/lib/python3.10/site-packages/swig/data/bin/swig  -DSWIG_DIR=/tmp/usr/lib/python3.10/site-packages/swig/data/share/swig/4.0.2/
 
-          run "Test ${PYTHON_VERSION}" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
-          run "Build ${PYTHON_VERSION}" cmake --build $BUILD_PATH --target package_wheel -- -j${THREAD_COUNT}
-          auditwheel show ${ARTIFACT_PATH}/tmp/interop*${PYTHON_VERSION}*linux_x86_64.whl
-          auditwheel repair ${ARTIFACT_PATH}/tmp/interop*${PYTHON_VERSION}*linux_x86_64.whl -w ${ARTIFACT_PATH}
-          rm -fr ${ARTIFACT_PATH}/tmp
+        set +e
+        for attempt in 1 2 3; do
+            run "Test ${PYTHON_VERSION}" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
+        done
+        set -e
+        run "Test ${PYTHON_VERSION}" cmake --build $BUILD_PATH --target check -- -j${THREAD_COUNT}
+
+        set +e
+        for attempt in 1 2 3; do
+            run "Build ${PYTHON_VERSION}" cmake --build $BUILD_PATH --target package_wheel -- -j${THREAD_COUNT}
+        done
+        set -e
+        run "Build ${PYTHON_VERSION}" cmake --build $BUILD_PATH --target package_wheel -- -j${THREAD_COUNT}
+        auditwheel show ${ARTIFACT_PATH}/tmp/interop*${PYTHON_VERSION}*linux_*.whl
+        auditwheel repair ${ARTIFACT_PATH}/tmp/interop*${PYTHON_VERSION}*linux_*.whl -w ${ARTIFACT_PATH}
+        rm -fr "${ARTIFACT_PATH}/tmp"
     fi
 elif [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PYTHON_VERSION" != "DotNetStandard" ] && [ "$PYTHON_VERSION" != "None" ] ; then
     if [ "$PYTHON_VERSION" == "ALL" ] ; then
@@ -254,7 +275,7 @@ elif [ "$PYTHON_VERSION" != "" ] && [ "$PYTHON_VERSION" != "Disable" ] && [ "$PY
             which pip
             python -m pip install delocate || true
             python --version
-            python -m pip install numpy
+            python -m pip install numpy --only-binary numpy,pandas
             python -m pip install wheel
             python -m pip install setuptools
             echo "Check setuptools"

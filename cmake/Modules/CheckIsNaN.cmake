@@ -2,6 +2,7 @@
 # Adpoted from: https://github.com/soonhokong/fp-test/blob/master/src/cmake_modules/CheckIsNaN.cmake
 
 include(CheckCXXSourceCompiles)
+include(CheckCXXSourceRuns)
 
 
 CHECK_CXX_SOURCE_COMPILES(

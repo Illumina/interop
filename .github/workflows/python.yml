@@ -3,6 +3,9 @@ name: Python Wheels
 env:
   MACOSX_DEPLOYMENT_TARGET: 10.9
   DOCKER_IMAGE: quay.io/pypa/manylinux2014_x86_64
+  DOCKER_IMAGE_AARCH64: quay.io/pypa/manylinux_2_28_aarch64
+  # Unable to build numpy using the earlier image below
+  #quay.io/pypa/manylinux2014_aarch64
 
 on:
   push:
@@ -16,7 +19,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
+        os: [ubuntu-22.04, windows-latest, macOS-latest]
         pyver: ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13', '3.14']
 
     steps:
@@ -25,7 +28,7 @@ jobs:
           fetch-depth: 0
 
       - uses: actions/setup-python@v4
-        if: matrix.os != 'ubuntu-latest'
+        if: ${{ !startsWith(matrix.os, 'ubuntu') }}
         with:
           python-version: ${{matrix.pyver}}
         id: cpver
@@ -36,33 +39,18 @@ jobs:
           git config user.email "<>"
           git --version
 
-      - name: Package Python 3.8 and earlier
-        if: ${{ startsWith(matrix.os, 'ubuntu') && matrix.pyver == '3.8' }}
-        run: docker run --rm -v ${{github.workspace}}/:/io ezralanglois/interop sh /io/tools/package.sh /io /io/dist travis OFF
+      - name: Package Python 3.8-3.x Linux x86_64
+        if: ${{ startsWith(matrix.os, 'ubuntu') }}
+        run: docker run --rm -v ${{github.workspace}}/:/io $DOCKER_IMAGE sh /io/tools/package.sh /io /io/dist travis OFF Release ${{ matrix.pyver }}
 
-      - name: Package Python 3.9
-        if: ${{ startsWith(matrix.os, 'ubuntu') && matrix.pyver == '3.9' }}
-        run: docker run --rm -v ${{github.workspace}}/:/io $DOCKER_IMAGE sh /io/tools/package.sh /io /io/dist travis OFF Release cp39-cp39
+      - name: Install QEMU
+        if: ${{ startsWith(matrix.os, 'ubuntu') }}
+        run: |
+          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 
-      - name: Package Python 3.10
-        if: ${{ startsWith(matrix.os, 'ubuntu') && matrix.pyver == '3.10' }}
-        run: docker run --rm -v ${{github.workspace}}/:/io $DOCKER_IMAGE sh /io/tools/package.sh /io /io/dist travis OFF Release cp310-cp310
-
-      - name: Package Python 3.11
-        if: ${{ startsWith(matrix.os, 'ubuntu') && matrix.pyver == '3.11' }}
-        run: docker run --rm -v ${{github.workspace}}/:/io $DOCKER_IMAGE sh /io/tools/package.sh /io /io/dist travis OFF Release cp311-cp311
-
-      - name: Package Python 3.12
-        if: ${{ startsWith(matrix.os, 'ubuntu') &&  matrix.pyver == '3.12' }}
-        run: docker run --rm -v ${{github.workspace}}/:/io $DOCKER_IMAGE sh /io/tools/package.sh /io /io/dist travis OFF Release cp312-cp312
-
-      - name: Package Python 3.13
-        if: ${{ startsWith(matrix.os, 'ubuntu') &&  matrix.pyver == '3.13' }}
-        run: docker run --rm -v ${{github.workspace}}/:/io $DOCKER_IMAGE sh /io/tools/package.sh /io /io/dist travis OFF Release cp313-cp313
-
-      - name: Package Python 3.14
-        if: ${{ startsWith(matrix.os, 'ubuntu') &&  matrix.pyver == '3.14' }}
-        run: docker run --rm -v ${{github.workspace}}/:/io $DOCKER_IMAGE sh /io/tools/package.sh /io /io/dist travis OFF Release cp314-cp314
+      - name: Package Python 3.9-3.x Linux Arm64
+        if: ${{ startsWith(matrix.os, 'ubuntu') }}
+        run: docker run --rm -v ${{github.workspace}}/:/io $DOCKER_IMAGE_AARCH64 sh /io/tools/package.sh /io /io/dist travis OFF Release ${{ matrix.pyver }}
 
       - name: Windows Package Python
         if: ${{ startsWith(matrix.os, 'windows') }}
