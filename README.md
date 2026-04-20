@@ -9,6 +9,8 @@ The Illumina InterOp libraries are a set of common routines used for reading Int
 Illumina sequencers including **NextSeq 1k/2k** and NovaSeqX. These libraries are backwards compatible and capable of supporting prior releases of the software,
 with one exception: GA systems have been excluded.
 
+Interop is licensed under [PolyForm Strict License 1.0.0](https://github.com/Illumina/interop/blob/master/LICENSE) 
+
 ***
 > We now support an interface to 3.8-3.14
 > Note that 3.10-3.14 are CentOS 7 or later while earlier versions support Centos 5 or later
